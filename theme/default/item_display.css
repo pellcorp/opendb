@@ -1,0 +1,143 @@
+div.item_displayContent th.prompt
+{
+	color: white;
+	background-color: #BDC7F7;
+}
+
+div.item_displayContent td.data
+{
+	background-color: #DCE6FB;
+}
+
+td.data ul
+{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+th.prompt
+{
+	white-space: nowrap;
+}
+
+ul.ticks li
+{
+	list-style-image: url(../../images/tick.gif);
+	margin-left: 15px; 
+	padding-left: 0px;
+}
+
+ul.plain
+{
+	float: left;
+}
+
+ul.category
+{
+	list-style-type: none;
+	padding: 0px;
+	text-align: center;
+}
+
+ul.category li
+{
+	padding-right: 5px;
+	float: left;
+}
+
+ul.names
+{
+	list-style-type: none;
+}
+
+ul.names li
+{
+	float: left;
+	padding-right: 5px;
+}
+
+ul.coverimages
+{
+	float: right;
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+	margin-right: 25px;
+}
+
+ul.coverimages li
+{
+	float: left;
+}
+
+ul.footer-links
+{
+	clear: both;
+	padding: 5px;
+	padding-left: 0px;
+}
+
+div.tabContent ul.footer-links
+{
+	float: right;
+	padding-top: 10px;
+}
+
+.rating, .norating
+{
+	font-weight: bold;
+	margin: 0px;
+}
+
+#reviews ul
+{
+	list-style-type: none;
+}
+
+#reviews .author
+{
+	display: block;
+	font-weight: bold;
+}
+
+#reviews .reference
+{
+	display: block;
+}
+
+#reviews .rating
+{
+	display: block;
+	padding-top: 5px;
+}
+
+ul.sitepluginLinks
+{
+	margin-bottom: 10px;
+	list-style-type: none;
+	float: left;
+	width: 95%;
+	margin-top: 10px;
+}
+
+ul.sitepluginLinks li
+{
+	margin-left: 10px;
+	float: left;
+}
+
+div#tab-content table
+{
+	width: 99%;
+}
+
+div#tab-content th.prompt
+{
+	width: 20%;
+}
+
+div#instance_info table
+{
+	width: 99%;
+}

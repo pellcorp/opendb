@@ -903,7 +903,7 @@ function insert_item_attribute($item_id, $instance_no, $s_attribute_type, $order
 	if($attribute_val !== NULL || $lookup_attribute_val !==NULL)
 	{	
 		$query = "INSERT INTO item_attribute (item_id, instance_no, s_attribute_type, order_no, attribute_no, lookup_attribute_val, attribute_val)".
-				"VALUES ($item_id, ".(is_numeric($instance_no)?$instance_no:"-1").", '$s_attribute_type', $order_no, $attribute_no, ".($lookup_attribute_val!==NULL?"'$lookup_attribute_val'":"NULL").", ".($attribute_val!==NULL?"'$attribute_val'":"NULL").")";
+				"VALUES ($item_id, ".(is_numeric($instance_no)?$instance_no:"0").", '$s_attribute_type', $order_no, $attribute_no, ".($lookup_attribute_val!==NULL?"'$lookup_attribute_val'":"NULL").", ".($attribute_val!==NULL?"'$attribute_val'":"NULL").")";
 				
 		$insert = db_query($query);
 		if ($insert && db_affected_rows() > 0)

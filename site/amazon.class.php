@@ -466,8 +466,10 @@ class amazon extends SitePlugin
 			$this->addItemAttribute('nb_pages', $regs[1]);
 		}
 		
+		//<li><b>Publisher:</b> Prima Games (November 24, 1998)</li>
 		//<li><b>Publisher:</b> HarperCollins; New Ed edition (1 Mar 1999)</li>
-		if(preg_match("!<b>Publisher:</b>[\s]*([^;]+);!U", $pageBuffer, $regs) || 
+		if(preg_match("!<b>Publisher:</b>[\s]*([^;\(]+);!U", $pageBuffer, $regs) || 
+				preg_match("!<b>Publisher:</b>[\s]*([^\(]+)\(!U", $pageBuffer, $regs) || 
 				preg_match("!<b>Publisher:</b>[\s]*([^<]+)</li>!U", $pageBuffer, $regs)) 
 		{
 			$this->addItemAttribute('publisher', $regs[1]);

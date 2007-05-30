@@ -16,13 +16,6 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-	
-	-- CHANGLOG --
-		
-	Version		Comments
-	-------		--------
-	0.81		Initial 0.81 compliant release.
-	0.81p1		Fix to parse DVD year, ratio and all item type blurbs correctly.
 */
 include_once("./functions/SitePlugin.class.inc");
 include_once("./site/amazonutils.php");
@@ -520,6 +513,28 @@ class amazonde extends SitePlugin
 			$this->addItemAttribute('year', $regs[1]);
 		}
 		
+		//<li><b>DVD-Erscheinungstermin:</b>  1. Dez. 2005</li>
+		if(preg_match("!<li><b>DVD-Erscheinungstermin:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
+		{
+			// Get year only, for now.  In the future we may add ability to
+			// convert date to local date format.
+			$regs = preg_split("/[\s,]+/", trim($regs[1]));
+			if(preg_match("/([0-9]+)$/m", $regs[2], $regs2))
+				$this->addItemAttribute('dvd_rel_dt', $regs2[1]);
+				
+			if($this->getItemAttribute('year') === FALSE)
+			{
+				$this->addItemAttribute('year', $regs2[1]);
+			}
+		}
+		
+		//<li><b>Spieldauer:</b>  482 Minuten</li>
+		// Duration extraction block
+		if(preg_match("!<li><b>Spieldauer:[\s]*</b>[\s]*([0-9]+) Minuten</li>!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('run_time', $regs[1]);
+		}
+		
 		// Rating extraction block
 		if(preg_match("!<li><b>FSK:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
 		{
@@ -542,13 +557,15 @@ class amazonde extends SitePlugin
 		else
 			$this->addItemAttribute('dvd_region', '2'); //otherwise assume region 2
 		
+		//<li><b>DVD Features:</b><ul><li>ALIEN - DIE WIEDERGEBURT: Kommentare, Pre- Production-Featurettes, Multi- Angle-Segmente, Produktions- Dokumentationen, Post- Production-Featurettes</li><li>ALIEN 3: Kommentare, Pre-Production-Featurettes, Multi-Angle-Segmente, Produktions-Dokumentationen, Post-Production-Featurettes</li><li>ALIEN: Infos von Ridley Scott zur Director's Cut-Version, Kommentare, Pre-Production-Featurettes, Produktions-Dokumentation, Post-Production-Featurettes, unveröffentlichte Szenen</li><li>ALIENS - DIE RÜCKKEHR: Infos von James Cameron zur Extended Version, Kommentare, Pre-Production- Featurettes, Multi-Angle-Animatics, Produktions-Dokumentationen, Post-Production-Featurettes</li><li>Jeder der vier Filme ist als Extended-Version zu sehen. Dieses Set enthält keine zusätzliche Bonus-DVD</li></ul>
+
 		// Edition details block - 'dvd_extras' attribute
-		if(preg_match("/<b>DVD Features:<\/b>[\n](.*)<li><b>/si", $pageBuffer, $regs))
+		if(preg_match("!<li><b>DVD Features:[\s]*</b><ul>(.*?)</ul>!si", $pageBuffer, $regs))
 		{
 			// TODO "anamorphic" Other formating in Amazon EU
 			// "no_discs" NOT Supported by Amazon EU
 			
-			if(preg_match_all("/<ul><li>(.*)<\/ul>/i",$regs[1], $matches))
+			if(preg_match_all("!<li>(.*?)</li>!i",$regs[1], $matches))
 			{
 				$dvd_extras = NULL;
 				
@@ -617,21 +634,6 @@ class amazonde extends SitePlugin
 					$this->addItemAttribute('studio', $regs[1]);
 				}
 				
-				if(preg_match("/DVD Erscheinungstermin: ([^<]+)<br>/i", $detailPage, $regs))
-				{
-					// Get year only, for now.  In the future we may add ability to
-					// convert date to local date format.
-					$regs = preg_split ("/[\s,]+/", trim($regs[1]));
-					if(preg_match("/([0-9]+)$/m", $regs[2], $regs2))
-						$this->addItemAttribute('dvd_rel_dt', $regs2[1]);
-				}
-			
-				// Duration extraction block
-				if (preg_match("/Laufzeit: ([0-9]+)/i", $detailPage, $regs))
-				{
-					$this->addItemAttribute('run_time', $regs[1]);
-				}
-	
 				// Ratio
 				if (preg_match(":Bildformat(.*)<br>:i", $detailPage, $regs))
 				{

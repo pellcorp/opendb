@@ -1552,7 +1552,7 @@ class phpthumb {
 					return true;
 
 				}
-				unlink($IMtempfilename);
+				@unlink($IMtempfilename);
 
 			} else {
 				$this->DebugMessage('ImageMagickThumbnailToGD() aborting, phpThumb_tempnam() failed', __FILE__, __LINE__);
@@ -3361,7 +3361,7 @@ class phpthumb {
 							fclose($fp_tempfile);
 							$gdimg_source = gif_loadFileToGDimageResource($tempfilename);
 							$this->DebugMessage('gif_loadFileToGDimageResource('.$tempfilename.') completed', __FILE__, __LINE__);
-							unlink($tempfilename);
+							@unlink($tempfilename);
 							return $gdimg_source;
 							break;
 						} else {
@@ -3377,7 +3377,7 @@ class phpthumb {
 
 					// great
 					$this->DebugMessage($ICFSreplacementFunctionName.'('.$tempnam.') succeeded', __FILE__, __LINE__);
-					unlink($tempnam);
+					@unlink($tempnam);
 					return $gdimg_source;
 
 				} else { // GD functions not available

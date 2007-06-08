@@ -29,6 +29,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						'1.1',
 						array(
 							array('description'=>'New Related Status Type'),
+							array('description'=>'Transfer Linked Items')
 						)
 					);
 	}

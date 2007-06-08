@@ -33,6 +33,11 @@ class VersionCheckTest extends PHPUnit_TestCase
 	{
 	}
 	
+	function testVersion10To11Dev1()
+	{
+		$this->assertTrue(version_compare('1.1dev1', '1.0pl1', '>'), '1.1dev1 > 1.0pl1');
+	}
+	
 	function testVersionBeta3ToBeta4()
 	{
 		$this->assertTrue(version_compare('1.0b3', '1.0a4', '>'), '1.0b3 > 1.0a4');

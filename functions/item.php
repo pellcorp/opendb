@@ -150,7 +150,9 @@ function fetch_item_instance_cnt($s_item_type = NULL)
 function fetch_child_item_rs($item_id)
 {
 	// so that both resultset use item_id for the item.id or item_instance.item_id!!!
-	$query = "SELECT id as item_id, parent_id, title, s_item_type FROM item WHERE parent_id='".$item_id."' order by id ASC";
+	$query = "SELECT id as item_id, parent_id, title, s_item_type 
+			FROM item 
+			WHERE parent_id='".$item_id."' order by id ASC";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -342,6 +344,39 @@ function fetch_category_item_cnt($category, $s_item_type = NULL)
 function fetch_owner_item_instance_rs($owner_id)
 {
 	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, i.parent_id, ii.owner_id, i.title, i.s_item_type FROM item i, item_instance ii WHERE i.id = ii.item_id AND parent_id IS NULL AND ii.owner_id='".$owner_id."' "; 
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else
+		return FALSE;
+}
+
+/**
+ * 
+ */
+function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL)
+{
+	$query = "SELECT iir.item_id, 
+					iir.instance_no, 
+					i.title,
+					i.s_item_type, 
+					iir.related_item_id, 
+					iir.related_item_instance 
+			FROM	item_instance_relationship iir,
+					item_instance ii,
+				 	item i
+			WHERE 	ii.item_id = i.id AND
+					iir.item_id = ii.item_id AND
+					iir.instance_no = ii.instance_no AND 
+					iir.item_id = $item_id";
+
+	if(is_numeric($instance_no))
+	{
+		 $query .= " AND iir.instance_no = $instance_no";
+	}
+	
+	$query .= "ORDER BY 1, 2 ASC";
+	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 		return $result;
@@ -1607,5 +1642,26 @@ function delete_item_instance($item_id, $instance_no)
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
 		return FALSE;
 	}
+}
+
+function insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_item_instance)
+{
+	//Either the instance_no was specified to begin with, or the LOCK TABLES and fetch_max_instance_no call worked.
+	$query = "INSERT INTO item_instance_relationship(item_id, instance_no, related_item_id, related_item_instance)".
+			"VALUES ($item_id, $instance_no, $related_item_id, $related_item_instance)";
+			
+	$insert = db_query($query);
+	if ($insert && db_affected_rows() > 0)
+	{
+		$sequence_number = db_insert_id();
+		
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $related_item_id, $related_item_instance));
+		return $sequence_number;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $related_item_id, $related_item_instance));
+		return FALSE;
+	}			
 }
 ?>

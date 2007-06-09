@@ -1231,7 +1231,8 @@ function handle_edit_or_refresh($op, $parent_item_r, $item_r, $status_type_r, $H
 	// If $parent_item_r defined, then the test for parent ownership is sufficient!
 	if(is_not_empty_array($parent_item_r) || 
 			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-			$item_r['owner_id'] == get_opendb_session_var('user_id'))
+			$item_r['owner_id'] == get_opendb_session_var('user_id') || 
+			($op == 'newinstance' && is_user_allowed_to_own(get_opendb_session_var('user_id'))))
 	{
 		if(is_empty_array($parent_item_r) || 
 				is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
@@ -1698,24 +1699,23 @@ function perform_update_process(&$parent_item_r, &$item_r, &$status_type_r, &$HT
 	
 	do_op_title($parent_item_r, $item_r, $status_type_r, $HTTP_VARS['start-op'] == 'newinstance'?'newinstance':'update');
 	
-	$errors = NULL;					
-	$return_val = handle_item_update($parent_item_r, $item_r, $HTTP_VARS, $_FILES, $errors);
-	if($return_val === TRUE)
+	$errors = NULL;
+	
+	if(is_empty_array($parent_item_r))
 	{
-	    if(is_empty_array($parent_item_r))
+    	if($HTTP_VARS['start-op'] == 'newinstance')
+    	{
+    		$item_r['instance_no'] = NULL;
+    		
+	    	$return_val = handle_item_instance_insert($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
+    	}
+	    else
 	    {
-	    	if($HTTP_VARS['start-op'] == 'newinstance')
-	    	{
-	    		$item_r['instance_no'] = NULL;
-	    		
-		    	$return_val = handle_item_instance_insert($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
-	    	}
-		    else
-		    {
-		    	$return_val = handle_item_instance_update($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
-		    }
+	    	$return_val = handle_item_instance_update($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
 	    }
-	}
+    }
+	
+	$return_val = handle_item_update($parent_item_r, $item_r, $HTTP_VARS, $_FILES, $errors);
 	
 	if($return_val === "__INVALID_DATA__")
 	{

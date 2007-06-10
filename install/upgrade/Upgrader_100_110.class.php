@@ -56,10 +56,9 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		{
 			while($item_instance_r = db_fetch_assoc($results))
 			{
-				$related_instance_no = 
-					insert_item_instance(
+				insert_item_instance(
 						$item_instance_r['related_item_id'], 
-						NULL, //$instance_no, 
+						1, //$instance_no, 
 						'R', //$s_status_type, 
 						NULL, //$status_comment, 
 						NULL, //$borrow_duration, 
@@ -69,7 +68,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 							$item_instance_r['item_id'], 
 							$item_instance_r['instance_no'], 
 							$item_instance_r['related_item_id'], 
-							$related_instance_no);
+							1);
 			}
 			db_free_result($results);
 		}

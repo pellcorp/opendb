@@ -58,13 +58,16 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		{
 			while($item_instance_r = db_fetch_assoc($results))
 			{
-				insert_item_instance(
-						$item_instance_r['related_item_id'], 
-						1, //$instance_no, 
-						'R', //$s_status_type, 
-						NULL, //$status_comment, 
-						NULL, //$borrow_duration, 
-						$item_instance_r['owner_id']);
+				if(!is_exists_item_instance($item_instance_r['related_item_id'], 1))
+				{
+					insert_item_instance(
+							$item_instance_r['related_item_id'], 
+							1, //$instance_no, 
+							'R', //$s_status_type, 
+							NULL, //$status_comment, 
+							NULL, //$borrow_duration, 
+							$item_instance_r['owner_id']);
+				}
 					
 				insert_item_instance_relationship(
 							$item_instance_r['item_id'], 

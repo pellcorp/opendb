@@ -566,3 +566,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'yes', 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'youve_borrow_or_return', 'You have previously borrowed this item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'you_have_it_borrowed', 'You have it borrowed'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'you_have_reservation', 'You have an existing reservation'); 
+
+# related item support
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_item(s)', 'Related Item(s)'); 

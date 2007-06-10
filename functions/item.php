@@ -290,7 +290,7 @@ function fetch_child_item_cnt($item_id)
 */
 function fetch_category_item_cnt($category, $s_item_type = NULL)
 {
-	$query = "SELECT count(DISTINCT ii.item_id) as count ".
+	$query = "SELECT COUNT(DISTINCT ii.item_id) AS COUNT ".
 			"FROM item i, item_instance ii, s_status_type sst, user u, s_attribute_type sat, s_item_attribute_type siat, item_attribute ia ".
 			"WHERE u.user_id = ii.owner_id AND ".
 			"siat.s_item_type = i.s_item_type AND ".
@@ -361,7 +361,7 @@ function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL)
 					i.title,
 					i.s_item_type, 
 					iir.related_item_id, 
-					iir.related_item_instance 
+					iir.related_instance_no 
 			FROM	item_instance_relationship iir,
 					item_instance ii,
 				 	item i
@@ -708,7 +708,7 @@ function fetch_item_listing_cnt($HTTP_VARS, $column_display_config_rs=NULL)
 */
 function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
 {
-	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, i.parent_id, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
+	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
 
 	$attr_order_by = NULL;
 	$column_order_by = NULL;
@@ -808,26 +808,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	$from_r[] = 'item i';
 	$from_r[] = 'item_instance ii';
 
-	//
-	// Linked Item support
-	//
-	if(get_opendb_config_var('listings', 'linked_items') == 'restrict')
-	{
-		$where_r[] = 
-			"(i.parent_id IS NOT NULL AND ii.item_id = i.parent_id)";
-	}
-	else if((get_opendb_config_var('listings', 'linked_items') == 'include' ||  //override
-				$HTTP_VARS['linked_items'] == 'include') &&
-			$HTTP_VARS['linked_items'] != 'exclude')
-	{ 
-		// this still breaks an index, it means full table scan on item table no matter what, 
-		// but I think it is a bit faster which is good enough for now.
-		$where_r[] = "ii.item_id = IFNULL(i.parent_id, i.id)"; 
-	}
-	else // $HTTP_VARS['linked_items'] == 'exclude'
-	{
-		$where_r[] = 'ii.item_id = i.id';// only parent items should ever be listed.
-	}
+	$where_r[] = 'ii.item_id = i.id';// only parent items should ever be listed.
 	
 	//
 	// Owner restriction
@@ -1644,23 +1625,23 @@ function delete_item_instance($item_id, $instance_no)
 	}
 }
 
-function insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_item_instance)
+function insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_instance_no)
 {
 	//Either the instance_no was specified to begin with, or the LOCK TABLES and fetch_max_instance_no call worked.
-	$query = "INSERT INTO item_instance_relationship(item_id, instance_no, related_item_id, related_item_instance)".
-			"VALUES ($item_id, $instance_no, $related_item_id, $related_item_instance)";
+	$query = "INSERT INTO item_instance_relationship(item_id, instance_no, related_item_id, related_instance_no)".
+			"VALUES ($item_id, $instance_no, $related_item_id, $related_instance_no)";
 			
 	$insert = db_query($query);
 	if ($insert && db_affected_rows() > 0)
 	{
 		$sequence_number = db_insert_id();
 		
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $related_item_id, $related_item_instance));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $related_item_id, $related_instance_no));
 		return $sequence_number;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $related_item_id, $related_item_instance));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $related_item_id, $related_instance_no));
 		return FALSE;
 	}			
 }

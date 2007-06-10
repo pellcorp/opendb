@@ -55,7 +55,6 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	{
 		echo("<li><form class=\"quickSearch\" action=\"listings.php\">".
 			"<input type=\"hidden\" name=\"search_list\" value=\"y\">".
-			"<input type=\"hidden\" name=\"linked_items\" value=\"include\">".
 			//"<input type=\"hidden\" name=\"attribute_type\" value=\"UPC_ID\">".
 			//"<input type=\"hidden\" name=\"attr_match\" value=\"partial\">".
 			//"<input type=\"text\" name=\"attribute_val\" size=\"10\">".

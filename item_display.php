@@ -437,7 +437,7 @@ if(is_site_enabled())
 					echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 					echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('details')."</li>");
 					echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('instance_info')."</li>");
-					echo("<li id=\"menu-linked_items\" onclick=\"return activateTab('linked_items', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('linked_item(s)')."</li>");
+					echo("<li id=\"menu-related_items\" onclick=\"return activateTab('related_items', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('related_items(s)')."</li>");
 					echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('review(s)')."</li>");
 					echo("</ul>");
 				}
@@ -530,7 +530,7 @@ if(is_site_enabled())
 					
 				echo("</div>");
 				
-				// need to be able to display details about parent instances even if linked item is context
+				// need to be able to display details about parent instances even if related item is context
 				if(is_not_empty_array($parent_item_r))
 					$current_item_r = $parent_item_r;
 				else
@@ -629,9 +629,9 @@ if(is_site_enabled())
 				
 				echo("</div>");
 				
-				echo("<div class=\"$otherTabsClass\" id=\"linked_items\">");
+				echo("<div class=\"$otherTabsClass\" id=\"related_items\">");
 
-				echo("<h3>".get_opendb_lang_var('linked_item(s)')."</h3>");
+				echo("<h3>".get_opendb_lang_var('related_item(s)')."</h3>");
 				if(is_array($parent_item_r))
 					echo(get_child_items_table($parent_item_r, $item_r, $HTTP_VARS));
 				else

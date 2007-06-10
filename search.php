@@ -343,17 +343,6 @@ if(is_site_enabled())
 				"\n<input type=radio name=\"status_comment_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."&nbsp;&nbsp;".
 				"\n<input type=checkbox name=\"status_comment_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive'));
 
-		// if the listings.linked_items variable is set, then this overrides any search terms.		
-		if(get_opendb_config_var('item_input', 'linked_item_support') !== FALSE &&
-				get_opendb_config_var('listings', 'linked_items') == 'undefined')
-	   	{
-			echo format_field(
-			    get_opendb_lang_var('linked_item(s)'),
-				NULL,
-			   	"\n<input type=radio name=\"linked_items\" value=\"include\"".(get_opendb_config_var('search', 'default_include_linked_items')!==FALSE?" CHECKED":"").">".get_opendb_lang_var('include')."&nbsp;&nbsp;".
-	   				"<input type=radio name=\"linked_items\" value=\"exclude\"".(get_opendb_config_var('search', 'default_include_linked_items')===FALSE?" CHECKED":"").">".get_opendb_lang_var('exclude'));
-		}
-		
 		// ------------------------
 		// UPDATE_ON FIELD
 		// ------------------------

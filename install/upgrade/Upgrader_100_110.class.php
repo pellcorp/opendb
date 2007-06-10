@@ -28,6 +28,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						'1.0',
 						'1.1.0',
 						array(
+							array('description'=>'New Item Relationship Table'),
 							array('description'=>'New Related Status Type'),
 							array('description'=>'Transfer Linked Items'),
 							array('description'=>'Finalise upgrade')
@@ -35,9 +36,9 @@ class Upgrader_100_110 extends OpenDbUpgrader
 					);
 	}
 	
-	function executeStep1($stepPart)
+	function executeStep2($stepPart)
 	{
-		exec_install_sql_file("./admin/s_status_type/sql/R-Related.sql", $errors);
+		return exec_install_sql_file("./admin/s_status_type/sql/R-Related.sql", $errors);
 	}
 	
 	/**
@@ -45,7 +46,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 	 * a item_instance_relationship to link it to all the parent item instances.  Finally
 	 * drop the parent_id column.
 	 */
-	function executeStep2($stepPart)
+	function executeStep3($stepPart)
 	{
 		$results = db_query(
 					"SELECT ii.item_id, ii.instance_no, ii.owner_id, i.id AS related_item_id
@@ -73,11 +74,14 @@ class Upgrader_100_110 extends OpenDbUpgrader
 			}
 			db_free_result($results);
 		}
+		
+		return TRUE;
 	}
 	
-	function executeStep3($stepPart)
+	function executeStep4($stepPart)
 	{
 		db_query("ALTER TABLE item DROP parent_id");
+		return TRUE;
 	}
 }
 ?>

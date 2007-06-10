@@ -87,8 +87,7 @@ function fetch_language_langvar_rs($language, $options = NULL)
 			FROM s_language_var dflt
 			LEFT JOIN s_language_var slv
 			ON slv.language = '$language' AND slv.varname = dflt.varname
-			WHERE dflt.language = '".fetch_default_language()."'
-			ORDER BY dflt.varname"; 
+			WHERE dflt.language = '".fetch_default_language()."'";
 	}
 	else
 	{

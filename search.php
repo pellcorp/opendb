@@ -60,9 +60,6 @@ function get_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategories,
 		{
 			while($item_attribute_type_r = db_fetch_assoc($results))
 			{
-				$display_type = trim($item_attribute_type_r['display_type']);
-				$input_type = trim($item_attribute_type_r['input_type']);
-
 				// Do not include any attributes which do not exist as item attributes
 				if($item_attribute_type_r['s_field_type'] != 'TITLE' &&
 							$item_attribute_type_r['s_field_type'] != 'DURATION' &&

@@ -1,0 +1,1611 @@
+<?php
+/* 	
+	Open Media Collectors Database
+	Copyright (C) 2001,2006 by Jason Pell
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+include_once("./functions/database.php");
+include_once("./functions/logging.php");
+include_once("./functions/item_attribute.php");
+include_once("./functions/item_type.php");
+include_once("./functions/theme.php");
+include_once("./functions/utils.php");
+include_once("./functions/datetime.php");
+include_once("./functions/status_type.php");
+include_once("./functions/BooleanParser.class.inc");
+include_once("./functions/widgets.php");
+include_once("./functions/item_type_group.php");
+
+/**
+	Will check that the $uid has an item_instance for item_id.  If instance_no specified,
+	will check that the user owns the specified instance, otherwise this function is
+	only checking that the $uid owns at least one instance of the item.
+*/	
+function is_user_owner_of_item($item_id, $instance_no, $uid)
+{
+	$query = "SELECT 'x' FROM item_instance WHERE item_id = '$item_id' AND owner_id = '$uid' ";
+	if(is_numeric($instance_no))
+		$query .= " AND instance_no = '$instance_no' ";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		// The very fact that at least one row was returned indicates that owner
+		// has at least one instance of item.
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+function is_exists_child_item_with_diff_item_type_to_parent($item_id, $s_item_type)
+{
+	$query = "SELECT 'x' FROM item WHERE parent_id = '$item_id' AND s_item_type <> '$s_item_type' ";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+*/
+function fetch_item_owner_id($item_id, $instance_no)
+{
+	$query = "SELECT owner_id FROM item_instance WHERE item_id = '$item_id' AND instance_no = '$instance_no'";
+	$result = db_query($query);
+	if ($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		if ($found)
+		{
+			db_free_result($result);
+			return $found['owner_id'];
+		}
+	}
+	//else
+	return FALSE;
+}
+
+function fetch_item_s_status_type($item_id, $instance_no)
+{
+	$query = "SELECT s_status_type FROM item_instance WHERE item_id = '$item_id' AND instance_no = '$instance_no'";
+	$result = db_query($query);
+	if ($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		if ($found)
+		{
+			db_free_result($result);
+			return $found['s_status_type'];
+		}
+	}
+	//else
+	return FALSE;	
+}
+
+/**
+	Returns a count of item instances stored in the database, or false if none found.
+	NOTE: If $s_item_type is specified, only the given $s_item_type is counted (otherwise all)
+*/
+function fetch_item_instance_cnt($s_item_type = NULL)
+{
+	$query = "SELECT count(ii.item_id) as count ";
+	$from = "FROM item_instance ii, s_status_type sst, user u, item i ";
+	$where = "WHERE i.id = ii.item_id AND u.user_id = ii.owner_id AND u.active_ind = 'Y' AND sst.s_status_type = ii.s_status_type ";
+			
+	if($s_item_type)
+	{
+		$where .= " AND i.s_item_type = '".$s_item_type."' ";
+	}
+	
+	// Restrict certain status types, to specified user types.
+	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+	if(is_not_empty_array($user_type_r))
+	{
+		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
+	}
+	
+	$query .= "$from $where";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Returns resultset of child items for the particular item_id
+*/
+function fetch_child_item_rs($item_id)
+{
+	// so that both resultset use item_id for the item.id or item_instance.item_id!!!
+	$query = "SELECT id as item_id, parent_id, title, s_item_type FROM item WHERE parent_id='".$item_id."' order by id ASC";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else	
+		return FALSE;
+}
+
+/**
+	Returns resultset of item_instance's for the particular item_id
+*/
+function fetch_item_instance_rs($item_id, $owner_id)
+{
+	// so that both resultset use item_id for the item.id or item_instance.item_id!!!
+	$query = "SELECT ii.item_id, ii.instance_no, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
+			" FROM item_instance ii, s_status_type sst, user u, item i".
+			" WHERE i.id = ii.item_id AND u.user_id = ii.owner_id AND u.active_ind = 'Y' AND sst.s_status_type = ii.s_status_type AND ii.item_id='".$item_id."' ".(strlen($owner_id)>0?"AND ii.owner_id = '$owner_id'":"");
+	
+	// Restrict certain status types, to specified user types.
+	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+	if(is_not_empty_array($user_type_r))
+	{
+		$query .= " AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
+	}
+	
+	$query .= " ORDER BY ii.instance_no	";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else	
+		return FALSE;
+}
+
+/**
+	Returns a count of items owned by the specified owner_id, or FALSE if no records.
+	Assumes this will NOT be called for INACTIVE users, if being called from Statistics
+	
+	NOTE: If $s_item_type is specified, only the given s_item_type is counted (otherwise all)
+	
+*/
+function fetch_owner_item_cnt($owner_id, $s_item_type = NULL)
+{
+	$query = "SELECT count(ii.item_id) AS count ";
+	$from = "FROM item_instance ii, s_status_type sst, item i ";
+	$where = "WHERE i.id = ii.item_id AND sst.s_status_type = ii.s_status_type ";
+			
+	if($s_item_type)
+	{
+		$where .= "AND i.s_item_type='".$s_item_type."' ";
+	}
+	$where .= "AND ii.owner_id = '$owner_id' "; 
+	
+	// Restrict certain status types, to specified user types.
+	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+	if(is_not_empty_array($user_type_r))
+	{
+		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
+	}
+	
+	$query .= "$from $where";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/*
+* 	We do not know which s_status_type's the get_opendb_session_var('user_type')
+* 	can have access to so we include a join to s_status_type to hide any
+* 	items with a s_status_type the current user should not see.
+*/
+function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type)
+{
+	$query = "SELECT count(ii.item_id) as count ".
+			"FROM item_instance ii, s_status_type sst, item i ".
+			"WHERE i.id = ii.item_id AND sst.s_status_type = ii.s_status_type AND ii.owner_id='".$owner_id."' AND ii.s_status_type = '$s_status_type' ";
+
+	// Restrict certain status types, to specified user types.
+	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+	if(is_not_empty_array($user_type_r))
+	{
+		$query .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
+	}
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found !== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Returns a count of child items for $item_id
+*/
+function fetch_child_item_cnt($item_id)
+{
+	$query = "SELECT count(id) as count FROM item WHERE parent_id ='".$item_id."'";
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found !== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Returns a count of items in the specified $s_item_type category, or FALSE if no records.
+	NOTE: If $s_item_type is specified, only the given s_item_type is counted (otherwise all)
+*/
+function fetch_category_item_cnt($category, $s_item_type = NULL)
+{
+	$query = "SELECT count(DISTINCT ii.item_id) as count ".
+			"FROM item i, item_instance ii, s_status_type sst, user u, s_attribute_type sat, s_item_attribute_type siat, item_attribute ia ".
+			"WHERE u.user_id = ii.owner_id AND ".
+			"siat.s_item_type = i.s_item_type AND ".
+			"sat.s_attribute_type = siat.s_attribute_type AND ".
+			"sat.s_field_type = 'CATEGORY' AND ".
+			"ia.s_attribute_type = siat.s_attribute_type AND ".
+			"ia.item_id = ii.item_id AND ".
+			"(ia.instance_no = 0 OR ia.instance_no = ii.instance_no) AND ".
+			"ia.order_no = siat.order_no AND ".
+			"u.active_ind = 'Y' AND ".
+			"sst.s_status_type = ii.s_status_type AND ".
+			"i.id = ii.item_id AND ".
+			"i.parent_id IS NULL AND ".
+			"ia.lookup_attribute_val = '".$category."'";
+	
+	if($s_item_type)
+	{
+		$query .= " AND i.s_item_type='".$s_item_type."'";
+	}
+	
+	// Restrict certain status types, to specified user types.
+	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+	if(is_not_empty_array($user_type_r))
+	{
+		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
+	}
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/*
+* Returns a list of items owned by the specified owner.
+* item_id,instance_no,title
+* 
+* Note: Used exclusively in User Admin.  This we can restrict
+* set returned, to only those records which are accessible to
+* the administrator.
+*/
+function fetch_owner_item_instance_rs($owner_id)
+{
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, i.parent_id, ii.owner_id, i.title, i.s_item_type FROM item i, item_instance ii WHERE i.id = ii.item_id AND parent_id IS NULL AND ii.owner_id='".$owner_id."' "; 
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else
+		return FALSE;
+}
+
+//
+// Returns an associative array for a single item.
+//id,owner_id,title,s_item_type
+//
+function fetch_item_instance_r($item_id, $instance_no)
+{
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, i.parent_id, ii.owner_id, i.title, i.s_item_type FROM item i,item_instance ii WHERE i.id = ii.item_id AND i.id='".$item_id."' AND ii.instance_no = '".$instance_no."'";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found;
+	}
+	else
+		return FALSE;
+}
+
+function fetch_item_r($item_id)
+{
+	$query = "SELECT id as item_id, parent_id, title, s_item_type FROM item WHERE id='".$item_id."'";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found;
+	}
+	else
+		return FALSE;
+}
+
+//
+// Returns an associative array for a single item.
+//id,owner_id,title,s_item_type
+//
+function fetch_child_item_r($item_id)
+{
+	return fetch_item_r($item_id);
+}
+
+/**
+	Return the item title.
+*/
+function fetch_item_title($item_id)
+{
+	// Only load previous record if edit.
+	$query = "SELECT title FROM item WHERE id='".$item_id."'"; 
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found['title'];
+	}
+	else
+		return FALSE;
+}
+
+//
+// Return the item title.
+//
+function fetch_item_type($item_id)
+{
+	// Only load previous record if edit.
+	$query = "SELECT s_item_type FROM item WHERE id='".$item_id."'"; 
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found['s_item_type'];
+	}
+	else
+		return FALSE;
+}
+
+/**
+	Will ascertain whether an item already exists with the same information:
+		title, s_item_type, parent_id
+	OR
+		title, s_item_type, owner_id		
+*/
+function is_exists_title($title, $s_item_type, $owner_id=NULL, $parent_id=NULL)
+{
+	// In this case we assume the parent id is visible and accessible to the 
+	// current user, because otherwise validation checks would not have allowed
+	// the user to come this far.
+	if(strlen($parent_id)>0)
+	{
+		$query = "SELECT 'x' FROM item i ".
+	    		"WHERE i.title = '".addslashes($title)."' AND ".
+				"i.s_item_type = '".$s_item_type."' AND ".
+				"i.parent_id = '".$parent_id."'";
+	}
+	else
+	{
+		$query = "SELECT 'x' FROM item i,item_instance ii, s_status_type sst, user u ".
+    			"WHERE i.id = ii.item_id AND ".
+				"u.user_id = ii.owner_id AND ".
+				"u.active_ind = 'Y' AND ".
+				"sst.s_status_type = ii.s_status_type AND ".
+				"i.title = '".addslashes($title)."' AND ".
+            	"i.s_item_type = '".$s_item_type."' AND ".
+				" i.parent_id IS NULL ";
+				
+		// Restrict certain status types, to specified user types.
+		$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+		if(is_not_empty_array($user_type_r))
+		{
+			$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+					" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+					" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
+		}
+				
+		if(strlen($owner_id)>0)
+			$query .= "AND ii.owner_id = '".$owner_id."'";
+	}
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+/**
+	Assumes that lock_item_instance has been called to ensure that
+	between delete of item_instance and delete of item, no further activity
+	can occur on the table.
+	
+	If '$instance_no' specified, will test whether the specific instance 
+	exists or not; Other wise will test whether any instances exist.
+
+	This will not cater for 'linked' items which do not have a 
+	item_instance record.
+*/
+function is_exists_item_instance($item_id, $instance_no=NULL)
+{
+	$query = "SELECT 'x' FROM item_instance WHERE item_id = '$item_id' ";
+	if($instance_no)
+		$query .= "AND instance_no = '$instance_no'";
+	$query .= " LIMIT 0,1";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+function is_exists_item_instance_with_owner($owner_id)
+{
+	$query = "SELECT 'x' FROM item_instance WHERE owner_id = '$owner_id'";
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+function is_exists_item_instance_with_owner_and_status($item_id, $s_status_type, $owner_id)
+{
+	$query = "SELECT 'x' FROM item_instance WHERE item_id = '$item_id' AND owner_id = '$owner_id' AND s_status_type = '$s_status_type'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Checks if the underlying item record actually exists or not.
+*/
+function is_exists_item($item_id)
+{
+	$query = "SELECT 'x' FROM item WHERE id = '$item_id'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Check if item is a child item.  No need to check item_instance,
+	because parent-child relationship does not exist there.
+*/
+function is_child_item($item_id)
+{
+	$query = "SELECT parent_id FROM item WHERE id = '$item_id'";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE && is_numeric($found['parent_id']))
+			return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Assumes that lock_item_instance has been called to 
+	ensure that the max_instance_no DOES NOT CHANGE between the select
+	and insert.
+*/
+function fetch_max_instance_no($item_id)
+{
+	$query = "SELECT MAX(instance_no) as instance_no FROM item_instance WHERE item_id = $item_id";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['instance_no'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	@param item_where_clause - the result of running the item_where_clause statement.
+	
+	@param $column_display_config_rs - Format of this array is:
+	 	array(
+	 		s_attribute_type => '',
+			order_no=>'',
+	 		value => '',
+	 		lookup => '',
+	 		attr_match => '',
+			search_attribute_ind => 'Y');
+	 
+	 Arrays where value is defined, attr_match is one of 'word' or 'partial'
+	 and search_attribute_ind = 'y' will be included in the select statement.
+*/
+function fetch_item_listing_cnt($HTTP_VARS, $column_display_config_rs=NULL)
+{
+	$query = "SELECT COUNT(DISTINCT i.id, ii.instance_no";
+	if(is_array($column_display_config_rs))
+	{
+		for($i=0; $i<count($column_display_config_rs); $i++)
+		{
+			// ignore all other configuration columns as they are already included
+			if($column_display_config_rs[$i]['column_type'] == 's_attribute_type')
+			{
+				// if not an order by column, we want to generate the fields individually in the listings page.
+				if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y')
+				{
+					if(strlen($column_display_config_rs[$i]['attribute_val'])>0 && 
+							($column_display_config_rs[$i]['attr_match'] == 'word' || $column_display_config_rs[$i]['attr_match'] == 'partial') &&
+							$column_display_config_rs[$i]['search_attribute_ind']  == 'y')
+					{
+						$query .= ', ifnull(ia'.$i.'.attribute_val,ia'.$i.'.lookup_attribute_val)';
+					}
+				}
+			}
+		}
+	}
+	$query .= ") AS count ";
+	
+	$query .= from_and_where_clause($HTTP_VARS, $column_display_config_rs, 'COUNT');
+
+	//echo "\n<code>Listing Query: $query</code>";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if($found!==FALSE)
+			return $found['count'];
+	}
+	
+	//else
+	return FALSE;
+}
+
+/**
+	Add the SELECT and ORDER BY CLAUSES
+
+	@param $HTTP_VARS
+	@param $column_display_config_rs
+
+	@param	$order_by by should be one of "s_item_type, owner_id, title, update_on"
+		The $order_by value will control which order column is first in the list, the rest
+		will be filled in after with defaults.
+	
+	@param	$sortorder will be either "asc" or "desc"  if not defined it will default to "asc"
+	@param	$index is the LIMIT value to apply.
+*/
+function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
+{
+	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, i.parent_id, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
+
+	$attr_order_by = NULL;
+	$column_order_by = NULL;
+	if(is_array($column_display_config_rs))
+	{
+		for($i=0; $i<count($column_display_config_rs); $i++)
+		{
+			if($column_display_config_rs[$i]['column_type'] == 's_attribute_type')
+			{
+				// if not an order by column, we want to generate the fields individually in the listings page.
+				if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y' || $column_display_config_rs[$i]['search_attribute_ind'] === 'y')
+				{
+					$fieldname = get_field_name($column_display_config_rs[$i]['s_attribute_type'], $column_display_config_rs[$i]['order_no']);
+					
+					if($column_display_config_rs[$i]['orderby_datatype'] === 'numeric')
+						$query .= ', (ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val)+0) AS '.$fieldname;
+					else
+						$query .= ', ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val) AS '.$fieldname;
+			
+					if( $column_order_by == NULL && strlen($order_by)>0 && strcasecmp($order_by, $fieldname) === 0)
+					{
+						$column_order_by = $fieldname;
+					}
+				}//if($column_display_config_rs[$i]['orderby']!==FALSE)
+			}
+            else if($column_display_config_rs[$i]['column_type'] == 's_field_type')
+			{
+                if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y')
+				{
+                	if($column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
+					{
+                        // add the category columns
+						$query .= ',catia.lookup_attribute_val AS catia_lookup_attribute_val, catia.s_attribute_type AS catia_s_attribute_type, catia.order_no AS catia_order_no';
+					}
+				}
+			}
+		}
+	}
+		
+	$query .= " ".
+			from_and_where_clause($HTTP_VARS, $column_display_config_rs, 'LISTING');
+
+	if($column_order_by != NULL)
+	{
+		$query .= ' ORDER BY '.$column_order_by.' '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
+	}
+	else if($order_by == 's_item_type')
+		$query .= ' ORDER BY i.s_item_type '.$sortorder.', i.title, ii.instance_no ASC';	
+	else if($order_by == 'category')
+		$query .= ' ORDER BY catia_lookup_attribute_val '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
+	else if($order_by == 'owner_id')
+		$query .= ' ORDER BY ii.owner_id '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
+	else if($order_by == 's_status_type')
+		$query .= ' ORDER BY ii.s_status_type '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
+	else if($order_by == 'update_on')
+		$query .= ' ORDER BY ii.update_on '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
+	else if($order_by === 'item_id')
+		$query .= ' ORDER BY i.id '.$sortorder.', ii.instance_no ASC, i.s_item_type';
+	else //if($order_by === 'title')
+		$query .= ' ORDER BY i.title '.$sortorder.', ii.instance_no ASC, i.s_item_type';
+	
+	if(is_numeric($start_index) && is_numeric($items_per_page))
+	{
+		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	}
+	
+	//echo "\n<code>Listing Query: $query</code>";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else
+		return FALSE;          
+}
+
+/**
+* 	NOTE: PRIVATE FUNCTION.
+
+	Will return the FROM and WHERE clauses for a selection from the item table.
+	
+	If $owner_id defined, will limit to only items owned by owner_id
+	If $s_item_type defined, will limit to only items of that type.
+	If $category defined, will limit to only items of that category.
+	If $letter defined will limit to item.title starting with that letter.
+	
+	@param $HTTP_VARS['...'] variables supported: 
+		owner_id, s_item_type, s_item_type[], s_item_type_group, title, title_match, category,
+		rating, attribute_type, lookup_attribute_val, attribute_val, attr_match, 
+		update_on, datetimemask, update_on_days, letter, start_item_id
+		s_status_type[], status_comment, not_s_status_type[], linked_items
+*/
+function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $query_type = 'LISTING')
+{
+	// For checking whether count (DISTINCT ...) is supported, and thus 
+	// whether we have to do any special processing!
+		
+	$from_r[] = 'item i';
+	$from_r[] = 'item_instance ii';
+
+	//
+	// Linked Item support
+	//
+	if(get_opendb_config_var('listings', 'linked_items') == 'restrict')
+	{
+		$where_r[] = 
+			"(i.parent_id IS NOT NULL AND ii.item_id = i.parent_id)";
+	}
+	else if((get_opendb_config_var('listings', 'linked_items') == 'include' ||  //override
+				$HTTP_VARS['linked_items'] == 'include') &&
+			$HTTP_VARS['linked_items'] != 'exclude')
+	{ 
+		// this still breaks an index, it means full table scan on item table no matter what, 
+		// but I think it is a bit faster which is good enough for now.
+		$where_r[] = "ii.item_id = IFNULL(i.parent_id, i.id)"; 
+	}
+	else // $HTTP_VARS['linked_items'] == 'exclude'
+	{
+		$where_r[] = 'ii.item_id = i.id';// only parent items should ever be listed.
+	}
+	
+	//
+	// Owner restriction
+	//
+	if(strlen($HTTP_VARS['owner_id'])>0)
+		$where_r[] = 'ii.owner_id = \''.$HTTP_VARS['owner_id'].'\'';
+	else if(strlen($HTTP_VARS['not_owner_id'])>0)//For not showing current user items.
+		$where_r[] = 'ii.owner_id <> \''.$HTTP_VARS['not_owner_id'].'\'';
+	
+	//
+	// Item Type / Item Type group restriction
+	//
+	if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0)
+	{
+		$where_r[] = 'i.s_item_type = \''.$HTTP_VARS['s_item_type'].'\'';
+	}
+	else if(strlen($HTTP_VARS['s_item_type_group'])>0)
+	{
+		$from_r[] = 's_item_type_group_rltshp sitgr';
+		$where_r[] = 'sitgr.s_item_type = i.s_item_type';
+		$where_r[] = 'sitgr.s_item_type_group = \''.$HTTP_VARS['s_item_type_group'].'\'';
+	}
+	else if(is_not_empty_array($HTTP_VARS['s_item_type']))
+	{
+		$where_r[] = 'i.s_item_type IN('.format_sql_in_clause($HTTP_VARS['s_item_type']).')';
+	}
+	
+	//
+	// Status Type restriction
+	//
+	if(is_not_empty_array($HTTP_VARS['s_status_type']))
+	{
+		$from_r[] = 's_status_type sst';
+		$where_r[] = 'sst.s_status_type = ii.s_status_type';
+			
+		$where_r[] = 'sst.s_status_type IN('.format_sql_in_clause($HTTP_VARS['s_status_type']).')';
+	}
+	else if($HTTP_VARS['s_status_type'] != 'ALL' && strlen($HTTP_VARS['s_status_type'])>0)
+	{	// ALL = Special type, which does not restrict.
+		$from_r[] = 's_status_type sst';
+		$where_r[] = 'sst.s_status_type = ii.s_status_type';
+		
+		$where_r[] = 'sst.s_status_type = \''.$HTTP_VARS['s_status_type'].'\'';
+	}
+	
+	//
+	// User and Status type restriction
+	//
+	if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'))!==0) // not current user
+	{
+		$from_r[] = 'user u';
+		$where_r[] = 'u.user_id = ii.owner_id';
+		
+		// Join the s_status and user (to remove Deactivated user records) tables in, so we can do some restrictions if required.
+		$where_r[] = '(u.active_ind IS NULL OR u.active_ind = \'Y\')';
+		
+		// Restrict certain status types, to specified user types.
+		$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+		if(is_not_empty_array($user_type_r))
+		{
+			// Check if s_status_type table already included, if not include it.
+			if( array_search2('s_status_type sst', $from_r) === FALSE )
+			{
+				$from_r[] = 's_status_type sst';
+				$where_r[] = 'sst.s_status_type = ii.s_status_type';
+			}
+			
+			$where_r[] = '( ii.owner_id = \''.get_opendb_session_var('user_id').'\' OR '.
+					' LENGTH(IFNULL(sst.min_display_user_type,\'\')) = 0 OR '.
+					' sst.min_display_user_type IN('.format_sql_in_clause($user_type_r).') )';
+		}
+	}
+	
+	//
+	// Status Comment restriction
+	//
+	if(strlen($HTTP_VARS['status_comment'])>0)
+	{
+		// Escape only the single quote!
+		$HTTP_VARS['status_comment'] = str_replace("'","\\'", $HTTP_VARS['status_comment']);
+	
+		if($HTTP_VARS['status_comment_match'] != 'exact')
+		{
+			$parser = new BooleanParser();
+			$statements = $parser->parseBooleanStatement($HTTP_VARS['status_comment']);
+			if(is_array($statements))
+			{
+				$where_r[] = build_boolean_clause($statements, 'ii.status_comment', $HTTP_VARS['status_comment_match'], 'AND', $HTTP_VARS['status_comment_case']);
+			}
+		}
+		else
+		{
+			if(is_null($HTTP_VARS['status_comment_case']))
+			{
+				$where_r[] = 'ii.status_comment = \''.$HTTP_VARS['status_comment'].'\'';
+			}
+			else
+			{
+				$where_r[] = 'BINARY ii.status_comment = \''.$HTTP_VARS['status_comment'].'\'';
+			}
+		}
+	}
+	
+	//
+	// Title restriction
+	//
+	if(strlen($HTTP_VARS['title'])>0)
+	{
+		// Escape only the single quote!
+		$HTTP_VARS['title'] = str_replace("'","\\'", $HTTP_VARS['title']);
+	
+		if($HTTP_VARS['title_match'] != 'exact')
+		{
+			$parser = new BooleanParser();
+			$statements = $parser->parseBooleanStatement($HTTP_VARS['title']);
+			if(is_array($statements))
+			{
+				$where_r[] = build_boolean_clause($statements, 'i.title', $HTTP_VARS['title_match'], 'AND', $HTTP_VARS['title_case']);
+			}
+		}
+		else
+		{
+			if(is_null($HTTP_VARS['title_case']))
+			{
+				$where_r[] = 'i.title = \''.$HTTP_VARS['title'].'\'';
+			}
+			else
+			{
+				$where_r[] = 'BINARY i.title = \''.$HTTP_VARS['title'].'\'';
+			}
+		}
+	}
+	else if(strlen($HTTP_VARS['letter'])>0)
+	{
+		// Numeric match.
+		if($HTTP_VARS['letter'] == '#')
+			$where_r[] = 'ASCII(LEFT(title,1)) BETWEEN ASCII(\'0\') AND ASCII(\'9\')';
+		else
+			$where_r[] = 'UPPER(LEFT(i.title,1)) = \''.strtoupper($HTTP_VARS['letter']).'\'';
+	}
+	
+	//
+	// Last Updated support
+	//
+	if(strlen($HTTP_VARS['update_on'])>0)
+	{
+		if(strlen($HTTP_VARS['datetimemask'])>0)
+		{
+			$timestamp = get_timestamp_for_datetime($HTTP_VARS['update_on'], $HTTP_VARS['datetimemask']);
+			if($timestamp!==FALSE)
+			{
+				$where_r[] = 'ii.update_on >= FROM_UNIXTIME('.$timestamp.')';
+			}
+			else
+			{
+				// by default get items from 1 day ago, if update_on can not be parsed correctly.
+				$where_r[] = 'TO_DAYS(ii.update_on) >= (TO_DAYS(now())-1)';
+			}
+		}
+		else
+		{
+			$where_r[] = 'ii.update_on >= \''.$HTTP_VARS['update_on'].'\'';
+		}
+	}
+	else if(is_numeric($HTTP_VARS['update_on_days']))// GIve us all records updated in the last however many days.
+	{
+		$where_r[] = 'TO_DAYS(ii.update_on) >= (TO_DAYS(now())-'.$HTTP_VARS['update_on_days'].')';
+	}
+
+	//
+	// Item Attribute listing/restriction
+	//
+	if(is_array($column_display_config_rs))
+	{
+		for($i=0; $i<count($column_display_config_rs); $i++)
+		{
+			if($column_display_config_rs[$i]['column_type'] == 's_attribute_type')
+			{
+				if($column_display_config_rs[$i]['search_attribute_ind'] != 'y')
+				{
+					// either LISTING or COUNT
+					if($query_type != 'COUNT')
+					{
+						$left_join = 'LEFT JOIN item_attribute ia'.$i.' ON '.
+							'ia'.$i.'.item_id = i.id AND (ia'.$i.'.instance_no = 0 OR ia'.$i.'.instance_no = ii.instance_no) AND ia'.$i.'.s_attribute_type = \''.$column_display_config_rs[$i]['s_attribute_type'].'\' AND ia'.$i.'.attribute_no = 1';
+				
+						// So we can work out which search attribute types to display
+						if(is_numeric($column_display_config_rs[$i]['order_no']))
+						{
+							$left_join .= ' AND ia'.$i.'.order_no = '.$column_display_config_rs[$i]['order_no'];
+						}
+						$left_join_from_r[] = $left_join;
+					}
+				}
+				else // search attribute
+				{
+					$from_r[] = 'item_attribute ia'.$i;
+			
+					// now do the where clause.
+					$where_r[] = 'ia'.$i.'.item_id = i.id AND (ia'.$i.'.instance_no = 0 OR ia'.$i.'.instance_no = ii.instance_no) AND ia'.$i.'.s_attribute_type = \''.$column_display_config_rs[$i]['s_attribute_type'].'\'';// AND ia'.$i.'.attribute_no = 1';
+					
+					if(strlen($column_display_config_rs[$i]['attribute_val'])>0 && 
+								$column_display_config_rs[$i]['attribute_val'] != '%' &&
+								$column_display_config_rs[$i]['attr_match'] != 'exact')
+					{
+						$parser = new BooleanParser();
+						$statements = $parser->parseBooleanStatement(strtoupper(str_replace("'","\\'", $column_display_config_rs[$i]['attribute_val'])));
+						if(is_array($statements))
+						{
+							if($column_display_config_rs[$i]['lookup_attribute_ind'] == 'Y')
+							{
+								$where_r[] = build_boolean_clause($statements, 'ia'.$i.'.lookup_attribute_val', 'plain', 'AND', $HTTP_VARS['attr_case']);
+							}
+							else
+							{
+								$where_r[] = build_boolean_clause($statements, 'ia'.$i.'.attribute_val', $column_display_config_rs[$i]['attr_match'], 'AND', $HTTP_VARS['attr_case']);
+							}
+						}
+					}
+					else if(strlen($column_display_config_rs[$i]['lookup_attribute_val'])>0 && 
+								$column_display_config_rs[$i]['lookup_attribute_val'] != '%' &&
+								$column_display_config_rs[$i]['lookup_attribute_ind'] == 'Y')
+					{
+						$value = str_replace("'","\\'", $column_display_config_rs[$i]['lookup_attribute_val']);
+						$where_r[] = 'ia'.$i.'.lookup_attribute_val = \''.str_replace('\_','_',$value).'\'';
+					}
+					else if(strlen($column_display_config_rs[$i]['attribute_val'])>0 && 
+							$column_display_config_rs[$i]['attribute_val'] != '%')
+					{
+						if(starts_with($column_display_config_rs[$i]['attribute_val'], '"') && 
+										ends_with($column_display_config_rs[$i]['attribute_val'], '"'))
+						{
+							$column_display_config_rs[$i]['attribute_val'] = substr($column_display_config_rs[$i]['attribute_val'], 1, -1);
+						}
+						
+						$value = strtoupper(str_replace("'","\\'", $column_display_config_rs[$i]['attribute_val']));
+				
+						$where_r[] = 'UPPER(ia'.$i.'.attribute_val) = \''.str_replace('\_','_',$value).'\'';
+					}
+					
+					if(strlen($HTTP_VARS['attr_update_on'])>0)
+					{
+						if(strlen($HTTP_VARS['datetimemask'])>0)
+						{
+							$timestamp = get_timestamp_for_datetime($HTTP_VARS['attr_update_on'], $HTTP_VARS['datetimemask']);
+							if($timestamp!==FALSE)
+							{
+								$where_r[] = 'ia'.$i.'.update_on >= FROM_UNIXTIME('.$timestamp.')';
+							}
+							else
+							{
+								// by default get items from 1 day ago, if update_on can not be parsed correctly.
+								$where_r[] = 'TO_DAYS(ia'.$i.'.update_on) >= (TO_DAYS(now())-1)';
+							}
+						}
+						else
+						{
+							$where_r[] = 'ia'.$i.'.update_on >= \''.$HTTP_VARS['attr_update_on'].'\'';
+						}
+					}
+					else if(is_numeric($HTTP_VARS['attr_update_on_days']))// GIve us all records updated in the last however many days.
+					{
+						$where_r[] = 'TO_DAYS(ia'.$i.'.update_on) >= (TO_DAYS(now())-'.$HTTP_VARS['attr_update_on_days'].')';
+					}
+				}
+			}
+            else if($column_display_config_rs[$i]['column_type'] == 's_field_type')
+			{
+               	if($column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
+				{
+					$from_r[] = 's_item_attribute_type catsiat';
+					$from_r[] = 's_attribute_type catsat';
+					$where_r[] = 'catsiat.s_item_type = i.s_item_type AND catsat.s_attribute_type = catsiat.s_attribute_type AND catsat.s_field_type = \'CATEGORY\'';
+
+					$left_join_clause = 'LEFT JOIN item_attribute catia ON '.
+							'catia.item_id = i.id AND (catia.instance_no = 0 OR catia.instance_no = ii.instance_no) AND catia.s_attribute_type = catsiat.s_attribute_type AND catia.order_no = catsiat.order_no';
+
+					if(strlen($HTTP_VARS['category'])>0 ||
+							(strcasecmp($HTTP_VARS['attr_match'], 'category')===0 &&
+								strlen($HTTP_VARS['attribute_val'])>0))// Support specifying $attribute_val for $category where $attr_match=="category"!
+					{
+						// If item_type && item_type_group are not set!
+						if(strlen($HTTP_VARS['attribute_type'])>0 && !is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])==0 && strlen($HTTP_VARS['s_item_type_group'])==0)
+						{
+                                 $where_r[] = 'catsat.s_attribute_type = \''.$HTTP_VARS['attribute_type'].'\'';
+						}
+
+						// Escape single quotes only.
+						$value = strtoupper(str_replace("'","\\'", ifempty($HTTP_VARS['category'], $HTTP_VARS['attribute_val'])));
+						$where_r[] = 'UPPER(catia.lookup_attribute_val) = \''.str_replace('\_','_',$value).'\'';
+					}
+					else
+					{
+				        $left_join_clause .= ' AND catia.attribute_no = 1';
+					}
+
+					$left_join_from_r[] = $left_join_clause;
+				}
+			}
+		}
+	}
+
+	// If attribute_val specified without a attribute_type, then do a loose join to item_attribute table,
+	// only on attribute_val column.
+	if(strlen($HTTP_VARS['attribute_type'])==0 &&
+			(strlen($HTTP_VARS['attribute_val'])>0 ||
+			strlen($HTTP_VARS['attr_update_on'])>0 ||
+			strlen($HTTP_VARS['attr_update_on_days'])>0))
+	{
+		$from_r[] = 'item_attribute ia';
+				
+		// now do the where clause.
+		$where_r[] = 'ia.item_id = i.id '; //AND ia.attribute_no = 1';
+		
+		if($HTTP_VARS['attr_match'] != 'exact')
+		{
+			$parser = new BooleanParser();
+			$statements = $parser->parseBooleanStatement(strtoupper(str_replace("'","\\'", $HTTP_VARS['attribute_val'])));
+			if(is_array($statements))
+			{
+				if(is_lookup_attribute_type($HTTP_VARS['attribute_type']))
+				{
+					$where_r[] = build_boolean_clause($statements, 'ia.lookup_attribute_val', 'plain', 'AND', $HTTP_VARS['attr_case']);
+				}
+				else
+				{
+					$where_r[] = build_boolean_clause($statements, 'ia.attribute_val', $HTTP_VARS['attr_match'], 'AND', $HTTP_VARS['attr_case']);
+				}
+			}
+		}
+		else// attr_match = 'exact'
+		{
+			if(is_lookup_attribute_type($HTTP_VARS['attribute_type']))
+			{
+				$value = str_replace("'","\\'", $HTTP_VARS['attribute_val']);
+				
+				$where_r[] = 'ia.lookup_attribute_val = \''.str_replace('\_','_',$value).'\'';
+			}
+			else
+			{
+				$value = str_replace("'","\\'", $HTTP_VARS['attribute_val']);
+				
+				if(is_null($HTTP_VARS['attr_case']))
+				{
+					$where_r[] = '( ia.attribute_val = \''.str_replace('\_','_',$value).'\' OR '.
+						'ia.attribute_val LIKE \'% '.$value.' %\' OR '.
+						'ia.attribute_val LIKE \''.$value.' %\' OR '.
+						'ia.attribute_val LIKE \'% '.$value.'\')';
+				}
+				else
+				{
+					$where_r[] = '( BINARY ia.attribute_val = \''.str_replace('\_','_',$value).'\' OR '.
+						'ia.attribute_val LIKE BINARY \'% '.$value.' %\' OR '.
+						'ia.attribute_val LIKE BINARY \''.$value.' %\' OR '.
+						'ia.attribute_val LIKE BINARY \'% '.$value.'\')';
+
+				}
+			}
+		}
+		
+		if(strlen($HTTP_VARS['attr_update_on'])>0)
+		{
+			if(strlen($HTTP_VARS['datetimemask'])>0)
+			{
+				$timestamp = get_timestamp_for_datetime($HTTP_VARS['attr_update_on'], $HTTP_VARS['datetimemask']);
+				if($timestamp!==FALSE)
+				{
+					$where_r[] = 'ia.update_on >= FROM_UNIXTIME('.$timestamp.')';
+				}
+				else
+				{
+					// by default get items from 1 day ago, if update_on can not be parsed correctly.
+					$where_r[] = 'TO_DAYS(ia.update_on) >= (TO_DAYS(now())-1)';
+				}
+			}
+			else
+			{
+				$where_r[] = 'ia.update_on >= \''.$HTTP_VARS['attr_update_on'].'\'';
+			}
+		}
+		else if(is_numeric($HTTP_VARS['attr_update_on_days']))// GIve us all records updated in the last however many days.
+		{
+			$where_r[] = 'TO_DAYS(ia.update_on) >= (TO_DAYS(now())-'.$HTTP_VARS['attr_update_on_days'].')';
+		}
+	}
+	
+	//
+	// Review restrictions
+	//
+	if(strlen($HTTP_VARS['rating'])>0)
+	{
+		$where_r[] = 'r.item_id = i.id AND r.rating >= '.$HTTP_VARS['rating'];
+		$from_r[] = 'review r';
+	}
+	
+	//
+	// Item ID range restriction (Used by Import script)
+	//
+	if(strlen($HTTP_VARS['item_id_range'])>0)
+	{
+		$where_r[] = 'i.id IN ('.expand_number_range($HTTP_VARS['item_id_range']).')';
+	}
+
+	//
+	// Now build the SQL query
+	//	
+	if(is_array($from_r))
+	{
+		$from_clause = '';
+		for($i=0; $i<count($from_r); $i++)
+		{
+			if(strlen($from_clause)>0)
+				$from_clause .= ', ';
+			$from_clause .= $from_r[$i];
+		}
+		$query .= 'FROM ('.$from_clause.') ';
+	}
+	
+	if(is_array($left_join_from_r))
+	{
+		$left_join_from_clause = '';
+		for($i=0; $i<count($left_join_from_r); $i++)
+		{
+			if(strlen($left_join_from_clause)>0)
+				$left_join_from_clause .= ' ';
+			$left_join_from_clause .= $left_join_from_r[$i];
+		}
+		
+		$query .= $left_join_from_clause.' ';
+	}
+	
+	if(is_array($where_r))
+	{
+		$where_clause = '';
+		for($i=0; $i<count($where_r); $i++)
+		{
+			if(strlen($where_clause)>0)
+				$where_clause .= ' AND ';
+			$where_clause .= $where_r[$i];
+		}
+		$query .= 'WHERE '.$where_clause;
+	}
+
+	return $query;
+}
+
+//
+// If successful will return the new ID for the item, otherwise will return FALSE.
+//
+function insert_item($parent_id, $s_item_type, $title)
+{
+	if(strlen($title)>0)
+	{
+		$title = addslashes(replace_newlines(trim($title)));
+		
+		$query = "INSERT INTO item (parent_id, s_item_type, title)".				   
+				" VALUES (".(!is_numeric($parent_id)?"NULL":"'$parent_id'").",'$s_item_type','$title')";
+
+		$insert = db_query($query);
+		if ($insert && db_affected_rows() > 0)
+		{
+			$new_item_id = db_insert_id();
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($parent_id, $s_item_type, $title));
+			return $new_item_id;
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($parent_id, $s_item_type, $title));
+			return FALSE;
+		}
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($parent_id, $s_item_type, $title));
+		return FALSE;
+	}		
+}
+
+/**
+	Update item - only called from update_item_instance from now on.
+
+	The only problem we have is that when an update of an item occurs, none of the item_instances
+	will reflect this.  So we cannot actually tell if an item has been updated.  But since we are
+	probably only interested in new items, that is alright.
+
+* 	@param $category - expects an array, which will be converted to a space delimited value.
+*/
+function update_item($item_id, $title)
+{
+	if(strlen($title)>0)
+	{
+        $query = "UPDATE item ".
+				"SET title = '".addslashes(replace_newlines(trim($title)))."'".
+				"WHERE id = '$item_id'";
+
+		$update = db_query($query);
+		// We should not treat updates that were not actually updated because value did not change as failures.
+		$rows_affected = db_affected_rows();
+		if ($update && $rows_affected !== -1)
+		{
+			if($rows_affected>0)
+				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $title));
+			return TRUE;
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $title));
+			return FALSE;
+		}
+	}
+}
+
+/**
+	Delete item and return boolean indicating success or failure.
+	
+	This function does not check for any dependencies.
+*/	
+function delete_item($item_id)
+{
+	$query ="DELETE FROM item WHERE id='".$item_id."'";
+	$delete = db_query($query);
+	if($delete && db_affected_rows() > 0)
+	{
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id));
+		return FALSE;
+	}
+}
+
+/*
+* Delete child item attributes, child items, item_attributes, item.
+* 
+* Assumes instances have been deleted.
+*/
+function delete_item_cascaded($item_id)
+{
+	if(db_query("LOCK TABLES item WRITE, item_attribute WRITE, item_instance WRITE"))
+	{
+		$query = "SELECT id as item_id FROM item WHERE parent_id='".$item_id."'";
+		$results = db_query($query);
+		if($results)
+		{
+			while($item_r = db_fetch_assoc($results))
+			{
+				$child_deleted = FALSE;
+				if(delete_item_attributes($item_r['item_id'], NULL, NULL, NULL))
+				{
+					if(delete_item($item_r['item_id']))
+					{
+						$child_deleted = TRUE;
+					}
+				}
+
+				if(!$child_deleted)
+				{
+					db_free_result($results);
+					
+					// Can't forget to unlock table.
+					db_query("UNLOCK TABLES");
+					
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Aborting cascade item delete - Child item(s) not deleted', array($item_id));
+					return FALSE;
+				}
+			}
+			db_free_result($results);
+		}//else no child items
+		
+		if(delete_item_attributes($item_id, NULL, NULL, NULL))
+		{
+			if(delete_item($item_id))
+			{
+				// Can't forget to unlock table.
+				db_query("UNLOCK TABLES");
+				return TRUE;
+			}
+			else
+			{
+				// Can't forget to unlock table.
+				db_query("UNLOCK TABLES");
+					
+				return FALSE;
+			}
+		}
+		else
+		{
+			// Can't forget to unlock table.
+			db_query("UNLOCK TABLES");
+					
+			return FALSE;
+		}
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id));
+		return FALSE;
+	}
+}
+
+/**
+* Used by all insert/update item_instance functions to make sure the data is valid.  Will
+* also update $status_comment / $borrow_duration and set them to a legal value for the
+* specified $s_status_type
+*/
+function validate_item_instance_fields($s_status_type, &$status_comment, &$borrow_duration)
+{
+	// At this point, a specific $s_status_type MUST be supplied.
+	if(strlen($s_status_type)>0)
+	{
+		$status_type_r = fetch_status_type_r($s_status_type);
+	}
+		
+	if(is_not_empty_array($status_type_r))	
+	{
+		// A $borrow_duration explicitly set to FALSE, is
+		// an indication that nothing should be done with it.
+		if($borrow_duration !== FALSE && $borrow_duration !== NULL)//if already null, no need to check again.
+		{
+			// Ensure we have a valid $borrow_duration
+			if(is_numeric($borrow_duration))//column cannot handle more than 999
+			{
+				if($borrow_duration > 999)
+					$borrow_duration = '999';
+			}
+			else
+			{
+				$borrow_duration = NULL;
+			}
+		}
+		
+		// If no status comment allowed, then set to NULL
+		if($status_type_r['status_comment_ind'] != 'Y' && $status_type_r['status_comment_ind'] != 'H')
+			$status_comment = NULL;
+		else
+			$status_comment = addslashes(substr(replace_newlines(trim(strip_tags($status_comment))),0,255));
+		
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+/**
+	For subsequent item_instance inserts.
+
+	Does not support $s_status_type = 'W' specific functionality.
+
+*/
+function insert_item_instance($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration, $owner_id)
+{
+	if(validate_item_instance_fields($s_status_type, $status_comment, $borrow_duration))
+	{
+		$item_instance_locked = FALSE;
+		
+		// No need to lock if new item, as no other item_instances will
+		// be assigned to it yet!
+		if(!is_numeric($instance_no))
+		{
+			if(db_query("LOCK TABLES item_instance WRITE"))
+			{	
+				$item_instance_locked = TRUE;
+				
+				// If not specified, work out the next one along.
+				$instance_no = fetch_max_instance_no($item_id);
+				if(is_numeric($instance_no))
+				{
+					// Add 1 to $instance_no
+					$instance_no = (int)$instance_no;
+					$instance_no++;
+				}
+				else // new item
+				{
+					$instance_no = 1;
+				}
+			}
+			else
+			{
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration, $owner_id));
+				return FALSE;
+			}
+		}
+		
+		//Either the instance_no was specified to begin with, or the LOCK TABLES and fetch_max_instance_no call worked.
+		$query = "INSERT INTO item_instance(item_id, instance_no, owner_id, borrow_duration, s_status_type, status_comment)".
+				"VALUES ('$item_id','$instance_no','$owner_id',".(is_numeric($borrow_duration)?"'$borrow_duration'":"NULL").",UPPER('".$s_status_type."'),'$status_comment')";
+				
+		$insert = db_query($query);
+		if ($insert && db_affected_rows() > 0)
+		{
+			// Can't forget to unlock table.
+			if($item_instance_locked)
+			{
+				db_query("UNLOCK TABLES");
+			}
+				
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration, $owner_id));
+			return $instance_no;
+		}
+		else
+		{
+			// Can't forget to unlock table.
+			if($item_instance_locked)
+			{
+				db_query("UNLOCK TABLES");
+			}
+			
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration, $owner_id));
+			return FALSE;
+		}			
+	}
+	else //if(validate_item_instance_fields($s_status_type, $borrow_duration))
+	{
+		return FALSE;
+	}
+}
+
+/**
+	@param $borrow_duration If set to FALSE, no update will occur.  If not numeric, will be
+	set to NULL otherwise.
+	
+	@param $status_comment If set to FALSE, no update will occur.  If not numeric, will be
+	set to NULL otherwise.
+*/
+function update_item_instance($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration)
+{
+	if(validate_item_instance_fields($s_status_type, $status_comment, $borrow_duration))
+	{
+		$query = "UPDATE item_instance SET ";
+	
+		// If $borrow_duration explicitly set to FALSE, then no update should occur!
+		if($borrow_duration !== FALSE)
+		{
+			$query .= "borrow_duration = ".(is_numeric($borrow_duration)?"'$borrow_duration'":"NULL").", ";
+		}
+			
+		if($status_comment!==FALSE)
+			$query .= "status_comment = '$status_comment', ";
+	
+		$query .= "s_status_type = UPPER('".$s_status_type."') ".
+			"WHERE item_id = '$item_id' AND instance_no = '$instance_no'";
+
+		$update = db_query($query);
+	
+		// We should not treat updates that were not actually updated because value did not change as failures.
+		$rows_affected = db_affected_rows();
+		if($update && $rows_affected !== -1)
+		{
+			if($rows_affected>0)
+				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration));
+			return TRUE;
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration));
+			return FALSE;
+		}
+	}
+	else //if(validate_item_instance_fields($s_status_type, $borrow_duration))
+	{	
+		return FALSE;
+	}
+}
+
+/**
+	@param $borrow_duration If set to FALSE, no update will occur.  If not numeric, will be
+	set to NULL otherwise.
+	
+	@param $status_comment If set to FALSE, no update will occur.  If not numeric, will be
+	set to NULL otherwise.
+*/
+function update_item_instance_owner($item_id, $instance_no, $old_owner_id, $owner_id)
+{
+	$query = "UPDATE item_instance SET owner_id = '$owner_id' "
+			."WHERE item_id = '$item_id' AND instance_no = '$instance_no'";
+
+	$update = db_query($query);
+	
+	// We should not treat updates that were not actually updated because value did not change as failures.
+	$rows_affected = db_affected_rows();
+	if($update && $rows_affected !== -1)
+	{
+		if($rows_affected>0)
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $old_owner_id, $owner_id));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $old_owner_id, $owner_id));
+		return FALSE;
+	}
+}
+
+//
+// Delete item and return boolean indicating success or failure.
+//
+function delete_item_instance($item_id, $instance_no)
+{
+	$query ="DELETE FROM item_instance WHERE item_id = '".$item_id."' AND instance_no = '$instance_no'";
+	$delete = db_query($query);
+	if(db_affected_rows() > 0)
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+		return FALSE;
+	}
+}
+?>

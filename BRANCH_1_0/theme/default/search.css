@@ -1,0 +1,10 @@
+table.searchForm th.prompt
+{
+	background: transparent;
+	color: black;
+}
+
+table.searchForm td.data
+{
+	background: transparent;
+}

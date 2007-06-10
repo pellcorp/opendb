@@ -1,0 +1,14 @@
+p.verifyCode img
+{
+	display: block;
+}
+
+p.verifyCode label
+{
+	font-weight: bold;
+}
+
+dl.userType dt
+{
+	font-weight: bold;
+}

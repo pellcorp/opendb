@@ -35,37 +35,52 @@ class VersionCheckTest extends PHPUnit_TestCase
 	
 	function testVersionBeta3ToBeta4()
 	{
-		$this->assertTrue(version_compare('1.0b3', '1.0a4', '>'), '1.0b3 > 1.0a4');
+		$this->assertTrue(opendb_version_compare('1.0b3', '1.0a4', '>'), '1.0b3 > 1.0a4');
 	}
 	
 	function testVersionBeta6ToReleaseCandidate1()
 	{
-		$this->assertTrue(version_compare('1.0RC1', '1.0b6', '>'), 'RC1 > 1.0b6');
+		$this->assertTrue(opendb_version_compare('1.0RC1', '1.0b6', '>'), 'RC1 > 1.0b6');
 	}
 	
 	function testVersionBeta9ToBeta10()
 	{
-		$this->assertTrue(version_compare('1.0b10', '1.0b9', '>'), '1.0b10 > 1.0b9');
+		$this->assertTrue(opendb_version_compare('1.0b10', '1.0b9', '>'), '1.0b10 > 1.0b9');
 	}
 	
 	function testVersionRC1To10()
 	{
-		$this->assertTrue(version_compare('1.0', '1.0RC1', '>'), '1.0RC1 > 1.0');
+		$this->assertTrue(opendb_version_compare('1.0', '1.0RC1', '>'), '1.0RC1 > 1.0');
 	}
 	
 	function testVersionRC2To10()
 	{
-		$this->assertTrue(version_compare('1.0', '1.0RC2', '>'), '1.0RC2 > 1.0');
+		$this->assertTrue(opendb_version_compare('1.0', '1.0RC2', '>'), '1.0RC2 > 1.0');
 	}
 	
 	function testVersion10To101()
 	{
-		$this->assertTrue(version_compare('1.0.1', '1.0', '>'), '1.0.1 > 1.0');
+		$this->assertTrue(opendb_version_compare('1.0.1', '1.0', '>'), '1.0.1 > 1.0');
 	}
 	
 	function testVersion10To10pl1()
 	{
-		$this->assertTrue(version_compare('1.0pl1', '1.0', '>'), '1.0pl1 > 1.0');
+		$this->assertTrue(opendb_version_compare('1.0pl1', '1.0', '>'), '1.0pl1 > 1.0');
+	}
+	
+	function testVersion10pl1To101()
+	{
+		$this->assertTrue(opendb_version_compare('1.0.1', '1.0pl1', '>'), '1.0.1 > 1.0pl1');
+	}
+	
+	function testVersion100pl1To101()
+	{
+		$this->assertTrue(opendb_version_compare('1.0.1', '1.0.0pl1', '>'), '1.0.1 > 1.0.0pl1');
+	}
+	
+	function testVersion081To101()
+	{
+		$this->assertTrue(opendb_version_compare('1.0.1', '0.81', '>'), '1.0.1 > 0.81');
 	}
 }
 

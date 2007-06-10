@@ -180,7 +180,7 @@ function install_check_php_settings()
 	$buffer .= "\n<form action=\"$PHP_SELF\" method=\"GET\">";
 	$buffer .= "<table>";
 	
-	if (version_compare(phpversion(), "4.3.0", ">="))
+	if (opendb_version_compare(phpversion(), "4.3.0", ">="))
 	{
 		$buffer .= format_field("PHP Version", NULL, phpversion());
 	}

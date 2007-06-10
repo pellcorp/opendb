@@ -44,218 +44,6 @@ include_once("./functions/item_display.php");
 include_once("./functions/site_plugin.php");
 
 /**
-	@selected will be currently selected record.
-
-	$borrow_duration is the item_instance.borrow_duration value in all cases, the rest of the values to do
-	with borrow duration will be calculated.
-*/
-function get_item_status_row($class, $item_r, $listing_link, $selected)
-{
-	global $HTTP_VARS;
-	global $PHP_SELF;
-	global $titleMaskCfg;
-
-	$rowcontents = "\n<tr class=\"$class\"><td>";
-	
-	if($selected)
-	{
-		$rowcontents .= $item_r['instance_no'];
-		$rowcontents .= " "._theme_image("tick.gif", NULL, get_opendb_lang_var('current_item_instance'));
-	}
-	else
-	{
-		$rowcontents .= "<a href=\"$PHP_SELF?item_id=${item_r['item_id']}&instance_no=${item_r['instance_no']}\">".$item_r['instance_no']."</a>";
-	}
-	$rowcontents .= "\n</td>";
-	
-	$page_title = $titleMaskCfg->expand_item_title($item_r);
-	
-	$page_title = remove_enclosing_quotes($page_title);
-	
-	$rowcontents .= "<td>".
-			get_list_username($item_r['owner_id'], $HTTP_VARS['mode'], $page_title, get_opendb_lang_var('back_to_item'), 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:'')).
-			"</td>";
-	
-	$status_type_r = fetch_status_type_r($item_r['s_status_type']);		
-	
-	// ---------------------- Borrow,Reserve,Cancel,Edit,Delete,etc operations here.
-	$action_links_rs = NULL;
-	
-	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-	{
-		$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'edit.gif',text=>get_opendb_lang_var('edit'));
-								
-		// Checks if any legal site plugins defined for $item_r['s_item_type']
-		if(is_item_legal_site_type($item_r['s_item_type']))
-		{
-			$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
-		}
-		
-		if($status_type_r['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
-		{
-			$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'delete.gif',text=>get_opendb_lang_var('delete'));		
-		}
-		
-		// Quick checkout NOT available to Admin user, unless they are also explicitly the owner.
-		if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
-					get_opendb_session_var('user_id') === $item_r['owner_id'] && 
-					get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-					($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N'))
-		{
-			// Cannot quick checkout an item already borrowed.
-			if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-			{
-				$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
-			}						
-		}
-	}
-
-	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && 
-				is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
-				(strlen($status_type_r['min_display_user_type'])==0 || in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
-			)
-	{
-		if(get_opendb_config_var('borrow', 'enable')!==FALSE)
-		{
-			// Check if already in reservation session variable.
-			if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-			{
-				$action_links_rs[] = array(url=>'borrow.php?op=delete_from_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y&listing_link='.$listing_link,img=>'delete_reserve_basket.gif',text=>get_opendb_lang_var('delete_from_reserve_list'));		
-			}
-			else if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
-			{
-				if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-				{
-					$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y&listing_link='.$listing_link,img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel_reservation'));
-				}
-				else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-				{
-					if($status_type_r['borrow_ind'] == 'Y' &&
-								(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
-								(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || !is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
-					{
-						if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE)
-						{
-							$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
-						}
-						else
-						{
-							$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve_item'));
-						}
-					}
-				}
-			}
-			else
-			{   
-				if($status_type_r['borrow_ind'] == 'Y')
-				{
-					if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE)
-					{
-						$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
-					}
-					else
-					{
-						$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve_item'));
-					}
-				}
-			}
-		}			
-	} // else -- guest user
-	
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || $item_r['owner_id'] == get_opendb_session_var('user_id'))
-	{
-		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-		{
-			$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
-		}
-		
-		if(is_exists_item_instance_history_borrowed_item($item_r['item_id'], $item_r['instance_no']))
-		{
-			$action_links_rs[] = array(url=>'borrow.php?op=my_item_history&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'item_history.gif',text=>get_opendb_lang_var('item_history'));
-		}
-	}
-
-	$rowcontents .= "\n<td>";
-	$rowcontents .= ifempty(format_action_links($action_links_rs),get_opendb_lang_var('not_applicable'));
-	$rowcontents .= "\n</td>";
-	
-	// Item Status Image.
-	$rowcontents .= "\n<td>";
-	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], NULL, NULL, "borrowed_item");
-	$rowcontents .= "\n</td>";
-	
-	// If a comment is allowed and defined, add it in.
-	$rowcontents .= "\n<td>";
-	if($status_type_r['status_comment_ind'] == 'Y' || ($status_type_r['status_comment_ind'] == 'H' && 
-			(get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))))
-	{
-		$rowcontents .= ifempty(nl2br($item_r['status_comment']),"&nbsp;"); // support newlines in this field
-	}
-	else
-	{
-		$rowcontents .= get_opendb_lang_var('not_applicable');
-	}
-	$rowcontents .= "\n</td>";
-	
-	if(get_opendb_config_var('borrow', 'enable')!==FALSE)
-	{
-		if(get_opendb_config_var('borrow', 'include_borrower_column')!==FALSE)
-		{
-			$rowcontents .= "\n<td>";
-			if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-				$rowcontents .= get_list_username(fetch_item_borrower($item_r['item_id'], $item_r['instance_no']), NULL, $page_title, get_opendb_lang_var('back_to_item'), 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link='.$listing_link);
-			else
-				$rowcontents .= get_opendb_lang_var('not_applicable');
-			$rowcontents .= "\n</td>";
-		}
-		
-		// Borrow Status Image.
-		$rowcontents .= "\n<td>";
-		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-		{
-			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), NULL, NULL, "borrowed_item");
-		}
-		else if(($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N') && is_item_reserved($item_r['item_id'], $item_r['instance_no']))
-		{
-			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), NULL, NULL, "borrowed_item");
-		}
-		else
-		{
-			$rowcontents .= get_opendb_lang_var('not_applicable');
-		}
-		$rowcontents .= "\n</td>";
-		
-		if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
-		{
-			// 'Due Back' functionality.	
-			$rowcontents .= "\n<td>";
-			if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-			{
-				$due_date = fetch_item_duedate_timestamp($item_r['item_id'], $item_r['instance_no']);
-				if(strlen($due_date)>0)
-					$rowcontents .= get_localised_timestamp(get_opendb_config_var('borrow', 'date_mask'), $due_date);
-				else
-					$rowcontents .= get_opendb_lang_var('undefined');
-			}
-			else if($status_type_r['borrow_ind'] != 'Y' && $status_type_r['borrow_ind'] != 'N')// s_status_type CAN be changed to 
-				$rowcontents .= get_opendb_lang_var('not_applicable');							// type with borrow_ind=N, even if item checked out / reserved
-			else if(is_numeric($item_r['borrow_duration']))
-			{
-				$duration_attr_type_r = fetch_sfieldtype_item_attribute_type_r($item_r['s_item_type'], 'DURATION');
-				$rowcontents .= get_display_field($duration_attr_type_r['s_attribute_type'], NULL, $duration_attr_type_r['display_type'], $item_r['borrow_duration'], FALSE);
-			}
-			else
-				$rowcontents .= get_opendb_lang_var('undefined');
-			$rowcontents .= "\n</td>";
-		}
-	}
-	
-	$rowcontents .= "\n</tr>";
-	return $rowcontents;		
-} 
-
-/**
 	This function will return a complete table of all links valid
 	for this item_type.
 
@@ -324,24 +112,16 @@ if(is_site_enabled())
 {
 	if (is_opendb_valid_session())
 	{
-		if(is_numeric($HTTP_VARS['parent_id']) && is_numeric($HTTP_VARS['parent_instance_no']))
-			$parent_item_r = fetch_item_instance_r($HTTP_VARS['parent_id'], $HTTP_VARS['parent_instance_no']);
-
-		if(is_not_empty_array($parent_item_r))
-			$item_r = fetch_child_item_r($HTTP_VARS['item_id']);
-		else if(is_numeric($HTTP_VARS['instance_no']))
+		if(is_numeric($HTTP_VARS['instance_no']))
 			$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
 	
 		if(is_not_empty_array($item_r))
 		{
-			if(is_not_empty_array($parent_item_r))
-				$status_type_r = fetch_status_type_r($parent_item_r['s_status_type']);
-			else
-				$status_type_r = fetch_status_type_r($item_r['s_status_type']);
+			$status_type_r = fetch_status_type_r($item_r['s_status_type']);
 			
-			if(( (is_not_empty_array($parent_item_r) && $parent_item_r['owner_id'] == get_opendb_session_var('user_id')) || 
-						(!is_array($parent_item_r) && $item_r['owner_id'] == get_opendb_session_var('user_id')) ) ||
-						(strlen($status_type_r['min_display_user_type'])==0 || in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type')))))
+			if($item_r['owner_id'] == get_opendb_session_var('user_id') ||
+						(strlen($status_type_r['min_display_user_type'])==0 || 
+							in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type')))))
 			{
 			    $titleMaskCfg = new TitleMask('item_display');
 
@@ -352,7 +132,7 @@ if(is_site_enabled())
 				echo(get_common_javascript());
 				echo(get_tabs_javascript());
 				
-				echo ("<h2>".$page_title." ".get_item_image($item_r['s_item_type'], $item_r['item_id'], is_numeric($item_r['parent_id']))."</h2>");
+				echo ("<h2>".$page_title." ".get_item_image($item_r['s_item_type'], $item_r['item_id'])."</h2>");
                 
 				// ---------------- Display IMAGE attributes ------------------------------------
 				// Will bypass the display of images if the config.php get_opendb_config_var('item_display', 'show_item_image')
@@ -437,7 +217,6 @@ if(is_site_enabled())
 					echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 					echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('details')."</li>");
 					echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('instance_info')."</li>");
-					echo("<li id=\"menu-related_items\" onclick=\"return activateTab('related_items', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('related_items(s)')."</li>");
 					echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('review(s)')."</li>");
 					echo("</ul>");
 				}
@@ -517,200 +296,15 @@ if(is_site_enabled())
 				echo(get_site_plugin_links($page_title, $item_r));
 				// -------------------------------------------------------------
 				
-				$detail_info_link_rs = NULL;
-				if(is_not_empty_array($parent_item_r))
-				{
-					$detail_info_link_rs[] = array(url=>"$PHP_SELF?item_id=".$HTTP_VARS['parent_id']."&instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_parent'));
-				}
-					
-				if(is_not_empty_array($detail_info_link_rs))
-				{
-					echo(format_footer_links($detail_info_link_rs));
-				}
-					
 				echo("</div>");
 				
-				// need to be able to display details about parent instances even if related item is context
-				if(is_not_empty_array($parent_item_r))
-					$current_item_r = $parent_item_r;
-				else
-					$current_item_r = $item_r;
-						
 				echo("<div class=\"$otherTabsClass\" id=\"instance_info\">");
-				
-				echo("<h3>".get_opendb_lang_var('instance_info')."</h3>");
-					
-				if(get_opendb_config_var('item_input', 'item_instance_support') !== FALSE)
-				{
-					$results = fetch_item_instance_rs($current_item_r['item_id'], NULL);
-					if($results)
-					{
-						echo("<table>".
-							"\n<tr class=\"navbar\">".
-							"\n<th>".get_opendb_lang_var('instance')."</th>".
-							"\n<th>".get_opendb_lang_var('owner')."</th>".
-							"\n<th>".get_opendb_lang_var('action')."</th>".
-							"\n<th>".get_opendb_lang_var('status')."</th>".
-							"\n<th>".get_opendb_lang_var('status_comment')."</th>");
-						
-						if(get_opendb_config_var('borrow', 'enable')!==FALSE)
-						{
-							if(get_opendb_config_var('borrow', 'include_borrower_column')!==FALSE)
-							{
-								echo("\n<th>".get_opendb_lang_var('borrower')."</th>");
-							}
-							
-							echo("\n<th>".get_opendb_lang_var('borrow_status')."</th>");
-							
-							if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
-							{
-								echo("\n<th>".get_opendb_lang_var('due_date_or_duration')."</th>");
-							}
-						}
-						echo("\n</tr>");
-
-						$toggle=TRUE;
-						$numrows = db_num_rows($results);
-						while($item_instance_r = db_fetch_assoc($results))
-						{
-							if($toggle)
-								$color="oddRow";
-							else
-		 						$color="evenRow";
-							$toggle = !$toggle;
-							
-							echo(get_item_status_row(
-									$color,
-									array_merge($current_item_r, $item_instance_r),
-									$HTTP_VARS['listing_link'], 
-									$numrows>1 && $current_item_r['instance_no']===$item_instance_r['instance_no']));
-						}
-						
-						echo("\n</table>");
-					}
-					else
-					{	// No instances found, because user has been deactivated and/or items are hidden.
-						echo(get_opendb_lang_var('no_records_found'));
-					}
-				}
-				else//lone instance only.
-				{
-					$numrows = 1;
-					echo(get_item_status_row(
-							"oddRow",
-							$current_item_r, 
-							$HTTP_VARS['listing_link'], 
-							FALSE));
-				}
-				
-				if($numrows>1)
-				{
-					echo(format_help_block(array('img'=>'tick.gif','text'=>get_opendb_lang_var('current_item_instance'))));
-				}
-				
-				$instance_info_links = NULL;
-				if(is_user_allowed_to_own(get_opendb_session_var('user_id')))
-				{
-					if(get_opendb_config_var('item_input', 'item_instance_support') !== FALSE)
-					{
-						$instance_info_links[] = array(url=>"item_input.php?op=newinstance&item_id=".$current_item_r['item_id']."&instance_no=".$current_item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('new_item_instance'));
-					}
-						
-					if(get_opendb_config_var('item_input', 'clone_item_support') !== FALSE)
-					{
-						$instance_info_links[] = array(url=>"item_input.php?op=clone_item&item_id=".$current_item_r['item_id']."&instance_no=".$current_item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('clone_item'));
-					}
-				}
-				
-				if(is_not_empty_array($instance_info_links))
-				{
-					echo(format_footer_links($instance_info_links));
-				}
-				
-				echo("</div>");
-				
-				echo("<div class=\"$otherTabsClass\" id=\"related_items\">");
-
-				echo("<h3>".get_opendb_lang_var('related_item(s)')."</h3>");
-				if(is_array($parent_item_r))
-					echo(get_child_items_table($parent_item_r, $item_r, $HTTP_VARS));
-				else
-					echo(get_child_items_table($item_r, NULL, $HTTP_VARS));
+				echo(get_instance_info_block($item_r));
+				echo get_related_items_block($item_r, $HTTP_VARS);
 				echo("</div>");
 			
-				// -------------------------- REVIEWS ---------------------------------------------------------
 				echo("<div class=\"$otherTabsClass\" id=\"reviews\">");
-							
-				echo("<h3>".get_opendb_lang_var('review(s)')."</h3>");
-					
-				$result = fetch_review_rs($item_r['item_id']);
-				if($result)
-				{
-					echo("<ul>");
-					while($review_r = db_fetch_assoc($result))
-					{
-						$action_links = NULL;
-						
-						echo("<li>");
-						
-						if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-										is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
-						{
-							$action_links_rs = NULL;
-							if(get_opendb_config_var('item_review', 'update_support')!==FALSE)
-								$action_links[] = array(url=>"item_review.php?op=edit&sequence_number=".$review_r['sequence_number']."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''), text=>get_opendb_lang_var('edit'));	
-							if(get_opendb_config_var('item_review', 'delete_support')!==FALSE)
-								$action_links[] = array(url=>"item_review.php?op=delete&sequence_number=".$review_r['sequence_number']."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''), text=>get_opendb_lang_var('delete'));	
-							
-							echo(format_footer_links($action_links));
-						}
-						
-						echo("<p class=\"author\">");
-						echo(
-							get_opendb_lang_var('on_date_name_wrote_the_following', 
-									array('date'=>get_localised_timestamp(get_opendb_config_var('item_display', 'review_datetime_mask'),$review_r['update_on']),
-									'fullname'=>fetch_user_name($review_r['author_id']), 
-									'user_id'=>$review_r['author_id'])));
-						echo("</p>");
-									
-						echo("<p class=\"comments\">".nl2br(trim($review_r['comment'])));
-						if($review_r['item_id']!=$item_r['item_id'])
-						{
-							echo("<span class=\"reference\">".get_opendb_lang_var(
-									'review_for_item_type_title',
-									array('s_item_type'=>$review_r['s_item_type'], 'item_id'=>$review_r['item_id'])).
-									"</span>");
-						}
-						echo("</p>");
-						
-						$average = $review_r['rating'];
-						$attribute_type_r = fetch_attribute_type_r("S_RATING");
-						echo("<span class=\"rating\">".get_display_field($attribute_type_r['s_attribute_type'], 
-								NULL, 
-								'review()', // display_type
-								$average,
-								FALSE).
-							"</span>");
-						
-						echo("</li>");
-					}//while
-					
-					echo("</ul>");
-				}
-				else
-				{
-					echo(get_opendb_lang_var('no_item_reviews'));
-				}
-				
-				$action_links = NULL;
-				if(is_user_allowed_to_review(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-				{
-					$action_links[] = array(
-							url=>"item_review.php?op=add&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),
-							text=>get_opendb_lang_var('review'));
-												
-					echo(format_footer_links($action_links));
-				}
+				echo(get_item_review_block($item_r));
 				echo("</div>"); // end of review
 				
 				echo("</div>"); // end of tab content

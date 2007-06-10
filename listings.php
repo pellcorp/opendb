@@ -674,15 +674,6 @@ function get_search_query_matrix($HTTP_VARS)
 		}
 	}
 		
-	if($HTTP_VARS['linked_items'] == 'include')
-	{
-		$searches[] = array(prompt=>get_opendb_lang_var('linked_item(s)'),field=>_theme_image('tick.gif'));
-	}
-	else
-	{
-		$searches[] = array(prompt=>get_opendb_lang_var('linked_item(s)'),field=>_theme_image('cross.gif'));
-	}
-	
 	return $searches;
 }//function get_search_query_matrix($HTTP_VARS)
 
@@ -1234,14 +1225,7 @@ if(is_site_enabled())
 						}
 						else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEMTYPE')
 						{
-							$listingObject->addItemTypeImageColumn(
-									$item_r['s_item_type'], 
-									is_numeric($item_r['parent_id']));
-										
-							if(is_numeric($item_r['parent_id']) && $item_r['owner_id'] !== get_opendb_session_var('user_id'))
-							{
-								$listingObject->addHelpEntry(get_opendb_lang_var('linked_items_cannot_be_reserved'), NULL, 'linked_items_cannot_be_reserved');
-							}
+							$listingObject->addItemTypeImageColumn($item_r['s_item_type']);
 						}
 						else if($v_column_display_config_rs[$i]['s_field_type'] == 'TITLE')
 						{

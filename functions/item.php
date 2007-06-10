@@ -303,7 +303,6 @@ function fetch_category_item_cnt($category, $s_item_type = NULL)
 			"u.active_ind = 'Y' AND ".
 			"sst.s_status_type = ii.s_status_type AND ".
 			"i.id = ii.item_id AND ".
-			"i.parent_id IS NULL AND ".
 			"ia.lookup_attribute_val = '".$category."'";
 	
 	if($s_item_type)
@@ -343,7 +342,10 @@ function fetch_category_item_cnt($category, $s_item_type = NULL)
 */
 function fetch_owner_item_instance_rs($owner_id)
 {
-	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, i.parent_id, ii.owner_id, i.title, i.s_item_type FROM item i, item_instance ii WHERE i.id = ii.item_id AND parent_id IS NULL AND ii.owner_id='".$owner_id."' "; 
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, i.title, i.s_item_type 
+			FROM item i, item_instance ii 
+			WHERE i.id = ii.item_id AND ii.owner_id='".$owner_id."' ";
+	 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 		return $result;
@@ -351,31 +353,47 @@ function fetch_owner_item_instance_rs($owner_id)
 		return FALSE;
 }
 
+define('RELATED_CHILDREN_MODE', 'CHILDREN');
+define('RELATED_PARENTS_MODE', 'PARENTS');
+
 /**
  * 
  */
-function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL)
+function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $related_mode = RELATED_CHILDREN_MODE)
 {
-	$query = "SELECT iir.item_id, 
-					iir.instance_no, 
+	$query = "SELECT ii.item_id, 
+					ii.instance_no, 
 					i.title,
-					i.s_item_type, 
-					iir.related_item_id, 
-					iir.related_instance_no 
+					i.s_item_type 
 			FROM	item_instance_relationship iir,
 					item_instance ii,
 				 	item i
-			WHERE 	ii.item_id = i.id AND
-					iir.item_id = ii.item_id AND
-					iir.instance_no = ii.instance_no AND 
-					iir.item_id = $item_id";
-
-	if(is_numeric($instance_no))
-	{
-		 $query .= " AND iir.instance_no = $instance_no";
-	}
+			WHERE 	ii.item_id = i.id AND ";
 	
-	$query .= "ORDER BY 1, 2 ASC";
+	if($related_mode == RELATED_CHILDREN_MODE)
+	{
+		$query .= "ii.item_id = iir.related_item_id AND
+					ii.instance_no = iir.related_instance_no ";
+		
+		$query .= "AND iir.item_id = $item_id ";
+		if(is_numeric($instance_no))
+		{
+			 $query .= "AND iir.instance_no = $instance_no";
+		}
+	}
+	else 
+	{
+		$query .= "ii.item_id = iir.item_id AND
+					ii.instance_no = iir.instance_no ";
+		
+		$query .= "AND iir.related_item_id = $item_id ";
+		if(is_numeric($instance_no))
+		{
+			 $query .= "AND iir.related_instance_no = $instance_no";
+		}
+	}
+
+	$query .= " ORDER BY 1, 2 ASC";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -390,7 +408,9 @@ function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL)
 //
 function fetch_item_instance_r($item_id, $instance_no)
 {
-	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, i.parent_id, ii.owner_id, i.title, i.s_item_type FROM item i,item_instance ii WHERE i.id = ii.item_id AND i.id='".$item_id."' AND ii.instance_no = '".$instance_no."'";
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, i.title, i.s_item_type 
+			FROM item i, item_instance ii 
+			WHERE i.id = ii.item_id AND i.id ='".$item_id."' AND ii.instance_no = '".$instance_no."'";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -405,7 +425,7 @@ function fetch_item_instance_r($item_id, $instance_no)
 
 function fetch_item_r($item_id)
 {
-	$query = "SELECT id as item_id, parent_id, title, s_item_type FROM item WHERE id='".$item_id."'";
+	$query = "SELECT id as item_id, title, s_item_type FROM item WHERE id = '".$item_id."'";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -433,7 +453,7 @@ function fetch_child_item_r($item_id)
 function fetch_item_title($item_id)
 {
 	// Only load previous record if edit.
-	$query = "SELECT title FROM item WHERE id='".$item_id."'"; 
+	$query = "SELECT title FROM item WHERE id = '".$item_id."'"; 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{
@@ -451,7 +471,7 @@ function fetch_item_title($item_id)
 function fetch_item_type($item_id)
 {
 	// Only load previous record if edit.
-	$query = "SELECT s_item_type FROM item WHERE id='".$item_id."'"; 
+	$query = "SELECT s_item_type FROM item WHERE id = '".$item_id."'"; 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{

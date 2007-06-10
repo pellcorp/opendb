@@ -42,7 +42,6 @@ include_once("./functions/status_type.php");
 include_once("./functions/TitleMask.class.php");
 include_once("./functions/HTML_Listing.class.inc");
 include_once("./functions/scripts.php");
-include_once("./functions/item_display.php");
 
 /**
 * Will test the old against the new value.
@@ -1050,7 +1049,6 @@ function get_edit_form($op, $parent_item_r, $item_r, $status_type_r, $HTTP_VARS,
 		echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 		echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('details')."</li>");
 		echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('instance_info')."</li>");
-		echo("<li id=\"menu-linked_items\" onclick=\"return activateTab('linked_items', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('linked_item(s)')."</li>");
 		echo("</ul>");
 		
 		$pageContents .= "<div class=\"tabContent\" id=\"details\">";
@@ -1147,17 +1145,6 @@ function get_edit_form($op, $parent_item_r, $item_r, $status_type_r, $HTTP_VARS,
 		
 		$pageContents .= "</div>";
 	
-		$pageContents .= "<div class=\"tabContentHidden\" id=\"linked_items\">";
-		$pageContents .= "<h3>".get_opendb_lang_var('linked_item(s)')."</h3>";
-		if(is_array($parent_item_r))
-			$pageContents .= get_child_items_table($parent_item_r, $item_r, $HTTP_VARS);
-		else if($op == 'clone_item')
-			$pageContents .= get_clone_child_items_table($item_r, $HTTP_VARS['coerce_child_item_type'] == 'Y');
-		else
-			$pageContents .= get_child_items_table($item_r, NULL, $HTTP_VARS);
-			
-		$pageContents .= "</div>";
-		
 		$pageContents .= "</div>";
 		
 		$pageContents .= "</form>";
@@ -1176,6 +1163,8 @@ function get_clone_child_items_table($item_r, $coerceChildTypes=FALSE)
 {
 	$buffer = '';
 
+	$buffer .= "<h3>".get_opendb_lang_var('related_item(s)')."</h3>";
+	
 	$results = fetch_child_item_rs($item_r['item_id']);
 	if($results)
 	{

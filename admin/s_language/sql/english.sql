@@ -569,3 +569,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'you_ha
 
 # related item support
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_item(s)', 'Related Item(s)'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_child_item(s)', 'Related Child Item(s)');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_related_item(s)', 'No Related Item(s)'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_item', 'Add Related Item'); 

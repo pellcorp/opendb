@@ -29,7 +29,8 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						'1.1.0',
 						array(
 							array('description'=>'New Related Status Type'),
-							array('description'=>'Transfer Linked Items')
+							array('description'=>'Transfer Linked Items'),
+							array('description'=>'Finalise upgrade')
 						)
 					);
 	}
@@ -72,6 +73,11 @@ class Upgrader_100_110 extends OpenDbUpgrader
 			}
 			db_free_result($results);
 		}
+	}
+	
+	function executeStep3($stepPart)
+	{
+		db_query("ALTER TABLE item DROP parent_id");
 	}
 }
 ?>

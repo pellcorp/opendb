@@ -23,6 +23,31 @@ include_once("./functions/logging.php");
 include_once("./functions/fileutils.php");
 include_once("./functions/utils.php");
 
+function fix_10_version($version)
+{
+	if($version == '1.0')
+	{
+		$version = '1.0.0';
+	}
+	else if(preg_match('/1\.0(RC)([0-9]+)/', $version, $matches) ||
+			preg_match('/1\.0(b)([0-9]+)/', $version, $matches) || 
+			preg_match('/1\.0(a)([0-9]+)/', $version, $matches) || 
+			preg_match('/1\.0(pl)([0-9]+)/', $version, $matches))
+	{
+		$version = '1.0.0'.$matches[1].$matches[2];
+	}
+	
+	return $version;
+}
+
+function opendb_version_compare($to_version, $from_version, $operator)
+{
+	$to_version = fix_10_version($to_version);
+	$from_version = fix_10_version($from_version);
+	
+	return version_compare($to_version, $from_version, $operator);
+}
+
 function fetch_missing_081_upload_item_attributes(&$errors)
 {
 	$missing_files_r = array();
@@ -594,7 +619,7 @@ function check_opendb_version()
    	$opendb_release_version = fetch_opendb_release_version();
    	if($opendb_release_version !== FALSE )
    	{
-   	    if(version_compare($opendb_release_version, get_opendb_version(), '>='))
+   	    if(opendb_version_compare($opendb_release_version, get_opendb_version(), '>='))
    	    {
    	        return TRUE;
    	    }
@@ -809,7 +834,7 @@ function build_upgrader_list(&$upgrader_rs, &$latest_to_version)
 				        'upgrader_plugin'=>$upgraderRef);
 				
 				if($latest_to_version == NULL || 
-					version_compare($upgraderPlugin->getToVersion(), $latest_to_version, '>'))
+					opendb_version_compare($upgraderPlugin->getToVersion(), $latest_to_version, '>'))
 				{
 					$latest_to_version = $upgraderPlugin->getToVersion();
 				}
@@ -837,9 +862,9 @@ function get_upgrader_r($db_version)
 		{
 			$upgrader_r = $upgrader_rs[$i];
 			
-			if(version_compare($db_version, $upgrader_r['to_version'], '=') ||
+			if(opendb_version_compare($db_version, $upgrader_r['to_version'], '=') ||
 					($latest_to_version == $upgrader_r['to_version'] && // this test ensures plugin is for latest version possible
-						version_compare($db_version, $upgrader_r['to_version'], '>=')))
+						opendb_version_compare($db_version, $upgrader_r['to_version'], '>=')))
 			{
 			  	return $upgrader_r;
 			}
@@ -886,11 +911,11 @@ function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 		{
 			$upgraders_rs[] = $upgrader_r;
 		}
-		else if(version_compare($db_version, $upgrader_r['from_version'], '>=') && version_compare($db_version, $upgrader_r['to_version'], '<'))
+		else if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
 		{
 			$upgraders_rs[] = $upgrader_r;
 		}
-		else if($latest_to_version == $upgrader_r['to_version'] && version_compare($db_version, $upgrader_r['to_version'], '<'))
+		else if($latest_to_version == $upgrader_r['to_version'] && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
 		{
 			$upgraders_rs[] = $upgrader_r;
 		}
@@ -908,7 +933,7 @@ function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 	
 	    	    // lets look for a from_version which matches db_version exactly, and don't bother
 	    	    // looking anywhere else if found.
-	    	    if(version_compare($db_version, $upgrader_r['from_version'], '='))
+	    	    if(opendb_version_compare($db_version, $upgrader_r['from_version'], '='))
 				{
 	    	        $revised_list_rs[] = $upgrader_r;
 	    	        break;

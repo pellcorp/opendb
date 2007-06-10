@@ -546,8 +546,11 @@ function handle_item_instance_insert($parent_item_r, &$item_r, $status_type_r, $
 						if($new_instance_no !== FALSE)
 						{
 							// Now $item_r represents new instance of item
-							$old_instance_no = $item_r['instance_no'];
 							$item_r['instance_no'] = $new_instance_no;
+							$item_r['s_status_type'] = $status_type;
+							$item_r['status_comment'] = $status_comment;
+							$item_r['borrow_duration'] = $borrow_duration;
+							$item_r['owner_id'] = $owner_id;
 
 						    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $_FILES, $errors);
 

@@ -39,7 +39,6 @@ $_COLUMN_DESC = array(
 
 $_COLUMN_HELP = array(
 	'insert_ind'=>array(
-		'If Change Owner = \'Y\', this indicator cannot be set to \'Y\'.',
 		'If \'Y\', items can be directly inserted, otherwise items can '.
 		'only be updated to this type (As long as update_ind = \'Y\')'),
 

@@ -152,8 +152,9 @@ class amazonde extends SitePlugin
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
+				//<td class="resultCount">1-24 von 22.345 Ergebnissen</td>
 				//1-24 von 66 Ergebnissen
-				if(preg_match("/<td class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,]+) Ergebnissen<\/td>/i", $pageBuffer, $regs) || 
+				if(preg_match("/<td class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/td>/i", $pageBuffer, $regs) || 
 						preg_match("/<td class=\"resultCount\">([0-9]+) Ergebnisse<\/td>/i", $pageBuffer, $regs))
 				{
 					// store total count here.

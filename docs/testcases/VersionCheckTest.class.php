@@ -82,6 +82,16 @@ class VersionCheckTest extends PHPUnit_TestCase
 	{
 		$this->assertTrue(opendb_version_compare('1.0.1', '0.81', '>'), '1.0.1 > 0.81');
 	}
+	
+	function testVersion101To101pl1()
+	{
+		$this->assertTrue(opendb_version_compare('1.0.1p1l', '1.0.1', '>'), '1.0.1p1l > 1.0.1');
+	}
+	
+	function testVersion10pl1To101pl1()
+	{
+		$this->assertTrue(opendb_version_compare('1.0.1p1l', '1.0pl1', '>'), '1.0.1p1l > 1.0pl1');
+	}
 }
 
 ?>

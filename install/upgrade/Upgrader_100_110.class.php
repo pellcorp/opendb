@@ -26,7 +26,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'1.0',
-						'1.1',
+						'1.1.0',
 						array(
 							array('description'=>'New Related Status Type'),
 							array('description'=>'Transfer Linked Items')

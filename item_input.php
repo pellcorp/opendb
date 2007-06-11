@@ -1395,12 +1395,10 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
     	$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
     	if($return_val !== FALSE)
 		{
-			// TODO - how to insert 
+			// TODO - allow addition of related items per instance, with a parameter or similiar.
 			if(is_numeric($HTTP_VARS['parent_instance_no']) && 
 					is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']))
 			{
-				print_r($item_r);
-				
     			insert_item_instance_relationships(
     					$HTTP_VARS['parent_item_id'], 
     					$item_r['item_id'], 

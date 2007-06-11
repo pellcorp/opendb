@@ -661,14 +661,11 @@ class ItemImportHandler
 				    
 				    if(is_array($attribute_type_r))
 				    {
-						if(get_function_type($attribute_type_r['display_type']) == 'hidden' ||
-									(strlen($attribute_type_r['display_type'])==0 && get_function_type($attribute_type_r['input_type']) == 'hidden'))
+				    	if($attribute_type_r['display_type'] == 'hidden' ||
+									($attribute_type_r['display_type']==0 && $attribute_type_r['input_type'] == 'hidden'))
 						{
-							$attribute_type_r['display_type'] = 'display(%value%)';
-						}
-						else // get rid of the list-link portion of the display type.
-						{
-							$attribute_type_r['display_type'] = str_replace('list-link', '', $attribute_type_r['display_type']);
+							$attribute_type_r['display_type'] = 'display';
+							$attribute_type_r['display_type_arg1'] = '%value%';
 						}
 
 						$column .= get_item_display_field(NULL, $attribute_type_r, $attribute_val);

@@ -1218,7 +1218,7 @@ function handle_user_delete($user_id, $HTTP_VARS, &$errors)
 					{
 						// The handle_item_delete does all the required checking before proceeding to
 						// delete the item, so call - and programmatically set the 'confirmed = true' setting.
-						if(!handle_item_delete(NULL, $item_r, fetch_status_type_r($item_r['s_status_type']), array('confirmed'=>'true'), $error, TRUE))
+						if(!handle_item_delete($item_r, fetch_status_type_r($item_r['s_status_type']), array('confirmed'=>'true'), $error, TRUE))
 						{
 							$errors[] = $error;
 						}

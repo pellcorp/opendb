@@ -483,7 +483,6 @@ class ItemImportHandler
 					$item_vars['trial_run'] = $this->_cfg_is_trial_run?'true':'false';
 					$item_vars['confirmed'] = $this->_cfg_ignore_duplicate_title?'true':'false';
 
-                    $parent_item_r = NULL;
 					$item_r = array(
 							s_item_type=>$this->_item_obj->getItemType(),
 							owner_id=>$this->_owner_id // FIXME: require this to get past handle_item_insert command!
@@ -494,7 +493,7 @@ class ItemImportHandler
 					$dummy_POST_FILES = NULL;
 					$errors = NULL;
 					
-                    $return_val = handle_item_insert($parent_item_r, $item_r, $item_vars, $dummy_POST_FILES, $errors);
+                    $return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
                     if($return_val === TRUE)
                     {
                         // store item id for later use
@@ -524,7 +523,7 @@ class ItemImportHandler
 							
 					    	$instance_vars = array_merge($item_vars, $this->getItemHTTPVars($instanceObj));
 					    	
-					    	$return_val = handle_item_instance_insert($parent_item_r, $item_r, $status_type_r, $instance_vars, $errors);
+					    	$return_val = handle_item_instance_insert($item_r, $status_type_r, $instance_vars, $errors);
 					    	if($return_val === TRUE)
 					    	{
 					    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
@@ -543,8 +542,6 @@ class ItemImportHandler
 						// now check for any child items
 						if($instance_valid && is_not_empty_array($this->_linked_item_obj_rs))
 						{
-						    $parent_item_r = $item_r;
-
 						    for($i=0; $i<count($this->_linked_item_obj_rs); $i++)
 							{
 				    			$itemObj =& $this->_linked_item_obj_rs[$i];
@@ -555,11 +552,10 @@ class ItemImportHandler
 
 								$item_r = array(
 									s_item_type=>$itemObj->getItemType(),
-									owner_id=>$this->_owner_id,
-									parent_id=>$parent_item_r['item_id']
+									owner_id=>$this->_owner_id
 								);
 
-								$return_val = handle_item_insert($parent_item_r, $item_r, $item_vars, $dummy_POST_FILES, $errors);
+								$return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
             					if($return_val === TRUE)
             					    $this->listing_item_import_result_row($itemObj, NULL, $item_vars, NULL);
             					else

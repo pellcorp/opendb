@@ -14,7 +14,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'activa
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add', 'Add'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_item', 'Add Item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_linked', 'Add Linked'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_linked_item', 'Add linked item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item', 'Add New Item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item_for_name', 'Add New Item for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_user', 'Add New User'); 
@@ -109,7 +108,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_it
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_item(s)_reserved', '{count} Item(s) reserved.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_item(s)_returned', '{count} Item(s) returned.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_review(s)', '{count} Review(s)'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'coerce_child_item_types', 'Coerce Child Item Type(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'column', 'Column'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'compulsory_field', 'Compulsory'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_clear_log', 'Are you sure you want to delete the log?'); 
@@ -573,3 +571,5 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'relate
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_related_item(s)', 'No Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_item', 'Add Related Item'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'coerce_related_item_types', 'Coerce Related Item Type(s)');
+ 

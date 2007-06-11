@@ -54,21 +54,6 @@ function is_user_owner_of_item($item_id, $instance_no, $uid)
 	return FALSE;
 }
 
-function is_exists_child_item_with_diff_item_type_to_parent($item_id, $s_item_type)
-{
-	$query = "SELECT 'x' FROM item WHERE parent_id = '$item_id' AND s_item_type <> '$s_item_type' ";
-
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		db_free_result($result);
-		return TRUE;
-	}
-
-	//else
-	return FALSE;
-}
-
 /**
 */
 function fetch_item_owner_id($item_id, $instance_no)
@@ -252,25 +237,6 @@ function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type)
 				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
 	}
 	
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found !== FALSE)
-			return $found['count'];
-	}
-
-	//else
-	return FALSE;
-}
-
-/**
-	Returns a count of child items for $item_id
-*/
-function fetch_child_item_cnt($item_id)
-{
-	$query = "SELECT count(id) as count FROM item WHERE parent_id ='".$item_id."'";
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{
@@ -485,7 +451,7 @@ function fetch_item_type($item_id)
 
 /**
 	Will ascertain whether an item already exists with the same information:
-		title, s_item_type, parent_id
+		title, s_item_type
 	OR
 		title, s_item_type, owner_id		
 */
@@ -593,27 +559,6 @@ function is_exists_item($item_id)
 	{
 		db_free_result($result);
 		return TRUE;
-	}
-
-	//else
-	return FALSE;
-}
-
-/**
-	Check if item is a child item.  No need to check item_instance,
-	because parent-child relationship does not exist there.
-*/
-function is_child_item($item_id)
-{
-	$query = "SELECT parent_id FROM item WHERE id = '$item_id'";
-	
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found!== FALSE && is_numeric($found['parent_id']))
-			return TRUE;
 	}
 
 	//else
@@ -1264,31 +1209,31 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 //
 // If successful will return the new ID for the item, otherwise will return FALSE.
 //
-function insert_item($parent_id, $s_item_type, $title)
+function insert_item($s_item_type, $title)
 {
 	if(strlen($title)>0)
 	{
 		$title = addslashes(replace_newlines(trim($title)));
 		
-		$query = "INSERT INTO item (parent_id, s_item_type, title)".				   
-				" VALUES (".(!is_numeric($parent_id)?"NULL":"'$parent_id'").",'$s_item_type','$title')";
+		$query = "INSERT INTO item (s_item_type, title)".				   
+				" VALUES ('$s_item_type', '$title')";
 
 		$insert = db_query($query);
 		if ($insert && db_affected_rows() > 0)
 		{
 			$new_item_id = db_insert_id();
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($parent_id, $s_item_type, $title));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_item_type, $title));
 			return $new_item_id;
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($parent_id, $s_item_type, $title));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type, $title));
 			return FALSE;
 		}
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($parent_id, $s_item_type, $title));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type, $title));
 		return FALSE;
 	}		
 }
@@ -1357,35 +1302,6 @@ function delete_item_cascaded($item_id)
 {
 	if(db_query("LOCK TABLES item WRITE, item_attribute WRITE, item_instance WRITE"))
 	{
-		$query = "SELECT id as item_id FROM item WHERE parent_id='".$item_id."'";
-		$results = db_query($query);
-		if($results)
-		{
-			while($item_r = db_fetch_assoc($results))
-			{
-				$child_deleted = FALSE;
-				if(delete_item_attributes($item_r['item_id'], NULL, NULL, NULL))
-				{
-					if(delete_item($item_r['item_id']))
-					{
-						$child_deleted = TRUE;
-					}
-				}
-
-				if(!$child_deleted)
-				{
-					db_free_result($results);
-					
-					// Can't forget to unlock table.
-					db_query("UNLOCK TABLES");
-					
-					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Aborting cascade item delete - Child item(s) not deleted', array($item_id));
-					return FALSE;
-				}
-			}
-			db_free_result($results);
-		}//else no child items
-		
 		if(delete_item_attributes($item_id, NULL, NULL, NULL))
 		{
 			if(delete_item($item_id))
@@ -1562,7 +1478,7 @@ function update_item_instance($item_id, $instance_no, $s_status_type, $status_co
 			"WHERE item_id = '$item_id' AND instance_no = '$instance_no'";
 
 		$update = db_query($query);
-	
+		
 		// We should not treat updates that were not actually updated because value did not change as failures.
 		$rows_affected = db_affected_rows();
 		if($update && $rows_affected !== -1)
@@ -1621,6 +1537,9 @@ function delete_item_instance($item_id, $instance_no)
 	$delete = db_query($query);
 	if(db_affected_rows() > 0)
 	{
+		// remove item relationships at this point too.
+		delete_item_instance_relationships($item_r['item_id'], $item_r['instance_no']);
+		
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
 		return TRUE;
 	}
@@ -1650,5 +1569,27 @@ function insert_item_instance_relationship($item_id, $instance_no, $related_item
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $related_item_id, $related_instance_no));
 		return FALSE;
 	}			
+}
+
+function delete_item_instance_relationships($item_id, $instance_no = NULL)
+{
+	$query ="DELETE FROM item_instance WHERE item_id = '".$item_id."'";
+	
+	if(is_numeric($instance_no))
+	{
+		$query .= " AND instance_no = '$instance_no'";
+	}
+	
+	$delete = db_query($query);
+	if(db_affected_rows() > 0)
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+		return FALSE;
+	}
 }
 ?>

@@ -376,7 +376,7 @@ class Listing
 
 		$is_borrowed_or_returned = FALSE;						
 		// Check whether item has been borrowed or returned by the current user before.
-		if($show_is_borrowed_or_returned!==FALSE && !is_numeric($item_r['parent_id']) && get_opendb_config_var('listings', 'show_borrowed_or_returned') !== FALSE)
+		if($show_is_borrowed_or_returned!==FALSE && get_opendb_config_var('listings', 'show_borrowed_or_returned') !== FALSE)
 		{
 			// Do not even bother if user owns item - they cannot borrow their own item.
 	 		if($item_r['owner_id'] != get_opendb_session_var('user_id'))
@@ -417,10 +417,7 @@ class Listing
 		
 		$item_r['title'] = $this->_titleMaskCfg->expand_item_title($item_r);
 		
-		if(is_numeric($item_r['parent_id']))
-			$title_href_link = 'item_display.php?item_id='.$item_r['item_id'].'&parent_id='.$item_r['parent_id'].'&parent_instance_no='.ifempty($item_r['parent_instance_no'], $item_r['instance_no']);
-		else
-			$title_href_link = 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'];
+		$title_href_link = 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'];
 		
 		if(strlen($this->_http_vars['listing_link'])>0)
 			$title_href_link .= '&listing_link='.$this->_http_vars['listing_link'];

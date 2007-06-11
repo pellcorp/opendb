@@ -47,8 +47,6 @@ function get_last_num_items_rs(
 	if(strlen($not_owner_id)>0)
 		$search_vars_r['not_owner_id'] = $not_owner_id;
 		
-	$search_vars_r['linked_items'] = 'exclude';
-	
 	$dummy_r = NULL;
 	$results = fetch_item_listing_rs($search_vars_r, $dummy_r, 'update_on', 'DESC', 0, $num_of_items);
 	if($results)

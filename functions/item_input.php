@@ -298,11 +298,13 @@ function handle_item_insert($parent_item_r, &$item_r, $HTTP_VARS, $_FILES, &$err
 							// A child item or do not check for non-owner duplicates
 							if(is_not_empty_array($parent_item_r))
 							{
-								if(get_opendb_config_var('item_input', 'duplicate_title_support')!==TRUE || ($HTTP_VARS['confirmed'] != 'true' && get_opendb_config_var('item_input', 'confirm_duplicate_linked_item_insert')!==FALSE))
+								if(get_opendb_config_var('item_input', 'duplicate_title_support')!==TRUE || 
+											($HTTP_VARS['confirmed'] != 'true' && 
+													get_opendb_config_var('item_input', 'confirm_duplicate_linked_item_insert')!==FALSE))
 								{
 								    // do not perform test in this case.
 								    if($HTTP_VARS['trial_run'] != 'true')
-										$is_exists_linked_title = is_exists_title($item_r['title'], $item_r['s_item_type'], NULL, $item_r['parent_id']);
+										$is_exists_linked_title = is_exists_title($item_r['title'], $item_r['s_item_type']);
 								}
 							}
 							else
@@ -334,7 +336,7 @@ function handle_item_insert($parent_item_r, &$item_r, $HTTP_VARS, $_FILES, &$err
 								{
 								    if($HTTP_VARS['trial_run'] != 'true')
 								    {
-										$new_item_id = insert_item($item_r['parent_id'], $item_r['s_item_type'], $item_r['title'], $item_r['owner_id']);
+										$new_item_id = insert_item($item_r['parent_id'], $item_r['s_item_type'], $item_r['title']);
 										if($new_item_id !== FALSE)
 										{
 											$item_r['item_id'] = $new_item_id;

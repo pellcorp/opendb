@@ -489,41 +489,27 @@ function fetch_item_type($item_id)
 	OR
 		title, s_item_type, owner_id		
 */
-function is_exists_title($title, $s_item_type, $owner_id=NULL, $parent_id=NULL)
+function is_exists_title($title, $s_item_type, $owner_id=NULL)
 {
-	// In this case we assume the parent id is visible and accessible to the 
-	// current user, because otherwise validation checks would not have allowed
-	// the user to come this far.
-	if(strlen($parent_id)>0)
+	$query = "SELECT 'x' FROM item i,item_instance ii, s_status_type sst, user u ".
+   			"WHERE i.id = ii.item_id AND ".
+			"u.user_id = ii.owner_id AND ".
+			"u.active_ind = 'Y' AND ".
+			"sst.s_status_type = ii.s_status_type AND ".
+			"i.title = '".addslashes($title)."' AND ".
+           	"i.s_item_type = '".$s_item_type."' AND ";
+			
+	// Restrict certain status types, to specified user types.
+	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
+	if(is_not_empty_array($user_type_r))
 	{
-		$query = "SELECT 'x' FROM item i ".
-	    		"WHERE i.title = '".addslashes($title)."' AND ".
-				"i.s_item_type = '".$s_item_type."' AND ".
-				"i.parent_id = '".$parent_id."'";
+		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
+				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
+				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
 	}
-	else
-	{
-		$query = "SELECT 'x' FROM item i,item_instance ii, s_status_type sst, user u ".
-    			"WHERE i.id = ii.item_id AND ".
-				"u.user_id = ii.owner_id AND ".
-				"u.active_ind = 'Y' AND ".
-				"sst.s_status_type = ii.s_status_type AND ".
-				"i.title = '".addslashes($title)."' AND ".
-            	"i.s_item_type = '".$s_item_type."' AND ".
-				" i.parent_id IS NULL ";
-				
-		// Restrict certain status types, to specified user types.
-		$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-		if(is_not_empty_array($user_type_r))
-		{
-			$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-					" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-					" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-		}
-				
-		if(strlen($owner_id)>0)
-			$query .= "AND ii.owner_id = '".$owner_id."'";
-	}
+			
+	if(strlen($owner_id)>0)
+		$query .= "AND ii.owner_id = '".$owner_id."'";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -818,7 +804,7 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		owner_id, s_item_type, s_item_type[], s_item_type_group, title, title_match, category,
 		rating, attribute_type, lookup_attribute_val, attribute_val, attr_match, 
 		update_on, datetimemask, update_on_days, letter, start_item_id
-		s_status_type[], status_comment, not_s_status_type[], linked_items
+		s_status_type[], status_comment, not_s_status_type[]
 */
 function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $query_type = 'LISTING')
 {

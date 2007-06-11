@@ -22,6 +22,71 @@ include_once("./functions/TitleMask.class.php");
 include_once("./functions/HTML_Listing.class.inc");
 include_once("./functions/item.php");
 
+/**
+	This function will return a complete table of all links valid
+	for this item_type.
+
+	This is useful because it allows the use of a site plugin for
+	generating links only, by specifying as the default site type.
+*/
+function get_site_plugin_links($page_title, $item_r)
+{
+	$pageContents = '';
+	
+	$results = fetch_site_plugin_rs($item_r['s_item_type']);
+	if($results)
+	{
+	    $titleMaskCfg = new TitleMask();
+	    
+		$pageContents = "<ul class=\"sitepluginLinks\">";
+		
+		while($site_plugin_type_r = db_fetch_assoc($results))
+		{
+			if(is_exists_site_plugin($site_plugin_type_r['site_type']))
+			{
+				$site_plugin_conf_rs = get_site_plugin_conf_r($site_plugin_type_r['site_type']);
+				
+				// Get the primary link, which will be extended with details for each individual link.
+				if(strlen($site_plugin_type_r['image'])>0)
+					$link_text = "<img src=\"./site/images/".$site_plugin_type_r['image']."\" border=\"0\" title=\"".htmlspecialchars($site_plugin_type_r['title'])."\" alt=\"".htmlspecialchars($site_plugin_type_r['title'])."\">";
+				else
+					$link_text = "[".$site_plugin_type_r['title']."]";
+							
+				$results2 = fetch_site_plugin_link_rs($site_plugin_type_r['site_type'], $item_r['s_item_type']);
+				if($results2)
+				{
+					while($site_plugin_link_r = db_fetch_assoc($results2))
+					{
+						$parse_url = NULL;
+						
+						if(strlen($site_plugin_link_r['url'])>0 && is_exists_site_item_attribute($site_plugin_type_r['site_type'], $item_r['item_id'], $item_r['instance_no']))
+							$parse_url = $site_plugin_link_r['url'];
+						else if(strlen($site_plugin_link_r['title_url'])>0)
+							$parse_url = $site_plugin_link_r['title_url'];
+						
+						if($parse_url != NULL)
+						{
+						    $titleMaskCfg->reset();
+						    
+							// now we want to expand the $parse_url
+							$parse_url = $titleMaskCfg->expand_title($item_r, $parse_url, $site_plugin_conf_rs);
+						
+							$pageContents .= "<li><a href=\"".$parse_url."\" onclick=\"popup('url.php?url=".urlencode($parse_url)."&cache_type=none', 800, 600); return false;\">$link_text";
+							$pageContents .= "<br />[".$site_plugin_link_r['description']."]";
+							$pageContents .= "</a></li>";
+						}
+					}//while
+					db_free_result($results2);
+				}
+			}
+		}//while
+		db_free_result($results);
+		
+		$pageContents .= "</ul>";
+		return $pageContents;
+	}
+}
+
 function get_item_review_block($item_r)
 {
 	$buffer .= "<h3>".get_opendb_lang_var('review(s)')."</h3>";
@@ -41,9 +106,9 @@ function get_item_review_block($item_r)
 			{
 				$action_links_rs = NULL;
 				if(get_opendb_config_var('item_review', 'update_support')!==FALSE)
-					$action_links[] = array(url=>"item_review.php?op=edit&sequence_number=".$review_r['sequence_number']."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''), text=>get_opendb_lang_var('edit'));	
+					$action_links[] = array(url=>"item_review.php?op=edit&sequence_number=".$review_r['sequence_number']."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''), text=>get_opendb_lang_var('edit'));	
 				if(get_opendb_config_var('item_review', 'delete_support')!==FALSE)
-					$action_links[] = array(url=>"item_review.php?op=delete&sequence_number=".$review_r['sequence_number']."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''), text=>get_opendb_lang_var('delete'));	
+					$action_links[] = array(url=>"item_review.php?op=delete&sequence_number=".$review_r['sequence_number']."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''), text=>get_opendb_lang_var('delete'));	
 				
 				$buffer .= format_footer_links($action_links);
 			}
@@ -89,7 +154,7 @@ function get_item_review_block($item_r)
 	if(is_user_allowed_to_review(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 	{
 		$action_links[] = array(
-				url=>"item_review.php?op=add&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),
+				url=>"item_review.php?op=add&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),
 				text=>get_opendb_lang_var('review'));
 									
 		$buffer .= format_footer_links($action_links);
@@ -441,7 +506,7 @@ function get_related_items_block($item_r, $HTTP_VARS)
 					is_numeric($item_r['item_id']) && is_numeric($item_r['instance_no']))
 		{
 			$action_links[] = array(
-									url=>"item_input.php?op=site-add&parent_id=".$item_r['item_id']."&parent_instance_no=".$item_r['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],
+									url=>"item_input.php?op=site-add&parent_item_id=".$item_r['item_id']."&parent_instance_no=".$item_r['instance_no']."&owner_id=".$item_r['owner_id']."&listing_link=".$HTTP_VARS['listing_link'],
 									text=>get_opendb_lang_var('add_related_item'));
 									
 			$buffer .= format_footer_links($action_links);
@@ -455,6 +520,8 @@ function get_related_items_block($item_r, $HTTP_VARS)
 
 function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 {
+	global $PHP_SELF;
+	
 	$buffer = '';
 
 	$results = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], $related_mode);

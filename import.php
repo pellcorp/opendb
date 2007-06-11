@@ -832,7 +832,7 @@ if(is_site_enabled())
 											if(is_not_empty_array($itemImportHandler->getItemIDList()))
 											{
 												$footer_links_r[] = array(
-													url=>'listings.php?item_id_range='.urlencode(get_item_id_range($itemImportHandler->getItemIDList())), //.'&linked_items=include', 
+													url=>'listings.php?item_id_range='.urlencode(get_item_id_range($itemImportHandler->getItemIDList())), 
 													text=>get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
 											}
 											

@@ -443,7 +443,7 @@ class SitePlugin
 			unset($search_attributes_r['site_type']);
 			unset($search_attributes_r['item_id']);
 			unset($search_attributes_r['instance_no']);
-			unset($search_attributes_r['parent_id']);
+			unset($search_attributes_r['parent_item_id']);
 			unset($search_attributes_r['parent_instance_no']);
 			unset($search_attributes_r['s_status_type']);
 			unset($search_attributes_r['title']);

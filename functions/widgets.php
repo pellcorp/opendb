@@ -2609,7 +2609,7 @@ function format_listing_link($value, $display, $item_attribute_type_r, $attr_mat
 	else
 		$value = urlencode($value);
 	
-	return "<a href=\"listings.php?attribute_list=y&attr_match=$attr_match&attribute_type=".$item_attribute_type_r['s_attribute_type']."&s_status_type=ALL&linked_items=include&attribute_val=".$value."&order_by=title&sortorder=ASC\" title=\"".get_opendb_lang_var('list_items_with_same_prompt', 'prompt', $item_attribute_type_r['prompt'])."\" class=\"listlink\">$display</a>";
+	return "<a href=\"listings.php?attribute_list=y&attr_match=$attr_match&attribute_type=".$item_attribute_type_r['s_attribute_type']."&s_status_type=ALL&attribute_val=".$value."&order_by=title&sortorder=ASC\" title=\"".get_opendb_lang_var('list_items_with_same_prompt', 'prompt', $item_attribute_type_r['prompt'])."\" class=\"listlink\">$display</a>";
 }
 
 /**

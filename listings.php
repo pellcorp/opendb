@@ -1098,8 +1098,7 @@ if(is_site_enabled())
 				{
 					if(!is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
 					{
-						if(!is_numeric($item_r['parent_id']) && 
-									$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
+						if($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
 									$item_r['owner_id'] !== get_opendb_session_var('user_id') && 
 									is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
 									!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) &&
@@ -1257,62 +1256,50 @@ if(is_site_enabled())
 								// The option of having only Quick Checkout links should be provided.
 								if(get_opendb_config_var('listings', 'show_input_actions'))
 								{
-									if(!is_numeric($item_r['parent_id']))
+									if(get_opendb_config_var('listings', 'show_input_actions'))
 									{
-										if(get_opendb_config_var('listings', 'show_input_actions'))
+										$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'edit.gif',text=>get_opendb_lang_var('edit'));
+								
+										// So we only have to check the 'is_site_plugin' once!
+										if(strlen($item_types_rs[$item_r['s_item_type']]['legal_site_type'])==0)
 										{
-											$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'edit.gif',text=>get_opendb_lang_var('edit'));
-									
-											// So we only have to check the 'is_site_plugin' once!
-											if(strlen($item_types_rs[$item_r['s_item_type']]['legal_site_type'])==0)
-											{
-												$item_types_rs[$item_r['s_item_type']]['legal_site_type'] = is_item_legal_site_type($item_r['s_item_type']);
-											}
-																
-											// Only site types which are considered legal can be allowed for refresh operation.
-											if(get_opendb_config_var('listings', 'show_refresh_actions') && $item_types_rs[$item_r['s_item_type']]['legal_site_type'])
-											{
-												$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
-											}
-										
-											if($status_type_rs[$item_r['s_status_type']]['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
-											{
-												$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
-											}
+											$item_types_rs[$item_r['s_item_type']]['legal_site_type'] = is_item_legal_site_type($item_r['s_item_type']);
+										}
+															
+										// Only site types which are considered legal can be allowed for refresh operation.
+										if(get_opendb_config_var('listings', 'show_refresh_actions') && $item_types_rs[$item_r['s_item_type']]['legal_site_type'])
+										{
+											$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
 										}
 									
-										if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
+										if($status_type_rs[$item_r['s_status_type']]['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
 										{
-											// Quick checkout NOT available to Admin user, unless they are also explicitly the owner.
-											if($item_r['owner_id'] == get_opendb_session_var('user_id') && 
-														get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-														get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
-														($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' || $status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'N'))
-											{
-												// Cannot quick checkout an item already borrowed.
-												if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-												{
-													$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
-												}
-											}
-	
-											if($item_r['owner_id'] == get_opendb_session_var('user_id'))
-											{
-												if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-												{
-													$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
-												}
-											}
+											$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
 										}
 									}
-									else //if(!is_numeric($item_r['parent_id']))
+								
+									if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 									{
-										$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&parent_id='.$item_r['parent_id'].'&parent_instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'edit.gif',text=>get_opendb_lang_var('edit'));
-										if(get_opendb_config_var('listings', 'show_refresh_actions') && is_item_legal_site_type($item_r['s_item_type']))
+										// Quick checkout NOT available to Admin user, unless they are also explicitly the owner.
+										if($item_r['owner_id'] == get_opendb_session_var('user_id') && 
+													get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+													get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
+													($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' || $status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'N'))
 										{
-											$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&parent_id='.$item_r['parent_id'].'&parent_instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
+											// Cannot quick checkout an item already borrowed.
+											if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
+											{
+												$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
+											}
 										}
-										$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&parent_id='.$item_r['parent_id'].'&parent_instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
+
+										if($item_r['owner_id'] == get_opendb_session_var('user_id'))
+										{
+											if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
+											{
+												$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
+											}
+										}
 									}
 								}
 							}
@@ -1320,8 +1307,7 @@ if(is_site_enabled())
 							if($item_r['owner_id'] != get_opendb_session_var('user_id')) //non-owner items here.
 							{   
 								// Reservation/Cancel Information.
-								if(!is_numeric($item_r['parent_id']) && 
-										get_opendb_config_var('borrow', 'enable')!==FALSE && 
+								if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
 										get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 								{
 									if(is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
@@ -1376,7 +1362,7 @@ if(is_site_enabled())
 					{
 						if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 						{
-							if(!is_numeric($item_r['parent_id']) && is_item_borrowed($item_r['item_id'],$item_r['instance_no']))
+							if(is_item_borrowed($item_r['item_id'],$item_r['instance_no']))
 							{
 								$listingObject->addThemeImageColumn(
 											'borrowed.gif', 
@@ -1384,9 +1370,9 @@ if(is_site_enabled())
 											NULL, //title
 											'borrowed_item');
 			  				}
-							else if(!is_numeric($item_r['parent_id']) && 
-									($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' || $status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'N') && 
-									is_item_reserved($item_r['item_id'], $item_r['instance_no']))
+							else if(($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' || 
+										$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'N') && 
+										is_item_reserved($item_r['item_id'], $item_r['instance_no']))
 							{
 								$listingObject->addThemeImageColumn(
 											'reserved.gif', 

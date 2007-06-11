@@ -1046,11 +1046,6 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"".$HTTP_VARS['parent_item_id']."\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"".$HTTP_VARS['parent_instance_no']."\">";
 		
-		if($op == 'clone_item')
-		{
-			$pageContents .= "\n<input type=\"hidden\" name=\"coerce_child_item_type\" value=\"".$HTTP_VARS['coerce_child_item_type']."\">";
-		}
-		
 		if($op == 'clone_item' || is_not_empty_array($item_r))
 		{
 			if(is_numeric($item_r['item_id']))
@@ -1404,12 +1399,6 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
     					$item_r['item_id'], 
     					$item_r['instance_no']);	
 			}
-			
-	    	if($HTTP_VARS['start-op'] == 'clone_item' && is_numeric($HTTP_VARS['old_item_id']))
-			{
-				// TODO - need to reengineer clone for related items
-	//			clone_child_items($item_r, $HTTP_VARS['old_item_id'], $HTTP_VARS['coerce_child_item_type'] == 'Y');
-			}
 		}
 	}
 	
@@ -1583,16 +1572,12 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 						$item_r['s_item_type'],
 						's_item_type', NULL, NULL, NULL, FALSE, 'clone-s_item_type').'</td></tr>');
 		
-		echo('<tr><th class="prompt">'.get_opendb_lang_var('clone_related_items').'</th>'.
-			'<td class="data"><input type=checkbox name="clone_related_items" value="Y" CHECKED></td></tr>');
-			
-		echo('<tr><th class="prompt">'.get_opendb_lang_var('coerce_related_item_types').'</th>'.
-			'<td class="data"><input type=checkbox name="coerce_related_item_types" value="Y" CHECKED></td></tr>');
-		
 		echo('</table>');			
-		echo('<input type="submit" value="'.get_opendb_lang_var('continue').'">');
+		echo('<input type="submit" value="'.get_opendb_lang_var('submit').'">');
 		
 		echo('</form>');
+		
+		echo format_help_block(array('text'=>get_opendb_lang_var('clone_item_help')));
 	
 		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
 	}

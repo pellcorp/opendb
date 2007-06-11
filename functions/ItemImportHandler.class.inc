@@ -523,8 +523,7 @@ class ItemImportHandler
 		}
 		
 		$this->_listingsObject->addItemTypeImageColumn(
-				$itemObj->getItemType(),
-				$itemObj->_is_linked);
+				$itemObj->getItemType());
 
 		if(strcasecmp(get_class($itemObj),'ItemInstance')===0)
 	        $instance_no = $itemObj->getInstanceNo();
@@ -592,7 +591,7 @@ class ItemImportHandler
 		}
 		
 		$this->_listingsObject->endRow();
-	}//function listing_item_import_result_row($is_linked_item, $instance_no, $status_type_r, $s_item_type, $title, $category, $attribute_rs, $errorMsg = NULL)
+	}
 
 	/**
 	*/

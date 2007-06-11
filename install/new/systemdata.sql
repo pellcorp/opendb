@@ -501,20 +501,16 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'item_instance_support', 1, 'Item Instance Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'new_instance_owner_only', 2, 'New Instance Owner Only', 'Whether item instances can be created across owners', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'new_instance_admin_diff_owner_support', 3, 'Admin New Instance', 'Admin can create new instance for other user', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'linked_item_support', 4, 'Linked Item Support', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'link_same_type_only', 5, 'Linked Item Restrict Type', 'Linked items must be same type as parent item', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_support', 6, 'Clone Item Support', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_admin_diff_owner_support', 7, 'Admin Clone Item', 'Admin can clone item for other user', 'boolean');
-# INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_insert', 9, 'Auto Site Insert', 'Bypass new item edit screen', 'boolean');
-#INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 10, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'duplicate_title_support', 11, 'Duplicate Title Support', 'Duplicate title with same type and owner allowed', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_insert', 12, 'Confirm Duplicate Insert', 'Confrm insert of duplicate title with same type regardless of owner', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_owner_insert', 13, 'Confirm Duplicate Owner Insert', 'Confrm insert of duplicate title with same type and owner', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_linked_item_insert', 14, 'Confirm Linked Item Duplicate Insert', 'Confirm a duplicate title insert for same owner', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_item_delete', 15, 'Confirm Item Delete', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_linked_item_delete', 16, 'Confirm Linked Item Delete', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 17, 'Allow Item Delete with inactive borrow records', ' exist', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('item_input', 'title_articles', 19, 'Title Articles', 'Format title, so that articles appear at the end of the title.', 'array', 'text');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_support', 4, 'Clone Item Support', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_admin_diff_owner_support', 5, 'Admin Clone Item', 'Admin can clone item for other user', 'boolean');
+# INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_insert', 6, 'Auto Site Insert', 'Bypass new item edit screen', 'boolean');
+#INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 7, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'duplicate_title_support', 8, 'Duplicate Title Support', 'Duplicate title with same type and owner allowed', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_insert', 9, 'Confirm Duplicate Insert', 'Confrm insert of duplicate title with same type regardless of owner', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_owner_insert', 10, 'Confirm Duplicate Owner Insert', 'Confrm insert of duplicate title with same type and owner', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_item_delete', 11, 'Confirm Item Delete', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 12, 'Allow Item Delete with inactive borrow records', ' exist', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('item_input', 'title_articles', 13, 'Title Articles', 'Format title, so that articles appear at the end of the title.', 'array', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.site', 'debug', 1, 'Debug Site Plugins', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'width', 3, 'Item Image Width', '', 'number');
@@ -540,7 +536,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'title_mask_macro_theme_img_help', 11, 'Title Mask Help Entries', 'Display any \'theme_img\' title mask macro elements in the help section.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_borrowed_or_returned', 12, 'Show Previously Borrowed Indication', 'Show indication if a user has already borrowed/returned item', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('listings', 'linked_items', 13, 'Display Linked Items', 'Override search functionality, to always include / restrict / exclude linked items.  If this variable is set, no linked items field will be in the search form.', 'value_select', 'undefined,restrict,include,exclude');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'print_listing_datetime_mask', 15, 'Print Listing Datetime Mask', '', 'datemask');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'save_listing_url', 16, 'Enable \'Back to Listing\' Links', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_exact_match_search_columns', 17, 'Include Exact Match Search Columns', 'Include a column for each exact match search column, by default this is disabled.', 'boolean');
@@ -588,8 +583,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow.reminder', 'duration_range', 1, 'Duration Range', 'Reminder job duration range, as follows: +X = X days overdue; 0 = on day due; -X = X days before due date', 'number');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('search', 'default_include_linked_items', 1, 'Include Linked Items', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('search', 'datetime_mask', 2, 'Datetime Mask', 'Search datetime mask', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('search', 'datetime_mask', 1, 'Datetime Mask', 'Search datetime mask', 'datemask');
 
 #
 # Configuration Item Values.
@@ -694,8 +688,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_displa
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_display', 'item_image_size', 'height', '100');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'review_datetime_mask', 'Day, DDth Month YYYY HH24:MI');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'export_link', 'OpenDb_XML');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'linked_item_support', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'link_same_type_only', 'FALSE');
 #INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_insert', 'FALSE');
 #INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_update', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'clone_item_support', 'TRUE');
@@ -704,12 +696,10 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input'
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'new_instance_owner_only', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'new_instance_admin_diff_owner_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_item_delete', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_linked_item_delete', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'duplicate_title_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_duplicate_insert','FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_duplicate_owner_insert', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_duplicate_linked_item_insert', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'item_image_size', 'height', '50');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '0', 'The');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '1', 'A');
@@ -735,7 +725,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'allow_override_show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'print_listing_datetime_mask', 'Day, DDth Month YYYY HH24:MI:SS');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'linked_items', 'undefined');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'items_per_page', '21');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_input_actions', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_refresh_actions', 'TRUE');
@@ -783,7 +772,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'd
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'datetime_mask', 'DD/MM/YYYY HH:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow.reminder', 'duration_range', '-1');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('search', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('search', 'default_include_linked_items', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('announcements', 'datetime_mask', 'DD/MM/YYYY HH:MI:SS');
 
 #

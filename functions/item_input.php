@@ -728,26 +728,6 @@ function copy_item_to_http_vars($old_item_r, $new_item_type)
 	return $HTTP_VARS;
 }
 
-/*function clone_related_items($item_r, $old_item_id, $coerceRelatedTypes = FALSE)
-{
-	$results = fetch_child_item_rs($old_item_id);
-	if($results)
-	{
-		while($child_item_r = db_fetch_assoc($results))
-		{
-			// Either we are coercing all children, or leave as is!
-			if($coerceChildTypes)
-				$new_child_item_type = $item_r['s_item_type'];
-			else
-				$new_child_item_type = $child_item_r['s_item_type'];
-			
-			$new_child_item_id = insert_item($item_r['item_id'], $new_child_item_type, $child_item_r['title']);
-			copy_item_attributes($child_item_r['s_item_type'], $child_item_r['item_id'], NULL, $new_child_item_type, $new_child_item_id, NULL);
-		}
-		db_free_result($results);
-	}
-}*/
-
 /*
  * This function assumes, that the delete confirm functionality has already
  * been processed, before being called.  It does not confirm delete checking

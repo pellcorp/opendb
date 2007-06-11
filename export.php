@@ -448,8 +448,8 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	$buffer .= "\n<table>";
 	
 	$buffer .= "\n<tr>";
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('item_id').':</td><td class="data"><input type="checkbox" name="export_columns[item_id]" value="Y"'.($HTTP_VARS['linked_items']=='include'?' CHECKED':'').'></td>';
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('instance_no').':</td><td class="data"><input type="checkbox" name="export_columns[instance_no]" value="Y"'.($HTTP_VARS['linked_items']=='include'?' CHECKED':'').'></td>';
+	$buffer .= '<td class="prompt">'.get_opendb_lang_var('item_id').':</td><td class="data"><input type="checkbox" name="export_columns[item_id]" value="Y"></td>';
+	$buffer .= '<td class="prompt">'.get_opendb_lang_var('instance_no').':</td><td class="data"><input type="checkbox" name="export_columns[instance_no]" value="Y"></td>';
 	$buffer .= '<td class="prompt">'.get_opendb_lang_var('owner_id').':</td><td class="data"><input type="checkbox" name="export_columns[owner_id]" value="Y"'.(strlen($HTTP_VARS['owner_id'])==0?' CHECKED':'').'></td>';
 	
 	$buffer .= "</tr>\n<tr>";

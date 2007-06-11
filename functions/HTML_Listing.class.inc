@@ -302,7 +302,6 @@ class HTML_Listing extends Listing
 				case 'item_type_image':
 					$this->_write('<td class="item_type_image">');
 					$s_item_type = $row_column_rs[$i]['s_item_type'];
-					$is_linked_item = $row_column_rs[$i]['is_linked_item'];
 					
 					if(!is_array($this->_item_type_rs[$s_item_type]) || strlen($this->_item_type_rs[$s_item_type]['image'])==0)
 					{
@@ -336,12 +335,6 @@ class HTML_Listing extends Listing
 						$this->_write($s_item_type);
 					}
 					
-					if($is_linked_item)
-					{
-						$this->addHelpEntry(get_opendb_lang_var('linked_item'), 'linked.gif', 'linked_item');
-							
-						$this->_write(_theme_image('linked.gif', 'L', get_opendb_lang_var('linked_item'), $this->rowclass));
-					}
 					$this->_write('</td>');
 					break;
 					

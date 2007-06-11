@@ -3114,7 +3114,7 @@ function format_error_block($errors, $err_type = 'error')
 	use $s_item_type if specified, otherwise will get s_item_type
 	for $item_id first.
 */
-function get_item_image($s_item_type, $item_id = NULL, $islinked = FALSE)
+function get_item_image($s_item_type, $item_id = NULL)
 {
 	if(strlen($s_item_type)>0 || ($s_item_type = fetch_item_type($item_id)))
 	{
@@ -3134,14 +3134,8 @@ function get_item_image($s_item_type, $item_id = NULL, $islinked = FALSE)
 
 				$imagetext = _theme_image($item_type_r['image'], $s_item_type, $title_text, NULL, 's_item_type', 's_item_type');
 			}
-	
-			if($islinked)
-			{
-				$imagetext .= _theme_image("linked.gif", NULL, get_opendb_lang_var('linked_item'), NULL, NULL, 'linked_item');
-			}
-				
+
 			return $imagetext;
-			
 		}
 	}
 	

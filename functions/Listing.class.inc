@@ -348,13 +348,12 @@ class Listing
 					type=>$type);
 	}
 	
-	function addItemTypeImageColumn($s_item_type, $is_linked_item = FALSE)
+	function addItemTypeImageColumn($s_item_type)
 	{
 		$this->_row_column_rs[] = 
 			array(
 				column_type=>'item_type_image',
-				s_item_type=>$s_item_type,
-				is_linked_item=>$is_linked_item);
+				s_item_type=>$s_item_type);
 	}
 	
 	/**
@@ -368,7 +367,7 @@ class Listing
 		
 		$s_item_type = $item_r['s_item_type'];
 		
-		//In this case we want to test the real item_id even of a linked item.
+		//In this case we want to test the real item_id
 		if($show_is_item_reviewed!==FALSE && is_item_reviewed($item_r['item_id']))
 		{
 			$is_item_reviewed = TRUE;

@@ -13,7 +13,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'activa
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'activate_user_list', 'Activate Users'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add', 'Add'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_item', 'Add Item'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_linked', 'Add Linked'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item', 'Add New Item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item_for_name', 'Add New Item for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_user', 'Add New User'); 
@@ -115,7 +114,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confir
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_review', 'Are you sure you want to delete the review?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_title', 'Are you sure you want to permanently delete {display_title}?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_passwd', 'Confirm'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_title_linked_item_insert', 'This linked item \"{title}\" already exists.  Do you want to continue?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_title_same_type_and_owner_insert', 'You already have a {s_item_type} item \"{title}\".  Do you want to continue?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_title_same_type_insert', 'This item \"{title}\" already exists.  Do you want to continue?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_activate', 'Are you sure you want to activate user \"{fullname}\" ({user_id})?'); 
@@ -141,7 +139,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'defaul
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete', 'Delete'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_from_reserve_list', 'Remove from Basket'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_item', 'Delete Item'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_linked_item', 'Delete linked item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_user', 'Delete User'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'desc', 'Desc'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'description', 'Description'); 
@@ -155,9 +152,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_da
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_duration_detail', 'Duration: {borrow_duration} day(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'dumping_data_for_table', 'Dumping data for table \'{table}\''); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit', 'Edit'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_linked_item', 'Edit linked item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_my_info', 'Edit My Info'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_parent', 'Edit Parent'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_title', 'Edit {display_title}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_user_info', 'Edit User Info'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_footer', '{site} {version}\\n{site_url}'); 
@@ -569,8 +564,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'relate
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_related_item(s)', 'No Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_item', 'Add Related Item'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_related_items', 'Clone Related Item(s)');
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'coerce_related_item_types', 'Coerce Related Item Type(s)');
 
 #missing clone title
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_title', 'Clone {display_title}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_item_help', 'Related items will not be cloned'); 

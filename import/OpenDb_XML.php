@@ -50,7 +50,7 @@ class OpenDb_XML
 		{
 			if(strcmp($name, 'item')===0)
 			{
-				import_start_item($attribs['s_item_type'], $attribs['title'], $attribs['category']);
+				import_start_item($attribs['s_item_type'], $attribs['title']);
 			}
 			else if(strcmp($name, 'instance')===0)
 			{

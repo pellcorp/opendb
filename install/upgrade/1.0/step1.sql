@@ -20,11 +20,14 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 # delete linked item vars, replace with related item vars
 
-DELETE FROM s_language_var WHERE language = 'ENGLISH' AND varname IN('linked_item(s)', 'add_linked_item', 'coerce_child_item_types');
+DELETE FROM s_language_var WHERE language = 'ENGLISH' AND varname IN('parent_id', 'parent_item_not_found', 'linked_item(s)', 'add_linked_item', 'coerce_child_item_types');
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_item(s)', 'Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_child_item(s)', 'Related Child Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_related_item(s)', 'No Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_item', 'Add Related Item'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_related_items', 'Clone Related Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'coerce_related_item_types', 'Coerce Related Item Type(s)');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_title', 'Clone {display_title}'); 

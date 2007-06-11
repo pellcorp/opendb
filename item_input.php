@@ -1571,8 +1571,12 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 						$item_r['s_item_type'],
 						's_item_type', NULL, NULL, NULL, FALSE, 'clone-s_item_type').'</td></tr>');
 		
+		echo('<tr><th class="prompt">'.get_opendb_lang_var('clone_related_items').'</th>'.
+			'<td class="data"><input type=checkbox name="clone_related_items" value="Y" CHECKED></td></tr>');
+			
 		echo('<tr><th class="prompt">'.get_opendb_lang_var('coerce_related_item_types').'</th>'.
 			'<td class="data"><input type=checkbox name="coerce_related_item_types" value="Y" CHECKED></td></tr>');
+		
 		echo('</table>');			
 		echo('<input type="submit" value="'.get_opendb_lang_var('continue').'">');
 		
@@ -1583,7 +1587,8 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 	else
 	{
 		// at this point we need to populate $HTTP_VARS with all data corresponding to a mapping between the old and possible new item type
-		$HTTP_VARS = array_merge($HTTP_VARS, copy_item_to_http_vars($item_r, $HTTP_VARS['s_item_type']));
+		$HTTP_VARS = array_merge($HTTP_VARS, 
+						copy_item_to_http_vars($item_r, $HTTP_VARS['s_item_type']));
 
 		// insert item for item type as specified in previous dialog
 		$item_r['s_item_type'] = $HTTP_VARS['s_item_type'];

@@ -31,12 +31,9 @@ class Item
 	var $_item_type = NULL;
 	var $_title = NULL;
 	var $_attribute_rs = NULL;
-	var $_is_linked = FALSE;
 
-	function Item($parentItemObj = NULL)
+	function Item()
 	{
-		if($parentItemObj!=NULL)
-	        $this->_is_linked = TRUE;
 	}
 
 	function setItemType($s_item_type)
@@ -117,11 +114,6 @@ class Item
 	{
 		return $this->_attribute_rs;
 	}
-	
-	function isLinked()
-	{
-		return $this->_is_linked;
-	}
 }
 
 class ItemInstance extends Item
@@ -187,17 +179,12 @@ class ItemImportHandler
 	var $_item_id_list_r;
 	
 	var $_item_obj;
-	var $_linked_item_obj_rs;
 	var $_instance_item_obj_rs;
 
     // indicator of whether we are operating on a instance context or not.  If
 	// so, then the last Item in the $_instance_item_obj_rs array will be used.
     var $_is_item_instance;
     
-	// indicator of whether we are operating on a linked item or not.  If
-	// so, then the last Item in the $_linked_item_obj_rs array will be used.
-	var $_is_linked_item;
-
 	// state info - what context are we inserting for!	
 	var $_owner_id;
 	
@@ -282,10 +269,8 @@ class ItemImportHandler
 	{
 		$this->_errors = NULL;
 		$this->_item_obj = NULL;
-		$this->_linked_item_obj_rs = NULL;
 		$this->_instance_item_obj_rs = NULL;
 		
-		$this->_is_linked_item = FALSE;
 		$this->_is_item_instance = FALSE;
 		$this->_is_item_finished = FALSE;
 	}
@@ -305,11 +290,6 @@ class ItemImportHandler
 		return $this->_item_obj;
 	}
 	
-	function &getLinkedItems()
-	{
-		return $this->_linked_item_obj_rs;
-	}
-	
 	function &getInstanceItems()
 	{
 		return $this->_instance_item_obj_rs;
@@ -323,48 +303,30 @@ class ItemImportHandler
 			$this->clear();
 		}
 		
-		if($this->_item_obj != NULL) // we have a active parent item.
-		{
-			// error in XML, but ignore it.
-			if($this->_is_item_instance)
-			    $this->_is_item_instance = FALSE;
-
-			$this->_linked_item_obj_rs[] = new Item($this->_item_obj);
-			$this->_is_linked_item = TRUE;
-					
-			$tmpItem =& $this->_linked_item_obj_rs[count($this->_linked_item_obj_rs) - 1];
-			$tmpItem->setItemType($s_item_type);
-			$tmpItem->setTitle($title);
-			return TRUE;
-		}
-		else // new parent
-		{
-			// reset instance indicator
-            $this->_is_item_instance = FALSE;
-            
-			$this->_item_obj =& new Item();
-			$this->_item_obj->setItemType($s_item_type);
-			$this->_item_obj->setTitle($title);
-			return TRUE;
-		}
+		// reset instance indicator
+		$this->_is_item_instance = FALSE;
+           
+		$this->_item_obj =& new Item();
+		$this->_item_obj->setItemType($s_item_type);
+		$this->_item_obj->setTitle($title);
+		return TRUE;
 	}
 	
 	function setTitle($title)
 	{
 		if($this->_is_item_finished !== TRUE)
 		{
-			// parent item must be defined.
 			if($this->_item_obj != NULL)
 			{
 				$this->_item_obj->setTitle($title);
-			}//if($this->_item_obj != NULL)
+			}
 			else
 			{
 				$this->addError('setTitle', get_opendb_lang_var('undefined_error'));
 				return FALSE;
 			}
 		}
-		else // if($this->isError() !== TRUE)
+		else
 		{
 			return FALSE;
 		}
@@ -376,28 +338,18 @@ class ItemImportHandler
 	{
 		if($this->_is_item_finished !== TRUE)
 		{
-			// parent item must be defined.
 			if($this->_item_obj != NULL)
 			{
-				// not a child item
-				if($this->_is_linked_item !== TRUE)
-				{
-					$this->_instance_item_obj_rs[] = new ItemInstance($this->_item_obj, $this->_owner_id, $s_status_type, $status_comment, $borrow_duration);
-					$this->_is_item_instance = TRUE;
-				}// child item is current!!!
-				else
-				{
-					$this->addError('startItemInstance', get_opendb_lang_var('undefined_error'));
-					return FALSE;
-				}
-			}//if($this->_item_obj != NULL)
+				$this->_instance_item_obj_rs[] = new ItemInstance($this->_item_obj, $this->_owner_id, $s_status_type, $status_comment, $borrow_duration);
+				$this->_is_item_instance = TRUE;
+			}
 			else
 			{
 				$this->addError('startItemInstance', get_opendb_lang_var('undefined_error'));
 				return FALSE;
 			}
 		}
-		else // if($this->isError() !== TRUE)
+		else
 		{
 			return FALSE;
 		}
@@ -428,9 +380,7 @@ class ItemImportHandler
 		{
 			if($this->_item_obj != NULL)
 			{
-				if($this->_is_linked_item)
-					$tmpItem =& $this->_linked_item_obj_rs[count($this->_linked_item_obj_rs) - 1];
-				else if($this->_is_item_instance)
+				if($this->_is_item_instance)
                     $tmpItem =& $this->_instance_item_obj_rs[count($this->_instance_item_obj_rs) - 1];
 				else
 					$tmpItem =& $this->_item_obj;
@@ -457,122 +407,91 @@ class ItemImportHandler
 		{
 			if($this->_item_obj != NULL)
 			{
-				if($this->_is_linked_item)
+				// instance was not closed, close it now!
+				if($this->_is_item_instance)
+				    $this->_is_item_instance = FALSE;
+
+				// if not item instance, create one
+				if(is_empty_array($this->_instance_item_obj_rs))
 				{
-					$this->_is_linked_item = FALSE;
+				    $this->startItemInstance();
+				    $this->endItemInstance();
+				}
+					
+				// The item is finished, no more additions are allowed, until the
+				// startItem method is called again.
+				$this->_is_item_finished = TRUE;
+
+				$item_vars = $this->getItemHTTPVars($this->_item_obj);
+
+				$item_vars['trial_run'] = $this->_cfg_is_trial_run?'true':'false';
+				$item_vars['confirmed'] = $this->_cfg_ignore_duplicate_title?'true':'false';
+
+				$item_r = array(
+						s_item_type=>$this->_item_obj->getItemType(),
+						owner_id=>$this->_owner_id
+				);
+				
+				$instance_valid = FALSE;
+				
+				$dummy_POST_FILES = NULL;
+				$errors = NULL;
+				
+				$return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
+				if($return_val === TRUE)
+				{
+					// store item id for later use
+					if($this->_cfg_is_trial_run!==TRUE && is_numeric($item_r['item_id']))
+						$this->_item_id_list_r[] = $item_r['item_id'];
+
+					for($i=0; $i<count($this->_instance_item_obj_rs); $i++)
+					{
+					    $instanceObj =& $this->_instance_item_obj_rs[$i];
+						
+                           // if status type is to be overriden, do it here!
+						if($this->_cfg_override_status_type)
+							$status_type_r = $this->_cfg_default_status_type_r;
+						else
+						{
+						    $status_type_r = fetch_status_type_r($instanceObj->getStatusType());
+
+							// if illegal type, then override by default.
+							if($status_type_r['closed_ind'] == 'Y' || $status_type_r['insert_ind'] != 'Y')
+							{
+							    $status_type_r = $this->_cfg_default_status_type_r;
+							}
+						}
+
+						$item_r['owner_id'] = $instanceObj->getOwnerID();
+						$item_r['s_status_type'] = $status_type_r['s_status_type'];
+						
+				    	$instance_vars = array_merge($item_vars, $this->getItemHTTPVars($instanceObj));
+				    	
+				    	$return_val = handle_item_instance_insert($item_r, $status_type_r, $instance_vars, $errors);
+				    	if($return_val === TRUE)
+				    	{
+				    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
+							$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, NULL);
+							
+							// indicates at least one instance inserted.
+							$instance_valid = TRUE;
+				    	}
+				    	else
+				    	{
+				    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
+							$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, $errors);
+				    	}
+					}
 				}
 				else
 				{
-					// instance was not closed, close it now!
-					if($this->_is_item_instance)
-					    $this->_is_item_instance = FALSE;
-
-					// if not item instance, create one
-					if(is_empty_array($this->_instance_item_obj_rs))
-					{
-					    $this->startItemInstance();
-					    $this->endItemInstance();
-					}
-						
-					// The item is finished, no more additions are allowed, until the
-					// startItem method is called again.
-					$this->_is_item_finished = TRUE;
-
-                    $item_vars = $this->getItemHTTPVars($this->_item_obj);
-
-					$item_vars['trial_run'] = $this->_cfg_is_trial_run?'true':'false';
-					$item_vars['confirmed'] = $this->_cfg_ignore_duplicate_title?'true':'false';
-
-					$item_r = array(
-							s_item_type=>$this->_item_obj->getItemType(),
-							owner_id=>$this->_owner_id // FIXME: require this to get past handle_item_insert command!
-					);
-					
-					$instance_valid = FALSE;
-					
-					$dummy_POST_FILES = NULL;
-					$errors = NULL;
-					
-                    $return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
-                    if($return_val === TRUE)
-                    {
-                        // store item id for later use
-                        if($this->_cfg_is_trial_run!==TRUE && is_numeric($item_r['item_id']))
-	                        $this->_item_id_list_r[] = $item_r['item_id'];
-
-						for($i=0; $i<count($this->_instance_item_obj_rs); $i++)
-						{
-						    $instanceObj =& $this->_instance_item_obj_rs[$i];
-							
-                            // if status type is to be overriden, do it here!
-							if($this->_cfg_override_status_type)
-								$status_type_r = $this->_cfg_default_status_type_r;
-							else
-							{
-							    $status_type_r = fetch_status_type_r($instanceObj->getStatusType());
-
-								// if illegal type, then override by default.
-								if($status_type_r['closed_ind'] == 'Y' || $status_type_r['insert_ind'] != 'Y')
-								{
-								    $status_type_r = $this->_cfg_default_status_type_r;
-								}
-							}
-
-							$item_r['owner_id'] = $instanceObj->getOwnerID();
-							$item_r['s_status_type'] = $status_type_r['s_status_type'];
-							
-					    	$instance_vars = array_merge($item_vars, $this->getItemHTTPVars($instanceObj));
-					    	
-					    	$return_val = handle_item_instance_insert($item_r, $status_type_r, $instance_vars, $errors);
-					    	if($return_val === TRUE)
-					    	{
-					    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
-								$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, NULL);
-								
-								// indicates at least one instance inserted.
-								$instance_valid = TRUE;
-					    	}
-					    	else
-					    	{
-					    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
-								$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, $errors);
-					    	}
-						}
-						
-						// now check for any child items
-						if($instance_valid && is_not_empty_array($this->_linked_item_obj_rs))
-						{
-						    for($i=0; $i<count($this->_linked_item_obj_rs); $i++)
-							{
-				    			$itemObj =& $this->_linked_item_obj_rs[$i];
-				    			$item_vars = $this->getItemHTTPVars($itemObj);
-
-								$item_vars['trial_run'] = $this->_cfg_is_trial_run?'true':'false';
-								$item_vars['confirmed'] = $this->_cfg_ignore_duplicate_title?'true':'false';
-
-								$item_r = array(
-									s_item_type=>$itemObj->getItemType(),
-									owner_id=>$this->_owner_id
-								);
-
-								$return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
-            					if($return_val === TRUE)
-            					    $this->listing_item_import_result_row($itemObj, NULL, $item_vars, NULL);
-            					else
-            					    $this->listing_item_import_result_row($itemObj, NULL, $item_vars, $errors);
-				            }
-						}//if(is_empty_array($this->_linked_item_obj_rs))
-					}
-					else
-					{
-					    $this->listing_item_import_result_row($this->_item_obj, NULL, $item_vars, $errors);
-					}
-                    
-                    $this->_item_obj = NULL;
-                    
-					// end of parent item.
-					return TRUE;
+				    $this->listing_item_import_result_row($this->_item_obj, NULL, $item_vars, $errors);
 				}
+                   
+				$this->_item_obj = NULL;
+                   
+				// end of parent item.
+				return TRUE;
 			}
 			else
 			{
@@ -624,7 +543,7 @@ class ItemImportHandler
 		    // if override status type, then we are not showing this column
 		    if($this->_cfg_override_status_type!==TRUE)
 		    {
-				if(!$itemObj->_is_linked && is_array($status_type_r))
+				if(is_array($status_type_r))
 				{
 					$this->_listingsObject->addThemeImageColumn(
 								$status_type_r['img'],
@@ -655,16 +574,13 @@ class ItemImportHandler
 				        }
 				    }
 				    
-				    if(is_array($attribute_type_r))
+					if(is_array($attribute_type_r))
 				    {
-						if(get_function_type($attribute_type_r['display_type']) == 'hidden' ||
-									(strlen($attribute_type_r['display_type'])==0 && get_function_type($attribute_type_r['input_type']) == 'hidden'))
+				    	if($attribute_type_r['display_type'] == 'hidden' ||
+									($attribute_type_r['display_type']==0 && $attribute_type_r['input_type'] == 'hidden'))
 						{
-							$attribute_type_r['display_type'] = 'display(%value%)';
-						}
-						else // get rid of the list-link portion of the display type.
-						{
-							$attribute_type_r['display_type'] = str_replace('list-link', '', $attribute_type_r['display_type']);
+							$attribute_type_r['display_type'] = 'display';
+							$attribute_type_r['display_type_arg1'] = '%value%';
 						}
 
 						$column .= get_item_display_field(NULL, $attribute_type_r, $attribute_val);

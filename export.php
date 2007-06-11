@@ -36,31 +36,27 @@ include_once("./functions/TitleMask.class.php");
 
 /*
 * Export Type 
-* 
-* @param $linked_items - 'include' or 'exclude'
 */
-function export_type_items(&$exportPlugin, $send_as_format, $page_title, $s_item_type, $item_id, $instance_no, $owner_id, $include_linked_items)
+function export_type_items(&$exportPlugin, $page_title, $s_item_type, $item_id, $instance_no, $owner_id)
 {
 	$itemresults = fetch_export_item_rs($s_item_type, $item_id, $owner_id);
 	if($itemresults)
 	{
-		send_header($exportPlugin, $send_as_format, $page_title);
+		send_header($exportPlugin, $page_title);
 		while($item_r = db_fetch_assoc($itemresults))
 		{
 			send_data(
-					$send_as_format, 
 					get_export_type_item(
 								$exportPlugin, 
 								$item_r['item_id'],
 								$instance_no,
 								$item_r['s_item_type'],
 								$item_r['title'],
-								$owner_id,
-								$include_linked_items));
+								$owner_id));
 		}
 		db_free_result($itemresults);
 		
-		send_footer($exportPlugin, $send_as_format);
+		send_footer($exportPlugin);
 		return TRUE;
 	}
 	else
@@ -72,7 +68,7 @@ function export_type_items(&$exportPlugin, $send_as_format, $page_title, $s_item
 * be recursively called for child items.  Child
 * items do not have children.
 */
-function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_type, $title, $owner_id, $include_linked_items=NULL, $isChild=FALSE)
+function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_type, $title, $owner_id)
 {
 	$buffer = '';
 	
@@ -105,21 +101,6 @@ function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_ty
 					$buffer .= $exportPlugin->end_item_instance();
 				}
 				db_free_result($iiresults);
-			}
-		}
-		
-		if($include_linked_items!==FALSE)
-		{
-			$childresults = fetch_child_item_rs($item_id);
-			if($childresults)
-			{
-				while($child_item_r = db_fetch_assoc($childresults))
-				{
-					// recursive call.
-					$buffer .= get_export_type_item($exportPlugin, $child_item_r['item_id'], NULL, $child_item_r['s_item_type'], $child_item_r['title'], NULL, NULL, TRUE);
-				}
-			
-				db_free_result($childresults);
 			}
 		}
 	}
@@ -164,12 +145,12 @@ function export_type_item_attributes($exportPlugin, $item_id, $instance_no, $s_i
 /**
 * Row Export
 */
-function export_row_items(&$exportPlugin, $send_as_format, $page_title, $include_header, $export_columns, $s_item_type, $owner_id, $include_linked_items)
+function export_row_items(&$exportPlugin, $page_title, $include_header, $export_columns, $s_item_type, $owner_id)
 {
 	$iiresults = fetch_export_item_instance_rs($s_item_type, $owner_id);
 	if($iiresults)
 	{
-		send_header($exportPlugin, $send_as_format, $page_title);
+		send_header($exportPlugin, $page_title);
 
 		if($include_header == 'Y')
 		{
@@ -178,7 +159,7 @@ function export_row_items(&$exportPlugin, $send_as_format, $page_title, $include
 				$row = get_header_row('prompt', $export_columns, $s_item_type);
 				if(is_not_empty_array($row))
 				{
-					send_data($send_as_format, $exportPlugin->prompt_header($row));
+					send_data($exportPlugin->prompt_header($row));
 				}
 			}
 			else if(method_exists($exportPlugin, 'data_header'))
@@ -186,7 +167,7 @@ function export_row_items(&$exportPlugin, $send_as_format, $page_title, $include
 				$row = get_header_row('data', $export_columns, $s_item_type);
 				if(is_not_empty_array($row))
 				{
-					send_data($send_as_format, $exportPlugin->data_header());
+					send_data($exportPlugin->data_header());
 				}
 			}
 		}
@@ -194,19 +175,12 @@ function export_row_items(&$exportPlugin, $send_as_format, $page_title, $include
 		$item_instance_r2 = NULL;
 		while($item_instance_r = db_fetch_assoc($iiresults))
 		{
-			// If we have changed item_id's then we need to do the child items, before continuing.
-			if($include_linked_items!==FALSE && $item_instance_r2!=NULL && $item_instance_r2['item_id'] != $item_instance_r['item_id'])
-			{
-				send_data($send_as_format, export_linked_row_items($exportPlugin, $send_as_format, $export_columns, strlen($s_item_type)==0, $item_instance_r2['item_id']));
-			}							
-			
 			$row = get_item_row(
 						$export_columns,
 						strlen($s_item_type)==0,
 						$item_instance_r['item_id'], 
 						$item_instance_r['instance_no'],
 						$item_instance_r['owner_id'],
-						NULL,
 						$item_instance_r['s_item_type'],
 						$item_instance_r['title'],
 						$item_instance_r['borrow_duration'],
@@ -215,26 +189,20 @@ function export_row_items(&$exportPlugin, $send_as_format, $page_title, $include
 
 			if(is_not_empty_array($row))
 			{
-				send_data($send_as_format, $exportPlugin->item_row($row));
+				send_data($exportPlugin->item_row($row));
 			}
 						
 			$item_instance_r2 = $item_instance_r;
-		}
-		
-		// If we have changed item_id's then we need to do the child items, before continuing.
-		if($include_linked_items!==FALSE && $item_instance_r!=NULL)
-		{
-			export_linked_row_items($exportPlugin, $send_as_format, $export_columns, strlen($s_item_type)==0, $item_instance_r2['item_id']);
 		}
 		
 		db_free_result($iiresults);
 		
 		if(method_exists($exportPlugin, 'close'))
 		{
-			send_data($send_as_format, $exportPlugin->close());
+			send_data($exportPlugin->close());
 		}
 		
-		send_footer($exportPlugin, $send_as_format);
+		send_footer($exportPlugin);
 		return TRUE;
 	}
 	else
@@ -243,36 +211,7 @@ function export_row_items(&$exportPlugin, $send_as_format, $page_title, $include
 	}
 }
 
-function export_linked_row_items(&$exportPlugin, $send_as_format, $export_columns, $is_all_item_types, $item_id)
-{
-	$childresults = fetch_child_item_rs($item_id);
-	if($childresults)
-	{
-		while($child_item_r = db_fetch_assoc($childresults))
-		{
-			$row = get_item_row(
-						$export_columns,
-						$is_all_item_types,
-						$child_item_r['item_id'], 
-						NULL, 
-						NULL, 
-						$item_id,
-						$child_item_r['s_item_type'],
-						$child_item_r['title'],
-						NULL,
-						NULL,
-						NULL);
-			
-			if(is_not_empty_array($row))
-			{
-				send_data($send_as_format, $exportPlugin->item_row($row));
-			}
-		}
-		db_free_result($childresults);
-	}
-}
-
-function get_item_row($export_columns, $is_all_item_types, $item_id, $instance_no, $owner_id, $parent_id, $s_item_type, $title, $borrow_duration, $s_status_type, $status_comment)
+function get_item_row($export_columns, $is_all_item_types, $item_id, $instance_no, $owner_id, $s_item_type, $title, $borrow_duration, $s_status_type, $status_comment)
 {
 	if(!is_array($export_columns) || $export_columns['item_id'] == 'Y')
 	{
@@ -287,11 +226,6 @@ function get_item_row($export_columns, $is_all_item_types, $item_id, $instance_n
 	if(!is_array($export_columns) || $export_columns['owner_id'] == 'Y')
 	{
 		$row[] = $owner_id;
-	}
-	
-	if(!is_array($export_columns) || $export_columns['parent_id'] == 'Y')
-	{
-		$row[] = $parent_id;
 	}
 	
 	if(!is_array($export_columns) || $export_columns['s_item_type'] == 'Y')
@@ -383,14 +317,6 @@ function get_header_row($header_type, $export_columns, $s_item_type)
 			$headings[] = get_opendb_lang_var('owner_id');
 	}
 	
-	if(!is_array($export_columns) || $export_columns['parent_id'] == 'Y')
-	{
-		if($header_type == 'data')
-			$headings[] = 'parent_id';
-		else
-			$headings[] = get_opendb_lang_var('parent_id');
-	}
-	
 	if(!is_array($export_columns) || $export_columns['s_item_type'] == 'Y')
 	{
 		if($header_type == 'data')
@@ -446,90 +372,64 @@ function get_header_row($header_type, $export_columns, $s_item_type)
 	return $headings;
 }
 
-/*
-* Output content, in correct 'send_as_format'.  if the
-* Send_as_format is not 'attachment' we assume it should be
-* streamed directly to the browser.
-*/
-function send_data($send_as_format, $buffer)
+function send_data($buffer)
 {
 	if(strlen($buffer))
 	{
-		if($send_as_format == 'attachment')
-			echo($buffer);
-		else
-			echo(str_replace("\t", str_repeat("&nbsp;",8), htmlspecialchars($buffer)));
+		echo($buffer);
 			
 		// do explicit flush
 		flush();
 	}
 }
 
-function send_header(&$exportPlugin, $send_as_format, $page_title)
+function send_header(&$exportPlugin, $page_title)
 {
-	if($send_as_format == 'attachment')
+	// hard code for now
+	$filename_prefix = 'export';
+
+	if(method_exists($exportPlugin, 'get_file_extension'))
 	{
-		// hard code for now
-		$filename_prefix = 'export';
-	
-		if(method_exists($exportPlugin, 'get_file_extension'))
-		{
-			$filename = $filename_prefix.'.'.$exportPlugin->get_file_extension();
-		}
-		else
-		{
-			$filename = $filename_prefix.'.txt';
-		}
-			
-		if(method_exists($exportPlugin, 'get_file_content_type'))
-		{
-			$content_type = $exportPlugin->get_file_content_type();
-		}
-		else
-		{
-			$content_type = 'text/plain';
-		}
-		
-		if(method_exists($exportPlugin, 'http_header'))
-		{
-			$exportPlugin->http_header(ifempty($send_as_format, 'inline'), $filename, $content_type);
-		}
-		else
-		{
-			header("Cache-control: no-store");
-			header("Pragma: no-store");
-			header("Expires: 0");
-			header("Content-disposition: ".ifempty($send_as_format, 'inline')."; filename=$filename");
-			header("Content-type: $content_type");
-		}
-		
-		if(method_exists($exportPlugin, 'file_header'))
-		{
-			send_data($send_as_format, $exportPlugin->file_header($page_title));
-		}
+		$filename = $filename_prefix.'.'.$exportPlugin->get_file_extension();
 	}
 	else
 	{
-		echo(_theme_header($page_title));
-		echo("<h2>".$page_title."</h2>");
-
-		echo("<pre>");
-	}			
+		$filename = $filename_prefix.'.txt';
+	}
+		
+	if(method_exists($exportPlugin, 'get_file_content_type'))
+	{
+		$content_type = $exportPlugin->get_file_content_type();
+	}
+	else
+	{
+		$content_type = 'text/plain';
+	}
+	
+	if(method_exists($exportPlugin, 'http_header'))
+	{
+		$exportPlugin->http_header($filename, $content_type);
+	}
+	else
+	{
+		header("Cache-control: no-store");
+		header("Pragma: no-store");
+		header("Expires: 0");
+		header("Content-disposition: attachment; filename=$filename");
+		header("Content-type: $content_type");
+	}
+	
+	if(method_exists($exportPlugin, 'file_header'))
+	{
+		send_data($exportPlugin->file_header($page_title));
+	}
 }
 
-function send_footer(&$exportPlugin, $send_as_format)
+function send_footer(&$exportPlugin)
 {
-	if($send_as_format == 'attachment')
+	if(method_exists($exportPlugin, 'file_footer'))
 	{
-		if(method_exists($exportPlugin, 'file_footer'))
-		{
-			send_data($send_as_format, $exportPlugin->file_footer());
-		}
-	}
-	else
-	{
-		echo("</pre>");
-		echo(_theme_footer());
+		send_data($exportPlugin->file_footer());
 	}
 }
 
@@ -543,8 +443,6 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	$buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"export\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">";
-	$buffer .= "\n<input type=\"hidden\" name=\"send_as_format\" value=\"".$HTTP_VARS['send_as_format']."\">";
-	$buffer .= "\n<input type=\"hidden\" name=\"linked_items\" value=\"".$HTTP_VARS['linked_items']."\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"plugin\" value=\"".$HTTP_VARS['plugin']."\">";
 	
 	$buffer .= "\n<table>";
@@ -555,7 +453,6 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	$buffer .= '<td class="prompt">'.get_opendb_lang_var('owner_id').':</td><td class="data"><input type="checkbox" name="export_columns[owner_id]" value="Y"'.(strlen($HTTP_VARS['owner_id'])==0?' CHECKED':'').'></td>';
 	
 	$buffer .= "</tr>\n<tr>";
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('parent_id').':</td><td class="data"><input type="checkbox" name="export_columns[parent_id]" value="Y"'.($HTTP_VARS['linked_items']=='include'?' CHECKED':'').'></td>';
 	$buffer .= '<td class="prompt">'.get_opendb_lang_var('s_item_type').':</td><td class="data"><input type="checkbox" name="export_columns[s_item_type]" value="Y" CHECKED></td>';
 	
 	if(strlen($HTTP_VARS['s_item_type'])>0)
@@ -654,15 +551,6 @@ if(is_site_enabled())
 					$exportPlugin =& new $pluginRef();
 					if($exportPlugin !== NULL)
 					{
-						// only allow inline if content type is text based.
-						if($HTTP_VARS['send_as_format'] != 'attachment')
-						{
-							if(!starts_with($exportPlugin->get_file_content_type(), 'text/'))
-							{
-								$HTTP_VARS['send_as_format'] = 'attachment';
-							}
-						}
-									
 						if(strlen($HTTP_VARS['s_item_type'])==0 || is_valid_item_type_structure($HTTP_VARS['s_item_type']))
 						{
 							if($exportPlugin->get_plugin_type() == 'row')
@@ -677,36 +565,13 @@ if(is_site_enabled())
 								
 								if(is_not_empty_array($HTTP_VARS['export_columns']))
 								{
-									if($HTTP_VARS['send_as_format'] != 'attachment' && $HTTP_VARS['op2'] != 'exporting')
+									@set_time_limit(600);
+									if(!export_row_items($exportPlugin, $page_title, $HTTP_VARS['include_header'], $HTTP_VARS['export_columns'], $HTTP_VARS['s_item_type'], $HTTP_VARS['owner_id']))
 									{
-										echo(_theme_header($page_title));
-										echo(get_common_javascript());
-										
+										echo _theme_header($page_title);
 										echo("<h2>".$page_title."</h2>");
-										
-										echo("\n<form action=\"$PHP_SELF\" method=\"POST\" name=\"export_progress\">");
-										echo(get_url_fields($HTTP_VARS, array('op2'=>'exporting')));
-										echo("</form>\n");
-
-										echo("<p class=\"success\">".get_opendb_lang_var('export_progress_message')."</p>");
-										
-										// todo - should we bypass this screen if javascript off?
-										echo("<script language=\"JavaScript\">
-											addEvent(window, 'load', function(){document.forms['export_progress'].submit();});
-											</script>");
-											
-										echo(_theme_footer());
-									}
-									else
-									{
-										@set_time_limit(600);
-										if(!export_row_items($exportPlugin, $HTTP_VARS['send_as_format'], $page_title, $HTTP_VARS['include_header'], $HTTP_VARS['export_columns'], $HTTP_VARS['s_item_type'], $HTTP_VARS['owner_id'], $HTTP_VARS['linked_items']!='exclude'))
-										{
-											echo _theme_header($page_title);
-											echo("<h2>".$page_title."</h2>");
-											echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
-											echo _theme_footer();
-										}
+										echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
+										echo _theme_footer();
 									}
 								}
 								else
@@ -754,35 +619,13 @@ if(is_site_enabled())
 									$page_title = get_opendb_lang_var('type_export', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name()));
 								}
 								
-								if($HTTP_VARS['send_as_format'] != 'attachment' && $HTTP_VARS['op2'] != 'exporting')
+								@set_time_limit(600);
+								if(!export_type_items($exportPlugin, $page_title, $HTTP_VARS['s_item_type'], $HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['owner_id']))
 								{
-									echo(_theme_header($page_title));
-									echo(get_common_javascript());
+									echo _theme_header($page_title);
 									echo("<h2>".$page_title."</h2>");
-									
-									echo("\n<form action=\"$PHP_SELF\" method=\"POST\" name=\"export_progress\">");
-									echo(get_url_fields($HTTP_VARS, array('op2'=>'exporting')));
-									echo("</form>\n");
-									
-									echo("<p class=\"success\">".get_opendb_lang_var('export_progress_message')."</p>");
-									
-									// todo - should we bypass this screen if javascript off?	
-									echo("<script language=\"JavaScript\">
-											addEvent(window, 'load', function(){document.forms['export_progress'].submit();});
-											</script>");
-											
-									echo(_theme_footer());
-								}
-								else
-								{
-									@set_time_limit(600);
-									if(!export_type_items($exportPlugin, $HTTP_VARS['send_as_format'], $page_title, $HTTP_VARS['s_item_type'], $HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['owner_id'], $HTTP_VARS['linked_items']!='exclude'))
-									{
-										echo _theme_header($page_title);
-										echo("<h2>".$page_title."</h2>");
-										echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
-										echo _theme_footer();
-									}
+									echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
+									echo _theme_footer();
 								}
 							}//get_plugin_type() not supported.
 							else
@@ -872,15 +715,6 @@ if(is_site_enabled())
 						"\n</select>"
 					);
 					
-				if(get_opendb_config_var('item_input', 'linked_item_support')!==FALSE)
-				{
-					echo format_field(
-						get_opendb_lang_var('linked_item(s)'),
-						NULL,
-							"\n<input type=radio name=\"linked_items\" value=\"include\" CHECKED>".get_opendb_lang_var('include')."&nbsp;&nbsp;".
-	 							"<input type=radio name=\"linked_items\" value=\"exclude\">".get_opendb_lang_var('exclude'));
-				}
-				
 				$field = "\n<select name=\"plugin\">\n";
 				$export_type_r = get_export_r();
 				if(is_array($export_type_r))
@@ -909,11 +743,6 @@ if(is_site_enabled())
 					NULL, 
 					$field
 				);
-				
-				echo format_field(
-					get_opendb_lang_var('send_as_file'),
-					NULL,
-					"<input type=\"checkbox\" name=\"send_as_format\" value=\"attachment\" CHECKED>");
 				
 				echo("</table>");
 					

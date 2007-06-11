@@ -350,7 +350,6 @@ CREATE TABLE user_address_attribute (
 DROP TABLE IF EXISTS item;
 CREATE TABLE item (
   id			INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  parent_id		INTEGER(10) UNSIGNED,
   title			VARCHAR(255) NOT NULL,
   s_item_type	VARCHAR(10) NOT NULL,
   PRIMARY KEY ( id ),
@@ -374,6 +373,16 @@ CREATE table item_instance (
   KEY owner_id_idx ( owner_id ),
   KEY s_status_type_idx ( s_status_type )
 ) TYPE=MyISAM COMMENT='Item Instance table';
+
+CREATE TABLE item_instance_relationship (
+    sequence_number INT( 10 ) NOT NULL AUTO_INCREMENT,
+    item_id INT( 10 ) NOT NULL,
+    instance_no SMALLINT( 5 ) NOT NULL,
+    related_item_id INT( 10 ) NOT NULL,
+    related_instance_no SMALLINT( 5 ) NOT NULL,
+PRIMARY KEY ( sequence_number ),
+UNIQUE KEY ( item_id, instance_no, related_item_id, related_instance_no )
+) TYPE=MyISAM COMMENT = 'item instance relationship table';
 
 #
 # Item Attribute table

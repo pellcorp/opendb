@@ -32,9 +32,7 @@ function fetch_export_item_rs($s_item_type, $item_id, $owner_id)
 			"WHERE u.user_id = ii.owner_id AND sst.s_status_type = ii.s_status_type AND i.id = ii.item_id ";
 
 	if(strlen($owner_id)>0)
-		$query .= "AND ii.owner_id = '$owner_id' AND i.parent_id IS NULL ";
-	else
-		$query .= "AND i.parent_id IS NULL ";
+		$query .= "AND ii.owner_id = '$owner_id' ";
 	
 	// can only export items for active users.
 	$query .= "AND u.active_ind = 'Y' ";
@@ -66,7 +64,7 @@ function fetch_export_item_rs($s_item_type, $item_id, $owner_id)
 */
 function fetch_export_item_instance_rs($s_item_type, $owner_id)
 {
-	$query = "SELECT i.id as item_id, ii.instance_no, i.parent_id, i.title, i.s_item_type, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
+	$query = "SELECT i.id as item_id, ii.instance_no, i.title, i.s_item_type, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
 			"FROM user u, item i, item_instance ii, s_status_type sst ".
 			"WHERE u.user_id = ii.owner_id AND sst.s_status_type = ii.s_status_type AND i.id = ii.item_id ";
 

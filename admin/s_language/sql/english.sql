@@ -377,8 +377,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'owner(
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'owner_id', 'Owner'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'page_listing_index', 'Listing Items {first_row} to {last_row} of {total}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parameters', 'Parameters'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_id', 'Parent ID'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_item_not_found', 'Parent item not found'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'partial_match', 'Partial'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'passwds_do_not_match', 'Passwords do not match.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'passwd_changed', 'Password changed.'); 
@@ -571,5 +569,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'relate
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_related_item(s)', 'No Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_item', 'Add Related Item'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_related_items', 'Clone Related Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'coerce_related_item_types', 'Coerce Related Item Type(s)');
- 
+
+#missing clone title
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_title', 'Clone {display_title}'); 

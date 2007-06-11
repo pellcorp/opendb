@@ -130,23 +130,6 @@ function fetch_item_instance_cnt($s_item_type = NULL)
 }
 
 /**
-	Returns resultset of child items for the particular item_id
-*/
-function fetch_child_item_rs($item_id)
-{
-	// so that both resultset use item_id for the item.id or item_instance.item_id!!!
-	$query = "SELECT id as item_id, parent_id, title, s_item_type 
-			FROM item 
-			WHERE parent_id='".$item_id."' order by id ASC";
-	
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-		return $result;
-	else	
-		return FALSE;
-}
-
-/**
 	Returns resultset of item_instance's for the particular item_id
 */
 function fetch_item_instance_rs($item_id, $owner_id)

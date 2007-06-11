@@ -132,12 +132,16 @@ function fetch_item_instance_cnt($s_item_type = NULL)
 /**
 	Returns resultset of item_instance's for the particular item_id
 */
-function fetch_item_instance_rs($item_id, $owner_id)
+function fetch_item_instance_rs($item_id, $owner_id = NULL)
 {
 	// so that both resultset use item_id for the item.id or item_instance.item_id!!!
 	$query = "SELECT ii.item_id, ii.instance_no, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
 			" FROM item_instance ii, s_status_type sst, user u, item i".
-			" WHERE i.id = ii.item_id AND u.user_id = ii.owner_id AND u.active_ind = 'Y' AND sst.s_status_type = ii.s_status_type AND ii.item_id='".$item_id."' ".(strlen($owner_id)>0?"AND ii.owner_id = '$owner_id'":"");
+			" WHERE i.id = ii.item_id AND 
+					u.user_id = ii.owner_id AND 
+					u.active_ind = 'Y' AND 
+					sst.s_status_type = ii.s_status_type AND 
+					ii.item_id='".$item_id."' ".(strlen($owner_id)>0?"AND ii.owner_id = '$owner_id'":"");
 	
 	// Restrict certain status types, to specified user types.
 	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
@@ -1533,25 +1537,65 @@ function delete_item_instance($item_id, $instance_no)
 	}
 }
 
-function insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_instance_no)
+function insert_item_instance_relationships($item_id, $related_item_id, $related_instance_no)
 {
-	//Either the instance_no was specified to begin with, or the LOCK TABLES and fetch_max_instance_no call worked.
-	$query = "INSERT INTO item_instance_relationship(item_id, instance_no, related_item_id, related_instance_no)".
-			"VALUES ($item_id, $instance_no, $related_item_id, $related_instance_no)";
-			
-	$insert = db_query($query);
-	if ($insert && db_affected_rows() > 0)
+	// do not lock tables for this bit!
+	$instance_no_r = NULL;
+	$results = fetch_item_instance_rs($item_id);
+	if($results)
 	{
-		$sequence_number = db_insert_id();
+		while($item_instance_r = db_fetch_assoc($results))
+		{
+			$instance_no_r[] = $item_instance_r['instance_no'];
+		}
+		db_free_result($results);
+	}
+
+	if(db_query("LOCK TABLES item_instance WRITE, item_instance_relationship WRITE"))
+	{
+		if(is_array($instance_no_r))
+		{
+			while(list(,$instance_no) = each($instance_no_r))
+			{
+				insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_instance_no);
+			}
+		}
 		
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $related_item_id, $related_instance_no));
-		return $sequence_number;
+		db_query("UNLOCK TABLES");
+		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $related_item_id, $related_instance_no));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $related_item_id, $related_instance_no));
 		return FALSE;
-	}			
+	}
+}
+
+function insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_instance_no)
+{
+	if(is_numeric($item_id) && is_numeric($instance_no) && is_numeric($related_item_id) && is_numeric($related_instance_no))
+	{
+		$query = "INSERT INTO item_instance_relationship(item_id, instance_no, related_item_id, related_instance_no)".
+				"VALUES ($item_id, $instance_no, $related_item_id, $related_instance_no)";
+		
+		$insert = db_query($query);
+		if ($insert && db_affected_rows() > 0)
+		{
+			$sequence_number = db_insert_id();
+			
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $related_item_id, $related_instance_no));
+			return $sequence_number;
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $related_item_id, $related_instance_no));
+			return FALSE;
+		}
+	}
+	else
+	{
+		return FALSE;			
+	}
 }
 
 function delete_item_instance_relationships($item_id, $instance_no = NULL)

@@ -438,7 +438,7 @@ class ItemImportHandler
 				$errors = NULL;
 				
 				$return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
-				if($return_val === TRUE)
+				if($return_val !== FALSE)
 				{
 					// store item id for later use
 					if($this->_cfg_is_trial_run!==TRUE && is_numeric($item_r['item_id']))
@@ -468,7 +468,7 @@ class ItemImportHandler
 				    	$instance_vars = array_merge($item_vars, $this->getItemHTTPVars($instanceObj));
 				    	
 				    	$return_val = handle_item_instance_insert($item_r, $status_type_r, $instance_vars, $errors);
-				    	if($return_val === TRUE)
+				    	if($return_val !== FALSE)
 				    	{
 				    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
 							$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, NULL);

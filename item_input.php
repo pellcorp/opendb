@@ -1390,14 +1390,28 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	$op = NULL;
 	
 	$return_val = handle_item_insert($item_r, $HTTP_VARS, $_FILES, $errors);
-	if($return_val === TRUE)
+	if($return_val !== FALSE)
 	{
     	$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
-    	
-    	if($HTTP_VARS['start-op'] == 'clone_item' && is_numeric($HTTP_VARS['old_item_id']))
+    	if($return_val !== FALSE)
 		{
-			// TODO - need to reengineer clone for related items
-//			clone_child_items($item_r, $HTTP_VARS['old_item_id'], $HTTP_VARS['coerce_child_item_type'] == 'Y');
+			// TODO - how to insert 
+			if(is_numeric($HTTP_VARS['parent_instance_no']) && 
+					is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']))
+			{
+				print_r($item_r);
+				
+    			insert_item_instance_relationships(
+    					$HTTP_VARS['parent_item_id'], 
+    					$item_r['item_id'], 
+    					$item_r['instance_no']);	
+			}
+			
+	    	if($HTTP_VARS['start-op'] == 'clone_item' && is_numeric($HTTP_VARS['old_item_id']))
+			{
+				// TODO - need to reengineer clone for related items
+	//			clone_child_items($item_r, $HTTP_VARS['old_item_id'], $HTTP_VARS['coerce_child_item_type'] == 'Y');
+			}
 		}
 	}
 	
@@ -1841,7 +1855,7 @@ if(is_site_enabled())
 				}
 				else
 				{
-					$item_r = array(id=>NULL,
+					$item_r = array(item_id=>NULL,
 							title=>NULL,
 							s_item_type=>trim($HTTP_VARS['s_item_type']));
 				}

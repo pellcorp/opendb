@@ -346,7 +346,8 @@ function is_newinstance_status_type_valid($item_id, $owner_id, $new_status_type_
 			// Owner must have enough permission to create items of this type.
 			if(strlen($new_status_type_r['min_create_user_type'])==0 || in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
 			{
-				if(get_opendb_config_var('item_input', 'new_instance_owner_only')!==TRUE || is_user_owner_of_item($item_id, NULL, $owner_id))
+				if( (get_opendb_config_var('item_input', 'item_instance_support')!==FALSE || !is_exists_item_instance($item_id) ) &&
+						( get_opendb_config_var('item_input', 'new_instance_owner_only')!==TRUE || is_user_owner_of_item($item_id, NULL, $owner_id) ) )
 				{
 					return TRUE;
 				}

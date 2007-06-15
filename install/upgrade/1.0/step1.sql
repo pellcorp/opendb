@@ -108,7 +108,9 @@ DELETE FROM s_config_group_item WHERE group_id = 'item_input' AND id IN(
 	'linked_item_support', 
 	'link_same_type_only', 
 	'confirm_duplicate_linked_item_insert',
-	'confirm_linked_item_delete');
+	'confirm_linked_item_delete',
+	'new_instance_admin_diff_owner_support',
+	'clone_item_admin_diff_owner_support');
 
 DELETE FROM s_config_group_item_var WHERE group_id = 'listings' AND id IN('linked_items');
 DELETE FROM s_config_group_item_var WHERE group_id = 'search' AND id IN('default_include_linked_items');
@@ -116,7 +118,9 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'item_input' AND id IN(
 	'linked_item_support', 
 	'link_same_type_only', 
 	'confirm_duplicate_linked_item_insert',
-	'confirm_linked_item_delete');
+	'confirm_linked_item_delete',
+	'new_instance_admin_diff_owner_support',
+	'clone_item_admin_diff_owner_support');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');

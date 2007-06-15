@@ -465,11 +465,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'item_instance_support', 1, 'Item Instance Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'new_instance_owner_only', 2, 'New Instance Owner Only', 'Whether item instances can be created across owners', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'new_instance_admin_diff_owner_support', 3, 'Admin New Instance', 'Admin can create new instance for other user', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'linked_item_support', 4, 'Linked Item Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'link_same_type_only', 5, 'Linked Item Restrict Type', 'Linked items must be same type as parent item', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_support', 6, 'Clone Item Support', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_admin_diff_owner_support', 7, 'Admin Clone Item', 'Admin can clone item for other user', 'boolean');
 # INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_insert', 9, 'Auto Site Insert', 'Bypass new item edit screen', 'boolean');
 #INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 10, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'duplicate_title_support', 11, 'Duplicate Title Support', 'Duplicate title with same type and owner allowed', 'boolean');
@@ -665,10 +663,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input'
 #INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_insert', 'FALSE');
 #INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_update', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'clone_item_support', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'clone_item_admin_diff_owner_support', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'item_instance_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'new_instance_owner_only', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'new_instance_admin_diff_owner_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_item_delete', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'confirm_linked_item_delete', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 'TRUE');

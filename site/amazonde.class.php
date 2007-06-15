@@ -454,53 +454,54 @@ class amazonde extends SitePlugin
 		}			
 	}
 	
-	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
+function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
-		// Author extraction
+		// Author(s) and/or Editor(s)
 		if (preg_match('|von <a href=".*?">(.*?)</a>|si', $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('author', $regs[1]);
-		}	
-	
-		// ISBN
-		if(preg_match("/<b>ISBN:<\/b>(.*?)<br>/", $pageBuffer, $regs2))
-		{
-			$this->addItemAttribute('isbn', $regs2[1]);	
 		}
-		
-		// Publicationdate
-		if(preg_match("/<b>Erscheinungsdatum:<\/b>(.*?)<br>/", $pageBuffer, $regs2))
-		{
-			// All we want is the year here.
-			if (preg_match("/([0-9]+)$/", $regs2[1], $regs3))
-				$this->addItemAttribute('pub_date', $regs3[1]);		
-		}
-	
-		//Publischer / Pages
-		if(preg_match("/<b>[\s]*[Gebundene Ausgabe|Kalender|Taschenbuch|Broschiert|CD]+<\/b>[\n|\r]*- (.*?) - (.*?)<br>/m",$pageBuffer,$regs))
-		{
-			if(preg_match("/([0-9]+)/", $regs[1], $regs2))
-				$this->addItemAttribute('nb_pages', $regs2[1]);
 
-			$this->addItemAttribute('publisher', $regs[2]);
+		// ISBN-10 (Note: there is also an ISBN-13; just change 10 to 13 to get it)
+		if (preg_match("/<li><b>ISBN-10:<\/b>(.*?)<\/li>/", $pageBuffer, $regs2))
+		{
+			$this->addItemAttribute('isbn', $regs2[1]);
 		}
-	
-		// Category
+
+		// Publisher, Edition no., Publication date
+		if (preg_match("/<li><b>Verlag:<\/b>(.*?); Auflage:(.*?)\((.*?)\)<\/li>/", $pageBuffer, $regs2))
+		{
+			$this->addItemAttribute('publisher', $regs2[1]);
+			$this->addItemAttribute('edition', $regs2[2]);
+
+			// All we want of publication date is the year
+			if (preg_match("/([0-9]+)$/", $regs2[3], $regs3))
+				$this->addItemAttribute('pub_date', $regs3[1]);
+		}
+
+		// Book type (edition?), Pages
+		if (preg_match("/<li><b>([Gebundene Ausgabe|Kalender|Taschenbuch|Broschiert|CD]+?):<\/b>(.*?)Seiten<\/li>/", $pageBuffer, $regs))
+		{
+			//$this->addItemAttribute('type', $regs[1]);
+			$this->addItemAttribute('nb_pages', $regs[2]);
+		}
+
+		// Category -- hmmm, Amazon seems to have removed genre information from books
 		if (preg_match('|<b>Kategorie\(n\):</b> <a .*?>(.*?)</a>|', $pageBuffer, $regs2))
 		{
 			$this->addItemAttribute('genre', $regs2[1]);
 		}
-	
-		//Plot (Amazon blurb)
+
+		// Plot (Amazon blurb)
 		$this->addItemAttribute('blurb', $this->parse_amazon_book_blurb($pageBuffer));
-	
+
 		// Editorial reviews
-		if(preg_match("/<a href=([^\"]+)>Alle Rezensionen ansehen/i", $pageBuffer, $regs))
+		if (preg_match("/<a href=([^\"]+)>Alle Rezensionen ansehen/i", $pageBuffer, $regs))
 		{
 			$reviewPage = $this->fetchURI('http://www.amazon.de/' . $regs[1]);
-	
+
 			// Fetch the information if page not empty
-			if(strlen($reviewPage)>0)
+			if (strlen($reviewPage) > 0)
 			{
 				$this->addItemAttribute('blurb', $this->parse_amazon_book_blurb($reviewPage));
 			}

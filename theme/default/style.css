@@ -310,10 +310,9 @@ ul.menu li a:hover, ul.menu li.active a
 	border: 0;
 }
 
-#header ul.headerLinks li.help a
+#header ul.headerLinks li.help img
 {
-	background: url(../../images/help_icon.gif) no-repeat;
-	color: #DCE6FB;
+	vertical-align: middle;
 }
 
 #header ul.headerLinks li.login

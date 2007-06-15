@@ -510,86 +510,78 @@ function handle_item_update($parent_item_r, &$item_r, $HTTP_VARS, $_FILES, &$err
 */
 function handle_item_instance_insert($parent_item_r, &$item_r, $status_type_r, $HTTP_VARS, &$errors)
 {
-	if(get_opendb_config_var('item_input', 'item_instance_support')!==FALSE)
+	if(is_empty_array($parent_item_r))
 	{
-		if(is_empty_array($parent_item_r))
+		$owner_id = ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'));
+		
+		if(is_user_allowed_to_own($owner_id) && (
+				$owner_id == get_opendb_session_var('user_id') || 
+				is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))))
 		{
-			$owner_id = ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'));
+			$status_type = ifempty($HTTP_VARS['s_status_type'], $item_r['s_status_type']);
+			$status_type_r = fetch_status_type_r($status_type);
 			
-			if(is_user_allowed_to_own($owner_id) && (
-					$owner_id == get_opendb_session_var('user_id') || 
-					is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))))
+			if(is_newinstance_status_type_valid($item_r['item_id'], $owner_id, $status_type_r, $errors))
 			{
-				$status_type = ifempty($HTTP_VARS['s_status_type'], $item_r['s_status_type']);
-				$status_type_r = fetch_status_type_r($status_type);
+				// assume validation attribute function converts borrow duration to a single element array.
+				if(is_array($HTTP_VARS['borrow_duration']) && count($HTTP_VARS['borrow_duration']) == 1)
+					$borrow_duration = $HTTP_VARS['borrow_duration'][0];
+				else
+					$borrow_duration = $HTTP_VARS['borrow_duration'];
 				
-				if(is_newinstance_status_type_valid($item_r['item_id'], $owner_id, $status_type_r, $errors))
+				$status_comment = $HTTP_VARS['status_comment'];
+				
+				if(strlen($status_comment)>0 && $status_type_r['status_comment_ind'] != 'Y' && $status_type_r['status_comment_ind'] != 'H')
 				{
-					// assume validation attribute function converts borrow duration to a single element array.
-					if(is_array($HTTP_VARS['borrow_duration']) && count($HTTP_VARS['borrow_duration']) == 1)
-						$borrow_duration = $HTTP_VARS['borrow_duration'][0];
-					else
-						$borrow_duration = $HTTP_VARS['borrow_duration'];
-					
-					$status_comment = $HTTP_VARS['status_comment'];
-					
-					if(strlen($status_comment)>0 && $status_type_r['status_comment_ind'] != 'Y' && $status_type_r['status_comment_ind'] != 'H')
+					// Actually this is a warning!
+					$errors[] = array('error'=>get_opendb_lang_var('s_status_type_status_comments_not_supported', 's_status_type_desc', $status_type_r['description']) ,'detail'=>'');
+					$status_comment = NULL;
+				}
+				
+				if($HTTP_VARS['trial_run'] != 'true')
+				{
+					$new_instance_no = insert_item_instance($item_r['item_id'], NULL, $status_type, $status_comment, $borrow_duration, $owner_id);
+					if($new_instance_no !== FALSE)
 					{
-						// Actually this is a warning!
-						$errors[] = array('error'=>get_opendb_lang_var('s_status_type_status_comments_not_supported', 's_status_type_desc', $status_type_r['description']) ,'detail'=>'');
-						$status_comment = NULL;
-					}
-					
-					if($HTTP_VARS['trial_run'] != 'true')
-					{
-						$new_instance_no = insert_item_instance($item_r['item_id'], NULL, $status_type, $status_comment, $borrow_duration, $owner_id);
-						if($new_instance_no !== FALSE)
-						{
-							// Now $item_r represents new instance of item
-							$item_r['instance_no'] = $new_instance_no;
-							$item_r['s_status_type'] = $status_type;
-							$item_r['status_comment'] = $status_comment;
-							$item_r['borrow_duration'] = $borrow_duration;
-							$item_r['owner_id'] = $owner_id;
+						// Now $item_r represents new instance of item
+						$item_r['instance_no'] = $new_instance_no;
+						$item_r['s_status_type'] = $status_type;
+						$item_r['status_comment'] = $status_comment;
+						$item_r['borrow_duration'] = $borrow_duration;
+						$item_r['owner_id'] = $owner_id;
 
-						    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $_FILES, $errors);
+					    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $_FILES, $errors);
 
-							return TRUE;
-						}
-						else//if($new_instance_no !== FALSE)
-						{
-							$db_error = db_error();
-							$errors = array('error'=>get_opendb_lang_var('item_instance_not_added'),'detail'=>$db_error);
-							return FALSE;
-						}
+						return TRUE;
 					}
-					else
+					else//if($new_instance_no !== FALSE)
 					{
-					    return TRUE;
+						$db_error = db_error();
+						$errors = array('error'=>get_opendb_lang_var('item_instance_not_added'),'detail'=>$db_error);
+						return FALSE;
 					}
 				}
-				else//if(is_status_type_insert_valid($item_r['item_id'], $owner_id, $new_status_type_r, $errors))
+				else
 				{
-					return FALSE;
+				    return TRUE;
 				}
-			}// non-admin user attempting to insert item for someone else.
-			else
+			}
+			else//if(is_status_type_insert_valid($item_r['item_id'], $owner_id, $new_status_type_r, $errors))
 			{
-				$errors = array('error'=>get_opendb_lang_var('not_authorized_to_page'));
-				
-				opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to insert an item instance for another user');
 				return FALSE;
 			}
-		}
-		else//if(is_empty_array($parent_item_r))
+		}// non-admin user attempting to insert item for someone else.
+		else
 		{
-			$errors = array('error'=>get_opendb_lang_var('operation_not_available'),'detail'=>'');
+			$errors = array('error'=>get_opendb_lang_var('not_authorized_to_page'));
+			
+			opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to insert an item instance for another user');
 			return FALSE;
 		}
 	}
-	else//if(get_opendb_config_var('item_input', 'item_instance_support')!==FALSE)
-		$errors = array('error'=>get_opendb_lang_var('operation_not_avail_new_instance'),'detail'=>'');
+	else//if(is_empty_array($parent_item_r))
 	{
+		$errors = array('error'=>get_opendb_lang_var('operation_not_available'),'detail'=>'');
 		return FALSE;
 	}
 }

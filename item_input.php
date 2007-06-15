@@ -1700,23 +1700,32 @@ function perform_update_process(&$parent_item_r, &$item_r, &$status_type_r, &$HT
 	do_op_title($parent_item_r, $item_r, $status_type_r, $HTTP_VARS['start-op'] == 'newinstance'?'newinstance':'update');
 	
 	$errors = NULL;
-	
+	 
 	if(is_empty_array($parent_item_r))
 	{
+		// assume failure, until a path sets it otherwise.
+		$return_val = FALSE;
+		
     	if($HTTP_VARS['start-op'] == 'newinstance')
     	{
-    		$item_r['instance_no'] = NULL;
-    		
-	    	$return_val = handle_item_instance_insert($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
+			$item_r['instance_no'] = NULL;
+    		$return_val = handle_item_instance_insert($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
     	}
 	    else
 	    {
 	    	$return_val = handle_item_instance_update($parent_item_r, $item_r, $status_type_r, $HTTP_VARS, $errors);
 	    }
     }
+    else
+    {
+    	$return_val = TRUE;
+    }
 	
-	$return_val = handle_item_update($parent_item_r, $item_r, $HTTP_VARS, $_FILES, $errors);
-	
+    if($return_val===TRUE)
+    {
+		$return_val = handle_item_update($parent_item_r, $item_r, $HTTP_VARS, $_FILES, $errors);
+    }
+    
 	if($return_val === "__INVALID_DATA__")
 	{
 		// We need to load the edit form again here!

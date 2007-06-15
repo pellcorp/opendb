@@ -540,67 +540,55 @@ if(is_site_enabled())
 				
 				echo("<h3>".get_opendb_lang_var('instance_info')."</h3>");
 					
-				if(get_opendb_config_var('item_input', 'item_instance_support') !== FALSE)
+				$results = fetch_item_instance_rs($current_item_r['item_id'], NULL);
+				if($results)
 				{
-					$results = fetch_item_instance_rs($current_item_r['item_id'], NULL);
-					if($results)
+					echo("<table>".
+						"\n<tr class=\"navbar\">".
+						"\n<th>".get_opendb_lang_var('instance')."</th>".
+						"\n<th>".get_opendb_lang_var('owner')."</th>".
+						"\n<th>".get_opendb_lang_var('action')."</th>".
+						"\n<th>".get_opendb_lang_var('status')."</th>".
+						"\n<th>".get_opendb_lang_var('status_comment')."</th>");
+					
+					if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 					{
-						echo("<table>".
-							"\n<tr class=\"navbar\">".
-							"\n<th>".get_opendb_lang_var('instance')."</th>".
-							"\n<th>".get_opendb_lang_var('owner')."</th>".
-							"\n<th>".get_opendb_lang_var('action')."</th>".
-							"\n<th>".get_opendb_lang_var('status')."</th>".
-							"\n<th>".get_opendb_lang_var('status_comment')."</th>");
-						
-						if(get_opendb_config_var('borrow', 'enable')!==FALSE)
+						if(get_opendb_config_var('borrow', 'include_borrower_column')!==FALSE)
 						{
-							if(get_opendb_config_var('borrow', 'include_borrower_column')!==FALSE)
-							{
-								echo("\n<th>".get_opendb_lang_var('borrower')."</th>");
-							}
-							
-							echo("\n<th>".get_opendb_lang_var('borrow_status')."</th>");
-							
-							if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
-							{
-								echo("\n<th>".get_opendb_lang_var('due_date_or_duration')."</th>");
-							}
+							echo("\n<th>".get_opendb_lang_var('borrower')."</th>");
 						}
-						echo("\n</tr>");
+						
+						echo("\n<th>".get_opendb_lang_var('borrow_status')."</th>");
+						
+						if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
+						{
+							echo("\n<th>".get_opendb_lang_var('due_date_or_duration')."</th>");
+						}
+					}
+					echo("\n</tr>");
 
-						$toggle=TRUE;
-						$numrows = db_num_rows($results);
-						while($item_instance_r = db_fetch_assoc($results))
-						{
-							if($toggle)
-								$color="oddRow";
-							else
-		 						$color="evenRow";
-							$toggle = !$toggle;
-							
-							echo(get_item_status_row(
-									$color,
-									array_merge($current_item_r, $item_instance_r),
-									$HTTP_VARS['listing_link'], 
-									$numrows>1 && $current_item_r['instance_no']===$item_instance_r['instance_no']));
-						}
+					$toggle=TRUE;
+					$numrows = db_num_rows($results);
+					while($item_instance_r = db_fetch_assoc($results))
+					{
+						if($toggle)
+							$color="oddRow";
+						else
+	 						$color="evenRow";
+						$toggle = !$toggle;
 						
-						echo("\n</table>");
+						echo(get_item_status_row(
+								$color,
+								array_merge($current_item_r, $item_instance_r),
+								$HTTP_VARS['listing_link'], 
+								$numrows>1 && $current_item_r['instance_no']===$item_instance_r['instance_no']));
 					}
-					else
-					{	// No instances found, because user has been deactivated and/or items are hidden.
-						echo(get_opendb_lang_var('no_records_found'));
-					}
+					
+					echo("\n</table>");
 				}
-				else//lone instance only.
-				{
-					$numrows = 1;
-					echo(get_item_status_row(
-							"oddRow",
-							$current_item_r, 
-							$HTTP_VARS['listing_link'], 
-							FALSE));
+				else
+				{	// No instances found, because user has been deactivated and/or items are hidden.
+					echo(get_opendb_lang_var('no_records_found'));
 				}
 				
 				if($numrows>1)

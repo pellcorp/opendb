@@ -33,7 +33,7 @@ class VersionCheckTest extends PHPUnit_TestCase
 	{
 	}
 	
-	function testVersionBeta3ToBeta4()
+	function testVersionBeta3ToAlpha4()
 	{
 		$this->assertTrue(opendb_version_compare('1.0b3', '1.0a4', '>'), '1.0b3 > 1.0a4');
 	}

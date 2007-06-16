@@ -488,17 +488,15 @@ if (is_opendb_valid_session())
 				
 				echo("</form>");
 				echo("</table>");
-
-				// Only display if duplicates exist!
+				
+				$help_entries_rs = NULL;
 				if(is_not_empty_array($saatr_already_exists))
 				{
 					$help_entries_rs[] = array('img'=>'rs.gif', 'text'=>'Duplicate Attribute Type & Order No');
-					while(list(,$help_entries_r) = each($_FORM_HELP['saatr']))
-						$help_entries_rs[] = $help_entries_r;
-					echo(format_help_block($help_entries_rs));
-				}	
-				else
-					echo(format_help_block($_FORM_HELP['saatr']));
+				}
+				
+				$help_entries_rs[] = array('text'=>'Entries without a <b>attribute type</b> AND <b>order no</b> specified will be ignored.');
+				echo(format_help_block($help_entries_rs));
 			}
 			else
 			{
@@ -525,7 +523,7 @@ if (is_opendb_valid_session())
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
 				echo("\n<tr><td align=left nowrap>".
-							format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+							format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 						"</td><td>&nbsp;</td></tr>");
 			}
 	
@@ -553,7 +551,9 @@ if (is_opendb_valid_session())
 			{
 				echo format_error_block($errors);
 			}
-				
+			
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
+			
 			echo("<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
 				"<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">".
 				"<input type=\"hidden\" name=\"op\" value=\"\">".
@@ -597,8 +597,6 @@ if (is_opendb_valid_session())
 				"<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
 				"&nbsp;".
 				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">".
-				"&nbsp;".
-				"<input type=button value=\"Add New Type\" onclick=\"this.form['op'].value='new_type'; this.form.submit();\">".
 				"</td>".
 				"</tr>");
 

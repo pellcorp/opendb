@@ -34,13 +34,6 @@ $_CORE_ATTRIBUTE_TYPES = array(
 		'S_DURATION', 'S_ITEM_ID', 'S_STATUS', 'S_TITLE', 'S_RATING', 'S_STATCMNT'
 	);
 
-$_FORM_HELP = array(
-	// Display help footer for specific item_type edit form (top block)
-	'sit'=>array('Image(s) must be in a <i>theme search path</i> directory.'),
-	// Display help footer in specific item type edit form. (bottom block)
-	'siat'=>array('Order No. and Attribute Type are compulsory')
-	);
-
 function display_s_item_type_insert_form($HTTP_VARS)
 {
 	$sat_results = fetch_sfieldtype_attribute_type_rs(array('TITLE', 'CATEGORY', 'STATUSTYPE', 'STATUSCMNT', 'DURATION'));
@@ -1112,16 +1105,15 @@ if (is_opendb_valid_session())
 				echo("</form>");
 				echo("</table>");
 
-				// Only display if duplicates exist!
+				$help_entries_rs = NULL;
 				if(is_not_empty_array($sait_already_exists))
 				{
 					$help_entries_rs[] = array('img'=>'rs.gif', 'text'=>'Duplicate Attribute Type & Order No');
-					while(list(,$help_entries_r) = each($_FORM_HELP['siat']))
-						$help_entries_rs[] = $help_entries_r;
-					echo(format_help_block($help_entries_rs));
-				}	
-				else
-					echo(format_help_block($_FORM_HELP['siat']));
+				}
+
+				$help_entries_rs[] = array('text'=>'Order No. and Attribute Type are compulsory');
+				
+				echo(format_help_block($help_entries_rs));
 			}
 			else
 			{
@@ -1149,7 +1141,7 @@ if (is_opendb_valid_session())
 			
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
-				echo(format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))));
+				echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
 			}
 					
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -1173,16 +1165,17 @@ if (is_opendb_valid_session())
 		{
 			echo get_validation_javascript();
 			
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+				
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a> ]");
+			
 			echo("<form name=\"sqlform\" action=\"$PHP_SELF\" method=\"GET\">".
 				"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 				"<input type=\"hidden\" name=\"op\" value=\"\">".
 				"<input type=\"hidden\" name=\"s_item_type\" value=\"\">".
 				"</form>");
-			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
 				
-			
 			echo("\n<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">");
 
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
@@ -1216,14 +1209,13 @@ if (is_opendb_valid_session())
 			}
 
 			echo("<tr><td colspan=6 align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">".
-				" <input type=button value=\"New Item Type\" onclick=\"this.form['op'].value='new_type'; this.form.submit();\"></td></tr>");
+				" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
 
 			echo("</table>");
 			
 			echo("</form>");
 			
-			echo(format_help_block($_FORM_HELP['sit']));
+			echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
 
 			function is_not_exists_item_type($type)
 			{

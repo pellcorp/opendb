@@ -495,7 +495,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 	
     if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 	{
-		$buffer .= format_help_block(array(array('img'=>'compulsory.gif', 'text'=>'Compulsory Field')));
+		$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>'Compulsory Field'));
 	}
     
 	$buffer .= "<input type=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n";

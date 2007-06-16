@@ -245,7 +245,6 @@ class Listing
 	
 	function _addHelpEntry($help_text, $img=NULL, $id=NULL)
 	{
-		
 		if($id === NULL || !is_array($this->_help_entry_added_r) || in_array($id, $this->_help_entry_added_r)!==TRUE)
 		{
 			$this->_help_entry_rs[] = array(img=>$img, text=>$help_text);

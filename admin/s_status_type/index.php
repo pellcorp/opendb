@@ -386,7 +386,7 @@ if(is_opendb_valid_session())
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
 				echo("\n<tr><td align=left nowrap>".
-				format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+				format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 				"</td><td>&nbsp;</td></tr>");
 			}
 				
@@ -425,7 +425,7 @@ if(is_opendb_valid_session())
 				if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 				{
 					echo("\n<tr><td align=left nowrap>".
-						format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 						"</td><td>&nbsp;</td></tr>");
 				}
 					
@@ -454,6 +454,8 @@ if(is_opendb_valid_session())
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
+				
             echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
 				"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 				"\n<input type=\"hidden\" name=\"op\" value=\"\">".
@@ -488,12 +490,6 @@ if(is_opendb_valid_session())
 				}
 				db_free_result($results);
 			}
-
-			echo("<tr>".
-				"<td colspan=".($column_count)." align=center>".
-				"<input type=button value=\"New Status Type\" onclick=\"this.form['op'].value='new'; this.form.submit();\">".
-				"</td>".
-				"</tr>");
 
 			echo("</form>");
 			echo("</table>");

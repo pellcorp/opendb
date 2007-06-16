@@ -21,12 +21,6 @@
 include_once("./functions/item_type.php");
 include_once("./functions/item_type_group.php");
 
-$_FORM_HELP = array('* No relationships defined for this group',
-					'System Indicator = \'Y\' indicates that the record will be used in all parts of the system '.
-					'to group item type\'s together.  Examples of this are title display mask and listings column configuration. '.
-					'Other examples include reviews for different item type\'s, but the same title will be displayed together.  '.
-					'If the System Indicator = \'N\', then it will only be used in listings functionality, to list item types together. '.
-					'However it would not allow for identifying common listings column config; in this instance the default column configuration would be used.');
 
 function display_s_item_type_group_row($item_type_group_r, $row)
 {
@@ -228,7 +222,12 @@ if (is_opendb_valid_session())
 				echo("</form>");
 				echo("</table>");
 				
-				echo(format_help_block($_FORM_HELP));
+				echo(format_help_block(
+						'System Indicator = \'Y\' indicates that the record will be used in all parts of the system '.
+						'to group item type\'s together.  Examples of this are title display mask and listings column configuration. '.
+						'Other examples include reviews for different item type\'s, but the same title will be displayed together.  '.
+						'If the System Indicator = \'N\', then it will only be used in listings functionality, to list item types together. '.
+						'However it would not allow for identifying common listings column config; in this instance the default column configuration would be used.'));
 		}
 		else if($HTTP_VARS['op'] == 'edit_item_type_group_rltshps')
 		{

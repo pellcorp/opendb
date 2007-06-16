@@ -1585,7 +1585,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 		
 		echo('</form>');
 		
-		echo format_help_block(array('text'=>get_opendb_lang_var('clone_item_help')));
+		echo format_help_block(get_opendb_lang_var('clone_item_help'));
 	
 		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
 	}

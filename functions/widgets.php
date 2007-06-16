@@ -2869,55 +2869,39 @@ function _format_help_entry($help_entry_r)
 	}
 }
 
-function _format_help_list($help_entries_rs, $topLevel=FALSE)
+function _format_help_list($help_entry)
 {
-	if(is_array($help_entries_rs))
+	$field = '';
+	
+	if(is_array($help_entry) && !isset($help_entry['text']))
 	{
-		if(!isset($help_entries_rs['text']))
+		while(list($key,$entry) = each($help_entry))
 		{
-			if(!$topLevel)// remove indenting for top level UL
-				$field = "\n<ul>";
-				
-			while(list($key,$entry) = each($help_entries_rs))
-			{
-				if(is_array($entry) && !isset($entry['text']))
-				{
-					$field .= _format_help_list($entry);
-				}
-				else
-				{
-					$field .= "\n<li>"._format_help_entry($entry)."</li>";
-				}
-			}
-			
-			if(!$topLevel)
-				$field .= "\n</ul>";
+			$field .= _format_help_list($entry);
 		}
-		else
-		{
-			return _format_help_entry($help_entries_rs);	
-		}
-			
-		return $field;
 	}
 	else
 	{
-		return $help_entries_rs;
+		$field .= "\n<li>"._format_help_entry($help_entry)."</li>";
 	}
+	
+	return $field;
 }
 
 function format_help_block($help_entries_rs)
 {
 	if(!is_array($help_entries_rs) && strlen($help_entries_rs)>0)
-		$entries[] = $help_entries_rs;
-	else if(is_array($help_entries_rs))
+		$entries[] = array( array('text'=>$help_entries_rs) );
+	else if(is_array($help_entries_rs) && isset( $help_entries_rs['text'] ))
+		$entries[] = array($help_entries_rs);
+	else
 		$entries[] =& $help_entries_rs;
-	
+		
 	if(is_array($entries))
 	{
-		return "\n<div class=\"help\">".
-			_format_help_list($entries, TRUE).
-			"</div>\n";
+		return "\n<ul class=\"help\">".
+			_format_help_list($entries).
+			"</ul>\n";
 	}
 	else
 	{

@@ -22,9 +22,6 @@ include_once("./functions/site_plugin.php");
 include_once("./functions/parseutils.php");
 include_once("./functions/scripts.php");
 
-// Display help footer for lookup attribute type edit form
-$edit_satl_form_help = array('Image(s) must be in a <i>theme search path</i> directory.');
-
 $input_type_functions_cats = array(
 			'file'=>array('url'),
 			'lookup'=>array('radio_grid', 'checkbox_grid', 'single_select', 'multi_select'),
@@ -997,7 +994,7 @@ if(is_opendb_valid_session())
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
 				echo("\n<tr><td align=left nowrap>".
-						format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 					"</td><td>&nbsp;</td></tr>");
 			}
 			
@@ -1039,7 +1036,7 @@ if(is_opendb_valid_session())
 				if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 				{
 					echo("\n<tr><td align=left nowrap>".
-						format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 						"</td><td>&nbsp;</td></tr>");
 				}
 			
@@ -1095,7 +1092,7 @@ if(is_opendb_valid_session())
 
 			echo(display_lookup_attribute_type_form($HTTP_VARS));
 
-			echo(format_help_block($edit_satl_form_help));
+			echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
 		}
 		else if($HTTP_VARS['op'] == '')
 		{

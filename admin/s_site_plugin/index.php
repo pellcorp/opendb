@@ -1507,7 +1507,7 @@ if (is_opendb_valid_session())
 				if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 				{
 					echo("\n<tr><td align=left nowrap>".
-						format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 						"</td><td>&nbsp;</td></tr>");
 				}
 					
@@ -1548,7 +1548,7 @@ if (is_opendb_valid_session())
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
 				echo("\n<tr><td align=left nowrap>".
-					format_help_block(array(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')))).
+					format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
 					"</td><td>&nbsp;</td></tr>");
 			}
 					
@@ -1799,6 +1799,8 @@ if (is_opendb_valid_session())
 				echo format_error_block($errors);
 			}
 			
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a> ]");
+			
 			echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
 				"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 				"\n<input type=\"hidden\" name=\"op\" value=\"\">".
@@ -1868,7 +1870,6 @@ if (is_opendb_valid_session())
 				"<td colspan=6 align=center>".
 				"<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
 				"&nbsp;<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">".
-				"&nbsp;<input type=button value=\"New Site Plugin\" onclick=\"document.forms['navigate'].op.value='new_site_plugin'; document.forms['navigate'].submit();\">".
 				"</td>".
 				"</tr>");
 				echo("</form>");
@@ -1879,7 +1880,6 @@ if (is_opendb_valid_session())
 				
 				echo("<tr><td colspan=6 align=center>".
 				"<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
-				"&nbsp;<input type=button value=\"New Site Plugin\" onclick=\"document.forms['navigate'].op.value='new_site_plugin'; document.forms['navigate'].submit();\">".
 				"</td></tr>");
 			}
 			echo("</table>");

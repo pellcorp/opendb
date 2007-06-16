@@ -245,14 +245,14 @@ if(is_site_enabled())
 				echo("</div>"); // end of tab content
 				echo("</div>");  // end of tabContainer
 			}
-			else // if(!in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
+			else
 			{
 				$page_title = get_opendb_lang_var('s_status_type_display_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt(get_opendb_session_var('user_type')),'s_status_type_desc'=>$status_type_r['description']));
 				echo _theme_header($page_title);
 				echo("<p class=\"error\">".$page_title."</p>");
 			}
 		}
-		else //if(is_not_empty_array($item_r))
+		else
 		{
 			echo _theme_header(get_opendb_lang_var('item_not_found'));
 			echo("<p class=\"error\">".get_opendb_lang_var('item_not_found')."</p>");
@@ -260,7 +260,7 @@ if(is_site_enabled())
 		
 		if(is_export_plugin(get_opendb_config_var('item_display', 'export_link')))
 		{
-			$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&send_as_format=attachment",text=>get_opendb_lang_var('type_export_item_record', 'type', get_display_export_type(get_opendb_config_var('item_display', 'export_link'))));
+			$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'], text=>get_opendb_lang_var('type_export_item_record', 'type', get_display_export_type(get_opendb_config_var('item_display', 'export_link'))));
 		}
 			
 		// Include a Back to Listing link.

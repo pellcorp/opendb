@@ -90,6 +90,18 @@ class DbPrefixesTest extends PHPUnit_TestCase
 		$this->assertEquals( "SHOW FULL COLUMNS FROM opendb_item_instance",
 							parse_sql_statement("SHOW FULL COLUMNS FROM item_instance", 'opendb_'));
 	}
+	
+	function testAddTableIndex()
+	{
+		$this->assertEquals( "ALTER TABLE opendb_item_attribute ADD INDEX lookup_attribute_val_idx ( lookup_attribute_val )",
+							parse_sql_statement("ALTER TABLE item_attribute ADD INDEX lookup_attribute_val_idx ( lookup_attribute_val )", 'opendb_'));
+	}	
+	
+	function testAddTableIndex2()
+	{
+		$this->assertEquals( "ALTER TABLE opendb_item_attribute ADD INDEX attribute_val_idx ( attribute_val ( 255 ) )",
+							parse_sql_statement("ALTER TABLE item_attribute ADD INDEX attribute_val_idx ( attribute_val ( 255 ) )", 'opendb_'));
+	}
 }
 
 ?>

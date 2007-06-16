@@ -355,6 +355,64 @@ function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $rel
 		return FALSE;
 }
 
+/**
+ * Does current item have any related items
+ *
+ * @param unknown_type $item_id
+ * @param unknown_type $instance_no
+ * @return unknown
+ */
+function is_exists_item_instance_relationship($item_id, $instance_no)
+{
+	$query = "SELECT 'X'
+			FROM item_instance_relationship
+			WHERE item_id = $item_id AND
+				instance_no = $instance_no";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+/**
+ * Check whether item instance is referenced in at least one item instance relationship.  Where parent_item_id and
+ * parent_instance_no are specified, relationship checking will not count a relationship featuring this parent - good
+ * for when deleting item and we have a parent context.
+ *
+ * @param unknown_type $item_id
+ * @param unknown_type $instance_no
+ */
+function is_exists_related_item_instance_relationship($item_id, $instance_no, $parent_item_id = NULL, $parent_instance_no = NULL)
+{
+	$query = "SELECT 'X'
+			FROM item_instance_relationship
+			WHERE related_item_id = $item_id AND
+				related_instance_no = $instance_no";
+
+	if(is_numeric($parent_item_id) && is_numeric($parent_instance_no))
+	{
+		$query .= " AND item_id <> $parent_item_id AND instance_no <> $parent_instance_no ";
+	}
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
 //
 // Returns an associative array for a single item.
 //id,owner_id,title,s_item_type
@@ -1281,7 +1339,7 @@ function delete_item($item_id)
 }
 
 /*
-* Delete child item attributes, child items, item_attributes, item.
+* Delete item_attributes, item.
 * 
 * Assumes instances have been deleted.
 */
@@ -1520,19 +1578,27 @@ function update_item_instance_owner($item_id, $instance_no, $old_owner_id, $owne
 //
 function delete_item_instance($item_id, $instance_no)
 {
-	$query ="DELETE FROM item_instance WHERE item_id = '".$item_id."' AND instance_no = '$instance_no'";
-	$delete = db_query($query);
-	if(db_affected_rows() > 0)
-	{
-		// remove item relationships at this point too.
-		delete_item_instance_relationships($item_r['item_id'], $item_r['instance_no']);
+	// remove all child related item instance relationships only - not the actual instances themselves.
+	delete_item_instance_relationships($item_r['item_id'], $item_r['instance_no']);
 		
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
-		return TRUE;
+	if(!is_exists_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no']))
+	{
+		$query = "DELETE FROM item_instance WHERE item_id = '".$item_id."' AND instance_no = '$instance_no'";
+		$delete = db_query($query);
+		if(db_affected_rows() > 0)
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+			return TRUE;
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+			return FALSE;
+		}
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Instance is referenced in at least one item instance relationship', array($item_id, $instance_no));
 		return FALSE;
 	}
 }
@@ -1600,7 +1666,7 @@ function insert_item_instance_relationship($item_id, $instance_no, $related_item
 
 function delete_item_instance_relationships($item_id, $instance_no = NULL)
 {
-	$query ="DELETE FROM item_instance WHERE item_id = '".$item_id."'";
+	$query = "DELETE FROM item_instance WHERE item_id = '".$item_id."'";
 	
 	if(is_numeric($instance_no))
 	{
@@ -1616,6 +1682,27 @@ function delete_item_instance_relationships($item_id, $instance_no = NULL)
 	else
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
+		return FALSE;
+	}
+}
+
+function delete_related_item_instance_relationship($item_id, $instance_no, $parent_item_id, $parent_instance_no)
+{
+	$query = "DELETE FROM item_instance_relationship 
+			WHERE related_item_id = '".$item_id."' AND 
+				related_instance_no = $instance_no AND
+				item_id = $parent_item_id AND
+				instance_no = $parent_instance_no";
+	
+	$delete = db_query($query);
+	if(db_affected_rows() > 0)
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $parent_item_id, $parent_instance_no));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $parent_item_id, $parent_instance_no));
 		return FALSE;
 	}
 }

@@ -2778,10 +2778,15 @@ function format_confirm_form($PHP_SELF, $confirm_message, $form_field_rs, $HTTP_
 /**
 	Displays the footer links on a page.
 */
-function format_footer_links($footer_links_rs)
+function format_footer_links($links_rs)
 {
 	$field = NULL;
 	
+	if(is_array($links_rs) && isset($links_rs['url']))
+		$footer_links_rs[] = $links_rs;
+	else
+		$footer_links_rs =& $links_rs;
+		
 	if(is_array($footer_links_rs))
 	{
 		$field = "<ul class=\"footer-links\">";

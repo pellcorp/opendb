@@ -733,118 +733,127 @@ function copy_item_to_http_vars($old_item_r, $new_item_type)
  */
 function handle_item_delete($item_r, $status_type_r, $HTTP_VARS, &$errors, $delete_with_closed_borrow_records = NULL)
 {
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-				$item_r['owner_id'] == get_opendb_session_var('user_id'))
-	{
-		if($status_type_r['delete_ind'] == 'Y')
-		{
-			// allow execution override of this variable only
-			if($delete_with_closed_borrow_records === NULL)
-			{
-				// save it once, so do not call get_opendb_config_var function more than once.
-				$delete_with_closed_borrow_records = get_opendb_config_var('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records');
-			}
-			
-			if( ($delete_with_closed_borrow_records===TRUE && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no'])) ||
-					  ($delete_with_closed_borrow_records!==TRUE && !is_exists_item_instance_borrowed_item($item_r['item_id'], $item_r['instance_no'])) )
-			{
-				$inactive_borrowed_items_exist = FALSE;
-				if($delete_with_closed_borrow_records===TRUE && is_exists_item_instance_borrowed_item($item_r['item_id'], $item_r['instance_no']))
-				{
-					$inactive_borrowed_items_exist = TRUE;
-				}
-				
-				if($HTTP_VARS['confirmed'] == 'true' || 
-							($inactive_borrowed_items_exist!==TRUE && 
-							get_opendb_config_var('item_input', 'confirm_item_delete')===FALSE) )
-				{
-					if($inactive_borrowed_items_exist)
-					{
-						if(!delete_item_instance_inactive_borrowed_items($item_r['item_id'], $item_r['instance_no']))
-						{
-							$db_error = db_error();
-							$errors = array('error'=>get_opendb_lang_var('undefined_error'),'detail'=>$db_error);
-							return FALSE;
-						}
-					}
-						
-					if(!is_exists_item_instance_borrowed_item($item_r['item_id'], $item_r['instance_no']))
-					{
-						// item instance relationships will be removed in this step.
-						if(!delete_item_instance($item_r['item_id'], $item_r['instance_no']))
-						{
-							$db_error = db_error();
-							$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>$db_error);
-							return FALSE;
-						}
-					}
-					else
-					{
-						if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
-							$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>get_opendb_lang_var('item_reserved_or_borrowed'));
-						else
-							$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>get_opendb_lang_var('item_has_inactive_borrowed_item'));
-						return FALSE;
-					}
-
-					// If child and no more instance left, 
-					// proceed with item and item_attribute delete.
-					if(!is_exists_item_instance($item_r['item_id'], NULL))
-					{
-						// Get rid of all reviews.
-						if(is_item_reviewed($item_r['item_id']))
-						{
-							delete_reviews($item_r['item_id']);
-						}
-						
-						delete_item_attributes($item_r['item_id'], $item_r['instance_no']);
-						
-						if(!delete_item($item_r['item_id']))
-						{
-							$db_error = db_error();
-							$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>$db_error);
-							return FALSE;
-						}
-						
-						// As long as delete_item has worked, we do not care about anything else.
-						return TRUE;
-					}
-				}
-				else if($HTTP_VARS['confirmed'] != 'false')
-				{
-					if($inactive_borrowed_items_exist)
-						return "__CONFIRM_INACTIVE_BORROW__";
-					else
-						return "__CONFIRM__";
-				}
-				else // confirmation required.
-				{
-					return "__ABORTED__";				
-				}
-			}
-			else
-			{
-				if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
-					$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>get_opendb_lang_var('item_reserved_or_borrowed'));
-				else
-					$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>get_opendb_lang_var('item_has_inactive_borrowed_item'));
-
-				opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to to delete item with attached reservation record(s)', $item_r);
-				return FALSE;
-			}
-		}
-		else//if($status_type_r['delete_ind'] == 'Y')
-		{
-			$errors = array('error'=>get_opendb_lang_var('operation_not_avail_s_status_type', 's_status_type_desc', $status_type_r['description']),'detail'=>'');
-			opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'Attempted to delete item instance with a status that prevents the item being deleted', $item_r);
-			return FALSE;
-		}
-	}
-	else
+	if($item_r['owner_id'] != get_opendb_session_var('user_id') && 
+				!is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 	{
 		$errors = array('error'=>get_opendb_lang_var('cannot_delete_item_not_owned'),'detail'=>'');
 		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User to delete item instance they do not own', $item_r);
 		return FALSE;
+	}
+	
+	if($status_type_r['delete_ind'] != 'Y')
+	{
+		$errors = array('error'=>get_opendb_lang_var('operation_not_avail_s_status_type', 's_status_type_desc', $status_type_r['description']),'detail'=>'');
+		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'Attempted to delete item instance with a status that prevents the item being deleted', $item_r);
+		return FALSE;
+	}
+
+	if(is_exists_item_instance_relationship($item_r['item_id'], $item_r['instance_no']))
+	{
+		$errors = array('error'=>get_opendb_lang_var('item_not_deleted'), 'detail'=>get_opendb_lang_var('item_related_to_other_items'));
+		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to to delete item with related items', $item_r);
+		return FALSE;
+	}
+	
+	if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
+	{
+		$errors = array('error'=>get_opendb_lang_var('item_not_deleted'), 'detail'=>get_opendb_lang_var('item_reserved_or_borrowed'));
+		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to to delete item with active reservation(s)', $item_r);
+		return FALSE;
+	}
+	
+	$inactive_borrowed_items_exist = FALSE;
+	if(is_exists_item_instance_borrowed_item($item_r['item_id'], $item_r['instance_no']))
+	{
+		if(get_opendb_config_var('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records')!==TRUE) 
+		{
+			$errors = array('error'=>get_opendb_lang_var('item_not_deleted'), 'detail'=>get_opendb_lang_var('item_has_inactive_borrowed_item'));
+			opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to to delete item with inactive reservation(s)', $item_r);
+			return FALSE;
+		}
+		else
+		{
+			$inactive_borrowed_items_exist = TRUE;
+		}
+	}
+			
+	if($HTTP_VARS['confirmed'] == 'true' || 
+				($inactive_borrowed_items_exist!==TRUE && 
+				get_opendb_config_var('item_input', 'confirm_item_delete')===FALSE) )
+	{
+		if($inactive_borrowed_items_exist)
+		{
+			if(!delete_item_instance_inactive_borrowed_items($item_r['item_id'], $item_r['instance_no']))
+			{
+				$db_error = db_error();
+				$errors = array('error'=>get_opendb_lang_var('undefined_error'),'detail'=>$db_error);
+				return FALSE;
+			}
+		}
+			
+		if(!is_exists_item_instance_borrowed_item($item_r['item_id'], $item_r['instance_no']))
+		{
+			delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']);
+			
+			if(!is_exists_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']))
+			{
+				// item instance relationships will be removed in this step.
+				if(!delete_item_instance($item_r['item_id'], $item_r['instance_no']))
+				{
+					$db_error = db_error();
+					$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>$db_error);
+					return FALSE;
+				}
+			}
+			else
+			{	
+				$errors = array('error'=>get_opendb_lang_var('item_not_deleted'), 'detail'=>get_opendb_lang_var('item_related_to_other_items'));
+				opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to to delete item with attached item instance relationship record(s)', $item_r);
+				return FALSE;
+			}
+		}
+		else
+		{
+			if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
+				$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>get_opendb_lang_var('item_reserved_or_borrowed'));
+			else
+				$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>get_opendb_lang_var('item_has_inactive_borrowed_item'));
+			return FALSE;
+		}
+
+		// If child and no more instance left, 
+		// proceed with item and item_attribute delete.
+		if(!is_exists_item_instance($item_r['item_id'], NULL))
+		{
+			// Get rid of all reviews.
+			if(is_item_reviewed($item_r['item_id']))
+			{
+				delete_reviews($item_r['item_id']);
+			}
+			
+			delete_item_attributes($item_r['item_id'], $item_r['instance_no']);
+			
+			if(!delete_item($item_r['item_id']))
+			{
+				$db_error = db_error();
+				$errors = array('error'=>get_opendb_lang_var('item_not_deleted'),'detail'=>$db_error);
+				return FALSE;
+			}
+			
+			// As long as delete_item has worked, we do not care about anything else.
+			return TRUE;
+		}
+	}
+	else if($HTTP_VARS['confirmed'] != 'false')
+	{
+		if($inactive_borrowed_items_exist)
+			return "__CONFIRM_INACTIVE_BORROW__";
+		else
+			return "__CONFIRM__";
+	}
+	else // confirmation required.
+	{
+		return "__ABORTED__";				
 	}
 }
 

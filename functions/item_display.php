@@ -466,39 +466,38 @@ function get_related_items_block($item_r, $HTTP_VARS)
 {
 	$buffer = '<div id="relatedItems">';
 	
-	$buffer .= "<h3>".get_opendb_lang_var('related_item(s)')."</h3>";
-	
 	$relatedChildrenTable = get_related_items_listing($item_r, $HTTP_VARS, RELATED_CHILDREN_MODE);
+	$relatedParentsTable = get_related_items_listing($item_r, $HTTP_VARS, RELATED_PARENTS_MODE);
+	
 	if($relatedChildrenTable!=NULL)
 	{
-		$buffer .= "<p>".get_opendb_lang_var('related_child_item(s)')."</p>";
+		$buffer .= "<h3>".get_opendb_lang_var('related_item(s)')."</h3>";
 		$buffer .= $relatedChildrenTable;
-	}
-				
-	$relatedParentsTable = get_related_items_listing($item_r, $HTTP_VARS, RELATED_PARENTS_MODE);
-	if($relatedParentsTable!=NULL)
-	{
-		$buffer .= "<p>".get_opendb_lang_var('related_parent_item(s)')."</p>";
-		$buffer .= $relatedParentsTable;
 	}
 	
 	if($relatedChildrenTable == NULL && $relatedParentsTable == NULL)
 	{
+		$buffer .= "<h3>".get_opendb_lang_var('related_item(s)')."</h3>";
 		$buffer .= get_opendb_lang_var('no_related_item(s)');
 	}
 	
-	$action_links = NULL;
 	if(get_opendb_session_var('user_id') === $item_r['owner_id'])
 	{
 		if(get_opendb_config_var('item_input', 'related_item_support') !== FALSE && 
 					is_numeric($item_r['item_id']) && is_numeric($item_r['instance_no']))
 		{
-			$action_links[] = array(
+			$action_links = array(
 									url=>"item_input.php?op=site-add&parent_item_id=".$item_r['item_id']."&parent_instance_no=".$item_r['instance_no']."&owner_id=".$item_r['owner_id']."&listing_link=".$HTTP_VARS['listing_link'],
 									text=>get_opendb_lang_var('add_related_item'));
 									
 			$buffer .= format_footer_links($action_links);
 		}
+	}
+	
+	if($relatedParentsTable!=NULL)
+	{
+		$buffer .= "<h3>".get_opendb_lang_var('related_parent_item(s)')."</h3>";
+		$buffer .= $relatedParentsTable;
 	}
 	
 	$buffer .= "</div>";
@@ -525,7 +524,7 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 		$listingObject->addHeaderColumn(get_opendb_lang_var('title'), 'title', FALSE);
 				
 		$include_action_column = FALSE;
-		if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		if($related_mode == RELATED_CHILDREN_MODE && get_opendb_session_var('user_id') === $item_r['owner_id']) 
 		{
 			$listingObject->addHeaderColumn(get_opendb_lang_var('action'), 'action', FALSE);
 			$include_action_column = TRUE;
@@ -550,7 +549,7 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 				{
 					$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$related_item_r['item_id'].'&instance_no='.$related_item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
 				}
-				$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$related_item_r['item_id'].'&instance_no='.$related_item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),img=>'delete.gif',text=>get_opendb_lang_var('delete'));
+				$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$related_item_r['item_id'].'&instance_no='.$related_item_r['instance_no'].'&parent_item_id='.$item_r['item_id'].'&parent_instance_no='.$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),img=>'delete.gif',text=>get_opendb_lang_var('delete'));
 			
 				$listingObject->addActionColumn($action_links_rs);
 			}

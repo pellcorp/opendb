@@ -145,6 +145,11 @@ p.error
 	padding-right: 0px;
 }
 
+ul.help
+{
+	margin: 0px;
+}
+
 /* All help text */
 .help
 {
@@ -152,6 +157,7 @@ p.error
 	font-size: x-small;
 	clear: both;
 }
+
 
 ul.footer-links
 {

@@ -4,6 +4,11 @@ div.item_displayContent th.prompt
 	background-color: #BDC7F7;
 }
 
+div#instanceInfo, div#relatedItems
+{
+	float: left;
+}
+
 div.item_displayContent td.data
 {
 	background-color: #DCE6FB;
@@ -73,7 +78,6 @@ ul.coverimages li
 
 ul.footer-links
 {
-	clear: both;
 	padding: 5px;
 	padding-left: 0px;
 }

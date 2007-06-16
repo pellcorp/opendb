@@ -243,7 +243,7 @@ function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type)
 */
 function fetch_category_item_cnt($category, $s_item_type = NULL)
 {
-	$query = "SELECT COUNT(DISTINCT ii.item_id) AS COUNT ".
+	$query = "SELECT COUNT(DISTINCT ii.item_id) AS count ".
 			"FROM item i, item_instance ii, s_status_type sst, user u, s_attribute_type sat, s_item_attribute_type siat, item_attribute ia ".
 			"WHERE u.user_id = ii.owner_id AND ".
 			"siat.s_item_type = i.s_item_type AND ".
@@ -278,7 +278,9 @@ function fetch_category_item_cnt($category, $s_item_type = NULL)
 		$found = db_fetch_assoc($result);
 		db_free_result($result);
 		if ($found!== FALSE)
+		{
 			return $found['count'];
+		}
 	}
 
 	//else

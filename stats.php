@@ -64,7 +64,7 @@ function build_item_category_chart_info($s_item_type)
 			while($attribute_type_r = db_fetch_assoc($results)) // next category...
 			{
 				$num_total = fetch_category_item_cnt($attribute_type_r['value'], $s_item_type);
-				if($num_total>0)
+				if($num_total > 0)
 				{
 					$key = $attribute_type_r['display'];
 					$info[$key] = $num_total;

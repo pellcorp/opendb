@@ -54,7 +54,7 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS)
 		}
 		else
 		{
-			$buffer .= "<li><a href=\"$PHP_SELF?".get_url_string($HTTP_VARS, array('letter'=>$char))."\">".$char."</a></li>";
+			$buffer .= "<li><a href=\"$PHP_SELF?".get_url_string($HTTP_VARS, array('letter'=>$char), array('page_no'))."\">".$char."</a></li>";
 		}
 	}
 

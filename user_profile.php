@@ -149,8 +149,9 @@ if(is_site_enabled())
 				if(strlen($HTTP_VARS['redirect_link'])>0 && strlen($HTTP_VARS['redirect_url'])>0)
 				{
 					$footer_links_r[] = array(url=>urldecode($HTTP_VARS['redirect_url']),text=>$HTTP_VARS['redirect_link']);
-					echo format_footer_links($footer_links_r);
 				}
+				
+				echo format_footer_links($footer_links_r);
 			}
 			else
 			{

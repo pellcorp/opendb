@@ -378,8 +378,6 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		}
 	}		
 	
-	$buffer .= get_url_fields(array('redirect_link'=>$HTTP_VARS['redirect_link'], 'redirect_url'=>$HTTP_VARS['redirect_url']));
-	
 	$buffer .= "\n</form>";
 	
 	return $buffer;		
@@ -435,8 +433,6 @@ function get_user_password_change_form($user_r, $HTTP_VARS)
 		$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";
 	else
 		$onclick_event = "this.form.submit();";
-	
-	$buffer .= get_url_fields(array('redirect_link'=>$HTTP_VARS['redirect_link'], 'redirect_url'=>$HTTP_VARS['redirect_url']));
 	
     $buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"update_password\">".
 					"\n<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('change_password')."\">";
@@ -1913,11 +1909,11 @@ if(is_site_enabled())
 				echo("<p class=\"error\">".get_opendb_lang_var('operation_not_available')."</p>");
 			}
 			
-			if(strlen($HTTP_VARS['redirect_link'])>0 && strlen($HTTP_VARS['redirect_url'])>0)
+			if(is_array(get_opendb_session_var('user_listing_url_vars')))
 			{
-				$footer_links_r[] = array(url=>urldecode($HTTP_VARS['redirect_url']),text=>$HTTP_VARS['redirect_link']);
+				$footer_links_r[] = array(url=>"user_listing.php?".get_url_string(get_opendb_session_var('user_listing_url_vars')),text=>get_opendb_lang_var('back_to_user_listing'));
 			}
-				
+	
 			echo format_footer_links($footer_links_r);
 			echo _theme_footer();
 		}

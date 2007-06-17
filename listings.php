@@ -1073,7 +1073,6 @@ if(is_site_enabled())
 				$v_listing_url_vars['mode'] = NULL;
 				
 				// These variables should not be passed back from a 'Back to Listing' link!		
-				$v_listing_url_vars['internal_link'] = NULL;
 				$v_listing_url_vars['listing_link'] = NULL;
 			
 				// These are listing specific - we do not want to save them.

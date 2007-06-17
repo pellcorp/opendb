@@ -32,7 +32,7 @@ function get_printable_link_r($pageid)
 	
 	if($pageid == 'listings' || $pageid == 'borrow')
 	{
-		return array(url=>"$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'), array('listing_link', 'internal_link')),
+		return array(url=>"$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'), array('listing_link')),
 					title=>get_opendb_lang_var('printable_version'),
 					image=>_theme_image_src("printable.gif"));
 	}

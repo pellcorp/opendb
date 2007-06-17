@@ -447,12 +447,7 @@ if(is_site_enabled())
 		{
 			echo("<p class=\"error\">".get_opendb_lang_var('operation_not_available')."</p>");
 		}
-		
-		// Always have a redirect link, for after email and also to abort email send.
-		if (strlen($HTTP_VARS['redirect_link'])>0)
-		{
-			echo format_footer_links(array(array(url=>urldecode($HTTP_VARS['redirect_url']),text=>$HTTP_VARS['redirect_link'])));
-		}
+
 		echo _theme_footer();
 	}
 	else

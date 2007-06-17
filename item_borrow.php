@@ -1417,7 +1417,6 @@ if(is_site_enabled())
 							echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 							echo("\n<input type=\"hidden\" name=\"op\" value=\"admin_quick_check_out\">");
 							echo("\n<input type=\"hidden\" name=\"page_no\" value=\"\">");//dummy
-							echo("\n<input type=\"hidden\" name=\"internal_link\" value=\"\">");//dummy
 							echo("\n<input type=\"hidden\" name=\"borrower_id\" value=\"".$HTTP_VARS['borrower_id']."\">");
 							
 							echo("<label for=\"item_instance_if\">".get_opendb_lang_var('item_id')."</label><input id=\"item_instance_if\" type=\"text\" name=\"item_instance\" value=\"\">");

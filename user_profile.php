@@ -146,11 +146,12 @@ if(is_site_enabled())
 					$footer_links_r[] = array(url=>$url, target=>'popup(640,480)', text=>get_opendb_lang_var('send_email'));
 				}
 				
-				if(strlen($HTTP_VARS['redirect_link'])>0 && strlen($HTTP_VARS['redirect_url'])>0)
+				if(is_array(get_opendb_session_var('user_listing_url_vars')))
 				{
-					$footer_links_r[] = array(url=>urldecode($HTTP_VARS['redirect_url']),text=>$HTTP_VARS['redirect_link']);
-					echo format_footer_links($footer_links_r);
+					$footer_links_r[] = array(url=>"user_listing.php?".get_url_string(get_opendb_session_var('user_listing_url_vars')),text=>get_opendb_lang_var('back_to_user_listing'));
 				}
+		
+				echo format_footer_links($footer_links_r);
 			}
 			else
 			{

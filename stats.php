@@ -334,7 +334,7 @@ if(is_site_enabled())
 					echo("<tr class=\"data\"><th>");
 					if(!is_user_guest(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 					{
-						echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."&subject=".urlencode(get_opendb_lang_var('no_subject'))."&redirect_link=".urlencode(get_opendb_lang_var('back_to_statistics'))."&redirect_url=".urlencode($PHP_SELF)."\">".$user_name."</a>");
+						echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."\">".$user_name."</a>");
 					}
 					else
 					{
@@ -413,7 +413,7 @@ if(is_site_enabled())
 						echo("<tr class=\"data\"><th>");
 						if(!is_user_guest(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 						{
-							echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."&subject=".urlencode(get_opendb_lang_var('no_subject'))."&redirect_link=".urlencode(get_opendb_lang_var('back_to_statistics'))."&redirect_url=".urlencode($PHP_SELF)."\">".$user_name."</a>");
+							echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."\">".$user_name."</a>");
 						}
 						else
 						{

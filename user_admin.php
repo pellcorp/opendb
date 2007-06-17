@@ -378,6 +378,8 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		}
 	}		
 	
+	$buffer .= "<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">";
+	
 	$buffer .= "\n</form>";
 	
 	return $buffer;		
@@ -436,7 +438,9 @@ function get_user_password_change_form($user_r, $HTTP_VARS)
 	
     $buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"update_password\">".
 					"\n<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('change_password')."\">";
-					
+	
+	$buffer .= "<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">";
+	
 	$buffer .= "\n</form>";
 
 	return $buffer;
@@ -1909,7 +1913,7 @@ if(is_site_enabled())
 				echo("<p class=\"error\">".get_opendb_lang_var('operation_not_available')."</p>");
 			}
 			
-			if(is_array(get_opendb_session_var('user_listing_url_vars')))
+			if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('user_listing_url_vars')))
 			{
 				$footer_links_r[] = array(url=>"user_listing.php?".get_url_string(get_opendb_session_var('user_listing_url_vars')),text=>get_opendb_lang_var('back_to_user_listing'));
 			}

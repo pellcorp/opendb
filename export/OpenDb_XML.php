@@ -75,11 +75,11 @@ class OpenDb_XML
 	function file_header($title)
 	{
 		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n".
-				"<!DOCTYPE opendb-items PUBLIC \"-//Open Media Collectors Database//DTD OpenDb Item Export 1.2//EN\" \"http://opendb.iamvegan.net/dtd/opendb-items_1.2.dtd\">\n\n".
+				"<!DOCTYPE opendb-items PUBLIC \"-//Open Media Collectors Database//DTD OpenDb Item Export 1.3//EN\" \"http://opendb.iamvegan.net/dtd/opendb-items_1.3.dtd\">\n\n".
 				"<!--\n".
 				"\t$title\n".
 				"-->\n".
-				"<opendb-items version=\"1.2\">";
+				"<opendb-items version=\"1.3\">";
 	}
 
 	/*

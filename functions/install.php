@@ -29,10 +29,10 @@ function fix_10_version($version)
 	{
 		$version = '1.0.0';
 	}
-	else if(preg_match('/1\.0(RC)([0-9]+)/', $version, $matches) ||
-			preg_match('/1\.0(b)([0-9]+)/', $version, $matches) || 
-			preg_match('/1\.0(a)([0-9]+)/', $version, $matches) || 
-			preg_match('/1\.0(pl)([0-9]+)/', $version, $matches))
+	else if(preg_match('/^1\.0(RC)([0-9]+)$/', $version, $matches) ||
+			preg_match('/^1\.0(b)([0-9]+)$/', $version, $matches) || 
+			preg_match('/^1\.0(a)([0-9]+)$/', $version, $matches) || 
+			preg_match('/^1\.0(pl)([0-9]+)$/', $version, $matches))
 	{
 		$version = '1.0.0'.$matches[1].$matches[2];
 	}
@@ -40,11 +40,14 @@ function fix_10_version($version)
 	return $version;
 }
 
+/**
+ */
 function opendb_version_compare($to_version, $from_version, $operator)
 {
 	$to_version = fix_10_version($to_version);
 	$from_version = fix_10_version($from_version);
 	
+	//echo("<br>$to_version $operator $from_version");
 	return version_compare($to_version, $from_version, $operator);
 }
 
@@ -610,15 +613,18 @@ function install_determine_opendb_database_version()
 }
 
 /**
-* Return TRUE if update to date, otherwise FALSE
-
-	Assumes database exists
+* Return TRUE if up to date, otherwise FALSE
+* 
+* Assumes database exists
 */
 function check_opendb_version()
 {
    	$opendb_release_version = fetch_opendb_release_version();
+   	
    	if($opendb_release_version !== FALSE )
    	{
+   		// the $opendb_release_version is unlikely to be larger than get_opendb_version(),
+		// so this could be simplified to a '=', but leave as is.
    	    if(opendb_version_compare($opendb_release_version, get_opendb_version(), '>='))
    	    {
    	        return TRUE;
@@ -847,7 +853,7 @@ function build_upgrader_list(&$upgrader_rs, &$latest_to_version)
 }
 
 /**
-	Retrieve plugin info responsible for $db_version
+	Retrieve plugin info responsible for latest s_opendb_release version
 */
 function get_upgrader_r($db_version)
 {
@@ -861,21 +867,14 @@ function get_upgrader_r($db_version)
 		for($i=0; $i<count($upgrader_rs); $i++)
 		{
 			$upgrader_r = $upgrader_rs[$i];
-			
-			if(opendb_version_compare($db_version, $upgrader_r['to_version'], '=') ||
-					($latest_to_version == $upgrader_r['to_version'] && // this test ensures plugin is for latest version possible
-						opendb_version_compare($db_version, $upgrader_r['to_version'], '>=')))
+			if($db_version == $upgrader_r['to_version'])
 			{
-			  	return $upgrader_r;
+				return $upgrader_r;
 			}
 		}
 	}
-	
-	// the last one encountered 
-	if($upgrader_r!=NULL)
-	    return $upgrader_r;
-	else
-		return FALSE;
+
+	return FALSE;
 }
 
 /**
@@ -899,7 +898,7 @@ function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 	$all_upgrader_rs = NULL;
 	
   	build_upgrader_list($all_upgrader_rs, $latest_to_version);
-
+  	
 	$upgraders_rs = NULL;
 
 	// initial filter - 
@@ -907,15 +906,17 @@ function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 	{  	
 		$upgrader_r = $all_upgrader_rs[$i];
 			    
-		if(strlen($db_version)==0)
+		if(strlen($db_version)==0) // no database installed so get a list of all
 		{
 			$upgraders_rs[] = $upgrader_r;
 		}
-		else if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+		else if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && 
+							opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
 		{
 			$upgraders_rs[] = $upgrader_r;
 		}
-		else if($latest_to_version == $upgrader_r['to_version'] && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+		else if($latest_to_version == $upgrader_r['to_version'] && 
+							opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
 		{
 			$upgraders_rs[] = $upgrader_r;
 		}

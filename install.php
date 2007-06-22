@@ -492,7 +492,6 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 
     $buffer .= "</table>";
 	
-	
     if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 	{
 		$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>'Compulsory Field'));
@@ -649,6 +648,7 @@ function install_opendb_new_install($HTTP_VARS, &$errors)
 				exec_install_sql_file("./admin/s_status_type/sql/H-Hidden.sql", $errors);
 				exec_install_sql_file("./admin/s_status_type/sql/X-External.sql", $errors);
 				exec_install_sql_file("./admin/s_status_type/sql/W-Wishlist.sql", $errors);
+				exec_install_sql_file("./admin/s_status_type/sql/R-Related.sql", $errors);
 				
 				exec_install_sql_file("./install/new/guestuser.sql", $errors);
 				exec_install_sql_file("./install/new/adminuser.sql", $errors);
@@ -738,8 +738,8 @@ function perform_upgrade_step($HTTP_VARS, $opendb_release_r, $latest_to_version 
  		{
  			if($latest_to_version == $upgraderPlugin->getToVersion())
  			{
- 				$to_version = get_opendb_version();
- 				$description = 'Upgrade from '.$opendb_release_r['release_version'].' to '.get_opendb_version();
+				$to_version = $latest_to_version;
+ 				$description = 'Upgrade from '.$opendb_release_r['release_version'].' to '.$to_version;
  			}
  			else
  			{

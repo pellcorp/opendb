@@ -39,34 +39,41 @@ include_once("./functions/TitleMask.class.php");
 */
 function export_type_items(&$exportPlugin, $page_title, $s_item_type, $item_id, $instance_no, $owner_id)
 {
-	$itemresults = fetch_export_item_rs($s_item_type, $item_id, $owner_id);
-	if($itemresults)
+	if(is_numeric($item_id) && is_numeric($instance_no))
 	{
 		send_header($exportPlugin, $page_title);
-		while($item_r = db_fetch_assoc($itemresults))
+		
+		$item_r = fetch_item_instance_r($item_id, $instance_no);
+		if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_item_instance_viewable($item_r['s_status_type'], $error))
 		{
-			send_data(
-					get_export_type_item(
-								$exportPlugin, 
-								$item_r['item_id'],
-								$instance_no,
-								$item_r['s_item_type'],
-								$item_r['title'],
-								$owner_id));
+			send_data(get_export_type_item($exportPlugin, $item_id, $instance_no, $item_r['s_item_type'], $item_r['title'], $owner_id));
 		}
-		db_free_result($itemresults);
 		
 		send_footer($exportPlugin);
 		return TRUE;
 	}
 	else
-		return FALSE;
+	{
+		$itemresults = fetch_export_item_rs($s_item_type, $owner_id);
+		if($itemresults)
+		{
+			send_header($exportPlugin, $page_title);
+			while($item_r = db_fetch_assoc($itemresults))
+			{
+				send_data(get_export_type_item($exportPlugin, $item_r['item_id'], NULL, $item_r['s_item_type'], $item_r['title'], $owner_id));
+			}
+			db_free_result($itemresults);
+			
+			send_footer($exportPlugin);
+			return TRUE;
+		}
+	}
+	
+	//else
+	return FALSE;
 }
 
 /*
-* This function exports a single Item, and will
-* be recursively called for child items.  Child
-* items do not have children.
 */
 function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_type, $title, $owner_id)
 {
@@ -77,31 +84,28 @@ function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_ty
 	// export item (non instance level) attributes.
 	$buffer .= export_type_item_attributes($exportPlugin, $item_id, NULL, $s_item_type);
 	
-	if($isChild!==TRUE)
+	if(is_numeric($instance_no))
 	{
-		if(is_numeric($instance_no))
+		$item_instance_r = fetch_item_instance_r($item_id, $instance_no);
+		if(is_not_empty_array($item_instance_r))
 		{
-			$item_instance_r = fetch_item_instance_r($item_id, $instance_no);
-			if(is_not_empty_array($item_instance_r))
+			$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment']);
+			$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
+			$buffer .= $exportPlugin->end_item_instance();
+		}
+	}
+	else
+	{
+		$iiresults = fetch_item_instance_rs($item_id, $owner_id);
+		if($iiresults)
+		{
+			while($item_instance_r = db_fetch_assoc($iiresults))
 			{
 				$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment']);
 				$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
 				$buffer .= $exportPlugin->end_item_instance();
 			}
-		}
-		else
-		{
-			$iiresults = fetch_item_instance_rs($item_id, $owner_id);
-			if($iiresults)
-			{
-				while($item_instance_r = db_fetch_assoc($iiresults))
-				{
-					$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment']);
-					$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
-					$buffer .= $exportPlugin->end_item_instance();
-				}
-				db_free_result($iiresults);
-			}
+			db_free_result($iiresults);
 		}
 	}
 	

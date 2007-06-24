@@ -22,6 +22,29 @@ include_once("./functions/borrowed_item.php");
 include_once("./functions/user.php");
 include_once("./functions/language.php");
 
+/**
+ * @param unknown_type $item_r
+ * @param unknown_type $error
+ * @return unknown
+ */
+function is_item_instance_viewable($status_type, &$error)
+{
+	$status_type_r = fetch_status_type_r($status_type);
+	
+	if(strlen($status_type_r['min_display_user_type'])==0 || 
+			in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
+	{
+		return TRUE;
+	}
+	else
+	{		
+		$error = get_opendb_lang_var('s_status_type_display_access_disabled_for_usertype', 
+					array('usertype'=>get_usertype_prompt(get_opendb_session_var('user_type')),
+							's_status_type_desc'=>$status_type_r['description']));
+		return FALSE;
+	}
+}
+
 /*
 * Only sofar as the s_status_type exists!
 */

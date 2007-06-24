@@ -22,10 +22,10 @@ include_once("./functions/logging.php");
 include_once("./functions/status_type.php");
 
 /*
-* Fetch a complete list of item records, which have a matching
+* Fetch a complete list of item records, which have at least one
 * item instance, for the specified owner_id.
 */
-function fetch_export_item_rs($s_item_type, $item_id, $owner_id)
+function fetch_export_item_rs($s_item_type, $owner_id)
 {
 	$query = "SELECT DISTINCT i.id as item_id, i.title, i.s_item_type ".
 			"FROM user u, item i, item_instance ii, s_status_type sst ".
@@ -48,9 +48,7 @@ function fetch_export_item_rs($s_item_type, $item_id, $owner_id)
 		
 	if(strlen($s_item_type)>0)
 		$query .= "AND i.s_item_type = '$s_item_type'";
-	if(strlen($item_id)>0)
-		$query .= "AND i.id = '$item_id' ";
-
+	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
     	return $result;

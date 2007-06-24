@@ -52,11 +52,8 @@ if(is_site_enabled())
 	
 		if(is_not_empty_array($item_r))
 		{
-			$status_type_r = fetch_status_type_r($item_r['s_status_type']);
-			
-			if($item_r['owner_id'] == get_opendb_session_var('user_id') ||
-						(strlen($status_type_r['min_display_user_type'])==0 || 
-							in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type')))))
+			if($item_r['owner_id'] == get_opendb_session_var('user_id') || 
+								is_item_instance_viewable($item_r['s_status_type'], $error))
 			{
 			    $titleMaskCfg = new TitleMask('item_display');
 
@@ -247,9 +244,8 @@ if(is_site_enabled())
 			}
 			else
 			{
-				$page_title = get_opendb_lang_var('s_status_type_display_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt(get_opendb_session_var('user_type')),'s_status_type_desc'=>$status_type_r['description']));
-				echo _theme_header($page_title);
-				echo("<p class=\"error\">".$page_title."</p>");
+				echo _theme_header($error);
+				echo("<p class=\"error\">".$error."</p>");
 			}
 		}
 		else

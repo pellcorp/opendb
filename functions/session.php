@@ -22,7 +22,9 @@ include_once('./functions/http.php');
 function register_opendb_session_var($name, $value)
 {
 	// supposedly not required
-	global $_SESSION;
+	if(!isset($_SESSION)) {
+		global $_SESSION;
+	}
 
     $_SESSION[$name] = $value;
 
@@ -39,7 +41,9 @@ function register_opendb_session_var($name, $value)
 function unregister_opendb_session_var($name)
 {
 	// supposedly not required
-    global $_SESSION;
+	if(!isset($_SESSION)) {
+		global $_SESSION;
+	}
 
     if(is_register_globals_enabled())
 	{
@@ -53,7 +57,9 @@ function unregister_opendb_session_var($name)
 function get_opendb_session_var($name)
 {
 	// supposedly not required
-    global $_SESSION;
+	if(!isset($_SESSION)) {
+		global $_SESSION;
+	}
 
 	if(is_array($_SESSION) && isset($_SESSION[$name]))
 	{

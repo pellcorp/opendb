@@ -3,7 +3,12 @@
 #
 filename="opendb-backup-`date +%d%m%y`.sql"
 
-lynx -accept_all_cookies -dump -dont_wrap_pre 'http://opendb.iamvegan.net/demo/login.php?op=login&uid=<opendb_admin_uid>&passwd=<opendb_admin_password>&redirect=backup.php%3Fop%3Dexport%26all_tables%3Dy%26send_as_format%3Dfile' > /tmp/$filename
+OPENDB_URL=http://opendb.iamvegan.net/demo1.0
+OPENDB_ADMIN_UID=admin
+OPENDB_ADMIN_PWD=admin
+OPENDB_ADMIN_EMAIL=opendb@iamvegan.net
+
+lynx -accept_all_cookies -dump -dont_wrap_pre "$OPENDB_URL/login.php?op=login&uid=$OPENDB_ADMIN_UID&passwd=$OPENDB_ADMIN_PWD&redirect=admin.php%3Ftype%3Dbackup%26op%3Dexport%26all_tables%3Dy%26mode%3Djob" > /tmp/$filename
 
 # Compress sql
 gzip -c /tmp/$filename > /tmp/${filename}.gz
@@ -13,6 +18,5 @@ rm /tmp/$filename
 uuencode /tmp/${filename}.gz ${filename}.gz > /tmp/${filename}.gz.enc
 rm /tmp/${filename}.gz
 
-mail -s "OpenDb Backup" opendb@iamvegan.net < /tmp/${filename}.gz.enc  
+mail -s "OpenDb Backup" $OPENDB_ADMIN_EMAIL < /tmp/${filename}.gz.enc  
 rm /tmp/${filename}.gz.enc
-

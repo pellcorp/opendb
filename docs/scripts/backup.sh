@@ -3,7 +3,7 @@
 #
 filename="opendb-backup-`date +%d%m%y`.sql"
 
-OPENDB_URL=http://127.0.0.1/jason/opendb
+OPENDB_URL=http://opendb.iamvegan.net/demo
 OPENDB_ADMIN_UID=admin
 OPENDB_ADMIN_PWD=admin
 OPENDB_ADMIN_EMAIL=opendb@iamvegan.net

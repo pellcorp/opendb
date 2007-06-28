@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPENDB_URL=http://opendb.iamvegan.net/demo
+OPENDB_URL=http://opendb.iamvegan.net/demo1.0
 OPENDB_ADMIN_UID=admin
 OPENDB_ADMIN_PWD=admin
 

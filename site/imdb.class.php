@@ -98,7 +98,7 @@ class imdb extends SitePlugin
 											
 										    if(preg_match("/[\s]*\(([0-9]+)\)/", $matches2[3], $regs))
 										    {
-										    	$title .= " ".$regs[1];
+										    	$title .= " (".$regs[1].")";
 										    }
 										    
 											if(preg_match("/<br>&#160;aka(.*)/", $matches2[3], $regs))
@@ -106,7 +106,7 @@ class imdb extends SitePlugin
 										    	$comments = unhtmlentities(strip_tags($regs[1]));
 										    }
 										    
-											$this->addListingRow($title, $image, $comments, array('imdb_id'=>imdb_id));
+											$this->addListingRow($title, $image, $comments, array('imdb_id'=>$imdb_id));
 										}
 									}
 								}

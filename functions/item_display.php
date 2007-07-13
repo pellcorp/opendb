@@ -288,7 +288,8 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	// ---------------------- Borrow,Reserve,Cancel,Edit,Delete,etc operations here.
 	$action_links_rs = NULL;
 	
-	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || 
+				is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 	{
 		$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'edit.gif',text=>get_opendb_lang_var('edit'));
 								
@@ -319,7 +320,8 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 
 	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && 
 				is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
-				(strlen($status_type_r['min_display_user_type'])==0 || in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
+				(strlen($status_type_r['min_display_user_type'])==0 || 
+					in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
 			)
 	{
 		if(get_opendb_config_var('borrow', 'enable')!==FALSE)
@@ -367,7 +369,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 				}
 			}
 		}			
-	} // else -- guest user
+	}
 	
 	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || $item_r['owner_id'] == get_opendb_session_var('user_id'))
 	{

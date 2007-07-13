@@ -67,12 +67,8 @@ if(is_site_enabled())
 				echo ("<h2>".$page_title." ".get_item_image($item_r['s_item_type'], $item_r['item_id'])."</h2>");
                 
 				// ---------------- Display IMAGE attributes ------------------------------------
-				// Will bypass the display of images if the config.php get_opendb_config_var('item_display', 'show_item_image')
-				// variable has been explicitly set to FALSE.  This means that if the variable does 
-				// not exist, this block should still execute.
 				if(get_opendb_config_var('item_display', 'show_item_image')!==FALSE)
 				{
-					// Here we need to get the image_attribute_type and check if it is set.
 					$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'IMAGE');
 					if($results)
 					{
@@ -84,13 +80,12 @@ if(is_site_enabled())
 
 							$imageurl = get_file_attribute_url($item_r['item_id'], $item_r['instance_no'], $image_attribute_type_r, $imageurl);
 							
-							// If an image is specified.
 							if(strlen($imageurl)>0)
 							{
 								$coverimages_rs[] = array(
 									'file'=>file_cache_get_image_r($imageurl, 'display'),
 									'prompt'=>$image_attribute_type_r['prompt']);
-							}//if(strlen($imageurl)>0)
+							}
 						}
 						db_free_result($results);
 						
@@ -176,14 +171,12 @@ if(is_site_enabled())
 					echo("<p class=\"norating\">".get_opendb_lang_var('no_rating')."</p>");	
 				}
 				
-				// Do all the attributes.  Ignore any attributes that have an input_type of hidden.
 				$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 				if($results)
 				{
 					echo("<table>");
 					while($item_attribute_type_r = db_fetch_assoc($results))
 					{
-						// If display_type == '' AND input_type == 'hidden' we set to 'hidden'
 						$display_type = trim($item_attribute_type_r['display_type']);
 						
 						if(($HTTP_VARS['mode'] == 'printable' && $item_attribute_type_r['printable_ind'] != 'Y') ||
@@ -201,7 +194,6 @@ if(is_site_enabled())
 						else
 							$value = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'],  $item_attribute_type_r['order_no']);
 
-						// Only show attributes which have a value.
 						if(is_not_empty_array($value) || (!is_array($value) && strlen($value)>0))
 						{
 							$item_attribute_type_r['display_type'] = $display_type;
@@ -224,9 +216,7 @@ if(is_site_enabled())
 					echo("\n</table>");
 				}
 				
-				// ---------------------Site Link Block -----------------------
 				echo(get_site_plugin_links($page_title, $item_r));
-				// -------------------------------------------------------------
 				
 				echo("</div>");
 				

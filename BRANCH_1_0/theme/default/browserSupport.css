@@ -1,0 +1,10 @@
+ul.browsers
+{
+	list-style-type: none;
+}
+
+ul.browsers img
+{
+	border: none;
+	vertical-align: middle;
+}

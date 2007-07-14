@@ -1,0 +1,9 @@
+div.search-query dd
+{
+	float: none;
+}
+
+table.listing-table
+{
+	width: 80%;
+}

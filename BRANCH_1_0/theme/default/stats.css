@@ -1,0 +1,64 @@
+.OpendbStatsGraphs
+{
+	size: 150;
+	font-size: 2;
+	background: transparent;
+	text-color: #000000;
+	caption-color: #000000;
+	light-color: #BDC7F7;
+	dark-color: #DCE6FB;
+	light-border-color: #DCE6FB;
+	dark-border-color: #000000;
+	background-color: #FAFAFA;
+}
+
+h3
+{
+	clear: both;
+}
+
+dl.generalStats
+{
+	width: 30%;
+	float: left;
+}
+
+dl.generalStats dt
+{
+	float: left;
+	padding-right: 10px;
+	font-weight: bold;
+	width: 60%;
+	white-space: nowrap;
+}
+
+table.itemStats td
+{
+	text-align: center;
+}
+
+table.itemStats tr.totals th
+{
+	text-align: right;
+	font-size: 90%;
+}
+
+ul.itemCharts
+{
+	padding-left: 0px;
+	margin-left: 0px;
+	width: 100%;
+	list-style-type: none;
+}
+
+ul.itemCharts li
+{
+	float: left;
+	list-style-type: none;
+}
+
+ul.itemCharts h3
+{
+	width: 100%;
+}
+

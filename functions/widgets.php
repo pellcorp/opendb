@@ -756,8 +756,8 @@ function readonly_field($name, $value)
 function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -779,8 +779,8 @@ function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value
 function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -820,8 +820,8 @@ function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_
 function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -841,8 +841,8 @@ function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $v
 function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -862,8 +862,8 @@ function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $valu
 function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -894,8 +894,8 @@ function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $co
 function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size > 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -1078,8 +1078,8 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		if(is_file_upload_enabled())
 		{
 	       	// Default size.
-			$size = $length;
-			if($size >= 50 || $size<=0)
+			$size = $length; 
+			if(!is_numeric($size) || $size <= 0)
 				$size = 50;
 	
 			$field .= "<div class=\"fieldContentHidden\" id=\"${name}_upload\">";

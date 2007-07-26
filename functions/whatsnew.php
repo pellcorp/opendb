@@ -157,8 +157,6 @@ function get_last_item_list(
 			$href_link = "<a href=\"".htmlspecialchars($list_item_r['item_display_url'])."\">";
 		}
 		
-		
-		
 		$imageblock = get_image_block($list_item_r['imageurl']);
 		if($imageblock!=NULL)
 		{

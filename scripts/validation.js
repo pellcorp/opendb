@@ -35,7 +35,7 @@ function legalCharFilter(inval, legalChars)
 // Will filter text must match: [0-9]
 function numericFilter(inval)
 {
-	return legalCharFilter(inval, '0123456789');
+	return legalCharFilter(inval, '-0123456789');
 }
 	
 // Very simple email validation

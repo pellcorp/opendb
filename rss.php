@@ -201,7 +201,12 @@ if(is_site_enabled())
 				// Create the end tags
 				$rssoutput .=  "\n</channel>".
 					"\n</rss>";
-				echo mb_convert_encoding($rssoutput,  mb_detect_encoding($rssoutput), "UTF-8");
+					
+				if(function_exists("mb_convert_encoding") && function_exists("mb_detect_encoding")) {
+					echo mb_convert_encoding($rssoutput,  mb_detect_encoding($rssoutput), "UTF-8");
+				} else {
+					echo $rssoutput;
+				}
 
 			}//else if($HTTP_VARS['type'] == 'announcements')
 			else

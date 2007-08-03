@@ -113,8 +113,6 @@ function is_opendb_valid_session()
     if(is_opendb_configured())
     {
 		$site_r = get_opendb_config_var('site');
-		
-		
 
 		// Public access to OpenDb for configured user.
 		if(is_site_public_access_enabled())

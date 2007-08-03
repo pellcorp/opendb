@@ -432,7 +432,7 @@ function generate_s_item_type_sql($s_item_type)
 /**
 Save zip file and return location or FALSE on error
 */
-function create_item_type_zip($s_item_type, &$error)
+/*function create_item_type_zip($s_item_type, &$error)
 {
     $zipfile = opendb_tempnam(strtolower($s_item_type.'.zip'));
 	if($zipfile!==FALSE)
@@ -497,7 +497,7 @@ function create_item_type_zip($s_item_type, &$error)
 	
 	//else
 	return FALSE;
-}
+}*/
 
 /*
 * Remove ALL records associated with an s_item_type, which includes:
@@ -575,7 +575,7 @@ if (is_opendb_valid_session())
 			header("Content-Length: ".strlen($sqlfile));
 			echo($sqlfile);
 		}
-		else if ($HTTP_VARS['op'] == 'zip' && is_exists_item_type($HTTP_VARS['s_item_type']))
+		/*else if ($HTTP_VARS['op'] == 'zip' && is_exists_item_type($HTTP_VARS['s_item_type']))
 		{
 		    header("Cache-control: no-store");
 			header("Pragma: no-store");
@@ -596,7 +596,7 @@ if (is_opendb_valid_session())
 				header("Content-type: text/plain");
 				echo $error;
 			}
-		}
+		}*/
 		else if($HTTP_VARS['op'] == 'delete_type') // This is initiated from the main s_item_type form.
 		{
 			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);

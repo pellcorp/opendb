@@ -1792,6 +1792,8 @@ if (is_opendb_valid_session())
 
 		if($HTTP_VARS['op'] == 'list_site_plugins')
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a> ]");
+			
 			echo get_popup_javascript();
 			
 			if(is_not_empty_array($errors))
@@ -1816,12 +1818,6 @@ if (is_opendb_valid_session())
 			$results = fetch_site_plugin_rs();
 			if($results)
 			{
-				echo("\n<form name=\"sqlform\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"\">".
-					"\n<input type=\"hidden\" name=\"site_type\" value=\"\">".
-					"\n</form>");
-				
 				echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"GET\">");
 				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 				echo("\n<input type=\"hidden\" name=\"op\" value=\"new_site_plugin\">");
@@ -1867,21 +1863,18 @@ if (is_opendb_valid_session())
 				echo("<tr>".
 				"<td colspan=6 align=center>".
 				"<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
-				"&nbsp;<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">".
-				"&nbsp;<input type=button value=\"New Site Plugin\" onclick=\"document.forms['navigate'].op.value='new_site_plugin'; document.forms['navigate'].submit();\">".
+				"<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">".
 				"</td>".
 				"</tr>");
+				
 				echo("</form>");
+				
 			}//if($results)
 			else
 			{
 				echo("<tr><td colspan=6 align=center><div class=error>No Site Plugins Installed</div></td></tr>");
-				
-				echo("<tr><td colspan=6 align=center>".
-				"<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
-				"&nbsp;<input type=button value=\"New Site Plugin\" onclick=\"document.forms['navigate'].op.value='new_site_plugin'; document.forms['navigate'].submit();\">".
-				"</td></tr>");
 			}
+				
 			echo("</table>");
 			
 			function is_not_exists_site_plugin($type)

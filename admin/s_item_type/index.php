@@ -1171,6 +1171,8 @@ if (is_opendb_valid_session())
 				$HTTP_VARS['op'] == 'edit_types' || 
 				$HTTP_VARS['op'] == 'update_types')
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a> ]");
+			
 			echo get_validation_javascript();
 			
 			echo("<form name=\"sqlform\" action=\"$PHP_SELF\" method=\"GET\">".
@@ -1181,12 +1183,6 @@ if (is_opendb_valid_session())
 			
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
-				
-			
-			echo("\n<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
 			
 			echo("<table>");
 			echo("<tr class=\"navbar\">"
@@ -1201,6 +1197,11 @@ if (is_opendb_valid_session())
 			$results = fetch_s_item_type_rs();
 			if($results)
 			{
+				echo("\n<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">");
+
+				echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
+				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+			
 				// value, display, img, checked_ind, order_no
 				$row = 0;
 				while($item_type_r = db_fetch_assoc($results))
@@ -1209,22 +1210,21 @@ if (is_opendb_valid_session())
 					$row++;
 				}
 				db_free_result($results);
+				
+				echo("<tr><td colspan=6 align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+					" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\"></tr>");
+					
+				echo("</form>");
 			}
 			else
 			{
 				echo("<tr><td colspan=6 align=center><div class=error>No Item Types Installed</div></td></tr>");
 			}
 
-			echo("<tr><td colspan=6 align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">".
-				" <input type=button value=\"New Item Type\" onclick=\"this.form['op'].value='new_type'; this.form.submit();\"></td></tr>");
-
 			echo("</table>");
 			
-			echo("</form>");
-			
 			echo(format_help_block($_FORM_HELP['sit']));
-
+			
 			function is_not_exists_item_type($type)
 			{
 				return !is_exists_item_type($type, FALSE);

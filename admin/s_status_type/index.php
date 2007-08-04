@@ -142,8 +142,8 @@ function display_s_status_type_row($status_type_r, $row)
 	echo("\n<td class=\"data\" align=center>".ifempty($status_type_r['default_ind'], 'N')."</td>");
     echo("\n<td class=\"data\" align=center>".$status_type_r['closed_ind']."</td>");
 
-	echo("\n<td class=\"data\">[&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
-		"&nbsp;/&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a>&nbsp;]</td>");
+	echo("\n<td class=\"data\">[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
+		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a> ]</td>");
 
 	echo("</tr>");
 }
@@ -451,6 +451,8 @@ if(is_opendb_valid_session())
 		}
 		else if(strlen($HTTP_VARS['op'])==0)
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
+			
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
@@ -488,12 +490,6 @@ if(is_opendb_valid_session())
 				}
 				db_free_result($results);
 			}
-
-			echo("<tr>".
-				"<td colspan=".($column_count)." align=center>".
-				"<input type=button value=\"New Status Type\" onclick=\"this.form['op'].value='new'; this.form.submit();\">".
-				"</td>".
-				"</tr>");
 
 			echo("</form>");
 			echo("</table>");

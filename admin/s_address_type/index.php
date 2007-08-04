@@ -547,6 +547,8 @@ if (is_opendb_valid_session())
 		// There are specific operations where this form should be displayed.
 		if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types')
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
+			
 			echo get_validation_javascript();
 			
 			if(is_not_empty_array($errors))
@@ -595,10 +597,7 @@ if (is_opendb_valid_session())
 			echo("<tr>".
 				"<td colspan=".($column_count)." align=center>".
 				"<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				"&nbsp;".
 				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">".
-				"&nbsp;".
-				"<input type=button value=\"Add New Type\" onclick=\"this.form['op'].value='new_type'; this.form.submit();\">".
 				"</td>".
 				"</tr>");
 

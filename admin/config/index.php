@@ -390,18 +390,25 @@ if(is_opendb_valid_session())
 			"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 			"<input type=\"hidden\" name=\"op\" value=\"\">");
 		
-	    // display config form here. 
-	    // TODO - for performance reasons it might be a good idea to cache the call to fetch_s_config_group_rs, although realistically,
-		// its not that many records, so its more expedient to simply call it twice.  We call it twice, to push out the html as soon
-		// as possible rather than cache it, as this causes out of memory issues on tightly configured servers.
-	    $results = fetch_s_config_group_rs();
+		$config_group_rs = NULL;
+		$results = fetch_s_config_group_rs();
 		if($results)
+		{
+			while($config_group_r = db_fetch_assoc($results))
+			{
+				$config_group_rs[] = $config_group_r;
+			}
+			db_free_result($results);
+		}
+		
+		if(is_array($config_group_rs))
 		{
 			echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
         	
         	$count=1;
 
-			while($config_group_r = db_fetch_assoc($results))
+        	reset($config_group_rs);
+			while(list(,$config_group_r) = each($config_group_rs))
 			{
                 echo "<li id=\"menu-pane$count\"".($count==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$count', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
 				$count++;
@@ -409,16 +416,13 @@ if(is_opendb_valid_session())
 			db_free_result($results);
 			
 			echo("</ul>");
-  		}
-  		
-  		$results = fetch_s_config_group_rs();
-  		if($results)
-  		{
-  			$count=1;
+
+			$count=1;
 
   			echo("<div id=\"tab-content\">");
   			
-  			while($config_group_r = db_fetch_assoc($results))
+  			reset($config_group_rs);
+			while(list(,$config_group_r) = each($config_group_rs))
   			{
   				echo "<div class=\"".($count==1?"tabContent":"tabContentHidden")."\" id=\"pane$count\">\n".
   				get_group_block($config_group_r).
@@ -426,9 +430,6 @@ if(is_opendb_valid_session())
   				 
   				$count++;
   			}
-  				
-  			db_free_result($results);
-  			
   			echo("</div>");
   		}
   		

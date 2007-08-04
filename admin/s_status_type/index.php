@@ -368,7 +368,7 @@ if(is_opendb_valid_session())
             // Include validation javascript here.
 			echo get_validation_javascript();
             
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Status Type List</a>]</div>");
+            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
 			echo("\n<h3>New Status type</h3>");
 
@@ -405,7 +405,7 @@ if(is_opendb_valid_session())
             // Include validation javascript here.
 			echo get_validation_javascript();
 
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Status Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
 			echo("\n<h3>Edit Status type</h3>");
             if(is_not_empty_array($errors))

@@ -1199,7 +1199,7 @@ if (is_opendb_valid_session())
 				
 				if(is_not_empty_array($site_attribute_type_r))
 				{
-					echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+					echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 					echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin System Item Types</h3>");
 					
 					if(is_not_empty_array($errors))
@@ -1309,7 +1309,7 @@ if (is_opendb_valid_session())
 			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 			if(is_not_empty_array($site_plugin_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Links</h3>");
 				
 				if(is_not_empty_array($errors))
@@ -1344,7 +1344,7 @@ if (is_opendb_valid_session())
 			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 			if(is_not_empty_array($site_plugin_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Configuration</h3>");
 				
 				if(is_not_empty_array($errors))
@@ -1380,7 +1380,7 @@ if (is_opendb_valid_session())
 			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 			if(is_not_empty_array($site_plugin_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Input Fields</h3>");
 				
 				if(is_not_empty_array($errors))
@@ -1415,7 +1415,7 @@ if (is_opendb_valid_session())
 			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 			if(is_not_empty_array($site_plugin_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Attribute Type Map</h3>");
 				
 				if(is_not_empty_array($errors))
@@ -1450,7 +1450,7 @@ if (is_opendb_valid_session())
 			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 			if(is_not_empty_array($site_plugin_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Lookup Attribute Type Map</h3>");
 				
 				if(is_not_empty_array($errors))
@@ -1488,7 +1488,7 @@ if (is_opendb_valid_session())
 			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 			if(is_not_empty_array($site_plugin_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 			
 				echo("\n<h3>Edit Site Plugin</h3>");
 			
@@ -1529,7 +1529,7 @@ if (is_opendb_valid_session())
 		}
 		else if($HTTP_VARS['op'] == 'new_site_plugin')
 		{
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 			
 			echo("\n<h3>New Site Plugin</h3>");
 			
@@ -1613,7 +1613,7 @@ if (is_opendb_valid_session())
 										{
 											@set_time_limit(600);
 											
-											echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+											echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 											
 											echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Updating ".strtoupper($installPlugin->getInstallTable())." table</h3>");
 
@@ -1698,7 +1698,7 @@ if (is_opendb_valid_session())
 							}//if(strlen($HTTP_VARS['import_file'])>0)
 							else
 							{
-								echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Site Plugin List</a>]</div>");
+								echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 								echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Update ".strtoupper($installPlugin->getInstallTable())." table</h3>");
 								
 								echo(get_validation_javascript());

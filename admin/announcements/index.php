@@ -235,7 +235,7 @@ if (is_opendb_valid_session())
 		}
 		else if($HTTP_VARS['op'] == 'new') //display new announcement form.
 		{
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Announcement List</a>]</div>");
+            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
             
 			echo("<h3>New Announcement</h3>");
 			
@@ -246,7 +246,7 @@ if (is_opendb_valid_session())
 		}
 		else if($HTTP_VARS['op'] == 'edit') //Display edit announcement form.
 		{
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Announcement List</a>]</div>");
+            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
             
 			echo("<h3>Edit Announcement</h3>");
 			

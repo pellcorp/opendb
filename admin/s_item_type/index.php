@@ -1020,7 +1020,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Item Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
 			
 			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
 			if($item_type_r!==FALSE)
@@ -1132,7 +1132,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Item Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
 			echo get_validation_javascript();
 				
 			echo("\n<h3>New Item Type</h3>");

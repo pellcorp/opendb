@@ -402,7 +402,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Address Types List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
 			
 			$address_type_r = fetch_s_address_type_r($HTTP_VARS['s_address_type']);
 			if($address_type_r!==FALSE)
@@ -509,7 +509,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Address Types List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
 			echo get_validation_javascript();
 				
 			echo("\n<h3>New Address Type</h3>");

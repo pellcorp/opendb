@@ -979,7 +979,7 @@ if(is_opendb_valid_session())
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
 			echo get_widget_tooltip_array();
 
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Attribute Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
 			echo("\n<h3>New Attribute type</h3>");
 
@@ -1018,7 +1018,7 @@ if(is_opendb_valid_session())
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
             echo get_widget_tooltip_array();
             
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Attribute Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
 			echo("\n<h3>Edit Attribute type</h3>");
 
@@ -1067,7 +1067,7 @@ if(is_opendb_valid_session())
 
 			echo get_validation_javascript();
 
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Attribute Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
             echo("<script language=\"JavaScript1.2\">
 			function toggleChecked(element, name)

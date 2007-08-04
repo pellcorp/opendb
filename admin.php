@@ -44,7 +44,7 @@ if(is_site_enabled())
 			if($HTTP_VARS['mode'] != 'job')
 			{
 				$menu_option_r = get_system_admin_tools_menu($HTTP_VARS['type']);
-				$title = 'System Admin Tools - '.$menu_option_r['alt'];
+				$title = 'System Admin Tools - '.$menu_option_r['link'];
 				
 				echo("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">".
 						"\n<html>".

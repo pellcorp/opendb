@@ -415,23 +415,23 @@ if(is_opendb_valid_session())
 		
 		if(is_array($config_group_rs))
 		{
-			echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
+			echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
         	
         	reset($config_group_rs);
 			while(list(,$config_group_r) = each($config_group_rs))
 			{
 				if($config_group_r['id'] == $HTTP_VARS['group_id'])
 				{
-					echo "<li id=\"menu-pane-".$config_group_r['id']."\" class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
+					echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
 				}
 				else
 				{
-					echo "<li id=\"menu-pane-".$config_group_r['id']."\"><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";					
+					echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";					
 				}
 			}
 			db_free_result($results);
 			
-			echo("</ul>");
+			echo("\n</ul>");
 
   			echo("<div id=\"tab-content\">");
   			

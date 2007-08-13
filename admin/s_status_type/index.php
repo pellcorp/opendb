@@ -329,7 +329,7 @@ if(is_opendb_valid_session())
 		}
 		else if($HTTP_VARS['op'] == 'insert')
 		{
-			$HTTP_VARS['s_status_type'] = strtoupper(substr($HTTP_VARS['s_status_type'],0,1));
+			$HTTP_VARS['s_status_type'] = strtoupper(substr(trim($HTTP_VARS['s_status_type']),0,1));
 			
 			if(strlen($HTTP_VARS['s_status_type'])>0 && !is_valid_s_status_type($HTTP_VARS['s_status_type']))
 			{

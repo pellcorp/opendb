@@ -1,5 +1,9 @@
 /* item input widgets */
 
+input.saveButton
+{
+	float: right;
+}
 
 div.item_inputContent th.prompt
 {

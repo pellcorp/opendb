@@ -1046,7 +1046,16 @@ function get_edit_form($op, $parent_item_r, $item_r, $status_type_r, $HTTP_VARS,
 	{
 		$pageContents = '';
 		
-		echo("<div class=\"tabContainer\">");
+		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+			$pageContents .= get_validation_javascript();
+		else
+			$pageContents .= get_popup_javascript();
+	
+		$pageContents .= get_common_javascript();
+		$pageContents .= get_tabs_javascript();
+		$pageContents .= get_forms_javascript();
+		
+		$pageContents .= "<div class=\"tabContainer\">";
 		
 		if($upload_file_fields && is_file_upload_enabled())
 		{
@@ -1062,26 +1071,18 @@ function get_edit_form($op, $parent_item_r, $item_r, $status_type_r, $HTTP_VARS,
 		else
 			$onclick_event = "this.form.submit();";
 		
-		$pageContents .= "<input class=\"saveButton\" type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
+		//activateTab(menuId, menuContainerId, contentContainerId, activeMenuClass, tabClass)
+		$pageContents .= "<ul class=\"tabMenu\" id=\"tab-menu\">";
+		$pageContents .= "<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('details')."</li>";
+		$pageContents .= "<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('instance_info')."</li>";
+		$pageContents .= "<li id=\"menu-linked_items\" onclick=\"return activateTab('linked_items', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('linked_item(s)')."</li>";
+		$pageContents .= "</ul>";
 		
-		echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
-		echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('details')."</li>");
-		echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('instance_info')."</li>");
-		echo("<li id=\"menu-linked_items\" onclick=\"return activateTab('linked_items', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('linked_item(s)')."</li>");
-		echo("</ul>");
+		$pageContents .= "<div id=\"tab-content\">";
+		
+		$pageContents .= "<input type=\"button\" class=\"saveButton\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
 		
 		$pageContents .= "<div class=\"tabContent\" id=\"details\">";
-		
-		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			$pageContents .= get_validation_javascript();
-		else
-			$pageContents .= get_popup_javascript();
-	
-		$pageContents .= get_common_javascript();
-		$pageContents .= get_tabs_javascript();
-		$pageContents .= get_forms_javascript();
-		
-		echo("<div class=\"tabContent\" id=\"tab-content\">");
 		
 		$pageContents .= "\n<input type=\"hidden\" name=\"op\" value=\"$op2\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"start-op\" value=\"$op\">";
@@ -1120,9 +1121,6 @@ function get_edit_form($op, $parent_item_r, $item_r, $status_type_r, $HTTP_VARS,
 	
 		$pageContents .= $formContents;
 		
-		
-		//$pageContents .= "<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
-		
 		$action_links_rs = NULL;
 		if(is_not_empty_array($parent_item_r))
 		{
@@ -1149,7 +1147,6 @@ function get_edit_form($op, $parent_item_r, $item_r, $status_type_r, $HTTP_VARS,
 			$pageContents .= get_opendb_lang_var('no_records_found');
 		}
 	
-		
 		$pageContents .= "</div>";
 	
 		$pageContents .= "<div class=\"tabContentHidden\" id=\"linked_items\">";

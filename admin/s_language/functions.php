@@ -287,7 +287,7 @@ function delete_s_language_var($language, $varname = NULL)
 
 function delete_s_table_language_var($language, $table = NULL, $column = NULL, $key1 = NULL, $key2 = NULL, $key3 = NULL)
 {
-    if(is_exists_language($language) && validate_s_table($table, $key1, $key2, $key3))
+    if(is_exists_language($language) && ($table == NULL || validate_s_table($table, $key1, $key2, $key3)))
 	{
 		$query = "DELETE FROM s_table_language_var ".
 			"WHERE language = '$language'";

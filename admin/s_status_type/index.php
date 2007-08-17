@@ -142,8 +142,8 @@ function display_s_status_type_row($status_type_r, $row)
 	echo("\n<td class=\"data\" align=center>".ifempty($status_type_r['default_ind'], 'N')."</td>");
     echo("\n<td class=\"data\" align=center>".$status_type_r['closed_ind']."</td>");
 
-	echo("\n<td class=\"data\">[&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
-		"&nbsp;/&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a>&nbsp;]</td>");
+	echo("\n<td class=\"data\">[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
+		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a> ]</td>");
 
 	echo("</tr>");
 }
@@ -329,7 +329,7 @@ if(is_opendb_valid_session())
 		}
 		else if($HTTP_VARS['op'] == 'insert')
 		{
-			$HTTP_VARS['s_status_type'] = strtoupper(substr($HTTP_VARS['s_status_type'],0,1));
+			$HTTP_VARS['s_status_type'] = strtoupper(substr(trim($HTTP_VARS['s_status_type']),0,1));
 			
 			if(strlen($HTTP_VARS['s_status_type'])>0 && !is_valid_s_status_type($HTTP_VARS['s_status_type']))
 			{
@@ -368,7 +368,7 @@ if(is_opendb_valid_session())
             // Include validation javascript here.
 			echo get_validation_javascript();
             
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Status Type List</a>]</div>");
+            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
 			echo("\n<h3>New Status type</h3>");
 
@@ -405,7 +405,7 @@ if(is_opendb_valid_session())
             // Include validation javascript here.
 			echo get_validation_javascript();
 
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Status Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
 			echo("\n<h3>Edit Status type</h3>");
             if(is_not_empty_array($errors))
@@ -451,11 +451,11 @@ if(is_opendb_valid_session())
 		}
 		else if(strlen($HTTP_VARS['op'])==0)
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
+			
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
-				
             echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
 				"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 				"\n<input type=\"hidden\" name=\"op\" value=\"\">".

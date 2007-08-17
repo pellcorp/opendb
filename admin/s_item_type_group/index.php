@@ -234,7 +234,7 @@ if (is_opendb_valid_session())
 			$item_type_group_r = fetch_item_type_group_r($HTTP_VARS['s_item_type_group']);
 			if(is_not_empty_array($item_type_group_r))
 			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Item Type Group List</a>]</div>");
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Main</a>]</div>");
 				echo("\n<h3>Edit ".$HTTP_VARS['s_item_type_group']." Item Type Group Relationships</h3>");
 				
 				if(is_not_empty_array($errors))

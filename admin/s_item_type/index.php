@@ -425,7 +425,7 @@ function generate_s_item_type_sql($s_item_type)
 /**
 Save zip file and return location or FALSE on error
 */
-function create_item_type_zip($s_item_type, &$error)
+/*function create_item_type_zip($s_item_type, &$error)
 {
     $zipfile = opendb_tempnam(strtolower($s_item_type.'.zip'));
 	if($zipfile!==FALSE)
@@ -490,7 +490,7 @@ function create_item_type_zip($s_item_type, &$error)
 	
 	//else
 	return FALSE;
-}
+}*/
 
 /*
 * Remove ALL records associated with an s_item_type, which includes:
@@ -568,7 +568,7 @@ if (is_opendb_valid_session())
 			header("Content-Length: ".strlen($sqlfile));
 			echo($sqlfile);
 		}
-		else if ($HTTP_VARS['op'] == 'zip' && is_exists_item_type($HTTP_VARS['s_item_type']))
+		/*else if ($HTTP_VARS['op'] == 'zip' && is_exists_item_type($HTTP_VARS['s_item_type']))
 		{
 		    header("Cache-control: no-store");
 			header("Pragma: no-store");
@@ -589,7 +589,7 @@ if (is_opendb_valid_session())
 				header("Content-type: text/plain");
 				echo $error;
 			}
-		}
+		}*/
 		else if($HTTP_VARS['op'] == 'delete_type') // This is initiated from the main s_item_type form.
 		{
 			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
@@ -1013,7 +1013,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Item Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
 			
 			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
 			if($item_type_r!==FALSE)
@@ -1124,7 +1124,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Item Type List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
 			echo get_validation_javascript();
 				
 			echo("\n<h3>New Item Type</h3>");
@@ -1163,23 +1163,18 @@ if (is_opendb_valid_session())
 				$HTTP_VARS['op'] == 'edit_types' || 
 				$HTTP_VARS['op'] == 'update_types')
 		{
-			echo get_validation_javascript();
-			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
-				
 			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a> ]");
+			
+			echo get_validation_javascript();
 			
 			echo("<form name=\"sqlform\" action=\"$PHP_SELF\" method=\"GET\">".
 				"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 				"<input type=\"hidden\" name=\"op\" value=\"\">".
 				"<input type=\"hidden\" name=\"s_item_type\" value=\"\">".
 				"</form>");
-				
-			echo("\n<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+			
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
 			
 			echo("<table>");
 			echo("<tr class=\"navbar\">"
@@ -1194,6 +1189,11 @@ if (is_opendb_valid_session())
 			$results = fetch_s_item_type_rs();
 			if($results)
 			{
+				echo("\n<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">");
+
+				echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
+				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+			
 				// value, display, img, checked_ind, order_no
 				$row = 0;
 				while($item_type_r = db_fetch_assoc($results))
@@ -1202,14 +1202,16 @@ if (is_opendb_valid_session())
 					$row++;
 				}
 				db_free_result($results);
+				
+				echo("<tr><td colspan=6 align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+					" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\"></tr>");
+					
+				echo("</form>");
 			}
 			else
 			{
 				echo("<tr><td colspan=6 align=center><div class=error>No Item Types Installed</div></td></tr>");
 			}
-
-			echo("<tr><td colspan=6 align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
 
 			echo("</table>");
 			

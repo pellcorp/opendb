@@ -153,6 +153,14 @@ Will return Group Block, including any subblocks
 */
 function get_group_block($config_group_r)
 {
+	global $PHP_SELF;
+	global $ADMIN_TYPE;
+	
+	$buffer .= "<form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">".
+			"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
+			"<input type=\"hidden\" name=\"op\" value=\"\">".
+			"<input type=\"hidden\" name=\"group_id\" value=\"".$config_group_r['id']."\">";
+			
 	$buffer .= "<div style=\"{text-align: right;}\"><input type=submit value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">
 			<input type=submit value=\"Save\" onclick=\"this.form['op'].value='save'; this.form.submit();\"></div>\n";
 	
@@ -223,6 +231,8 @@ function get_group_block($config_group_r)
 		db_free_result($results);
 	}
 	
+	$buffer .= "</form>";
+	
 	return $buffer;
 }
 
@@ -231,7 +241,7 @@ function save_config($HTTP_VARS, &$errors)
 	// had to add USER and s_language tables because these tables are accessed in the validations
     if(db_query("LOCK TABLES user READ, s_language READ, s_config_group WRITE, s_config_group_item WRITE, s_config_group_item_var WRITE"))
 	{
-		$results = fetch_s_config_group_rs();
+		$results = fetch_s_config_group_rs($HTTP_VARS['group_id']);
 		if($results)
 		{
 	        while($config_group_r = db_fetch_assoc($results))
@@ -367,6 +377,11 @@ if(is_opendb_valid_session())
 	{
 	    @set_time_limit(0);
 	    
+		if(strlen($HTTP_VARS['group_id']) == 0)
+		{
+			$HTTP_VARS['group_id'] = 'site';
+		}
+		
 	    // process any updates
 		if($HTTP_VARS['op'] == 'save')
 		{
@@ -383,53 +398,56 @@ if(is_opendb_valid_session())
 		echo(get_tabs_javascript());
 		
 		echo("<div class=\"tabContainer\">");
-		echo("<form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">".
-			"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-			"<input type=\"hidden\" name=\"op\" value=\"\">");
 		
-	    // display config form here. 
-	    // TODO - for performance reasons it might be a good idea to cache the call to fetch_s_config_group_rs, although realistically,
-		// its not that many records, so its more expedient to simply call it twice.  We call it twice, to push out the html as soon
-		// as possible rather than cache it, as this causes out of memory issues on tightly configured servers.
-	    $results = fetch_s_config_group_rs();
+		$config_group_rs = NULL;
+		$results = fetch_s_config_group_rs();
 		if($results)
 		{
-			echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
-        	
-        	$count=1;
-
 			while($config_group_r = db_fetch_assoc($results))
 			{
-                echo "<li id=\"menu-pane$count\"".($count==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$count', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
-				$count++;
+				$config_group_rs[] = $config_group_r;
+			}
+			db_free_result($results);
+		}
+		
+		if(is_array($config_group_rs))
+		{
+			echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
+        	
+        	reset($config_group_rs);
+			while(list(,$config_group_r) = each($config_group_rs))
+			{
+				if($config_group_r['id'] == $HTTP_VARS['group_id'])
+				{
+					echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
+				}
+				else
+				{
+					echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";					
+				}
 			}
 			db_free_result($results);
 			
-			echo("</ul>");
-  		}
-  		
-  		$results = fetch_s_config_group_rs();
-  		if($results)
-  		{
-  			$count=1;
+			echo("\n</ul>");
 
   			echo("<div id=\"tab-content\">");
   			
-  			while($config_group_r = db_fetch_assoc($results))
+  			reset($config_group_rs);
+			while(list(,$config_group_r) = each($config_group_rs))
   			{
-  				echo "<div class=\"".($count==1?"tabContent":"tabContentHidden")."\" id=\"pane$count\">\n".
-  				get_group_block($config_group_r).
-  				"</div>";
-  				 
-  				$count++;
-  			}
-  				
-  			db_free_result($results);
-  			
+  				if($config_group_r['id'] == $HTTP_VARS['group_id'])
+  				{
+  					echo "<div class=\"tabContent\">\n".
+  					get_group_block($config_group_r).
+  					"</div>";
+  					
+  					break;
+  				}
+			}
   			echo("</div>");
   		}
   		
-  		echo("</form></div>");
+  		echo("</div>");
 	}
 }//if(is_opendb_valid_session())
 ?>

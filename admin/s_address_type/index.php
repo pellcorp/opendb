@@ -50,11 +50,6 @@ $_COLUMN_HELP = array(
 		'')
 );
 
-$_FORM_HELP = array(
-	// Display help footer in specific item type edit form. (bottom block)
-	'saatr'=>array('Entries without a <b>attribute type</b> AND <b>order no</b> specified will be ignored.')
-);
-
 /*
 * s_address_type			varchar(10) NOT NULL,
   description				varchar(30) NOT NULL,
@@ -402,7 +397,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Address Types List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
 			
 			$address_type_r = fetch_s_address_type_r($HTTP_VARS['s_address_type']);
 			if($address_type_r!==FALSE)
@@ -507,7 +502,7 @@ if (is_opendb_valid_session())
 		{
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Address Types List</a>]</div>");
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
 			echo get_validation_javascript();
 				
 			echo("\n<h3>New Address Type</h3>");
@@ -545,15 +540,15 @@ if (is_opendb_valid_session())
 		// There are specific operations where this form should be displayed.
 		if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types')
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
+			
 			echo get_validation_javascript();
 			
 			if(is_not_empty_array($errors))
 			{
 				echo format_error_block($errors);
 			}
-			
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
-			
+				
 			echo("<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
 				"<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">".
 				"<input type=\"hidden\" name=\"op\" value=\"\">".
@@ -595,7 +590,6 @@ if (is_opendb_valid_session())
 			echo("<tr>".
 				"<td colspan=".($column_count)." align=center>".
 				"<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				"&nbsp;".
 				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">".
 				"</td>".
 				"</tr>");

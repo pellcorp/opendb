@@ -262,7 +262,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE ||
 					is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 		{
-			if(is_valid_opendb_mailer() && ($HTTP_VARS['user_type'] == 'A' || $HTTP_VARS['user_type'] == 'N' || $HTTP_VARS['user_type'] == 'B'))
+			if(is_valid_opendb_mailer() && $HTTP_VARS['user_type'] != 'G') 
 				$compulsory_ind = 'N';
 			else
 				$compulsory_ind = 'Y';

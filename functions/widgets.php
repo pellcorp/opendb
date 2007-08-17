@@ -412,12 +412,12 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 		$value[] = $tmpval;
 	}
 	
-	if($compulsory_ind == 'Y')
+	if($item_attribute_type_r['compulsory_ind'] == 'Y')
 	{
 		// at this point, $value will always be an array because of the block above.
 		if(is_empty_or_not_array($value))
 		{
-			$error = array('error'=>get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt),'detail'=>'');
+			$error = array('error'=>get_opendb_lang_var('prompt_must_be_specified', 'prompt', $item_attribute_type_r['prompt']),'detail'=>'');
 			if(is_array($errors))
 				$errors[] = $error;
 			else
@@ -471,7 +471,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 					{
 						if(!in_array(strtolower(get_file_ext($value[$i])), $extensions_r))
 						{
-							$error = array('error'=>get_opendb_lang_var('url_is_not_valid', array('prompt'=>$prompt,'extensions'=>implode(', ', $extensions_r))),'detail'=>'');
+							$error = array('error'=>get_opendb_lang_var('url_is_not_valid', array('prompt'=>$item_attribute_type_r['prompt'], 'extensions'=>implode(', ', $extensions_r))),'detail'=>'');
 							if(is_array($errors))
 								$errors[] = $error;
 							else
@@ -489,7 +489,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 				{
 					if(!is_valid_email_addr($value[$i]))
 					{
-						$error = array('error'=>get_opendb_lang_var('email_is_not_valid', 'prompt', $prompt),'detail'=>'');
+						$error = array('error'=>get_opendb_lang_var('email_is_not_valid', 'prompt', $item_attribute_type_r['prompt']),'detail'=>'');
 						if(is_array($errors))
 							$errors[] = $error;
 						else
@@ -511,7 +511,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 						$timestamp = get_timestamp_for_datetime($value[$i], 'YYYYMMDDHH24MISS');
 						if($timestamp===FALSE)
 						{
-							$error = array('error'=>get_opendb_lang_var('datetime_is_not_valid', array('prompt'=>$prompt,'format_mask'=>$item_attribute_type_r['input_type_arg1'])),'detail'=>'');
+							$error = array('error'=>get_opendb_lang_var('datetime_is_not_valid', array('prompt'=>$item_attribute_type_r['prompt'], 'format_mask'=>$item_attribute_type_r['input_type_arg1'])),'detail'=>'');
 							if(is_array($errors))
 								$errors[] = $error;
 							else
@@ -535,7 +535,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 					{
 						if(strstr($legalChars, substr($value[$i],$j,1)) === FALSE)
 						{
-							$error = array('error'=>get_opendb_lang_var('prompt_must_be_format', array('prompt'=>$prompt,'format'=>'['.$item_attribute_type_r['input_type_arg3'].']')),'detail'=>'');
+							$error = array('error'=>get_opendb_lang_var('prompt_must_be_format', array('prompt'=>$item_attribute_type_r['prompt'], 'format'=>'['.$item_attribute_type_r['input_type_arg3'].']')),'detail'=>'');
 							if(is_array($errors))
 								$errors[] = $error;
 							else
@@ -553,7 +553,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 				{
 					if(!is_numeric($value[$i]))
 					{
-						$error = array('error'=>get_opendb_lang_var('prompt_must_be_format', array('prompt'=>$prompt,'format'=>'[0-9]')),'detail'=>'');
+						$error = array('error'=>get_opendb_lang_var('prompt_must_be_format', array('prompt'=>$item_attribute_type_r['prompt'], 'format'=>'[0-9]')),'detail'=>'');
 						if(is_array($errors))
 							$errors[] = $error;
 						else
@@ -756,8 +756,8 @@ function readonly_field($name, $value)
 function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -779,8 +779,8 @@ function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value
 function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -820,8 +820,8 @@ function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_
 function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -841,8 +841,8 @@ function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $v
 function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -862,8 +862,8 @@ function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $valu
 function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size >= 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -894,8 +894,8 @@ function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $co
 function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
-	$size = $length;
-	if($size > 50 || $size<=0)
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -1078,8 +1078,8 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		if(is_file_upload_enabled())
 		{
 	       	// Default size.
-			$size = $length;
-			if($size >= 50 || $size<=0)
+			$size = $length; 
+			if(!is_numeric($size) || $size <= 0)
 				$size = 50;
 	
 			$field .= "<div class=\"fieldContentHidden\" id=\"${name}_upload\">";

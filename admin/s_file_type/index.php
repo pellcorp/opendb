@@ -34,7 +34,7 @@ function display_s_file_type_row($file_type_r, $row)
 	}
 	else
 	{
-		echo("\n<td align=\"center\" class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "text(30,100)", "Y", $file_type_r['content_type'], FALSE).
+		echo("\n<td align=\"center\" class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "text(20,100)", "Y", $file_type_r['content_type'], FALSE).
 			"<input type=hidden name=\"exists_ind[$row]\" value=\"N\">".
 			"</td>");
 	}
@@ -52,7 +52,7 @@ function display_s_file_type_row($file_type_r, $row)
 	echo("<td class=\"data\">".custom_select("content_group[$row]", $groups, "%value%", 1, $file_type_r['content_group'], "value")."</td>");
 
 	//description
-	echo("\n<td class=\"data\">".get_input_field("description[$row]", NULL, NULL, "text(30,255)", "N", $file_type_r['description'], FALSE)."</td>");
+	echo("\n<td class=\"data\">".get_input_field("description[$row]", NULL, NULL, "text(20,255)", "N", $file_type_r['description'], FALSE)."</td>");
 	
 	echo("\n<td align=\"center\" class=\"data\">".get_input_field("extension[$row]", NULL, "Extension", "text(10,10)", "Y",  $file_type_r['extension'], FALSE)."</td>");
 	
@@ -67,7 +67,7 @@ function display_s_file_type_row($file_type_r, $row)
 	}
 	
 	// convert array of extensiosn to a string
-	echo("\n<td class=\"data\">".get_input_field("alt_extensions[$row]", NULL, "Alternate Extensions", "text(30,255)", "N", $alt_extensions, FALSE)."</td>");
+	echo("\n<td class=\"data\">".get_input_field("alt_extensions[$row]", NULL, "Alternate Extensions", "text(20,255)", "N", $alt_extensions, FALSE)."</td>");
 	
 	echo("<td class=\"data\" align=center>");
 	// Get the theme specific source of the image.

@@ -2725,48 +2725,17 @@ function format_display_value($mask, $img, $value, $display, $theme_image_type=N
 }
 
 /*
-* Stub.
-*/
-function get_op_confirm_form($PHP_SELF, $confirm_message, $HTTP_VARS)
-{
-	return format_confirm_form($PHP_SELF, 
-							$confirm_message, 
-							NULL, 
-							$HTTP_VARS);
-}
-
-/*
 * @parm  $PHP_SELF - Form action
 * @param $prompt_message
 * @param $form_field_rs Array of form fields, of following format:
 * 	$form_field_rs[] = array('prompt'=>'Prompt', 'field'=>'Field contents')
 */
-function format_confirm_form($PHP_SELF, $confirm_message, $form_field_rs, $HTTP_VARS)
+function get_op_confirm_form($PHP_SELF, $confirm_message, $HTTP_VARS)
 {
-	$formContents = '';
-	
-	if(is_not_empty_array($form_field_rs))
-	{
-		$formContents .= "\n<table>";
-		while(list(,$field) = each($form_field_rs))
-		{
-			if(strlen($field['prompt'])>0)
-			{
-				$formContents .= 
-					format_field($field['prompt'],
-								NULL, // prompt_mask
-								$field['field']);
-			}
-			else
-			{
-				$formContents .= $field['field'];
-			}
-		}
-		$formContents .= "\n</table>";
-	}
-
-	$formContents .= "<p>".$confirm_message."</p>".
-		"\n<form action=\"$PHP_SELF\" method=\"POST\">".
+	$formContents = "\n<form action=\"$PHP_SELF\" method=\"POST\">";
+		
+	$formContents .= 
+		"<p>".$confirm_message."</p>".
 		get_url_fields($HTTP_VARS, array('confirmed'=>'false')). // Pass all http variables
 		"\n<input type=\"button\" value=\" ".get_opendb_lang_var('yes')." \" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\"> ".
 		"\n<input type=\"button\" value=\" ".get_opendb_lang_var('no')." \" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">".

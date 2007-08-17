@@ -774,38 +774,23 @@ if (is_opendb_valid_session())
 					
 						echo "Change Item Attribute Type Order No</h3>";
 					
-						$op_confirm_prompt = "";
-						
 						if(!is_s_item_attribute_type_deletable($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['order_no']))
 						{
-							$op_confirm_prompt .= "<div class=\"error\">Dependant items attribute exist for the \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\" Item Attribute Type - these will be updated to reflect this change!</div><br>";
+							echo("<p class=\"error\">Dependant items attribute exist for the \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\" Item Attribute Type - these will be updated to reflect this change!</p>");
 						}
 						
-						$op_confirm_prompt .= "Are you sure you want to update the Order No. for Item Attribute Type \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\"?";
-						
-						$field_rs[] = 
-							array('prompt'=>"Attribute Type",
-								'field'=>get_input_field("s_attribute_type", NULL, "Attribute Type", "readonly", "N", $HTTP_VARS['s_attribute_type'], FALSE));
-								
-						$field_rs[] = 
-							array('prompt'=>"Old Order No",
-								'field'=>get_input_field("old_order_no", NULL, "Old Order No.", "readonly", "N", $HTTP_VARS['order_no'], FALSE));
-								
-						$field_rs[] = 
-							array('prompt'=>"New Order No",
-								'field'=>get_input_field("order_no", NULL, "New Order No.", "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE));
-						
-						unset($HTTP_VARS['s_attribute_type']);
-						unset($HTTP_VARS['order_no']);
-						unset($HTTP_VARS['old_order_no']);
-						
-						echo "<table width=\"95%\"><tr><td>".
-							format_confirm_form(
-								$PHP_SELF, 
-								$op_confirm_prompt,
-								$field_rs,
-								$HTTP_VARS).
-							"</td></tr></table>";
+						echo("<form action=\"$PHP_SELF\" method=\"GET\">".
+							get_url_fields($HTTP_VARS, array('confirmed'=>'false'), array('s_attribute_type', 'order_no', 'old_order_no')));
+							
+						echo("<table>");
+						echo get_input_field("s_attribute_type", NULL, "Attribute Type", "readonly", "Y", $HTTP_VARS['s_attribute_type']);
+						echo get_input_field("old_order_no", NULL, "Old Order No", "readonly", "Y", $HTTP_VARS['order_no']);
+						echo get_input_field("order_no", NULL, "New Order No", "number(3)", "Y", $HTTP_VARS['order_no']);
+						echo("</table>");
+				
+						echo("\n<input type=\"button\" value=\" ".get_opendb_lang_var('continue')." \" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\"> ".
+							"\n<input type=\"button\" value=\" ".get_opendb_lang_var('cancel')." \" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">".
+						"</form>\n");
 					}
 					else // $HTTP_VARS['confirmed'] == 'true'
 					{
@@ -828,6 +813,10 @@ if (is_opendb_valid_session())
 								$errors[] = array('error'=>'Item Attribute Type "'.$HTTP_VARS['s_attribute_type'].'['.$HTTP_VARS['old_order_no'].']" order_no not updated.','detail'=>'Item attribute Type with new order_no exists');
 							}
 						}// do nothing here
+						else 
+						{
+							$errors[] = array('error'=>'Item Attribute Type "'.$HTTP_VARS['s_attribute_type'].'['.$HTTP_VARS['old_order_no'].']" order_no not found.', 'detail'=>'');
+						}
 						
 						// return to edit form
 						$HTTP_VARS['op'] = 'edit';

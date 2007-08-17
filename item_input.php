@@ -1011,22 +1011,6 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 	if($formContents!==FALSE)
 	{
 		$pageContents = '';
-		echo("<div class=\"tabContainer\">");
-		
-		echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
-		echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('details')."</li>");
-		echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('instance_info')."</li>");
-		echo("</ul>");
-		
-		$pageContents .= "<div class=\"tabContent\" id=\"details\">";
-		if($upload_file_fields && is_file_upload_enabled())
-		{
-			$pageContents .= "\n<form name=\"itemInput\" action=\"$PHP_SELF\" method=\"POST\" enctype=\"multipart/form-data\">";
-		}
-		else
-		{
-			$pageContents .= "\n<form action=\"$PHP_SELF\" method=\"POST\">"; 
-		}
 		
 		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 			$pageContents .= get_validation_javascript();
@@ -1037,7 +1021,33 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		$pageContents .= get_tabs_javascript();
 		$pageContents .= get_forms_javascript();
 		
-		echo("<div class=\"tabContent\" id=\"tab-content\">");
+		$pageContents .= "<div class=\"tabContainer\">";
+		
+		if($upload_file_fields && is_file_upload_enabled())
+		{
+			$pageContents .= "\n<form name=\"itemInput\" action=\"$PHP_SELF\" method=\"POST\" enctype=\"multipart/form-data\">";
+		}
+		else
+		{
+			$pageContents .= "\n<form action=\"$PHP_SELF\" method=\"POST\">"; 
+		}
+		
+		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+			$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";
+		else
+			$onclick_event = "this.form.submit();";
+		
+		//activateTab(menuId, menuContainerId, contentContainerId, activeMenuClass, tabClass)
+		$pageContents .= "<ul class=\"tabMenu\" id=\"tab-menu\">";
+		$pageContents .= "<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('details')."</li>";
+		$pageContents .= "<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('instance_info')."</li>";
+		$pageContents .= "</ul>";
+		
+		$pageContents .= "<div id=\"tab-content\">";
+		
+		$pageContents .= "<input type=\"button\" class=\"saveButton\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
+		
+		$pageContents .= "<div class=\"tabContent\" id=\"details\">";
 		
 		$pageContents .= "\n<input type=\"hidden\" name=\"op\" value=\"$op2\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"start-op\" value=\"$op\">";
@@ -1063,13 +1073,6 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		$pageContents .= "\n<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">";
 	
 		$pageContents .= $formContents;
-		
-		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";
-		else
-			$onclick_event = "this.form.submit();";
-
-		$pageContents .= "<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
 		
 		$action_links_rs = NULL;
 		

@@ -78,7 +78,7 @@ function getItemsPerPageControl($PHP_SELF, $HTTP_VARS)
 		while(list(,$items_per_page) = each($items_per_page_options_r))
 		{
 			if($items_per_page == '0')
-				$display = '';
+				$display = get_opendb_lang_var('all');
 			else
 				$display = $items_per_page;
 			

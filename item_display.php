@@ -302,11 +302,12 @@ function get_site_plugin_links($page_title, $item_r)
 						    $titleMaskCfg->reset();
 						    
 							// now we want to expand the $parse_url
-							$parse_url = $titleMaskCfg->expand_title($item_r, $parse_url, $site_plugin_conf_rs);
-						
-							$pageContents .= "<li><a href=\"".$parse_url."\" onclick=\"popup('url.php?url=".urlencode($parse_url)."&cache_type=none', 800, 600); return false;\">$link_text";
-							$pageContents .= "<br />[".$site_plugin_link_r['description']."]";
-							$pageContents .= "</a></li>";
+							$parse_url = trim($titleMaskCfg->expand_title($item_r, $parse_url, $site_plugin_conf_rs));
+							if(strlen($parse_url)>0) {
+								$pageContents .= "<li><a href=\"".$parse_url."\" onclick=\"popup('url.php?url=".urlencode($parse_url)."&cache_type=none', 800, 600); return false;\">$link_text";
+								$pageContents .= "<br />[".$site_plugin_link_r['description']."]";
+								$pageContents .= "</a></li>";
+							}
 						}
 					}//while
 					db_free_result($results2);

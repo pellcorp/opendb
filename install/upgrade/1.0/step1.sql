@@ -127,3 +127,5 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_r
 
 ALTER TABLE item_attribute ADD INDEX lookup_attribute_val_idx ( lookup_attribute_val );
 
+# action links are not printable
+UPDATE s_item_listing_column_conf SET printable_support_ind = 'N' WHERE column_type = 'action_links';

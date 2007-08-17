@@ -851,7 +851,7 @@ INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field
 VALUES (1, 4, 's_field_type', 'RATING', NULL, NULL, 'Y', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
-VALUES (1, 5, 'action_links', NULL, NULL, NULL, 'N', NULL, 'Y');
+VALUES (1, 5, 'action_links', NULL, NULL, NULL, 'N', NULL, 'N');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (1, 6, 's_field_type', 'OWNER', NULL, NULL, 'Y', NULL, 'Y');
@@ -887,7 +887,7 @@ INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field
 VALUES (2, 6, 's_attribute_type', NULL, 'AGE_RATING', NULL, 'Y', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
-VALUES (2, 7, 'action_links', NULL, NULL, NULL, 'N', NULL, 'Y');
+VALUES (2, 7, 'action_links', NULL, NULL, NULL, 'N', NULL, 'N');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (2, 8, 's_field_type', 'OWNER', NULL, NULL, 'Y', NULL, 'Y');
@@ -920,7 +920,7 @@ INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field
 VALUES (3, 5, 's_attribute_type', NULL, 'ARTIST', NULL, 'Y', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
-VALUES (3, 6, 'action_links', NULL, NULL, NULL, 'N', NULL, 'Y');
+VALUES (3, 6, 'action_links', NULL, NULL, NULL, 'N', NULL, 'N');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (3, 7, 's_field_type', 'OWNER', NULL, NULL, 'Y', NULL, 'Y');
@@ -953,7 +953,7 @@ INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field
 VALUES (4, 5, 's_attribute_type', NULL, 'AUTHOR', NULL, 'Y', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
-VALUES (4, 7, 'action_links', NULL, NULL, NULL, 'N', NULL, 'Y');
+VALUES (4, 7, 'action_links', NULL, NULL, NULL, 'N', NULL, 'N');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (4, 8, 's_field_type', 'OWNER', NULL, NULL, 'Y', NULL, 'Y');
@@ -989,7 +989,7 @@ INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field
 VALUES (5, 6, 's_attribute_type', NULL, 'NO_PLAYERS', NULL, 'Y', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
-VALUES (5, 7, 'action_links', NULL, NULL, NULL, 'N', NULL, 'Y');
+VALUES (5, 7, 'action_links', NULL, NULL, NULL, 'N', NULL, 'N');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (5, 8, 's_field_type', 'OWNER', NULL, NULL, 'Y', NULL, 'Y');

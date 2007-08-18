@@ -112,74 +112,85 @@ function build_langvar_page($language)
 	global $PHP_SELF;
 	global $ADMIN_TYPE;
 	
-	$block = "<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>";
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 	
-	$block .= "<h3>Edit $language Language Variables</h3>";
+	echo("<h3>Edit $language Language Variables</h3>");
 		
-	$block .= "<div class=\"tabContainer\"><form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">".
+	echo("<div class=\"tabContainer\"><form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">".
 		"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 		"<input type=\"hidden\" name=\"op\" value=\"update-langvars\">".
-		"<input type=\"hidden\" name=\"language\" value=\"".$language."\">";
+		"<input type=\"hidden\" name=\"language\" value=\"".$language."\">");
 
-   	$tabBlock = "";
-   	$paneBlock = "";
-   	$pageno = 1;
-   	$varcount = 0;
+	$initLetter = NULL;
+	$currentInitLetter = NULL;
 
 	$results = fetch_language_langvar_rs($language, !is_default_language($language)?OPENDB_LANG_INCLUDE_DEFAULT:NULL);
 	if($results)
 	{
-		$lang_var_rs = NULL;
+		$alpha_lang_var_rs = NULL;
 		
 		while($lang_var_r = db_fetch_assoc($results))
 		{
-			$lang_var_r['id'] = $varcount;
-			$varcount++;
+			$initLetter = strtoupper(substr($lang_var_r['varname'], 0, 1));
 			
-			$lang_var_rs[] = $lang_var_r;
-			
-			if(count($lang_var_rs) == 20)
+			if( $currentInitLetter == NULL || $currentInitLetter != $initLetter)
 			{
-				$tabBlock .= "<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$pageno', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">Page&nbsp;$pageno</li>";
-				
-		        $paneBlock .= "<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">\n";
-		        $paneBlock .= "<input type=\"submit\" value=\"Update\">";
-				$paneBlock .= '<table><tr class="navbar">';
-				$paneBlock .= '<th>Varname</th>';
-				
-				if(!is_default_language($language))
-				{
-					$paneBlock .= '<th>Default</th>';
-				}
-				
-				$paneBlock .= '<th>Value</th></tr>';
-				while(list(,$lang_var_r) = each($lang_var_rs))
-				{
-					$paneBlock .= '<tr>';
-					$paneBlock .= '<td class="prompt">'.$lang_var_r['varname'].'</td>';
-					if(!is_default_language($language))
-					{
-						$paneBlock .= '<td class="data">'.htmlspecialchars($lang_var_r['default_value']).'</td>';
-					}
-					$paneBlock .= '<td class="data"><input type="text" size=60 name="lang_var['.$lang_var_r['varname'].']" value="'.htmlspecialchars($lang_var_r['value']).'"></td>';
-					$paneBlock .= '</tr>';
-				}
-				$paneBlock .= '</table>';
-	
-				$paneBlock .= "\n</div>";
-				
-				$lang_var_rs = NULL;
-				$pageno++;
-			}				
+				$currentInitLetter = $initLetter;
+			}
+			
+			$alpha_lang_var_rs[$currentInitLetter][] = $lang_var_r;
 		}
 		db_free_result($results);
 	}
 	
-	$block .= "<ul class=\"tabMenu\" id=\"tab-menu\">".$tabBlock."</ul>";
-	$block .= '<div id="tab-content">'.$paneBlock.'</div>';
+	echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 	
-	$block .= '</form></div>';
-	return $block;
+	$isFirst = true;
+	while(list($letter, $lang_var_rs) = each($alpha_lang_var_rs))
+	{
+		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$letter', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">&nbsp;$letter&nbsp;</li>");
+		$isFirst = false;
+	}
+	echo("</ul>");
+	
+	reset($alpha_lang_var_rs);
+	
+	echo('<div id="tab-content">');
+	echo("<div style=\"{text-align: right;}\"><input class=\"saveButton\" type=\"submit\" value=\"Update\"></div>");
+	
+	$isFirst = true;
+	while(list($letter, $lang_var_rs) = each($alpha_lang_var_rs))
+	{
+		echo("<div id=\"pane$letter\" class=\"".($isFirst?"tabContent":"tabContentHidden")."\">\n");
+		
+		echo('<table><tr class="navbar">');
+		echo('<th>Varname</th>');
+			
+		if(!is_default_language($language))
+		{
+			echo('<th>Default</th>');
+		}
+			
+		echo('<th>Value</th></tr>');
+		while(list(,$lang_var_r) = each($lang_var_rs))
+		{
+			echo('<tr>');
+			echo('<td class="prompt">'.$lang_var_r['varname'].'</td>');
+			if(!is_default_language($language))
+			{
+				echo('<td class="data">'.htmlspecialchars($lang_var_r['default_value']).'</td>');
+			}
+			echo('<td class="data"><input type="text" size=60 name="lang_var['.$lang_var_r['varname'].']" value="'.htmlspecialchars($lang_var_r['value']).'"></td>');
+			echo('</tr>');
+		}
+		echo('</table>');
+	
+		echo("\n</div>");
+		
+		$isFirst = false;
+	}
+	
+	echo('</form></div>');
 }
 
 function build_table_page($language)
@@ -477,7 +488,7 @@ if (is_opendb_valid_session())
 			{
 				echo(get_common_javascript());
 				echo get_tabs_javascript();
-				echo build_langvar_page($HTTP_VARS['language']);
+				build_langvar_page($HTTP_VARS['language']);
 			}
 			else
 			{

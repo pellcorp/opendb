@@ -58,8 +58,9 @@ function moveRowDown(form, element)
 }
 
 var listOfColumns = new Array(
-		'column_no', 'column_type', 's_field_type', 's_attribute_type' , 'orderby_support_ind', 'orderby_datatype',
-		'override_prompt', 'printable_support_ind');
+		'column_no', 'column_type', 's_field_type', 's_attribute_type' , 'override_prompt', 'printable_support_ind', 
+		'orderby_support_ind', 'orderby_datatype', 'orderby_default_ind', 'orderby_sort_order'
+		);
 
 /**
 This code is really really really messy, it should be consolidated so that we don't repeat large sections of
@@ -79,10 +80,12 @@ function doOnChange(form, element)
 	var column_type = get_row_element(form, row, 'column_type');
 	var s_field_type = get_row_element(form, row, 's_field_type');
 	var s_attribute_type = get_row_element(form, row, 's_attribute_type');
-	var orderby_support_ind = get_row_element(form, row, 'orderby_support_ind');
-	var orderby_datatype = get_row_element(form, row, 'orderby_datatype');
 	var override_prompt = get_row_element(form, row, 'override_prompt');
 	var printable_support_ind = get_row_element(form, row, 'printable_support_ind');
+	var orderby_support_ind = get_row_element(form, row, 'orderby_support_ind');
+	var orderby_datatype = get_row_element(form, row, 'orderby_datatype');
+	var orderby_default_ind = get_row_element(form, row, 'orderby_default_ind');
+	var orderby_sort_order = get_row_element(form, row, 'orderby_sort_order');
 
 	if(name == 'column_type')
 	{
@@ -92,9 +95,15 @@ function doOnChange(form, element)
 		s_attribute_type.disabled = false;
 		orderby_support_ind.disabled = false;
 		orderby_support_ind.checked = true;
-	
+		
 		removeEmptySelectOption(orderby_datatype);
 		orderby_datatype.disabled = false;
+		
+		orderby_default_ind.checked = false;
+		orderby_default_ind.disabled = false;
+			
+		insertEmptySelectOption(orderby_sort_order);
+		orderby_sort_order.disabled = true;
 		
 		override_prompt.disabled = false;
 		printable_support_ind.disabled = false;
@@ -116,18 +125,23 @@ function doOnChange(form, element)
 		}
 		else
 		{
-		
 			insertEmptySelectOption(s_field_type);
 			s_field_type.disabled=true;
 			
 			insertEmptySelectOption(s_attribute_type);
 			s_attribute_type.disabled=true;
 			
+			orderby_support_ind.checked = false;
+			orderby_support_ind.disabled = true;
+			
 			insertEmptySelectOption(orderby_datatype);
 			orderby_datatype.disabled = true;
 			
-			orderby_support_ind.checked = false;
-			orderby_support_ind.disabled = true;
+			orderby_default_ind.checked = false;
+			orderby_default_ind.disabled = true;
+			
+			insertEmptySelectOption(orderby_sort_order);
+			orderby_sort_order.disabled = true;
 			
 			if(val == 'action_links' || val == '')
 			{			
@@ -145,9 +159,18 @@ function doOnChange(form, element)
 		{
 			orderby_support_ind.checked = false;
 			orderby_support_ind.disabled = true;
-
+			
 			insertEmptySelectOption(orderby_datatype);
 			orderby_datatype.disabled = true;
+			
+			orderby_default_ind.checked = false;
+			orderby_default_ind.disabled = true;
+			
+			insertEmptySelectOption(orderby_sort_order);
+			orderby_sort_order.disabled = true;
+			
+			orderby_default_ind.checked = false;
+			orderby_default_ind.disabled = false;
 		}
 		else
 		{
@@ -168,11 +191,33 @@ function doOnChange(form, element)
 		{
 			insertEmptySelectOption(orderby_datatype);
 			orderby_datatype.disabled = true;
+			
+			orderby_default_ind.disabled = true;
+			orderby_default_ind.checked = false;
+			
+			insertEmptySelectOption(orderby_sort_order);
+			orderby_sort_order.disabled = true;
 		}
 		else
 		{
 			removeEmptySelectOption(orderby_datatype);
 			orderby_datatype.disabled = false;
+			
+			orderby_default_ind.disabled = false;
+			orderby_default_ind.checked = false;
+		}
+	}
+	else if(name == 'orderby_default_ind')
+	{
+		if(!element.checked)
+		{
+			insertEmptySelectOption(orderby_sort_order);
+			orderby_sort_order.disabled = true;
+		}
+		else
+		{
+			removeEmptySelectOption(orderby_sort_order);
+			orderby_sort_order.disabled = false;
 		}
 	}
 	

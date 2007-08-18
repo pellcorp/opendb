@@ -146,6 +146,8 @@ if(is_site_enabled())
 					$footer_links_r[] = array(url=>$url, target=>'popup(640,480)', text=>get_opendb_lang_var('send_email'));
 				}
 				
+				$footer_links_r[] = array(url=>"listings.php?owner_id=".$HTTP_VARS['uid']."&order_by=title&sortorder=ASC", text=>get_opendb_lang_var('list_my_items'));
+				
 				if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('user_listing_url_vars')))
 				{
 					$footer_links_r[] = array(url=>"user_listing.php?".get_url_string(get_opendb_session_var('user_listing_url_vars')),text=>get_opendb_lang_var('back_to_user_listing'));

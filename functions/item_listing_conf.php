@@ -33,7 +33,7 @@ function fetch_item_listing_conf_rs()
 
 function fetch_s_item_listing_column_conf_rs($silc_id)
 {
-	$query = 'SELECT column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind '.
+	$query = 'SELECT column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, orderby_sort_order, orderby_default_ind, printable_support_ind '.
 			'FROM s_item_listing_column_conf '.
 			'WHERE silc_id = '.$silc_id.' '.
 			'ORDER BY column_no';

@@ -170,9 +170,11 @@ CREATE TABLE s_item_listing_column_conf (
 	s_field_type			VARCHAR(10),
 	s_attribute_type		VARCHAR(10),
 	override_prompt			VARCHAR(30),
+	printable_support_ind	VARCHAR(1) NOT NULL DEFAULT 'Y',
 	orderby_support_ind		VARCHAR(1) NOT NULL DEFAULT 'Y',
 	orderby_datatype		VARCHAR(10),
-	printable_support_ind	VARCHAR(1) NOT NULL DEFAULT 'Y',
+	orderby_default_ind		VARCHAR(1) NOT NULL DEFAULT 'N',
+	orderby_sort_order		VARCHAR(4),
 	PRIMARY KEY ( silc_id, column_no )
 ) TYPE=MyISAM COMMENT='Item Listing Column Configuration';
 

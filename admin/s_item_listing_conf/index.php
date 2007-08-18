@@ -31,10 +31,13 @@ function get_column_prompts()
 				'Column Type',
 				'Field Type',
 				'Attribute Type',
-				'Orderby Support',
-				'Orderby Datatype',
 				'Override Prompt',
-				'Printable Support');				
+				'Printable<br />Support',
+				'Orderby<br />Support',
+				'Orderby<br />Datatype',
+				'Orderby<br />Default',
+				'Orderby<br />Sort Order'
+				);				
 }
 
 /**
@@ -54,18 +57,19 @@ function is_field_disabled($name, $record_r)
 	{
 		return ($record_r['column_type'] != 's_attribute_type' && $record_r['column_type'] != 's_field_type');
 	}
-	else if($name == 'orderby_datatype')
+	else if($name == 'orderby_datatype' || $name == 'orderby_default_ind')
 	{
 		return ($record_r['orderby_support_ind'] == 'N' || 
 			($record_r['column_type'] != 's_attribute_type' && $record_r['column_type'] != 's_field_type'));
 	}
-	else if($name == 'override_prompt')
+	else if($name == 'orderby_sort_order')
 	{
-		return FALSE; // only ever disabled for new record
+		return ($record_r['orderby_support_ind'] == 'N' || $record_r['orderby_default_ind'] == 'N' ||
+			($record_r['column_type'] != 's_attribute_type' && $record_r['column_type'] != 's_field_type'));
 	}
-	else if($name == 'printable_support_ind')
+	else //if($name == 'override_prompt')
 	{
-		return ($record_r['column_type'] == 'action_links');
+		return FALSE;
 	}
 }
 
@@ -184,6 +188,38 @@ function get_column_details($record_r, $row)
 				$new_record || is_field_disabled('s_attribute_type', $record_r)),
 			FALSE));
 	
+	$columns_r[] = array(
+		'column'=>'override_prompt',
+		'field'=>get_input_field(
+			"override_prompt[$row]", 
+			NULL, 
+			'Override Prompt', 
+			'text(20,30)', 
+			'N',
+			$record_r['override_prompt'], 
+			FALSE,
+			'',
+			'', // onChange
+			$new_record || is_field_disabled('override_prompt', $record_r)));
+			
+	$disabled = ($new_record || is_field_disabled('printable_support_ind', $record_r));
+	if($disabled)
+		$record_r['printable_support_ind'] = 'N';
+		
+	$columns_r[] = array(
+		'column'=>'printable_support_ind',
+		'field'=>get_input_field(
+			"printable_support_ind[$row]",
+			NULL,
+			'Printable Support',
+			"simple_checkbox(".($record_r['printable_support_ind']=='Y'?'CHECKED':'').")", 
+			'N', 
+			'Y', 
+			FALSE,
+			'',
+			'', // onchange
+			$disabled));
+			
 	$disabled = ($new_record || is_field_disabled('orderby_support_ind', $record_r));
 	if($disabled)
 		$record_r['orderby_support_ind'] = 'N';	
@@ -202,15 +238,15 @@ function get_column_details($record_r, $row)
 			'doOnChange(this.form, this);',
 			$new_record || is_field_disabled('orderby_support_ind', $record_r)));
 
-	$datatypes_r = array();
+	$orderby_datatypes_r = array();
 	if(is_field_disabled('orderby_datatype', $record_r))
 	{
-		$datatypes_r = array(
+		$orderby_datatypes_r = array(
 			array('value'=>'', 'display'=>''));
 	}
 
-	$datatypes_r = array_merge(
-		$datatypes_r,
+	$orderby_datatypes_r = array_merge(
+		$orderby_datatypes_r,
 		array(
 			array('value'=>'alpha'),
 			array('value'=>'numeric')));
@@ -222,7 +258,7 @@ function get_column_details($record_r, $row)
 			NULL,
 			custom_select(
 				"orderby_datatype[$row]", 
-				$datatypes_r, 
+				$orderby_datatypes_r, 
 				'%value%', 
 				1,
 				$record_r['orderby_datatype'],
@@ -232,39 +268,55 @@ function get_column_details($record_r, $row)
 				'', // onChange
 				$new_record || is_field_disabled('orderby_datatype', $record_r)), 
 			FALSE));
-					
-	$columns_r[] = array(
-		'column'=>'override_prompt',
-		'field'=>get_input_field(
-			"override_prompt[$row]", 
-			NULL, 
-			'Override Prompt', 
-			'text(20,30)', 
-			'N',
-			$record_r['override_prompt'], 
-			FALSE,
-			'',
-			'', // onChange
-			$new_record || is_field_disabled('override_prompt', $record_r)));
-
-	$disabled = ($new_record || is_field_disabled('printable_support_ind', $record_r));
+			
+	$disabled = ($new_record || is_field_disabled('orderby_default_ind', $record_r));
 	if($disabled)
-		$record_r['printable_support_ind'] = 'N';
+		$record_r['orderby_default_ind'] = 'N';
 		
 	$columns_r[] = array(
-		'column'=>'printable_support_ind',
+		'column'=>'orderby_default_ind',
 		'field'=>get_input_field(
-			"printable_support_ind[$row]",
+			"orderby_default_ind[$row]",
 			NULL,
-			'Printable Support',
-			"simple_checkbox(".($record_r['printable_support_ind']=='Y'?'CHECKED':'').")", 
+			'Default Orderby',
+			"simple_checkbox(".($record_r['orderby_default_ind']=='Y'?'CHECKED':'').")", 
 			'N', 
 			'Y', 
 			FALSE,
 			'',
-			'', // onchange
+			'doOnChange(this.form, this);', // onchange
 			$disabled));
 	
+	$sortorder_r = array();
+	if(is_field_disabled('orderby_sort_order', $record_r))
+	{
+		$sortorder_r = array(
+			array('value'=>'', 'display'=>''));
+	}
+	$sortorder_r = array_merge(
+		$sortorder_r,
+		array(
+			array('value'=>'asc'),
+			array('value'=>'desc')));
+
+	$columns_r[] = array(
+		'column'=>'orderby_sort_order',
+		'field'=>format_field(
+			'Orderby Sort Order',
+			NULL,
+			custom_select(
+				"orderby_sort_order[$row]", 
+				$sortorder_r, 
+				'%value%', 
+				1,
+				$record_r['orderby_sort_order'],
+				'value',
+				NULL,
+				'',
+				'', // onChange
+				$new_record || is_field_disabled('orderby_sort_order', $record_r)), 
+			FALSE));
+			
 	$buffer = "<tr>";
 	
 	$class = 'data';
@@ -313,9 +365,12 @@ if(is_opendb_valid_session())
 								's_field_type'=>$HTTP_VARS['s_field_type'][$row],
 								's_attribute_type'=>$HTTP_VARS['s_attribute_type'][$row],
 								'override_prompt'=>$HTTP_VARS['override_prompt'][$row],
+								'printable_support_ind'=>$HTTP_VARS['printable_support_ind'][$row],
 								'orderby_support_ind'=>$HTTP_VARS['orderby_support_ind'][$row],
 								'orderby_datatype'=>$HTTP_VARS['orderby_datatype'][$row],
-								'printable_support_ind'=>$HTTP_VARS['printable_support_ind'][$row]);
+								'orderby_default_ind'=>$HTTP_VARS['orderby_default_ind'][$row],
+								'orderby_sort_order'=>$HTTP_VARS['orderby_sort_order'][$row]
+								);
 
 						if(validate_item_column_conf_r($column_conf_r, $error))
 						{

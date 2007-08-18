@@ -149,6 +149,14 @@ function validate_orderby_datatype($datatype)
 		return 'alpha';
 }
 
+function validate_orderby_sort_order($sortorder)
+{
+	if(strcasecmp($sortorder, 'asc') === 0)
+		return 'asc';
+	else
+		return 'desc';
+}
+
 function validate_s_attribute_type($s_attribute_type)
 {
 	$s_attribute_type = strtoupper($s_attribute_type);
@@ -202,9 +210,11 @@ function validate_item_column_conf_r(&$column_conf_r, &$error)
 					$column_conf_r['s_field_type'], 
 					$column_conf_r['s_attribute_type'], 
 					$column_conf_r['override_prompt'],
+					$column_conf_r['printable_support_ind'],
 					$column_conf_r['orderby_support_ind'], 
 					$column_conf_r['orderby_datatype'], 
-					$column_conf_r['printable_support_ind'],
+					$column_conf_r['orderby_default_ind'], 
+					$column_conf_r['orderby_sort_order'], 
 					$error);	
 }
 				
@@ -214,9 +224,11 @@ function validate_item_column_conf(
 		&$s_field_type, 
 		&$s_attribute_type, 
 		&$override_prompt,
+		&$printable_support_ind, 
 		&$orderby_support_ind, 
 		&$orderby_datatype, 
-		&$printable_support_ind, 
+		&$orderby_default_ind, 
+		&$orderby_sort_order, 
 		&$error)
 {
 	$column_type = validate_column_type($column_type);
@@ -227,8 +239,9 @@ function validate_item_column_conf(
 			$s_field_type = NULL;
 			$s_attribute_type = NULL;
 			$orderby_support_ind = 'N';
-			$orderby_datatype = NULL;	
-			$printable_support_ind = 'N';
+			$orderby_default_ind = 'N';
+			$orderby_datatype = NULL;
+			$orderby_sort_order = NULL;
 		}
 		else
 		{
@@ -267,13 +280,15 @@ function validate_item_column_conf(
 
 			$orderby_support_ind = validate_ind_column($orderby_support_ind);
 			if($orderby_support_ind == 'Y')
-			{
 				$orderby_datatype = validate_orderby_datatype($orderby_datatype);
-			}
 			else
-			{
 				$orderby_datatype = NULL;
-			}
+			
+			$orderby_default_ind = validate_ind_column($orderby_default_ind);
+			if($orderby_default_ind == 'Y')
+				$orderby_sort_order = validate_orderby_sort_order($orderby_sort_order);
+			else
+				$orderby_sort_order = NULL;
 			
 			$printable_support_ind = validate_ind_column($printable_support_ind);
 		}
@@ -307,9 +322,11 @@ function insert_new_column_conf_set($silc_id, $column_conf_rs)
 						$column_conf_r['s_field_type'], 
 						$column_conf_r['s_attribute_type'], 
 						$column_conf_r['override_prompt'],
+						$column_conf_r['printable_support_ind'],
 						$column_conf_r['orderby_support_ind'], 
 						$column_conf_r['orderby_datatype'], 
-						$column_conf_r['printable_support_ind'],
+						$column_conf_r['orderby_default_ind'],
+						$column_conf_r['orderby_sort_order'],
 						TRUE); //assumes validation already performed
 			}
 			
@@ -332,7 +349,8 @@ function insert_new_column_conf_set($silc_id, $column_conf_rs)
 
 function insert_s_item_listing_column_conf(
 				$silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, 
-				$override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind,
+				$override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype,
+				$orderby_default_ind, $orderby_sort_order,
 				$skip_validations = FALSE)
 {
     if(is_numeric($column_no)>0 && strlen($column_type)>0)
@@ -341,7 +359,7 @@ function insert_s_item_listing_column_conf(
 		if($skip_validations == TRUE || is_exists_s_item_listing_conf($silc_id))
 		{
 			if($skip_validations == TRUE || 
-					validate_item_column_conf($column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind, $error))
+					validate_item_column_conf($column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order, $error))
 			{
 		    	$query = 'INSERT INTO s_item_listing_column_conf ('.
 							'silc_id, '.
@@ -350,9 +368,11 @@ function insert_s_item_listing_column_conf(
 						's_field_type, '.
 						's_attribute_type, '.
 						'override_prompt, '.
+						'printable_support_ind, '.
 						'orderby_support_ind, '.
 						'orderby_datatype, '.
-						'printable_support_ind) '.
+						'orderby_default_ind, '.
+						'orderby_sort_order) '.
 					'VALUES ('.
 						"'$silc_id', ".
 						"$column_no, ".
@@ -360,19 +380,21 @@ function insert_s_item_listing_column_conf(
 						"'$s_field_type', ".
 						"'$s_attribute_type', ".
 						"'".addslashes(trim(strip_tags($override_prompt)))."', ".
+						"'$printable_support_ind', ".
 						"'$orderby_support_ind', ".
 						"'$orderby_datatype', ".
-						"'$printable_support_ind')";
+						"'$orderby_default_ind', ".
+						"'$orderby_sort_order') ";
 	
 				$insert = db_query($query);
 				if ($insert && db_affected_rows() > 0)
 				{
-					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind));
+					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
 					return TRUE;
 				}
 				else
 				{
-					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind));
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
 					return FALSE;
 				}
 			}
@@ -383,7 +405,7 @@ function insert_s_item_listing_column_conf(
 		}
 		else
 		{
-            opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Parent s_item_listing_conf not found', array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind));
+            opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Parent s_item_listing_conf not found', array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
 			return FALSE;
 		}
 	}
@@ -396,7 +418,8 @@ function insert_s_item_listing_column_conf(
 */
 function update_s_item_listing_column_conf(
 				$silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, 
-				$override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind,
+				$override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype,
+				$orderby_default_ind, $orderby_sort_order,
 				$skip_validations = FALSE)
 {
     if(is_numeric($column_no)>0 && strlen($column_type)>0)
@@ -404,16 +427,18 @@ function update_s_item_listing_column_conf(
 	    // ensure parent record exists
 		if($skip_validations == TRUE || is_exists_s_item_listing_conf($silc_id))
 		{
-			if($skip_validations == TRUE || validate_item_column_conf($column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind, $error))
+			if($skip_validations == TRUE || validate_item_column_conf($column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order, $error))
 			{
 				$query = "UPDATE s_item_listing_column_conf "
 						."SET column_type = '$column_type', "
 						."s_field_type = '$s_field_type', "
 						."s_attribute_type = '$s_attribute_type', "
 						."override_prompt = '$override_prompt', "
+						."printable_support_ind = '$printable_support_ind', "
 						."orderby_support_ind = '$orderby_support_ind', "
 						."orderby_datatype = '$orderby_datatype', "
-						."printable_support_ind = '$printable_support_ind'"
+						."orderby_default_ind = '$orderby_default_ind', "
+						."orderby_sort_order = '$orderby_sort_order' "
 					."WHERE silc_id = $silc_id AND column_no = $column_no";
 	
 				$update = db_query($query);
@@ -422,12 +447,12 @@ function update_s_item_listing_column_conf(
 				if($update && ($rows_affected = db_affected_rows()) !== -1)
 				{
 					if($rows_affected>0)
-						opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind));
+						opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
 					return TRUE;
 				}
 				else
 				{
-					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $orderby_support_ind, $orderby_datatype, $printable_support_ind));
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
 					return FALSE;
 				}
 			}//if(is_exists_s_title_display_mask_item($stdm_id, $s_item_type_group, $s_item_type))

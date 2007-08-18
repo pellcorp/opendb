@@ -66,10 +66,10 @@ function get_menu_options($user_id, $user_type)
 		if(is_user_allowed_to_own($user_id, $user_type))
 		{
 			$menu_options['item'][] = array(link=>get_opendb_lang_var('add_new_item'), url=>"item_input.php?op=site-add&owner_id=$user_id");
-			$menu_options['item'][] = array(link=>get_opendb_lang_var('list_my_items'), url=>"listings.php?owner_id=$user_id&order_by=title&sortorder=ASC");
+			$menu_options['item'][] = array(link=>get_opendb_lang_var('list_my_items'), url=>"listings.php?owner_id=$user_id");
 		}
 		
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php?order_by=title&sortorder=ASC");
+		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
 						
 		if(is_user_allowed_to_own($user_id, $user_type))
 		{
@@ -178,7 +178,7 @@ function get_menu_options($user_id, $user_type)
 	}
 	else if(is_site_public_access_enabled())
 	{
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php?order_by=title&sortorder=ASC");
+		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
 	}

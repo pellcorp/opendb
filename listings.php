@@ -242,6 +242,18 @@ function is_item_type_in_item_type_r($v_item_types, $s_item_type)
 	return FALSE;
 }
 
+function find_default_orderby_column_config($v_column_display_config_rs)
+{
+	reset($v_column_display_config_rs);
+	for($k=0; $k<count($v_column_display_config_rs); $k++)
+	{
+		if($v_column_display_config_rs[$k]['orderby_default_ind'] == 'Y')
+		{
+			return $v_column_display_config_rs[$k];
+		}
+	}
+}
+
 function find_field_type_column_config($s_field_type, $display_column_config)
 {
 	$idx_of_element = -1;
@@ -393,6 +405,158 @@ function &filter_for_printable_list($column_display_config_rs)
 		}
 	}
 	return $new_column_display_config_rs;
+}
+
+function expand_column_display_config($v_column_display_config_rs, $show_owner_column, $show_action_column, &$show_is_item_reviewed)
+{
+	for($i=0; $i<count($v_column_display_config_rs); $i++)
+	{
+		$v_column_display_config_rs[$i]['include_in_listing'] = TRUE;
+		
+		if($v_column_display_config_rs[$i]['column_type'] == 's_attribute_type')
+		{
+			$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
+			if(is_array($v_attribute_type_r))
+			{
+				if(strlen($HTTP_VARS['s_item_type'])>0)
+				{
+					$v_column_display_config_rs[$i]['prompt'] = 
+							ifempty(fetch_s_item_type_attr_prompt($HTTP_VARS['s_item_type'], $v_column_display_config_rs[$i]['s_attribute_type']), $v_attribute_type_r['prompt']);
+				}
+				else
+				{
+					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
+				}
+				
+				// record whether the s_attribute_type is a lookup attribute_type for use while generating the page.
+				if($v_attribute_type_r['lookup_attribute_ind'] == 'Y')
+				{
+					$v_column_display_config_rs[$i]['lookup_attribute_ind'] = 'Y';
+					
+					if(strlen($v_column_display_config_rs[$i]['lookup_attribute_val'])==0 && strlen($v_column_display_config_rs[$i]['attribute_val'])>0)
+					{
+						$v_column_display_config_rs[$i]['lookup_attribute_val'] = $v_column_display_config_rs[$i]['attribute_val'];
+						$v_column_display_config_rs[$i]['attribute_val'] = NULL;
+					}
+				}
+				else if($v_attribute_type_r['multi_attribute_ind'] =='Y')
+				{
+					$v_column_display_config_rs[$i]['multi_attribute_ind'] = 'Y';
+				}
+
+				if($v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y')
+				{
+					if ($v_column_display_config_rs[$i]['orderby_datatype'] != 'numeric' && $v_attribute_type_r['input_type'] == 'number')
+					{
+						$v_column_display_config_rs[$i]['orderby_datatype'] = 'numeric';
+					}
+				}
+
+				$v_column_display_config_rs[$i]['fieldname'] = get_field_name($v_column_display_config_rs[$i]['s_attribute_type']);
+				
+				if($v_column_display_config_rs[$i]['search_attribute_ind'] != 'y' || 
+						$v_column_display_config_rs[$i]['attr_match'] != 'exact' ||
+						get_opendb_config_var('listings', 'show_exact_match_search_columns')!==FALSE)
+				{
+					$v_column_display_config_rs[$i]['include_in_listing'] = FALSE; 
+				}
+			}
+			else
+			{
+				// what to do here!?
+			}
+		}
+		else if($v_column_display_config_rs[$i]['column_type'] == 's_field_type')
+		{
+			if($v_column_display_config_rs[$i]['s_field_type'] == 'RATING')
+			{
+				$v_column_display_config_rs[$i]['s_attribute_type'] = 'S_RATING';
+				
+				$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
+				
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
+																	
+				$v_column_display_config_rs[$i]['fieldname'] = 'rating';
+				$v_column_display_config_rs[$i]['orderby_support_ind'] = 'N';
+				
+				$show_is_item_reviewed = FALSE;
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEM_ID')
+			{
+				$v_column_display_config_rs[$i]['s_attribute_type'] = 'S_ITEM_ID';
+				 
+				$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
+				
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
+
+				$v_column_display_config_rs[$i]['fieldname'] = 'item_id';
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
+			{
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('category'));
+				
+				$v_column_display_config_rs[$i]['fieldname'] = 'category';
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSTYPE')
+			{
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('status'));
+			
+				$v_column_display_config_rs[$i]['fieldname'] = 's_status_type';
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSCMNT')
+			{
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('status_comment'));
+			
+				$v_column_display_config_rs[$i]['fieldname'] = 'statuscmnt';
+				$v_column_display_config_rs[$i]['orderby_support_ind'] = 'N';
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'TITLE')
+			{
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('title'));
+
+				$v_column_display_config_rs[$i]['fieldname'] = 'title';
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEMTYPE')
+			{
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('type'));
+			
+				$v_column_display_config_rs[$i]['fieldname'] = 's_item_type';
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'OWNER')
+			{
+				$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('owner'));
+				$v_column_display_config_rs[$i]['fieldname'] = 'owner_id';
+				
+				if($show_owner_column)
+				{
+					$v_column_display_config_rs[$i]['include_in_listing'] = FALSE;
+				}
+			}
+		}
+		else if($v_column_display_config_rs[$i]['column_type'] == 'action_links')
+		{
+			$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('action'));
+			
+			$v_column_display_config_rs[$i]['fieldname'] = 'action_links';
+			$v_column_display_config_rs[$i]['orderby_support_ind'] = 'N';
+			
+			if($show_action_column)
+			{
+				$v_column_display_config_rs[$i]['include_in_listing'] = FALSE;
+			}
+		}
+		else if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
+					$v_column_display_config_rs[$i]['column_type'] == 'borrow_status')
+		{
+			$v_column_display_config_rs[$i]['prompt'] = 
+										ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('borrow_status'));
+
+			$v_column_display_config_rs[$i]['fieldname'] = 'borrow_status';
+			$v_column_display_config_rs[$i]['orderby_support_ind'] = 'N';
+		}
+	}
+	
+	return $v_column_display_config_rs;
 }
 
 function get_search_query_matrix($HTTP_VARS)
@@ -778,8 +942,6 @@ if(is_site_enabled())
 		echo(get_common_javascript());
 		echo(get_listings_javascript());
 		echo(get_popup_javascript());
-			
-		$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 		
 		$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
 		if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0 && is_not_empty_array($v_item_types))
@@ -866,6 +1028,34 @@ if(is_site_enabled())
 		echo(getListingFiltersBlock());
 		echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));
 		
+		// If a S_RATING is included as column, this will be set to FALSE.
+		$show_is_item_reviewed = TRUE;
+
+		$v_column_display_config_rs = expand_column_display_config(
+										$v_column_display_config_rs, 
+										$show_owner_column, 
+										$show_action_column,
+										$show_is_item_reviewed);
+		
+		// order_by, sortorder
+		if( strlen($HTTP_VARS['order_by']) == 0 )
+		{
+			$column_config_r = find_default_orderby_column_config($v_column_display_config_rs);
+			if($column_config_r!=NULL)
+			{
+				$HTTP_VARS['order_by'] = $column_config_r['fieldname'];
+				$HTTP_VARS['sortorder'] = strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC'));
+			}
+			else
+			{
+				// failsafe title.
+				$HTTP_VARS['order_by'] = 'title';
+				$HTTP_VARS['sortorder'] = 'ASC';
+			}
+		}
+		
+		$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+		
 		$listingObject->startListing($page_title);
 		
 		if($show_checkbox_column)
@@ -875,175 +1065,14 @@ if(is_site_enabled())
 		
 		for($i=0; $i<count($v_column_display_config_rs); $i++)
 		{
-			if($v_column_display_config_rs[$i]['column_type'] == 's_attribute_type')
+			if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
 			{
-				$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
-				if(is_array($v_attribute_type_r))
-				{
-					if(strlen($HTTP_VARS['s_item_type'])>0)
-					{
-						$v_column_display_config_rs[$i]['prompt'] = 
-								ifempty(fetch_s_item_type_attr_prompt($HTTP_VARS['s_item_type'], $v_column_display_config_rs[$i]['s_attribute_type']), $v_attribute_type_r['prompt']);
-					}
-					else
-					{
-						$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
-					}
-					
-					// record whether the s_attribute_type is a lookup attribute_type for use while generating the page.
-					if($v_attribute_type_r['lookup_attribute_ind'] == 'Y')
-					{
-						$v_column_display_config_rs[$i]['lookup_attribute_ind'] = 'Y';
-						
-						if(strlen($v_column_display_config_rs[$i]['lookup_attribute_val'])==0 && strlen($v_column_display_config_rs[$i]['attribute_val'])>0)
-						{
-							$v_column_display_config_rs[$i]['lookup_attribute_val'] = $v_column_display_config_rs[$i]['attribute_val'];
-							$v_column_display_config_rs[$i]['attribute_val'] = NULL;
-						}
-					}
-					else if($v_attribute_type_r['multi_attribute_ind'] =='Y')
-					{
-						$v_column_display_config_rs[$i]['multi_attribute_ind'] = 'Y';
-					}
-
-					if($v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y')
-					{
-						if ($v_column_display_config_rs[$i]['orderby_datatype'] != 'numeric' && $v_attribute_type_r['input_type'] == 'number')
-						{
-							$v_column_display_config_rs[$i]['orderby_datatype'] = 'numeric';
-						}
-					}
-
-					$v_column_display_config_rs[$i]['fieldname'] = get_field_name($v_column_display_config_rs[$i]['s_attribute_type']);
-					
-					if($v_column_display_config_rs[$i]['search_attribute_ind'] != 'y' || 
-							$v_column_display_config_rs[$i]['attr_match'] != 'exact' ||
-							get_opendb_config_var('listings', 'show_exact_match_search_columns')!==FALSE)
-					{
-						$listingObject->addHeaderColumn(
-								$v_column_display_config_rs[$i]['prompt'], 
-								$v_column_display_config_rs[$i]['fieldname'],
-								$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-					}
-				}
-			}
-			else if($v_column_display_config_rs[$i]['column_type'] == 's_field_type')
-			{
-				if($v_column_display_config_rs[$i]['s_field_type'] == 'RATING')
-				{
-					$v_column_display_config_rs[$i]['s_attribute_type'] = 'S_RATING';
-					
-					$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
-					
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
-																		
-					$listingObject->addHeaderColumn(
-								$v_column_display_config_rs[$i]['prompt'],
-								'rating',
-								FALSE);
-						
-					$show_is_item_reviewed = FALSE;
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEM_ID')
-				{
-					$v_column_display_config_rs[$i]['s_attribute_type'] = 'S_ITEM_ID';
-					 
-					$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
-					
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
-
-					$listingObject->addHeaderColumn(
-								$v_column_display_config_rs[$i]['prompt'],
-								'item_id', 
-								$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
-				{
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('category'));
-					
-					$listingObject->addHeaderColumn(
-								$v_column_display_config_rs[$i]['prompt'], 
-								'category', 
-								$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSTYPE')
-				{
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('status'));
-				
-					$listingObject->addHeaderColumn(
-								$v_column_display_config_rs[$i]['prompt'], 
-								's_status_type', 
-								$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSCMNT')
-				{
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('status_comment'));
-				
-					$listingObject->addHeaderColumn(
-							$v_column_display_config_rs[$i]['prompt'], 
-							'statuscmnt',
-							FALSE);
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'TITLE')
-				{
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('title'));
-
-					$listingObject->addHeaderColumn(
-							$v_column_display_config_rs[$i]['prompt'], 
-							'title',
-							$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEMTYPE')
-				{
-					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('type'));
-				
-					$listingObject->addHeaderColumn(
-							$v_column_display_config_rs[$i]['prompt'], 
-							's_item_type',
-							$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-				}
-				else if($v_column_display_config_rs[$i]['s_field_type'] == 'OWNER')
-				{
-					if($show_owner_column)
-					{
-						$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('owner'));
-					
-						$listingObject->addHeaderColumn(
-								$v_column_display_config_rs[$i]['prompt'], 
-								'owner_id', 
-								$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-					}
-				}
-			}
-			else if($v_column_display_config_rs[$i]['column_type'] == 'action_links')
-			{
-				$v_column_display_config_rs[$i]['prompt'] = 
-											ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('action'));
-												
-				if($show_action_column)
-				{
-					$listingObject->addHeaderColumn(
-							$v_column_display_config_rs[$i]['prompt'], 
-							'action_links',
-							FALSE);
-				}
-			}
-			else if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
-						$v_column_display_config_rs[$i]['column_type'] == 'borrow_status')
-			{
-				$v_column_display_config_rs[$i]['prompt'] = 
-											ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('borrow_status'));
-												
 				$listingObject->addHeaderColumn(
-						$v_column_display_config_rs[$i]['prompt'], 
-						'borrow_status',
-						FALSE);
+							$v_column_display_config_rs[$i]['prompt'], 
+							$v_column_display_config_rs[$i]['fieldname'],
+							$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
 			}
-	
-		}//while(list(,$v_column_display_config_r) = each($v_column_display_config_rs))
-		
-		// If a S_RATING is included as column, this will be set to FALSE.
-		$show_is_item_reviewed = TRUE;
+		}
 		
 		// If no items Per Page - we are listing everything.
 		if(is_numeric($listingObject->getItemsPerPage()))

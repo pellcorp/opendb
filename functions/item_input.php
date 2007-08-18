@@ -1003,7 +1003,7 @@ function status_type_input_field($fieldname, $lookup_results, $value=NULL)
 		}
 			
 		$field .= "\n<td nowrap><input type=radio name=\"$fieldname\" value=\"".$lookup_r['value']."\" ".($lookup_r['checked_ind'] == 'Y'?"CHECKED":"").">".
-				format_display_value('%img%', $lookup_r['img'], $lookup_r['value'], $lookup_r['display']).
+				format_display_value('%img%', $lookup_r['img'], $lookup_r['value'], $lookup_r['display'], "s_status_type").
 				"\n</td>";
 										
 		$columns++;

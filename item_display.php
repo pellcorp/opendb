@@ -176,12 +176,12 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	}
 
 	$rowcontents .= "\n<td>";
-	$rowcontents .= ifempty(format_action_links($action_links_rs),get_opendb_lang_var('not_applicable'));
+	$rowcontents .= ifempty(format_action_links($action_links_rs), get_opendb_lang_var('not_applicable'));
 	$rowcontents .= "\n</td>";
 	
 	// Item Status Image.
 	$rowcontents .= "\n<td>";
-	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], NULL, NULL, "borrowed_item");
+	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], $status_type_r['description'], NULL, "s_status_type");
 	$rowcontents .= "\n</td>";
 	
 	// If a comment is allowed and defined, add it in.
@@ -214,11 +214,11 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		$rowcontents .= "\n<td>";
 		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 		{
-			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), NULL, NULL, "borrowed_item");
+			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), get_opendb_lang_var('borrowed'), NULL, "borrowed_item");
 		}
 		else if(($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N') && is_item_reserved($item_r['item_id'], $item_r['instance_no']))
 		{
-			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), NULL, NULL, "borrowed_item");
+			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), get_opendb_lang_var('reserved'), NULL, "borrowed_item");
 		}
 		else
 		{

@@ -85,6 +85,7 @@ function get_last_num_items_rs(
 			}
 			
 			$item_r['itemtypeimage']['title'] = $item_type_r['description'];
+			$item_r['itemtypeimage']['s_item_type'] = $item_r['s_item_type'];
 				
 			if(get_opendb_config_var('login.last_items_list', 'show_item_image')!==FALSE)
 			{
@@ -163,15 +164,22 @@ function get_last_item_list(
 			$item_block .= "<span class=\"coverImage\">".$href_link .$imageblock. "</a></span>";
 		}
 		
-		$itemimageblock = get_image_block($list_item_r['itemtypeimage'], 's_item_type');
-		if($itemimageblock!=NULL)
+		if(is_array($list_item_r['itemtypeimage']))
 		{
-			$titleblock = $href_link . $itemimageblock." ".$list_item_r['title']."</a>";
+			$itemimageblock = _theme_image(
+					$list_item_r['itemtypeimage']['url'],
+					$list_item_r['itemtypeimage']['s_item_type'],
+					$list_item_r['itemtypeimage']['title'],
+					NULL,// alignment
+					's_item_type');
+					
+			$titleblock = $href_link . $itemimageblock." ".$list_item_r['title']."</a>";	
 		}
 		else
 		{
 			$titleblock = $href_link . $list_item_r['title'] . "</a>";	
 		}
+									
 		$item_block .= "<h4 class=\"title\">$titleblock</h4>";
 		
 		$item_block .= "<small class=\"updateOn\">".$list_item_r['update_on']."</small>";

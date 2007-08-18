@@ -309,7 +309,7 @@ if(is_site_enabled())
 			    while(list(, $status_type_r) = each($status_type_rs))
 				{
 					echo("<th>".
-						_theme_image($status_type_r['img'], $status_type_r['description'], NULL, NULL, "borrowed_item").
+						_theme_image($status_type_r['img'], $status_type_r['description'], NULL, NULL, "s_status_type").
 						"</th>");
 				}
 			}

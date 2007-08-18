@@ -340,7 +340,7 @@ function get_import_choices_table(&$importPlugin, $cfg_include_header_row, $cfg_
 									$cfg_default_status_type_r['img'],
 									'Y',
 									$cfg_default_status_type_r['description'],
-									"borrowed_item")."</dd>";
+									"s_status_type")."</dd>";
 		}
 	}
 

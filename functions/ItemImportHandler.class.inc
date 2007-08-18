@@ -632,9 +632,9 @@ class ItemImportHandler
 				{
 					$this->_listingsObject->addThemeImageColumn(
 								$status_type_r['img'],
-								$status_type_r['description'],
-								NULL, //title
-								'borrowed_item');
+								$status_type_r['description'], // alt
+								$status_type_r['description'], //title
+								's_status_type');
 				}
 				else
 				{
@@ -645,7 +645,7 @@ class ItemImportHandler
 			$column = '';
 			if(is_array($attribute_rs))
 			{
-				$column .= '<table width=100% border=0 cellpadding=0 cellspacing=0>';
+				$column .= '<table>';
 				reset($attribute_rs);
 				while(list($key,$attribute_val) = each($attribute_rs))
 				{

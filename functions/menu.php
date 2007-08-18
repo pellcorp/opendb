@@ -128,7 +128,7 @@ function get_menu_options($user_id, $user_type)
 			}
 		} //if(is_user_allowed_to_borrow($user_id, $type))
 
-		//$menu_options['misc'][] = array(link=>get_opendb_lang_var('item_search'), url=>"search.php");
+		$menu_options['misc'][] = array(link=>get_opendb_lang_var('item_search'), url=>"search.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
 		

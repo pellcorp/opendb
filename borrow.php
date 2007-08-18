@@ -356,7 +356,7 @@ if(is_site_enabled())
 								delete_cart_item($sequence_number);
 							}
 						}
-					} //if($HTTP_VARS['op'] == 'update_my_reserve_basket' || $HTTP_VARS['op'] == 'delete_from_my_reserve_basket')
+					} 
 					
 					$page_title = get_opendb_lang_var('item_reserve_list');
 					
@@ -386,12 +386,11 @@ if(is_site_enabled())
 					// Set it explicitly here.
 					$HTTP_VARS['op'] = 'my_reserve_basket';
 				
-					// Include a Back to Listing link
-					// If a single item was specified and it exists, provide a back to item link here.
 					if($HTTP_VARS['item_link'] === 'y' && is_exists_item_instance($HTTP_VARS['item_id'],$HTTP_VARS['instance_no']))
 					{
 						$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],text=>get_opendb_lang_var('back_to_item'));
 					}
+					
 					if($HTTP_VARS['listing_link'] === 'y' && is_not_empty_array(get_opendb_session_var('listing_url_vars')))
 					{
 						$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
@@ -495,15 +494,9 @@ if(is_site_enabled())
 	
 							if($checkbox_column!==FALSE)
 							{
-
-								if($HTTP_VARS['op'] == 'my_reserve_basket' || 
-									$HTTP_VARS['op'] == 'my_reserved' || 
-									$HTTP_VARS['op'] == 'owner_borrowed' ||
-									($HTTP_VARS['op'] == 'owner_reserved' && 
-											(
-												($status_type_r['borrow_ind'] == 'Y' || 
-												$status_type_r['borrow_ind'] == 'N') && 
-											!is_item_borrowed($borrowed_item_r['item_id'],$borrowed_item_r['instance_no']))))
+								if(($HTTP_VARS['op'] == 'my_reserve_basket' || $HTTP_VARS['op'] == 'my_reserved' || $HTTP_VARS['op'] == 'owner_borrowed') || 
+										($HTTP_VARS['op'] == 'owner_reserved' && 
+												!is_item_borrowed($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'])) )
 								{
 									$listingObject->addCheckboxColumn($borrowed_item_r['sequence_number'], FALSE);
 								}
@@ -555,28 +548,20 @@ if(is_site_enabled())
 							// Checked Out status!
 							if($HTTP_VARS['op'] == 'owner_reserved' || $HTTP_VARS['op'] == 'my_reserved' || $HTTP_VARS['op'] == 'all_reserved')
 							{
-								if(is_item_borrowed($borrowed_item_r['item_id'],$borrowed_item_r['instance_no']))
+								if(is_item_borrowed($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']))
 								{
 									$listingObject->addThemeImageColumn(
 											'borrowed.gif', 
 											get_opendb_lang_var('borrowed'), 
-											NULL, //title
-											'borrowed_item');
-								}
-								else if($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N') // Reserved - If the items are here they have to have been reserved!
-								{
-									$listingObject->addThemeImageColumn(
-											'reserved.gif', 
-											get_opendb_lang_var('reserved'), 
-											NULL, //title
+											get_opendb_lang_var('borrowed'), //title
 											'borrowed_item');
 								}
 								else
 								{
 									$listingObject->addThemeImageColumn(
-											$status_type_r['img'], 
-											$status_type_r['description'], 
-											NULL, //title
+											'reserved.gif', 
+											get_opendb_lang_var('reserved'), 
+											get_opendb_lang_var('reserved'), //title
 											'borrowed_item');
 								}
 							}
@@ -591,7 +576,7 @@ if(is_site_enabled())
 									$listingObject->addThemeImageColumn(
 											'reserved.gif', 
 											get_opendb_lang_var('reserved'), 
-											NULL, //title
+											get_opendb_lang_var('reserved'), //title
 											'borrowed_item');
 								}
 								else if($borrowed_item_r['status'] == 'C')
@@ -604,7 +589,7 @@ if(is_site_enabled())
 									$listingObject->addThemeImageColumn(
 											'borrowed.gif', 
 											get_opendb_lang_var('borrowed'), 
-											NULL, //title
+											get_opendb_lang_var('borrowed'), //title
 											'borrowed_item');
 								}
 							}

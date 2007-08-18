@@ -307,11 +307,10 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		
 		// Quick checkout NOT available to Admin user, unless they are also explicitly the owner.
 		if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
-					get_opendb_session_var('user_id') === $item_r['owner_id'] && 
-					get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-					($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N'))
+				get_opendb_session_var('user_id') === $item_r['owner_id'] && 
+				get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+				$status_type_r['borrow_ind'] == 'Y')
 		{
-			// Cannot quick checkout an item already borrowed.
 			if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 			{
 				$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y'.(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
@@ -426,7 +425,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		{
 			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), get_opendb_lang_var('borrowed'), NULL, "borrowed_item");
 		}
-		else if(($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N') && is_item_reserved($item_r['item_id'], $item_r['instance_no']))
+		else if(is_item_reserved($item_r['item_id'], $item_r['instance_no']))
 		{
 			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), get_opendb_lang_var('reserved'), NULL, "borrowed_item");
 		}
@@ -448,15 +447,19 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 				else
 					$rowcontents .= get_opendb_lang_var('undefined');
 			}
-			else if($status_type_r['borrow_ind'] != 'Y' && $status_type_r['borrow_ind'] != 'N')// s_status_type CAN be changed to 
-				$rowcontents .= get_opendb_lang_var('not_applicable');							// type with borrow_ind=N, even if item checked out / reserved
 			else if(is_numeric($item_r['borrow_duration']))
 			{
 				$duration_attr_type_r = fetch_sfieldtype_item_attribute_type_r($item_r['s_item_type'], 'DURATION');
-				$rowcontents .= get_display_field($duration_attr_type_r['s_attribute_type'], NULL, $duration_attr_type_r['display_type'], $item_r['borrow_duration'], FALSE);
+				$rowcontents .= get_item_display_field(
+						$item_r,
+						$duration_attr_type_r,
+						$item_r['borrow_duration'],
+						FALSE);
 			}
 			else
+			{
 				$rowcontents .= get_opendb_lang_var('undefined');
+			}
 			$rowcontents .= "\n</td>";
 		}
 	}

@@ -317,32 +317,16 @@ function is_update_status_type_valid($item_id, $instance_no, $owner_id, $old_sta
 		{
 			$owner_user_type = fetch_user_type($owner_id);
 		
-			// Either no existing borrowed_item records, or new s_status_type borrow_ind must allow borrowing (==Y), or
-			// only temporarily disable it (==N).
-			if( (($new_status_type_r['borrow_ind'] != 'Y' && 
-						$new_status_type_r['borrow_ind'] != 'N' && 
-						$new_status_type_r['borrow_ind'] != 'B' && 
-						is_exists_item_instance_borrowed_item($item_id, $instance_no)) || 
-					($new_status_type_r['borrow_ind'] != 'Y' && 
-						$new_status_type_r['borrow_ind'] != 'N' && 
-						is_item_borrowed($item_id, $instance_no))) )
+			// Owner must have enough permission to create items of this type.
+			if(strlen($new_status_type_r['min_create_user_type'])==0 || 
+						in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
 			{
-				$errors = get_opendb_lang_var('operation_not_avail_s_status_type', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
-				return FALSE;
+				return TRUE;
 			}
 			else
 			{
-				// Owner must have enough permission to create items of this type.
-				if(strlen($new_status_type_r['min_create_user_type'])==0 || 
-							in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
-				{
-					return TRUE;
-				}
-				else
-				{
-					$errors = get_opendb_lang_var('s_status_type_create_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
-					return FALSE;
-				}
+				$errors = get_opendb_lang_var('s_status_type_create_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
+				return FALSE;
 			}
 		}
 		else

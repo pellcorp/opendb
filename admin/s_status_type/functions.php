@@ -139,12 +139,9 @@ function insert_s_status_type($s_status_type, $description, $img,
 	
 	$min_display_user_type = validate_user_type_column($min_display_user_type);
 	
-	if($change_owner_ind == 'Y')
-		$min_create_user_type = 'N'; // normal user minimum
-	else
-		$min_create_user_type = validate_user_type_column($min_create_user_type);
+	$min_create_user_type = validate_user_type_column($min_create_user_type);
 	
-	$borrow_ind = validate_ind_column($borrow_ind, array('Y','N','B','X'));
+	$borrow_ind = validate_ind_column($borrow_ind, array('Y','N'));
 	
 	$query = "INSERT INTO s_status_type ( s_status_type, description, img, insert_ind, update_ind, delete_ind, change_owner_ind, min_display_user_type, min_create_user_type, borrow_ind, status_comment_ind, default_ind, closed_ind )".
 			"VALUES ('$s_status_type', '$description', '$img', '$insert_ind', '$update_ind', '$delete_ind', '$change_owner_ind', '$min_display_user_type', '$min_create_user_type', '$borrow_ind', '$status_comment_ind', '$default_ind', 'N')";
@@ -215,12 +212,9 @@ function update_s_status_type($s_status_type, $description, $img,
 	
 	$min_display_user_type = validate_user_type_column($min_display_user_type);
 	
-	if($change_owner_ind == 'Y')
-		$min_create_user_type = 'N'; // normal user minimum
-	else
-		$min_create_user_type = validate_user_type_column($min_create_user_type);
+	$min_create_user_type = validate_user_type_column($min_create_user_type);
 	
-	$borrow_ind = validate_ind_column($borrow_ind, array('Y','N','B','X'));
+	$borrow_ind = validate_ind_column($borrow_ind, array('Y','N'));
 		
 	$status_comment_ind = validate_ind_column($status_comment_ind, array('Y','N','H'));
 	$default_ind = validate_ind_column($default_ind);

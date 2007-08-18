@@ -79,27 +79,18 @@ $_COLUMN_HELP = array(
 			'users with items in this type.'),
 
 	'min_create_user_type'=>array(
-		'If Change Owner = \'Y\', this must be set to \'N\'.',
 		'Specifies the minimum user type, who can insert items of this type, or '.
 			'update existing items to this type.'.
 
 		'User Types in OpenDb are hierarchical:',
 		array(
-			'G - Guest (Lowest)',
-			'B - Borrower',
 			'N - Normal',
 			'A - Admin (Highest)')),
 
 	'borrow_ind'=>array(
-		'If \'Y\', items can be reserved/checked out/checked in.',
- 		'If \'N\', items can not be reserved, but can be [quick] checked out.',
-		'If \'B\', items can not be [quick] checked out.  If item checked out, it cannot be updated to '.
-			'a s_status_type with borrow_ind = \'B\'',
-
-		'If \'X\', items can not be reserved/[quick] checked out/checked in.  Items cannot have any borrowed '.
-			'records (active or otherwise).  An item with borrowed item records cannot be updated to a '.
-			's_status_type with borrow_ind = \'X\'',
-		),
+		'If \'Y\', items can be reserved / checked out / checked in / quick checked out.',
+ 		'If \'N\', items can not be reserved, but can be checked out if a reservation already exists.',
+	),
 
 	'default_ind'=>array(
 		'Only one Status Type should be \'Y\'.  Will be checked by default, for new item operations, etc'),
@@ -136,7 +127,7 @@ function display_s_status_type_row($status_type_r, $row)
 	if($src!==FALSE && strlen($src)>0)
 		echo("<img src=\"$src\">");
 	else
-		echo("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		echo("&nbsp;");
 	echo("</td>");
 
 	echo("\n<td class=\"data\" align=center>".ifempty($status_type_r['default_ind'], 'N')."</td>");
@@ -216,11 +207,13 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	echo get_input_field("delete_ind", NULL, $_COLUMN_DESC['delete_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['delete_ind'],$HTTP_VARS['delete_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('delete_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("change_owner_ind", NULL, $_COLUMN_DESC['change_owner_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['change_owner_ind'], ifempty($HTTP_VARS['change_owner_ind'],"N")), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('change_owner_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
-	$user_type_rs = array_merge(array(array('value'=>'', 'display'=>'')), get_user_types_rs(get_user_types_r()));
-	echo format_field($_COLUMN_DESC['min_display_user_type'], NULL, custom_select("min_display_user_type", $user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_display_user_type'],$HTTP_VARS['min_display_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_display_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-	echo format_field($_COLUMN_DESC['min_create_user_type'], NULL, custom_select("min_create_user_type", $user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_create_user_type'],$HTTP_VARS['min_create_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_create_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	$display_user_type_rs = array_merge(array(array('value'=>'', 'display'=>'')), get_user_types_rs(get_user_types_r()));
+	echo format_field($_COLUMN_DESC['min_display_user_type'], NULL, custom_select("min_display_user_type", $display_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_display_user_type'],$HTTP_VARS['min_display_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_display_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
-	echo get_input_field("borrow_ind", NULL, $_COLUMN_DESC['borrow_ind'], "value_radio_grid('Y,N,B,X',*)", "N", ifempty($status_type_r['borrow_ind'],$HTTP_VARS['borrow_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('borrow_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	$create_user_type_rs = array_merge(array(array('value'=>'', 'display'=>'')), get_user_types_rs(get_owner_user_types_r()));
+	echo format_field($_COLUMN_DESC['min_create_user_type'], NULL, custom_select("min_create_user_type", $create_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_create_user_type'],$HTTP_VARS['min_create_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_create_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	
+	echo get_input_field("borrow_ind", NULL, $_COLUMN_DESC['borrow_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['borrow_ind'],$HTTP_VARS['borrow_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('borrow_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("status_comment_ind", NULL, $_COLUMN_DESC['status_comment_ind'], "value_radio_grid('Y,H,N',*)", "N", ifempty($status_type_r['status_comment_ind'],$HTTP_VARS['status_comment_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('status_comment_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("default_ind", NULL, $_COLUMN_DESC['default_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['default_ind'],$HTTP_VARS['default_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('default_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
@@ -295,16 +288,6 @@ if(is_opendb_valid_session())
 				{
 					$errors[] =	array('error'=>'Status type not updated',
 									'detail'=>'Item instance(s) exist for user(s) whose type, is not compatible with the new \''.$_COLUMN_DESC['min_create_user_type'].'\' (min_create_user_type) value.');
-				}
-				else if($HTTP_VARS['borrow_ind'] != $status_type_r['borrow_ind'] && $HTTP_VARS['borrow_ind'] != 'Y' && $HTTP_VARS['borrow_ind'] != 'N' && is_exists_borrowed_items_for_status_type($HTTP_VARS['s_status_type'], TRUE))
-				{
-					$errors[] = array('error'=>'Status type not updated',
-									'detail'=>'Cannot update borrow_ind to \''.$HTTP_VARS['borrow_ind'].'\', as '.$status_type_r['description'].' item instance(s) exist, which are currently checked out.');
-				}
-				else if($HTTP_VARS['borrow_ind'] != $status_type_r['borrow_ind'] && $HTTP_VARS['borrow_ind'] != 'Y' && $HTTP_VARS['borrow_ind'] != 'N' && $HTTP_VARS['borrow_ind'] != 'B' && is_exists_borrowed_items_for_status_type($HTTP_VARS['s_status_type']))
-				{
-					$errors[] = array('error'=>'Status type not updated',
-									'detail'=>'Cannot update borrow_ind to \''.$HTTP_VARS['borrow_ind'].'\', as '.$status_type_r['description'].' item instance(s) exist, which have borrowed item(s) attached.');
 				}
 				else
 				{

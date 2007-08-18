@@ -1279,31 +1279,27 @@ if(is_site_enabled())
 								
 									if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 									{
-										// Quick checkout NOT available to Admin user, unless they are also explicitly the owner.
-										if($item_r['owner_id'] == get_opendb_session_var('user_id') && 
-													get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-													get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
-													($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' || $status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'N'))
-										{
-											// Cannot quick checkout an item already borrowed.
-											if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-											{
-												$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
-											}
-										}
-
 										if($item_r['owner_id'] == get_opendb_session_var('user_id'))
 										{
 											if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 											{
 												$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
 											}
+											else
+											{
+												if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+														get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
+														$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
+												{
+													$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
+												}
+											}
 										}
 									}
 								}
 							}
 					
-							if($item_r['owner_id'] != get_opendb_session_var('user_id')) //non-owner items here.
+							if($item_r['owner_id'] != get_opendb_session_var('user_id'))
 							{   
 								// Reservation/Cancel Information.
 								if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
@@ -1366,17 +1362,15 @@ if(is_site_enabled())
 								$listingObject->addThemeImageColumn(
 											'borrowed.gif', 
 											get_opendb_lang_var('borrowed'), 
-											NULL, //title
+											get_opendb_lang_var('borrowed'), //title
 											'borrowed_item');
 			  				}
-							else if(($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' || 
-										$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'N') && 
-										is_item_reserved($item_r['item_id'], $item_r['instance_no']))
+							else if(is_item_reserved($item_r['item_id'], $item_r['instance_no']))
 							{
 								$listingObject->addThemeImageColumn(
 											'reserved.gif', 
 											get_opendb_lang_var('reserved'), 
-											NULL, //title
+											get_opendb_lang_var('borrowed'), //title
 											'borrowed_item');
 							}
 							else

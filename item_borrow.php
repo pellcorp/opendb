@@ -51,7 +51,8 @@ function handle_reserve($item_id, $instance_no, $borrower_id, &$errors)
 		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
 		return FALSE;
 	}
-	else if(strlen($status_type_r['min_display_user_type'])>0 && !in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
+	else if(strlen($status_type_r['min_display_user_type'])>0 && 
+			!in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
 	{
 		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
 		return FALSE;
@@ -133,31 +134,31 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 		return FALSE;
 	}
 	
-	$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
-	if($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N')//Owner operation
+	$sequence_number = fetch_borrowed_item_seq_no($item_id, $instance_no, 'R', $borrower_id);
+	if($sequence_number !== FALSE)
 	{
-		$sequence_number = fetch_borrowed_item_seq_no($item_id, $instance_no, 'R', $borrower_id);
-		if($sequence_number !== FALSE)
+		if(get_opendb_config_var('borrow', 'quick_checkout_use_existing_reservation')!==FALSE)
 		{
-			if(get_opendb_config_var('borrow', 'quick_checkout_use_existing_reservation')!==FALSE)
+			if(check_out_item($sequence_number, $borrow_duration))
 			{
-				if(check_out_item($sequence_number, $borrow_duration))
-				{
-					return $sequence_number;
-				}
-				else
-				{
-					return FALSE;
-				}
+				return $sequence_number;
 			}
 			else
 			{
-				$errors = get_opendb_lang_var('user_has_reservation', 'user_id', $borrower_id);
 				return FALSE;
 			}
-		}//if($sequence_number !== FALSE)
+		}
 		else
-		{	
+		{
+			$errors = get_opendb_lang_var('user_has_reservation', 'user_id', $borrower_id);
+			return FALSE;
+		}
+	}//if($sequence_number !== FALSE)
+	else
+	{	
+		$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
+		if($status_type_r['borrow_ind'] == 'Y')
+		{
 			$new_borrowed_item_id = quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_duration);
 			if($new_borrowed_item_id!==FALSE)
 			{
@@ -168,11 +169,11 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 				return FALSE;
 			}
 		}
-	}		
-	else
-	{
-		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
-		return FALSE;
+		else
+		{
+			$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+			return FALSE;
+		}
 	}
 }
 
@@ -230,24 +231,12 @@ function handle_checkout($sequence_number, $borrow_duration, &$errors)
 		return FALSE;
 	}
 
-	// Once a reservation exists, the s_status_type of the item can be changed to a borrow_ind=N type,
-	// and the item can still be checked out.  The change of status to a borrow_ind=N, only prevents
-	// new reservations from being recorded.
-	$status_type_r = fetch_status_type_r(fetch_item_s_status_type($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']));
-	if($status_type_r['borrow_ind'] == 'Y' || $status_type_r['borrow_ind'] == 'N')//Existing reservation
+	if(check_out_item($sequence_number, $borrow_duration))
 	{
-		if(check_out_item($sequence_number, $borrow_duration))
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
+		return TRUE;
 	}
 	else
 	{
-		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
 		return FALSE;
 	}
 }
@@ -1330,7 +1319,7 @@ if(is_site_enabled())
 											if(!is_user_owner_of_item($item_id, $instance_no, $HTTP_VARS['borrower_id']))
 											{
 												$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
-												if($status_type_r['borrow_ind'] == 'Y')//Owner operation
+												if($status_type_r['borrow_ind'] == 'Y')
 												{
 													$HTTP_VARS['checkout_item_instance_rs'][] = $item_id."_".$instance_no;
 												}

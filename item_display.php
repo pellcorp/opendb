@@ -243,7 +243,11 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 			else if(is_numeric($item_r['borrow_duration']))
 			{
 				$duration_attr_type_r = fetch_sfieldtype_item_attribute_type_r($item_r['s_item_type'], 'DURATION');
-				$rowcontents .= get_display_field($duration_attr_type_r['s_attribute_type'], NULL, $duration_attr_type_r['display_type'], $item_r['borrow_duration'], FALSE);
+				$rowcontents .= get_item_display_field(
+						$item_r,
+						$duration_attr_type_r,
+						$item_r['borrow_duration'],
+						FALSE);
 			}
 			else
 				$rowcontents .= get_opendb_lang_var('undefined');

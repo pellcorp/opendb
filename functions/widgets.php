@@ -2900,7 +2900,7 @@ function format_action_links($action_links_rs)
 	while(list(,$action_link_r) = @each($action_links_rs))
 	{
 		if(strlen($action_link_r['img'])>0)
-			$action_image = _theme_image('action_'.$action_link_r['img'], NULL, $action_link_r['text'], NULL, "action");
+			$action_image = _theme_image('action_'.$action_link_r['img'], $action_link_r['text'], $action_link_r['text'], NULL, "action");
 		else
 			$action_image = FALSE;
 		

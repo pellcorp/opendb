@@ -646,7 +646,7 @@ function get_search_query_matrix($HTTP_VARS)
 										$status_type_r['img'], 
 										'Y',
 										$status_type_r['description'],
-										'borrowed_item');
+										's_status_type');
 			}
 		}
 		
@@ -1201,8 +1201,8 @@ if(is_site_enabled())
 							$listingObject->addThemeImageColumn(
 									$status_type_rs[$item_r['s_status_type']]['img'],
 									$status_type_rs[$item_r['s_status_type']]['description'],
-									NULL, //title
-									'borrowed_item');//type
+									$status_type_rs[$item_r['s_status_type']]['description'], //title
+									's_status_type');//type
 						}
 						else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSCMNT')
 						{

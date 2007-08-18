@@ -1411,11 +1411,7 @@ function validate_item_instance_fields($s_status_type, &$status_comment, &$borro
 			}
 		}
 		
-		// If no status comment allowed, then set to NULL
-		if($status_type_r['status_comment_ind'] != 'Y' && $status_type_r['status_comment_ind'] != 'H')
-			$status_comment = NULL;
-		else
-			$status_comment = addslashes(substr(replace_newlines(trim(strip_tags($status_comment))),0,255));
+		$status_comment = addslashes(substr(replace_newlines(trim(strip_tags($status_comment))),0,255));
 		
 		return TRUE;
 	}

@@ -133,3 +133,5 @@ UPDATE s_item_listing_column_conf SET printable_support_ind = 'N' WHERE column_t
 # remove option to have B and X borrow indicators
 UPDATE s_status_type SET borrow_ind = 'N' WHERE borrow_ind IN ('X', 'B');
 
+# status comments can always be populated but will be invisible if 'N'
+UPDATE s_status_type SET status_comment_ind = 'N' WHERE status_comment_ind  = 'H';

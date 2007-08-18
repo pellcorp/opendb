@@ -33,7 +33,7 @@ $_COLUMN_DESC = array(
 			'min_display_user_type'=>'Minimum Display User',
 			'min_create_user_type'=>'Minimum Create User',
 			'borrow_ind'=>'Borrow',
-			'status_comment_ind'=>'Status Comment',
+			'status_comment_ind'=>'Status Comment Visible',
 			'default_ind'=>'Default',
 			'closed_ind'=>'Closed');
 
@@ -96,11 +96,8 @@ $_COLUMN_HELP = array(
 		'Only one Status Type should be \'Y\'.  Will be checked by default, for new item operations, etc'),
 
 	'status_comment_ind'=>array(
-		'If \'Y\' or \'H\', status_comment\'s can be recorded in the item_instance table, and displayed '.
-			'in the item_display.php Instance Info section.',
-
-		'If \'H\', then the comment will be shown in item_display.php, only when the owner of the '.
-			'item_instance, or an administrator is viewing the record.'),
+		'If \'Y\', status comment\'s will be visible.',
+		'If \'N\', status comment\'s will be invisible to all but admins and the owner of the item.'),
 
 	'closed_ind'=>array(
 		'This column, allows s_status_type records to be used in existing records, but no new '.
@@ -214,7 +211,7 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	echo format_field($_COLUMN_DESC['min_create_user_type'], NULL, custom_select("min_create_user_type", $create_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_create_user_type'],$HTTP_VARS['min_create_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_create_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	echo get_input_field("borrow_ind", NULL, $_COLUMN_DESC['borrow_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['borrow_ind'],$HTTP_VARS['borrow_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('borrow_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-	echo get_input_field("status_comment_ind", NULL, $_COLUMN_DESC['status_comment_ind'], "value_radio_grid('Y,H,N',*)", "N", ifempty($status_type_r['status_comment_ind'],$HTTP_VARS['status_comment_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('status_comment_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("status_comment_ind", NULL, $_COLUMN_DESC['status_comment_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['status_comment_ind'],$HTTP_VARS['status_comment_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('status_comment_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("default_ind", NULL, $_COLUMN_DESC['default_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['default_ind'],$HTTP_VARS['default_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('default_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	if(is_array($status_type_r))

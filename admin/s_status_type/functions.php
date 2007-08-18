@@ -132,7 +132,7 @@ function insert_s_status_type($s_status_type, $description, $img,
 	// do this one first, as we need to validate the data for the others based on this one.
 	$change_owner_ind = validate_ind_column($change_owner_ind);
 	
-	
+	$status_comment_ind = validate_ind_column($status_comment_ind);
 	$insert_ind = validate_ind_column($insert_ind);
 	$update_ind = validate_ind_column($update_ind);
 	$delete_ind = validate_ind_column($delete_ind);
@@ -141,7 +141,7 @@ function insert_s_status_type($s_status_type, $description, $img,
 	
 	$min_create_user_type = validate_user_type_column($min_create_user_type);
 	
-	$borrow_ind = validate_ind_column($borrow_ind, array('Y','N'));
+	$borrow_ind = validate_ind_column($borrow_ind);
 	
 	$query = "INSERT INTO s_status_type ( s_status_type, description, img, insert_ind, update_ind, delete_ind, change_owner_ind, min_display_user_type, min_create_user_type, borrow_ind, status_comment_ind, default_ind, closed_ind )".
 			"VALUES ('$s_status_type', '$description', '$img', '$insert_ind', '$update_ind', '$delete_ind', '$change_owner_ind', '$min_display_user_type', '$min_create_user_type', '$borrow_ind', '$status_comment_ind', '$default_ind', 'N')";
@@ -214,9 +214,9 @@ function update_s_status_type($s_status_type, $description, $img,
 	
 	$min_create_user_type = validate_user_type_column($min_create_user_type);
 	
-	$borrow_ind = validate_ind_column($borrow_ind, array('Y','N'));
+	$borrow_ind = validate_ind_column($borrow_ind);
 		
-	$status_comment_ind = validate_ind_column($status_comment_ind, array('Y','N','H'));
+	$status_comment_ind = validate_ind_column($status_comment_ind);
 	$default_ind = validate_ind_column($default_ind);
 	$closed_ind = validate_ind_column($closed_ind);
 	

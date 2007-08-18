@@ -460,13 +460,6 @@ function handle_item_instance_insert(&$item_r, $status_type_r, $HTTP_VARS, &$err
 			
 			$status_comment = $HTTP_VARS['status_comment'];
 			
-			if(strlen($status_comment)>0 && $status_type_r['status_comment_ind'] != 'Y' && $status_type_r['status_comment_ind'] != 'H')
-			{
-				// Actually this is a warning!
-				$errors[] = array('error'=>get_opendb_lang_var('s_status_type_status_comments_not_supported', 's_status_type_desc', $status_type_r['description']) ,'detail'=>'');
-				$status_comment = NULL;
-			}
-			
 			if($HTTP_VARS['trial_run'] != 'true')
 			{
 				$new_instance_no = insert_item_instance($item_r['item_id'], NULL, $status_type, $status_comment, $borrow_duration, $owner_id);
@@ -554,19 +547,6 @@ function handle_item_instance_update($item_r, $status_type_r, $HTTP_VARS, &$erro
 				}
 				
 				$status_comment = ifempty($HTTP_VARS['status_comment'], $item_r['status_comment']);
-				if(strlen($status_comment)>0)
-				{
-					if($update_status_type_r['status_comment_ind'] != 'Y' && $update_status_type_r['status_comment_ind'] != 'H')
-					{
-						// Actually this is a warning!
-						$errors[] = array('error'=>get_opendb_lang_var('s_status_type_status_comments_not_supported', 's_status_type_desc', $update_status_type_r['description']) ,'detail'=>'');
-						$status_comment = NULL;
-					}
-				}
-				else
-				{
-					$status_comment = FALSE; // Not defined, so do not update
-				}
 				
 				// trigger change owner processing at this point.
 				if(strlen($HTTP_VARS['owner_id']) && $HTTP_VARS['owner_id'] != $item_r['owner_id'])

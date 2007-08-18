@@ -395,9 +395,9 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	
 	// If a comment is allowed and defined, add it in.
 	$rowcontents .= "\n<td>";
-	if($status_type_r['status_comment_ind'] == 'Y' || ($status_type_r['status_comment_ind'] == 'H' && 
-			(get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))))
+	if($status_type_r['status_comment_ind'] == 'Y' ||
+			get_opendb_session_var('user_id') === $item_r['owner_id'] || 
+			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) )
 	{
 		$rowcontents .= ifempty(nl2br($item_r['status_comment']),"&nbsp;"); // support newlines in this field
 	}

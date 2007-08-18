@@ -1208,9 +1208,8 @@ if(is_site_enabled())
 						{
 							// If a comment is allowed and defined, add it in.
 							if($status_type_rs[$item_r['s_status_type']]['status_comment_ind'] == 'Y' || 
-										($status_type_rs[$item_r['s_status_type']]['status_comment_ind'] == 'H' && 
-											(get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-												is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))))
+											get_opendb_session_var('user_id') === $item_r['owner_id'] || 
+												is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) )
 							{
 								 // support newlines in this field
 								$listingObject->addColumn(nl2br($item_r['status_comment']));

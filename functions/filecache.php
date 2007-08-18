@@ -301,6 +301,7 @@ function file_cache_get_cache_file($file_cache_r)
 function file_cache_get_cache_file_thumbnail($file_cache_r)
 {
 	$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
+	
 	if(strlen($file_cache_r['cache_file_thumb'])>0 && 
 				file_exists($directory.$file_cache_r['cache_file_thumb']))
 	{

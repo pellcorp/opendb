@@ -27,8 +27,6 @@ include_once("./functions/item_type_group.php");
 include_once("./functions/install.php");
 include_once("./functions/browser.php");
 
-//include_once('./functions/pclzip/pclzip.lib.php');
-
 // attributes delivered as part of core installation or included in optional patches
 $_CORE_ATTRIBUTE_TYPES = array(
 		'S_DURATION', 'S_ITEM_ID', 'S_STATUS', 'S_TITLE', 'S_RATING', 'S_STATCMNT'
@@ -142,13 +140,7 @@ function display_s_item_type_row($item_type_r, $row)
 	if(is_not_empty_array($errors))
 		echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=check_item_type_structure&s_item_type=".$item_type_r['s_item_type']."&inc_menu=N\" onclick=\"popup('${PHP_SELF}?type=${ADMIN_TYPE}&op=check_item_type_structure&s_item_type=".$item_type_r['s_item_type']."&inc_menu=N','640', '480'); return false;\">[ERROR]</a>");
 	else
-	{
-		echo("\n[ ");
-		// a custom function added to pclzip.lib.php to check if ZIP is enabled
-		//if(is_pclzip_supported())
-		//	echo("<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=zip&s_item_type=${item_type_r['s_item_type']}&mode=job\">ZIP</a> / ");
-		echo("<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&s_item_type=${item_type_r['s_item_type']}&mode=job\">SQL</a> ]");
-	}
+		echo("\n[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&s_item_type=${item_type_r['s_item_type']}&mode=job\">SQL</a> ]");
     echo("\n</td>");
 
 	echo("</tr>");
@@ -422,76 +414,6 @@ function generate_s_item_type_sql($s_item_type)
 	}
 }
 
-/**
-Save zip file and return location or FALSE on error
-*/
-/*function create_item_type_zip($s_item_type, &$error)
-{
-    $zipfile = opendb_tempnam(strtolower($s_item_type.'.zip'));
-	if($zipfile!==FALSE)
-	{
-		$sql_filename = './admin/s_item_type/sql/'.strtolower($s_item_type).'.sql';
-		if(!file_exists($sql_filename) || @unlink($sql_filename))
-		{
-		    $sqlfile = generate_s_item_type_sql($s_item_type);
-		    if($sqlfile!=NULL)
-			{
-				if(file_put_contents($sql_filename, $sqlfile))
-				{
-				    $s_item_type_r = fetch_s_item_type_r($s_item_type);
-				    if($s_item_type_r !== FALSE)
-					{
-						$file_list = NULL;
-						if(file_exists('./images/'.$s_item_type_r['image']))
-						{
-						    $file_list[] = './images/'.$s_item_type_r['image'];
-						}
-						else
-						{
-						    $error = 'Could not find Image';
-						}
-
-						if(file_exists($sql_filename))
-						{
-						    $file_list[] = $sql_filename;
-						}
-						else
-						{
-						    $error = 'Could not find SQL';
-						}
-
-						if(is_array($file_list) && count($file_list)==2)
-						{
-							$archive = new PclZip($zipfile);
-							$list = $archive->add($file_list);
-							if($list > 0)
-							{
-							    return $zipfile;
-							}
-							else
-							{
-							    @unlink($zipfile);
-							    $error = $archive->errorInfo(true);
-							}
-						}
-					}
-				}//if(file_put_contents($sql_filename, $sqlfile))
-				else
-				{
-					$error = 'Could not write SQL file';
-				}
-			}//if($sqlfile!=NULL)
-		}//if(!file_exists($sql_filename) || @unlink($sql_filename))
-	}//if($zipfile!==FALSE)
-	else
-	{
-	    $error = 'Could not create zip file';
-	}
-	
-	//else
-	return FALSE;
-}*/
-
 /*
 * Remove ALL records associated with an s_item_type, which includes:
 * 	review
@@ -568,28 +490,6 @@ if (is_opendb_valid_session())
 			header("Content-Length: ".strlen($sqlfile));
 			echo($sqlfile);
 		}
-		/*else if ($HTTP_VARS['op'] == 'zip' && is_exists_item_type($HTTP_VARS['s_item_type']))
-		{
-		    header("Cache-control: no-store");
-			header("Pragma: no-store");
-			header("Expires: 0");
-
-			$zipfile = create_item_type_zip($HTTP_VARS['s_item_type'], $error);
-			if($zipfile!==FALSE)
-			{
-			    header("Content-disposition: attachment; filename=".strtolower($HTTP_VARS['s_item_type']).".zip");
-				header("Content-type: application/zip");
-				header("Content-Length: ".filesize($zipfile));
-				fpassthru2($zipfile);
-				@unlink($zipfile);
-			}
-			else
-			{
-			    header("Content-disposition: attachment; filename=".strtolower($HTTP_VARS['s_item_type']).".err");
-				header("Content-type: text/plain");
-				echo $error;
-			}
-		}*/
 		else if($HTTP_VARS['op'] == 'delete_type') // This is initiated from the main s_item_type form.
 		{
 			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);

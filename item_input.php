@@ -1838,7 +1838,6 @@ if(is_site_enabled())
 				{
 					// Dummy array entry, as the s_status_type will be chosen in the edit form.
 					$status_type_r = array(
-								'insert_ind'=>'Y',
 								'borrow_ind'=>'Y');
 				}
 				

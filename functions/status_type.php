@@ -78,7 +78,6 @@ function fetch_newitem_status_type_rs($owner_id)
 			stlv.columnname = 'description' AND
 			stlv.key1 = sst.s_status_type ".
 			"WHERE sst.closed_ind <> 'Y' AND ".
-			"sst.insert_ind = 'Y' AND ".
 			"(LENGTH(IFNULL(sst.min_create_user_type,'')) = 0 OR ".
 			"sst.min_create_user_type IN($in_clause) ) ".
 			"ORDER BY 1 ASC";
@@ -95,40 +94,13 @@ function fetch_newitem_status_type_rs($owner_id)
 */
 function fetch_update_status_type_rs($item_id, $instance_no, $owner_id)
 {
-	function get_status_type_in_clause($query)
-	{
-		$result = db_query($query);
-		if($result && db_num_rows($result)>0)
-		{
-			$inclause = "";
-			while($status_type_r = db_fetch_assoc($result))
-			{
-				if(strlen($inclause)>0)
-					$inclause .= ",";
-				$inclause .= "'".$status_type_r['s_status_type']."'";
-			}
-	
-			if(strlen($inclause)>0)
-				return "$inclause";
-		}
-		return FALSE;
-	}
-
 	$user_type_r = get_min_user_type_r(fetch_user_type($owner_id));
 	if(is_not_empty_array($user_type_r))
 		$in_clause = format_sql_in_clause($user_type_r);
 
 	$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
 	
-	// If a borrow record already exists for a record, then can only reset item s_status_type
-	// to one where borrows are allowed (borrow_ind=Y), or temporarily disabled (borrow_ind=N),
-	// but not completely disallowed. (borrow_ind=X)
-	if(is_item_borrowed($item_id, $instance_no))
-		$borrow_clause = "sst.borrow_ind IN('Y','N') ";	
-	else if(is_exists_item_instance_borrowed_item($item_id, $instance_no))
-		$borrow_clause = "sst.borrow_ind IN('Y','N','B') ";	
-		
-	$query = "SELECT DISTINCT sst.s_status_type as value, IFNULL(stlv.value, sst.description) as display, sst.img, sst.default_ind as checked_ind ".
+	$query = "SELECT DISTINCT sst.s_status_type, sst.s_status_type as value, IFNULL(stlv.value, sst.description) as display, sst.img, sst.default_ind as checked_ind ".
 			"FROM s_status_type sst ".
 			"LEFT JOIN s_table_language_var stlv
 			ON stlv.language = '".get_opendb_site_language()."' AND
@@ -140,12 +112,9 @@ function fetch_update_status_type_rs($item_id, $instance_no, $owner_id)
 	$query .= "sst.s_status_type = '".$status_type_r['s_status_type']."' OR ";
 	
 	$query .= "(sst.closed_ind <> 'Y' AND ".
-				"sst.update_ind = 'Y' AND ".
-				(strlen($borrow_clause)>0?" $borrow_clause AND ":"").
 				"(LENGTH(IFNULL(sst.min_create_user_type,'')) = 0 OR ".
-				"sst.min_create_user_type IN($in_clause)) ";
-	
-	$query .= ") ORDER BY 1 ASC";
+				"sst.min_create_user_type IN($in_clause)) ) ".
+				"ORDER BY 1 ASC";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -241,7 +210,7 @@ function fetch_status_type_r($s_status_type, $full_record=TRUE)
 	$query = "SELECT sst.s_status_type, IFNULL(stlv.value, sst.description) AS description, sst.img";
 	
 	if($full_record)
-		$query .= ", sst.insert_ind, sst.update_ind, sst.delete_ind, sst.change_owner_ind, sst.min_display_user_type, sst.min_create_user_type, sst.borrow_ind, sst.status_comment_ind, sst.default_ind, sst.closed_ind ";
+		$query .= ", sst.delete_ind, sst.change_owner_ind, sst.min_display_user_type, sst.min_create_user_type, sst.borrow_ind, sst.status_comment_ind, sst.default_ind, sst.closed_ind ";
 	
 	$query .= " FROM s_status_type sst ".
 			"LEFT JOIN s_table_language_var stlv
@@ -272,7 +241,6 @@ function fetch_default_status_type_for_owner($owner_id)
 	$query = "SELECT sst.s_status_type ".
 			"FROM s_status_type sst ".
 			"WHERE sst.closed_ind <> 'Y' AND ".
-			"sst.insert_ind = 'Y' AND ".
 			"sst.default_ind = 'Y' AND ".
 			"(LENGTH(IFNULL(sst.min_create_user_type,'')) = 0 OR ".
 			"sst.min_create_user_type IN($in_clause) ) ".
@@ -313,29 +281,21 @@ function is_update_status_type_valid($item_id, $instance_no, $owner_id, $old_sta
 	// New status cannot be closed.
 	if($new_status_type_r['closed_ind'] != 'Y')
 	{
-		if($new_status_type_r['update_ind'] == 'Y')
+		$owner_user_type = fetch_user_type($owner_id);
+	
+		// Owner must have enough permission to create items of this type.
+		if(strlen($new_status_type_r['min_create_user_type'])==0 || 
+					in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
 		{
-			$owner_user_type = fetch_user_type($owner_id);
-		
-			// Owner must have enough permission to create items of this type.
-			if(strlen($new_status_type_r['min_create_user_type'])==0 || 
-						in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
-			{
-				return TRUE;
-			}
-			else
-			{
-				$errors = get_opendb_lang_var('s_status_type_create_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
-				return FALSE;
-			}
+			return TRUE;
 		}
 		else
 		{
-			$errors = array('error'=>get_opendb_lang_var('operation_not_avail_s_status_type', 's_status_type_desc', $new_status_type_r['description']),'detail'=>'');
+			$errors = get_opendb_lang_var('s_status_type_create_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
 			return FALSE;
 		}
 	}
-	else//if($new_status_type_r['closed_ind'] != 'Y')
+	else
 	{
 		$errors = array('error'=>get_opendb_lang_var('s_status_type_not_supported', 's_status_type_desc', $new_status_type_r['description']),'detail'=>'');
 		return FALSE;
@@ -346,33 +306,25 @@ function is_newinstance_status_type_valid($item_id, $owner_id, $new_status_type_
 {
 	if($new_status_type_r['closed_ind'] != 'Y')
 	{
-		if($new_status_type_r['insert_ind'] == 'Y')
-		{
-			$owner_user_type = fetch_user_type($owner_id);
+		$owner_user_type = fetch_user_type($owner_id);
 
-			// Owner must have enough permission to create items of this type.
-			if(strlen($new_status_type_r['min_create_user_type'])==0 || in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
+		// Owner must have enough permission to create items of this type.
+		if(strlen($new_status_type_r['min_create_user_type'])==0 || in_array($new_status_type_r['min_create_user_type'], get_min_user_type_r($owner_user_type)))
+		{
+			if( (get_opendb_config_var('item_input', 'item_instance_support')!==FALSE || !is_exists_item_instance($item_id) ) &&
+					( get_opendb_config_var('item_input', 'new_instance_owner_only')!==TRUE || is_user_owner_of_item($item_id, NULL, $owner_id) ) )
 			{
-				if( (get_opendb_config_var('item_input', 'item_instance_support')!==FALSE || !is_exists_item_instance($item_id) ) &&
-						( get_opendb_config_var('item_input', 'new_instance_owner_only')!==TRUE || is_user_owner_of_item($item_id, NULL, $owner_id) ) )
-				{
-					return TRUE;
-				}
-				else//if(get_opendb_config_var('item_input', 'new_instance_owner_only')!==TRUE || is_user_owner_of_item($item_r['item_id'], NULL, get_opendb_session_var('user_id')))
-				{
-					$errors = array('error'=>get_opendb_lang_var('operation_not_avail_new_instance'),'detail'=>'');
-					return FALSE;
-				}
+				return TRUE;
 			}
-			else
+			else//if(get_opendb_config_var('item_input', 'new_instance_owner_only')!==TRUE || is_user_owner_of_item($item_r['item_id'], NULL, get_opendb_session_var('user_id')))
 			{
-				$errors = get_opendb_lang_var('s_status_type_create_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
+				$errors = array('error'=>get_opendb_lang_var('operation_not_avail_new_instance'),'detail'=>'');
 				return FALSE;
 			}
-		}//if($new_status_type_r['insert_ind'] == 'Y')
+		}
 		else
 		{
-			$errors = array('error'=>get_opendb_lang_var('operation_not_avail_s_status_type', 's_status_type_desc', $new_status_type_r['description']),'detail'=>'');
+			$errors = get_opendb_lang_var('s_status_type_create_access_disabled_for_usertype', array('usertype'=>get_usertype_prompt($owner_user_type),'s_status_type_desc'=>$new_status_type_r['description']));
 			return FALSE;
 		}
 	}

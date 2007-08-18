@@ -26,26 +26,16 @@ $_COLUMN_DESC = array(
 			's_status_type'=>'Status Type',
 			'description'=>'Description',
 			'img'=>'Image',
-			'insert_ind'=>'Insert',
-			'update_ind'=>'Update',
 			'delete_ind'=>'Delete',
 			'change_owner_ind'=>'Change Owner',
 			'min_display_user_type'=>'Minimum Display User',
 			'min_create_user_type'=>'Minimum Create User',
-			'borrow_ind'=>'Borrow',
-			'status_comment_ind'=>'Status Comment Visible',
+			'borrow_ind'=>'Borrow Support',
+			'status_comment_ind'=>'Status Comments',
 			'default_ind'=>'Default',
 			'closed_ind'=>'Closed');
 
 $_COLUMN_HELP = array(
-	'insert_ind'=>array(
-		'If \'Y\', items can be directly inserted, otherwise items can '.
-		'only be updated to this type (As long as update_ind = \'Y\')'),
-
-	'update_ind'=>array(
-		'If \'Y\', existing items can be updated to this type. If \'N\', then items can only '.
-		'be directly inserted. (As long as insert_ind = \'Y\')'),
-
 	'delete_ind'=>array(
 		'Item instances of this type can be deleted.'),
 
@@ -53,39 +43,20 @@ $_COLUMN_HELP = array(
 		'Item instances of this type can have their owner changed.'),
 
 	'min_display_user_type'=>array(
-		'Specifies the minimum user type, who can see list/display items of this '.
-			'status.  For instance, if this column is set to \'A\', then only Admininstrator\'s '.
-			'can list/display items of this status.  Items of this type owned by the user will be '.
-			'visible to the user, and the user can still create items of this type, (Pursuant to any '.
-			'restrictions enforced by min_create_user_type)',
+		'Specifies the minimum user type, that can view / list items of this status that belong to other users.',
 
 		'User Types in OpenDb are hierarchical:',
 		array(
 			'G - Guest (Lowest)',
 			'B - Borrower',
 			'N - Normal',
-			'A - Admin (Highest)'),
-
-		'If a reservation is attempted for an item with a status_type, that has a '.
-			'min_display_user_type set, which does not fit in with that of the current '.
-			'user, the reservation will be aborted.',
-
-		'If user is not a valid min_display_user_type or min_create_user_type user type the status will not '.
-			'be displayed in Stats, Whatsnew or Search page.  This has an interesting side effect, if this '.
-			'indicator is modified, after users add items of this type.  These items will no longer be '.
-			'visible via Stats, but the items themselves can be found indirectly (not via status type list of values) '.
-			'in listings.php.  For performance reasons no extra validation will be done, to check for the existence '.
-			'of user items, if both min_display_user_type and min_create_user_type are modified to a user type above '.
-			'users with items in this type.'),
+			'A - Admin (Highest)')
+	),
 
 	'min_create_user_type'=>array(
-		'Specifies the minimum user type, who can insert items of this type, or '.
-			'update existing items to this type.'.
-
-		'User Types in OpenDb are hierarchical:',
-		array(
-			'N - Normal',
-			'A - Admin (Highest)')),
+		'Specifies the minimum user type, that can create items of this type, or '.
+			'update existing items to this type.'
+	),
 
 	'borrow_ind'=>array(
 		'If \'Y\', items can be reserved / checked out / checked in / quick checked out.',
@@ -93,7 +64,7 @@ $_COLUMN_HELP = array(
 	),
 
 	'default_ind'=>array(
-		'Only one Status Type should be \'Y\'.  Will be checked by default, for new item operations, etc'),
+		'Controls which type is checked by default for item input and searching, etc.'),
 
 	'status_comment_ind'=>array(
 		'If \'Y\', status comment\'s will be visible.',
@@ -199,8 +170,6 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 		$field .= " <img align=absmiddle valign=absmiddle src=\"$image_src\">";
 	echo format_field($_COLUMN_DESC['img'], NULL, $field, TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('img')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
-	echo get_input_field("insert_ind", NULL, $_COLUMN_DESC['insert_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['insert_ind'],$HTTP_VARS['insert_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('insert_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-	echo get_input_field("update_ind", NULL, $_COLUMN_DESC['update_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['update_ind'],$HTTP_VARS['update_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('update_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("delete_ind", NULL, $_COLUMN_DESC['delete_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['delete_ind'],$HTTP_VARS['delete_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('delete_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("change_owner_ind", NULL, $_COLUMN_DESC['change_owner_ind'], "value_radio_grid('Y,N',*)", "N", ifempty($status_type_r['change_owner_ind'], ifempty($HTTP_VARS['change_owner_ind'],"N")), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('change_owner_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
@@ -289,7 +258,7 @@ if(is_opendb_valid_session())
 				else
 				{
 					if(!update_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
-								$HTTP_VARS['insert_ind'], $HTTP_VARS['update_ind'], $HTTP_VARS['delete_ind'], 
+								$HTTP_VARS['delete_ind'], 
 								$HTTP_VARS['change_owner_ind'], 
 								$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
 								$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind'],
@@ -314,7 +283,7 @@ if(is_opendb_valid_session())
 			if(strlen($HTTP_VARS['s_status_type'])>0 && !is_valid_s_status_type($HTTP_VARS['s_status_type']))
 			{
 				if(!insert_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
-								$HTTP_VARS['insert_ind'], $HTTP_VARS['update_ind'], $HTTP_VARS['delete_ind'], 
+								$HTTP_VARS['delete_ind'], 
 								$HTTP_VARS['change_owner_ind'], 
 								$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
 								$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind']))

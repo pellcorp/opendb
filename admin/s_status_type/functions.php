@@ -115,7 +115,7 @@ function validate_user_type_column($column)
 }
 
 function insert_s_status_type($s_status_type, $description, $img, 
-							$insert_ind, $update_ind, $delete_ind, $change_owner_ind, 
+							$delete_ind, $change_owner_ind, 
 							$min_display_user_type,	$min_create_user_type,
 							$borrow_ind, $status_comment_ind, $default_ind)
 {
@@ -133,8 +133,6 @@ function insert_s_status_type($s_status_type, $description, $img,
 	$change_owner_ind = validate_ind_column($change_owner_ind);
 	
 	$status_comment_ind = validate_ind_column($status_comment_ind);
-	$insert_ind = validate_ind_column($insert_ind);
-	$update_ind = validate_ind_column($update_ind);
 	$delete_ind = validate_ind_column($delete_ind);
 	
 	$min_display_user_type = validate_user_type_column($min_display_user_type);
@@ -143,8 +141,8 @@ function insert_s_status_type($s_status_type, $description, $img,
 	
 	$borrow_ind = validate_ind_column($borrow_ind);
 	
-	$query = "INSERT INTO s_status_type ( s_status_type, description, img, insert_ind, update_ind, delete_ind, change_owner_ind, min_display_user_type, min_create_user_type, borrow_ind, status_comment_ind, default_ind, closed_ind )".
-			"VALUES ('$s_status_type', '$description', '$img', '$insert_ind', '$update_ind', '$delete_ind', '$change_owner_ind', '$min_display_user_type', '$min_create_user_type', '$borrow_ind', '$status_comment_ind', '$default_ind', 'N')";
+	$query = "INSERT INTO s_status_type ( s_status_type, description, img, delete_ind, change_owner_ind, min_display_user_type, min_create_user_type, borrow_ind, status_comment_ind, default_ind, closed_ind )".
+			"VALUES ('$s_status_type', '$description', '$img', '$delete_ind', '$change_owner_ind', '$min_display_user_type', '$min_create_user_type', '$borrow_ind', '$status_comment_ind', '$default_ind', 'N')";
 
 	$insert = db_query($query);
 	// We should not treat updates that were not actually updated because value did not change as failures.
@@ -154,7 +152,7 @@ function insert_s_status_type($s_status_type, $description, $img,
 		if($rows_affected>0)
 		{
 					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, db_error(), array($s_status_type, $description, $img, 
-							$insert_ind, $update_ind, $delete_ind, $change_owner_ind, 
+							$delete_ind, $change_owner_ind, 
 							$min_display_user_type,	$min_create_user_type,
 							$borrow_ind, $status_comment_ind, $default_ind));
 		}
@@ -163,7 +161,7 @@ function insert_s_status_type($s_status_type, $description, $img,
 	else
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_status_type, $description, $img, 
-							$insert_ind, $update_ind, $delete_ind, $change_owner_ind, 
+							$delete_ind, $change_owner_ind, 
 							$min_display_user_type,	$min_create_user_type,
 							$borrow_ind, $status_comment_ind, $default_ind));
 		return FALSE;
@@ -195,7 +193,7 @@ function update_default_status_type($exclude_s_status_type)
 /*
 */
 function update_s_status_type($s_status_type, $description, $img, 
-							$insert_ind, $update_ind, $delete_ind, $change_owner_ind, 
+							$delete_ind, $change_owner_ind, 
 							$min_display_user_type,	$min_create_user_type,
 							$borrow_ind, $status_comment_ind, $default_ind,
 							$closed_ind)
@@ -206,8 +204,6 @@ function update_s_status_type($s_status_type, $description, $img,
 	// do this one first, as we need to validate the data for the others based on this one.
 	$change_owner_ind = validate_ind_column($change_owner_ind);
 	
-	$insert_ind = validate_ind_column($insert_ind);
-	$update_ind = validate_ind_column($update_ind);
 	$delete_ind = validate_ind_column($delete_ind);
 	
 	$min_display_user_type = validate_user_type_column($min_display_user_type);
@@ -223,8 +219,6 @@ function update_s_status_type($s_status_type, $description, $img,
 	$query = "UPDATE s_status_type ".
 				"SET description = '$description', ".
 				"img = '$img', ".
-				"insert_ind = '$insert_ind', ".
-				"update_ind = '$update_ind', ".
 				"delete_ind = '$delete_ind', ".
 				"change_owner_ind = '$change_owner_ind', ".
 				"min_display_user_type = '$min_display_user_type', ".
@@ -244,7 +238,7 @@ function update_s_status_type($s_status_type, $description, $img,
 		if($rows_affected>0)
 		{
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_status_type, $description, $img, 
-							$insert_ind, $update_ind, $delete_ind, $change_owner_ind,
+							$delete_ind, $change_owner_ind,
 							$min_display_user_type,	$min_create_user_type,
 							$borrow_ind, $status_comment_ind, $default_ind,
 							$closed_ind));
@@ -260,7 +254,7 @@ function update_s_status_type($s_status_type, $description, $img,
 	else
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_status_type, $description, $img, 
-							$insert_ind, $update_ind, $delete_ind, $change_owner_ind,
+							$delete_ind, $change_owner_ind,
 							$min_display_user_type,	$min_create_user_type,
 							$borrow_ind, $status_comment_ind, $default_ind,
 							$closed_ind));

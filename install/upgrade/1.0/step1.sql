@@ -135,3 +135,7 @@ UPDATE s_status_type SET borrow_ind = 'N' WHERE borrow_ind IN ('X', 'B');
 
 # status comments can always be populated but will be invisible if 'N'
 UPDATE s_status_type SET status_comment_ind = 'N' WHERE status_comment_ind  = 'H';
+
+# insert / update indicators no longer supported
+ALTER TABLE s_status_type DROP update_ind;
+ALTER TABLE s_status_type DROP insert_ind;

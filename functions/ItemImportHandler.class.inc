@@ -456,7 +456,7 @@ class ItemImportHandler
 						    $status_type_r = fetch_status_type_r($instanceObj->getStatusType());
 
 							// if illegal type, then override by default.
-							if($status_type_r['closed_ind'] == 'Y' || $status_type_r['insert_ind'] != 'Y')
+							if($status_type_r['closed_ind'] == 'Y')
 							{
 							    $status_type_r = $this->_cfg_default_status_type_r;
 							}

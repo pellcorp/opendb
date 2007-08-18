@@ -243,8 +243,6 @@ CREATE table s_status_type (
   s_status_type				VARCHAR(1) NOT NULL DEFAULT 'Y',
   description				VARCHAR(30) NOT NULL,
   img						VARCHAR(255),
-  insert_ind				VARCHAR(1) NOT NULL DEFAULT 'Y',
-  update_ind				VARCHAR(1) NOT NULL DEFAULT 'Y',
   delete_ind				VARCHAR(1) NOT NULL DEFAULT 'Y',
   change_owner_ind			VARCHAR(1) NOT NULL DEFAULT 'N',
   min_display_user_type		VARCHAR(1),

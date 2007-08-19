@@ -53,7 +53,7 @@ function get_last_num_items_rs(
 	$results = fetch_item_listing_rs($search_vars_r, $dummy_r, 'update_on', 'DESC', 0, $num_of_items);
 	if($results)
 	{
-	    $titleMaskCfg = new TitleMask(array('login.last_items_list', 'item_listing'));
+	    $titleMaskCfg = new TitleMask(array('last_items_list', 'item_listing'));
 	    
 		$image_attribute_type_rs = NULL;
 		while($item_r = db_fetch_assoc($results))
@@ -116,7 +116,7 @@ function get_last_num_items_rs(
 					
 					$item_r['imageurl']['title'] = $item_r['title'];
 				}
-			}//if(get_opendb_config_var('login.last_items_list', 'show_item_image')!==FALSE)
+			}
 			
 			$item_rs[] = $item_r;
 			
@@ -136,7 +136,6 @@ function get_last_item_list(
 					$site_url_prefix = NULL,
 					$is_popup_item_display = FALSE)
 {
-	// You have to change the $owner_id, $s_item_type and number of items parameters.
 	$list_item_rs = get_last_num_items_rs(
 						$num_of_items,// number of items to return
 						$owner_id , //owner_id 

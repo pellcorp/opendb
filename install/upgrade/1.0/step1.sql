@@ -74,7 +74,10 @@ DELETE FROM s_language_var WHERE varname IN (
 	'invalid_s_item_type',
 	'invalid_s_item_type_attribute_type',
 	'confirm_clone_item',
-	'site_login'
+	'site_login',
+	'print_item_cover',
+	'item_search',
+	'tbl_dump_header'
 );
 
 # delete linked item vars, replace with related item vars

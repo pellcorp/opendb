@@ -188,7 +188,7 @@ function opendb_email($to, $toname, $from, $fromname, $subject, $message, &$erro
 	{
         $message =
 				stripslashes($message).
-					"\n\n\n".
+					"\n\n".
 					get_email_footer();
 
 		$subject = stripslashes($subject).

@@ -110,7 +110,7 @@ if (is_opendb_valid_session())
 			$CRLF = get_user_browser_crlf();
 
 			echo("# -------------------------------------------------------------".$CRLF);
-		    echo("# ".get_opendb_lang_var('tbl_dump_header', array('site'=>get_opendb_config_var('site', 'title'), 'version'=>get_opendb_version())).$CRLF);
+		    echo("# ".get_opendb_title_and_version().$CRLF);
    			echo("# http://sourceforge.net/projects/opendb/".$CRLF);
 		    echo("#".$CRLF);
    			echo("# ".get_opendb_lang_var('connected_to', get_opendb_config_var('db_server')).$CRLF);

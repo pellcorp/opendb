@@ -39,7 +39,7 @@ function get_printable_link_r($pageid)
 	else if($pageid == 'item_display')
 	{
 		return array(url=>"$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable')),
-					title=>get_opendb_lang_var('print_item_cover'),
+					title=>get_opendb_lang_var('printable_version'),
 					image=>_theme_image_src("printable.gif"));
 	}
 }
@@ -128,7 +128,7 @@ function get_menu_options($user_id, $user_type)
 			}
 		} //if(is_user_allowed_to_borrow($user_id, $type))
 
-		$menu_options['misc'][] = array(link=>get_opendb_lang_var('item_search'), url=>"search.php");
+		$menu_options['misc'][] = array(link=>get_opendb_lang_var('advanced_search'), url=>"search.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
 		

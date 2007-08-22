@@ -152,7 +152,7 @@ if(is_site_enabled())
 {
 	if (is_opendb_valid_session())
 	{
-		$page_title = get_opendb_lang_var('item_search');
+		$page_title = get_opendb_lang_var('advanced_search');
 		echo _theme_header($page_title);
 
 		// Include validation javascript here.
@@ -219,7 +219,8 @@ if(is_site_enabled())
 		// ------------------------
 		if(@count($item_type_rs)>1)
 		{
-			$itemTypeSelect = "<select name=\"s_item_type\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
+			$itemTypeSelect = "<select name=\"s_item_type\" 
+						onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
 			reset($item_type_rs);		

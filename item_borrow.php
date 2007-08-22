@@ -885,17 +885,9 @@ function send_notification_email($to_user, $from_user, $heading, $introduction, 
 
 	if(strlen($more_information)>0)
 	{
-		$message .= "\n\n\n\n\n".
-				get_opendb_lang_var('more_information').
-				"\n";
-
-		// Add title underline...
-		for($i=0;$i<strlen(get_opendb_lang_var('more_information'));$i++)
-			$message .= "-";
-
-		$message .= "\n".
+		$message .= "\n\n\n".
 					$more_information.
-					"\n\n";
+					"\n";
 	}
 
 	// Send the mail!

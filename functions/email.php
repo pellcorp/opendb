@@ -113,9 +113,7 @@ function get_email_footer()
 			// Now return the complete footer text
 			return	$dashed_line
 					."\n"
-					.$footer_text
-					."\n"
-					.$dashed_line;
+					.$footer_text;
 		}
 	}
 

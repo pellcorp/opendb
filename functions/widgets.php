@@ -2436,7 +2436,7 @@ function get_item_display_field(
 		}
 	}
 	else if(!is_array($value) && $item_attribute_type_r['display_type'] == 'display' && 
-													$item_attribute_type_r['display_type_arg1'] == '%value%')
+													ifempty($item_attribute_type_r['display_type_arg1'], '%value%') == '%value%')
 	{
 		// Support newline formatting by default.
 		$value = nl2br(trim($value));

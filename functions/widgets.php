@@ -2248,9 +2248,6 @@ function get_item_display_field(
 			{
 				$values = explode($item_attribute_type_r['display_type_arg2'], $value);
 
-				// If delimiter is a 'space', this indicates that
-				// the attribute_type is most likely a multi-value
-				// type, so we should do a word match.
 				if(strlen(trim($item_attribute_type_r['display_type_arg2']))===0)
 					$attr_match = 'word';
 				else

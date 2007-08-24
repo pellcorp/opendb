@@ -50,13 +50,13 @@ function output_cache_file($cache_type, $url)
 		}
 		else
 		{
-			header('Location:'.$url);
+			http_redirect($url);
 		}
 		unset($snoopy);
 	}
 	else
 	{
-		header('Location:'.$url);
+		http_redirect($url);
 	}
 }
 
@@ -130,7 +130,7 @@ if(is_site_enabled())
 			}//if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
 			else
 			{
-				header('Location:'.$HTTP_VARS['url']);
+				http_redirect($HTTP_VARS['url']);
 			}
 		} //if(strlen($HTTP_VARS['url'])>0)
 		else

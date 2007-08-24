@@ -428,7 +428,7 @@ if(is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] 
 	if(strlen($HTTP_VARS['redirect'])>0)// Redirect to requested page, as already logged in.
 	{
 		//TODO: This does not work very well with a login page in middle of an item update!
-		header('Location: ' . urldecode($HTTP_VARS['redirect']));
+		http_redirect(urldecode($HTTP_VARS['redirect']));
 	}
 	else if($HTTP_VARS['op'] == 'change-user')
 	{
@@ -440,7 +440,7 @@ if(is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] 
 					is_user_changeuser($HTTP_VARS['uid']))
 			{
                 perform_changeuser($HTTP_VARS);
-				header('Location: login.php');
+				http_redirect('login.php');
 				return;
 			}
 			else
@@ -450,7 +450,7 @@ if(is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] 
 		}
 		else
 		{
-			header('Location: login.php');
+			http_redirect('login.php');
 			return;
 		}
 	}
@@ -509,7 +509,7 @@ else  // invalid session - go to login
 		}
 		else
 		{
-            header('Location: login.php');
+            http_redirect('login.php');
 			return;
 		}
 	}
@@ -526,12 +526,12 @@ else  // invalid session - go to login
 					// We've just given her a valid one, so log it
 					// appropriately and send a redirect to where she
 					// really wanted to go.
-					header('Location: ' . urldecode($HTTP_VARS['redirect']));
+					http_redirect(urldecode($HTTP_VARS['redirect']));
 					return;
 				}
 				else
 				{
-					header('Location: login.php');
+					http_redirect('login.php');
 					return;
 				}
 			}

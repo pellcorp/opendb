@@ -42,7 +42,7 @@ if(get_opendb_config_var('login', 'enable_change_user')!==FALSE &&
     unregister_opendb_session_var('admin_user_id');
 	
 	// invalid login, so login instead.
- 	header('Location: index.php');
+ 	http_redirect('index.php');
 }
 else
 {
@@ -66,7 +66,7 @@ else
 	// if public access was successful, redirect to index to load public access welcome
 	if(is_site_public_access_enabled())
 	{
-		header('Location: index.php');
+		http_redirect('index.php');
 	}
 	else
 	{
@@ -74,7 +74,7 @@ else
 		session_destroy();
 
 		// redirect to index after logout
-		header('Location: index.php');
+		http_redirect('index.php');
 	}
 }
 

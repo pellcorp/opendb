@@ -99,7 +99,7 @@ if (is_opendb_valid_session())
 						}
 						
 						// return to log file without POST params so can do immediate refresh of log
-						header("Location: $PHP_SELF?type=$ADMIN_TYPE");
+						http_redirect("$PHP_SELF?type=$ADMIN_TYPE");
 					}
 					else if($HTTP_VARS['confirmed'] != 'false')
 					{
@@ -118,7 +118,7 @@ if (is_opendb_valid_session())
 						$HTTP_VARS['op'] = '';
 						
 						// return to log file without POST params so can do immediate refresh of log
-						header("Location: $PHP_SELF?type=$ADMIN_TYPE");
+						http_redirect("$PHP_SELF?type=$ADMIN_TYPE");
 					}
 				}
 				else if($HTTP_VARS['op'] == 'backup')

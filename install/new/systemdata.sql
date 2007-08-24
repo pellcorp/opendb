@@ -380,6 +380,9 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'search'
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import', 14, 'Import', 'Import configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import.cache', 1, 'Import Cache', 'Import Cache configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'stats', 15, 'Statistics', 'Statistics configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds', 16, 'Feeds', 'Feeds configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.new_items', 1, 'New Items Feed', 'New Items Feed configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.announcements', 2, 'Announcements Feed', 'Announcements Feed configuration' );
 
 #
 # Configuration Items
@@ -583,6 +586,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('search', 'datetime_mask', 1, 'Datetime Mask', 'Search datetime mask', 'datemask');
 
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('feeds.new_items', 'total_num_items', 1, 'Total Items to List', '', 'number');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('feeds.announcements', 'total_num_items', 1, 'Total Announcements to List', '', 'number');
+
 #
 # Configuration Item Values.
 #
@@ -771,6 +777,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'd
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow.reminder', 'duration_range', '-1');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('search', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('announcements', 'datetime_mask', 'DD/MM/YYYY HH:MI:SS');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('feeds.new_items', 'total_num_items', '18');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('feeds.announcements', 'total_num_items', '5');
 
 #
 # Title Display Mask data

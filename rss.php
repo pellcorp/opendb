@@ -54,7 +54,7 @@ function build_new_items_feed($URL, $datemask)
 {
 	$rssout = '';
 	
-	$last_items_list_conf_r = get_opendb_config_var('login.last_items_list');
+	$last_items_list_conf_r = get_opendb_config_var('feeds.new_items');
 	
 	$list_item_rs = get_last_num_items_rs(
 						$last_items_list_conf_r['total_num_items'],// number of items to return
@@ -119,8 +119,17 @@ function build_announcements_feed($URL, $datemask)
 {
 	$rssout = '';
 	
-	// Get the last 5 announcements 
-	$result = fetch_announcement_rs(get_opendb_session_var('user_type'), NULL, "DESC", 0, 5, "N", "Y");
+	$last_items_list_conf_r = get_opendb_config_var('feeds.announcements');
+
+	// TODO - make the options here configurable
+	$result = fetch_announcement_rs(
+			get_opendb_session_var('user_type'), //$min_user_type
+			NULL, //$order_by
+			"DESC", //$sortorder
+			0, //$start_index
+			$last_items_list_conf_r['total_num_items'], //5, //$items_per_page
+			"N", //$limit_days
+			"Y"); //$limit_closed
 
 	// Create the RSS item tags
 	if($result && db_num_rows($result)>0)

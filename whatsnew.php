@@ -25,6 +25,32 @@ include_once("./functions/auth.php");
 include_once("./functions/whatsnew.php");
 include_once("./functions/scripts.php");
 
+/**
+ * This class is designed to execute under a public access enabled site if you want to embed it in
+ * other sites.
+ * 
+ * You need to copy the following javascript to your site and put it into the script/ directory:
+ * 
+ * 	script/common.js
+ *  script/marquee.js
+ * 	script/popup.js
+ * 
+ * You can use the following PHP to embed this into your site (assuming you have Snoopy.class.ph
+ * available):
+ * 
+
+<?php 
+include_once("./Snoopy.class.php"); 
+$snoopy = new Snoopy(); 
+$snoopy->fetch("http://127.0.0.1/jason/opendb/whatsnew.php"); 
+if($snoopy->status >= 200 && $snoopy->status<300) 
+{ 
+	echo $snoopy->results; 
+} 
+?>
+
+ * 
+ */
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session())
@@ -34,7 +60,6 @@ if(is_site_enabled())
 		if($HTTP_VARS['op'] == 'marquee')
 		{
 			echo get_popup_javascript();
-			echo("<script src=\"./include/marquee.js\"></script>");
 			echo(get_common_javascript());
 			echo(get_marquee_javascript());
 			

@@ -119,6 +119,8 @@ function get_s_item_listing_column_conf_rs($s_item_type_group, $s_item_type)
 	 	{
 	 	    while($item_listing_column_conf_r = db_fetch_assoc($results))
 			{
+				$item_listing_column_conf_r['item_listing_conf_ind'] = 'Y';
+				
 				$item_listing_column_conf_rs[] = $item_listing_column_conf_r;
 			}
 			db_free_result($results);

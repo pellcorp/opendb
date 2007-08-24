@@ -289,8 +289,6 @@ function &merge_display_column_config_arrays($display_column_config, $search_col
 		{
 			if($display_column_config[$i]['column_type'] == 's_attribute_type')
 			{
-				$display_column_config[$i]['display_column_ind'] = 'Y'; 
-				
 				if(strlen($display_column_config[$i]['s_attribute_type'])>0)
 				{
 					if(($idx_of_element = find_attribute_type_column_config($display_column_config[$i]['s_attribute_type'], $search_column_config)) != -1)
@@ -929,7 +927,7 @@ if(is_site_enabled())
 					$v_column_display_config_rs[$i]['fieldname'] = get_field_name($v_column_display_config_rs[$i]['s_attribute_type']);
 					
 					if($v_column_display_config_rs[$i]['search_attribute_ind'] != 'y' || 
-							$v_column_display_config_rs[$i]['display_column_ind'] == 'Y' ||
+							$v_column_display_config_rs[$i]['item_listing_conf_ind'] == 'Y' ||
 							$v_column_display_config_rs[$i]['attr_match'] != 'exact' ||
 							get_opendb_config_var('listings', 'show_exact_match_search_columns')!==FALSE)
 					{
@@ -1138,7 +1136,7 @@ if(is_site_enabled())
 					if($v_column_display_config_rs[$i]['column_type'] == 's_attribute_type')
 					{
 						if($v_column_display_config_rs[$i]['search_attribute_ind'] != 'y' || 
-								$v_column_display_config_rs[$i]['display_column_ind'] == 'Y' ||
+								$v_column_display_config_rs[$i]['item_listing_conf_ind'] == 'Y' ||
 								$v_column_display_config_rs[$i]['attr_match'] != 'exact' ||
 								get_opendb_config_var('listings', 'show_exact_match_search_columns')!==FALSE)
 						{

@@ -34,7 +34,23 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
 	if(strlen($url)>0)
  		$redirect .= '?'.$url;
 	
-	header("Location: login.php?op=login&redirect=".urlencode($redirect));
+	http_redirect("login.php?op=login&redirect=".urlencode($redirect));
+}
+
+					
+/**
+ * Simple HTTTP Location redirect
+ *
+ * A simple function to redirect browsers via the HTTP Location header.
+ *
+ * @param string $link The URL to redirect the user's browser to
+ */
+function http_redirect($link)
+{
+	if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+		header('Location: https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
+	else
+		header('Location: http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
 }
 
 /**

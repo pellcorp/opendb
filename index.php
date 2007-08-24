@@ -35,26 +35,26 @@ if(is_browser_supported())
 		{
 			if(get_opendb_config_var('site', 'upgrade_check')===FALSE || check_opendb_version())
 			{
-				header('Location: login.php');
+				http_redirect('login.php');
 			}
 			else
 			{
-				header('Location: install.php');
+				http_redirect('install.php');
 			}
 		}//if(is_opendb_configured())
 		else
 		{
-			header('Location: install.php');
+			http_redirect('install.php');
 		}
 	}//if(is_db_connected())
 	else
 	{
-		header('Location: install.php');
+		http_redirect('install.php');
 	}
 }
 else
 {
-	header('Location: browserSupport.php');	
+	http_redirect('browserSupport.php');	
 }
 
 // Cleanup after begin.inc.php

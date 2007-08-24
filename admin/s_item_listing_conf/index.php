@@ -167,7 +167,7 @@ function get_column_details($record_r, $row)
 	}
 
 	// this is to avoid confusion if system data is defined for non-existent s_attribute_types
-	if(is_not_empty_array($record_r) && !in_array($record_r['s_attribute_type'], $attribute_type_rs))
+	if(!$new_record && !in_array($record_r['s_attribute_type'], $attribute_type_rs))
 		$attribute_type_rs[] = array('value'=>$record_r['s_attribute_type'], 'display'=>$record_r['s_attribute_type']);
 		
 	$columns_r[] = array(

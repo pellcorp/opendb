@@ -407,6 +407,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'enable', 1, 'Enable', 'Expose the OpenDb as a public site, with \'guest\' User ID', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'user_id', 2, 'Guest User', 'You must choose a valid \'guest\' User', 'guest_userid');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, no restrictions apply.  Otherwise only the pages listed will be accessible while public access is in effect.', 'array', 'text');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'enable_javascript_validation', 1, 'Enable Javascript Validation', 'Enforce javascript data validations in addition to backend validations.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'show_prompt_compulsory_ind', 2, 'Show Prompt Compulsory Indicator', 'Any Mandatory data elements will show a visual mandatory element identifier', 'boolean');
@@ -598,6 +599,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'fil
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'register_globals_enabled', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'restrict_session_cookie_to_host_path', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'upgrade_check', 'TRUE');
+
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'enable', 'FALSE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.gzip_compression', 'enable', 'FALSE');

@@ -59,14 +59,28 @@ configured public access user.
 */
 function is_site_public_access_enabled()
 {
+	global $PHP_SELF;
+	
 	if(is_opendb_configured())
 	{
 		$site_plugin_access_r = get_opendb_config_var('site.public_access');
+		
 		if($site_plugin_access_r['enable'] === TRUE &&
 					strlen($site_plugin_access_r['user_id'])>0 &&
 					get_opendb_session_var('user_id') === $site_plugin_access_r['user_id'])
 		{
-		    return TRUE;
+			// if array is empty, then no restrictions apply.
+			if(is_not_empty_array($site_plugin_access_r['enabled_pages'])) {
+				
+				$page = basename($PHP_SELF, '.php');
+				
+				if(!in_array($page, $site_plugin_access_r['enabled_pages'])) {
+					return FALSE;
+				}
+			}
+			
+			//else
+			return TRUE;
 		}
 		else
 		{

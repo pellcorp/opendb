@@ -90,7 +90,8 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 		
 		$include_menu = ($inc_menu!==FALSE && $inc_menu!=='N'?TRUE:FALSE);
 		
-		if(!$include_menu)
+		// do not overwrite the mode if already set.
+		if(!$include_menu && strlen($HTTP_VARS['mode'])==0)
 		{
 			$HTTP_VARS['mode'] = 'no-menu';	
 		}

@@ -217,7 +217,7 @@ function get_last_item_list_marquee($blocks_r)
 	{
 		while(list(,$block) = @each($blocks_r))
 		{
-			$buffer .= "<div class=\"lastitemlist-item\" style=\"display: none;\">";
+			$buffer .= "\n<div class=\"lastitemlist-item\" style=\"display: none;\">";
 			$buffer .= $block;
 			$buffer .= "</div>";
 		}

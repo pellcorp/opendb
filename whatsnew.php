@@ -63,7 +63,7 @@ if(is_site_enabled())
 			echo(get_common_javascript());
 			echo(get_marquee_javascript());
 			
-			echo("<div id=\"lastitemlist-container\">".
+			echo("\n<div id=\"lastitemlist-container\">".
 				get_last_item_list_marquee(
 					get_last_item_list(
 						get_opendb_config_var('login.last_items_list', 'total_num_items'),
@@ -73,9 +73,9 @@ if(is_site_enabled())
 						NULL,
 						get_site_url(),
 						TRUE)).
-			"</div>");
+			"\n</div>");
 						
-			echo("<script language=\"JavaScript\">
+			echo("\n<script language=\"JavaScript\">
 			window.onload = function(){startMarquee('lastitemlist-container', 'lastitemlist-item', 2000);}
 			</script>");
 		}

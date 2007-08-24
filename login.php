@@ -104,7 +104,7 @@ function get_announcements_block()
 			while($announcement_r = db_fetch_assoc($results))
 			{
 				$buffer .= "<li><h4>".$announcement_r['title']."</h4>";
-				$buffer .= "<small class=\"submitDate\">".get_localised_timestamp(get_opendb_config_var('announcements', 'datetime_mask'),$announcement_r['submit_on'])."</small>";
+				$buffer .= "<small class=\"submitDate\">".get_localised_timestamp(get_opendb_config_var('login.announcements', 'datetime_mask'),$announcement_r['submit_on'])."</small>";
 				$buffer .= "<p class=\"content\">".nl2br($announcement_r['content'])."</p></li>";
 			}
 			db_free_result($results);

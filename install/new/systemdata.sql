@@ -380,7 +380,6 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'search'
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import', 14, 'Import', 'Import configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import.cache', 1, 'Import Cache', 'Import Cache configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'stats', 15, 'Statistics', 'Statistics configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'announcements', 16, 'Announcements', 'Announcements configuration' );
 
 #
 # Configuration Items
@@ -407,7 +406,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'enable', 1, 'Enable', 'Expose the OpenDb as a public site, with \'guest\' User ID', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'user_id', 2, 'Guest User', 'You must choose a valid \'guest\' User', 'guest_userid');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, no restrictions apply.  Otherwise only the pages listed will be accessible while public access is in effect.', 'array', 'text');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, standard guest user restrictions will apply.  Otherwise only pages listed will be accessible while public access is in effect.', 'array', 'text');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'enable_javascript_validation', 1, 'Enable Javascript Validation', 'Enforce javascript data validations in addition to backend validations.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'show_prompt_compulsory_ind', 2, 'Show Prompt Compulsory Indicator', 'Any Mandatory data elements will show a visual mandatory element identifier', 'boolean');
@@ -467,9 +466,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.last_items_list', 'datetime_mask', 8, 'Datetime Mask', '', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'display_count', 3, 'Display Count', 'Number of Announcements to list', 'number');
-
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('announcements', 'datetime_mask', 1, 'Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'display_count', 2, 'Display Count', 'Number of Announcements to list', 'number');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'datetime_mask', 3, 'Datetime Mask', '', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('import', 'row_import_default_initcap_checked', 1, 'Row Import Initcap Enabled', 'Initcap checked by default', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('import.cache', 'file_location', 2, 'Import Cache location', 'Location of import cache files', 'readonly');

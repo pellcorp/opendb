@@ -449,7 +449,7 @@ class amazon extends SitePlugin
 			}
 		}
 		
-		if(preg_match("!<b>ISBN-10:</b>[\s]*([0-9]+)!", $pageBuffer, $regs))
+		if(preg_match("!<b>ISBN-10:</b>[\s]*([0-9X]+)!", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('isbn', $regs[1]);
 			$this->addItemAttribute('isbn10', $regs[1]);

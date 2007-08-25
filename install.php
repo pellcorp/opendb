@@ -695,21 +695,30 @@ function install_opendb_upgrade($HTTP_VARS, &$errors)
  	    $upgraders_r = get_upgrader_r($opendb_release_r['release_version']);
  	    $HTTP_VARS['upgrader_plugin'] = $upgraders_r['upgrader_plugin'];
  	}
- 	else //if(strlen($HTTP_VARS['upgrader_plugin'])==0)
+ 	else
 	{
 		$latest_to_version = NULL;
 	
 		// $latest_to_version is out param!
-		$upgraders_rs = get_upgraders_rs(is_array($opendb_release_r)?$opendb_release_r['release_version']:NULL, get_opendb_version(), $latest_to_version);
-		if(count($upgraders_rs) == 1)
-		{
-			$HTTP_VARS['upgrader_plugin'] = $upgraders_rs[0]['upgrader_plugin'];
-	    	$upgraders_rs = NULL;
-		}
-		else if(count($upgraders_rs) > 1)
-		{
-			$errors = "More than one upgrader is available for this version, this is an error, please contact the author."; 
-			return FALSE; // more than one upgrade step possible is an error!
+		$upgraders_rs = get_upgraders_rs(
+					is_array($opendb_release_r)?$opendb_release_r['release_version']:NULL, 
+					get_opendb_version(), 
+					$latest_to_version, 
+					$errors);
+					
+		if(is_array($upgraders_rs)) {
+			if(count($upgraders_rs) == 1)
+			{
+				$HTTP_VARS['upgrader_plugin'] = $upgraders_rs[0]['upgrader_plugin'];
+		    	$upgraders_rs = NULL;
+			}
+			else if(count($upgraders_rs) > 1)
+			{
+				$errors[] = "More than one upgrader is available for this version, this is an error, please contact the author."; 
+				return FALSE; // more than one upgrade step possible is an error!
+			}
+		} else {
+			return FALSE;	
 		}
     }//else - already defined, so should already have record.
 

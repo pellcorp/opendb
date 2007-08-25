@@ -891,7 +891,7 @@ function get_upgrader_r($db_version)
 	@param $opendb_version - is the version of the code we are updating the database to
 	@param $latest_to_version - is the latest upgrader to_version available.
 */
-function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
+function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version, &$errors)
 {
 	//echo '<br>db_version:'.$db_version;
 	//echo '<br>opendb_version:'.$opendb_version;
@@ -902,57 +902,62 @@ function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 
 	$upgraders_rs = NULL;
 
-	// initial filter - 
-	for($i=0; $i<count($all_upgrader_rs); $i++)
-	{  	
-		$upgrader_r = $all_upgrader_rs[$i];
-			    
-		if(strlen($db_version)==0)
-		{
-			$upgraders_rs[] = $upgrader_r;
-		}
-		else if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
-		{
-			$upgraders_rs[] = $upgrader_r;
-		}
-		else if($latest_to_version == $upgrader_r['to_version'] && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
-		{
-			$upgraders_rs[] = $upgrader_r;
-		}
-	}
-
-	if(is_not_empty_array($upgraders_rs))
-	{
-     	// now have to process it to remove those options that are not appropriate
-		if(strlen($db_version)>0)
-		{
-		  	$revised_list_rs = NULL;
-			for($i=0; $i<count($upgraders_rs); $i++)
-			{  	
-				$upgrader_r = $upgraders_rs[$i];
-	
-	    	    // lets look for a from_version which matches db_version exactly, and don't bother
-	    	    // looking anywhere else if found.
-	    	    if(opendb_version_compare($db_version, $upgrader_r['from_version'], '='))
-				{
-	    	        $revised_list_rs[] = $upgrader_r;
-	    	        break;
-	    	    }
+	if(count($all_upgrader_rs)>0) {
+		// initial filter - 
+		for($i=0; $i<count($all_upgrader_rs); $i++)
+		{  	
+			$upgrader_r = $all_upgrader_rs[$i];
+				    
+			if(strlen($db_version)==0)
+			{
+				$upgraders_rs[] = $upgrader_r;
 			}
-			
-    		if(is_array($revised_list_rs))
-	    		return $revised_list_rs;
-			else
-				return $upgraders_rs;
+			else if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+			{
+				$upgraders_rs[] = $upgrader_r;
+			}
+			else if($latest_to_version == $upgrader_r['to_version'] && opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+			{
+				$upgraders_rs[] = $upgrader_r;
+			}
 		}
-		else
+		
+		if(is_not_empty_array($upgraders_rs))
 		{
-			return $upgraders_rs;
+	     	// now have to process it to remove those options that are not appropriate
+			if(strlen($db_version)>0)
+			{
+			  	$revised_list_rs = NULL;
+				for($i=0; $i<count($upgraders_rs); $i++)
+				{  	
+					$upgrader_r = $upgraders_rs[$i];
+		
+		    	    // lets look for a from_version which matches db_version exactly, and don't bother
+		    	    // looking anywhere else if found.
+		    	    if(opendb_version_compare($db_version, $upgrader_r['from_version'], '='))
+					{
+		    	        $revised_list_rs[] = $upgrader_r;
+		    	        break;
+		    	    }
+				}
+				
+	    		if(is_array($revised_list_rs))
+		    		return $revised_list_rs;
+				else
+					return $upgraders_rs;
+			}
+			else
+			{
+				return $upgraders_rs;
+			}
 		}
-	}
-	else // empty array as last resort.
-	{
-		return array();
+		else // empty array as last resort.
+		{
+			return array();
+		}
+	} else {
+		$errors[] = 'No Upgrader plugin classes found - this is a fatal error!';
+		return FALSE;		
 	}
 }
 

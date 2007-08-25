@@ -19,16 +19,18 @@
 
 function showMarqueeElement(elementsList, currentDisplay, timeout)
 {
-	elementsList[currentDisplay].style.display = 'none';
-	
-	currentDisplay++;
-	if(currentDisplay >= elementsList.length)
-	{
-		currentDisplay=0;
+	if(elementsList.length > 0) {
+		elementsList[currentDisplay].style.display = 'none';
+		
+		currentDisplay++;
+		if(currentDisplay >= elementsList.length)
+		{
+			currentDisplay=0;
+		}
+		elementsList[currentDisplay].style.display = '';
+		
+		setTimeout(function(){ showMarqueeElement(elementsList, currentDisplay, timeout);}, timeout);
 	}
-	elementsList[currentDisplay].style.display = '';
-	
-	setTimeout(function(){ showMarqueeElement(elementsList, currentDisplay, timeout);}, timeout);
 }
 
 function startMarquee(container, itemclass, timeout)

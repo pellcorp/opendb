@@ -29,27 +29,24 @@ include_once("./functions/scripts.php");
  * This class is designed to execute under a public access enabled site if you want to embed it in
  * other sites.
  * 
- * You need to copy the following javascript to your site and put it into the script/ directory:
+ * You must copy the following javascript to your site and put it into a script/ directory:
  * 
  * 	script/common.js
  *  script/marquee.js
  * 	script/popup.js
  * 
- * You can use the following PHP to embed this into your site (assuming you have Snoopy.class.ph
+ * You can use the following PHP to embed this into your site (assuming you have Snoopy.class.php
  * available):
  * 
-
-<?php 
-include_once("./Snoopy.class.php"); 
-$snoopy = new Snoopy(); 
-$snoopy->fetch("http://127.0.0.1/jason/opendb/whatsnew.php"); 
-if($snoopy->status >= 200 && $snoopy->status<300) 
-{ 
-	echo $snoopy->results; 
-} 
-?>
-
- * 
+ *	<?php 
+ *	include_once("./Snoopy.class.php"); 
+ *	$snoopy = new Snoopy(); 
+ *	$snoopy->fetch("http://127.0.0.1/jason/opendb/whatsnew.php"); 
+ *	if($snoopy->status >= 200 && $snoopy->status<300) 
+ *	{ 
+ *		echo $snoopy->results; 
+ *	} 
+ *	?>
  */
 if(is_site_enabled())
 {
@@ -67,16 +64,19 @@ if(is_site_enabled())
 				get_last_item_list_marquee(
 					get_last_item_list(
 						get_opendb_config_var('login.last_items_list', 'total_num_items'),
-						NULL,
-						NULL,
-						NULL,
-						NULL,
-						get_site_url(),
-						TRUE)).
+						NULL, //$owner_id
+						NULL, //$s_item_type
+						NULL, //$update_on
+						NULL, //$not_owner_id
+						get_site_url(), //$site_url_prefix
+						TRUE)).  //$is_popup_item_display
 			"\n</div>");
 						
 			echo("\n<script language=\"JavaScript\">
-			window.onload = function(){startMarquee('lastitemlist-container', 'lastitemlist-item', 2000);}
+			addEvent(
+				window, 
+				'load', 
+				function(){startMarquee('lastitemlist-container', 'lastitemlist-item', 2000);} );
 			</script>");
 		}
 	}

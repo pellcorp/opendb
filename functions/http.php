@@ -47,10 +47,14 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
  */
 function http_redirect($link)
 {
-	if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-		header('Location: https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
-	else
-		header('Location: http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
+	if(!is_url_absolute($link)) {
+		if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+			header('Location: https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
+		else
+			header('Location: http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
+	} else {
+		header("Location: $link");
+	}
 }
 
 /**

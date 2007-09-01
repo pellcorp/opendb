@@ -39,7 +39,6 @@ INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type,
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('ADDR_LINE', 'Address Line', 'Address', 'text', '50', '255', NULL, NULL, NULL, 'display', '%value%', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'ADDRESS', NULL);
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('CITY', 'City', 'City', 'text', '50', '100', NULL, NULL, NULL, 'display', '%value%', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'ADDRESS', NULL);
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('COUNTRY', 'Country', 'Country', 'single_select', '%display%', NULL, NULL, NULL, NULL, 'display', '%display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', 'ADDRESS', NULL);
-INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('EMAIL_ADDR', 'Email address', 'Email', 'email', '30', '50', NULL, NULL, NULL, 'display', '%value%', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'ADDRESS', NULL);
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('PHONE_NO', 'Phone Number', 'Phone', 'filtered', '20', '50', '0-9 \\-+', NULL, NULL, 'display', '%value%', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'ADDRESS', NULL);
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('POSTCODE', 'Post code', 'Postcode', 'number', '10', NULL, NULL, NULL, NULL, 'display', '%value%', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'ADDRESS', NULL);
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('STATE', 'State', 'State', 'text', '20', '100', NULL, NULL, NULL, 'display', '%display%', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'ADDRESS', NULL);
@@ -47,17 +46,12 @@ INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type,
 #
 # System Address Type
 # 
-INSERT INTO s_address_type ( s_address_type, description, display_order, min_create_user_type, min_display_user_type, compulsory_for_user_type )
-VALUES ( 'EMAIL', 'Email Address', '1', 'B', 'N', 'B' );
-
 INSERT INTO s_address_type ( s_address_type, description, display_order, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind )
-VALUES ( 'SNAIL', 'Postal Address', '2', 'B', 'B', '*', 'Y' );
+VALUES ( 'SNAIL', 'Postal Address', '1', 'B', 'B', '*', 'Y' );
 
 #
 # System Address Type relationship
 # 
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'EMAIL', 'EMAIL_ADDR', '1', NULL, NULL, NULL, NULL, 'N' );
 INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
 VALUES ( 'SNAIL', 'ADDR_LINE', '1', 'Address Line 1', NULL, NULL, NULL, 'N' );
 INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)

@@ -431,42 +431,18 @@ function fetch_user_name($uid)
 	return FALSE;
 }
 
-/**
-* Since the EMAIL address is used throughout the system, a specialised
-* abstraction of the user_address structure is required.  There is a general
-* assumption that the EMAIL address will ALWAYS be present, and all current
-* code generally assumes this.
-*/
 function fetch_user_email($uid)
 {
-	$email_attribute = get_opendb_config_var('email', 'user_address_attribute');
-	if(strlen($email_attribute)>0)
+	$query = "SELECT email_addr FROM user WHERE user_id = '$uid'";
+	$result = db_query($query);
+	if ($result && db_num_rows($result)>0)
 	{
-		$address_type_r = fetch_user_address_type_r($uid, 'EMAIL');
-		if(is_not_empty_array($address_type_r))
-		{
-			$email_addr = fetch_user_address_attribute_val(
-							$address_type_r['sequence_number'],
-							$email_attribute);
-		
-			if($email_addr !== FALSE)
-			{
-				return $email_addr;
-			}
-			else
-			{
-				return FALSE;
-			}
-		}
-		else
-		{
-			return FALSE;
-		}
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found['email_addr'];
 	}
-	else
-	{
-		return FALSE;
-	}
+	//else
+	return FALSE;
 }
 
 // returns the user's specified language
@@ -558,7 +534,7 @@ function fetch_user_lastvisit($uid)
 function fetch_user_rs($user_types=NULL, $active_ind=NULL, $order_by=NULL, $sortorder="ASC", $include_deactivated_users=FALSE, $exclude_user=NULL, $start_index=NULL, $items_per_page=NULL)
 {
 	// Uses the special 'zero' value lastvisit = 0 to test for default date value.
-	$query = "SELECT user_id, active_ind, IF(LENGTH(fullname)>0,fullname,user_id) as fullname, IF(LENGTH(type)>0,type,'N') as type, language, theme, IF(lastvisit <> 0,UNIX_TIMESTAMP(lastvisit),'') as lastvisit FROM user";
+	$query = "SELECT user_id, active_ind, IF(LENGTH(fullname)>0,fullname,user_id) as fullname, IF(LENGTH(type)>0,type,'N') as type, language, theme, email_addr, IF(lastvisit <> 0,UNIX_TIMESTAMP(lastvisit),'') as lastvisit FROM user";
 
 	// List all users who can borrow records.
 	$user_type_clause = format_sql_in_clause($user_types);
@@ -676,7 +652,7 @@ function fetch_user_cnt($user_types=NULL, $active_ind=NULL, $include_deactivated
 //
 function fetch_user_r($uid)
 {
-	$query = "SELECT user_id, fullname, if(length(type)>0,type,'N') as type, language, theme, lastvisit FROM user where user_id = '".$uid."'";
+	$query = "SELECT user_id, fullname, if(length(type)>0,type,'N') as type, language, theme, email_addr, lastvisit FROM user where user_id = '".$uid."'";
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)
 	{
@@ -825,7 +801,7 @@ function update_user_type($uid, $type)
 		Specify FALSE to not update theme.
 		Specify FALSE to not update language.
 */
-function update_user($uid, $fullname, $language, $theme, $type)
+function update_user($uid, $fullname, $language, $theme, $email_addr, $type)
 {
 	// Do not set to default if explicitly set to FALSE
 	if($type!==FALSE && strlen($type)==0)
@@ -833,6 +809,7 @@ function update_user($uid, $fullname, $language, $theme, $type)
 
 	$query = "UPDATE user SET ".
 					"fullname='".addslashes($fullname)."'".
+					", email_addr='".addslashes($email_addr)."'".
 					($language!==FALSE?", language='".addslashes($language)."'":"").
 					($theme!==FALSE?", theme='".addslashes($theme)."'":"").
 					($type!==FALSE?", type='$type'":"").
@@ -859,16 +836,17 @@ function update_user($uid, $fullname, $language, $theme, $type)
 // This relies on the user_id UNIQUE constraint.  The $uid is the updating user.
 // Will do md5($pwd) before inserting...
 //
-function insert_user($uid, $fullname, $pwd, $type, $language, $theme, $active_ind='Y')
+function insert_user($uid, $fullname, $pwd, $type, $language, $theme, $email_addr, $active_ind='Y')
 {
 	if(strlen($type)==0)
 		$type = "N"; //default!
 
-	$query = "INSERT INTO user (user_id, fullname, pwd, type, language, theme, active_ind, lastvisit)".
+	$query = "INSERT INTO user (user_id, fullname, pwd, type, email_addr, language, theme, active_ind, lastvisit)".
 				"VALUES('".$uid."',".
 						"'".addslashes($fullname)."',".
 						"'".md5($pwd)."',".
 						"'".$type."',".
+						"'".addslashes($email_addr)."',".
 						"'".addslashes($language)."',".
 						"'".addslashes($theme)."',".
 						"'".$active_ind."',".
@@ -877,12 +855,12 @@ function insert_user($uid, $fullname, $pwd, $type, $language, $theme, $active_in
 	$insert = db_query($query);
 	if($insert && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $fullname, '*', $type, $language, $theme, $active_ind));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $fullname, '*', $type, $language, $theme, $email_addr, $active_ind));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $fullname, '*', $type, $language, $theme, $active_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $fullname, '*', $type, $email_addr, $language, $theme, $email_addr, $active_ind));
 		return FALSE;
 	}
 }

@@ -383,27 +383,28 @@ function perform_newpassword($HTTP_VARS, &$errors)
 	{
 		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'User requested to be emailed a new password', array($HTTP_VARS['uid']));
 
-		$user_name  = fetch_user_name($HTTP_VARS['uid']);
-		$user_email = fetch_user_email($HTTP_VARS['uid']);
+		$user_r = fetch_user_r($HTTP_VARS['uid']);
+		
 		$user_passwd  = generate_password(8);
 
 		// only send if valid user (email)
-		if(strlen($user_email)>0)
+		if(strlen($user_r['email_addr'])>0)
 		{
 			$pass_result = update_user_passwd($HTTP_VARS['uid'], $user_passwd);
 			if($pass_result===TRUE)
 			{
 				$from       = get_opendb_config_var('email', 'noreply_address');
 				$from_name  = get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title'));
+
 				$subject    = get_opendb_lang_var('lost_password');
-				$message    = get_opendb_lang_var('to_user_email_intro', 'fullname', $user_name).
+				$message    = get_opendb_lang_var('to_user_email_intro', 'fullname', $user_r['fullname']).
 							"\n\n".
 							get_opendb_lang_var('new_passwd_email').
 							  "\n\n".
 			        	      get_opendb_lang_var('userid').": ".$HTTP_VARS['uid']."\n".
 		    	        	  get_opendb_lang_var('password').": ".$user_passwd;
 
-				if(opendb_email($user_email, $user_name, $from, $from_name, $subject, $message,	$errors))
+				if(opendb_email($user_r['email_addr'], $user_r['fullname'], $from, $from_name, $subject, $message,	$errors))
 				{
 					return TRUE;
 				}

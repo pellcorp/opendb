@@ -31,6 +31,8 @@ class Upgrader_100_110 extends OpenDbUpgrader
 							array('description'=>'New Item Relationship Table'),
 							array('description'=>'New Related Status Type'),
 							array('description'=>'Transfer Linked Items'),
+							array('description'=>'Transfer Email Addresses'),
+							array('description'=>'Cleanup Email address system data'),
 							array('description'=>'Finalise upgrade')
 						)
 					);
@@ -82,6 +84,39 @@ class Upgrader_100_110 extends OpenDbUpgrader
 	}
 	
 	function executeStep4($stepPart)
+	{
+		$results = db_query(
+					"SELECT ua.user_id, uaa.attribute_val
+					FROM user_address ua, user_address_attribute uaa
+					WHERE ua.sequence_number = uaa.ua_sequence_number AND 
+					ua.s_address_type = 'EMAIL' AND
+					ua.start_dt <= NOW() AND (ua.end_dt IS NULL OR ua.end_dt < NOW())");
+		if($results)
+		{
+			$result = TRUE;
+
+			while($addr_attr_r = db_fetch_assoc($results))
+			{
+				if(is_valid_email_addr($addr_attr_r['attribute_val'])) {
+					if(db_query("UPDATE user SET email_addr = '".$addr_attr_r['attribute_val']."'
+								WHERE user_id = '".$addr_attr_r['user_id']."'") === FALSE )
+					{
+						$this->addError(
+								'User '.$addr_attr_r['user_id'].' email address ('.$addr_attr_r['attribute_val'].') not transferred',
+								db_error());
+								
+						$result = FALSE;
+					}
+				}
+			}
+			
+			return $result;
+		}
+		
+		return TRUE;
+	}
+	
+	function executeStep6($stepPart)
 	{
 		db_query("ALTER TABLE item DROP parent_id");
 		return TRUE;

@@ -63,7 +63,14 @@ function send_email_to_site_admins($from, $subject, $message, &$errors)
 	$results = fetch_user_rs(array('A'));
 	while($user_r = db_fetch_assoc($results))
 	{
-		if(opendb_email(fetch_user_email($user_r['user_id']), $admin_name, $from, NULL, $subject, $message, $errors))
+		if(opendb_email(
+				$user_r['email_addr'], 
+				$admin_name, 
+				$from, 
+				NULL, 
+				$subject, 
+				$message, 
+				$errors))
 		{
 			$success = TRUE;
 		}
@@ -128,11 +135,14 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 {
 	if(is_user_valid($to_userid) && is_user_valid($from_userid))
 	{
+		$to_user_r = fetch_user_r($to_userid);
+		$from_user_r = fetch_user_r($from_userid);
+		
 		return opendb_email(
-				fetch_user_email($to_userid),
-				fetch_user_name($to_userid),
-				fetch_user_email($from_userid),
-				fetch_user_name($from_userid),
+				$to_user_r['email_addr'],
+				$to_user_r['fullname'],
+				$from_user_r['email_addr'],
+				$from_user_r['fullname'],
 				$subject,
 				$message,
 				$errors);

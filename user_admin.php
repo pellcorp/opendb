@@ -123,6 +123,14 @@ function get_user_input_form($user_r, $HTTP_VARS)
    	            "Y", //compulsory!
        	        ifempty($HTTP_VARS['fullname'],$user_r['fullname']),
 				TRUE);
+				
+	$buffer .= get_input_field("email_addr",
+				NULL, // s_attribute_type
+				get_opendb_lang_var('email'), 
+                "email(30,100)", //input type.
+   	            "Y", //compulsory!
+       	        ifempty($HTTP_VARS['email_addr'], $user_r['email_addr']),
+				TRUE);
 	
 	if(get_opendb_config_var('user_admin', 'user_themes_support')!==FALSE)
 	{	
@@ -297,7 +305,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		}
 	}//if($HTTP_VARS['op'] == 'new_user')
 	
-// do verify code logic here
+	// do verify code logic here
 	if($HTTP_VARS['op'] == 'signup')
 	{
 		$random_num = get_secretimage_random_num();
@@ -481,11 +489,10 @@ function is_empty_attribute($s_attribute_type, $attribute_val)
 */
 function send_newuser_email($user_r, $passwd, &$errors)
 {
-	$from = fetch_user_email(get_opendb_session_var('user_id'));
-	$from_name = fetch_user_name(get_opendb_session_var('user_id'));
-
-	$subject    = get_opendb_lang_var('welcome_to_site', 'site', get_opendb_config_var('site', 'title'));
-	$message    = get_opendb_lang_var('to_user_email_intro', 'fullname', $user_r['fullname']).
+	$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
+	
+	$subject = get_opendb_lang_var('welcome_to_site', 'site', get_opendb_config_var('site', 'title'));
+	$message = get_opendb_lang_var('to_user_email_intro', 'fullname', $user_r['fullname']).
 								"\n\n".
 								get_opendb_lang_var('welcome_email', 'site', get_opendb_config_var('site', 'title')).
 								 "\n\n".
@@ -500,20 +507,17 @@ function send_newuser_email($user_r, $passwd, &$errors)
 				"    ".get_site_url()."user_admin.php?op=edit&user_id=".urlencode($user_r['user_id']);
  	}
 
-	$email_addr = fetch_user_email($user_r['user_id']);
-	if(is_valid_email_addr($email_addr))
+	if(is_valid_email_addr($user_r['email_addr']))
 	{
-		// In this case ask the email function not to append [OpenDb] to subject
-		// line, as we will already be including reference to the name
 		return opendb_email(
-						$email_addr,
+						$user_r['email_addr'],
 						$user_r['fullname'],
-						$from,
-						$from_name,
+						$from_user_r['email_addr'],
+						$from_user_r['fullname'],
 						$subject,
 						$message,
 						$errors,
-						FALSE);
+						FALSE); // append site to subject
 	}
 }
 
@@ -529,11 +533,13 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 		{
 			$HTTP_VARS['user_id'] = strtolower(filter_input_field("filtered(20,20,a-zA-Z0-9_.)", $HTTP_VARS['user_id']));
 			$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
+			$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
 
 			$is_uid_validated = validate_input_field(get_opendb_lang_var('userid'), "filtered(20,20,a-zA-Z0-9_.)", "Y", $HTTP_VARS['user_id'], $errors);
 			$is_fullname_validated = validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors);
+			$is_email_validated = validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors);
 
-			if($is_uid_validated && $is_fullname_validated)
+			if($is_uid_validated && $is_fullname_validated && $is_email_validated)
 			{
 				$is_address_validated = TRUE;
 				$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
@@ -625,7 +631,7 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 					}
 
 					// We want to validate and perform inserts even in signup mode
-					if(insert_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['pwd'], $HTTP_VARS['user_type'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $active_ind))
+					if(insert_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['pwd'], $HTTP_VARS['user_type'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], $active_ind))
 					{
 						$address_creation_success = TRUE;
 						$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
@@ -738,9 +744,12 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 	if(is_not_empty_array($user_r))
 	{
 		$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
+		$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
 		
 		$is_fullname_validated = validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors);
-		if($is_fullname_validated)
+		$is_email_validated = validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors);
+		
+		if($is_fullname_validated && $is_email_validated)
 		{
 			$address_attribs_provided = NULL;
 			$is_address_validated = TRUE;
@@ -791,7 +800,7 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 					$HTTP_VARS['uid_language'] = NULL;
 				}
 			
-				if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], FALSE))
+				if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], FALSE))
 				{
 					// No errors recorded at this stage.
 					$errors = NULL;
@@ -954,7 +963,7 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 						// address update failed.
 						return FALSE;
 					}
-				}//if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['location'], $HTTP_VARS['email'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], FALSE)) 
+				} 
 				else
 				{
 					$db_error = db_error();

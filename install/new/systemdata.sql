@@ -440,10 +440,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.proxy_server', 'password', 5, 'Password', '', 'password');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'send_to_site_admin', 1, 'Send to Admin', 'Sending Email to admin is supported.', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'user_address_attribute', 2, 'User Address Attribute', '', 'readonly');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'noreply_address', 3, 'No Reply Address', 'Configure no-reply address for events such as password resets', 'text');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'windows_smtp_server', 4, 'Windows SMTP Server', 'If smtp server either configured via php mail or smtp mailer is running on windows (for example if its an MS Exchange Server) and mail is not getting through, it may help to check this.', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('email', 'mailer', 5, 'Mailer', '', 'value_select', 'smtp,mail,none');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'noreply_address', 2, 'No Reply Address', 'Configure no-reply address for events such as password resets', 'text');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'windows_smtp_server', 3, 'Windows SMTP Server', 'If smtp server either configured via php mail or smtp mailer is running on windows (for example if its an MS Exchange Server) and mail is not getting through, it may help to check this.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('email', 'mailer', 4, 'Mailer', '', 'value_select', 'smtp,mail,none');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email.smtp', 'host', 1, 'Email SMTP Host', '', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email.smtp', 'port', 2, 'Email SMTP Port', '', 'number');
@@ -647,7 +646,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.proxy_
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email', 'mailer', 'mail');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email', 'send_to_site_admin', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email', 'noreply_address', 'noreply@iamvegan.net');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email', 'user_address_attribute', 'EMAIL_ADDR');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email.smtp', 'host', 'mail.domain.edu.au');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email.smtp', 'username', 'jpell');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login', 'enable_new_pwd_gen', 'TRUE');

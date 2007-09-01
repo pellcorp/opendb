@@ -299,6 +299,7 @@ CREATE TABLE user (
   type			VARCHAR(1) NOT NULL DEFAULT 'N',
   language		VARCHAR(20),
   theme			VARCHAR(20),
+  email_addr	VARCHAR(255),
   lastvisit		TIMESTAMP(14) NOT NULL,
   active_ind	VARCHAR(1) NOT NULL DEFAULT 'Y',
   PRIMARY KEY ( user_id )

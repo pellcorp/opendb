@@ -77,6 +77,15 @@ if(is_site_enabled())
 						NULL,
 						$user_r['fullname']));
 	
+				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || 
+						is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+				{
+					echo(format_field(
+						get_opendb_lang_var('email'),
+						NULL,
+						$user_r['email_addr']));
+				}
+						
 				echo("\n</table>");
 	
 				$address_header_displayed = FALSE;
@@ -134,7 +143,7 @@ if(is_site_enabled())
 					db_free_result($addr_results);
 				}
 				
-				if(is_valid_opendb_mailer() && fetch_user_email($HTTP_VARS['uid'])!==FALSE)
+				if(is_valid_opendb_mailer() && strlen($user_r['email_addr'])>0)
 				{
 					$url = 'email.php?'.
 							get_url_string(Array(

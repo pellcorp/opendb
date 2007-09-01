@@ -164,3 +164,9 @@ UPDATE s_status_type SET status_comment_ind = 'N' WHERE status_comment_ind  = 'H
 # insert / update indicators no longer supported
 ALTER TABLE s_status_type DROP update_ind;
 ALTER TABLE s_status_type DROP insert_ind;
+
+# moving email address back to user table, as it is always compulsory.  will also
+# make it easier to work with bridges to other software too.
+ALTER TABLE user ADD email_addr	VARCHAR(255);
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email', 'Email'); 

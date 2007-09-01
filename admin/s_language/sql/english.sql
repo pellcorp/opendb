@@ -156,6 +156,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit',
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_my_info', 'Edit My Info'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_title', 'Edit {display_title}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_user_info', 'Edit User Info'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email', 'Email'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_footer', '{site} {version}\\n{site_url}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_is_not_valid', '{prompt} must be a valid email address.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_site_administrator', 'Email {site} Administrator'); 

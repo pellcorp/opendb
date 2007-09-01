@@ -186,8 +186,14 @@ function send_email_to_userids($user_id_rs, $fromemail, $fromname, $subject, $me
 		$touser_r = fetch_user_r($user_id);
 		if(is_not_empty_array($touser_r))
 		{
-			$email_address = fetch_user_email($touser_r['user_id']);
-			if(opendb_email($email_address, $touser_r['fullname'], $fromemail, $fromname, $subject, $message, $errors))
+			if(opendb_email(
+					$touser_r['email_addr'], 
+					$touser_r['fullname'], 
+					$fromemail, 
+					$fromname, 
+					$subject, 
+					$message, 
+					$errors))
 			{
 				$success[] = $touser_r['fullname']." (".$user_id.")";
 			}
@@ -296,7 +302,7 @@ if(is_site_enabled())
 					{
 						send_email_to_userids(
 								$user_id_r, 
-								fetch_user_email($from_user_r['user_id']), 
+								$from_user_r['email_addr'], 
 								$from_user_r['fullname'],
 								$HTTP_VARS['subject'], 
 								$HTTP_VARS['message']);
@@ -330,7 +336,7 @@ if(is_site_enabled())
 				{
 					send_email_to_userids(
 							get_user_id_rs(array($HTTP_VARS['usertype'])), 
-							fetch_user_email($from_user_r['user_id']), 
+							$from_user_r['email_addr'], 
 							$from_user_r['fullname'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message']);
@@ -367,7 +373,7 @@ if(is_site_enabled())
 				{
 					send_email_to_userids(
 							$filtered_user_id_rs, 
-							fetch_user_email($from_user_r['user_id']), 
+							$from_user_r['email_addr'], 
 							$from_user_r['fullname'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message']);
@@ -392,7 +398,7 @@ if(is_site_enabled())
 				{
 					send_email_to_userids(
 							array($HTTP_VARS['uid']), 
-							fetch_user_email($from_user_r['user_id']), 
+							$from_user_r['email_addr'], 
 							$from_user_r['fullname'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message']);

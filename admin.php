@@ -40,6 +40,24 @@ if(is_site_enabled())
 		if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 		{
 			$ADMIN_TYPE = ifempty($HTTP_VARS['type'], 'config');
+			$ADMIN_DIR = './admin/'.$ADMIN_TYPE;
+			
+			if(file_exists("./admin/".$ADMIN_TYPE."/functions.php"))
+			{
+				include_once("./admin/".$ADMIN_TYPE."/functions.php");
+			}
+			
+			if(file_exists("./admin/".$ADMIN_TYPE."/ajaxjobs.php"))
+			{
+				require_once("./lib/xajax/xajax_core/xajax.inc.php");
+
+				$xajax = new xajax("admin.php?type=$ADMIN_TYPE");
+				$xajax->configure('javascript URI', 'lib/xajax/');
+
+				include_once("./admin/".$ADMIN_TYPE."/ajaxjobs.php");
+				
+				$xajax->processRequest();
+			}
 
 			if($HTTP_VARS['mode'] != 'job')
 			{
@@ -48,8 +66,13 @@ if(is_site_enabled())
 				
 				echo("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">".
 						"\n<html>".
-						"\n<head>".
-						"\n	<title>".get_opendb_title_and_version()." - $title"."</title>".
+						"\n<head>");
+				
+				if($xajax) {
+					$xajax->printJavascript();
+				}
+				
+				echo("\n<title>".get_opendb_title_and_version()." - $title"."</title>".
 						"\n<link rel=\"icon\" href=\"images/icon.gif\" type=\"image/gif\" />".
 						get_theme_css('admin'));
 				
@@ -75,13 +98,8 @@ if(is_site_enabled())
 					echo('<form id="toolType" action="admin.php"><select name="type" onChange="this.form.submit();">');
 					
 					reset($system_admin_tools_menu_options);
-	
 					while(list($tool, $menu_option_r) = each($system_admin_tools_menu_options))
 					{
-						if(strlen($ADMIN_TYPE)==0)
-						{
-							$ADMIN_TYPE = $tool;
-						}
 					    $admin_options[] = $menu_option_r;
 					    
 					    echo("\n<option value=\"".$tool."\"".($ADMIN_TYPE==$tool?" SELECTED":"").">".$menu_option_r['link']."</option>");
@@ -93,14 +111,8 @@ if(is_site_enabled())
 				
 				echo("<div id=\"content\" class=\"adminContent\">");
 			}
-			
-			$ADMIN_DIR = './admin/'.$ADMIN_TYPE;
-			if(file_exists("./admin/".$ADMIN_TYPE."/functions.php"))
-			{
-				include("./admin/".$ADMIN_TYPE."/functions.php");
-			}
-				
-			include("./admin/".$ADMIN_TYPE."/index.php");
+
+			include_once("./admin/".$ADMIN_TYPE."/index.php");
 			
 			if($HTTP_VARS['mode'] != 'job')
 			{

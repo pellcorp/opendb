@@ -16,14 +16,8 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-This script produces a table, one row per HTTP cache file, sorted by
-descending expiry date (freshest file at the top, oldest at the bottom).
-
-TODO: only print "delete all stale entries" if there are stale entries.
-Tricky (ugly) to do without putting the link after the list, which would
-force users to scroll to the bottom to find it.
 */
+
 include_once("./functions/datetime.php");
 include_once("./functions/filecache.php");
 include_once("./functions/item_attribute.php");
@@ -47,63 +41,6 @@ function display_job_form($job)
 	$rsimage = _theme_image_src('rs.gif');
 	
  ?>
-	<script src="./scripts/prototype/prototype.js" language="JavaScript" type="text/javascript"></script>
-	<script src="./admin/item_cache/ajaxjobs.js" language="JavaScript" type="text/javascript"></script>
-
-	<script language="JavaScript">
-	var updateFunc = function(job)
-	{
-		var percentage = document.getElementById("percentage");
-		var messsage = document.getElementById("message");
-	
-		var element = document.getElementById("status");
-		if(!job.cancelled)
-		{
-			var images = element.getElementsByTagName("img");
-			var count = job.outOfTen();
-	
-			for(var i=0; i<count; i++)
-			{
-				images[i].src = '<?php echo $rsimage; ?>';
-			}
-			
-			percentage.innerHTML = job.percentage()+"%";
-			
-			if(job.finished)
-			{
-				message.innerHTML = 'Complete...';
-				document.getElementById("cancelButton").disabled = true;	
-			}
-		}
-		else if(job.exception)
-		{
-			messsage.innerHTML = "<div class=\"error\">"+job.exception+"</div>";
-			
-			document.getElementById("startButton").disabled = false;
-			document.getElementById("cancelButton").disabled = true;	
-		}
-	}
-	
-	function resetStatus()
-	{
-		percentage.innerHTML = '0%';
-		message.innerHTML = 'Working...';
-		
-		var element = document.getElementById("status");
-		var images = element.getElementsByTagName("img");
-		for(var i=0; i<10; i++)
-		{
-			images[i].src = '<?php echo $gsimage; ?>';
-		}
-	}
-	
-	function cancelStatus()
-	{
-		message.innerHTML = 'Stopping, Please wait.';
-	}
-	</script>
-	
-	<br>
 	<div id="status" style="{width:300; margin: 4px}">
 	<table width=100% border=0>
 	<tr>
@@ -126,9 +63,10 @@ function display_job_form($job)
 	</tr>
 	</table>
 	
-	<form>
-	<input type="button" id="startButton" name="start" onclick="this.disabled=true; this.form.cancel.disabled=false; resetStatus(); executeAdminJob(new Job(1, '<?php echo $url ?>', updateFunc));" value="Start" />
-	<input type="button" id="cancelButton" name="cancel" onclick="this.disabled=true; cancelStatus(); getJobById(1).cancel('Stopped');" value="Cancel" DISABLED="DISABLED" />
+	<form id="progressForm">
+		<input type="hidden" name="continue" value="true" />
+		<input type="button" id="startButton" value="Start" onclick="this.form['continue'].value='true'; xajax_doJob('<?php echo $job; ?>', '0', 'true'); return false;" />
+		<input type="button" id="cancelButton" value="Cancel" onclick="this.form['continue'].value='false';" />
 	</form>
 	</div>
 <?php		
@@ -154,12 +92,12 @@ if (is_opendb_valid_session())
 				header("Content-type: application/xml");
 				
 				//todo - this is messy, but for now with only a few jobs it will do!
-				if($HTTP_VARS['job'] == 'update')
+				/*if($HTTP_VARS['job'] == 'update')
 					echo perform_update_cache_batch();
 				else if($HTTP_VARS['job'] == 'refresh')
 					echo perform_refresh_cache_batch();
 				else if($HTTP_VARS['job'] == 'refresh_thumbnails')
-					echo perform_refresh_thumbnails_batch();
+					echo perform_refresh_thumbnails_batch();*/
 			}
 			else
 			{

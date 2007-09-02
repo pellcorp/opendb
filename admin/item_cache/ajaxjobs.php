@@ -11,7 +11,7 @@ function doJob($job, $continue, $completedCount, $failureCount) {
 	}
 		
 	if($continue !== 'false') {
-		$batchLimit = 1;
+		$batchLimit = 10;
 
 		if($job == 'update')
 			perform_update_cache_batch($batchLimit, $processed, $failures, $remaining);
@@ -37,7 +37,7 @@ function doJob($job, $continue, $completedCount, $failureCount) {
 		
 		if($processed == 0 && $failures > 0) {
 			$objResponse->assign("message", "innerHTML", "Job Failure (Completed: $completedCount, Failures: $failureCount)");
-			$objResponse->assign("startButton", "value", "");
+			$objResponse->assign("startButton", "value", "Start");
 		} else {
 			
 			$percentage = 0;
@@ -70,12 +70,12 @@ function doJob($job, $continue, $completedCount, $failureCount) {
 				$objResponse->script("xajax_doJob('$job', document.forms['progressForm']['continue'].value, $completedCount, $failureCount);");
 			} else {
 				$objResponse->assign("message", "innerHTML", "Job Complete (Completed: $completedCount, Failures: $failureCount)");
-				$objResponse->assign("startButton", "value", "");
+				$objResponse->assign("startButton", "value", "Start");
 			}
 		}
 	} else {
 		$objResponse->assign("message", "innerHTML", "Job Aborted (Completed: $completedCount, Failures: $failureCount)");
-		$objResponse->assign("startButton", "value", "");
+		$objResponse->assign("startButton", "value", "Start");
 	}
 	
 	return $objResponse;
@@ -94,15 +94,15 @@ function perform_update_cache_batch($limit, &$processed, &$failures, &$remaining
 			{
 				// if URL happens to have been inserted by someone else before we get to the current
 				// row, then this function will do nothing, and thats ok.
-//				if(file_cache_insert_file($item_attribute_r['attribute_val'], NULL, NULL, NULL, 'ITEM', FALSE))
-//				{
+				if(file_cache_insert_file($item_attribute_r['attribute_val'], NULL, NULL, NULL, 'ITEM', FALSE))
+				{
 					$processed++;
-//				}
-//				else
-//				{
-//					$failures++;
-//				}
-				
+				}
+				else
+				{
+					$failures++;
+				}
+
 				// don't process anymore this time around.
 				if($processed >= $limit)
 				{

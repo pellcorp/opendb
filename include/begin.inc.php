@@ -24,7 +24,7 @@ $_OPENDB_ERROR_REPORTING = error_reporting(E_ALL & ~E_NOTICE);
 //ini_set('session.save_handler', 'files'); 
 
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
-define('__OPENDB_RELEASE__', '1.0.4pl1');
+define('__OPENDB_RELEASE__', '1.0.4pl2');
 define('__OPENDB_TITLE__', 'OpenDb');
 
 // definitions for use in logging that may not be defined in older version of PHP, but

@@ -24,22 +24,11 @@ include_once("./functions/item_attribute.php");
 include_once("./functions/listutils.php");
 include_once("./functions/HTML_Listing.class.inc");
 
-// todo - provide a bit more info when the process fails, at least log details
-// to log file!!!
-
 /**
-	Repeatedly call the AJAX URL until the remainder job/result/remainder == 0
-	or status of job returned is FAILURE
 */
 function display_job_form($job)
 {
-	global $ADMIN_TYPE;
-	
-	$url = 'admin.php?type='.$ADMIN_TYPE.'&mode=job&op=job&job='.$job;
-	
 	$gsimage = _theme_image_src('gs.gif');
-	$rsimage = _theme_image_src('rs.gif');
-	
  ?>
 	<div id="status" style="{width:300; margin: 4px}">
 	<table width=100% border=0>
@@ -65,8 +54,10 @@ function display_job_form($job)
 	
 	<form id="progressForm">
 		<input type="hidden" name="continue" value="true" />
-		<input type="button" id="startButton" value="Start" onclick="this.form['continue'].value='true'; xajax_doJob('<?php echo $job; ?>', '0', 'true'); return false;" />
-		<input type="button" id="cancelButton" value="Cancel" onclick="this.form['continue'].value='false';" />
+		<input type="button" id="startButton" value="Start" 
+				onclick="this.form['continue'].value='true'; xajax_doJob('<?php echo $job; ?>', 'true', '0', '0'); this.value='Working...'; this.disabled=true; return false;" />
+		<input type="button" id="cancelButton" value="Cancel" 
+				onclick="this.form['continue'].value='false'; this.disabled=true; " />
 	</form>
 	</div>
 <?php		
@@ -83,36 +74,16 @@ if (is_opendb_valid_session())
 		
 		if($HTTP_VARS['op'] == 'job')
 		{
-			if($HTTP_VARS['mode'] == 'job')
-			{
-				header("Cache-control: no-store");
-				header("Pragma: no-store");
-				header("Expires: 0");
-				header("Content-disposition: inline");
-				header("Content-type: application/xml");
-				
-				//todo - this is messy, but for now with only a few jobs it will do!
-				/*if($HTTP_VARS['job'] == 'update')
-					echo perform_update_cache_batch();
-				else if($HTTP_VARS['job'] == 'refresh')
-					echo perform_refresh_cache_batch();
-				else if($HTTP_VARS['job'] == 'refresh_thumbnails')
-					echo perform_refresh_thumbnails_batch();*/
-			}
-			else
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
-				
-				//todo - this is messy, but for now with only a few jobs it will do!
-				if($HTTP_VARS['job'] == 'update')
-					echo("\n<h3>Update Item Cache</h3>");
-				else if($HTTP_VARS['job'] == 'refresh')
-					echo("\n<h3>Refresh Item Cache files</h3>");
-				else if($HTTP_VARS['job'] == 'refresh_thumbnails')
-					echo("\n<h3>Refresh Item Cache Thumbnail files</h3>");
-	
-				display_job_form($HTTP_VARS['job']);
-			}
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
+			
+			if($HTTP_VARS['job'] == 'update')
+				echo("\n<h3>Update Item Cache</h3>");
+			else if($HTTP_VARS['job'] == 'refresh')
+				echo("\n<h3>Refresh Item Cache files</h3>");
+			else if($HTTP_VARS['job'] == 'refresh_thumbnails')
+				echo("\n<h3>Refresh Item Cache Thumbnail files</h3>");
+
+			display_job_form($HTTP_VARS['job']);
 		}
 		else if($HTTP_VARS['op'] == 'delete')
 		{

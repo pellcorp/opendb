@@ -65,9 +65,9 @@ function doJob($job, $continue, $completedCount, $failureCount) {
 			$objResponse->assign("percentage", "innerHTML", "$percentage%");
 			
 			if($remaining > 0) {
-				$objResponse->assign("message", "innerHTML", "Completed $completedCount of $totalItems");
+				$objResponse->assign("message", "innerHTML", "Completed $completedCount of $totalItems (Failures: $failureCount)");
 				
-				$objResponse->script("xajax_doJob('$job', document.forms['progressForm']['continue'].value, $completedCount, $failureCount);");
+				$objResponse->script("xajax_doJob('$job', document.forms['progressForm']['continue'].value, '$completedCount', '$failureCount');");
 			} else {
 				$objResponse->assign("message", "innerHTML", "Job Complete (Completed: $completedCount, Failures: $failureCount)");
 				$objResponse->assign("startButton", "value", "Start");

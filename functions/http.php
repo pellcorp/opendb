@@ -48,10 +48,21 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
 function http_redirect($link)
 {
 	if(!is_url_absolute($link)) {
-		if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-			header('Location: https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
-		else
-			header('Location: http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
+		$protocol = 'http';
+		if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			$protocol = 'https';
+		}
+		
+		$host = $_SERVER['HTTP_HOST'];
+		
+		$path = dirname($_SERVER['PHP_SELF']);
+		if(substr($path, -1, 1) != '/') {
+			$path .= '/';
+		}
+		$path .= $link;
+		
+		header('Location: '.$protocol.'://'.$host.$path);
+			
 	} else {
 		header("Location: $link");
 	}

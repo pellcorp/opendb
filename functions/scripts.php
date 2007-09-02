@@ -54,6 +54,11 @@ function get_validation_javascript()
 			get_javascript('popup.js');
 }
 
+function get_search_javascript()
+{
+	return get_javascript('search.js');
+}
+
 function get_listings_javascript()
 {
 	return get_javascript('listings.js');

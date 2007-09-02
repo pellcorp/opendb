@@ -33,11 +33,6 @@ include_once("./functions/parseutils.php");
 include_once("./functions/user.php");
 include_once("./functions/status_type.php");
 
-function get_search_javascript()
-{
-	return '<script src="./scripts/search.js" language="JavaScript" type="text/javascript"></script>';
-}
-
 function get_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategories, &$item_attribute_type_rs)
 {
 	$buffer = "";

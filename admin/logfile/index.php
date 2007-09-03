@@ -48,7 +48,7 @@ include_once("./functions/logging.php");
 include_once("./functions/user.php");
 include_once("./functions/datetime.php");
 
-function _build_tooltip_popup($prompt, $value)
+function _build_tooltip($prompt, $value)
 {
 	$value = str_replace("\"", "&quot;", $value);
 	$value = str_replace("'", "\\'", $value);
@@ -195,7 +195,7 @@ if (is_opendb_valid_session())
 							
 							if($tokens['parameters'] != NULL)
 							{
-								$tokens['parameters'] = _build_tooltip_popup(get_opendb_lang_var('parameters'), $tokens['parameters']);
+								$tokens['parameters'] = _build_tooltip(get_opendb_lang_var('parameters'), $tokens['parameters']);
 							}
 							else
 							{
@@ -206,7 +206,7 @@ if (is_opendb_valid_session())
 							{
 								if(strlen($tokens['message'])>100)
 								{
-									$tokens['message'] = _build_tooltip_popup(get_opendb_lang_var('message'), $tokens['message']);
+									$tokens['message'] = _build_tooltip(get_opendb_lang_var('message'), $tokens['message']);
 								}										
 							}
 							else

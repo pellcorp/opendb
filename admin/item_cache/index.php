@@ -109,8 +109,6 @@ if (is_opendb_valid_session())
 		
 		if($HTTP_VARS['op'] == '')
 		{
-			echo get_popup_javascript();
-			
 			echo("<p>");
 			
 			if(fetch_file_cache_new_item_attribute_cnt() > 0)
@@ -123,15 +121,17 @@ if (is_opendb_valid_session())
 				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh\">Refresh</a>]&nbsp;");
 			}
 			
-			if(fetch_file_cache_missing_thumbs_cnt('ITEM') > 0)
-			{
+			// TODO - these things are slow...
+
+			//if(fetch_file_cache_missing_thumbs_cnt('ITEM') > 0)
+			//{
 				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh_thumbnails\">Refresh Thumbnails</a>]&nbsp;");
-			}
+			//}
 			
-			if(fetch_file_cache_missing_file_cnt('ITEM') > 0 || fetch_file_cache_item_attribute_orphans_cnt() > 0)
-			{
+			//if(fetch_file_cache_missing_file_cnt('ITEM') > 0 || fetch_file_cache_item_attribute_orphans_cnt() > 0)
+			//{
 				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a>]&nbsp;");
-			}
+			//}
 			
 			echo("</p>");
 					

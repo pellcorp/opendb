@@ -432,8 +432,7 @@ if(is_site_enabled())
 					echo('<h2>'.$page_title.' '.$page_image.'</h2>');
 					
 					echo(get_listings_javascript());
-					echo(get_popup_javascript());
-					
+										
 					$listingObject->startListing($page_title);
 
 					if($checkbox_column!==FALSE)

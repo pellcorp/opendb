@@ -248,7 +248,6 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 	$site_plugin_rs = get_site_plugin_rs($HTTP_VARS, $item_r);
 	if(is_array($site_plugin_rs))
 	{
-		echo(get_popup_javascript());
 		echo(get_common_javascript());
 		echo(get_tabs_javascript());
 		
@@ -1266,7 +1265,7 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
 					
  					if(strlen($row_data_r['more_info_url'])>0)
 					{
- 						$formContents .= "\n<td class=\"moreInfo\"><a href=\"".$row_data_r['more_info_url']."\" onclick=\"popup('url.php?url=".urlencode($row_data_r['more_info_url'])."&cache_type=none', 800, 600); return false;\">".get_opendb_lang_var('more_info')."</a></td>";
+ 						$formContents .= "\n<td class=\"moreInfo\"><a href=\"".$row_data_r['more_info_url']."&cache_type=none\" target=\"_new\">".get_opendb_lang_var('more_info')."</a></td>";
 					}
 						
  					$formContents .= "\n</tr>";
@@ -1388,7 +1387,7 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	$op = NULL;
 	
 	$return_val = handle_item_insert($item_r, $HTTP_VARS, $_FILES, $errors);
-	if($return_val !== FALSE)
+	if($return_val === TRUE)
 	{
     	$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
     	if($return_val !== FALSE)
@@ -1415,12 +1414,12 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 		if($return_val === "__CONFIRM_EXISTS_OWNER_TITLE__")
 		{
 			$message_lang_var = 'confirm_title_same_type_and_owner_insert';
-			$footer_links_r[] = array(url=>"listings.php?search_list=y&inc_menu=N&owner_id=".$item_r['owner_id']."&title=".urlencode($item_r['title'])."&title_match=exact&s_item_type=".$item_r['s_item_type'],target=>'popup',text=>get_opendb_lang_var('list_duplicate_title(s)'));
+			$footer_links_r[] = array(url=>"listings.php?search_list=y&inc_menu=N&owner_id=".$item_r['owner_id']."&title=".urlencode($item_r['title'])."&title_match=exact&s_item_type=".$item_r['s_item_type'],target=>'_new',text=>get_opendb_lang_var('list_duplicate_title(s)'));
 		}
 		else if($return_val === "__CONFIRM_EXISTS_TITLE__")
 		{
 			$message_lang_var = 'confirm_title_same_type_insert';
-			$footer_links_r[] = array(url=>"listings.php?search_list=y&inc_menu=N&title=".urlencode($item_r['title'])."&title_match=exact&s_item_type=".$item_r['s_item_type'],target=>'popup',text=>get_opendb_lang_var('list_duplicate_title(s)'));
+			$footer_links_r[] = array(url=>"listings.php?search_list=y&inc_menu=N&title=".urlencode($item_r['title'])."&title_match=exact&s_item_type=".$item_r['s_item_type'],target=>'_new',text=>get_opendb_lang_var('list_duplicate_title(s)'));
 		}
 									
 		do_op_title($item_r, $status_type_r, $HTTP_VARS['start-op'] == 'clone_item'?'clone_item':'insert');

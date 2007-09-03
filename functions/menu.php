@@ -226,19 +226,7 @@ function get_menu_option($option_r)
 {
 	$buffer = "\n<a href=\"".$option_r['url']."\" title=\"".ifempty($option_r['alt'],$option_r['link'])."\"";
 			
-	if(starts_with($option_r['target'], 'popup'))
-	{
-		$spec = prc_function_spec($option_r['target']);
-
-		if(!is_array($spec['args']))
-		{
-			$spec['args'][0] = '800';
-			$spec['args'][1] = '600';
-		}
-
-		$buffer .= " onclick=\"popup('".$option_r['url']."','".$spec['args'][0]."','".$spec['args'][1]."'); return false;\"";
-	}
-	else if($option_r['target'] == '_new')
+	if($option_r['target'] == '_new')
 	{
 		$buffer .= ' target="_new"';
 	}

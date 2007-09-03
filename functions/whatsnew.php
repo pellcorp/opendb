@@ -132,7 +132,7 @@ function get_last_item_list(
 					$update_on = NULL, 
 					$not_owner_id = NULL,
 					$site_url_prefix = NULL,
-					$is_popup_item_display = FALSE)
+					$is_new_window_item_display = FALSE)
 {
 	$list_item_rs = get_last_num_items_rs(
 						$num_of_items,// number of items to return
@@ -146,13 +146,13 @@ function get_last_item_list(
 	{
 		$item_block = '';
 		
-		if($is_popup_item_display)
+		if($is_new_window_item_display)
 		{
-			$href_link = "<a href=\"".$list_item_r['item_display_url']."\" onclick=\"popup('".$list_item_r['item_display_url']."&inc_menu=N', 800, 600); return false;\">";
+			$href_link = "<a href=\"".$list_item_r['item_display_url']."&inc_menu=N\" target=\"_new\">";
 		}
 		else
 		{
-			$href_link = "<a href=\"".htmlspecialchars($list_item_r['item_display_url'])."\">";
+			$href_link = "<a href=\"".$list_item_r['item_display_url']."\">";
 		}
 		
 		$imageblock = get_image_block($list_item_r['imageurl']);

@@ -510,7 +510,7 @@ function is_exists_title($title, $s_item_type, $owner_id=NULL)
 			"u.active_ind = 'Y' AND ".
 			"sst.s_status_type = ii.s_status_type AND ".
 			"i.title = '".addslashes($title)."' AND ".
-           	"i.s_item_type = '".$s_item_type."' AND ";
+           	"i.s_item_type = '".$s_item_type."' ";
 			
 	// Restrict certain status types, to specified user types.
 	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));

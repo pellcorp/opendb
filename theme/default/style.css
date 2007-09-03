@@ -437,3 +437,11 @@ div.elementHidden
 {
 	background-image: url(../../images/collapsed.gif);
 }
+
+form.confirmForm fieldset {
+	border: none;
+}
+
+form.confirmForm submit {
+	clear: left;
+}

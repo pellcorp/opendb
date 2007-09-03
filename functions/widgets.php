@@ -2723,13 +2723,18 @@ function format_display_value($mask, $img, $value, $display, $theme_image_type=N
 
 function get_op_confirm_form($PHP_SELF, $confirm_message, $HTTP_VARS)
 {
-	$formContents = "\n<form action=\"$PHP_SELF\" method=\"POST\">";
+	$formContents = "\n<form class=\"confirmForm\" action=\"$PHP_SELF\" method=\"POST\">";
 		
 	$formContents .= 
 		"<p>".$confirm_message."</p>".
-		get_url_fields($HTTP_VARS, array('confirmed'=>'false')). // Pass all http variables
-		"\n<input type=\"button\" value=\" ".get_opendb_lang_var('yes')." \" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\"> ".
-		"\n<input type=\"button\" value=\" ".get_opendb_lang_var('no')." \" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">".
+		get_url_fields($HTTP_VARS, NULL, array('confirmed')). // Pass all http variables
+		"<fieldset>".
+		"<label for=\"confirm_yes\">".get_opendb_lang_var('yes')."</label>".
+		"<input type=\"radio\" name=\"confirmed\" value=\"true\">".
+		"<label for=\"confirm_no\">".get_opendb_lang_var('no')."</label>".
+		"<input id=\"confirm_no\" type=\"radio\" name=\"confirmed\" value=\"false\" CHECKED>".
+		"</fieldset>".
+		"<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">".
 	"</form>\n";
 
 	return $formContents;

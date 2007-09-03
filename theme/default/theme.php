@@ -42,13 +42,13 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	$help_page = get_opendb_help_page($pageid);
 	if($help_page!=NULL)
 	{
-		echo("<li class=\"help\"><a target=\"_new\" href=\"help.php?page=".$help_page."\" onclick=\"popup('help.php?page=$help_page', 800,600); return false;\" title=\"".get_opendb_lang_var('help')."\">"._theme_image("help_icon.gif")."</a></li>");
+		echo("<li class=\"help\"><a href=\"help.php?page=".$help_page."\" target=\"_new\" title=\"".get_opendb_lang_var('help')."\">"._theme_image("help_icon.gif")."</a></li>");
 	}
 	
 	$print_link_r = get_printable_link_r($pageid);
 	if(is_array($print_link_r))
 	{
-		echo("<li><a target=\"_new\" href=\"".$print_link_r['url']."\" title=\"".$print_link_r['title']."\"><img src=\"".$print_link_r['image']."\" alt=\"".$print_link_r['title']."\"></a></li>");
+		echo("<li><a href=\"".$print_link_r['url']."\" target=\"_new\" title=\"".$print_link_r['title']."\"><img src=\"".$print_link_r['image']."\" alt=\"".$print_link_r['title']."\"></a></li>");
 	}
 	
 	if($include_menu)

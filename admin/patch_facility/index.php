@@ -80,7 +80,7 @@ function display_patch_list($title, $patchdir)
 				echo("<tr class=\"oddRow\">".
                     "<td>".$sqllist[$i]['name']."</td>".
 					"<td>".$sqllist[$i]['sqlfile']."</td>".
-					"<td><a href=\"admin.php?type=$ADMIN_TYPE&op=previewsql&mode=job&title=".urlencode($sqllist[$i]['sqlfile'])."&patchdir=$patchdir&sqlfile=".$sqllist[$i]['sqlfile']."&preview=true\" onclick=\"popup('admin.php?type=$ADMIN_TYPE&op=previewsql&mode=job&title=".urlencode($sqllist[$i]['sqlfile'])."&patchdir=$patchdir&sqlfile=".$sqllist[$i]['sqlfile']."&preview=true', 800, 600); return false;\">Preview</a></td>".
+					"<td><a href=\"admin.php?type=$ADMIN_TYPE&op=previewsql&mode=job&title=".urlencode($sqllist[$i]['sqlfile'])."&patchdir=$patchdir&sqlfile=".$sqllist[$i]['sqlfile']."&preview=true\" target=\"_new\">Preview</a></td>".
 					"<td><a href=\"admin.php?type=$ADMIN_TYPE&op=installsql&patchdir=$patchdir&sqlfile=".$sqllist[$i]['sqlfile']."\">Install</a></td>".
 					"</tr>");
 			}

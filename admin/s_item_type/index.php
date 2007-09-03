@@ -137,13 +137,18 @@ function display_s_item_type_row($item_type_r, $row)
 		"&nbsp;]</td>");
 
     echo("\n<td class=\"$class\">");
-	if(is_not_empty_array($errors))
-		echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=check_item_type_structure&s_item_type=".$item_type_r['s_item_type']."&inc_menu=N\" onclick=\"popup('${PHP_SELF}?type=${ADMIN_TYPE}&op=check_item_type_structure&s_item_type=".$item_type_r['s_item_type']."&inc_menu=N','640', '480'); return false;\">[ERROR]</a>");
-	else
-		echo("\n[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&s_item_type=${item_type_r['s_item_type']}&mode=job\">SQL</a> ]");
+	echo("\n[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&s_item_type=${item_type_r['s_item_type']}&mode=job\">SQL</a> ]");
     echo("\n</td>");
 
 	echo("</tr>");
+	
+	if(is_not_empty_array($errors)) {
+		echo("\n<tr>");
+		echo("\n<td colspan=\"6\" class=\"$class\">");
+		echo format_error_block($errors);
+    	echo("\n</td>");
+    	echo("\n<tr>");
+	}
 }
 
 /*
@@ -468,18 +473,7 @@ if (is_opendb_valid_session())
 {
 	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 	{
-		if($HTTP_VARS['op'] == 'check_item_type_structure')
-		{
-			if(is_exists_item_type($HTTP_VARS['s_item_type']))
-			{
-				if(!check_item_type_structure($HTTP_VARS['s_item_type'], $errors))
-				{
-					echo("<h2>Item Type (".$HTTP_VARS['s_item_type'].") Structural Defects</h2>");
-					echo format_error_block($errors);
-				}	
-			}
-		}
-		else if ($HTTP_VARS['op'] == 'sql' && is_exists_item_type($HTTP_VARS['s_item_type']))
+		if ($HTTP_VARS['op'] == 'sql' && is_exists_item_type($HTTP_VARS['s_item_type']))
 		{
 			header("Cache-control: no-store");
 			header("Pragma: no-store");

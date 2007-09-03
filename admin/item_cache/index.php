@@ -166,7 +166,6 @@ if (is_opendb_valid_session())
 				{
 					$listingObject->startRow();
 					
-					//$listingObject->addColumn($file_cache_r['sequence_number']);
 					if(file_cache_get_cache_file($file_cache_r))
 					{
 						if($file_cache_r['upload_file_ind'] == 'Y')
@@ -177,8 +176,9 @@ if (is_opendb_valid_session())
 						{
 							$hrefUrl = $file_cache_r['url'];
 						}
+						
 						$listingObject->addColumn(
-							"<a href=\"$hrefUrl\" onclick=\"popup('url.php?url=".urlencode($file_cache_r['url'])."&cache_type=${HTTP_VARS['cache_type']}', 400, 300); return false;\">".
+							"<a href=\"$hrefUrl\" target=\"_new\">".
 							get_overflow_tooltip_column($file_cache_r['url'], 100).
 							"</a>");
 					}

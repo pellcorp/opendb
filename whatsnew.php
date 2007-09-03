@@ -33,7 +33,6 @@ include_once("./functions/scripts.php");
  * 
  * 	script/common.js
  *  script/marquee.js
- * 	script/popup.js
  * 
  * You can use the following PHP to embed this into your site (assuming you have Snoopy.class.php
  * available):
@@ -56,7 +55,6 @@ if(is_site_enabled())
 		
 		if($HTTP_VARS['op'] == 'marquee')
 		{
-			echo get_popup_javascript();
 			echo(get_common_javascript());
 			echo(get_marquee_javascript());
 			

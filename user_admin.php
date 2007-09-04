@@ -750,7 +750,10 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 		if(is_usertype_valid($HTTP_VARS['user_type']))
 		{
 			$HTTP_VARS['user_id'] = strtolower(filter_input_field("filtered(20,20,a-zA-Z0-9_.)", $HTTP_VARS['user_id']));
-			$is_uid_validated = validate_input_field(get_opendb_lang_var('userid'), "filtered(20,20,a-zA-Z0-9_.)", "Y", $HTTP_VARS['user_id'], $errors);
+			if(!validate_input_field(get_opendb_lang_var('userid'), "filtered(20,20,a-zA-Z0-9_.)", "Y", $HTTP_VARS['user_id'], $errors))
+			{
+				return FALSE;
+			}
 			
 			if(validate_user_info($HTTP_VARS['user_type'], $HTTP_VARS, $address_provided_r, $errors))
 			{

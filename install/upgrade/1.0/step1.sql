@@ -170,3 +170,6 @@ ALTER TABLE s_status_type DROP insert_ind;
 ALTER TABLE user ADD email_addr	VARCHAR(255);
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email', 'Email'); 
+
+# allow null pwd - prevents logins
+ALTER TABLE user CHANGE pwd pwd VARCHAR(40);

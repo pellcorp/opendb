@@ -521,205 +521,295 @@ function send_newuser_email($user_r, $passwd, &$errors)
 	}
 }
 
+function validate_user_info($user_type, &$HTTP_VARS, &$address_provided_r, &$errors)
+{
+	$address_attribs_provided = NULL;
+	$is_address_validated = TRUE;
+	
+	$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
+	$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
+		
+	if(!validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors) ||
+			!validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors))
+	{
+		return FALSE;	
+	}
+		
+	// Do not allow update with illegal theme!
+	if(get_opendb_config_var('user_admin', 'user_themes_support')===FALSE || !is_legal_user_theme($HTTP_VARS['uid_theme']))
+	{
+		$HTTP_VARS['uid_theme'] = FALSE; // Do not update theme!
+	}
+		
+	// Do not allow update with illegal language.			
+	if(get_opendb_config_var('user_admin', 'user_language_support')===FALSE || !is_exists_language($HTTP_VARS['uid_language']))
+	{
+		$HTTP_VARS['uid_language'] = NULL;
+	}
+	
+	$addr_results = fetch_address_type_rs($user_type, TRUE);
+	if($addr_results)
+	{
+		while($address_type_r = db_fetch_assoc($addr_results))
+		{
+			$v_address_type = strtolower($address_type_r['s_address_type']);
+			
+			$address_provided_r[$v_address_type] = FALSE;
+			
+			$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_type, 'update', TRUE);
+			if($attr_results)
+			{
+				while($addr_attribute_type_r = db_fetch_assoc($attr_results))
+				{
+					$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'],$addr_attribute_type_r['order_no']);
+			
+					$HTTP_VARS[$v_address_type][$fieldname] = filter_item_input_field($addr_attribute_type_r, $HTTP_VARS[$v_address_type][$fieldname]);
+					
+					if(is_empty_attribute($addr_attribute_type_r['s_attribute_type'], $HTTP_VARS[$v_address_type][$fieldname])!==FALSE)
+					{
+						$address_provided_r[$v_address_type] = TRUE;
+						
+						if(!validate_item_input_field($addr_attribute_type_r, $HTTP_VARS[$v_address_type][$fieldname], $errors))
+						{
+							$is_address_validated = FALSE;
+						}
+					}
+				}
+				db_free_result($attr_results);
+			}//if($addr_results)
+		}
+		db_free_result($addr_results);
+	}//if($addr_results)
+
+	return $is_address_validated;
+}
+
+function update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, &$errors) 
+{
+	// No errors recorded at this stage.
+	$errors = NULL;
+
+	$address_creation_success = TRUE;
+	$address_type_sequence_number_r = NULL;
+	
+	$addr_results = fetch_user_address_type_rs($user_r['user_id'], $user_r['type'], TRUE);
+	if($addr_results)
+	{
+		while($address_type_r = db_fetch_assoc($addr_results))
+		{
+			$v_address_type = strtolower($address_type_r['s_address_type']);
+			
+			$address_creation_success = TRUE;
+			
+			// address does not currently exist, so create it.
+			if($address_type_r['sequence_number'] === NULL)
+			{
+				if($address_provided_r[$v_address_type]!==FALSE)
+				{
+					$new_sequence_number = insert_user_address($user_r['user_id'], $address_type_r['s_address_type'], $HTTP_VARS[$v_address_type]['public_address_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind']);
+					if($new_sequence_number !== FALSE)
+					{
+						$address_type_r['sequence_number'] = $new_sequence_number;
+					}
+					else
+					{
+						$address_creation_success = FALSE;
+					}
+				}
+			}
+			else
+			{
+				$new_sequence_number = update_user_address($address_type_r['sequence_number'], $HTTP_VARS[$v_address_type]['public_address_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind']);
+			}
+			
+			if($address_creation_success!==FALSE)
+			{
+				if($address_provided_r[$v_address_type]!==FALSE)
+				{
+					$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_r['type'], 'update', TRUE);
+					if($attr_results)
+					{
+						while($addr_attribute_type_r = db_fetch_assoc($attr_results))
+						{
+							$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']);
+							
+							if(is_lookup_attribute_type($addr_attribute_type_r['s_attribute_type']))
+							{
+								$lookup_value_r = NULL;
+								if(is_array($HTTP_VARS[$v_address_type][$fieldname]))
+									$lookup_value_r =& $HTTP_VARS[$v_address_type][$fieldname];
+								else if(strlen(trim($HTTP_VARS[$v_address_type][$fieldname]))>0)
+									$lookup_value_r[] = $HTTP_VARS[$v_address_type][$fieldname];
+				
+								$user_addr_attr_lookup_val_r = fetch_user_address_lookup_attribute_val(
+												$address_type_r['sequence_number'], 
+												$addr_attribute_type_r['s_attribute_type'], 
+												$addr_attribute_type_r['order_no']);
+								
+								if($user_addr_attr_lookup_val_r !== FALSE)
+								{
+									if(is_not_empty_array($lookup_value_r)) // insert/update mode
+									{
+										if(!update_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $lookup_value_r))
+										{
+											$db_error = db_error();
+											$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
+											$address_creation_success = FALSE;
+										}
+									}
+									else
+									{
+										if(!delete_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']))
+										{
+											$db_error = db_error();
+											$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
+											$address_creation_success = FALSE;
+										}
+									}
+								}
+								else if(is_not_empty_array($lookup_value_r))
+								{
+									if(!insert_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $lookup_value_r))
+									{
+										$db_error = db_error();
+										$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
+										$address_creation_success = FALSE;
+									}
+								}
+							}
+							else
+							{
+								$attribute_val = fetch_user_address_attribute_val(
+												$address_type_r['sequence_number'], 
+												$addr_attribute_type_r['s_attribute_type'],
+												$addr_attribute_type_r['order_no']);
+								
+								if($attribute_val!==FALSE)
+								{
+									if(strlen($HTTP_VARS[$v_address_type][$fieldname])>0)
+									{
+										if(!update_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $HTTP_VARS[$v_address_type][$fieldname]))
+										{
+											$db_error = db_error();
+											$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
+											$address_creation_success = FALSE;
+										}
+									}
+									else
+									{
+										if(!delete_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']))
+										{
+											$db_error = db_error();
+											$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
+											$address_creation_success = FALSE;
+										}
+									}
+								}
+								else
+								{
+									if(strlen($HTTP_VARS[$v_address_type][$fieldname])>0)
+									{
+										if(!insert_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $HTTP_VARS[$v_address_type][$fieldname]))
+										{
+											$db_error = db_error();
+											$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
+											$address_creation_success = FALSE;
+										}
+									}
+								}
+							}
+						}
+						db_free_result($attr_results);
+					}
+				}
+				else
+				{
+					// existing address, we want to get rid of it here
+					if($address_type_r['sequence_number']!==NULL)
+					{
+						if(delete_user_address_attributes($address_type_r['sequence_number']))
+						{
+							delete_user_address($address_type_r['sequence_number']);
+						}
+					}
+				}
+			}
+		}
+		db_free_result($addr_results);
+	}
+		
+	return $address_creation_success;
+}
+
 /*
 */
 function handle_user_insert(&$HTTP_VARS, &$errors)
 {
-	// We need to check if user already exists, so we can return a nice error.
-	// A userid CANNOT differ in case alone!
-	if(!is_user_valid($HTTP_VARS['user_id'], TRUE))
+	if(!is_user_valid($HTTP_VARS['user_id']))
 	{
 		if(is_usertype_valid($HTTP_VARS['user_type']))
 		{
 			$HTTP_VARS['user_id'] = strtolower(filter_input_field("filtered(20,20,a-zA-Z0-9_.)", $HTTP_VARS['user_id']));
-			$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
-			$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
-
 			$is_uid_validated = validate_input_field(get_opendb_lang_var('userid'), "filtered(20,20,a-zA-Z0-9_.)", "Y", $HTTP_VARS['user_id'], $errors);
-			$is_fullname_validated = validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors);
-			$is_email_validated = validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors);
-
-			if($is_uid_validated && $is_fullname_validated && $is_email_validated)
-			{
-				$is_address_validated = TRUE;
-				$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
-				if($addr_results)
-				{
-					while($address_type_r = db_fetch_assoc($addr_results))
-					{
-						$v_address_type = strtolower($address_type_r['s_address_type']);
-						$address_attribs_provided[$v_address_type] = FALSE;
-						
-						$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $HTTP_VARS['user_type'], 'update', TRUE);
-						if($attr_results)
-						{
-							while($addr_attribute_type_r = db_fetch_assoc($attr_results))
-							{
-								$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'],$addr_attribute_type_r['order_no']);
-								$HTTP_VARS[$v_address_type][$fieldname] = filter_item_input_field($addr_attribute_type_r, $HTTP_VARS[$v_address_type][$fieldname]);
-								
-								if(is_empty_attribute($addr_attribute_type_r['s_attribute_type'], $HTTP_VARS[$v_address_type][$fieldname])!==FALSE)
-								{
-									$address_attribs_provided[$v_address_type] = TRUE;
-									
-									if(!validate_item_input_field($addr_attribute_type_r, $HTTP_VARS[$v_address_type][$fieldname], $errors))
-									{
-										$is_address_validated = FALSE;
-									}
-								}
-							}
-							db_free_result($attr_results);
-						}//if($addr_results)
-					}
-					db_free_result($addr_results);
-				}//if($addr_results)
-				
-				if($is_address_validated)
-				{
-				    // no password saved when signing up, as user still must be activated
-				    if($HTTP_VARS['op'] != 'signup')
-					{
-						// If no password specified, generate one
-						if(strlen($HTTP_VARS['pwd'])==0)
-						{
-							// check whether a password is provided or not
-							if(is_valid_opendb_mailer() &&
-									($HTTP_VARS['user_type'] == 'A' ||
-									$HTTP_VARS['user_type'] == 'N' ||
-									$HTTP_VARS['user_type'] == 'B'))
-							{
-								$HTTP_VARS['pwd'] = generate_password(8);
-							}
-							else
-							{
-								$errors[] = array('error'=>get_opendb_lang_var('passwd_not_specified'));
-								return FALSE;
-							}
-						}
-						else if($HTTP_VARS['pwd'] != $HTTP_VARS['confirmpwd'])
-						{
-							$errors[] = array('error'=>get_opendb_lang_var('passwds_do_not_match'));
-							return FALSE;
-						}
-			        }//if($HTTP_VARS['op'] != 'signup')
-			        else
-			        {
-			            // Will be reset when user activated
-			            $HTTP_VARS['pwd'] = 'none';
-			        }
-			        
-					// Do not allow update with illegal theme!
-					if(get_opendb_config_var('user_admin', 'user_themes_support')===FALSE || !is_legal_user_theme($HTTP_VARS['uid_theme']))
-					{
-						$HTTP_VARS['uid_theme'] = NULL;
-					}
-				
-					// Do not allow update with illegal language.			
-					if(get_opendb_config_var('user_admin', 'user_language_support')===FALSE || !is_exists_language($HTTP_VARS['uid_language']))
-					{
-						$HTTP_VARS['uid_language'] = NULL;
-					}
-
-					// If the user is in signup mode, set active_ind='X', which means that the user must be activated by the admin before he can log in
-					if($HTTP_VARS['op'] == 'signup')
-					{
-						$active_ind = 'X';
-					}
-					else
-					{
-						$active_ind = 'Y';
-					}
-
-					// We want to validate and perform inserts even in signup mode
-					if(insert_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['pwd'], $HTTP_VARS['user_type'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], $active_ind))
-					{
-						$address_creation_success = TRUE;
-						$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
-						if($addr_results)
-						{
-							while($address_type_r = db_fetch_assoc($addr_results))
-							{
-								$v_address_type = strtolower($address_type_r['s_address_type']);
-								
-								if($address_attribs_provided[$v_address_type]!==FALSE)
-								{
-									$new_sequence_number = insert_user_address($HTTP_VARS['user_id'], $address_type_r['s_address_type'], $HTTP_VARS[$v_address_type]['public_access_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind']);
-									if($new_sequence_number !== FALSE)
-									{
-										$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $HTTP_VARS['user_type'], 'update', TRUE);
-										if($attr_results)
-										{
-											while($addr_attribute_type_r = db_fetch_assoc($attr_results))
-											{
-												$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']);
-												
-												if(is_lookup_attribute_type($addr_attribute_type_r['s_attribute_type']))
-												{
-													$lookup_value_r = NULL;
-													if(is_array($HTTP_VARS[$v_address_type][$fieldname]))
-														$lookup_value_r =& $HTTP_VARS[$v_address_type][$fieldname];
-													else if(strlen(trim($HTTP_VARS[$v_address_type][$fieldname]))>0)
-														$lookup_value_r[] = $HTTP_VARS[$v_address_type][$fieldname];
-													
-													if(is_not_empty_array($lookup_value_r))
-													{
-														if(!insert_user_address_attributes($new_sequence_number, $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $lookup_value_r))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_added'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-												}
-												else
-												{
-													if(strlen($HTTP_VARS[$v_address_type][$fieldname])>0)
-													{
-														if(!insert_user_address_attributes($new_sequence_number, $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $HTTP_VARS[$v_address_type][$fieldname]))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_added'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-												}
-											}
-											db_free_result($attr_results);
-										}//if($addr_results)
-									}//if($new_sequence_number !== FALSE)
-									else
-									{
-										$db_error = db_error();
-										$errors[] = array('error'=>get_opendb_lang_var('user_address_not_added'),'detail'=>$db_error);
-										$address_creation_success = FALSE;
-									}
-								}//if($address_attribs_provided[$v_address_type]!==FALSE)
-							}
-							db_free_result($addr_results);
-						}//if($addr_results)
 			
-						if($address_creation_success)
+			if(validate_user_info($HTTP_VARS['user_type'], $HTTP_VARS, $address_provided_r, $errors))
+			{
+				if($HTTP_VARS['op'] == 'signup' ) // no password saved when signing up, as user still must be activated
+				{
+					$active_ind = 'X';
+					
+					// Will be reset when user activated
+					$HTTP_VARS['pwd'] = NULL;
+				}
+				else
+				{
+					$active_ind = 'Y';
+					
+					if(strlen($HTTP_VARS['pwd'])==0)
+					{
+						// check whether a password is provided or not
+						if(is_valid_opendb_mailer() &&
+								($HTTP_VARS['user_type'] == 'A' ||
+								$HTTP_VARS['user_type'] == 'N' ||
+								$HTTP_VARS['user_type'] == 'B'))
 						{
-							return TRUE;
+							$HTTP_VARS['pwd'] = generate_password(8);
 						}
 						else
 						{
+							$errors[] = array('error'=>get_opendb_lang_var('passwd_not_specified'));
 							return FALSE;
 						}
 					}
-					else
+					else if($HTTP_VARS['pwd'] != $HTTP_VARS['confirmpwd'])
 					{
-						$db_error = db_error();
-						$errors[] = array('error'=>get_opendb_lang_var('user_not_added', 'user_id', $HTTP_VARS['user_id']),'detail'=>$db_error);
+						$errors[] = array('error'=>get_opendb_lang_var('passwds_do_not_match'));
 						return FALSE;
 					}
-				}//if($is_address_validated)
+				}
+			        
+				// We want to validate and perform inserts even in signup mode
+				if(insert_user($HTTP_VARS['user_id'], 
+							$HTTP_VARS['fullname'], 
+							$HTTP_VARS['pwd'],
+							$HTTP_VARS['user_type'], 
+							$HTTP_VARS['uid_language'], 
+							$HTTP_VARS['uid_theme'], 
+							$HTTP_VARS['email_addr'], 
+							$active_ind))
+				{
+					$user_r = fetch_user_r($HTTP_VARS['user_id']);
+					
+					return update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, $errors);
+				}
 				else
 				{
+					$db_error = db_error();
+					$errors[] = array('error'=>get_opendb_lang_var('user_not_added', 'user_id', $HTTP_VARS['user_id']),'detail'=>$db_error);
 					return FALSE;
 				}
-			}//if($is_uid_validated && $is_fullname_validated)
-			else // not all required information specified
+			}
+			else 
 			{
 				return FALSE;				
 			}
@@ -736,247 +826,26 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 	}
 }
 
-/*
-*/
 function handle_user_update(&$HTTP_VARS, &$errors)
 {
 	$user_r = fetch_user_r($HTTP_VARS['user_id']);
 	if(is_not_empty_array($user_r))
 	{
-		$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
-		$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
-		
-		$is_fullname_validated = validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors);
-		$is_email_validated = validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors);
-		
-		if($is_fullname_validated && $is_email_validated)
+		if(validate_user_info($user_r, $HTTP_VARS, $address_attribs_provided, $errors))
 		{
-			$address_attribs_provided = NULL;
-			$is_address_validated = TRUE;
-			$addr_results = fetch_user_address_type_rs($user_r['user_id'], $user_r['type'], TRUE);
-			if($addr_results)
+			// no password change performed here...
+			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], FALSE))
 			{
-				while($address_type_r = db_fetch_assoc($addr_results))
-				{
-					$v_address_type = strtolower($address_type_r['s_address_type']);
-					
-					$address_attribs_provided[$v_address_type] = FALSE;
-					
-					$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_r['type'], 'update', TRUE);
-					if($attr_results)
-					{
-						while($addr_attribute_type_r = db_fetch_assoc($attr_results))
-						{
-							$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'],$addr_attribute_type_r['order_no']);
-					
-							$HTTP_VARS[$v_address_type][$fieldname] = filter_item_input_field($addr_attribute_type_r, $HTTP_VARS[$v_address_type][$fieldname]);
-							if(is_empty_attribute($addr_attribute_type_r['s_attribute_type'], $HTTP_VARS[$v_address_type][$fieldname])!==FALSE)
-							{
-								$address_attribs_provided[$v_address_type] = TRUE;
-								
-								if(!validate_item_input_field($addr_attribute_type_r, $HTTP_VARS[$v_address_type][$fieldname], $errors))
-								{
-									$is_address_validated = FALSE;
-								}
-							}
-						}
-						db_free_result($attr_results);
-					}//if($addr_results)
-				}
-				db_free_result($addr_results);
-			}//if($addr_results)
-			
-			if($is_address_validated)
-			{
-				// Do not allow update with illegal theme!
-				if(get_opendb_config_var('user_admin', 'user_themes_support')===FALSE || !is_legal_user_theme($HTTP_VARS['uid_theme']))
-				{
-					$HTTP_VARS['uid_theme'] = FALSE; // Do not update theme!
-				}
-				
-				// Do not allow update with illegal language.			
-				if(get_opendb_config_var('user_admin', 'user_language_support')===FALSE || !is_exists_language($HTTP_VARS['uid_language']))
-				{
-					$HTTP_VARS['uid_language'] = NULL;
-				}
-			
-				if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], FALSE))
-				{
-					// No errors recorded at this stage.
-					$errors = NULL;
-				
-					$address_creation_success = TRUE;
-					$address_type_sequence_number_r = NULL;
-					
-					$addr_results = fetch_user_address_type_rs($user_r['user_id'], $user_r['type'], TRUE);
-					if($addr_results)
-					{
-						while($address_type_r = db_fetch_assoc($addr_results))
-						{
-							$v_address_type = strtolower($address_type_r['s_address_type']);
-							
-							$address_creation_success = TRUE;
-							
-							// address does not currently exist, so create it.
-							if($address_type_r['sequence_number'] === NULL)
-							{
-								if($address_attribs_provided[$v_address_type]!==FALSE)
-								{
-									$new_sequence_number = insert_user_address($user_r['user_id'], $address_type_r['s_address_type'], $HTTP_VARS[$v_address_type]['public_address_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind']);
-									if($new_sequence_number !== FALSE)
-									{
-										$address_type_r['sequence_number'] = $new_sequence_number;
-									}
-									else
-									{
-										$address_creation_success = FALSE;
-									}
-								}
-							}
-							else
-							{
-								$new_sequence_number = update_user_address($address_type_r['sequence_number'], $HTTP_VARS[$v_address_type]['public_address_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind']);
-							}
-							
-							if($address_creation_success!==FALSE)
-							{
-								if($address_attribs_provided[$v_address_type]!==FALSE)
-								{
-									$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_r['type'], 'update', TRUE);
-									if($attr_results)
-									{
-										while($addr_attribute_type_r = db_fetch_assoc($attr_results))
-										{
-											$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']);
-											
-											if(is_lookup_attribute_type($addr_attribute_type_r['s_attribute_type']))
-											{
-												$lookup_value_r = NULL;
-												if(is_array($HTTP_VARS[$v_address_type][$fieldname]))
-													$lookup_value_r =& $HTTP_VARS[$v_address_type][$fieldname];
-												else if(strlen(trim($HTTP_VARS[$v_address_type][$fieldname]))>0)
-													$lookup_value_r[] = $HTTP_VARS[$v_address_type][$fieldname];
-								
-												$user_addr_attr_lookup_val_r = fetch_user_address_lookup_attribute_val(
-																$address_type_r['sequence_number'], 
-																$addr_attribute_type_r['s_attribute_type'], 
-																$addr_attribute_type_r['order_no']);
-												
-												if($user_addr_attr_lookup_val_r !== FALSE)
-												{
-													if(is_not_empty_array($lookup_value_r)) // insert/update mode
-													{
-														if(!update_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $lookup_value_r))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-													else
-													{
-														if(!delete_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-												}
-												else if(is_not_empty_array($lookup_value_r))
-												{
-													if(!insert_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $lookup_value_r))
-													{
-														$db_error = db_error();
-														$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
-														$address_creation_success = FALSE;
-													}
-												}
-											}
-											else
-											{
-												$attribute_val = fetch_user_address_attribute_val(
-																$address_type_r['sequence_number'], 
-																$addr_attribute_type_r['s_attribute_type'],
-																$addr_attribute_type_r['order_no']);
-												
-												if($attribute_val!==FALSE)
-												{
-													if(strlen($HTTP_VARS[$v_address_type][$fieldname])>0)
-													{
-														if(!update_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $HTTP_VARS[$v_address_type][$fieldname]))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-													else
-													{
-														if(!delete_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-												}
-												else
-												{
-													if(strlen($HTTP_VARS[$v_address_type][$fieldname])>0)
-													{
-														if(!insert_user_address_attributes($address_type_r['sequence_number'], $addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no'], $HTTP_VARS[$v_address_type][$fieldname]))
-														{
-															$db_error = db_error();
-															$errors[] = array('error'=>get_opendb_lang_var('user_address_not_updated'),'detail'=>$db_error);
-															$address_creation_success = FALSE;
-														}
-													}
-												}
-											}
-										}//while($addr_attribute_type_r = db_fetch_assoc($attr_results))
-										db_free_result($attr_results);
-									}//if($attr_results)
-								}//if($address_attribs_provided[$v_address_type]!==FALSE)
-								else
-								{
-									// existing address, we want to get rid of it here
-									if($address_type_r['sequence_number']!==NULL)
-									{
-										if(delete_user_address_attributes($address_type_r['sequence_number']))
-										{
-											delete_user_address($address_type_r['sequence_number']);
-										}
-									}
-								}
-							}//if($address_creation_success!==FALSE)
-						}
-						db_free_result($addr_results);
-					}//if($addr_results)
-						
-					if($address_creation_success!==FALSE)
-					{
-						return TRUE;
-					}
-					else
-					{
-						// address update failed.
-						return FALSE;
-					}
-				} 
-				else
-				{
-					$db_error = db_error();
-					$errors[] = array('error'=>get_opendb_lang_var('user_not_updated', 'user_id', $HTTP_VARS['user_id']),'detail'=>$db_error);
-					return FALSE;
-				}
-			}//if($is_address_validated)
+				return update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, $errors);
+			} 
 			else
 			{
+				$db_error = db_error();
+				$errors[] = array('error'=>get_opendb_lang_var('user_not_updated', 'user_id', $HTTP_VARS['user_id']),'detail'=>$db_error);
 				return FALSE;
 			}
 		}
-		else // not all required information specified
+		else 
 		{
 			return FALSE;
 		}
@@ -996,7 +865,8 @@ function handle_user_password_change($user_id, $HTTP_VARS, &$errors)
     	// If at least one password specified, we will try to perform update.
 		if(strlen($HTTP_VARS['pwd'])>0 || strlen($HTTP_VARS['confirmpwd'])>0)
 		{
-			if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE || is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')))
+			if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE || 
+							is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')))
 			{
 				if ($HTTP_VARS['pwd'] != $HTTP_VARS['confirmpwd'])
 				{
@@ -1379,7 +1249,9 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session() || $HTTP_VARS['op'] == 'signup')
 	{ 
-	    if ( $HTTP_VARS['op'] == 'signup' && $HTTP_VARS['op2'] == 'gfx_code_check' && is_numeric($HTTP_VARS['gfx_random_number']))
+	    if ( $HTTP_VARS['op'] == 'signup' && 
+	    		$HTTP_VARS['op2'] == 'gfx_code_check' && 
+	    		is_numeric($HTTP_VARS['gfx_random_number']))
 	    {
 	        secretimage($HTTP_VARS['gfx_random_number']);
 	    }
@@ -1456,13 +1328,7 @@ if(is_site_enabled())
 			{
 				if(get_opendb_config_var('login.signup', 'enable')!==FALSE)
 				{
-					$signup_restrict_usertypes = get_opendb_config_var('login.signup', 'restrict_usertypes');
-
-					// if no array defined, enforce default choices
-					if(is_empty_array($signup_restrict_usertypes))
-					{
-						$signup_restrict_usertypes = array('B', 'N');
-					}
+					$signup_restrict_usertypes = get_user_signup_types_r();
 
 					if(count($signup_restrict_usertypes) == 1)
 					{
@@ -1472,7 +1338,7 @@ if(is_site_enabled())
 					}
 
 					// either valid usertype, or a single user type specified
-					if(is_usertype_valid($HTTP_VARS['user_type']))
+					if( in_array($HTTP_VARS['user_type'], $signup_restrict_usertypes) )
 					{
 						if($HTTP_VARS['op2'] == 'send_info')
 						{
@@ -1489,6 +1355,9 @@ if(is_site_enabled())
 								if($return_val !== FALSE)
 								{
 									echo("\n<p class=\"success\">".get_opendb_lang_var('new_account_reply', 'site', get_opendb_config_var('site', 'title'))."</p>");
+									
+									//if( ifempty(get_opendb_config_var('login.signup', 'requirements'), 'Activate') === 'Activate' )
+									//{
 									if(send_signup_info_to_admin($HTTP_VARS, $errors))
 									{
 										echo("\n<p class=\"smsuccess\">".get_opendb_lang_var('new_account_admin_email_sent', 'site', get_opendb_config_var('site', 'title'))."</p>");
@@ -1543,6 +1412,7 @@ if(is_site_enabled())
 				if($return_val !== FALSE)
 				{
 					echo("\n<p class=\"success\">".get_opendb_lang_var('user_added', 'user_id', $HTTP_VARS['user_id'])."</p>");
+					
 					if($HTTP_VARS['email_user'] == 'Y')
 					{
 					    $user_r = fetch_user_r($HTTP_VARS['user_id']);
@@ -1558,7 +1428,7 @@ if(is_site_enabled())
 								echo format_error_block($errors);
 							}
 					    }
-					}//if($HTTP_VARS['email_user'] == 'Y')
+					}
 					
 					$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>($HTTP_VARS['user_id'] == get_opendb_session_var('user_id')?get_opendb_lang_var('edit_my_info'):get_opendb_lang_var('edit_user_info')));
 				}

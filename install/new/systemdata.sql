@@ -449,6 +449,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.signup', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('login.signup', 'restrict_usertypes', 2, 'Signup Usertype Restrictions', 'Restrict what user types can be signed up', 'array', 'usertype');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('login.signup', 'requirements', 2, 'Requirements', 'Signup rules are: <ul><li>Activated - Signup must be activated by an administrator</li><li>None - Signup is immediate</li></ul>', 'value_select', 'Activated,None');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items from being listed', 'boolean');

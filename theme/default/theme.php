@@ -28,6 +28,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 		"\n<head>".
 		"\n	<title>".get_opendb_title().(!empty($title)?" - $title":"")."</title>".
 		"\n<link rel=\"icon\" href=\""._theme_image_src("icon.gif")."\" type=\"image/gif\" />".
+		"<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Search\" href=\"./searchplugins.php\">".
 		get_theme_css($pageid, $mode).
 		get_opendb_rss_feeds_links().
 		"\n</head>".

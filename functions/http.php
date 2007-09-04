@@ -132,6 +132,8 @@ function get_site_url()
 	if(($protocol == 'http' && $port == '80') || ($protocol == 'https' && $port == '443'))
 		$port = '';
 	
+	
+
 	return $protocol."://".$host.(strlen($port)>0?":".$port:"").$path;
 }
 
@@ -186,6 +188,11 @@ function get_site_path()
 		$index = strrpos($path,"/");
 		if($index !== FALSE)
 			$path = substr($path,0,$index+1);//include last slash!
+	
+		// if path does not end in /, at this character.
+		if(substr($path, -1, 1) != '/') {
+			$path .= '/';
+		}
 	
 		return $path;
 	}

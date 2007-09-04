@@ -1459,7 +1459,7 @@ if(is_site_enabled())
 					}
 
 					// either valid usertype, or a single user type specified
-					if(is_usertype_valid($HTTP_VARS['user_type']))
+					if( in_array($HTTP_VARS['user_type'], $signup_restrict_usertypes) )
 					{
 						if($HTTP_VARS['op2'] == 'send_info')
 						{

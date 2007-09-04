@@ -379,27 +379,16 @@ function is_user_normal($uid, $type = NULL)
 /**
 	Checks if uid actually exists.
 
-	By default do not do case-insensitive check.  Generally $case=FALSE
-	will be used in user_admin.php, to ensure two users with uid only
-	differing in case are not created.  But because the rest of the logic
-	in opendb does case-sensitive comparisons, we are going to do it here
-	by default as well.
-	
-	$doUpperCheck	Do a case-sensitive comparison.  If false, the SQL query
-					will have a UPPER added around user_id and $uid parameter.
+	Note: UID cannot different in case alone, so all valid user checks will use case insensitive
+	comparison.
 */
-function is_user_valid($uid, $doUpperCheck=FALSE)
+function is_user_valid($uid)
 {
 	// Do a pre-emptive check!
 	if(strlen($uid)==0)
 		return FALSE;
 	
-	// CASE SENSITIVE comparison by default.  This is the fastest
-	// to execute as well.
-	if($doUpperCheck === FALSE)
-		$query = "SELECT 'x' FROM user WHERE user_id = '$uid'";
-	else
-		$query = "SELECT 'x' FROM user WHERE UPPER(user_id) = '".strtoupper($uid)."'";
+	$query = "SELECT 'x' FROM user WHERE LOWER(user_id) = '".strtolower($uid)."'";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

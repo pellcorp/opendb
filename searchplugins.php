@@ -26,14 +26,11 @@ include_once("./functions/auth.php");
 include_once("./functions/logging.php");
 include_once("./functions/http.php");
 
-$shortName = get_opendb_title();
-$description = "OpenDb title search on ".get_site_url();
-
 $siteUrl = get_site_url();
-if(substr($siteUrl, -1, 1) != '/') {
-	$siteUrl .= '/';
-}
-$searchUrl = get_site_url()."listings.php?search_list=y&amp;linked_items=include&amp;title_match=partial&amp;title={searchTerms}";
+
+$shortName = get_opendb_title();
+$description = "OpenDb title search on ".$siteUrl;
+$searchUrl = $siteUrl."listings.php?search_list=y&amp;linked_items=include&amp;title_match=partial&amp;title={searchTerms}";
 
 header("Content-Type: text/xml");
 ?>

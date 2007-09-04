@@ -132,8 +132,6 @@ function get_site_url()
 	if(($protocol == 'http' && $port == '80') || ($protocol == 'https' && $port == '443'))
 		$port = '';
 	
-	
-
 	return $protocol."://".$host.(strlen($port)>0?":".$port:"").$path;
 }
 

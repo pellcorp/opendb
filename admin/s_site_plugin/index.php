@@ -75,7 +75,7 @@ function display_site_plugin_conf_row($record_r, $row)
 	}
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(20,255)", 'N', $record_r['description'], FALSE)."</td>");
-	echo("<td class=\"data\">".get_input_field("value[$row]", NULL, "Value", "text(20,255)", "Y", $record_r['value'], FALSE)."</td>");
+	echo("<td class=\"data\">".get_input_field("value[$row]", NULL, "Value", "text(20,255)", "N", $record_r['value'], FALSE)."</td>");
 
 	echo("\n<td class=\"data\">");	
 	if(is_not_empty_array($record_r))
@@ -823,7 +823,7 @@ if (is_opendb_valid_session())
 				{
 					for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
 					{
-						if(strlen($HTTP_VARS['name'][$i])>0 && strlen($HTTP_VARS['keyid'][$i])>0 && strlen($HTTP_VARS['value'][$i])>0)
+						if(strlen($HTTP_VARS['name'][$i])>0 && strlen($HTTP_VARS['keyid'][$i])>0)
 						{
 							if($HTTP_VARS['exists_ind'][$i] == 'N')
 							{

@@ -19,12 +19,13 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'item_type_to_index_map', 'MP3', '', 'Music' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'item_type_to_index_map', 'VCD', '', 'DVD' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'amazon_access_key', 0, 'Need to register for using Amazon web services and enter your access key here', '' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'amazon_site_domain', 0, 'Restrict Plugin to Domain (Overrides domain input field)', '' );
 
 #
 # Site Plugin Input Fields
 #
 
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'aecsdomain', 1, '', 'Domain (com, co.uk...)', 'text', 'com', '{aecsdomain}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'aecsdomain', 1, '', 'Domain (com, co.uk...)', 'hidden', 'com', '{aecsdomain}' );
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'title', 2, '', 'Title', 'text', '', '{title}' );
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'aecsasin', 3, '', 'ASIN / ISBN Number', 'text', '', '{aecsasin}' );
 

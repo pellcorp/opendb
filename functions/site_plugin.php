@@ -527,17 +527,14 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 	{
 		$key = strtolower($key);
 		
-		if(isset($new_attributes_r[$key]))
+		if(isset($new_attributes_r[$key]) && $new_attributes_r[$key] != $value)
 		{
 			// we want the direct mapping attributes first.
 			$tmp_value = $new_attributes_r[$key];
 			unset($new_attributes_r[$key]);
-			
+		
 			$new_attributes_r[$key] = array($value);
-			
-			$new_attributes_r[$key] = array_merge(
-						$new_attributes_r[$key], 
-						$tmp_value);
+			$new_attributes_r[$key][] = $tmp_value;
 		}
 		else
 		{

@@ -559,7 +559,7 @@ class ItemImportHandler
 			$column = '';
 			if(is_array($attribute_rs))
 			{
-				$column .= '<table>';
+				$column .= '<table class="importAttribs">';
 				reset($attribute_rs);
 				while(list($key,$attribute_val) = each($attribute_rs))
 				{
@@ -582,6 +582,8 @@ class ItemImportHandler
 							$attribute_type_r['display_type_arg1'] = '%value%';
 						}
 
+						$attribute_type_r['listing_link_ind'] = 'N';
+						
 						$column .= get_item_display_field(NULL, $attribute_type_r, $attribute_val);
 					}
 				}

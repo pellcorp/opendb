@@ -458,16 +458,34 @@ function fetch_file_cache_refresh_cnt($cache_type = 'HTTP')
 	return FALSE;
 }
 
-function fetch_file_cache_item_attribute_orphans_cnt()
+function fetch_file_upload_item_attribute_orphans_cnt()
 {
-	// this query is not restricted to file_attribute_ind item attributes, but in the rare occurence
-	// where this occurs, its probably ok to leave them, in case for instance an attribute is misconfigured,
-	// to be non-file attribute ind, when it should be!e
 	$query = "SELECT count('x') AS count
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON (ia.attribute_val = fc.url OR ia.attribute_val = fc.location OR 
-			fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ) )
-	WHERE fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
+	LEFT JOIN item_attribute ia ON 
+			( fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ) )
+	WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!==FALSE)
+			return $found['count'];
+	}
+	
+	//else
+	return FALSE;
+}
+
+function fetch_file_cache_item_attribute_orphans_cnt()
+{
+	$query = "SELECT COUNT(*) AS count
+	FROM file_cache fc
+	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR 
+		fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ))
+	WHERE fc.upload_file_ind <> 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -483,18 +501,17 @@ function fetch_file_cache_item_attribute_orphans_cnt()
 }
 
 /**
-	Query the number of file cache records which no longer reference a item attribute
-	*/
+ * Only deleting orphans for item cache - and location should never be popula 
+ *
+ * @return unknown
+ */
 function fetch_file_cache_item_attribute_orphans_rs()
 {
-	// this query is not restricted to file_attribute_ind item attributes, but in the rare occurence
-	// where this occurs, its probably ok to leave them, in case for instance an attribute is misconfigured,
-	// to be non-file attribute ind, when it should be!
 	$query = "SELECT fc.sequence_number
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON (ia.attribute_val = fc.url OR ia.attribute_val = fc.location OR 
-			fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ))
-	WHERE fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
+	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR 
+		fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ))
+	WHERE fc.upload_file_ind <> 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -1002,6 +1019,4 @@ function file_cache_delete_orphan_item_cache()
 		db_free_result($results);
 	}
 }
-
-
 ?>

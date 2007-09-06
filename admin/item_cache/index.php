@@ -89,7 +89,8 @@ if (is_opendb_valid_session())
 		{
 			if($HTTP_VARS['confirmed'] == 'true')
 			{
-				file_cache_delete_orphan_item_cache();
+				// this function is really slow, and rather pointless anyway.
+				//file_cache_delete_orphan_item_cache();
 				file_cache_delete_orphans($HTTP_VARS['cache_type']);
 				
 				$HTTP_VARS['op'] = '';
@@ -121,17 +122,17 @@ if (is_opendb_valid_session())
 				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh\">Refresh</a>]&nbsp;");
 			}
 			
-			// TODO - these things are slow...
-
-			//if(fetch_file_cache_missing_thumbs_cnt('ITEM') > 0)
-			//{
+			if(fetch_file_cache_missing_thumbs_cnt('ITEM') > 0)
+			{
 				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh_thumbnails\">Refresh Thumbnails</a>]&nbsp;");
-			//}
+			}
 			
-			//if(fetch_file_cache_missing_file_cnt('ITEM') > 0 || fetch_file_cache_item_attribute_orphans_cnt() > 0)
-			//{
+			// the item attribute orphan count is really slow, so do not use it.
+			if(fetch_file_cache_missing_file_cnt('ITEM') > 0 ) //|| 
+//							fetch_file_cache_item_attribute_orphans_cnt() > 0)
+			{
 				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a>]&nbsp;");
-			//}
+			}
 			
 			echo("</p>");
 					

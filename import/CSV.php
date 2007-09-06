@@ -21,6 +21,7 @@ class CSV
 {
 	// required for introspection
 	var $delimiter = ',';
+	var $line_ending = "\n";
 	
 	function get_display_name()
 	{
@@ -52,18 +53,24 @@ class CSV
 
 	function read_row(&$fileHandler, &$error)
 	{
-		$argument="";
+		$delimiter = ',';
+	
+		$argument=NULL;
 		$quotefound=FALSE;
-		while(($line = $fileHandler->readLine() ) !== FALSE)
+	
+		while(( $line = $fileHandler->readLine() ) !== FALSE)
 		{
 			// do not require start and end newlines.
 			$line = trim($line);
 			
 			for($i=0; $i<strlen($line); $i++)
 			{
+				if($argument===NULL)
+					$argument="";
+	
 				if($line[$i] == "\"")
 				{
-					if($line[$i+1] == "\"")
+					if($quotefound && $line[$i+1] == "\"")
 					{
 						$argument .= $line[$i];
 						$i++;
@@ -92,17 +99,17 @@ class CSV
 			// only keep going if we are in middle of quote
 			if($quotefound)
 			{
-				$argument .= $fileHandler->line_ending;
+				$argument .= $this->$line_ending;
 			}
 			else
 			{
 				break;
 			}
 		}
-		
-		if(strlen($argument)>0)
+	
+		if($argument!==NULL)
 			$arguments[] = trim($argument);
-		
+	
 		return $arguments;
 	}
 }

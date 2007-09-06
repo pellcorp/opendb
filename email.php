@@ -176,7 +176,7 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 * Will not check whether $user_id_rs contains the current users user_id.  It is expected
 * that this should have already been done.
 */
-function send_email_to_userids($user_id_rs, $fromemail, $fromname, $subject, $message)
+function send_email_to_userids($user_id_rs, $from_userid, $subject, $message)
 {
 	$errors = NULL;
 	
@@ -186,14 +186,7 @@ function send_email_to_userids($user_id_rs, $fromemail, $fromname, $subject, $me
 		$touser_r = fetch_user_r($user_id);
 		if(is_not_empty_array($touser_r))
 		{
-			if(opendb_email(
-					$touser_r['email_addr'], 
-					$touser_r['fullname'], 
-					$fromemail, 
-					$fromname, 
-					$subject, 
-					$message, 
-					$errors))
+			if(opendb_user_email($touser_r['user_id'], $from_userid, $subject, $message, $errors))
 			{
 				$success[] = $touser_r['fullname']." (".$user_id.")";
 			}
@@ -302,8 +295,7 @@ if(is_site_enabled())
 					{
 						send_email_to_userids(
 								$user_id_r, 
-								$from_user_r['email_addr'], 
-								$from_user_r['fullname'],
+								$from_user_r['user_id'],
 								$HTTP_VARS['subject'], 
 								$HTTP_VARS['message']);
 					}
@@ -336,8 +328,7 @@ if(is_site_enabled())
 				{
 					send_email_to_userids(
 							get_user_id_rs(array($HTTP_VARS['usertype'])), 
-							$from_user_r['email_addr'], 
-							$from_user_r['fullname'], 
+							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message']);
 				}
@@ -373,8 +364,7 @@ if(is_site_enabled())
 				{
 					send_email_to_userids(
 							$filtered_user_id_rs, 
-							$from_user_r['email_addr'], 
-							$from_user_r['fullname'], 
+							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message']);
 				}
@@ -398,8 +388,7 @@ if(is_site_enabled())
 				{
 					send_email_to_userids(
 							array($HTTP_VARS['uid']), 
-							$from_user_r['email_addr'], 
-							$from_user_r['fullname'], 
+							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message']);
 				}
@@ -423,7 +412,7 @@ if(is_site_enabled())
 				$success = FALSE;
 				
 				// Only try to email if all the info is there, or we have been to the email form.  In the latter case we
-				// are also getting the opendb_email function to test the from and subject values for us.
+				// are also getting the opendb email function to test the from and subject values for us.
 				if(strlen($HTTP_VARS['from'])>0 && strlen($HTTP_VARS['subject'])>0 && (strlen($HTTP_VARS['message'])>0 || $HTTP_VARS['no_message'] == 'true'))
 				{
 					if(send_email_to_site_admins($HTTP_VARS['from'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors))

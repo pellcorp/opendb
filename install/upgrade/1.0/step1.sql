@@ -102,6 +102,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_re
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_title', 'Clone {display_title}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_item_help', 'Related items will not be cloned'); 
 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'noreply', 'No Reply');
+
 # delete configuration entries for linked item support.
 
 DELETE FROM s_config_group_item WHERE group_id = 'listings' AND id IN('linked_items');

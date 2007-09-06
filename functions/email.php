@@ -46,31 +46,23 @@ function is_valid_email_addr($email_addr)
 }
 
 /**
- * Its assumed that this function will only ever be used in the case where 
+ * Its assumed that this function will only ever be used in the case where a user could not signup,
+ * so this is the only case where no record will be recorded. 
  */
 function send_email_to_site_admins($from, $subject, $message, &$errors)
 {
-	if(!is_valid_email_addr($from))
+	if($from!==NULL && !is_valid_email_addr($from))
 	{
 		$errors[] = get_opendb_lang_var('invalid_from_address');
 		return FALSE;
 	}
-	
-	$admin_name = get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title'));
 	
 	$success = FALSE;
 	
 	$results = fetch_user_rs(array('A'));
 	while($user_r = db_fetch_assoc($results))
 	{
-		if(opendb_email(
-				$user_r['email_addr'], 
-				$admin_name, 
-				$from, 
-				NULL, 
-				$subject, 
-				$message, 
-				$errors))
+		if(opendb_user_email($user_r['user_id'], $from, $subject, $message, $errors))
 		{
 			$success = TRUE;
 		}
@@ -130,27 +122,51 @@ function get_email_footer()
 
 /**
 * Email to be sent from one OpenDb user to another
+* 
+* @from_userid can be null, and in this case, the from address will be the configured no-reply address for
+* the psuedo administrator.
 */
-function opendb_user_email($to_userid, $from_userid, $subject, $message, &$errors)
+function opendb_user_email($to_userid, $from_userid, $subject, $message, &$errors, $append_site_to_subject = TRUE)
 {
-	if(is_user_valid($to_userid) && is_user_valid($from_userid))
+	if(is_user_valid($to_userid))
 	{
 		$to_user_r = fetch_user_r($to_userid);
-		$from_user_r = fetch_user_r($from_userid);
+		$to_email_addr = trim($to_user_r['email_addr']);
+		$to_name = $to_user_r['fullname'];
 		
-		return opendb_email(
-				$to_user_r['email_addr'],
-				$to_user_r['fullname'],
-				$from_user_r['email_addr'],
-				$from_user_r['fullname'],
+		if(is_user_valid($from_userid))
+		{
+			$from_user_r = fetch_user_r($from_userid);
+			$from_email_addr = trim($from_user_r['email_addr']);
+			$from_name = $from_user_r['fullname'];
+		}
+		else if($from_userid === NULL)
+		{
+			$from_email_addr = get_opendb_config_var('email', 'noreply_address');
+			$from_name = get_opendb_lang_var('noreply');
+		}
+		else // assume $from_userid is actually an email address
+		{
+			$from_email_addr = $from_userid;
+		}
+		
+		if(sendEmail(
+				$to_email_addr,
+				$to_name,
+				$from_email_addr,
+				$from_name,
 				$subject,
 				$message,
-				$errors);
+				$errors,
+				$append_site_to_subject))
+		{
+			// todo - save record of sent message
+			return TRUE;	
+		}
 	}
-	else
-	{
-		return FALSE;
-	}
+	
+	//else
+	return FALSE;
 }
 
 /**
@@ -165,7 +181,7 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 
 	@returns TRUE on success, or array of errors on failure.
 */
-function opendb_email($to, $toname, $from, $fromname, $subject, $message, &$errors, $append_site_to_subject = TRUE)
+function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors, $append_site_to_subject = TRUE)
 {
 	// trim once only!
 	$to = trim($to);
@@ -194,14 +210,14 @@ function opendb_email($to, $toname, $from, $fromname, $subject, $message, &$erro
 	
 	if($success)
 	{
-        $message =
+		$subject = stripslashes($subject).
+					($append_site_to_subject?" [".get_opendb_config_var('site', 'title')."]":"");
+					
+		$message =
 				stripslashes($message).
 					"\n\n".
 					get_email_footer();
-
-		$subject = stripslashes($subject).
-					($append_site_to_subject?" [".get_opendb_config_var('site', 'title')."]":"");
-
+					
 		$mailer = new OpenDbMailer(ifempty(get_opendb_config_var('email', 'mailer'), 'mail'));
 
         $mailer->From     = $from;

@@ -509,15 +509,13 @@ function send_newuser_email($user_r, $passwd, &$errors)
 
 	if(is_valid_email_addr($user_r['email_addr']))
 	{
-		return opendb_email(
-						$user_r['email_addr'],
-						$user_r['fullname'],
-						$from_user_r['email_addr'],
-						$from_user_r['fullname'],
-						$subject,
-						$message,
-						$errors,
-						FALSE); // append site to subject
+		return opendb_user_email(
+					$user_r['user_id'], 
+					$from_user_r['user_id'], 
+					$subject,
+					$message, 
+					$errors,
+					FALSE);
 	}
 }
 
@@ -1233,19 +1231,13 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 		get_opendb_lang_var(
 			'new_account_email',
 			array(
-			'admin_name'=>get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')),
+				'admin_name'=>get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')),
 				'user_info'=>$user_info_lines,
 				'site'=>get_opendb_config_var('site', 'title'),
 				'activate_url'=>$activate_url,
 				'delete_url'=>$delete_url));
 
-	// if from address not provided, what the fuck do we do?!
-	if(strlen($email_addr)==0)
-	{
-		$email_addr = get_opendb_config_var('email', 'noreply_address');
-	}
-
-	return send_email_to_site_admins($email_addr, get_opendb_lang_var('new_account'), $message, $errors);
+	return send_email_to_site_admins(NULL, get_opendb_lang_var('new_account'), $message, $errors);
 }
 
 if(is_site_enabled())

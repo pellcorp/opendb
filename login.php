@@ -393,9 +393,6 @@ function perform_newpassword($HTTP_VARS, &$errors)
 			$pass_result = update_user_passwd($HTTP_VARS['uid'], $user_passwd);
 			if($pass_result===TRUE)
 			{
-				$from       = get_opendb_config_var('email', 'noreply_address');
-				$from_name  = get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title'));
-
 				$subject    = get_opendb_lang_var('lost_password');
 				$message    = get_opendb_lang_var('to_user_email_intro', 'fullname', $user_r['fullname']).
 							"\n\n".
@@ -404,7 +401,7 @@ function perform_newpassword($HTTP_VARS, &$errors)
 			        	      get_opendb_lang_var('userid').": ".$HTTP_VARS['uid']."\n".
 		    	        	  get_opendb_lang_var('password').": ".$user_passwd;
 
-				if(opendb_email($user_r['email_addr'], $user_r['fullname'], $from, $from_name, $subject, $message,	$errors))
+		    	if(opendb_user_email($user_r['user_id'], NULL, $subject, $message, $errors))
 				{
 					return TRUE;
 				}

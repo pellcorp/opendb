@@ -435,6 +435,20 @@ CREATE TABLE review (
 ) TYPE=MyISAM COMMENT='Item Review table';
 
 #
+# Mailbox for audit of all email sent from within opendb.
+#
+CREATE TABLE mailbox (
+    sequence_number INT( 10 ) NOT NULL AUTO_INCREMENT,
+    sent			TIMESTAMP(14) NOT NULL,
+    to_user_id	 	VARCHAR(20) NOT NULL,
+    from_user_id 	VARCHAR(20),
+    from_email_addr	VARCHAR(255),
+    subject			VARCHAR(100),
+    message			TEXT,
+PRIMARY KEY ( sequence_number )
+) TYPE=MyISAM COMMENT = 'mailbox';
+
+#
 # Site Plugin Configuration
 #
 DROP TABLE IF EXISTS s_site_plugin;

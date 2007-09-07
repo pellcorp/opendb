@@ -125,6 +125,10 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	// Indicate that we have been in this form, and have purposely left the message textarea blank.
 	$HTTP_VARS['no_message'] = 'true';
 	
+	// Include validation javascript here.
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+		echo get_validation_javascript();
+		
 	echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 	
 	echo get_url_fields($HTTP_VARS, NULL, array('subject', 'message'));
@@ -132,21 +136,22 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	echo("\n<table class=\"emailForm\">");
 	echo format_field(get_opendb_lang_var('to'),NULL,$to);
 	
-	// Will have supplied a value for both $from and $fromname, if coming from one of the
-	// operations where the user has to be logged in.
-	if(strlen($from)>0)
-		echo format_field(get_opendb_lang_var('from'),NULL,$from);
-	else
-	{
-		echo format_field(get_opendb_lang_var('from').(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE?_theme_image("compulsory.gif", NULL, get_opendb_lang_var('compulsory_field'), 'top'):""),
-						NULL,
-						"<input type=\"text\" name=\"from\" size=50 value=\"".htmlspecialchars($HTTP_VARS['from'])."\">");
-	}
+	echo get_input_field("from",
+			NULL, // s_attribute_type
+			get_opendb_lang_var('from'), 
+               strlen($from)>0?"readonly":"email(50,100)", //input type.
+               "Y", //compulsory!
+               $from,
+			TRUE);				
 	
-	echo format_field(get_opendb_lang_var('subject').(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE?_theme_image("compulsory.gif", NULL, get_opendb_lang_var('compulsory_field'), 'top'):""),
-						NULL,
-						"<input type=\"text\" name=\"subject\" size=50 value=\"".htmlspecialchars($subject)."\">");
-
+	echo get_input_field("subject",
+				NULL, // s_attribute_type
+				get_opendb_lang_var('subject'), 
+                "text(50,100)", //input type.
+                "Y", //compulsory!
+                $subject,
+				TRUE);
+				
 	echo get_input_field("message",
 				NULL, // s_attribute_type
 				get_opendb_lang_var('message'), 
@@ -166,8 +171,13 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	{
 		echo format_help_block($help_block_r);
 	}
+	
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+		$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";
+	else
+		$onclick_event = "this.form.submit();";
 		
-	echo("<input type=submit value=\"".get_opendb_lang_var('send_email')."\">");
+	echo("<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("\n</form>");
 	
 }

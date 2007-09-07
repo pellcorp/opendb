@@ -288,7 +288,7 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 		if(get_opendb_config_var('email', 'send_to_site_admin')!==FALSE)
 		{
 			$footer_links_r[] = array(
-						text=>get_opendb_lang_var('email_site_administrator', array('site'=>get_opendb_config_var('site', 'title'))),
+						text=>get_opendb_lang_var('email_administrator'),
 						target=>"popup(640,480)",
 						url=>"email.php?op=send_to_site_admin&inc_menu=N");
 		}
@@ -497,7 +497,7 @@ else  // invalid session - go to login
 				echo get_popup_javascript();
 
 				$footer_links_r[] = array(
-					text=>get_opendb_lang_var('email_site_administrator', array('site'=>get_opendb_config_var('site', 'title'))),
+					text=>get_opendb_lang_var('email_administrator'),
 					target=>"popup(640,480)",
 					url=>"email.php?op=send_to_site_admin&inc_menu=N&subject=".get_opendb_lang_var('lost_password'));
 			}

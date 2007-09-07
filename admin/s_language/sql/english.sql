@@ -159,7 +159,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit_u
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email', 'Email'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_footer', '{site} {version}\\n{site_url}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_is_not_valid', '{prompt} must be a valid email address.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_site_administrator', 'Email {site} Administrator'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_administrator', 'Email Administrator');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_users', 'Email Users'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'errors', 'Error(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'error_sending_email', 'An error occured while sending the email.'); 

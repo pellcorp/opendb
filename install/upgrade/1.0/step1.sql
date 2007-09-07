@@ -92,7 +92,8 @@ varname IN(
 	'coerce_child_item_types',
 	'delete_linked_item',
 	'edit_linked_item',
-	'edit_parent');
+	'edit_parent',
+	'email_site_administrator');
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_item(s)', 'Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
@@ -103,6 +104,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_item_help', 'Related items will not be cloned'); 
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'noreply', 'No Reply');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_administrator', 'Email Administrator');
 
 # delete configuration entries for linked item support.
 
@@ -175,3 +178,17 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email'
 
 # allow null pwd - prevents logins
 ALTER TABLE user CHANGE pwd pwd VARCHAR(40);
+
+#
+# Mailbox for audit of all email sent from within opendb.
+#
+CREATE TABLE mailbox (
+    sequence_number INT( 10 ) NOT NULL AUTO_INCREMENT,
+    sent			TIMESTAMP(14) NOT NULL,
+    to_user_id	 	VARCHAR(20) NOT NULL,
+    from_user_id 	VARCHAR(20),
+    from_email_addr	VARCHAR(255),
+    subject			VARCHAR(100),
+    message			TEXT,
+PRIMARY KEY ( sequence_number )
+) TYPE=MyISAM COMMENT = 'mailbox';

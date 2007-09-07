@@ -46,32 +46,6 @@ function is_valid_email_addr($email_addr)
 }
 
 /**
- * Its assumed that this function will only ever be used in the case where a user could not signup,
- * so this is the only case where no record will be recorded. 
- */
-function send_email_to_site_admins($from, $subject, $message, &$errors)
-{
-	if($from!==NULL && !is_valid_email_addr($from))
-	{
-		$errors[] = get_opendb_lang_var('invalid_from_address');
-		return FALSE;
-	}
-	
-	$success = FALSE;
-	
-	$results = fetch_user_rs(array('A'));
-	while($user_r = db_fetch_assoc($results))
-	{
-		if(opendb_user_email($user_r['user_id'], $from, $subject, $message, $errors))
-		{
-			$success = TRUE;
-		}
-	}
-	
-	return $success;
-}
-
-/**
 	Return email footer
 */
 function get_email_footer()
@@ -110,7 +84,8 @@ function get_email_footer()
 				$dashed_line .= "-";
 			
 			// Now return the complete footer text
-			return	$dashed_line
+			return	"\n\n".
+					$dashed_line
 					."\n"
 					.$footer_text;
 		}
@@ -121,6 +96,24 @@ function get_email_footer()
 }
 
 /**
+ */
+function send_email_to_site_admins($from, $subject, $message, &$errors)
+{
+	$success = FALSE;
+	
+	$results = fetch_user_rs(array('A'));
+	while($user_r = db_fetch_assoc($results))
+	{
+		if(opendb_user_email($user_r['user_id'], $from, $subject, $message, $errors))
+		{
+			$success = TRUE;
+		}
+	}
+	
+	return $success;
+}
+
+/**
 * Email to be sent from one OpenDb user to another
 * 
 * @from_userid can be null, and in this case, the from address will be the configured no-reply address for
@@ -128,27 +121,56 @@ function get_email_footer()
 */
 function opendb_user_email($to_userid, $from_userid, $subject, $message, &$errors, $append_site_to_subject = TRUE)
 {
+	$to_userid = trim($to_userid);
 	if(is_user_valid($to_userid))
 	{
 		$to_user_r = fetch_user_r($to_userid);
 		$to_email_addr = trim($to_user_r['email_addr']);
-		$to_name = $to_user_r['fullname'];
-		
+		$to_name = trim($to_user_r['fullname']);
+
+		$from_userid = trim($from_userid);
 		if(is_user_valid($from_userid))
 		{
 			$from_user_r = fetch_user_r($from_userid);
 			$from_email_addr = trim($from_user_r['email_addr']);
-			$from_name = $from_user_r['fullname'];
+			$from_name = trim($from_user_r['fullname']);
 		}
 		else if($from_userid === NULL)
 		{
-			$from_email_addr = get_opendb_config_var('email', 'noreply_address');
-			$from_name = get_opendb_lang_var('noreply');
+			$from_email_addr = trim(get_opendb_config_var('email', 'noreply_address'));
+			$from_name = trim(get_opendb_lang_var('noreply'));
 		}
-		else // assume $from_userid is actually an email address
+		else //if(is_valid_email_addr($from_userid))
 		{
 			$from_email_addr = $from_userid;
 		}
+		
+		if(!is_valid_email_addr($to_email_addr))
+		{
+			$errors[] = get_opendb_lang_var('invalid_to_address');
+			return FALSE;
+		}
+		
+		if(!is_valid_email_addr($from_email_addr))
+		{
+			$errors[] = get_opendb_lang_var('invalid_from_address');
+			return FALSE;
+		}
+	
+		$subject = trim(stripslashes($subject));
+		
+		if (strlen($subject)==0)
+		{
+			$errors[] = get_opendb_lang_var('invalid_subject');
+			return FALSE;
+		}
+	
+		if($append_site_to_subject) {
+			$subject .= " [".get_opendb_config_var('site', 'title')."]";
+		}
+		
+		$message = trim(stripslashes($message));
+		$message .= get_email_footer();
 		
 		if(sendEmail(
 				$to_email_addr,
@@ -157,8 +179,7 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 				$from_name,
 				$subject,
 				$message,
-				$errors,
-				$append_site_to_subject))
+				$errors))
 		{
 			// todo - save record of sent message
 			return TRUE;	
@@ -176,74 +197,32 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 	@param fromname
 	@param subject
 	@param message
-	@param append_site_to_subject Whether the [OpenDb] should be appended to
-			the subject line.
 
 	@returns TRUE on success, or array of errors on failure.
 */
-function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors, $append_site_to_subject = TRUE)
+function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors)
 {
-	// trim once only!
-	$to = trim($to);
-	$from = trim($from);
+	$mailer = new OpenDbMailer(ifempty(get_opendb_config_var('email', 'mailer'), 'mail'));
 
-	$success = TRUE;
-	
-	if(!is_valid_email_addr($from))
+	$mailer->From     = $from;
+	$mailer->FromName = $fromname;
+
+	$mailer->AddAddress($to, $toname);
+	$mailer->Subject = $subject;
+	$mailer->Body    = $message;
+
+	if($mailer->Send())
 	{
-		$errors[] = get_opendb_lang_var('invalid_from_address');
-		$success = FALSE;
-	}
-	
-	if (strlen(trim($subject))==0)
-	{
-		$errors[] = get_opendb_lang_var('invalid_subject');
-		$success = FALSE;
-	}
-	
-	// Check 'to' address
-	if(!is_valid_email_addr($to))
-	{
-		$errors[] = get_opendb_lang_var('invalid_to_address');
-		$success = FALSE;
-	}
-	
-	if($success)
-	{
-		$subject = stripslashes($subject).
-					($append_site_to_subject?" [".get_opendb_config_var('site', 'title')."]":"");
-					
-		$message =
-				stripslashes($message).
-					"\n\n".
-					get_email_footer();
-					
-		$mailer = new OpenDbMailer(ifempty(get_opendb_config_var('email', 'mailer'), 'mail'));
-
-        $mailer->From     = $from;
-		$mailer->FromName = $fromname;
-
-        $mailer->AddAddress($to, $toname);
-		$mailer->Subject = $subject;
-		$mailer->Body    = $message;
-
-		if($mailer->Send())
-		{
-			// No errors returned indicates correct execution.
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Email sent', array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
-			return TRUE;
-		}
-		else
-		{
-			// No errors returned indicates correct execution.
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
-
-			$errors[] = $mailer->ErrorInfo;
-			return FALSE;
-		}
+		// No errors returned indicates correct execution.
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Email sent', array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
+		return TRUE;
 	}
 	else
 	{
+		// No errors returned indicates correct execution.
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
+
+		$errors[] = $mailer->ErrorInfo;
 		return FALSE;
 	}
 }

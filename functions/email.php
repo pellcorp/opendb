@@ -95,18 +95,31 @@ function get_email_footer()
 	return "";
 }
 
-/**
- */
-function send_email_to_site_admins($from, $subject, $message, &$errors)
+function send_email_to_site_admins($from_email_addr, $subject, $message, &$errors)
 {
-	$success = FALSE;
+	$success = TRUE;
 	
-	$results = fetch_user_rs(array('A'));
-	while($user_r = db_fetch_assoc($results))
+	if(!is_valid_email_addr($from_email_addr))
 	{
-		if(opendb_user_email($user_r['user_id'], $from, $subject, $message, $errors))
+		$errors[] = get_opendb_lang_var('invalid_from_address');
+		$success = FALSE;
+	}
+	
+	if(strlen($subject)==0)
+	{
+		$errors[] = get_opendb_lang_var('invalid_subject');
+		$success = FALSE;
+	}
+	
+	if($success)
+	{
+		$results = fetch_user_rs(array('A'));
+		while($user_r = db_fetch_assoc($results))
 		{
-			$success = TRUE;
+			if(!opendb_user_email($user_r['user_id'], $from_email_addr, $subject, $message, $errors))
+			{
+				$success = FALSE;
+			}
 		}
 	}
 	
@@ -158,7 +171,6 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 		}
 	
 		$subject = trim(stripslashes($subject));
-		
 		if (strlen($subject)==0)
 		{
 			$errors[] = get_opendb_lang_var('invalid_subject');
@@ -172,15 +184,16 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 		$message = trim(stripslashes($message));
 		$message .= get_email_footer();
 		
-		if(sendEmail(
-				$to_email_addr,
-				$to_name,
-				$from_email_addr,
-				$from_name,
-				$subject,
-				$message,
-				$errors))
-		{
+		if( sendEmail($to_email_addr, $to_name, $from_email_addr, $from_name, $subject, $message, $errors) ) {
+
+			// save email record.
+			insert_email(
+				$to_userid, 
+				$from_userid!=$from_email_addr?$from_userid:NULL, 
+				$from_email_addr, // insert email function will set this to NULL if from user provided!
+				$subject, 
+				$message);
+			
 			// todo - save record of sent message
 			return TRUE;	
 		}
@@ -223,6 +236,58 @@ function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors)
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
 
 		$errors[] = $mailer->ErrorInfo;
+		return FALSE;
+	}
+}
+
+/**
+ * The table structure could be more sophisticated where a message is sent to multiple
+ * addresses, but since the email function does not provide this, I see no reason to
+ * do anything more complicated.
+ *
+ * @param unknown_type $item_id
+ * @param unknown_type $author_id
+ * @param unknown_type $comment
+ * @param unknown_type $rating
+ * @return unknown
+ */
+function insert_email($to_user_id, $from_user_id, $from_email_addr, $subject, $message)
+{
+	$to_user_id = trim($to_user_id);
+	$from_user_id = trim($from_user_id);
+	$from_email_addr = trim($from_email_addr);
+	
+	if(!is_user_valid($to_user_id)) {
+		return FALSE;
+	} else if( strlen($from_user_id)>0 && 
+			( !is_user_valid($from_user_id) || $from_user_id == $to_user_id ) ) {
+		return FALSE;
+	} else if( strlen($from_user_id)==0 && 
+			( strlen($from_email_addr)==0 || !is_valid_email_addr($from_email_addr)) ) {
+		return FALSE;
+	}
+	
+	if(strlen($from_user_id)>0) {
+		$from_email_addr = NULL;
+	} else {
+		$from_email_addr = addslashes($from_email_addr);
+	}
+	
+	$subject = addslashes(trim($subject));
+	$message = addslashes(replace_newlines(trim($message)));
+
+	$query = "INSERT INTO mailbox (to_user_id,from_user_id,from_email_addr,subject,message)".
+			"VALUES ('$to_user_id',".(strlen($from_user_id)>0?"'$from_user_id'":"NULL").",".(strlen($from_email_addr)>0?"'$from_email_addr'":"NULL").", '$subject','$message')";
+
+	$insert = db_query($query);
+	if ($insert && db_affected_rows() > 0)
+	{
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($to_user_id, $from_user_id, $from_email_addr, $subject, NULL));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($to_user_id, $from_user_id, $from_email_addr, $subject, NULL));
 		return FALSE;
 	}
 }

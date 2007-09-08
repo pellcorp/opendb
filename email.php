@@ -95,7 +95,7 @@ include_once("./functions/HTML_Listing.class.inc");
 * @param message
 * @param $HTTP_VARS - Any variables to include as hidden variables in the form.
 */
-function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname, $subject, $message, $HTTP_VARS)
+function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname, $subject, $message, $HTTP_VARS, $errors)
 {
 	global $PHP_SELF;
 		
@@ -106,32 +106,29 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	else if(strlen($to_userid)>0)
 		$to = $to_userid;
 	
-	// format from
-	if(strlen($from_userid)>0 && strlen($from_fullname)>0)
+	$isFromReadonly = FALSE;
+	
+	if(strlen($from_userid)>0 && strlen($from_fullname)>0) {
 		$from = get_opendb_lang_var('current_user', array('fullname'=>$from_fullname, 'user_id'=>$from_userid));
-	else if(strlen($from_fullname)>0)
-		$from = $from_fullname;
-	else if(strlen($from_userid)>0)
-		$from = $from_userid;
-
-	// Only if we have already been in this form.
-	if($HTTP_VARS['no_message'] == 'true')
-	{
-		if(strlen($subject)==0)
-			$error[] = array('error'=>get_opendb_lang_var('invalid_subject'));
-		echo format_error_block($error);
+		$isFromReadonly = TRUE;
+	} else if(strlen($from_fullname)>0) {
+		$from = $from_fullname; // this is an email address
+	} else if(strlen($from_userid)>0) {
+		$from = $from_userid; // this is an email address
 	}
-			
-	// Indicate that we have been in this form, and have purposely left the message textarea blank.
-	$HTTP_VARS['no_message'] = 'true';
 	
 	// Include validation javascript here.
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 		echo get_validation_javascript();
-		
+	
+	
+	if(is_array($errors)) {
+		echo format_error_block($errors);
+	}
+	
 	echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 	
-	echo get_url_fields($HTTP_VARS, NULL, array('subject', 'message'));
+	echo get_url_fields($HTTP_VARS, array('op2'=>'send'), array('subject', 'message'));
 	
 	echo("\n<table class=\"emailForm\">");
 	echo format_field(get_opendb_lang_var('to'),NULL,$to);
@@ -139,7 +136,7 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	echo get_input_field("from",
 			NULL, // s_attribute_type
 			get_opendb_lang_var('from'), 
-               strlen($from)>0?"readonly":"email(50,100)", //input type.
+               $isFromReadonly?"readonly":"email(50,100)", //input type.
                "Y", //compulsory!
                $from,
 			TRUE);				
@@ -172,12 +169,7 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 		echo format_help_block($help_block_r);
 	}
 	
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-		$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";
-	else
-		$onclick_event = "this.form.submit();";
-		
-	echo("<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('submit')."\">");
+	echo("<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("\n</form>");
 	
 }
@@ -186,9 +178,13 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 * Will not check whether $user_id_rs contains the current users user_id.  It is expected
 * that this should have already been done.
 */
-function send_email_to_userids($user_id_rs, $from_userid, $subject, $message)
+function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$errors)
 {
-	$errors = NULL;
+	if(strlen($subject)==0)
+	{
+		$errors[] = get_opendb_lang_var('invalid_subject');
+		return FALSE;
+	}
 	
 	reset($user_id_rs);
 	while (list(,$user_id) = each($user_id_rs))
@@ -228,6 +224,8 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message)
 		}
 		echo("</ul></p>");
 	}
+	
+	return TRUE;
 }
 
 function get_user_id_rs($user_type_rs=NULL, $exclude_current_user = FALSE)
@@ -300,17 +298,10 @@ if(is_site_enabled())
 				$user_id_r = get_user_id_rs(get_email_user_types_r(), TRUE);
 				if(is_not_empty_array($user_id_r))
 				{
-					// If everything is provided, we can send email.
-					if(strlen($HTTP_VARS['subject'])>0 && (strlen($HTTP_VARS['message'])>0 || $HTTP_VARS['no_message']=='true'))
-					{
-						send_email_to_userids(
-								$user_id_r, 
-								$from_user_r['user_id'],
-								$HTTP_VARS['subject'], 
-								$HTTP_VARS['message']);
-					}
-					else
-					{
+					if($HTTP_VARS['op2'] == 'send' && 
+							send_email_to_userids($user_id_r, $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
+						// do nothing 
+					} else {
 						show_email_form(
 								get_user_ids_tovalue($user_id_r),
 								$HTTP_VARS['toname'],
@@ -318,7 +309,8 @@ if(is_site_enabled())
 								$from_user_r['fullname'],
 								$HTTP_VARS['subject'],
 								$HTTP_VARS['message'],
-								$HTTP_VARS);
+								$HTTP_VARS,
+								$errors);
 					}
 				}
 				else
@@ -331,19 +323,19 @@ if(is_site_enabled())
 							in_array(ifempty($HTTP_VARS['usertype'],'N'), get_min_user_type_r(get_opendb_session_var('user_type'))))
 			{
 				// Default toname for bulk email.
-				if(strlen($HTTP_VARS['toname'])==0)
+				if(strlen($HTTP_VARS['toname'])==0) {
 					$HTTP_VARS['toname'] = get_opendb_lang_var('users', 'user_desc', get_usertype_prompt($HTTP_VARS['usertype']));
-					
-				if(strlen($HTTP_VARS['subject'])>0 && (strlen($HTTP_VARS['message'])>0 || $HTTP_VARS['no_message']=='true'))
-				{
-					send_email_to_userids(
+				}
+				
+				if($HTTP_VARS['op2'] == 'send' && 
+						send_email_to_userids(
 							get_user_id_rs(array($HTTP_VARS['usertype'])), 
 							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
-							$HTTP_VARS['message']);
-				}
-				else
-				{
+							$HTTP_VARS['message'],
+							$errors)) {
+					// do nothing
+				} else {
 					show_email_form(
 							get_user_ids_tovalue(get_user_id_rs(array($HTTP_VARS['usertype']), TRUE)),
 							$HTTP_VARS['toname'],
@@ -351,7 +343,8 @@ if(is_site_enabled())
 							$from_user_r['fullname'],
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message'],
-							$HTTP_VARS);
+							$HTTP_VARS,
+							$errors);
 				}
 			}
 			else if($HTTP_VARS['op'] == 'send_to_uids' && 
@@ -370,16 +363,15 @@ if(is_site_enabled())
 					}
 				}
 				
-				if(strlen($HTTP_VARS['subject'])>0 && (strlen($HTTP_VARS['message'])>0 || $HTTP_VARS['no_message']=='true'))
-				{
-					send_email_to_userids(
+				if($HTTP_VARS['op2'] == 'send' && 
+						send_email_to_userids(
 							$filtered_user_id_rs, 
 							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
-							$HTTP_VARS['message']);
-				}
-				else
-				{
+							$HTTP_VARS['message'],
+							$errors)) {
+					// do nothing
+				} else {
 					show_email_form(
 							get_user_ids_tovalue($filtered_user_id_rs),
 							get_opendb_lang_var('users', 'user_desc', get_opendb_config_var('site', 'title')),
@@ -387,23 +379,23 @@ if(is_site_enabled())
 							$from_user_r['fullname'],
 							$HTTP_VARS['subject'],
 							$HTTP_VARS['message'],
-							$HTTP_VARS);
+							$HTTP_VARS,
+							$errors);
 				}
 			}
 			else if($HTTP_VARS['op'] == 'send_to_uid' && 
 					is_user_valid($HTTP_VARS['uid']) && 
 					!is_user_guest(fetch_user_type($HTTP_VARS['uid']), get_opendb_session_var('user_type')))
 			{
-				if(strlen($HTTP_VARS['subject'])>0 && (strlen($HTTP_VARS['message'])>0 || $HTTP_VARS['no_message']=='true'))
-				{
+				if($HTTP_VARS['op2'] == 'send' && 
 					send_email_to_userids(
 							array($HTTP_VARS['uid']), 
 							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
-							$HTTP_VARS['message']);
-				}
-				else
-				{
+							$HTTP_VARS['message'],
+							$errors)) {
+					// do nothing
+				} else {
 					show_email_form(
 							$HTTP_VARS['uid'],
 							fetch_user_name($HTTP_VARS['uid']),
@@ -411,7 +403,8 @@ if(is_site_enabled())
 							$from_user_r['fullname'],
 							$HTTP_VARS['subject'],
 							$HTTP_VARS['message'],
-							$HTTP_VARS);
+							$HTTP_VARS,
+							$errors);
 				}
 			}
 			else if($HTTP_VARS['op'] == 'send_to_site_admin')
@@ -419,32 +412,21 @@ if(is_site_enabled())
 				// Avoid any attempts to foil required validation checks.
 				$HTTP_VARS['from'] = trim(strip_tags($HTTP_VARS['from']));
 				
-				$success = FALSE;
-				
-				// Only try to email if all the info is there, or we have been to the email form.  In the latter case we
-				// are also getting the opendb email function to test the from and subject values for us.
-				if(strlen($HTTP_VARS['from'])>0 && strlen($HTTP_VARS['subject'])>0 && (strlen($HTTP_VARS['message'])>0 || $HTTP_VARS['no_message'] == 'true'))
-				{
-					if(send_email_to_site_admins($HTTP_VARS['from'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors))
-					{
-						echo("<p class=\"success\">".get_opendb_lang_var('message_sent_to')." ".get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title'))."</p>");
-						$success = TRUE;
-					}
-				}
-
-				// Else first time into the email form.
-				if(!$success)
-				{
-					echo format_error_block($errors);
+				if($HTTP_VARS['op2'] == 'send' && 
+						send_email_to_site_admins($HTTP_VARS['from'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
+							
+					echo("<p class=\"success\">".get_opendb_lang_var('message_sent_to')." ".get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title'))."</p>");
 					
+				} else {
 					show_email_form(
 							NULL,// email 
 							get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')),
-							NULL, // from_userid
+							$HTTP_VARS['from'], // from_userid
 							NULL, // from_fullname
 							$HTTP_VARS['subject'],
 							$HTTP_VARS['message'],
-							$HTTP_VARS);
+							$HTTP_VARS,
+							$errors);
 				}
 			}
 		}

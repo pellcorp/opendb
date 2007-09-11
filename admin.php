@@ -53,7 +53,10 @@ if(is_site_enabled())
 
 				$xajax = new xajax("admin.php?type=$ADMIN_TYPE");
 				$xajax->configure('javascript URI', 'lib/xajax/');
-
+				$xajax->configure('debug', false);
+				$xajax->configure('statusMessages', true);
+				$xajax->configure('waitCursor', true);
+				
 				include_once("./admin/".$ADMIN_TYPE."/ajaxjobs.php");
 				
 				$xajax->processRequest();

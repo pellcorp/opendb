@@ -26,7 +26,9 @@
 if (!defined ('XAJAX_FUNCTION')) define ('XAJAX_FUNCTION', 'function');
 
 // require_once is necessary here as the xajaxEvent class will include this also
+//SkipAIO
 require_once dirname(__FILE__) . '/support/xajaxUserFunction.inc.php';
+//EndSkipAIO
 
 /*
 	Class: xajaxFunctionPlugin

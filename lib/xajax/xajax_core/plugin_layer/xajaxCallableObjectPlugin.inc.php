@@ -24,7 +24,9 @@
 */
 if (!defined ('XAJAX_CALLABLE_OBJECT')) define ('XAJAX_CALLABLE_OBJECT', 'callable object');
 
+//SkipAIO
 require dirname(__FILE__) . '/support/xajaxCallableObject.inc.php';
+//EndSkipAIO
 
 /*
 	Class: xajaxCallableObjectPlugin
@@ -109,11 +111,13 @@ class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 			{
 				$xco =& $aArgs[1];
 
+//SkipDebug
 				if (false === is_object($xco))
 				{
 					trigger_error("To register a callable object, please provide an instance of the desired class.", E_USER_WARNING);
 					return false;
 				}
+//EndSkipDebug
 
 				if (false === is_a($xco, 'xajaxCallableObject'))
 					$xco =& new xajaxCallableObject($xco);
@@ -142,14 +146,26 @@ class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 		{
 			if (0 < count($this->aCallableObjects))
 			{
-				echo "\n<script type='text/javascript' " . $this->sDefer . "charset='UTF-8'>\n";
-				echo "/* <![CDATA[ */\n";
+				$sCrLf = "\n";
+				
+				print $sCrLf;
+				print '<';
+				print 'script type="text/javascript" ';
+				print $this->sDefer;
+				print 'charset="UTF-8">';
+				print $sCrLf;
+				print '/* <';
+				print '![CDATA[ */';
+				print $sCrLf;
 
 				foreach(array_keys($this->aCallableObjects) as $sKey)
 					$this->aCallableObjects[$sKey]->generateClientScript($this->sXajaxPrefix);
 
-				echo "/* ]]> */\n";
-				echo "</script>\n";
+				print '/* ]]> */';
+				print $sCrLf;
+				print '<';
+				print '/script>';
+				print $sCrLf;
 			}
 		}
 	}

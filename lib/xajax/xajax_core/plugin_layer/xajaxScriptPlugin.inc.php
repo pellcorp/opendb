@@ -1,15 +1,70 @@
 <?php
+/*
+	File: xajaxScriptPlugin.inc.php
 
+	Contains the xajaxScriptPlugin class declaration.
+
+	Title: xajaxScriptPlugin class
+
+	Please see <copyright.inc.php> for a detailed description, copyright
+	and license information.
+*/
+
+/*
+	@package xajax
+	@version $Id: xajaxScriptPlugin.inc.php 362 2007-05-29 15:32:24Z calltoconstruct $
+	@copyright Copyright (c) 2005-2006 by Jared White & J. Max Wilson
+	@license http://www.xajaxproject.org/bsd_license.txt BSD License
+*/
+
+/*
+	Class: xajaxScriptPlugin
+	
+	Contains the code that can produce script and style data during deferred script
+	generation.  This allows the xajax generated javascript and style sheet information
+	to be loaded via an external file reference instead of inlined into the page
+	source.
+*/
 class xajaxScriptPlugin extends xajaxRequestPlugin
 {
+	/*
+		String: sRequest
+	*/
 	var $sRequest;
+	
+	/*
+		String: sHash
+	*/
 	var $sHash;
+	
+	/*
+		String: sRequestURI
+	*/
 	var $sRequestURI;
+	
+	/*
+		Boolean: bDeferScriptGeneration
+	*/
 	var $bDeferScriptGeneration;
+	
+	/*
+		Boolean: bValidateHash
+	*/
 	var $bValidateHash;
 	
+	/*
+		Boolean: bWorking
+	*/
 	var $bWorking;
 	
+	/*
+		Function: xajaxScriptPlugin
+		
+		Construct and initialize the xajax script plugin object.  During
+		initialization, this plugin will look for hash codes in the
+		GET data (parameters passed on the request URI) and store them
+		for later use.
+	*/
 	function xajaxScriptPlugin()
 	{
 		$this->sRequestURI = '';
@@ -35,7 +90,15 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 	/*
 		Function: configure
 		
-		Sets/stores configuration options used by this plugin.
+		Sets/stores configuration options used by this plugin.  See also:
+		<xajax::configure>.  This plugin will watch for and store the current
+		setting for the following configuration options:
+		
+		- <requestURI> (string): The requestURI of the current script file.
+		- <deferScriptGeneration> (boolean): A flag that indicates whether
+			script deferral is in effect or not.
+		- <deferScriptValidateHash> (boolean): A flag that indicates whether
+			or not the script hash should be validated.
 	*/
 	function configure($sName, $mValue)
 	{
@@ -50,6 +113,16 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		}
 	}
 	
+	/*
+		Function: generateClientScript
+		
+		Called by the <xajaxPluginManager> when the text of the client script
+		(or style) declarations are needed.
+		
+		This function will only output script or style information if the 
+		request URI contained an appropriate hash code and script deferral 
+		is in effect.
+	*/
 	function generateClientScript()
 	{
 		if ($this->bWorking)
@@ -89,6 +162,13 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		}
 	}
 	
+	/*
+		Function: canProcessRequest
+		
+		Called by the <xajaxPluginManager> to determine if this plugin can
+		process the current request.  This will return true when the
+		requestURI contains an appropriate hash code.
+	*/
 	function canProcessRequest()
 	{
 		return ('' != $this->sRequest);
@@ -134,6 +214,15 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		return $aSections;
 	}
 	
+	/*
+		Function: processRequest
+		
+		Called by the <xajaxPluginManager> when the current request should be 
+		processed.  This plugin will generate the javascript or style sheet information
+		that would normally be output by the other xajax plugin objects, when script 
+		deferral is in effect.  If script deferral is disabled, this function returns 
+		without performing any functions.
+	*/
 	function processRequest()
 	{
 		if ($this->canProcessRequest())
@@ -169,5 +258,8 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 	}
 }
 
+/*
+	Register the plugin with the xajax plugin manager.
+*/
 $objPluginManager =& xajaxPluginManager::getInstance();
-$objPluginManager->registerPlugin(new xajaxScriptPlugin($objXajax, 9999));
+$objPluginManager->registerPlugin(new xajaxScriptPlugin(), 9999);

@@ -17,7 +17,9 @@
 	@license http://www.xajaxproject.org/bsd_license.txt BSD License
 */
 
-include_once(dirname(__FILE__) . '/xajaxPlugin.inc.php');
+//SkipAIO
+require(dirname(__FILE__) . '/xajaxPlugin.inc.php');
+//EndSkipAIO
 
 /*
 	Class: xajaxPluginManager
@@ -56,6 +58,8 @@ class xajaxPluginManager
 	
 	/*
 		Function: xajaxPluginManager
+		
+		Construct and initialize the one and only xajax plugin manager.
 	*/
 	function xajaxPluginManager()
 	{
@@ -70,6 +74,9 @@ class xajaxPluginManager
 	
 	/*
 		Function: getInstance
+		
+		Implementation of the singleton pattern: returns the one and only instance of the 
+		xajax plugin manager.
 		
 		Returns:
 		
@@ -146,31 +153,36 @@ class xajaxPluginManager
 		if (is_a($objPlugin, 'xajaxRequestPlugin'))
 		{
 			$this->_insertIntoArray($this->aRequestPlugins, $objPlugin, $nPriority);
-//			$this->aRequestPlugins[] =& $objPlugin;
 			
 			if (method_exists($objPlugin, 'register'))
 				$this->_insertIntoArray($this->aRegistrars, $objPlugin, $nPriority);
-//				$this->aRegistrars[] =& $objPlugin;
 			
 			if (method_exists($objPlugin, 'canProcessRequest'))
 				if (method_exists($objPlugin, 'processRequest'))
 					$this->_insertIntoArray($this->aProcessors, $objPlugin, $nPriority);
-//					$this->aProcessors[] =& $objPlugin;
 		}
 		else if (is_a($objPlugin, 'xajaxResponsePlugin'))
 		{
 			$this->aResponsePlugins[] =& $objPlugin;
 		}
 		else
-			trigger_error('Attempt to register invalid plugin.', E_USER_ERROR);
+		{
+//SkipDebug
+			$objLanguageManager =& xajaxLanguageManager::getInstance();
+			trigger_error(
+				$objLanguageManager->getText('XJXPM:IPLGERR:01') 
+				. get_class($objPlugin) 
+				. $objLanguageManager->getText('XJXPM:IPLGERR:02')
+				, E_USER_ERROR
+				);
+//EndSkipDebug
+		}
 		
 		if (method_exists($objPlugin, 'configure'))
 			$this->_insertIntoArray($this->aConfigurable, $objPlugin, $nPriority);
-//			$this->aConfigurable[] =& $objPlugin;
 
 		if (method_exists($objPlugin, 'generateClientScript'))
 			$this->_insertIntoArray($this->aClientScriptGenerators, $objPlugin, $nPriority);
-//			$this->aClientScriptGenerators[] =& $objPlugin;
 	}
 
 	/*
@@ -185,8 +197,10 @@ class xajaxPluginManager
 	function canProcessRequest()
 	{
 		$bHandled = false;
-
-		foreach (array_keys($this->aProcessors) as $sKey) {
+		
+		$aKeys = array_keys($this->aProcessors);
+		sort($aKeys);
+		foreach ($aKeys as $sKey) {
 			$mResult = $this->aProcessors[$sKey]->canProcessRequest();
 			if (true === $mResult)
 				$bHandled = true;
@@ -207,8 +221,10 @@ class xajaxPluginManager
 	function processRequest()
 	{
 		$bHandled = false;
-
-		foreach (array_keys($this->aProcessors) as $sKey) {
+		
+		$aKeys = array_keys($this->aProcessors);
+		sort($aKeys);
+		foreach ($aKeys as $sKey) {
 			$mResult = $this->aProcessors[$sKey]->processRequest();
 			if (true === $mResult)
 				$bHandled = true;
@@ -230,7 +246,9 @@ class xajaxPluginManager
 	*/
 	function configure($sName, $mValue)
 	{
-		foreach (array_keys($this->aConfigurable) as $sKey)
+		$aKeys = array_keys($this->aConfigurable);
+		sort($aKeys);
+		foreach ($aKeys as $sKey)
 			$this->aConfigurable[$sKey]->configure($sName, $mValue);
 	}
 	
@@ -242,7 +260,9 @@ class xajaxPluginManager
 	*/
 	function register($aArgs)
 	{
-		foreach (array_keys($this->aRegistrars) as $sKey)
+		$aKeys = array_keys($this->aRegistrars);
+		sort($aKeys);
+		foreach ($aKeys as $sKey)
 		{
 			$objPlugin =& $this->aRegistrars[$sKey];
 			$mResult =& $objPlugin->register($aArgs);
@@ -254,8 +274,14 @@ class xajaxPluginManager
 				if (true === $mResult)
 					return true;
 		}
-		
-		trigger_error("Failed to locate registration method for the following: " . print_r($aArgs, true), E_USER_ERROR);
+//SkipDebug
+		$objLanguageManager =& xajaxLanguageManager::getInstance();
+		trigger_error(
+			$objLanguageManager->getText('XJXPM:MRMERR:01') 
+			. print_r($aArgs, true)
+			, E_USER_ERROR
+			);
+//EndSkipDebug
 	}
 	
 	/*
@@ -268,7 +294,9 @@ class xajaxPluginManager
 	*/
 	function generateClientScript()
 	{
-		foreach (array_keys($this->aClientScriptGenerators) as $sKey)
+		$aKeys = array_keys($this->aClientScriptGenerators);
+		sort($aKeys);
+		foreach ($aKeys as $sKey)
 			$this->aClientScriptGenerators[$sKey]->generateClientScript();
 	}
 	
@@ -280,7 +308,9 @@ class xajaxPluginManager
 	*/
 	function &getPlugin($sName)
 	{
-		foreach (array_keys($this->aResponsePlugins) as $sKey)
+		$aKeys = array_keys($this->aResponsePlugins);
+		sort($aKeys);
+		foreach ($aKeys as $sKey)
 			if (is_a($this->aResponsePlugins[$sKey], $sName))
 				return $this->aResponsePlugins[$sKey];
 

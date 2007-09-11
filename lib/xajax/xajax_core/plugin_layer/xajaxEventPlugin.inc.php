@@ -29,7 +29,9 @@
 if (!defined ('XAJAX_EVENT')) define ('XAJAX_EVENT', 'xajax event');
 if (!defined ('XAJAX_EVENT_HANDLER')) define ('XAJAX_EVENT_HANDLER', 'xajax event handler');
 
+//SkipAIO
 require dirname(__FILE__) . '/support/xajaxEvent.inc.php';
+//EndSkipAIO
 
 /*
 	Class: xajaxEventPlugin

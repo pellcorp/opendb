@@ -46,15 +46,26 @@ class xajaxResponseManager
 	var $bOutputEntities;
 	
 	/*
+		Array: aDebugMessages
+	*/
+	var $aDebugMessages;
+	
+	/*
 		Function: xajaxResponseManager
+		
+		Construct and initialize the one and only xajaxResponseManager object.
 	*/
 	function xajaxResponseManager()
 	{
 		$this->objResponse = NULL;
+		$this->aDebugMessages = array();
 	}
 	
 	/*
 		Function: getInstance
+		
+		Implementation of the singleton pattern: provide a single instance of the <xajaxResponseManager>
+		to all who request it.
 	*/
 	function &getInstance()
 	{
@@ -67,14 +78,29 @@ class xajaxResponseManager
 	
 	/*
 		Function: configure
+		
+		Called by the xajax object when configuration options are set in the main script.  Option
+		values are passed to each of the main xajax components and stored locally as needed.  The
+		<xajaxResponseManager> will track the characterEncoding and outputEntities settings.
 	*/
 	function configure($sName, $mValue)
 	{
-		if ('characterEncoding' == $sName) {
+		if ('characterEncoding' == $sName)
+		{
 			$this->sCharacterEncoding = $mValue;
-		} else if ('outputEntities' == $sName) {
+			
+			if (isset($this->objResponse))
+				$this->objResponse->setCharacterEncoding($this->sCharacterEncoding);
+		}
+		else if ('outputEntities' == $sName)
+		{
 			if (true === $mValue || false === $mValue)
+			{
 				$this->bOutputEntities = $mValue;
+				
+				if (isset($this->objResponse))
+					$this->objResponse->setOutputEntities($this->bOutputEntities);
+			}
 		}
 	}
 	
@@ -91,6 +117,17 @@ class xajaxResponseManager
 	
 	/*
 		Function: append
+		
+		Used, primarily internally, to append one response object onto the end of another.  You can
+		append one xajaxResponse to the end of another, or append a xajaxCustomResponse onto the end of 
+		another xajaxCustomResponse.  However, you cannot append a standard response object onto the end
+		of a custom response and likewise, you cannot append a custom response onto the end of a standard
+		response.
+		
+		$mResponse - (object):  The new response object to be added to the current response object.
+		
+		If no prior response has been appended, this response becomes the main response object to which other
+		response objects will be appended.
 	*/
 	function append($mResponse)
 	{
@@ -101,7 +138,12 @@ class xajaxResponseManager
 				if ($this->objResponse != $mResponse)
 					$this->objResponse->absorb($mResponse);
 			} else {
-				$this->debug('Error:  You cannot mix response types while processing a single request.');
+				$objLanguageManager =& xajaxLanguageManager::getInstance();
+				$this->debug(
+					$objLanguageManager->getText('XJXRM:MXRTERR') 
+					. get_class($this->objResponse) 
+					. ')'
+					);
 			}
 		} else if (is_a($mResponse, 'xajaxCustomResponse')) {
 			if (NULL == $this->objResponse) {
@@ -110,30 +152,44 @@ class xajaxResponseManager
 				if ($this->objResponse != $mResponse)
 					$this->objResponse->absorb($mResponse);
 			} else {
-				$this->debug('Error:  You cannot mix response types while processing a single request.');
+				$objLanguageManager =& xajaxLanguageManager::getInstance();
+				$this->debug(
+					$objLanguageManager->getText('XJXRM:MXRTERR') 
+					. get_class($this->objResponse) 
+					. ')'
+					);
 			}
 		} else {
-			$this->debug("An invalid response was returned while processing this request.");
+			$objLanguageManager =& xajaxLanguageManager::getInstance();
+			$this->debug($objLanguageManager->getText('XJXRM:IRERR'));
 		}
 	}
 	
 	/*
 		Function: debug
+		
+		Appends a debug message on the end of the debug message queue.  Debug messages
+		will be sent to the client with the normal response (if the response object supports
+		the sending of debug messages, see: <xajaxResponse>)
+		
+		$sMessage - (string):  The text of the debug message to be sent.
 	*/
 	function debug($sMessage)
 	{
-		if (NULL == $this->objResponse)
-			$this->objResponse = new xajaxResponse();
-			
-		$this->objResponse->debug($sMessage);
+		$this->aDebugMessages[] = $sMessage;
 	}
 	
 	/*
 		Function: send
+		
+		Prints the response object to the output stream, thus sending the response to the client.
 	*/
 	function send()
 	{
 		if (NULL != $this->objResponse) {
+			foreach ($this->aDebugMessages as $sMessage)
+				$this->objResponse->debug($sMessage);
+			$this->aDebugMessages = array();
 			$this->objResponse->printOutput();
 		}
 	}
@@ -141,7 +197,10 @@ class xajaxResponseManager
 	/*
 		Function: getCharacterEncoding
 		
-		Used to configure new xajaxResponse objects as they are instantiated.
+		Called automatically by new response objects as they are constructed to obtain the
+		current character encoding setting.  As the character encoding is changed, the <xajaxResponseManager>
+		will automatically notify the current response object since it would have been constructed
+		prior to the setting change, see <xajaxResponseManager::configure>.
 	*/
 	function getCharacterEncoding()
 	{
@@ -151,7 +210,10 @@ class xajaxResponseManager
 	/*
 		Function: getOutputEntities
 		
-		Used to configure new xajaxResponse objects as they are instantiated.
+		Called automatically by new response objects as they are constructed to obtain the
+		current output entities setting.  As the output entities setting is changed, the
+		<xajaxResponseManager> will automatically notify the current response object since it would
+		have been constructed prior to the setting change, see <xajaxResponseManager::configure>.
 	*/
 	function getOutputEntities()
 	{

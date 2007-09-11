@@ -235,6 +235,9 @@ class xajaxRequest
 
 	/*
 		Function: getScript
+		
+		Returns a string representation of the script output (javascript) from 
+		this request object.  See also:  <xajaxRequest::printScript>
 	*/
 	function getScript()
 	{

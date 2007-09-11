@@ -19,7 +19,9 @@
 */
 
 // require_once is necessary here as the function plugin also includes this
+//SkipAIO
 require_once dirname(__FILE__) . '/xajaxUserFunction.inc.php';
+//EndSkipAIO
 
 /*
 	Class: xajaxEvent

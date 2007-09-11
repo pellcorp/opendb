@@ -85,6 +85,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 	*/
 	function canProcessRequest()
 	{
+		return false;
 	}
 	
 	/*
@@ -154,7 +155,13 @@ class xajaxResponsePlugin extends xajaxPlugin
 	*/
 	function getName()
 	{
-		trigger_error('Response plugin should override the getName function.', E_USER_ERROR);
+//SkipDebug
+		$objLanguageManager =& xajaxLanguageManager::getInstance();
+		trigger_error(
+			$objLanguageManager->getText('XJXPLG:GNERR:01')
+			, E_USER_ERROR
+			);
+//EndSkipDebug
 	}
 	
 	/*
@@ -167,6 +174,12 @@ class xajaxResponsePlugin extends xajaxPlugin
 	*/
 	function process()
 	{
-		trigger_error('Response plugin should override the process function.', E_USER_ERROR);
+//SkipDebug
+		$objLanguageManager =& xajaxLanguageManager::getInstance();
+		trigger_error(
+			$objLanguageManager->getText('XJXPLG:PERR:01')
+			, E_USER_ERROR
+			);
+//EndSkipDebug
 	}
 }

@@ -24,45 +24,6 @@ include_once("./functions/item_attribute.php");
 include_once("./functions/listutils.php");
 include_once("./functions/HTML_Listing.class.inc");
 
-/**
-*/
-function display_job_form($job)
-{
-	$gsimage = _theme_image_src('gs.gif');
- ?>
-	<div id="status" style="{width:300; margin: 4px}">
-	<table width=100% border=0>
-	<tr>
-		<td align=center colspan=10 id="message" class="error">&nbsp;</td>
-	</tr>
-	<tr>
-	<td><img id="status1" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status2" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status3" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status4" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status5" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status6" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status7" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status8" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status9" src="<?php echo $gsimage; ?>"></td>
-	<td><img id="status10" src="<?php echo $gsimage; ?>"></td>
-	</tr>
-	<tr>
-		<td align=center colspan=10 id="percentage">0%</td>
-	</tr>
-	</table>
-	
-	<form id="progressForm">
-		<input type="hidden" name="continue" value="true" />
-		<input type="button" id="startButton" value="Start" 
-				onclick="this.form['continue'].value='true'; xajax_doJob('<?php echo $job; ?>', 'true', '0', '0'); this.value='Working...'; this.disabled=true; return false;" />
-		<input type="button" id="cancelButton" value="Cancel" 
-				onclick="this.form['continue'].value='false'; this.disabled=true; " />
-	</form>
-	</div>
-<?php		
-}
-	
 session_start();
 if (is_opendb_valid_session())
 { 
@@ -83,7 +44,7 @@ if (is_opendb_valid_session())
 			else if($HTTP_VARS['job'] == 'refresh_thumbnails')
 				echo("\n<h3>Refresh Item Cache Thumbnail files</h3>");
 
-			display_job_form($HTTP_VARS['job']);
+			$jobObj->__printJobProgressBar();
 		}
 		else if($HTTP_VARS['op'] == 'delete')
 		{

@@ -113,6 +113,11 @@ class xajaxCallableObject
 			// exclude constructor
 			if ($sClass == $sMethodName)
 				$bInclude = false;
+			
+			// jpell add
+			if(substr($sMethodName,0,2) == "__")
+				$bInclude = false;
+				
 			if ($bInclude)
 				$aRequests[strtolower($sMethodName)] =& 
 					new xajaxRequest("{$sXajaxPrefix}{$sClass}.{$sMethodName}");
@@ -145,6 +150,11 @@ class xajaxCallableObject
 			// exclude constructor
 			if ($sClass == $sMethodName)
 				$bInclude = false;
+			
+			// jpell add
+			if(substr($sMethodName,0,2) == "__")
+				$bInclude = false;
+				
 			if ($bInclude)
 			{
 				echo "{$sXajaxPrefix}{$sClass}.{$sMethodName} = function() { ";

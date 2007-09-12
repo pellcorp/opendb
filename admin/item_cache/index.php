@@ -44,7 +44,7 @@ if (is_opendb_valid_session())
 			else if($HTTP_VARS['job'] == 'refresh_thumbnails')
 				echo("\n<h3>Refresh Item Cache Thumbnail files</h3>");
 
-			$jobObj->__printJobProgressBar();
+			$jobObj->printJobProgressBar();
 		}
 		else if($HTTP_VARS['op'] == 'delete')
 		{

@@ -18,10 +18,6 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-
-//
-// This is the script for the comments table.
-//
 include_once("./functions/database.php");
 include_once("./functions/logging.php");
 include_once("./functions/datetime.php");
@@ -159,10 +155,9 @@ function fetch_review_cnt($s_item_type = NULL)
 //
 function fetch_review_rs($item_id)
 {
-		
-	$query = "SELECT r.sequence_number, i.id as item_id, i.title, i.s_item_type, r.author_id, r.comment, r.rating, UNIX_TIMESTAMP(r.update_on) as update_on".
-				" FROM review r, item i ".
-				" WHERE r.item_id = i.id AND ";
+	$query = "SELECT r.sequence_number, i.id AS item_id, i.title, i.s_item_type, r.author_id, r.comment, r.rating, UNIX_TIMESTAMP(r.update_on) AS update_on".
+			" FROM review r, item i ".
+			" WHERE r.item_id = i.id AND ";
 				
 	if(get_opendb_config_var('item_review', 'include_other_title_reviews')===TRUE)
 	{
@@ -264,6 +259,17 @@ function is_user_author($user_id, $exclude_user_items=FALSE)
 		return FALSE;
 }
 
+/**
+ * 
+ */
+function update_item_review($item_id)
+{
+	if(db_query("LOCK TABLES review r READ, item i WRITE"))
+	{
+		
+	}
+}
+
 /*
  * Returns average rating for title.
  */
@@ -272,6 +278,7 @@ function fetch_review_rating($item_id = NULL)
 	if($item_id)
 	{
 		$query = "SELECT rating FROM review r ";
+		
 		if(get_opendb_config_var('item_review', 'include_other_title_reviews')===TRUE)
 		{
 			$item_r = fetch_item_r($item_id);
@@ -322,6 +329,7 @@ function fetch_review_rating($item_id = NULL)
 		else
 			return $total / $number;
 	}
+	
 	//else
 	return FALSE;
 }
@@ -382,7 +390,6 @@ function update_review($sequence_number, $comment, $rating)
 */
 function delete_review($sequence_number)
 {
-		
 	$query = "DELETE FROM review WHERE sequence_number = '$sequence_number'";
 	$delete = db_query($query);
 	
@@ -403,7 +410,6 @@ function delete_review($sequence_number)
 */
 function delete_reviews($item_id)
 {
-		
 	$query = "DELETE FROM review WHERE item_id = '$item_id'";
 	$delete = db_query($query);
 	// doesn't matter if no items deleted, as long as operation was successful.
@@ -421,7 +427,6 @@ function delete_reviews($item_id)
 
 function delete_author_reviews($author_id)
 {
-		
 	$query = "DELETE FROM review WHERE author_id = '$author_id'";
 	$delete = db_query($query);
 	// doesn't matter if no items deleted, as long as operation was successful.

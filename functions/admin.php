@@ -81,7 +81,8 @@ function get_system_admin_tools_menu($admin_type = NULL)
         's_address_attribute_type'=>array('link'=>'System Address Attribute Types'),
 		's_site_plugin'=>array('link'=>'Site Plugins'),
         'patch_facility'=>array('link'=>'Miscellaneous Patches'),
-		'announcements'=>array('link'=>'Announcements'));
+		'announcements'=>array('link'=>'Announcements'),
+		'item_review'=>array('link'=>'Item Reviews'));
 		                        
 	if($admin_type!=NULL)
 	{

@@ -98,7 +98,7 @@ class AdminAjaxJobs
 		return $objResponse;
 	}
 	
-	function __printJobProgressBar() {
+	function printJobProgressBar() {
 		$gsimage = _theme_image_src('gs.gif');
 	
 		$divContents = '<div id="status" style="{width:300; margin: 4px}">

@@ -130,23 +130,13 @@ if(is_site_enabled())
 					}
 				}
 				
-				$cfgIsTabbedLayout = get_opendb_config_var('item_display', 'tabbed_layout');
-				
-				$otherTabsClass="tabContent";
-				if($cfgIsTabbedLayout!==FALSE)
-				{
-					$otherTabsClass="tabContentHidden";
-				}
-				
+				$otherTabsClass = "tabContentHidden";
 				echo("<div class=\"tabContainer\">");
-				if($cfgIsTabbedLayout!==FALSE)
-				{
-					echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
-					echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('details')."</li>");
-					echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('instance_info')."</li>");
-					echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('review(s)')."</li>");
-					echo("</ul>");
-				}
+				echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
+				echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('details')."</li>");
+				echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('instance_info')."</li>");
+				echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('review(s)')."</li>");
+				echo("</ul>");
 								
 				echo("<div id=\"tab-content\">");
 				

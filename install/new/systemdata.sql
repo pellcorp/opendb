@@ -490,9 +490,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_display', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_display', 'item_image_size', 'width', 3, 'Item Image Width', '', 'number');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'no_image', 4, 'No Image', 'Whether to display a \'missing\' image, if no image defined for item', 'text');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'tabbed_layout', 5, 'Tabbed Layout', 'Item Display tabbed layout', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'review_datetime_mask', 6, 'Review Datetime Mask', '', 'datemask');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'export_link', 7, 'Export Plugin Link Type', 'If defined will provide a export link', 'export');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'review_datetime_mask', 5, 'Review Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'export_link', 6, 'Export Plugin Link Type', 'If defined will provide a export link', 'export');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'item_instance_support', 1, 'Item Instance Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'new_instance_owner_only', 2, 'New Instance Owner Only', 'Whether item instances can be created across owners', 'boolean');
@@ -682,7 +681,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'ca
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'barchart_sort', 'desc');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'no_image', 'no-image.gif');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'tabbed_layout', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_display', 'item_image_size', 'height', '100');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'review_datetime_mask', 'Day, DDth Month YYYY HH24:MI');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'export_link', 'OpenDb_XML');

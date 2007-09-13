@@ -129,6 +129,9 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'item_input' AND id IN(
 	'new_instance_admin_diff_owner_support',
 	'clone_item_admin_diff_owner_support');
 
+DELETE FROM s_config_group_item WHERE group_id = 'item_display' AND id = 'tabbed_layout';
+DELETE FROM s_config_group_item_var WHERE group_id = 'item_display' AND id = 'tabbed_layout';
+
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 

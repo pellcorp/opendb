@@ -1035,3 +1035,6 @@ VALUES ('text/plain', 'DOCUMENT', 'Plain Text', NULL, 'N');
 
 INSERT INTO s_file_type_extension (content_type, extension, default_ind)
 VALUES ('text/plain', 'txt', 'Y');
+
+INSERT INTO s_title_display_mask(id, description)
+VALUES('feeds', 'RSS Feeds');

@@ -53,7 +53,7 @@ function get_last_num_items_rs(
 	$results = fetch_item_listing_rs($search_vars_r, $dummy_r, 'update_on', 'DESC', 0, $num_of_items);
 	if($results)
 	{
-	    $titleMaskCfg = new TitleMask(array('last_items_list', 'item_listing'));
+	    $titleMaskCfg = new TitleMask(array('feeds', 'last_items_list', 'item_display'));
 	    
 		$image_attribute_type_rs = NULL;
 		while($item_r = db_fetch_assoc($results))

@@ -195,3 +195,5 @@ CREATE TABLE mailbox (
     message			TEXT,
 PRIMARY KEY ( sequence_number )
 ) TYPE=MyISAM COMMENT = 'mailbox';
+
+INSERT INTO s_title_display_mask ( id, description ) VALUES ( 'feeds', 'RSS Feeds' );

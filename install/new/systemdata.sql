@@ -786,6 +786,9 @@ VALUES('item_listing', 'Item Listings');
 INSERT INTO s_title_display_mask(id, description)
 VALUES('item_borrow', 'Item Borrow');
 
+INSERT INTO s_title_display_mask(id, description)
+VALUES('feeds', 'RSS Feeds');
+
 #
 # Title Display Mask Group Items - Item Display
 #

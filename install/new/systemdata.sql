@@ -834,6 +834,12 @@ INSERT INTO s_title_display_mask_item(stdm_id, s_item_type_group, s_item_type, d
 VALUES('item_listing', 'AUDIO', '*', '{title}{if(instance_no>1," #{instance_no}")}');
 
 #
+# Feeds 
+#
+INSERT INTO s_title_display_mask_item(stdm_id, s_item_type_group, s_item_type, display_mask)
+VALUES('feeds', '*', 'GAME', '"{title}"{if(instance_no>1," #{instance_no}")}');
+
+#
 # Item Listing Configuration
 #
 INSERT INTO s_item_listing_conf(id, s_item_type_group, s_item_type) 

@@ -197,3 +197,6 @@ PRIMARY KEY ( sequence_number )
 ) TYPE=MyISAM COMMENT = 'mailbox';
 
 INSERT INTO s_title_display_mask ( id, description ) VALUES ( 'feeds', 'RSS Feeds' );
+
+INSERT INTO s_title_display_mask_item(stdm_id, s_item_type_group, s_item_type, display_mask)
+VALUES('feeds', '*', 'GAME', '"{title}"{if(instance_no>1," #{instance_no}")}');

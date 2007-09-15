@@ -61,7 +61,9 @@ function build_new_items_feed($URL, $datemask)
 						NULL, //owner_id 
 						NULL, // s_item_type
 						NULL, //update_on
-						NULL); // not_owner_id
+						NULL, // not_owner_id
+						NULL, // $site_url_prefix
+						'feeds');
 
 	if(is_not_empty_array($list_item_rs))
 	{

@@ -33,7 +33,8 @@ function get_last_num_items_rs(
 					$s_item_type = NULL, 
 					$update_on = NULL, 
 					$not_owner_id = NULL,
-					$site_url_prefix = NULL)
+					$site_url_prefix = NULL,
+					$title_mask_id = NULL)
 {
 	if(strlen($owner_id)>0)
 		$search_vars_r['owner_id'] = $owner_id;
@@ -51,7 +52,13 @@ function get_last_num_items_rs(
 	$results = fetch_item_listing_rs($search_vars_r, $dummy_r, 'update_on', 'DESC', 0, $num_of_items);
 	if($results)
 	{
-	    $titleMaskCfg = new TitleMask(array('feeds', 'last_items_list', 'item_display'));
+		if($title_mask_id == 'feeds') {
+			$title_mask_group = array('feeds', 'item_display');
+		} else {
+			$title_mask_group = array('last_items_list', 'item_listing');
+		}
+		
+	    $titleMaskCfg = new TitleMask($title_mask_group);
 	    
 		$image_attribute_type_rs = NULL;
 		while($item_r = db_fetch_assoc($results))
@@ -140,7 +147,8 @@ function get_last_item_list(
 						$s_item_type, // s_item_type
 						$update_on, //update_on
 						$not_owner_id, // not_owner_id
-						$site_url_prefix);
+						$site_url_prefix,
+						'last_items_list');
 
 	while(list(,$list_item_r) = @each($list_item_rs))
 	{

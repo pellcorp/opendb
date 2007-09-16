@@ -357,26 +357,19 @@ class Listing
 	
 	/**
 	* @param $item_r
-	* @param $show_is_item_reviewed
-	* @param $show_is_borrowed_or_returned
 	*/
-	function addTitleColumn($item_r, $show_is_item_reviewed = TRUE, $show_is_borrowed_or_returned = TRUE)
+	function addTitleColumn($item_r)
 	{
-		$is_item_reviewed = FALSE;
-		
 		$s_item_type = $item_r['s_item_type'];
 		
-		//In this case we want to test the real item_id
-		if($show_is_item_reviewed!==FALSE && is_item_reviewed($item_r['item_id']))
-		{
+		$is_item_reviewed = FALSE;
+		if(is_item_reviewed($item_r['item_id'])) {
 			$is_item_reviewed = TRUE;
-		}
-
-		$is_borrowed_or_returned = FALSE;						
-		// Check whether item has been borrowed or returned by the current user before.
-		if($show_is_borrowed_or_returned!==FALSE && get_opendb_config_var('listings', 'show_borrowed_or_returned') !== FALSE)
+		}			
+				
+		$is_borrowed_or_returned = FALSE;
+		if(get_opendb_config_var('listings', 'show_borrowed_or_returned') !== FALSE)
 		{
-			// Do not even bother if user owns item - they cannot borrow their own item.
 	 		if($item_r['owner_id'] != get_opendb_session_var('user_id'))
 			{
 				if(is_item_borrowed_or_returned_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
@@ -391,7 +384,6 @@ class Listing
 		$header_column_r = $this->findHeaderColumnByFieldname('title');
 		if($header_column_r['cover_image_support']===TRUE)
 		{
-			// there may not be a cover image, but we need to flag that cover images are being displayed.
 			$item_cover_image = NULL;
 			
 			if(strlen($this->_item_type_rs[$s_item_type]['image_attribute_type'])===0)

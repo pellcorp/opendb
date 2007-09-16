@@ -407,7 +407,7 @@ function &filter_for_printable_list($column_display_config_rs)
 	return $new_column_display_config_rs;
 }
 
-function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action_column, &$show_is_item_reviewed)
+function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action_column)
 {
 	$v_column_display_config_rs = get_s_item_listing_column_conf_rs($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
 			
@@ -529,8 +529,6 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 																	
 				$v_column_display_config_rs[$i]['fieldname'] = 'rating';
 				$v_column_display_config_rs[$i]['orderby_support_ind'] = 'N';
-				
-				$show_is_item_reviewed = FALSE;
 			}
 			else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEM_ID')
 			{
@@ -1050,14 +1048,10 @@ if(is_site_enabled())
 		echo(getListingFiltersBlock());
 		echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));
 		
-		// If a S_RATING is included as column, this will be set to FALSE.
-		$show_is_item_reviewed = TRUE;
-
 		$v_column_display_config_rs = get_column_display_config(
 										$HTTP_VARS, 
 										$show_owner_column, 
-										$show_action_column,
-										$show_is_item_reviewed);
+										$show_action_column);
 		
 		$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 		
@@ -1257,10 +1251,7 @@ if(is_site_enabled())
 							}
 							else if($v_column_display_config_rs[$i]['s_field_type'] == 'TITLE')
 							{
-								$listingObject->addTitleColumn(
-													$item_r,
-													$show_is_item_reviewed,
-													TRUE); // $show_is_borrowed_or_returned
+								$listingObject->addTitleColumn($item_r);
 							}
 							else if($v_column_display_config_rs[$i]['s_field_type'] == 'OWNER')
 							{

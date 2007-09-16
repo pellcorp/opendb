@@ -1027,7 +1027,7 @@ function handle_user_delete($user_id, $HTTP_VARS, &$errors)
 		
 		// Now that we can proceed, we need to know whether we are performing a Delete or Deactivate
 		// operation.
-		if(get_opendb_config_var('user_admin', 'user_delete_with_reviews')!==TRUE && is_user_author($user_id, TRUE)>0)
+		if(get_opendb_config_var('user_admin', 'user_delete_with_reviews')!==TRUE && is_user_author($user_id, TRUE))
 		{
 			$errors[] = array('error'=>get_opendb_lang_var('user_with_reviews_not_deleted'),'detail'=>'');
 			$confirm_operation = "__CONFIRM_DEACTIVATE__";

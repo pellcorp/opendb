@@ -402,7 +402,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 			$item_r = fetch_item_instance_r($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']);
 			
 			$listingObject->addItemTypeImageColumn($item_r['s_item_type']);
-			$listingObject->addTitleColumn($item_r, FALSE, FALSE);
+			$listingObject->addTitleColumn($item_r);
 			
 			if($op == 'reserve' || $op == 'cancel_reserve' || $op == 'quick_check_out')
 			{

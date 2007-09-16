@@ -512,10 +512,7 @@ if(is_site_enabled())
 								
 								if($HTTP_VARS['op'] == 'my_borrowed' || $HTTP_VARS['op'] == 'my_history')
 								{
-									$listingObject->addTitleColumn(
-											$borrowed_item_r,
-											TRUE, // is_item_reviewed
-											FALSE); // do not display previously borrowed or returned information.
+									$listingObject->addTitleColumn($borrowed_item_r);
 								}
 								else
 								{

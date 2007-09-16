@@ -25,12 +25,9 @@ include_once("./functions/utils.php");
 include_once("./functions/item.php");
 include_once("./functions/item_type_group.php");
 
-//
-// Return TRUE if title has at least one comment.
-//
 function is_item_reviewed($item_id)
 {
-	$query = "SELECT count('x') as count ".
+	$query = "SELECT COUNT('x') AS count ".
 			"FROM review r ";
 	
 	if(get_opendb_config_var('item_review', 'include_other_title_reviews')===TRUE)
@@ -41,12 +38,10 @@ function is_item_reviewed($item_id)
 		
 		if(get_opendb_config_var('item_review', 'other_title_reviews_restrict_to_item_type_group')!==FALSE)
 		{	
-			// first of all we need to get the groups this item belongs to, then we need
-			// to get the list of all other s_item_type's that are in those groups.	  
 			$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type'], 'Y');// only system_ind='Y' groups here.
 			if(is_array($item_type_group_r))
 			{
-				$item_type_r = fetch_item_types_for_group_r($item_type_group_r[0]); // only use first one.
+				$item_type_r = fetch_item_types_for_group_r($item_type_group_r[0]);
 				if(is_array($item_type_r))
 				{
 					$query .= " AND i.s_item_type IN (".format_sql_in_clause($item_type_r).")";
@@ -70,81 +65,6 @@ function is_item_reviewed($item_id)
 			return TRUE;
 	}
 	
-	//else
-	return FALSE;
-}
-
-function is_exists_review($sequence_number)
-{
-	$query = "SELECT 'x' FROM review WHERE sequence_number = '$sequence_number'";
-
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		db_free_result($result);
-		return TRUE;
-	}
-
-	//else
-	return FALSE;
-}
-
-function is_review_author($sequence_number, $author_id)
-{
-	$query = "SELECT author_id FROM review ".
-			"WHERE sequence_number = $sequence_number";
-	
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found && $found['author_id'] == $author_id)
-			return TRUE;
-	}
-	
-	//else
-	return FALSE;
-}
-
-/**
-	Returns a count of items stored in the database, or false if none found.
-*/
-function fetch_review_atdate_cnt($update_on)
-{
-	$query = "SELECT count(r.item_id) as count FROM review r WHERE r.update_on >= '$update_on'";
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found!== FALSE)
-			return $found['count'];
-	}
-
-	//else
-	return FALSE;
-}
-
-/**
-	Returns a count of items stored in the database, or false if none found.
-	If $s_item_type is specified, only reviews for items of the given s_item_type are counted
-*/
-function fetch_review_cnt($s_item_type = NULL)
-{
-	$query = "SELECT count(r.item_id) as count FROM review r";
-	if($s_item_type)
-		$query .= ", item i WHERE r.item_id = i.id AND i.s_item_type='$s_item_type'";
-
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found!== FALSE)
-			return $found['count'];
-	}
-
 	//else
 	return FALSE;
 }
@@ -193,83 +113,6 @@ function fetch_review_rs($item_id)
 		return FALSE;
 }
 
-function fetch_review_r($sequence_number)
-{
-	$query = "SELECT r.sequence_number, i.id as item_id, i.title, i.s_item_type, r.author_id, r.comment, r.rating, UNIX_TIMESTAMP(r.update_on) as update_on".
-				" FROM review r, item i".
-				" WHERE r.item_id = i.id AND r.sequence_number = $sequence_number";
-
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		return $found;
-	}
-	else
-		return FALSE;
-}
-
-/**
-* @param $author_id
-*/
-function fetch_author_review_cnt($author_id)
-{
-	$query = "SELECT count('X') as count FROM review WHERE author_id = '$author_id'";
-
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found!== FALSE)
-			return $found['count'];
-	}
-
-	//else
-	return FALSE;
-}
-
-/*
-* Checks whether any reviews created by specified user.
-* 
-* @param $exclude_user_items - If TRUE, we should not count 
-* 								reviews, for items the user owns
-*/
-function is_user_author($user_id, $exclude_user_items=FALSE)
-{
-	if($exclude_user_items!==TRUE)
-		$query = "SELECT 'X' as count FROM review WHERE author_id = '$user_id'";
-	else
-	{
-		$query = "SELECT 'X' ".
-				"FROM review r, item_instance ii ".
-				"WHERE r.item_id = ii.item_id AND ".
-				"r.author_id = '$user_id' AND ".
-				"ii.owner_id <> '$user_id'";
-	}
-	
-	$result = db_query($query);
-	if ($result && db_num_rows($result)>0)
-	{
-		db_free_result($result);
-		return TRUE;
-	}
-	else
-		return FALSE;
-}
-
-/**
- * 
- */
-function update_item_review($item_id)
-{
-	if(db_query("LOCK TABLES review r READ, item i WRITE"))
-	{
-		
-	}
-}
-
 /*
  * Returns average rating for title.
  */
@@ -277,7 +120,7 @@ function fetch_review_rating($item_id = NULL)
 {
 	if($item_id)
 	{
-		$query = "SELECT rating FROM review r ";
+		$query = "SELECT r.rating FROM review r ";
 		
 		if(get_opendb_config_var('item_review', 'include_other_title_reviews')===TRUE)
 		{
@@ -333,6 +176,148 @@ function fetch_review_rating($item_id = NULL)
 	//else
 	return FALSE;
 }
+
+function is_exists_review($sequence_number)
+{
+	$query = "SELECT 'x' FROM review WHERE sequence_number = '$sequence_number'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
+function is_review_author($sequence_number, $author_id)
+{
+	$query = "SELECT author_id FROM review ".
+			"WHERE sequence_number = $sequence_number";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found && $found['author_id'] == $author_id)
+			return TRUE;
+	}
+	
+	//else
+	return FALSE;
+}
+
+/**
+	Returns a count of items stored in the database, or false if none found.
+*/
+function fetch_review_atdate_cnt($update_on)
+{
+	$query = "SELECT COUNT(r.item_id) AS count FROM review r WHERE r.update_on >= '$update_on'";
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
+	Returns a count of items stored in the database, or false if none found.
+	If $s_item_type is specified, only reviews for items of the given s_item_type are counted
+*/
+function fetch_review_cnt($s_item_type = NULL)
+{
+	$query = "SELECT COUNT(r.item_id) AS count FROM review r";
+	if($s_item_type)
+		$query .= ", item i WHERE r.item_id = i.id AND i.s_item_type = '$s_item_type'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+function fetch_review_r($sequence_number)
+{
+	$query = "SELECT r.sequence_number, i.id as item_id, i.title, i.s_item_type, r.author_id, r.comment, r.rating, UNIX_TIMESTAMP(r.update_on) AS update_on".
+				" FROM review r, item i".
+				" WHERE r.item_id = i.id AND r.sequence_number = $sequence_number";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found;
+	}
+	else
+		return FALSE;
+}
+
+/**
+* @param $author_id
+*/
+function fetch_author_review_cnt($author_id)
+{
+	$query = "SELECT COUNT('X') AS count FROM review WHERE author_id = '$author_id'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!== FALSE)
+			return $found['count'];
+	}
+
+	//else
+	return FALSE;
+}
+
+/*
+* Checks whether any reviews created by specified user.
+* 
+* @param $exclude_user_items - If TRUE, we should not count reviews, for items the user owns
+*/
+function is_user_author($user_id, $exclude_user_items = FALSE)
+{
+	if($exclude_user_items!==TRUE) {
+		$query = "SELECT 'X' FROM review WHERE author_id = '$user_id'";
+	} else {
+		$query = "SELECT 'X' ".
+				"FROM review r, item_instance ii ".
+				"WHERE r.item_id = ii.item_id AND ".
+				"r.author_id = '$user_id' AND ".
+				"ii.owner_id <> '$user_id'";
+	}
+	
+	$result = db_query($query);
+	if ($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	
+	//else
+	return FALSE;
+}
+
+
 
 //
 // Insert a review

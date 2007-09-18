@@ -53,8 +53,6 @@ class CSV
 
 	function read_row(&$fileHandler, &$error)
 	{
-		$delimiter = ',';
-	
 		$argument=NULL;
 		$quotefound=FALSE;
 	
@@ -65,8 +63,8 @@ class CSV
 			
 			for($i=0; $i<strlen($line); $i++)
 			{
-				if($argument===NULL)
-					$argument="";
+				if($argument === NULL)
+					$argument = "";
 	
 				if($line[$i] == "\"")
 				{
@@ -87,7 +85,7 @@ class CSV
 					else
 					{
 						$arguments[] = trim($argument);
-						$argument="";
+						$argument = "";
 					}
 				}
 				else
@@ -99,7 +97,7 @@ class CSV
 			// only keep going if we are in middle of quote
 			if($quotefound)
 			{
-				$argument .= $this->$line_ending;
+				$argument .= $this->line_ending;
 			}
 			else
 			{

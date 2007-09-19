@@ -1,24 +1,18 @@
 <!--
 	Document Type Description for OpenDb 1.0 XML export format.
-	
-	All OpenDb Item XML must include a DOCTYPE of the following form:
-		<!DOCTYPE opendb-items 
-			PUBLIC "-//Open Media Collectors Database//DTD OpenDb Item Export 1.2//EN"
-			"http://opendb.iamvegan.net/dtd/opendb-items_1.2.dtd"
-		>
 -->
 
-<!ELEMENT opendb-items (item)*>
+<!ELEMENT opendb-items (item*)>
 <!ATTLIST opendb-items
 	version		CDATA	#REQUIRED>
 	
-<!ELEMENT item (instance|attribute|item)*>
+<!ELEMENT item (attribute*, instance*, item*)>
 <!ATTLIST item
 	item_id			CDATA	#IMPLIED
 	s_item_type		CDATA	#REQUIRED
 	title			CDATA	#REQUIRED>
 
-<!ELEMENT instance (attribute)*>
+<!ELEMENT instance (attribute*)>
 <!ATTLIST instance
 	instance_no		CDATA	#IMPLIED
 	owner_id		CDATA	#REQUIRED

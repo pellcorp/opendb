@@ -74,12 +74,15 @@ class OpenDb_XML
 	*/
 	function file_header($title)
 	{
+		
 		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n".
-				"<!DOCTYPE opendb-items PUBLIC \"-//Open Media Collectors Database//DTD OpenDb Item Export 1.3//EN\" \"http://opendb.iamvegan.net/dtd/opendb-items_1.3.dtd\">\n\n".
+			
 				"<!--\n".
 				"\t$title\n".
 				"-->\n".
-				"<opendb-items version=\"1.3\">";
+				"<OpendbItems version=\"1.3\" xmlns=\"http://opendb.iamvegan.net/xsd/OpendbItems-1.3.xsd\" ".
+				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ".
+				"xsi:schemaLocation=\"http://opendb.iamvegan.net/xsd/OpendbItems-1.3.xsd\">";
 	}
 
 	/*
@@ -87,34 +90,37 @@ class OpenDb_XML
 	*/
 	function file_footer()
 	{
-		return "\n</opendb-items>\n";
+		return "\n</OpendbItems>\n";
 	}
 
 	function start_item($item_id, $s_item_type, $title)
 	{
-		return "\n".tab_indent($this->_level++)."<item item_id=\"$item_id\" s_item_type=\"$s_item_type\" title=\"".escape_xml_entities($title)."\">";
+		return "\n".tab_indent($this->_level++).
+				"<Item ItemId=\"$item_id\" ItemType=\"$s_item_type\">".
+				"\n".tab_indent($this->_level).
+				"<Title>".escape_xml_entities($title)."</Title>";
 	}
 
 	function end_item()
 	{
-		return "\n".tab_indent(--$this->_level)."</item>";
+		return "\n".tab_indent(--$this->_level)."</Item>";
 	}
 
 	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment)
 	{
-		return "\n".tab_indent($this->_level++)."<instance instance_no=\"$instance_no\" owner_id=\"$owner_id\" borrow_duration=\"$borrow_duration\" s_status_type=\"$s_status_type\" status_comment=\"".escape_xml_entities($status_comment)."\">";
+		return "\n".tab_indent($this->_level)."<Instance InstanceNo=\"$instance_no\" OwnerId=\"$owner_id\" BorrowDuration=\"$borrow_duration\" StatusType=\"$s_status_type\" StatusComment=\"".escape_xml_entities($status_comment)."\" />";
 	}
 	
 	function end_item_instance()
 	{
-		return "\n".tab_indent(--$this->_level)."</instance>";
+		return "";
 	}
 
 	function item_attribute($s_attribute_type, $order_no, $attribute_val)
 	{
-		return "\n".tab_indent($this->_level)."<attribute s_attribute_type=\"$s_attribute_type\" order_no=\"$order_no\">".
+		return "\n".tab_indent($this->_level)."<Attribute AttributeType=\"$s_attribute_type\" OrderNo=\"$order_no\">".
 			escape_xml_entities($attribute_val).
-			"</attribute>";
+			"</Attribute>";
 	}
 }
 ?>

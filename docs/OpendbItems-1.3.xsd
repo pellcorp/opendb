@@ -6,7 +6,7 @@
 
 	<xsd:complexType name="OpendbItems">
 		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
-			<xsd:element ref="Item" />
+			<xsd:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		
 		<xsd:attribute name="version" type="xsd:string" use="required" />
@@ -15,7 +15,7 @@
 	<xsd:element name="Item" type="Item" />
 	<xsd:complexType name="Item"> 
 		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
-			<xsd:element ref="Title" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="Title" minOccurs="1" maxOccurs="1" />
 			<xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element ref="Instance" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
@@ -34,14 +34,14 @@
 	<xsd:element name="Instance" type="Instance" />
 	<xsd:complexType name="Instance">
 		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
-			<xsd:element ref="StatusComment" />
-			<xsd:element ref="Attribute" />
+			<xsd:element ref="StatusComment" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 
 		<xsd:attribute name="InstanceNo" type="xsd:string" />
-		<xsd:attribute name="OwnerId" type="xsd:string" use="required" />
-		<xsd:attribute name="BorrowDuration" type="xsd:string" use="required" />
-		<xsd:attribute name="StatusType" type="xsd:string" use="required" />
+		<xsd:attribute name="OwnerId" type="xsd:string" />
+		<xsd:attribute name="BorrowDuration" type="xsd:string" />
+		<xsd:attribute name="StatusType" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:element name="StatusComment" type="StatusComment" />
@@ -56,9 +56,8 @@
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="AttributeType" type="xsd:string" use="required" />
-				<xsd:attribute name="OrderNo" type="xsd:string" use="required" />
+				<xsd:attribute name="OrderNo" type="xsd:string" />
 			</xsd:extension>
 		</xsd:simpleContent>
 	</xsd:complexType>
 </xsd:schema>
-

@@ -22,6 +22,8 @@ class OpenDb_XML
 	var $version = '1.3';
 	var $is_version_valid = FALSE;
 	
+	var $_itemType = NULL;
+	
 	function get_display_name()
 	{
 		return 'Open Media Collectors Database XML';
@@ -34,12 +36,12 @@ class OpenDb_XML
 	
 	function is_doctype_supported($doctype)
 	{
-		return (strcasecmp($doctype, 'opendb-items') === 0);
+		return (strcasecmp($doctype, 'OpendbItems') === 0);
 	}
 
 	function start_element($name, $attribs, $pcdata)
 	{
-		if(strcmp($name, 'opendb-items')===0)
+		if(strcmp($name, 'OpendbItems')===0)
 		{
 			if($attribs['version'] === $this->version)
 				$this->is_version_valid = TRUE;
@@ -48,17 +50,25 @@ class OpenDb_XML
 		}
 		else if($this->is_version_valid)
 		{
-			if(strcmp($name, 'item')===0)
+			if(strcmp($name, 'Item')===0)
 			{
-				import_start_item($attribs['s_item_type'], $attribs['title']);
+				$this->_itemType = $attribs['ItemType'];
 			}
-			else if(strcmp($name, 'instance')===0)
+			else if(strcmp($name, 'Title')===0)
 			{
-				import_start_item_instance($attribs['s_status_type'], $attribs['status_comment'], $attribs['borrow_duration']);
+				import_start_item($this->_itemType, unhtmlentities($pcdata));
 			}
-			else if(strcmp($name, 'attribute')===0)
+			else if(strcmp($name, 'Instance')===0)
 			{
-				import_item_attribute($attribs['s_attribute_type'], NULL, unhtmlentities($pcdata));
+				// TODO - handle import of StatusComment
+				import_start_item_instance($attribs['StatusType'], NULL, $attribs['BorrowDuration']);
+			}
+			/*else if(strcmp($name, 'StatusComment')===0)
+			{
+			}*/
+			else if(strcmp($name, 'Attribute')===0)
+			{
+				import_item_attribute($attribs['AttributeType'], NULL, unhtmlentities($pcdata));
 			}
 		}
 	}
@@ -67,11 +77,11 @@ class OpenDb_XML
 	{
 		if($this->is_version_valid)
 		{
-			if(strcmp($name, 'item')===0)// ignore doctype start element.
+			if(strcmp($name, 'Item')===0)// ignore doctype start element.
 			{
 				import_end_item();
 			}
-			else if(strcmp($name, 'instance')===0)
+			else if(strcmp($name, 'Instance')===0)
 			{
                 import_end_item_instance();
 			}

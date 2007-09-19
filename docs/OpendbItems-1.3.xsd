@@ -34,6 +34,7 @@
 	<xsd:element name="Instance" type="Instance" />
 	<xsd:complexType name="Instance">
 		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="StatusComment" />
 			<xsd:element ref="Attribute" />
 		</xsd:sequence>
 
@@ -41,9 +42,15 @@
 		<xsd:attribute name="OwnerId" type="xsd:string" use="required" />
 		<xsd:attribute name="BorrowDuration" type="xsd:string" use="required" />
 		<xsd:attribute name="StatusType" type="xsd:string" use="required" />
-		<xsd:attribute name="StatusComment" type="xsd:string" />
 	</xsd:complexType>
 
+	<xsd:element name="StatusComment" type="StatusComment" />
+	<xsd:complexType name="StatusComment">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
 	<xsd:element name="Attribute" type="Attribute" />
 	<xsd:complexType name="Attribute">
 		<xsd:simpleContent>

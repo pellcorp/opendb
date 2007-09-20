@@ -20,12 +20,12 @@ set the email configuration Mailer to 'none'.
 
 2) Installation / Upgrade
 
-!!WARNING!! - Its extremely important to make a new directory for the 1.0 installation
-files, do not extract 1.0 files over the top of your existing 0.81 installation.  There
+!!WARNING!! - Its extremely important to make a new directory for the 1.X installation
+files, do not extract 1.X files over the top of your existing 0.81 installation.  There
 is a very good chance that conflicts between the old and new files will occur and this
 must be avoided.
 
-The new installer introduced with OpenDb 1.0, is a much more sophisticated mechanism for
+The new installer introduced with OpenDb 1.X, is a more sophisticated mechanism for
 upgrading / installing the OpenDb database.  It can be activated directly by executing 
 install.php.
 
@@ -39,7 +39,7 @@ the install / upgrade process is complete.
 2.1) Cover Image Cache (upload/ directory)
 
 When you upgrade from 0.81, if you have any locally saved cover images, you must copy the upload/
-directory over to the new 1.0 installation, so that cached images can continue to be served.
+directory over to the new 1.X installation, so that cached images can continue to be served.
 
 3) Documentation
 	

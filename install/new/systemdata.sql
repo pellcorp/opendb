@@ -635,6 +635,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http', 'deb
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.stream_external_images', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '0', 'imdb.com');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '1', 'imdb.org');
+INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '2', 'ia.media-imdb.com');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.cache', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.cache', 'directory', './httpcache');

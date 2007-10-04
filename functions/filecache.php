@@ -109,7 +109,13 @@ function file_cache_get_image_r($url, $type)
 				$file_r['fullsize']['height'] = $size[1];
 			}
 		}
-
+		
+		// assume these values are purely for generating correct popup
+		if(!is_numeric($file_r['fullsize']['width']) && !is_numeric($file_r['fullsize']['height'])) {
+			$file_r['fullsize']['width'] = '400';
+			$file_r['fullsize']['height'] = '300';
+		}
+		
 		if($thumbnail_file!==FALSE)
 		{
 			$size = @getimagesize($thumbnail_file);
@@ -145,6 +151,9 @@ function file_cache_get_image_r($url, $type)
 	{
 		$file_r['thumbnail'] = file_cache_get_noimage_r($type);
 	}
+	
+	
+	
 	return $file_r;
 }
 

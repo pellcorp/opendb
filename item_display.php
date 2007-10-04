@@ -110,7 +110,7 @@ if(is_site_enabled())
 									$file_r['url'] = $parsed_r['filename'];
 								}
 								
-								echo("<a href=\"".$file_r['url']."\" onclick=\"popup('".$file_r['fullsize']['url']."', 400, 300); return false;\">");
+								echo("<a href=\"".$file_r['url']."\" onclick=\"popup('".$file_r['fullsize']['url']."', ".$file_r['fullsize']['width'].", ".$file_r['fullsize']['height']."); return false;\">");
 							}
 							echo("<img src=\"".$file_r['thumbnail']['url']."\" border=0 title=\"".htmlspecialchars($coverimage_r['prompt'])."\" ");
 							

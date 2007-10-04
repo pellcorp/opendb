@@ -344,6 +344,7 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site', 
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.public_access', 1, 'Public Access', 'Public Access configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.url', 2, 'Opendb Site URL', 'Override OpenDb Site URL configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.gzip_compression', 3, 'GZIP Compression', 'Configure gzip compression' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.theme', 4, 'Theme Configuration', 'Configure themes' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'logging', 2, 'Logging', 'Logging configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'http', 3, 'Http', 'HTTP configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'http.cache', 1, 'Http Cache', 'HTTP Cache configuration' );
@@ -404,6 +405,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'enable', 1, 'Enable', 'Expose the OpenDb as a public site, with \'guest\' User ID', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'user_id', 2, 'Guest User', 'You must choose a valid \'guest\' User', 'guest_userid');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, standard guest user restrictions will apply.  Otherwise only pages listed will be accessible while public access is in effect.', 'array', 'text');
+
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.theme', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'enable_javascript_validation', 1, 'Enable Javascript Validation', 'Enforce javascript data validations in addition to backend validations.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'show_prompt_compulsory_ind', 2, 'Show Prompt Compulsory Indicator', 'Any Mandatory data elements will show a visual mandatory element identifier', 'boolean');

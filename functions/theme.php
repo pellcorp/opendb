@@ -64,6 +64,17 @@ function get_theme_header_appended_html()
 	return $_OPENDB_THEME_HEADER_HTML;
 }
 
+function get_content_type_charset() {
+	$contentType = "text/html";
+	
+	$charSet = get_opendb_config_var('site.theme', 'charset');
+	if(strlen($charSet)>0) {
+		$contentType .= ";charset=".$charSet;
+	}
+	
+	return $contentType;
+}
+
 /**
 	Do not return anything if not defined.
 */

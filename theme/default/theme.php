@@ -26,12 +26,13 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	echo("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">".
 		"\n<html>".
 		"\n<head>".
-		"\n	<title>".get_opendb_title().(!empty($title)?" - $title":"")."</title>".
+		"\n<title>".get_opendb_title().(!empty($title)?" - $title":"")."</title>".
+		"\n<meta http-equiv=\"Content-Type\" content=\"".get_content_type_charset()."\">".
 		"\n<link rel=\"icon\" href=\""._theme_image_src("icon.gif")."\" type=\"image/gif\" />".
-		"<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Search\" href=\"./searchplugins.php\">".
+		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Search\" href=\"./searchplugins.php\">".
 		get_theme_css($pageid, $mode).
 		get_opendb_rss_feeds_links().
-		"\n</head>".
+		"</head>".
 		"\n<body>");
 
 	echo("<div id=\"header\">");

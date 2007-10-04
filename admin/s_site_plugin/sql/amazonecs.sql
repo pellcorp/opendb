@@ -25,7 +25,7 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 # Site Plugin Input Fields
 #
 
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'aecsdomain', 1, '', 'Domain (com, co.uk...)', 'hidden', 'com', '{aecsdomain}' );
+#INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'aecsdomain', 1, '', 'Domain (com, co.uk...)', 'hidden', 'com', '{aecsdomain}' );
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'title', 2, '', 'Title', 'text', '', '{title}' );
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonecs', 'aecsasin', 3, '', 'ASIN / ISBN Number', 'text', '', '{aecsasin}' );
 

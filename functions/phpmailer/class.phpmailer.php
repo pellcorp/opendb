@@ -426,19 +426,20 @@ class PHPMailer
             $to .= $this->to[$i][0];
         }
 
-        if ($this->Sender != "" && strlen(ini_get("safe_mode"))< 1)
+        /*if ($this->Sender != "" && strlen(ini_get("safe_mode"))< 1)
         {
             $old_from = ini_get("sendmail_from");
             ini_set("sendmail_from", $this->Sender);
             $params = sprintf("-oi -f %s", $this->Sender);
+            
             $rt = @mail($to, $this->EncodeHeader($this->Subject), $body, 
                         $header, $params);
-        }
-        else
-            $rt = @mail($to, $this->EncodeHeader($this->Subject), $body, $header);
-
-        if (isset($old_from))
-            ini_set("sendmail_from", $old_from);
+        } else {*/
+            $rt = mail($to, $this->EncodeHeader($this->Subject), $body, $header);
+        /*}*/
+        
+        /*if (isset($old_from))
+            ini_set("sendmail_from", $old_from);*/
 
         if(!$rt)
         {

@@ -223,11 +223,8 @@ if (is_opendb_valid_session())
 				echo("</table>");
 				
 				echo(format_help_block(
-						'System Indicator = \'Y\' indicates that the record will be used in all parts of the system '.
-						'to group item type\'s together.  Examples of this are title display mask and listings column configuration. '.
-						'Other examples include reviews for different item type\'s, but the same title will be displayed together.  '.
-						'If the System Indicator = \'N\', then it will only be used in listings functionality, to list item types together. '.
-						'However it would not allow for identifying common listings column config; in this instance the default column configuration would be used.'));
+						array('If System Indicator = \'Y\' item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
+						'If System Indicator = \'N\' item types can be treated as groups for item listings filters only.')));
 		}
 		else if($HTTP_VARS['op'] == 'edit_item_type_group_rltshps')
 		{

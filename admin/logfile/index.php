@@ -147,10 +147,6 @@ if (is_opendb_valid_session())
 				
 				if($HTTP_VARS['op'] == '')
 				{
-					echo('<script language="JavaScript">
-					OLpageDefaults(BGCLASS, \'tooltip\', FGCLASS, \'tooltip\', TEXTFONTCLASS, \'tooltip\', CGCLASS, \'tooltip-caption\', CAPTIONFONTCLASS, \'tooltip-caption\', STICKY, MOUSEOFF, WRAP, WRAPMAX, 400);
-				</script>');
-				
 					if(is_array($errors))
 						echo(format_error_block($errors));
 					else if(is_array($success))

@@ -45,8 +45,6 @@ function get_printable_link_r($pageid)
 }
 
 /**
-	TODO - based on $HTTP_VARS determine currently selected link
-
 	You can use this menu options function, with standard image names
 	to automatically generate a menu with images, instead of text.
 

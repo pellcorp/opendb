@@ -1549,8 +1549,6 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 }
 
 /**
- * TODO - Need to re-engineer this functionality.
- *
  * @param unknown_type $item_r
  * @param unknown_type $status_type_r
  * @param unknown_type $HTTP_VARS

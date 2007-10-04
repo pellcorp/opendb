@@ -995,7 +995,6 @@ if(is_site_enabled())
 					}
 					else if(is_not_empty_array($HTTP_VARS['sequence_number'])) // from reserve basket
 					{
-						// TODO - Convert array of sequence numbers to array of item_id / instance_no
 						reset($HTTP_VARS['sequence_number']);
 						while(list(,$sequence_number) = each($HTTP_VARS['sequence_number']))
 						{

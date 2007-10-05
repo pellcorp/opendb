@@ -208,3 +208,15 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.theme', 4, 'Theme Configuration', 'Configure themes' );
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.theme', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
 
+UPDATE s_language_var SET VALUE = 'Import {description}' WHERE language = 'ENGLISH' AND varname = 'type_import';
+UPDATE s_language_var SET VALUE = 'Import {description} for {fullname} ({user_id})' WHERE language = 'ENGLISH' AND varname = 'type_import_items_for_name';
+
+UPDATE s_language_var SET VALUE = 'Export {description}' WHERE language = 'ENGLISH' AND varname = 'type_export';
+UPDATE s_language_var SET VALUE = 'Export {description} {title} (item_id={item_id})' WHERE language = 'ENGLISH' AND varname = 'type_export_for_item';
+UPDATE s_language_var SET VALUE = 'Export {description} {title} (item_id={item_id},instance_no={instance_no})' WHERE language = 'ENGLISH' AND varname = 'type_export_for_item_instance';
+UPDATE s_language_var SET VALUE = 'Export {description} {s_item_type} item(s)' WHERE language = 'ENGLISH' AND varname = 'type_export_for_item_type';
+UPDATE s_language_var SET VALUE = 'Export {description} for {fullname} ({user_id})' WHERE language = 'ENGLISH' AND varname = 'type_export_for_name';
+UPDATE s_language_var SET VALUE = 'Export {description} {s_item_type} item(s) for {fullname} ({user_id})' WHERE language = 'ENGLISH' AND varname = 'type_export_for_name_item_type';
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'export_item_record', 'Export Item');
+DELETE FROM s_language_var WHERE varname = 'type_export_item_record';

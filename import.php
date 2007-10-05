@@ -473,9 +473,9 @@ if(is_site_enabled())
 									$HTTP_VARS['ic_sequence_number'] = $sequence_number;
 									
 									if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-										$page_title = get_opendb_lang_var('type_import', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name()));
+										$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
 									else
-										$page_title = get_opendb_lang_var('type_import_items_for_name', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+										$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
 
 									echo(_theme_header($page_title));
 									
@@ -567,9 +567,9 @@ if(is_site_enabled())
 						$importPlugin = new PreviewImportPlugin();
 						
 						if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-							$page_title = get_opendb_lang_var('type_import', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name()));
+							$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
 						else
-							$page_title = get_opendb_lang_var('type_import_items_for_name', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+							$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
 		
 						echo(_theme_header($page_title));
 						echo ("<h2>".$page_title." ".get_item_image($HTTP_VARS['s_item_type'])."</h2>\n");
@@ -602,9 +602,9 @@ if(is_site_enabled())
 									$fileHandler =& new WrapperFileHandler($inFile);
 									
 									if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-										$page_title = get_opendb_lang_var('type_import', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name()));
+										$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
 									else
-										$page_title = get_opendb_lang_var('type_import_items_for_name', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+										$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
 		
 									echo(_theme_header($page_title));
 										
@@ -698,79 +698,13 @@ if(is_site_enabled())
 															$cfg_default_status_type_r,
 															$listingObject);
 										
-									if($importPlugin->get_plugin_type() == 'row')
-									{
-										if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-											$page_title = get_opendb_lang_var('type_import', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name()));
-										else
-											$page_title = get_opendb_lang_var('type_import_items_for_name', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
-										
-										echo(_theme_header($page_title));
-										echo ("<h2>".$page_title." ".get_item_image($HTTP_VARS['s_item_type'])."</h2>\n");
-									}
-									else if($importPlugin->get_plugin_type() == 'xml')
-									{
-										//
-										// The XML callback functions
-										//
-										function import_add_error($method, $error)
-										{
-											global $itemImportHandler;
-											$itemImportHandler->addError($method, $error);
-										}
-										
-										function import_start_item($s_item_type, $title = NULL)
-										{
-											global $itemImportHandler;
-											$itemImportHandler->startItem($s_item_type, $title);
-										}
-										
-										function import_set_title($title)
-										{
-											global $itemImportHandler;
-											$itemImportHandler->setTitle($title);
-										}
-										
-										function import_start_item_instance($s_status_type = NULL, $status_comment = NULL, $borrow_duration = NULL)
-										{
-											global $itemImportHandler;
-											$itemImportHandler->startItemInstance($s_status_type, $status_comment, $borrow_duration);
-										}
-										
-										function import_end_item_instance()
-										{
-											global $itemImportHandler;
-											$itemImportHandler->endItemInstance();
-										}
-										
-										// convenience function for plugins that do not import instance level attributes
-										function import_item_instance($s_status_type = NULL, $status_comment = NULL, $borrow_duration = NULL)
-										{
-											global $itemImportHandler;
-											$itemImportHandler->startItemInstance($s_status_type, $status_comment, $borrow_duration);
-											$itemImportHandler->endItemInstance();
-										}
-										
-										function import_item_attribute($s_attribute_type, $order_no, $attribute_val)
-										{
-											global $itemImportHandler;
-											$itemImportHandler->itemAttribute($s_attribute_type, $order_no, $attribute_val);
-										}
-										
-										function import_end_item()
-										{
-											global $itemImportHandler;
-											$itemImportHandler->endItem();
-										}
-										
-										if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-											$page_title = get_opendb_lang_var('type_import', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name()));
-										else
-											$page_title = get_opendb_lang_var('type_import_items_for_name', array('type'=>get_display_import_type(get_class($importPlugin)), 'description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
-										
-										echo(_theme_header($page_title));
-										echo ("<h2>".$page_title."</h2>\n");
-									}
+									if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
+										$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
+									else
+										$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+									
+									echo(_theme_header($page_title));
+									echo ("<h2>".$page_title."</h2>\n");
 							
 									echo(get_import_choices_table(
 										$importPlugin,
@@ -800,7 +734,10 @@ if(is_site_enabled())
 									}
 									else if($importPlugin->get_plugin_type() == 'xml')
 									{
-										$xmlHandler = new XMLImportPluginHandler($itemImportHandler, $importPlugin, $fileHandler);
+										// XML plugins will perform callbacks directly.
+										$importPlugin->setItemImportHandler($itemImportHandler);
+										
+										$xmlHandler = new XMLImportPluginHandler($importPlugin, $fileHandler);
 										if( ($resultOfImport = $xmlHandler->handleImport())!==TRUE)
 										{
 											$importError = $xmlHandler->getError();
@@ -842,7 +779,6 @@ if(is_site_enabled())
 											echo format_footer_links($footer_links_r);
 										}
 									}
-									
 									
 									// don't need it anymore.
 									unset($listingObject);

@@ -236,7 +236,7 @@ if(is_site_enabled())
 		
 		if(is_export_plugin(get_opendb_config_var('item_display', 'export_link')))
 		{
-			$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'], text=>get_opendb_lang_var('type_export_item_record', 'type', get_display_export_type(get_opendb_config_var('item_display', 'export_link'))));
+			$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'], text=>get_opendb_lang_var('export_item_record'));
 		}
 			
 		// Include a Back to Listing link.

@@ -22,22 +22,28 @@
 require_once("./include/begin.inc.php");
 
 require_once('PHPUnit.php');
+require_once('PHPUnit/GUI/SetupDecorator.php');
+require_once('PHPUnit/GUI/HTML.php');
 
-$suite = new PHPUnit_TestSuite();
+$gui = new PHPUnit_GUI_HTML();
 
 $handle=opendir("./docs/testcases/");
 while ($file = readdir($handle))
 {
 	if($file != "." && $file != ".." && preg_match("/([a-zA-Z0-9]+)\.class\.php/", $file, $regs))
 	{
-		require_once("./docs/testcases/".$file);
-		$suite->addTestSuite($regs[1]);
+		include_once("./docs/testcases/".$file);
+		
+		$className = basename($file,'.class.php');
+		if (class_exists($className)) {
+			$suites[] = new PHPUnit_TestSuite($className);
+		}
 	}
 }
 closedir($handle);
 
-$result = PHPUnit::run($suite);
-echo $result->toHTML();
+$gui->addSuites($suites);
+$gui->show();
 
 // Cleanup after begin.inc.php
 require_once("./include/end.inc.php");

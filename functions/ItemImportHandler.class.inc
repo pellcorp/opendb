@@ -124,22 +124,17 @@ class ItemInstance extends Item
 	var $_borrow_duration;
 	var $_instance_no;
     
-    function ItemInstance(&$parentItemObj, $owner_id, $status_type, $status_comment, $borrow_duration)
+    function ItemInstance(&$parentItemObj, $ownerId)
     {
         parent::Item();
         
         $this->setItemType($parentItemObj->getItemType());
         $this->setTitle($parentItemObj->getTitle());
         
-        $this->_owner_id = $owner_id;
-        $this->_status_type = $status_type;
-        $this->_status_comment = $status_comment;
-        $this->_borrow_duration = $borrow_duration;
-	}
-	
-	function setInstanceNo($instance_no)
-	{
-	    $this->_instance_no = $instance_no;
+        $this->setOwnerID($ownerId);
+        $this->setStatusType($statusType);
+        $this->setStatusComment($statusComment);
+        $this->setBorrowDuration($borrowDuration);
 	}
 	
 	function getInstanceNo()
@@ -147,9 +142,19 @@ class ItemInstance extends Item
 		return $this->_instance_no;
 	}
 	
+	function setInstanceNo($instanceNo)
+	{
+	    $this->_instance_no = $instanceNo;
+	}
+	
 	function getOwnerID()
 	{
 		return $this->_owner_id;
+	}
+	
+	function setOwnerID($ownerId)
+	{
+		$this->_owner_id = $ownerId;
 	}
 	
 	function getStatusType()
@@ -157,14 +162,29 @@ class ItemInstance extends Item
 		return $this->_status_type;
 	}
 	
+	function setStatusType($statusType)
+	{
+		$this->_status_type = $statusType;
+	}
+	
 	function getStatusComment()
 	{
 		return $this->_status_comment;
 	}
 	
+	function setStatusComment($statusComment)
+	{
+		$this->_status_comment = $statusComment;
+	}
+	
 	function getBorrowDuration()
 	{
 		return $this->_borrow_duration;
+	}
+	
+	function setBorrowDuration($borrowDuration)
+	{
+		$this->_borrow_duration = $borrowDuration;
 	}
 }
   
@@ -334,13 +354,13 @@ class ItemImportHandler
 	
 	/**
 	*/
-	function startItemInstance($s_status_type = NULL, $status_comment = NULL, $borrow_duration = NULL)
+	function startItemInstance()
 	{
 		if($this->_is_item_finished !== TRUE)
 		{
 			if($this->_item_obj != NULL)
 			{
-				$this->_instance_item_obj_rs[] = new ItemInstance($this->_item_obj, $this->_owner_id, $s_status_type, $status_comment, $borrow_duration);
+				$this->_instance_item_obj_rs[] = new ItemInstance($this->_item_obj, $this->_owner_id);
 				$this->_is_item_instance = TRUE;
 			}
 			else
@@ -355,10 +375,24 @@ class ItemImportHandler
 		}
 	}
 
-	/**
-	This function is only required to be called where there are multiple instances per item, otherwise calling
-	endItem is enough.
-	*/
+	function setInstanceStatusType($statusType)
+	{
+		$itemInstance =& $this->getCurrentItemInstance();
+		$itemInstance->setStatusType($statusType);
+	}
+	
+	function setInstanceStatusComment($statusComment)
+	{
+		$itemInstance =& $this->getCurrentItemInstance();
+		$itemInstance->setStatusComment($statusComment);
+	}
+	
+	function setInstanceBorrowDuration($borrowDuration)
+	{
+		$itemInstance =& $this->getCurrentItemInstance();
+		$itemInstance->setBorrowDuration($borrowDuration);
+	}
+	
 	function endItemInstance()
 	{
         if($this->_is_item_finished !== TRUE)
@@ -371,9 +405,6 @@ class ItemImportHandler
 		}
 	}
 	
-	/*
-	* 
-	*/
 	function itemAttribute($s_attribute_type, $order_no, $attribute_val)
 	{
 		if($this->_is_item_finished !== TRUE)
@@ -399,8 +430,6 @@ class ItemImportHandler
 		}
 	}
 
-	/*
-	*/
 	function endItem()
 	{
 		if($this->_is_item_finished !== TRUE)
@@ -507,6 +536,18 @@ class ItemImportHandler
 		}
 	}
 
+	function &getCurrentItemInstance() {
+		if($this->_is_item_finished !== TRUE) {
+			if($this->_item_obj != NULL) {
+				if($this->_is_item_instance) {
+					return $this->_instance_item_obj_rs[count($this->_instance_item_obj_rs) - 1];
+				}
+			}
+		}
+		
+		return NULL;
+	}
+	
 	function listing_item_import_result_row($itemObj, $status_type_r, $attribute_rs, $errorMsg = NULL)
 	{
 		$this->_listingsObject->startRow();

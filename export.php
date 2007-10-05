@@ -561,11 +561,11 @@ if(is_site_enabled())
 							{
 								// Work out page title.
 								if(strlen($HTTP_VARS['owner_id'])>0)
-									$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
+									$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
 								else if(strlen($HTTP_VARS['s_item_type'])>0)
-									$page_title = get_opendb_lang_var('type_export_for_item_type', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
+									$page_title = get_opendb_lang_var('type_export_for_item_type', array('description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
 								else
-									$page_title = get_opendb_lang_var('type_export', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name()));
+									$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
 								
 								if(is_not_empty_array($HTTP_VARS['export_columns']))
 								{
@@ -598,29 +598,29 @@ if(is_site_enabled())
 								if(strlen($HTTP_VARS['owner_id'])>0 || is_numeric($HTTP_VARS['item_id']))
 								{
 									if(strlen($HTTP_VARS['owner_id'])>0 && strlen($HTTP_VARS['s_item_type'])>0)
-										$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
+										$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
 									else if(strlen($HTTP_VARS['s_item_type'])>0)
-										$page_title = get_opendb_lang_var('type_export_for_item_type', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
+										$page_title = get_opendb_lang_var('type_export_for_item_type', array('description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
 									else if(is_numeric($HTTP_VARS['item_id']) && is_numeric($HTTP_VARS['instance_no']))
 									{
 										$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
-										$page_title = get_opendb_lang_var('type_export_for_item_instance', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'instance_no'=>$HTTP_VARS['instance_no'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
+										$page_title = get_opendb_lang_var('type_export_for_item_instance', array('description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'instance_no'=>$HTTP_VARS['instance_no'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
 									}
 									else if(is_numeric($HTTP_VARS['item_id']))
 									{
 										// Not really a child item, but we are not interested in the instance, so use this.  It still
 										// returns the right data anyway.
 										$item_r = fetch_child_item_r($HTTP_VARS['item_id']);
-										$page_title = get_opendb_lang_var('type_export_for_item', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
+										$page_title = get_opendb_lang_var('type_export_for_item', array('description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
 									}
 									else
 									{
-										$page_title = get_opendb_lang_var('type_export_for_name', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
+										$page_title = get_opendb_lang_var('type_export_for_name', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
 									}
 								}//if(strlen($HTTP_VARS['owner_id'])>0 || is_numeric($HTTP_VARS['item_id']))
 								else
 								{
-									$page_title = get_opendb_lang_var('type_export', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name()));
+									$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
 								}
 								
 								@set_time_limit(600);
@@ -641,7 +641,7 @@ if(is_site_enabled())
 						}//if(strlen($HTTP_VARS['s_item_type'])==0 || is_valid_item_type_structure($HTTP_VARS['s_item_type']))
 						else
 						{
-							$page_title = get_opendb_lang_var('type_export', array('type'=>get_display_export_type($pluginRef), 'description'=>$exportPlugin->get_display_name()));
+							$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
 							echo _theme_header($page_title);
 							echo("<h2>".$page_title."</h2>");
 							echo(format_error_block(array('error'=>get_opendb_lang_var('invalid_item_type_structure', 's_item_type', $HTTP_VARS['s_item_type']),'detail'=>'')));
@@ -731,7 +731,7 @@ if(is_site_enabled())
 						{
 							if(strcasecmp($pluginRef, get_class($exportPlugin)) === 0)
 							{
-								$field .= '<option value="'.$pluginRef.'">'.get_display_export_type($pluginRef).' - '.$exportPlugin->get_display_name()."\n";
+								$field .= '<option value="'.$pluginRef.'">'.$exportPlugin->get_display_name()."\n";
 							}
 							else
 							{

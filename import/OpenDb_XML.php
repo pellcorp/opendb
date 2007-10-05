@@ -17,12 +17,17 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-class OpenDb_XML
+
+include_once("./functions/XMLImportPlugin.class.php");
+
+class OpenDb_XML extends XMLImportPlugin
 {
 	var $version = '1.3';
 	var $is_version_valid = FALSE;
 	
-	var $_itemType = NULL;
+	function OpenDb_XML() {
+		parent::XMLImportPlugin();
+	}
 	
 	function get_display_name()
 	{
@@ -34,41 +39,49 @@ class OpenDb_XML
 		return 'xml';
 	}
 	
-	function is_doctype_supported($doctype)
+	function is_doctype_supported($docType)
 	{
-		return (strcasecmp($doctype, 'OpendbItems') === 0);
+		return (strcasecmp($docType, 'Items') === 0);
 	}
-
+	
+	function is_namespace_supported($nameSpace)
+	{
+		return (strcasecmp($nameSpace, 'http://opendb.iamvegan.net/xsd/Items-1.3.xsd') === 0);
+	}
+	
 	function start_element($name, $attribs, $pcdata)
 	{
-		if(strcmp($name, 'OpendbItems')===0)
+		if(strcmp($name, 'Items')===0)
 		{
 			if($attribs['version'] === $this->version)
 				$this->is_version_valid = TRUE;
-			else
-				import_add_error('start_element', 'Incorrect OpenDb XML Version. ('.$attribs['version'].'!='.$this->version.')');
+			else {
+				$this->addError('start_element', 'Incorrect OpenDb XML Version. ('.$attribs['version'].'!='.$this->version.')');
+			}
 		}
 		else if($this->is_version_valid)
 		{
 			if(strcmp($name, 'Item')===0)
 			{
-				$this->_itemType = $attribs['ItemType'];
+				$this->startItem($attribs['ItemType']);
 			}
 			else if(strcmp($name, 'Title')===0)
 			{
-				import_start_item($this->_itemType, unhtmlentities($pcdata));
+				$this->setTitle(unhtmlentities($pcdata));
 			}
 			else if(strcmp($name, 'Instance')===0)
 			{
-				// TODO - handle import of StatusComment
-				import_start_item_instance($attribs['StatusType'], NULL, $attribs['BorrowDuration']);
+				$this->startItemInstance();
+				$this->setInstanceStatusType($attribs['StatusType']);
+				$this->setInstanceBorrowDuration($attribs['BorrowDuration']);
 			}
-			/*else if(strcmp($name, 'StatusComment')===0)
+			else if(strcmp($name, 'StatusComment')===0)
 			{
-			}*/
+				$this->setInstanceStatusComment(unhtmlentities($pcdata));
+			}
 			else if(strcmp($name, 'Attribute')===0)
 			{
-				import_item_attribute($attribs['AttributeType'], NULL, unhtmlentities($pcdata));
+				$this->addAttribute($attribs['AttributeType'], NULL, unhtmlentities($pcdata));
 			}
 		}
 	}
@@ -77,13 +90,13 @@ class OpenDb_XML
 	{
 		if($this->is_version_valid)
 		{
-			if(strcmp($name, 'Item')===0)// ignore doctype start element.
+			if(strcmp($name, 'Item')===0)
 			{
-				import_end_item();
+				$this->endItem();
 			}
 			else if(strcmp($name, 'Instance')===0)
 			{
-                import_end_item_instance();
+				$this->endItemInstance();
 			}
 		}
 	}

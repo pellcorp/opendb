@@ -74,15 +74,13 @@ class OpenDb_XML
 	*/
 	function file_header($title)
 	{
-		
-		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n".
-			
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n".
 				"<!--\n".
 				"\t$title\n".
 				"-->\n".
-				"<OpendbItems version=\"1.3\" xmlns=\"http://opendb.iamvegan.net/xsd/OpendbItems-1.3.xsd\" ".
+				"<Items version=\"1.3\" xmlns=\"http://opendb.iamvegan.net/xsd/Items-1.3.xsd\" ".
 				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ".
-				"xsi:schemaLocation=\"http://opendb.iamvegan.net/xsd/OpendbItems-1.3.xsd\">";
+				"xsi:schemaLocation=\"http://opendb.iamvegan.net/xsd/Items-1.3.xsd\">";
 	}
 
 	/*
@@ -90,7 +88,7 @@ class OpenDb_XML
 	*/
 	function file_footer()
 	{
-		return "\n</OpendbItems>\n";
+		return "\n</Items>\n";
 	}
 
 	function start_item($item_id, $s_item_type, $title)

@@ -25,7 +25,9 @@ $mpaa_age_certification_map =
 					'NC-17'=>'MA',
 					'X'=>'R');
 
-class DVDProfiler_XML
+include_once("./functions/XMLImportPlugin.class.php");
+
+class DVDProfiler_XML extends XMLImportPlugin
 {
 	var $_image_prefix = "http://www.dvdprofiler.com/cgi-bin/data/myprofiler/images/";
 	
@@ -46,6 +48,10 @@ class DVDProfiler_XML
 	
 	// parent element name - only used by specific elements
 	var $v_element_name;
+	
+	function DVDProfiler_XML() {
+		parent::XMLImportPlugin();
+	}
 	
 	function get_display_name()
 	{
@@ -74,29 +80,23 @@ class DVDProfiler_XML
 		}
 		else if(strcmp($name, 'DVD')===0)
 		{
-			import_start_item('DVD');
+			$this->startItem('DVD');
 		}
 		else if(strcmp($name, 'ID')===0)
 		{
-			import_item_attribute(
-						'IMAGEURL',
-						NULL, 
-						array(
-							$this->_image_prefix.$pcdata."f.jpg", 
-							$this->_image_prefix.$pcdata."b.jpg"));
-							
-			import_item_attribute('FIMAGEURL', NULL, $this->_image_prefix.$pcdata."f.jpg");
-			import_item_attribute('BIMAGEURL', NULL, $this->_image_prefix.$pcdata."b.jpg");
+			$this->addAttribute('IMAGEURL', NULL, array($this->_image_prefix.$pcdata."f.jpg", $this->_image_prefix.$pcdata."b.jpg"));
+			$this->addAttribute('FIMAGEURL', NULL, $this->_image_prefix.$pcdata."f.jpg");
+			$this->addAttribute('BIMAGEURL', NULL, $this->_image_prefix.$pcdata."b.jpg");
 		}
   		else if(strcmp($name, 'Title')===0)
 		{
-			import_set_title($pcdata);
+			$this->setTitle($pcdata);
 		}
 		else if(strcmp($name, 'UPC')===0)
 		{
 			if(strlen($pcdata)>0)
 			{
-				import_item_attribute('UPC_ID', NULL, $pcdata);
+				$this->addAttribute('UPC_ID', NULL, $pcdata);
 			}
 		}
 		else if(strcmp($name, 'Genres')===0)
@@ -137,12 +137,13 @@ class DVDProfiler_XML
 		}
 		else if(strcmp($name, 'CollectionType')===0)
 		{
-			if(strcmp($pcdata, 'WishList') === 0)
-				import_item_instance('W');
-			else if(strcmp($pcdata, 'Ordered') === 0)
-				import_item_instance('O');
-			else //if(strcmp($pcdata, 'Owned') === 0)
-				import_item_instance('A');
+			if(strcmp($pcdata, 'WishList') === 0) {
+				$this->itemInstance('W');
+			} else if(strcmp($pcdata, 'Ordered') === 0) {
+				$this->itemInstance('O');
+			} else { //if(strcmp($pcdata, 'Owned') === 0)
+				$this->itemInstance('A');
+			}
 		}
 		else if(strcmp($name, 'Rating')===0)
 		{
@@ -154,14 +155,14 @@ class DVDProfiler_XML
 					if(strlen($mpaa_age_certification_map[$pcdata])>0)
 						$pcdata = $mpaa_age_certification_map[$pcdata];
 				}
-				import_item_attribute('AGE_RATING', NULL, $pcdata);
+				$this->addAttribute('AGE_RATING', NULL, $pcdata);
 			}
 		}
 		else if(strcmp($name, 'ProductionYear')===0)
 		{
 			if(strlen($pcdata)>0)
 			{
-				import_item_attribute('YEAR', NULL, $pcdata);
+				$this->addAttribute('YEAR', NULL, $pcdata);
 			}
 		}
 		else if(strcmp($name, 'Released')===0)
@@ -171,7 +172,7 @@ class DVDProfiler_XML
 				// Date Format YYYY-MM-DD
 				list($year, $month, $day) = sscanf($pcdata,"%d-%d-%d");
 
-				import_item_attribute(
+				$this->addAttribute(
 						'DVD_REL_DT', 
 						NULL,
 						str_pad($year,4,'0', STR_PAD_LEFT) // Format: 'YYYYMMDDHH24MISS'
@@ -184,7 +185,7 @@ class DVDProfiler_XML
 		}
 		else if(strcmp($name, 'RunningTime')===0)
 		{
-			import_item_attribute('RUN_TIME', NULL, $pcdata);
+			$this->addAttribute('RUN_TIME', NULL, $pcdata);
 		}
 		else if(strcmp($name, 'Regions')===0)
 		{
@@ -210,14 +211,14 @@ class DVDProfiler_XML
 			{
 				if(strlen($pcdata)>0)
 				{
-					import_item_attribute('VID_FORMAT', NULL, $pcdata);
+					$this->addAttribute('VID_FORMAT', NULL, $pcdata);
 				}
 			}
 			else if(strcmp($name, 'FormatAspectRatio')===0)
 			{
 				if(strlen($pcdata)>0)
 				{
-					import_item_attribute('RATIO', NULL, $pcdata);
+					$this->addAttribute('RATIO', NULL, $pcdata);
 				}
 			}
 			else if(strcmp($name, 'FormatLetterBox')===0)
@@ -231,8 +232,9 @@ class DVDProfiler_XML
 			}
 			else if(strcmp($name, 'Format16X9')===0)
 			{
-				if(strcmp($pcdata, 'True')===0)
-					import_item_attribute('ANAMORPHIC', NULL, 'Y');
+				if(strcmp($pcdata, 'True')===0) {
+					$this->addAttribute('ANAMORPHIC', NULL, 'Y');
+				}
 			}
 			else if(strcmp($name, 'FormatDualSided')===0)
 			{
@@ -475,7 +477,7 @@ class DVDProfiler_XML
 		{
 			if(strlen($pcdata)>0)
 			{
-				import_item_attribute('MOVIE_PLOT', NULL, $pcdata);
+				$this->addAttribute('MOVIE_PLOT', NULL, $pcdata);
 			}
 		}
 	}
@@ -488,13 +490,13 @@ class DVDProfiler_XML
 		}
 		else if(strcmp($name, 'DVD')===0)
 		{
-			import_end_item();
+			$this->endItem();
 		}
 		else if(strcmp($name, 'Genres')===0)
 		{
 			if(is_array($this->v_category_r))
 			{
-                import_item_attribute('MOVIEGENRE', NULL, $this->v_category_r);
+                $this->addAttribute('MOVIEGENRE', NULL, $this->v_category_r);
 			}
 			$this->v_category_r = NULL;
 			$this->v_element_name = NULL;
@@ -503,7 +505,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_region_r))
 			{
-				import_item_attribute('DVD_REGION', NULL, $this->v_region_r);
+				$this->addAttribute('DVD_REGION', NULL, $this->v_region_r);
 			}
 			$this->v_region_r = NULL;
 			$this->v_element_name = NULL;
@@ -516,7 +518,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_extras))
 			{
-				import_item_attribute('DVD_EXTRAS', NULL, implode("\n", $this->v_extras));
+				$this->addAttribute('DVD_EXTRAS', NULL, implode("\n", $this->v_extras));
 			}
 			$this->v_extras = NULL;
 			$this->v_element_name = NULL;
@@ -525,7 +527,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_studio_r))
 			{
-				import_item_attribute('STUDIO', NULL, $this->v_studio_r);
+				$this->addAttribute('STUDIO', NULL, $this->v_studio_r);
 			}
 			$this->v_studio_r = NULL;
 			$this->v_element_name = NULL;
@@ -577,7 +579,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_audio_r))
 			{
-				import_item_attribute('AUDIO_LANG', NULL, $this->v_audio_r); // let the handler sort out the array
+				$this->addAttribute('AUDIO_LANG', NULL, $this->v_audio_r); // let the handler sort out the array
 			}
 			$this->v_audio_r = NULL;
 			$this->v_element_name = NULL;
@@ -586,7 +588,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_subtitle_r))
 			{
-				import_item_attribute('SUBTITLES', NULL, $this->v_subtitle_r); // let the handler sort out the array
+				$this->addAttribute('SUBTITLES', NULL, $this->v_subtitle_r); // let the handler sort out the array
 			}
 			$this->v_subtitle_r = NULL;
 			$this->v_element_name = NULL;
@@ -595,7 +597,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_director_r))
 			{
-				import_item_attribute('DIRECTOR', NULL, $this->v_director_r);
+				$this->addAttribute('DIRECTOR', NULL, $this->v_director_r);
 			}
 			$this->v_director_r = NULL;
 			$this->v_element_name = NULL;
@@ -616,7 +618,7 @@ class DVDProfiler_XML
 		{
 			if(is_array($this->v_actor_r))
 			{
-				import_item_attribute('ACTORS', NULL, $this->v_actor_r);
+				$this->addAttribute('ACTORS', NULL, $this->v_actor_r);
 			}
 			$this->v_actor_r = NULL;
 			$this->v_element_name = NULL;

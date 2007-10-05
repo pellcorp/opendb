@@ -101,11 +101,6 @@ function is_export_plugin($plugin)
 		return FALSE;
 }
 
-function get_display_export_type($type)
-{
-	return str_replace('_', ' ', $type);
-}
-
 /**
 	Generate a list of export plugins
 	

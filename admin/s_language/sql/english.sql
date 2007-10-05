@@ -474,16 +474,19 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'to_use
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'trial_run', 'Trial Run'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'tuesday', 'Tuesday'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'tuesday_abbrev', 'Tue'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type', 'Type'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export', 'Export {type}'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_item', 'Export {type} - {description} {title} (item_id={item_id})'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_item_instance', 'Export {type} - {description} {title} (item_id={item_id},instance_no={instance_no})'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_item_type', 'Export {type} - {description} {s_item_type} item(s)'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_name', 'Export {type} - {description} for {fullname} ({user_id})'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_name_item_type', 'Export {type} - {description} {s_item_type} item(s) for {fullname} ({user_id})'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_item_record', '{type} Record'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_import', 'Import {type} - {description}'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_import_items_for_name', 'Import {type} - {description} for {fullname} ({user_id})'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type', 'Type');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export', 'Export {description}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_item', 'Export {description} {title} (item_id={item_id})'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_item_instance', 'Export {description} {title} (item_id={item_id},instance_no={instance_no})'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_item_type', 'Export {description} {s_item_type} item(s)'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_name', 'Export {description} for {fullname} ({user_id})'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_export_for_name_item_type', 'Export {description} {s_item_type} item(s) for {fullname} ({user_id})');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'export_item_record', 'Export Item');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_import', 'Import {description}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'type_import_items_for_name', 'Import {description} for {fullname} ({user_id})');
+
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'uncheck_all', 'Uncheck All'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'undefined', 'Undefined'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'undefined_error', 'Undefined Error Occurred'); 

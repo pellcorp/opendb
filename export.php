@@ -547,115 +547,103 @@ if(is_site_enabled())
 		{
 			if($HTTP_VARS['op'] == 'export')
 			{
-				if(is_export_plugin($HTTP_VARS['plugin']))
+				$exportPlugin =& get_export_plugin($HTTP_VARS['plugin']);
+				if($exportPlugin !== NULL)
 				{
-					$pluginRef = $HTTP_VARS['plugin'];
-							
-					include_once("./export/".$pluginRef.".php");
-					$exportPlugin =& new $pluginRef();
-					if($exportPlugin !== NULL)
+					if(strlen($HTTP_VARS['s_item_type'])==0 || is_valid_item_type_structure($HTTP_VARS['s_item_type']))
 					{
-						if(strlen($HTTP_VARS['s_item_type'])==0 || is_valid_item_type_structure($HTTP_VARS['s_item_type']))
+						if($exportPlugin->get_plugin_type() == 'row')
 						{
-							if($exportPlugin->get_plugin_type() == 'row')
+							// Work out page title.
+							if(strlen($HTTP_VARS['owner_id'])>0)
+								$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
+							else if(strlen($HTTP_VARS['s_item_type'])>0)
+								$page_title = get_opendb_lang_var('type_export_for_item_type', array('description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
+							else
+								$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
+							
+							if(is_not_empty_array($HTTP_VARS['export_columns']))
 							{
-								// Work out page title.
-								if(strlen($HTTP_VARS['owner_id'])>0)
-									$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
-								else if(strlen($HTTP_VARS['s_item_type'])>0)
-									$page_title = get_opendb_lang_var('type_export_for_item_type', array('description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
-								else
-									$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
-								
-								if(is_not_empty_array($HTTP_VARS['export_columns']))
-								{
-									@set_time_limit(600);
-									if(!export_row_items($exportPlugin, $page_title, $HTTP_VARS['include_header'], $HTTP_VARS['export_columns'], $HTTP_VARS['s_item_type'], $HTTP_VARS['owner_id']))
-									{
-										echo _theme_header($page_title);
-										echo("<h2>".$page_title."</h2>");
-										echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
-										echo _theme_footer();
-									}
-								}
-								else
-								{
-									echo _theme_header($page_title);
-									echo("<h2>".$page_title."</h2>");
-									
-									echo("<h3>".get_opendb_lang_var('choose_export_columns')."</h3>");
-										
-									echo(get_row_export_column_form($exportPlugin, $HTTP_VARS));
-										
-									echo _theme_footer();
-								}
-							}
-							else if($exportPlugin->get_plugin_type() == 'item')
-							{
-							    $titleMaskCfg = new TitleMask('item_display');
-							    
-								// Work out page title.
-								if(strlen($HTTP_VARS['owner_id'])>0 || is_numeric($HTTP_VARS['item_id']))
-								{
-									if(strlen($HTTP_VARS['owner_id'])>0 && strlen($HTTP_VARS['s_item_type'])>0)
-										$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
-									else if(strlen($HTTP_VARS['s_item_type'])>0)
-										$page_title = get_opendb_lang_var('type_export_for_item_type', array('description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
-									else if(is_numeric($HTTP_VARS['item_id']) && is_numeric($HTTP_VARS['instance_no']))
-									{
-										$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
-										$page_title = get_opendb_lang_var('type_export_for_item_instance', array('description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'instance_no'=>$HTTP_VARS['instance_no'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
-									}
-									else if(is_numeric($HTTP_VARS['item_id']))
-									{
-										// Not really a child item, but we are not interested in the instance, so use this.  It still
-										// returns the right data anyway.
-										$item_r = fetch_child_item_r($HTTP_VARS['item_id']);
-										$page_title = get_opendb_lang_var('type_export_for_item', array('description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
-									}
-									else
-									{
-										$page_title = get_opendb_lang_var('type_export_for_name', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
-									}
-								}//if(strlen($HTTP_VARS['owner_id'])>0 || is_numeric($HTTP_VARS['item_id']))
-								else
-								{
-									$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
-								}
-								
 								@set_time_limit(600);
-								if(!export_type_items($exportPlugin, $page_title, $HTTP_VARS['s_item_type'], $HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['owner_id']))
+								if(!export_row_items($exportPlugin, $page_title, $HTTP_VARS['include_header'], $HTTP_VARS['export_columns'], $HTTP_VARS['s_item_type'], $HTTP_VARS['owner_id']))
 								{
 									echo _theme_header($page_title);
 									echo("<h2>".$page_title."</h2>");
 									echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
 									echo _theme_footer();
 								}
-							}//get_plugin_type() not supported.
+							}
 							else
 							{
-								echo _theme_header(get_opendb_lang_var('undefined_error'));
-								echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
+								echo _theme_header($page_title);
+								echo("<h2>".$page_title."</h2>");
+								
+								echo("<h3>".get_opendb_lang_var('choose_export_columns')."</h3>");
+									
+								echo(get_row_export_column_form($exportPlugin, $HTTP_VARS));
+									
 								echo _theme_footer();
 							}
-						}//if(strlen($HTTP_VARS['s_item_type'])==0 || is_valid_item_type_structure($HTTP_VARS['s_item_type']))
+						}
+						else if($exportPlugin->get_plugin_type() == 'item')
+						{
+						    $titleMaskCfg = new TitleMask('item_display');
+						    
+							// Work out page title.
+							if(strlen($HTTP_VARS['owner_id'])>0 || is_numeric($HTTP_VARS['item_id']))
+							{
+								if(strlen($HTTP_VARS['owner_id'])>0 && strlen($HTTP_VARS['s_item_type'])>0)
+									$page_title = get_opendb_lang_var('type_export_for_name_item_type', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id'], 's_item_type'=>$HTTP_VARS['s_item_type']));
+								else if(strlen($HTTP_VARS['s_item_type'])>0)
+									$page_title = get_opendb_lang_var('type_export_for_item_type', array('description'=>$exportPlugin->get_display_name(), 's_item_type'=>$HTTP_VARS['s_item_type']));
+								else if(is_numeric($HTTP_VARS['item_id']) && is_numeric($HTTP_VARS['instance_no']))
+								{
+									$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
+									$page_title = get_opendb_lang_var('type_export_for_item_instance', array('description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'instance_no'=>$HTTP_VARS['instance_no'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
+								}
+								else if(is_numeric($HTTP_VARS['item_id']))
+								{
+									// Not really a child item, but we are not interested in the instance, so use this.  It still
+									// returns the right data anyway.
+									$item_r = fetch_child_item_r($HTTP_VARS['item_id']);
+									$page_title = get_opendb_lang_var('type_export_for_item', array('description'=>$exportPlugin->get_display_name(), 'item_id'=>$HTTP_VARS['item_id'],'title'=>$titleMaskCfg->expand_item_title($item_r)));
+								}
+								else
+								{
+									$page_title = get_opendb_lang_var('type_export_for_name', array('description'=>$exportPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
+								}
+							}//if(strlen($HTTP_VARS['owner_id'])>0 || is_numeric($HTTP_VARS['item_id']))
+							else
+							{
+								$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
+							}
+							
+							@set_time_limit(600);
+							if(!export_type_items($exportPlugin, $page_title, $HTTP_VARS['s_item_type'], $HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['owner_id']))
+							{
+								echo _theme_header($page_title);
+								echo("<h2>".$page_title."</h2>");
+								echo format_error_block(array('error'=>get_opendb_lang_var('no_records_found'),'detail'=>''));
+								echo _theme_footer();
+							}
+						}//get_plugin_type() not supported.
 						else
 						{
-							$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
-							echo _theme_header($page_title);
-							echo("<h2>".$page_title."</h2>");
-							echo(format_error_block(array('error'=>get_opendb_lang_var('invalid_item_type_structure', 's_item_type', $HTTP_VARS['s_item_type']),'detail'=>'')));
+							echo _theme_header(get_opendb_lang_var('undefined_error'));
+							echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
 							echo _theme_footer();
 						}
-					}//if($importPlugin !== NULL)
+					}//if(strlen($HTTP_VARS['s_item_type'])==0 || is_valid_item_type_structure($HTTP_VARS['s_item_type']))
 					else
 					{
-						echo _theme_header(get_opendb_lang_var('undefined_error'));
-						echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
+						$page_title = get_opendb_lang_var('type_export', array('description'=>$exportPlugin->get_display_name()));
+						echo _theme_header($page_title);
+						echo("<h2>".$page_title."</h2>");
+						echo(format_error_block(array('error'=>get_opendb_lang_var('invalid_item_type_structure', 's_item_type', $HTTP_VARS['s_item_type']),'detail'=>'')));
 						echo _theme_footer();
 					}
-				}
-				else //if(is_export_plugin($HTTP_VARS['plugin']))
+				}//if($importPlugin !== NULL)
+				else
 				{
 					echo _theme_header(get_opendb_lang_var('undefined_error'));
 					echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
@@ -720,24 +708,12 @@ if(is_site_enabled())
 					);
 					
 				$field = "\n<select name=\"plugin\">\n";
-				$export_type_r = get_export_r();
-				if(is_array($export_type_r))
+				$plugin_list_r = get_export_plugin_list_r();
+				if(is_array($plugin_list_r))
 				{
-					while(list(,$pluginRef) = @each($export_type_r))
+					while(list(,$plugin_r) = @each($plugin_list_r))
 					{
-						include_once("./export/".$pluginRef.".php");
-						$exportPlugin = new $pluginRef();
-						if($exportPlugin !== NULL)
-						{
-							if(strcasecmp($pluginRef, get_class($exportPlugin)) === 0)
-							{
-								$field .= '<option value="'.$pluginRef.'">'.$exportPlugin->get_display_name()."\n";
-							}
-							else
-							{
-								opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Export class is not valid', array($pluginRef));
-							}
-						}
+						$field .= '<option value="'.$plugin_r['name'].'">'.$plugin_r['description']."\n";
 					}
 				}
 				$field .= "</select>";

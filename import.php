@@ -463,7 +463,7 @@ if(is_site_enabled())
 					{
 						if($_FILES['uploadfile']['size']>0)
 						{
-							$importPlugin =& get_import_plugin($_FILES['uploadfile'], $error);
+							$importPlugin =& get_import_plugin_from_uploadfile($_FILES['uploadfile'], $error);
 							if($importPlugin !== NULL)
 							{
 								$sequence_number = import_cache_insert($HTTP_VARS['owner_id'], get_class($importPlugin), $_FILES['uploadfile']['tmp_name']);
@@ -488,6 +488,8 @@ if(is_site_enabled())
 									if($inFile)
 									{
 										$fileHandler =& new WrapperFileHandler($inFile);
+										
+										
 										echo(get_uploaded_form(
 													$importPlugin, 
 													($importPlugin->get_plugin_type()=='row')? $importPlugin->read_header($fileHandler, $error) : NULL,
@@ -588,55 +590,43 @@ if(is_site_enabled())
 					$import_cache_r = fetch_import_cache_r($HTTP_VARS['ic_sequence_number'], $HTTP_VARS['owner_id']);
 					if(is_not_empty_array($import_cache_r))
 					{
-						if(is_import_plugin($import_cache_r['plugin_name']))
+						$importPlugin =& get_import_plugin($import_cache_r['plugin_name']);
+						if($importPlugin !== NULL)
 						{
-							$pluginRef = $import_cache_r['plugin_name'];
-							
-							include_once("./import/".$pluginRef.".php");
-							$importPlugin = new $pluginRef();
-							if($importPlugin !== NULL)
+							$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
+							if($inFile)
 							{
-								$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
-								if($inFile)
-								{
-									$fileHandler =& new WrapperFileHandler($inFile);
-									
-									if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-										$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
-									else
-										$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
-		
-									echo(_theme_header($page_title));
-										
-									if($importPlugin->get_plugin_type() == 'row')
-										echo ("<h2>".$page_title." ".get_item_image($HTTP_VARS['s_item_type'])."</h2>\n");
-									else
-										echo("<h2>".$page_title."</h2>");
-									
-									echo(get_uploaded_form(
-												$importPlugin, 
-												($importPlugin->get_plugin_type()=='row')? $importPlugin->read_header($fileHandler, $error) : NULL,
-												$HTTP_VARS));
-									
-									unset($fileHandler);
-									@fclose($inFile);
-									
-									echo _theme_footer();
-								}//if(strlen($content)>0)
+								$fileHandler =& new WrapperFileHandler($inFile);
+								
+								if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
+									$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
 								else
-								{
-									echo _theme_header(get_opendb_lang_var('undefined_error'));
-									echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
-									echo _theme_footer();
-								}
-							}//if($importPlugin !== NULL)
+									$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+	
+								echo(_theme_header($page_title));
+									
+								if($importPlugin->get_plugin_type() == 'row')
+									echo ("<h2>".$page_title." ".get_item_image($HTTP_VARS['s_item_type'])."</h2>\n");
+								else
+									echo("<h2>".$page_title."</h2>");
+								
+								echo(get_uploaded_form(
+											$importPlugin, 
+											($importPlugin->get_plugin_type()=='row')? $importPlugin->read_header($fileHandler, $error) : NULL,
+											$HTTP_VARS));
+								
+								unset($fileHandler);
+								@fclose($inFile);
+								
+								echo _theme_footer();
+							}//if(strlen($content)>0)
 							else
 							{
 								echo _theme_header(get_opendb_lang_var('undefined_error'));
 								echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
 								echo _theme_footer();
 							}
-						}//if(is_import_plugin($import_cache_r['plugin_name']))
+						}//if($importPlugin !== NULL)
 						else
 						{
 							echo _theme_header(get_opendb_lang_var('undefined_error'));
@@ -656,149 +646,137 @@ if(is_site_enabled())
 					$import_cache_r = fetch_import_cache_r($HTTP_VARS['ic_sequence_number'], $HTTP_VARS['owner_id']);
 					if(is_not_empty_array($import_cache_r))
 					{
-						if(is_import_plugin($import_cache_r['plugin_name']))
+						$importPlugin =& get_import_plugin($import_cache_r['plugin_name']);
+						if($importPlugin !== NULL)
 						{
-							$pluginRef = $import_cache_r['plugin_name'];
-							
-							include_once("./import/".$pluginRef.".php");
-							$importPlugin =& new $pluginRef();
-							if($importPlugin !== NULL)
+							$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
+							if($inFile)
 							{
-								$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
-								if($inFile)
-								{
-									$fileHandler =& new WrapperFileHandler($inFile);
+								$fileHandler =& new WrapperFileHandler($inFile);
 
-									// we want to display all items - no pagination.
-									$HTTP_VARS['items_per_page'] = '';
-									
-									$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+								// we want to display all items - no pagination.
+								$HTTP_VARS['items_per_page'] = '';
 								
-									$listingObject->setNoRowsMessage(get_opendb_lang_var('no_items_found'));
-									
-									$cfg_include_header_row = ( strcmp($HTTP_VARS['include_header_row'],'Y')===0? TRUE : FALSE );
-									$cfg_ignore_duplicate_title = ( strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0? TRUE : FALSE );
-									$cfg_is_trial_run = ( strcmp($HTTP_VARS['trial_run'],'Y')===0? TRUE : FALSE );
-									$cfg_override_status_type = ( strcmp($HTTP_VARS['override_status_type'],'Y')===0? TRUE : FALSE );
-									
-									// force disable of duplicate titles.
-									set_opendb_config_ovrd_var('item_input', 'duplicate_title_support', $cfg_ignore_duplicate_title);
-									//set_opendb_config_ovrd_var('item_input', 'confirm_duplicate_insert', TRUE);
-	
-	                                if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
-										$cfg_default_status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
-									else
-										$cfg_default_status_type_r = fetch_status_type_r(fetch_default_status_type_for_owner($HTTP_VARS['owner_id']));
+								$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+							
+								$listingObject->setNoRowsMessage(get_opendb_lang_var('no_items_found'));
+								
+								$cfg_include_header_row = ( strcmp($HTTP_VARS['include_header_row'],'Y')===0? TRUE : FALSE );
+								$cfg_ignore_duplicate_title = ( strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0? TRUE : FALSE );
+								$cfg_is_trial_run = ( strcmp($HTTP_VARS['trial_run'],'Y')===0? TRUE : FALSE );
+								$cfg_override_status_type = ( strcmp($HTTP_VARS['override_status_type'],'Y')===0? TRUE : FALSE );
+								
+								// force disable of duplicate titles.
+								set_opendb_config_ovrd_var('item_input', 'duplicate_title_support', $cfg_ignore_duplicate_title);
+								//set_opendb_config_ovrd_var('item_input', 'confirm_duplicate_insert', TRUE);
 
-									$itemImportHandler = new ItemImportHandler(
-															$HTTP_VARS['owner_id'],
-															$cfg_is_trial_run,
-															$cfg_ignore_duplicate_title,
-															$cfg_override_status_type,
-															$cfg_default_status_type_r,
-															$listingObject);
-										
-									if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
-										$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
-									else
-										$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+                                if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
+									$cfg_default_status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+								else
+									$cfg_default_status_type_r = fetch_status_type_r(fetch_default_status_type_for_owner($HTTP_VARS['owner_id']));
+
+								$itemImportHandler = new ItemImportHandler(
+														$HTTP_VARS['owner_id'],
+														$cfg_is_trial_run,
+														$cfg_ignore_duplicate_title,
+														$cfg_override_status_type,
+														$cfg_default_status_type_r,
+														$listingObject);
 									
-									echo(_theme_header($page_title));
-									echo ("<h2>".$page_title."</h2>\n");
-							
-									echo(get_import_choices_table(
-										$importPlugin,
-										$cfg_include_header_row,
-										$cfg_ignore_duplicate_title,
-										$cfg_is_trial_run,
-										$cfg_override_status_type,
-										$cfg_default_status_type_r));
-									
-									$listingObject->startListing();
-							
-									$listingObject->addHeaderColumn(''); // Success or Failure column
-									$listingObject->addHeaderColumn(get_opendb_lang_var('type'));
-									$listingObject->addHeaderColumn(get_opendb_lang_var('title'));
-									//$listingObject->addHeaderColumn(get_opendb_lang_var('owner'));
-									if($cfg_override_status_type!==TRUE)
-										$listingObject->addHeaderColumn(get_opendb_lang_var('s_status_type'));
-									$listingObject->addHeaderColumn(get_opendb_lang_var('attributes'));
-							
-									if($importPlugin->get_plugin_type() == 'row')
+								if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
+									$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
+								else
+									$page_title = get_opendb_lang_var('type_import_items_for_name', array('description'=>$importPlugin->get_display_name(), 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']),'user_id'=>$HTTP_VARS['owner_id']));
+								
+								echo(_theme_header($page_title));
+								echo ("<h2>".$page_title."</h2>\n");
+						
+								echo(get_import_choices_table(
+									$importPlugin,
+									$cfg_include_header_row,
+									$cfg_ignore_duplicate_title,
+									$cfg_is_trial_run,
+									$cfg_override_status_type,
+									$cfg_default_status_type_r));
+								
+								$listingObject->startListing();
+						
+								$listingObject->addHeaderColumn(''); // Success or Failure column
+								$listingObject->addHeaderColumn(get_opendb_lang_var('type'));
+								$listingObject->addHeaderColumn(get_opendb_lang_var('title'));
+								//$listingObject->addHeaderColumn(get_opendb_lang_var('owner'));
+								if($cfg_override_status_type!==TRUE)
+									$listingObject->addHeaderColumn(get_opendb_lang_var('s_status_type'));
+								$listingObject->addHeaderColumn(get_opendb_lang_var('attributes'));
+						
+								if($importPlugin->get_plugin_type() == 'row')
+								{
+									$rowHandler = new RowImportPluginHandler($itemImportHandler, $importPlugin, $fileHandler, $HTTP_VARS['field_column'], $HTTP_VARS['field_default'], $HTTP_VARS['field_initcap']);
+									if( ($resultOfImport = $rowHandler->handleImport($cfg_include_header_row, $HTTP_VARS['s_item_type']))!==TRUE)
 									{
-										$rowHandler = new RowImportPluginHandler($itemImportHandler, $importPlugin, $fileHandler, $HTTP_VARS['field_column'], $HTTP_VARS['field_default'], $HTTP_VARS['field_initcap']);
-										if( ($resultOfImport = $rowHandler->handleImport($cfg_include_header_row, $HTTP_VARS['s_item_type']))!==TRUE)
-										{
-											$importError = $xmlHandler->getError();
-										}
+										$importError = $xmlHandler->getError();
 									}
-									else if($importPlugin->get_plugin_type() == 'xml')
+								}
+								else if($importPlugin->get_plugin_type() == 'xml')
+								{
+									// XML plugins will perform callbacks directly.
+									$importPlugin->setItemImportHandler($itemImportHandler);
+									
+									$xmlHandler = new XMLImportPluginHandler($importPlugin, $fileHandler);
+									if( ($resultOfImport = $xmlHandler->handleImport())!==TRUE)
 									{
-										// XML plugins will perform callbacks directly.
-										$importPlugin->setItemImportHandler($itemImportHandler);
-										
-										$xmlHandler = new XMLImportPluginHandler($importPlugin, $fileHandler);
-										if( ($resultOfImport = $xmlHandler->handleImport())!==TRUE)
-										{
-											$importError = $xmlHandler->getError();
-										}
+										$importError = $xmlHandler->getError();
 									}
-							
-									// Close file.
-									unset($fileHandler);
-									@fclose($inFile);
-									
-									$listingObject->endListing();
-									
-									if($resultOfImport !== TRUE)
-									{
-										$listingObject->setNoRowsMessage($importError);
-									}
-									else
-									{
-										if($cfg_is_trial_run)
-										{
-											echo("<form action=\"$PHP_SELF\" method=\"POST\">");
-											echo(get_url_fields($HTTP_VARS, array('op'), array('op2')));
-											echo("<input type=\"button\" onclick=\"this.form.op.value='uploaded'; this.form.submit();\" value=\"".get_opendb_lang_var('back')."\">");
-											echo("<input type=\"button\" onclick=\"this.form.trial_run.value='N'; this.form.op.value='import'; this.form.submit();\" value=\"".get_opendb_lang_var('import_items')."\">");
-											echo("</form>");
-										}
-										else 
-										{
-											if(is_not_empty_array($itemImportHandler->getItemIDList()))
-											{
-												$footer_links_r[] = array(
-													url=>'listings.php?item_id_range='.urlencode(get_item_id_range($itemImportHandler->getItemIDList())), 
-													text=>get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
-											}
-											
-											//Get rid of the file now!
-											import_cache_delete($HTTP_VARS['ic_sequence_number']);
-											
-											echo format_footer_links($footer_links_r);
-										}
-									}
-									
-									// don't need it anymore.
-									unset($listingObject);
-									
-									echo _theme_footer();
-								}//if(strlen($content)>0)
+								}
+						
+								// Close file.
+								unset($fileHandler);
+								@fclose($inFile);
+								
+								$listingObject->endListing();
+								
+								if($resultOfImport !== TRUE)
+								{
+									$listingObject->setNoRowsMessage($importError);
+								}
 								else
 								{
-									echo _theme_header(get_opendb_lang_var('undefined_error'));
-									echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
-									echo _theme_footer();
+									if($cfg_is_trial_run)
+									{
+										echo("<form action=\"$PHP_SELF\" method=\"POST\">");
+										echo(get_url_fields($HTTP_VARS, array('op'), array('op2')));
+										echo("<input type=\"button\" onclick=\"this.form.op.value='uploaded'; this.form.submit();\" value=\"".get_opendb_lang_var('back')."\">");
+										echo("<input type=\"button\" onclick=\"this.form.trial_run.value='N'; this.form.op.value='import'; this.form.submit();\" value=\"".get_opendb_lang_var('import_items')."\">");
+										echo("</form>");
+									}
+									else 
+									{
+										if(is_not_empty_array($itemImportHandler->getItemIDList()))
+										{
+											$footer_links_r[] = array(
+												url=>'listings.php?item_id_range='.urlencode(get_item_id_range($itemImportHandler->getItemIDList())), 
+												text=>get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
+										}
+										
+										//Get rid of the file now!
+										import_cache_delete($HTTP_VARS['ic_sequence_number']);
+										
+										echo format_footer_links($footer_links_r);
+									}
 								}
-							}//if($importPlugin !== NULL)
+								
+								// don't need it anymore.
+								unset($listingObject);
+								
+								echo _theme_footer();
+							}//if(strlen($content)>0)
 							else
 							{
 								echo _theme_header(get_opendb_lang_var('undefined_error'));
 								echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
 								echo _theme_footer();
 							}
-						}//if(is_import_plugin($import_cache_r['plugin_name']))
+						}//if($importPlugin !== NULL)
 						else
 						{
 							echo _theme_header(get_opendb_lang_var('undefined_error'));

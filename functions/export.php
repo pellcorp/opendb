@@ -124,4 +124,41 @@ function get_export_r()
 	else // empty array as last resort.
 		return array();
 }
+
+function &get_export_plugin($pluginName) {
+	if(is_export_plugin($pluginName)) {
+		include_once("./export/".$pluginName.".php");
+		$exportPlugin = new $pluginName();
+		return $exportPlugin;
+	} else {
+		return NULL;
+	}
+}
+
+function get_export_plugin_list_r() {
+	$pluginList = NULL;
+	
+	$export_type_r = get_export_r();
+	if(is_array($export_type_r))
+	{
+		while(list(,$pluginRef) = @each($export_type_r))
+		{
+			include_once("./export/".$pluginRef.".php");
+			$exportPlugin = new $pluginRef();
+			if($exportPlugin !== NULL)
+			{
+				if(strcasecmp($pluginRef, get_class($exportPlugin)) === 0)
+				{
+					$pluginList[] = array(name=>$pluginRef, description=>$exportPlugin->get_display_name());
+				}
+				else
+				{
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Export class is not valid', array($pluginRef));
+				}
+			}
+		}
+	}
+	
+	return $pluginList;
+}
 ?>

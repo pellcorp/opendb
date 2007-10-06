@@ -124,11 +124,21 @@ function &get_extension_import_plugin($extension)
 	return NULL;
 }
 
+function &get_import_plugin($pluginName) {
+	if(is_import_plugin($pluginName)) {
+		include_once("./import/".$pluginName.".php");
+		$importPlugin = new $pluginName();
+		return $importPlugin;
+	} else {
+		return NULL;
+	}
+}
+
 /**
 	Will return the plugin to use, based on the $http_post_uploadfile_r['name']
 	and/or the start of the file itself (available via: $http_post_uploadfile_r['tmp_name'])
 */
-function &get_import_plugin($http_post_uploadfile_r, &$error)
+function &get_import_plugin_from_uploadfile($http_post_uploadfile_r, &$error)
 {
 	$extension = strtolower(get_file_ext($http_post_uploadfile_r['name']));
 	if(strlen($extension)>0)

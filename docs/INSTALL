@@ -21,17 +21,12 @@ set the email configuration Mailer to 'none'.
 2) Installation / Upgrade
 
 !!WARNING!! - Its extremely important to make a new directory for the 1.X installation
-files, do not extract 1.X files over the top of your existing 0.81 installation.  There
-is a very good chance that conflicts between the old and new files will occur and this
-must be avoided.
+files, do not extract 1.X files over the top of your existing 0.81 installation.
 
-The new installer introduced with OpenDb 1.X, is a more sophisticated mechanism for
-upgrading / installing the OpenDb database.  It can be activated directly by executing 
-install.php.
+The new installer can be activated by executing install.php.
 
 With appropriate credentials, the OpenDb installer can create the opendb database
-and user.  The installer is fairly self-explanatary and in many cases, will 
-automatically perform the appropriate upgrades without any further intervention.
+and user.
 
 The install.php should be removed from the root directory of the opendb installation once
 the install / upgrade process is complete.

@@ -426,6 +426,7 @@ class PHPMailer
             $to .= $this->to[$i][0];
         }
 
+        // jpell - disabled this funky code here as rather pointless
         /*if ($this->Sender != "" && strlen(ini_get("safe_mode"))< 1)
         {
             $old_from = ini_get("sendmail_from");

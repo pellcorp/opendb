@@ -25,6 +25,12 @@ class XMLImportPlugin
 	function XMLImportPlugin() {
 	}
 	
+	/**
+	 * Import script will inject the ItemImportHandler before using this
+	 * class.
+	 *
+	 * @param unknown_type $itemImportHandler
+	 */
 	function setItemImportHandler(&$itemImportHandler) {
 		$this->_itemImportHandler =& $itemImportHandler; 
 	}

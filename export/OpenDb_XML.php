@@ -78,7 +78,7 @@ class OpenDb_XML
 				"<!--\n".
 				"\t$title\n".
 				"-->\n".
-				"<Items version=\"1.3\" xmlns=\"http://opendb.iamvegan.net/xsd/Items-1.3.xsd\" ".
+				"<Items xmlns=\"http://opendb.iamvegan.net/xsd/Items-1.3.xsd\" ".
 				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ".
 				"xsi:schemaLocation=\"http://opendb.iamvegan.net/xsd/Items-1.3.xsd\">";
 	}

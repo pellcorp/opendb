@@ -9,8 +9,6 @@
 		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
 			<xsd:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
-		
-		<xsd:attribute name="version" type="xsd:string" use="required" />
 	</xsd:complexType>
 
 	<xsd:element name="Item" type="Item" />

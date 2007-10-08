@@ -22,9 +22,6 @@ include_once("./functions/XMLImportPlugin.class.php");
 
 class OpenDb_XML extends XMLImportPlugin
 {
-	var $version = '1.3';
-	var $is_version_valid = FALSE;
-	
 	function OpenDb_XML() {
 		parent::XMLImportPlugin();
 	}
@@ -51,53 +48,39 @@ class OpenDb_XML extends XMLImportPlugin
 	
 	function start_element($name, $attribs, $pcdata)
 	{
-		if(strcmp($name, 'Items')===0)
+		if(strcmp($name, 'Item')===0)
 		{
-			if($attribs['version'] === $this->version)
-				$this->is_version_valid = TRUE;
-			else {
-				$this->addError('start_element', 'Incorrect OpenDb XML Version. ('.$attribs['version'].'!='.$this->version.')');
-			}
+			$this->startItem($attribs['ItemType']);
 		}
-		else if($this->is_version_valid)
+		else if(strcmp($name, 'Title')===0)
 		{
-			if(strcmp($name, 'Item')===0)
-			{
-				$this->startItem($attribs['ItemType']);
-			}
-			else if(strcmp($name, 'Title')===0)
-			{
-				$this->setTitle(unhtmlentities($pcdata));
-			}
-			else if(strcmp($name, 'Instance')===0)
-			{
-				$this->startItemInstance();
-				$this->setInstanceStatusType($attribs['StatusType']);
-				$this->setInstanceBorrowDuration($attribs['BorrowDuration']);
-			}
-			else if(strcmp($name, 'StatusComment')===0)
-			{
-				$this->setInstanceStatusComment(unhtmlentities($pcdata));
-			}
-			else if(strcmp($name, 'Attribute')===0)
-			{
-				$this->addAttribute($attribs['AttributeType'], NULL, unhtmlentities($pcdata));
-			}
+			$this->setTitle(unhtmlentities($pcdata));
+		}
+		else if(strcmp($name, 'Instance')===0)
+		{
+			$this->startItemInstance();
+			$this->setInstanceStatusType($attribs['StatusType']);
+			$this->setInstanceBorrowDuration($attribs['BorrowDuration']);
+		}
+		else if(strcmp($name, 'StatusComment')===0)
+		{
+			$this->setInstanceStatusComment(unhtmlentities($pcdata));
+		}
+		else if(strcmp($name, 'Attribute')===0)
+		{
+			$this->addAttribute($attribs['AttributeType'], NULL, unhtmlentities($pcdata));
 		}
 	}
 	
 	function end_element($name)
 	{
-		if($this->is_version_valid)
+		if(strcmp($name, 'Item')===0)
 		{
-			if(strcmp($name, 'Item')===0)
-			{
-				$this->endItem();
-			}
-			else if(strcmp($name, 'Instance')===0)
-			{
-				$this->endItemInstance();
-			}
+			$this->endItem();
+		}
+		else if(strcmp($name, 'Instance')===0)
+		{
+			$this->endItemInstance();
 		}
 	}
 }

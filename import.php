@@ -619,7 +619,7 @@ if(is_site_enabled())
 								@fclose($inFile);
 								
 								echo _theme_footer();
-							}//if(strlen($content)>0)
+							}
 							else
 							{
 								echo _theme_header(get_opendb_lang_var('undefined_error'));
@@ -630,7 +630,7 @@ if(is_site_enabled())
 						else
 						{
 							echo _theme_header(get_opendb_lang_var('undefined_error'));
-							echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
+							echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')." (".$import_cache_r['plugin_name'].")</p>");
 							echo _theme_footer();
 						}
 					}//if(is_not_empty_array($import_cache_r))
@@ -769,7 +769,7 @@ if(is_site_enabled())
 								unset($listingObject);
 								
 								echo _theme_footer();
-							}//if(strlen($content)>0)
+							}
 							else
 							{
 								echo _theme_header(get_opendb_lang_var('undefined_error'));
@@ -780,7 +780,7 @@ if(is_site_enabled())
 						else
 						{
 							echo _theme_header(get_opendb_lang_var('undefined_error'));
-							echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')."</p>");
+							echo("<p class=\"error\">".get_opendb_lang_var('undefined_error')." (".$import_cache_r['plugin_name'].")</p>");
 							echo _theme_footer();
 						}
 					}//if(is_not_empty_array($import_cache_r))

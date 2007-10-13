@@ -20,6 +20,11 @@ ul.importOptions li
 	padding-left: 5px;
 }
 
+table.importAttribs
+{
+	width: 100%;
+}
+
 table.listing-table th.prompt
 {
 	color: white;

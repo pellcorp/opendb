@@ -331,6 +331,11 @@ ul.menu li a:hover, ul.menu li.active a
 	display: inline;
 }
 
+form.quickSearch img
+{
+	padding-left: 2px;
+}
+
 #footer a
 {
 	font-size: 90%;

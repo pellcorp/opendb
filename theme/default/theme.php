@@ -39,22 +39,10 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	
 	echo("<h1><a href=\"index.php\">".get_opendb_title()."</a></h1>");
 	
-	echo("<ul class=\"headerLinks\">");
-	
-	$help_page = get_opendb_help_page($pageid);
-	if($help_page!=NULL)
-	{
-		echo("<li class=\"help\"><a href=\"help.php?page=".$help_page."\" target=\"_new\" title=\"".get_opendb_lang_var('help')."\">"._theme_image("help_icon.gif")."</a></li>");
-	}
-	
-	$print_link_r = get_printable_link_r($pageid);
-	if(is_array($print_link_r))
-	{
-		echo("<li><a href=\"".$print_link_r['url']."\" target=\"_new\" title=\"".$print_link_r['title']."\"><img src=\"".$print_link_r['image']."\" alt=\"".$print_link_r['title']."\"></a></li>");
-	}
-	
 	if($include_menu)
 	{
+		echo("<ul class=\"headerLinks\">");
+		
 		echo("<li><form class=\"quickSearch\" action=\"listings.php\">".
 			"<input type=\"hidden\" name=\"search_list\" value=\"y\">".
 			//"<input type=\"hidden\" name=\"attribute_type\" value=\"UPC_ID\">".
@@ -62,7 +50,6 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 			//"<input type=\"text\" name=\"attribute_val\" size=\"10\">".
 			"<input type=\"hidden\" name=\"title_match\" value=\"partial\">".
 			"<input type=\"text\" name=\"title\" size=\"10\">".
-			"<input type=\"submit\" value=\"".get_opendb_lang_var('search')."\">".
 			"</form></li>");
 
 		echo("<li><a href=\"search.php\">".get_opendb_lang_var('advanced')."</a></li>");
@@ -75,13 +62,26 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 		{
 			echo("<li class=\"login\"><a href=\"login.php?op=login\">".get_opendb_lang_var('login')."</a></li>");
 		}
-
+		
+		$help_page = get_opendb_help_page($pageid);
+		if($help_page!=NULL)
+		{
+			echo("<li class=\"help\"><a href=\"help.php?page=".$help_page."\" target=\"_new\" title=\"".get_opendb_lang_var('help')."\">"._theme_image("help_icon.gif")."</a></li>");
+		}
+		
+		$print_link_r = get_printable_link_r($pageid);
+		if(is_array($print_link_r))
+		{
+			echo("<li><a href=\"".$print_link_r['url']."\" target=\"_new\" title=\"".$print_link_r['title']."\"><img src=\"".$print_link_r['image']."\" alt=\"".$print_link_r['title']."\"></a></li>");
+		}
+	
 		if(is_exists_my_reserve_basket($user_id))
 		{
 			echo("<li><a href=\"borrow.php?op=my_reserve_basket\">"._theme_image("basket.png", NULL, get_opendb_lang_var('item_reserve_list'))."</a></li>");
-		} 
+		}
+
+		echo("</ul>");
 	}
-	echo("</ul>");
 		
 	echo("</div>");
 	

@@ -189,7 +189,6 @@ if(is_site_enabled())
 				echo(format_checkbox_action_links('user_id_rs', get_opendb_lang_var('no_users_checked'), $checkbox_action_rs));
 			}
 
-			$listingObject->addHelpEntry(get_opendb_lang_var('user_listing_column_header_sort_help'));
 			echo(format_help_block($listingObject->getHelpEntries()));
 			
 			echo("<ul class=\"listingControls\">");

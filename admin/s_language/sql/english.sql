@@ -273,7 +273,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_items_not_supported', 'Linked item support is disabled'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_item_must_be_type', 'Linked Item must be a {s_item_type} item type'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_item_not_found', 'Linked item not found'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listing_column_header_sort_help', 'Click a column heading to sort by that column'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listing_filters', 'Listing Filters'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listing_generated', 'Listing generated {datetime}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_all_items', 'List All Items'); 

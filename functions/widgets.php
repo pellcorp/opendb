@@ -2864,7 +2864,7 @@ function format_help_block($help_entries_rs)
 		$entries[] = array( array('text'=>$help_entries_rs) );
 	else if(is_array($help_entries_rs) && isset( $help_entries_rs['text'] ))
 		$entries[] = array($help_entries_rs);
-	else
+	else if(is_array($help_entries_rs))
 		$entries[] =& $help_entries_rs;
 		
 	if(is_array($entries))

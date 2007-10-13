@@ -293,11 +293,6 @@ class Listing
 		}
 		
 		$this->_header_column_rs[] =  $header_column_r;
-				
-		if($sortColumn !== FALSE)
-		{
-			$this->addHelpEntry(get_opendb_lang_var('listing_column_header_sort_help'), NULL, 'listing_column_header_sort_help');
-		}
 	}
 	
 	function findHeaderColumnByFieldname($fieldname)

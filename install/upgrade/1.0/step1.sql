@@ -220,3 +220,7 @@ UPDATE s_language_var SET VALUE = 'Export {description} {s_item_type} item(s) fo
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'export_item_record', 'Export Item');
 DELETE FROM s_language_var WHERE varname = 'type_export_item_record';
+
+# renamed export plugin
+UPDATE s_config_group_item_var SET value = 'OpenDbExportPlugin' WHERE group_id = 'item_display' AND id = 'export_link';
+

@@ -20,11 +20,28 @@
 include_once("./functions/fileutils.php");
 include_once("./functions/logging.php");
 include_once("./functions/widgets.php");
+include_once("./functions/utils.php");
 include_once("./functions/DocTypeNameSpaceXMLParser.class.php");
 include_once("./functions/XMLImportPluginHandler.class.php");
 include_once("./functions/RowImportPluginHandler.class.php");
 include_once("./functions/PreviewImportPlugin.class.php");
 include_once("./functions/WrapperFileHandler.class.php");
+
+function isXpathMatch($xpath, $match) {
+	if(strcmp($xpath, $match)===0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+function isXpathStartsWith($xpath, $startsWith) {
+	if(starts_with(strtolower($xpath), strtolower($startsWith))) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
 
 /*
  * Return the name of the plugin minus './import/' prefix and '.php' extension,
@@ -35,8 +52,8 @@ function &get_import_plugin_for_extension($extension, $doctype = NULL, $namespac
 {
 	$handle=opendir('./import');
 	while ($file = readdir($handle)) {
-		if ( !preg_match("/^\./",$file) && preg_match("/(.*).php$/",$file,$regs)) {
-			include('./import/'.$regs[1].'.php');
+		if ( !preg_match("/^\./",$file) && preg_match("/(.*).class.php$/",$file,$regs)) {
+			include('./import/'.$regs[1].'.class.php');
 			$importPlugin = new $regs[1];
 
 			if(strcasecmp(get_class($importPlugin), $regs[1])===0) {
@@ -66,8 +83,8 @@ function &get_import_plugin($pluginName) {
 	$handle=opendir('./import');
 	while ($file = readdir($handle)) {
 		// Ensure valid plugin name.
-		if ( !preg_match("/^\./",$file) && preg_match("/(.*).php$/",$file,$regs)) {
-			include('./import/'.$regs[1].'.php');
+		if ( !preg_match("/^\./",$file) && preg_match("/(.*).class.php$/",$file,$regs)) {
+			include('./import/'.$regs[1].'.class.php');
 			$importPlugin = new $regs[1];
 			
 			if(strcasecmp(get_class($importPlugin), $pluginName)===0) {

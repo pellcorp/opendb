@@ -26,6 +26,8 @@ class XMLImportPluginHandler
 	var $_startElementName;
 	var $_startElementAttribs;
 	var $_characterData;
+	
+	var $_elementXPath = array();
 
 	// stores the first error encountered.
 	var $_error;
@@ -60,15 +62,17 @@ class XMLImportPluginHandler
 
 	function _start_element($parser, $name, $attribs)
 	{
-		// if any character data waiting to be sent, send it now.
+		// if previous element has not been sent, send it now
 		if(strlen($this->_startElementName)>0)
 		{
 			$this->importPlugin->start_element(
+								"/".implode("/", $this->_elementXPath),
 								$this->_startElementName,
 								$this->_startElementAttribs,
 								trim($this->_characterData));
 		}
-
+		
+		$this->_elementXPath[] = $name;
 		$this->_startElementName = $name;
 		$this->_startElementAttribs = $attribs;
 		$this->_characterData = NULL;
@@ -76,10 +80,11 @@ class XMLImportPluginHandler
 
 	function _end_element($parser, $name)
 	{
-		// if any character data waiting to be sent, send it now.
+		// if previous element has not been sent, send it now
 		if(strlen($this->_startElementName)>0)
 		{
 			$this->importPlugin->start_element(
+								"/".implode("/", $this->_elementXPath),
 								$this->_startElementName,
 								$this->_startElementAttribs,
 								trim($this->_characterData));
@@ -89,7 +94,11 @@ class XMLImportPluginHandler
 			$this->_characterData = NULL;
 		}
 
-		$this->importPlugin->end_element($name);
+		$this->importPlugin->end_element(
+			"/".implode("/", $this->_elementXPath), 
+			$name);
+		
+		$elementName = array_pop($this->_elementXPath);
 	}
 
 	function _characters($parser, $data)

@@ -18,31 +18,13 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-//
-// Should be considered hidden methods.
-//
-function escape_xml_entities($str)
-{
-	// this can be found in functions/utils.php
-	return str_replaces(
-				array("\"", "<", ">", "\n", "\r", "&"), // find
-				array("&#34;", "&#60;", "&#62;", "&#10;", "&#13;", "&#38;"), // replace
-				$str);
-}
-
-//utility functions
-function tab_indent($level)
-{
-	if(is_numeric($level) && $level>0)
-		return str_repeat("\t", $level);
-	else
-		return "";
-}
-
-class OpenDb_XML
+class OpenDbExportPlugin
 {
 	var $_level = 1;
 
+	function OpenDbExportPlugin() {
+	}
+	
 	/*
 	* The content type, when saved as file.
 	*/
@@ -93,36 +75,57 @@ class OpenDb_XML
 
 	function start_item($item_id, $s_item_type, $title)
 	{
-		return "\n".tab_indent($this->_level++).
+		return "\n".$this->__tabIndent($this->_level++).
 				"<Item ItemId=\"$item_id\" ItemType=\"$s_item_type\">".
-				"\n".tab_indent($this->_level).
-				"<Title>".escape_xml_entities($title)."</Title>";
+				"\n".$this->__tabIndent($this->_level).
+				"<Title>".$this->__escapeXMLEntities($title)."</Title>";
 	}
 
 	function end_item()
 	{
-		return "\n".tab_indent(--$this->_level)."</Item>";
+		return "\n".$this->__tabIndent(--$this->_level)."</Item>";
 	}
 
 	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment)
 	{
-		$buffer = "\n".tab_indent($this->_level++)."<Instance InstanceNo=\"$instance_no\" OwnerId=\"$owner_id\" BorrowDuration=\"$borrow_duration\" StatusType=\"$s_status_type\">";
+		$buffer = "\n".$this->__tabIndent($this->_level++)."<Instance InstanceNo=\"$instance_no\" OwnerId=\"$owner_id\" BorrowDuration=\"$borrow_duration\" StatusType=\"$s_status_type\">";
 		if(strlen($status_comment)>0) {
-			$buffer .= "\n".tab_indent($this->_level)."<StatusComment>".escape_xml_entities($status_comment)."</StatusComment>";
+			$buffer .= "\n".$this->__tabIndent($this->_level)."<StatusComment>".$this->__escapeXMLEntities($status_comment)."</StatusComment>";
 		}
 		return $buffer;
 	}
 	
 	function end_item_instance()
 	{
-		return "\n".tab_indent(--$this->_level)."</Instance>";
+		return "\n".$this->__tabIndent(--$this->_level)."</Instance>";
 	}
 
 	function item_attribute($s_attribute_type, $order_no, $attribute_val)
 	{
-		return "\n".tab_indent($this->_level)."<Attribute AttributeType=\"$s_attribute_type\" OrderNo=\"$order_no\">".
-			escape_xml_entities($attribute_val).
+		return "\n".$this->__tabIndent($this->_level)."<Attribute AttributeType=\"$s_attribute_type\" OrderNo=\"$order_no\">".
+			$this->__escapeXMLEntities($attribute_val).
 			"</Attribute>";
+	}
+	
+	//
+	// Should be considered hidden methods.
+	//
+	function __escapeXMLEntities($str)
+	{
+		// this can be found in functions/utils.php
+		return str_replaces(
+					array("\"", "<", ">", "\n", "\r", "&"), // find
+					array("&#34;", "&#60;", "&#62;", "&#10;", "&#13;", "&#38;"), // replace
+					$str);
+	}
+	
+	//utility functions
+	function __tabIndent($level)
+	{
+		if(is_numeric($level) && $level>0)
+			return str_repeat("\t", $level);
+		else
+			return "";
 	}
 }
 ?>

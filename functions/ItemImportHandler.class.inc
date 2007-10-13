@@ -48,8 +48,6 @@ class Item
 	
     function addAttribute($attribute_type, $order_no, $value)
 	{
-		// where value is array, recursively call the addAttribute function,
-		// so rest of function can assume string $value.
 		if(is_array($value))
 		{
 			for($i=0; $i<count($value); $i++)
@@ -59,7 +57,6 @@ class Item
 		}
 		else
 		{
-			// trim the value before anything else.
 			$value = trim($value);
 
 			if(strlen($value)>0)
@@ -92,11 +89,11 @@ class Item
 						}
 					}
 				}
-				else // otherwise single value only
+				else
 				{
 					$this->_attribute_rs[$attribute_type] = $value;
 				}
-			}//if(strlen($value)>0)
+			}
 		}
 	}
 	
@@ -128,13 +125,10 @@ class ItemInstance extends Item
     {
         parent::Item();
         
-        $this->setItemType($parentItemObj->getItemType());
-        $this->setTitle($parentItemObj->getTitle());
-        
         $this->setOwnerID($ownerId);
-        $this->setStatusType($statusType);
-        $this->setStatusComment($statusComment);
-        $this->setBorrowDuration($borrowDuration);
+        
+        $this->setItemType($parentItemObj->getItemType());
+        //$this->setTitle($parentItemObj->getTitle());
 	}
 	
 	function getInstanceNo()
@@ -360,7 +354,7 @@ class ItemImportHandler
 		{
 			if($this->_item_obj != NULL)
 			{
-				$this->_instance_item_obj_rs[] = new ItemInstance($this->_item_obj, $this->_owner_id);
+				$this->_instance_item_obj_rs[] = new ItemInstance($this->getItem(), $this->getOwner());
 				$this->_is_item_instance = TRUE;
 			}
 			else
@@ -377,20 +371,26 @@ class ItemImportHandler
 
 	function setInstanceStatusType($statusType)
 	{
-		$itemInstance =& $this->getCurrentItemInstance();
-		$itemInstance->setStatusType($statusType);
+		$itemInstance =& $this->__getCurrentItemInstance();
+		if(is_object($itemInstance)) {
+			$itemInstance->setStatusType($statusType);
+		}
 	}
 	
 	function setInstanceStatusComment($statusComment)
 	{
-		$itemInstance =& $this->getCurrentItemInstance();
-		$itemInstance->setStatusComment($statusComment);
+		$itemInstance =& $this->__getCurrentItemInstance();
+		if(is_object($itemInstance)) {
+			$itemInstance->setStatusComment($statusComment);
+		}
 	}
 	
 	function setInstanceBorrowDuration($borrowDuration)
 	{
-		$itemInstance =& $this->getCurrentItemInstance();
-		$itemInstance->setBorrowDuration($borrowDuration);
+		$itemInstance =& $this->__getCurrentItemInstance();
+		if(is_object($itemInstance)) {
+			$itemInstance->setBorrowDuration($borrowDuration);
+		}
 	}
 	
 	function endItemInstance()
@@ -409,7 +409,7 @@ class ItemImportHandler
 	{
 		if($this->_is_item_finished !== TRUE)
 		{
-			if($this->_item_obj != NULL)
+			if($this->getItem() != NULL)
 			{
 				if($this->_is_item_instance)
                     $tmpItem =& $this->_instance_item_obj_rs[count($this->_instance_item_obj_rs) - 1];
@@ -451,14 +451,15 @@ class ItemImportHandler
 				// startItem method is called again.
 				$this->_is_item_finished = TRUE;
 
-				$item_vars = $this->getItemHTTPVars($this->_item_obj);
-
+				$item_vars = $this->__getItemHTTPVars($this->_item_obj);
+				
 				$item_vars['trial_run'] = $this->_cfg_is_trial_run?'true':'false';
 				$item_vars['confirmed'] = $this->_cfg_ignore_duplicate_title?'true':'false';
 
 				$item_r = array(
 						s_item_type=>$this->_item_obj->getItemType(),
-						owner_id=>$this->_owner_id
+						owner_id=>$this->getOwner(),
+						title=>$this->_item_obj->getTitle()
 				);
 				
 				$instance_valid = FALSE;
@@ -471,15 +472,19 @@ class ItemImportHandler
 				{
 					// store item id for later use
 					if($this->_cfg_is_trial_run!==TRUE && is_numeric($item_r['item_id']))
+					{
 						$this->_item_id_list_r[] = $item_r['item_id'];
-
+					}
+					
 					for($i=0; $i<count($this->_instance_item_obj_rs); $i++)
 					{
 					    $instanceObj =& $this->_instance_item_obj_rs[$i];
 						
                            // if status type is to be overriden, do it here!
 						if($this->_cfg_override_status_type)
+						{
 							$status_type_r = $this->_cfg_default_status_type_r;
+						}
 						else
 						{
 						    $status_type_r = fetch_status_type_r($instanceObj->getStatusType());
@@ -494,27 +499,32 @@ class ItemImportHandler
 						$item_r['owner_id'] = $instanceObj->getOwnerID();
 						$item_r['s_status_type'] = $status_type_r['s_status_type'];
 						
-				    	$instance_vars = array_merge($item_vars, $this->getItemHTTPVars($instanceObj));
+						$instance_vars = $this->__getItemHTTPVars($instanceObj);
+						
+						// we are missing instance attributes if already set in item
+				    	$instance_vars = array_merge($instance_vars, $item_vars);
 				    	
-				    	$return_val = handle_item_instance_insert($item_r, $status_type_r, $instance_vars, $errors);
+				    	$return_val = handle_item_instance_insert($item_r, $status_type_r, $item_vars, $errors);
 				    	if($return_val !== FALSE)
 				    	{
-				    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
-							$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, NULL);
+				    		$item_r['instance_no'] = $this->_cfg_is_trial_run?$i+1:$item_r['instance_no'];
+				    	    //$instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
+							$this->__listing_item_import_result_row($item_r, $status_type_r, $instance_vars, NULL);
 							
 							// indicates at least one instance inserted.
 							$instance_valid = TRUE;
 				    	}
 				    	else
 				    	{
-				    	    $instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
-							$this->listing_item_import_result_row($instanceObj, $status_type_r, $instance_vars, $errors);
+				    	    $item_r['instance_no'] = $this->_cfg_is_trial_run?$i+1:$item_r['instance_no'];
+				    	    //$instanceObj->setInstanceNo($this->_cfg_is_trial_run?$i+1:$item_r['instance_no']);
+							$this->__listing_item_import_result_row($item_r, $status_type_r, $instance_vars, $errors);
 				    	}
 					}
 				}
 				else
 				{
-				    $this->listing_item_import_result_row($this->_item_obj, NULL, $item_vars, $errors);
+				    $this->__listing_item_import_result_row($item_r, NULL, $item_vars, $errors);
 				}
                    
 				$this->_item_obj = NULL;
@@ -536,7 +546,7 @@ class ItemImportHandler
 		}
 	}
 
-	function &getCurrentItemInstance() {
+	function &__getCurrentItemInstance() {
 		if($this->_is_item_finished !== TRUE) {
 			if($this->_item_obj != NULL) {
 				if($this->_is_item_instance) {
@@ -548,7 +558,7 @@ class ItemImportHandler
 		return NULL;
 	}
 	
-	function listing_item_import_result_row($itemObj, $status_type_r, $attribute_rs, $errorMsg = NULL)
+	function __listing_item_import_result_row($item_r, $status_type_r, $attribute_rs, $errorMsg = NULL)
 	{
 		$this->_listingsObject->startRow();
 
@@ -563,15 +573,16 @@ class ItemImportHandler
 			$this->_success_row_count++;
 		}
 		
-		$this->_listingsObject->addItemTypeImageColumn(
-				$itemObj->getItemType());
+		$this->_listingsObject->addItemTypeImageColumn($item_r['s_item_type']);
 
-		if(strcasecmp(get_class($itemObj),'ItemInstance')===0)
-	        $instance_no = $itemObj->getInstanceNo();
-        
+		if(is_numeric($item_r['instance_no']))
+		{
+	        $instance_no = $item_r['instance_no'];
+		}
+		
 		// We have to include the title, instance, etc.
-		$this->_listingsObject->addColumn(
-				$itemObj->getTitle().(is_numeric($instance_no) && $instance_no>1?'&nbsp;#'.$instance_no:''));
+		$title = $item_r['title'].(is_numeric($instance_no) && $instance_no>1?'&nbsp;#'.$instance_no:'');
+		$this->_listingsObject->addColumn($title);
 
 		if(is_not_empty_array($errorMsg) || strlen($errorMsg) > 0)
 		{
@@ -604,29 +615,31 @@ class ItemImportHandler
 				reset($attribute_rs);
 				while(list($key,$attribute_val) = each($attribute_rs))
 				{
-				    $attribute_type_r = NULL;
-				    for($j=0; $j<count($this->_item_type_structure_rs[$itemObj->getItemType()]); $j++)
-				    {
-				        if($key == get_field_name($this->_item_type_structure_rs[$itemObj->getItemType()][$j]['s_attribute_type'], $this->_item_type_structure_rs[$itemObj->getItemType()][$j]['order_no']))
-				        {
-				            $attribute_type_r = $this->_item_type_structure_rs[$itemObj->getItemType()][$j];
-				            break;
-				        }
-				    }
-				    
-					if(is_array($attribute_type_r))
-				    {
-				    	if($attribute_type_r['display_type'] == 'hidden' ||
-									($attribute_type_r['display_type']==0 && $attribute_type_r['input_type'] == 'hidden'))
-						{
-							$attribute_type_r['display_type'] = 'display';
-							$attribute_type_r['display_type_arg1'] = '%value%';
-						}
+					$attribute_type_r = NULL;
+					
+					$attribute_type_rs =& $this->__getItemTypeAttribs($item_r['s_item_type']);
+        			if(is_array($attribute_type_rs))
+        			{
+        				reset($attribute_type_rs);
+						while(list(,$attribute_type_r) = each($attribute_type_rs)) 
+					    {
+					        if($key == get_field_name($attribute_type_r['s_attribute_type'], $attribute_type_r['order_no']))
+					        {
+						    	if($attribute_type_r['display_type'] == 'hidden' ||
+											($attribute_type_r['display_type']==0 && $attribute_type_r['input_type'] == 'hidden'))
+								{
+									$attribute_type_r['display_type'] = 'display';
+									$attribute_type_r['display_type_arg1'] = '%value%';
+								}
+		
+								$attribute_type_r['listing_link_ind'] = 'N';
+								
+								$column .= get_item_display_field(NULL, $attribute_type_r, $attribute_val);
 
-						$attribute_type_r['listing_link_ind'] = 'N';
-						
-						$column .= get_item_display_field(NULL, $attribute_type_r, $attribute_val);
-					}
+								break;
+					        }
+					    }
+        			}
 				}
 				$column .= '</table>';
 			}
@@ -638,17 +651,18 @@ class ItemImportHandler
 
 	/**
 	*/
-	function getItemHTTPVars($itemObj)
+	function __getItemHTTPVars(&$itemObj)
 	{
-        if($this->_save_item_type_attrib_details($itemObj->getItemType()))
+		$attribute_type_rs =& $this->__getItemTypeAttribs($itemObj->getItemType());
+        if(is_array($attribute_type_rs))
         {
 			// this will be set if array encountered, but not lookup value.
 			$processing_s_attribute_type = FALSE;
 
             $new_attributes_rs = $itemObj->getAttributes();
             
-            reset($this->_item_type_structure_rs[$itemObj->getItemType()]);
-			while(list(,$attribute_type_r) = each($this->_item_type_structure_rs[$itemObj->getItemType()]))
+            reset($attribute_type_rs);
+			while(list(,$attribute_type_r) = each($attribute_type_rs))
 			{
                 if($attribute_type_r['s_field_type']!='DURATION' &&
 						$attribute_type_r['s_field_type']!='TITLE' &&
@@ -729,7 +743,7 @@ class ItemImportHandler
 				else
 				{
                     // instance class
-					if(strcasecmp(get_class($this->_item_obj),'ItemInstance')===0)
+					if(strcasecmp(get_class($itemObj),'ItemInstance')===0)
 					{
 					    if($attribute_type_r['s_field_type'] == 'DURATION' && is_numeric($itemObj->getBorrowDuration()))
 					        $item_attributes_rs['borrow_duration'] = $itemObj->getBorrowDuration();
@@ -749,18 +763,16 @@ class ItemImportHandler
 			}//while
 
 			return $item_attributes_rs;
-		}//if($this->_save_item_type_attrib_details($s_item_type))
+		}
 		else
 		{
 			return FALSE;
 		}
 	}//function
 
-    // return FALSE if item does not exist.
-	function _save_item_type_attrib_details($s_item_type)
+	function __getItemTypeAttribs($s_item_type)
 	{
-		// save the structure of the item type once, including whether s_attribute_type is a lookup or not.
-		if(is_empty_or_not_array($this->_item_type_structure_rs[$s_item_type]))
+		if(!is_array($this->_item_type_structure_rs[$s_item_type]))
 		{
 			if(is_exists_item_type($s_item_type))
 			{
@@ -769,24 +781,18 @@ class ItemImportHandler
 				{
 					while($item_attribute_type_r = db_fetch_assoc($results))
 					{
-						// save s_item_attribute_type structure.
 						$this->_item_type_structure_rs[$s_item_type][] = $item_attribute_type_r;
 					}
 					db_free_result($results);
 				}
-
-				return TRUE;
 			}
 			else
 			{
-				// s_item_type does not exist.
-				return FALSE;
+				return NULL;
 			}
 		}
-		else
-		{
-			return TRUE;
-		}
+		
+		return $this->_item_type_structure_rs[$s_item_type];
 	}
 }
 ?>

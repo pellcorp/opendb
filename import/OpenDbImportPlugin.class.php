@@ -20,9 +20,9 @@
 
 include_once("./functions/XMLImportPlugin.class.php");
 
-class OpenDb_XML extends XMLImportPlugin
+class OpenDbImportPlugin extends XMLImportPlugin
 {
-	function OpenDb_XML() {
+	function OpenDbImportPlugin() {
 		parent::XMLImportPlugin();
 	}
 	
@@ -46,7 +46,7 @@ class OpenDb_XML extends XMLImportPlugin
 		return (strcasecmp($nameSpace, 'http://opendb.iamvegan.net/xsd/Items-1.3.xsd') === 0);
 	}
 	
-	function start_element($name, $attribs, $pcdata)
+	function start_element($xpath, $name, $attribs, $pcdata)
 	{
 		if(strcmp($name, 'Item')===0)
 		{
@@ -72,7 +72,7 @@ class OpenDb_XML extends XMLImportPlugin
 		}
 	}
 	
-	function end_element($name)
+	function end_element($xpath, $name)
 	{
 		if(strcmp($name, 'Item')===0)
 		{

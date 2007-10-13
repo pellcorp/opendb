@@ -55,13 +55,6 @@ class XMLImportPlugin
 		$this->_itemImportHandler->endItemInstance();
 	}
 	
-	function itemInstance($statusType, $borrowDuration = NULL) {
-		$this->startItemInstance();
-		$this->setInstanceStatusType($statusType);
-		$this->setInstanceBorrowDuration($borrowDuration);
-		$this->endItemInstance();
-	}
-
 	function setTitle($title) {
 		$this->_itemImportHandler->setTitle($title);
 	}

@@ -18,6 +18,8 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+// TODO - add tests
+
 require_once 'PHPUnit.php';
 
 require_once("./functions/StringFileHandler.class.php");

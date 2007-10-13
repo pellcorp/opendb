@@ -18,33 +18,12 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* The genre's supported by DVD Profiler are as follows:
-					Accessories, Action, Adult, Adventure, Animation, Anime, Classic, Comedy, Documentary
-					Drama, Family, Fantasy, Foreign, Horror, Music, Musical, Romance, Science-Fiction
-					Special Interest, Sports, Suspence/Thriller, Television, War, Western
-				*/
 
 include_once("./functions/XMLImportPlugin.class.php");
 
 class DVDProfilerImportPlugin extends XMLImportPlugin
 {
-	var $_featureMap = array(
-				'FeatureSceneAccess'=>'Scene Access',
-				'FeatureCommentary'=>'Commentary',
-				'FeatureTrailer'=>'Trailer(s)',
-				'FeatureDeletedScenes'=>'Deleted Scenes',
-				'FeatureMakingOf'=>'Featurette',
-				'FeatureProductionNotes'=>'Prod. Notes/Bios',
-				'FeatureGame'=>'Interactive Game',
-				'FeatureDVDROMContent'=>'DVD-ROM Content',
-				'FeatureMultiAngle'=>'Multi-angle',
-				'FeatureMusicVideos'=>'Music Video(s)',
-				'FeatureClosedCaptioned'=>'Closed Captioned',
-				'FeatureTHXCertified'=>'THX Certified',
-				'FeatureInterviews'=>'Interviews',
-				'FeatureStoryboardComparisons'=>'Story Boards',
-				'FeatureOuttakes'=>'Outtakes'
-				);
+	
 				
 	var $_image_prefix = "http://www.invelos.com/mpimages/";
 	
@@ -93,7 +72,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/Genres/Genre'))
 		{
-			$this->addAttribute('MOVIEGENRE', NULL, $pcdata);
+			$this->addAttribute('MOVIEGENRE', NULL, $this->__getMappedGenre($pcdata));
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/CollectionType'))
 		{
@@ -109,7 +88,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/Rating'))
 		{
-			$this->addAttribute('AGE_RATING', NULL, $pcdata);
+			$this->addAttribute('AGE_RATING', NULL, $this->__getMappedAgeRating($pcdata));
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/ProductionYear'))
 		{
@@ -148,10 +127,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		*/
 		else if(isXpathStartsWith($xpath, '/Collection/DVD/Features/Feature') && strcmp($pcdata, 'True')===0)
 		{
-			$content = $_featureMap[$name];
-			if(strlen($content)>0) {
-				$this->v_extras[] = $content;
-			}
+			$this->v_extras[] = $name;
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/Studios/Studio'))
 		{
@@ -193,24 +169,110 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/Features'))
 		{
-			if(is_array($this->v_extras)) {
-				$this->addAttribute('DVD_EXTRAS', NULL, implode("\n", $this->v_extras));
-			}
+			$this->addAttribute('DVD_EXTRAS', NULL, $this->__getMappedFeatures($this->v_extras));
 			$this->v_extras = NULL;
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/Audio/AudioTrack'))
 		{
 			if(is_array($this->v_audio)) {
 				if($this->v_audio['language'] == 'Commentary') {
-					$this->addAttribute('AUDIO_LANG', NULL, 'Commentary'); 
+					$this->addAttribute('AUDIO_LANG', NULL, $this->__getMappedAudioLang('Commentary')); 
 				} else if($this->v_audio['language'] == 'English') {
-					$this->addAttribute('AUDIO_LANG', NULL, $this->v_audio['format']); 
+					$this->addAttribute('AUDIO_LANG', NULL, $this->__getMappedAudioLang($this->v_audio['format'])); 
 				} else {
-					$this->addAttribute('AUDIO_LANG', NULL, $this->v_audio['language'].' '.$this->v_audio['format']); 
+					$this->addAttribute('AUDIO_LANG', NULL, $this->__getMappedAudioLang($this->v_audio['language'].' '.$this->v_audio['format'])); 
 				}
 				$this->v_audio = NULL;
 			}
 		}
+	}
+	
+	function __getMappedAudioLang($lang) {
+		$audioLangMap = array(
+			'Commentary'=>'DIR_COMMENT',
+			'Dolby Digital Stereo'=>'ENGLISH',
+			'Dolby Digital 5.1'=>'ENGLISH_5.1',
+			'Dolby Digital Surround EX'=>'ENGLISH_SR',
+			'DTS ES (Discrete)'=>'ENGLISH_DTS',
+			'DTS ES (Matrixed)'=>'ENGLISH_DTS',
+			'Dolby Digital Surround'=>'ENGLISH_SR',
+		);
+		
+		if(is_array($audioLangMap))
+		{
+			if(strlen($audioLangMap[$lang])>0)
+				$lang = $audioLangMap[$lang];
+		}
+		
+		return $lang;
+	}
+	
+	function __getMappedFeatures($feature_r) {
+		$featureMap = array(
+				'FeatureSceneAccess'=>'Scene Access',
+				'FeatureCommentary'=>'Commentary',
+				'FeatureTrailer'=>'Trailer(s)',
+				'FeatureDeletedScenes'=>'Deleted Scenes',
+				'FeatureMakingOf'=>'Featurette',
+				'FeatureProductionNotes'=>'Prod. Notes/Bios',
+				'FeatureGame'=>'Interactive Game',
+				'FeatureDVDROMContent'=>'DVD-ROM Content',
+				'FeatureMultiAngle'=>'Multi-angle',
+				'FeatureMusicVideos'=>'Music Video(s)',
+				'FeatureClosedCaptioned'=>'Closed Captioned',
+				'FeatureTHXCertified'=>'THX Certified',
+				'FeatureInterviews'=>'Interviews',
+				'FeatureStoryboardComparisons'=>'Story Boards',
+				'FeatureOuttakes'=>'Outtakes'
+				);
+		
+		if(is_array($feature_r)) {
+			reset($feature_r);
+			
+			$mapped_feature_r = array();
+			while(list(,$feature) = each($feature_r)) {
+				$mapped_feature_r[] = ifempty($featureMap[$feature], $feature);
+			}
+			
+			return implode("\n", $mapped_feature_r);
+		}
+		
+		return NULL;
+	}
+	
+	/**
+	 * The genre's supported by DVD Profiler are as follows:
+	 * 	Accessories, Action, Adult, Adventure, Animation, Anime, Classic, Comedy, Documentary
+	 * 	Drama, Family, Fantasy, Foreign, Horror, Music, Musical, Romance, Science-Fiction
+	 * 	Special Interest, Sports, Suspence/Thriller, Television, War, Western
+	*/
+	function __getMappedGenre($genre) {
+		if($genre == 'Science-Fiction') {
+			return 'ScienceFiction';
+		} else if($genre == 'Suspence/Thriller') {
+			return array('Suspense', 'Thriller');
+		} else if($pcdata == 'Special Interest') {
+			return 'Other';
+		} else {
+			return $genre;
+		}
+	}
+	
+	function __getMappedAgeRating($rating) {
+		$ageCertMap = 
+				array(
+					'PG-13'=>'PG',
+					'R'=>'MA',
+					'NC-17'=>'MA',
+					'X'=>'R');
+		
+		if(is_array($ageCertMap))
+		{
+			if(strlen($ageCertMap[$rating])>0)
+				$rating = $ageCertMap[$rating];
+		}
+		
+		return $rating;
 	}
 	
 	function __getFormattedName($attribs) {

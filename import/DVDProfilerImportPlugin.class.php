@@ -46,7 +46,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 				'FeatureOuttakes'=>'Outtakes'
 				);
 				
-	var $_image_prefix = "http://www.dvdprofiler.com/cgi-bin/data/myprofiler/images/";
+	var $_image_prefix = "http://www.invelos.com/mpimages/";
 	
 	var $v_audio = NULL;
 	var $v_extras = NULL;
@@ -78,10 +78,10 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		}
 		else if(isXpathMatch($xpath, '/Collection/DVD/ID'))
 		{
-			$this->addAttribute('IMAGEURL', NULL, $this->_image_prefix.$pcdata."f.jpg");
-			$this->addAttribute('IMAGEURL', NULL, $this->_image_prefix.$pcdata."b.jpg");
-			$this->addAttribute('FIMAGEURL', NULL, $this->_image_prefix.$pcdata."f.jpg");
-			$this->addAttribute('BIMAGEURL', NULL, $this->_image_prefix.$pcdata."b.jpg");
+			$this->addAttribute('IMAGEURL', NULL, $this->__getImageUrl($pcdata."f.jpg"));
+			$this->addAttribute('IMAGEURL', NULL, $this->__getImageUrl($pcdata."b.jpg"));
+			$this->addAttribute('FIMAGEURL', NULL, $this->__getImageUrl($pcdata."f.jpg"));
+			$this->addAttribute('BIMAGEURL', NULL, $this->__getImageUrl($pcdata."b.jpg"));
 		}
   		else if(isXpathMatch($xpath, '/Collection/DVD/Title'))
 		{
@@ -239,6 +239,10 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		} else {
 			return NULL;
 		}
+	}
+	
+	function __getImageUrl($image) {
+		return $this->_image_prefix.substr($image,0,2)."/".$image;
 	}
 }
 ?>

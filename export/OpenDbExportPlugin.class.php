@@ -112,11 +112,16 @@ class OpenDbExportPlugin
 	//
 	function __escapeXMLEntities($str)
 	{
-		// this can be found in functions/utils.php
-		return str_replaces(
-					array("\"", "<", ">", "\n", "\r", "&"), // find
-					array("&#34;", "&#60;", "&#62;", "&#10;", "&#13;", "&#38;"), // replace
-					$str);
+		/*if(function_exists("utf8_encode")) {
+			$str = utf8_encode($str);
+		}*/
+		
+		$str = str_replace(
+						array("\"", "<", ">", "\n", "\r", "&"), // find
+						array("&quot;", "&lt;", "&gt;", "&#10;", "&#13;", "&amp;"), // replace
+						$str);
+						
+		return $str;
 	}
 	
 	//utility functions

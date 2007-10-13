@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+	Export Open Media Collectors Database XML DVD item(s) for Jason Administrator (admin)
+-->
+<Items xmlns="http://opendb.iamvegan.net/xsd/Items-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://opendb.iamvegan.net/xsd/Items-1.3.xsd">
+	<Item ItemId="1947" ItemType="DVD">
+		<Title>Rambo: First Blood 2</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Steven Berkoff</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Charles Napier</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_SR</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">George P. Cosmatos</Attribute>
+		<Attribute AttributeType="DVDEMPR_ID" OrderNo="0">3073</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Vocally Enhanced Motion Menus&amp;#10;Commentary Track with director George Cosmatos&amp;#10;Documentary-&amp;quot;An American Hero's Journey&amp;quot;&amp;#10;Trivia Game&amp;#10;Scene Access&amp;#10;Theatrical Trailer&amp;#10;Production Notes&amp;#10;Cast &amp; Crew Information</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">1</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://images2.dvdempire.com/gen/movies/3073h.jpg</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">War</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Although the Vietnam War is officially over, Rambo remains the perfect fighting machine. But his survival skills are tested with a vengeance on a top-secret mission that takes him back to the jungles of Vietnam in search of American POWs. For when Rambo is double-crossed, this &amp;quot;expendable&amp;quot; hero, armed with just his bow, arrows and knife, must defeat savage enemies equipped with deadly firepower.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">95</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">SPANISH</Attribute>
+		<Attribute AttributeType="UPC_ID" OrderNo="0">012236046608</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">NTSC</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1985</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+			<StatusComment>fuck off</StatusComment>
+			<Attribute AttributeType="ALT_ID" OrderNo="1">12</Attribute>
+		</Instance>
+		<Instance InstanceNo="2" OwnerId="admin" BorrowDuration="" StatusType="A">
+			<Attribute AttributeType="ALT_ID" OrderNo="1">13</Attribute>
+		</Instance>
+	</Item>
+	<Item ItemId="2872" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
+		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
+		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
+		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
+		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+			<StatusComment>this is a test&amp;#10;&amp;#10;stuff again</StatusComment>
+			<Attribute AttributeType="ALT_ID" OrderNo="1">11111</Attribute>
+			<Attribute AttributeType="ALT_ID" OrderNo="2">22222</Attribute>
+		</Instance>
+		<Instance InstanceNo="2" OwnerId="admin" BorrowDuration="" StatusType="W">
+			<StatusComment>this is another test &amp;#10;&amp;#10;thanks for it.&amp;#10;&amp;#10;thanks again!</StatusComment>
+			<Attribute AttributeType="ALT_ID" OrderNo="1">33333</Attribute>
+			<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
+		</Instance>
+	</Item>
+	<Item ItemId="2874" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2875" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2876" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2877" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2878" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2879" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2880" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2881" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+		<Instance InstanceNo="2" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2885" ItemType="DVD">
+		<Title>Kaena, la prophÃ©tie</Title>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1967</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2886" ItemType="DVD">
+		<Title>Les Aventures de Tintin au Tibet</Title>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2887" ItemType="DVD">
+		<Title>Final Fantasy, les créatures de l'esprit (Édition simple)</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ming-Na Wen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alec Baldwin</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ving Rhames</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Steve Buscemi</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">James Woods</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="AMAZFRASIN" OrderNo="0">B00008LSRW</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Les films annonces&amp;#10;Le commentaire audio des co-ralisateurs et de l'quipe technique&amp;#10;Le commentaire audio des responsables de l'animation, du montage et de la direction artistique&amp;#10;La B.O.F isole avec les commentaires optionnels du compositeur&amp;#10;La version de travail avec factodes en vost (1h20)</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://ec1.images-amazon.com/images/I/51mIFyd54bL._SS500_.jpg</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">En 2065, la plus grande confusion règne sur notre planète. Seuls les plus résistants des humains vivent encore dans un univers de désolation dominé par l'ennemi absolu : de mystérieux fantômes qui se nourrissent en extrayant l'énergie de toute forme de vie terrestre. Le futur de notre espèce repose sur le courage et la volonté de quelques-uns. Déjouant les complots, évitant les pièges, ils doivent reconquérir la Terre en usant de toutes les magies. Deux clans s'opposent sur la manière la plus efficace d'éliminer les spectres : les premiers, commandés par un général belliqueux, souhaitent utiliser une arme de destruction totale ; les autres, conduits par le docteur Aki Ross, s'engagent dans une voie difficile : la reconstitution d'un rythme spirituel qui devrait chasser les fantômes et protéger les êtres vivants. L'aventure est risquée, mais ils n'ont plus rien à perdre.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">FRENCH</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2888" ItemType="DVD">
+		<Title>Sinbad, la lÃ©gende des sept mers</Title>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2890" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
+		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
+		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
+		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
+		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2892" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
+		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
+		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
+		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
+		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="W">
+			<Attribute AttributeType="ALT_ID" OrderNo="1">33333</Attribute>
+			<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
+		</Instance>
+	</Item>
+	<Item ItemId="2893" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
+		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
+		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
+		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
+		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="W">
+			<Attribute AttributeType="ALT_ID" OrderNo="1">33333</Attribute>
+			<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
+		</Instance>
+	</Item>
+	<Item ItemId="2924" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Crowley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chuck Tamburro</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Wright Huston</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Patrick Stack</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Stephen E. Miller</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Raimund Stamm</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robert Metcalfe</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Stephen Dimopoulos</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Greenwood</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Earl Klein</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Danny Wozna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Peter Lonstrup</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Mike Winlaw</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Donald Adams</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Menzies</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Frank Richter</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Grahman L. Galativk</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ian Hutchinson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Amy Alexander</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Gary Hetherington</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alex Kliner</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">R. G. Miller</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Suzee Pai</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Rigg</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">PG-13</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital Stereo</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Commentary</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">1</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.invelos.com/mpimages/01/012236115007f.jpg</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">He never fought a battle he couldn't win - except the conflict raging within his own soul. Academy Award nominee Sylvester Stallone stars as war hero John Tambo. An ex-Green Beret haunted by memories of Vietnam, he was once the perfect killing machine. Now he's searching for peace, but finds instead an over-zealous, small- toen sheriff who's spoiling for a fight. All hell breaks loose when an unjustly imprisoned Rambo excapes and becomes the target of a massive manhunt. Now he must use all his cunning, combat skills and weapons training to stay alive and outwit his pursuers. Co-starring Brian Dennehy and Richard Crenna, FIRST BLOOD is an explosive action-thriller that will keep you on teh edge of your seat until the final, powerful frame. This pulse-pounding saga has been digitally remastered and contains an exciting featurette, &amp;quot;First Blood: A Look Back&amp;quot;.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">96</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">SPANISH</Attribute>
+		<Attribute AttributeType="UPC_ID" OrderNo="0">012236-115007</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">NTSC</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2925" ItemType="DVD">
+		<Title>The Lord of The Rings: Fellowship of The Ring</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Elijah Wood</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ian McKellen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Virgo Mortensen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sean Astin</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Liv Tyler</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sean Bean</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Cate Blanchett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ian Holm</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Hugo Weaving</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Orlando Bloom</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Christopher Lee</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Davies Rhys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Billy Boyd</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Dominic Monaghan</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Andy Serkis</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sala Baker</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Noel Appleby</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Timothy Bartlett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Victoria Brenon Cole</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Paul Bryson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Marton Csokas</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Megan Edwards II</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Elsworth</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Mark Ferguson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Taea Hartwell</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alan Howard</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Billy Jackson III</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Katie Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Peter Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Lawrence Makoare</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brent McIntyre</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Peter McKenzie</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sarah McLeod</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ian Mune</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Parker</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Cameron Rhodes</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Martyn Sanderson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Harry Sinclaire</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Weatherley</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">PG-13</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital 5.1</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">French Dolby Digital Stereo</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Peter Jackson</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">1</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.invelos.com/mpimages/06/065935142065f.jpg</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Fantasy</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">With the help of a courageous fellowship of friends and allies, Frodo embarks on a perilous mission to destroy the legendary One Ring.  Hunting Frodo are servants of the Dark Lord, Sauron, the Ring's evil creator.  If Sauron reclaims the Ring, Middle-Earth is doomed.  Winner of four Academy Awards, this epic tale of good versus evil, friendship and sacrifice will transport you to a world beyond imaginaiton.</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">178</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
+		<Attribute AttributeType="UPC_ID" OrderNo="0">065935-142065</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">NTSC</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">2001</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2926" ItemType="DVD">
+		<Title>The Lord of the Rings: The Two Towers</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Rhys-Davies</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Allpress</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sean Astin</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Bach</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sala Baker</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sean Bean</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Cate Blanchett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Orlando Bloom</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Billy Boyd</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jed Brophy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sam Comery</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brad Dourif</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Calum Gittins</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Philip Grieve</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bernard Hill</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Hopkins</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Paris Howe Strewe</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Christopher Lee</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Timothy Lee</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Nathaniel Lees</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Leigh</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robbie Magasiva</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robyn Malcolm</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ian McKellen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Dominic Monaghan</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Viggo Mortensen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Noble</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Miranda Otto</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Parker</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Phillips</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robert Pollock</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Andy Serkis</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Phillip Spencer-Harris</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Olivia Tennet</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ray Trickett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Liv Tyler</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Karl Urban</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Stephen Ure</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Hugo Weaving</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Wenham</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Elijah Wood</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Victoria Beynon-Cole</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Lee Hartley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Billy Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Katie Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Paul Holmes</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Peter Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Henry Mortensen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Piripi Waretini</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">PG-13</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital Surround EX</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">DTS ES (Discrete)</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital Surround</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Commentary</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Peter Jackson</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">1</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.invelos.com/mpimages/79/794043650420f.jpg</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Fantasy</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Adventure</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Frodo Baggins and The Fellowship continue their quest to destroy The One Ring and stand against the evil of the dark Lord Sauron.&amp;#10;&amp;#10;The Fellowship has divided and now find themselves taking different paths to defeating Sauron and his allies. Their destinies now lie at two towers - Orthanc Tower in Isengard, where the corrupted wizard Saruman waits and Sauron's fortress at Barad-dûr, deep within the dark lands of Mordor.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">222</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">SPANISH</Attribute>
+		<Attribute AttributeType="UPC_ID" OrderNo="0">794043-650420</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">NTSC</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">2002</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+	<Item ItemId="2927" ItemType="DVD">
+		<Title>The Lord of the Rings: The Return of the King</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Elijah Wood</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ian McKellen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Viggo Mortensen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Liv Tyler</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sean Astin</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Cate Blanchett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Billy Boyd</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Dominic Monaghan</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Orlando Bloom</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Rhys-Davies</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Christopher Lee</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Miranda Otto</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bernard Hill</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Hopkins</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Andy Serkis</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Hugo Weaving</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brad Dourif</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Leigh</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robbie Magasiva</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robyn Malcolm</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Allpress</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sala Baker</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jed Brophy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sam Comery</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Parker</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Phillips</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Robert Pollock</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Calum Gittins</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John Bach</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Karl Urban</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Olivia Tennet</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Ray Trickett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Paris Howe Strewe</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Nathaniel Lees</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Wenham</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Stephen Ure</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Katie Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Paul Holmes</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Billy Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Peter Jackson</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Piripi Waretini</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">PG-13</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital Surround EX</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">DTS ES (Matrixed)</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital Surround</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Commentary</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Peter Jackson</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">1</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.invelos.com/mpimages/79/794043782626f.jpg</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Fantasy</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Adventure</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">The Fellowship's journey is coming to an end. Sauron's forces have attacked Gondor's capital of Minas Tirith in his final siege against mankind. Watched over by a fading steward, the once great kingdom has never been in more desperate need of its king. But will Aragorn find the strength to become what he was born to be and rise to meet his destiny?&amp;#10;As Gandalf desperately tries to move the broken forces of Gondor to act, Théoden unites the warriors of Rohan to join in the fight. Even in their courage and passionate loyalty, the forces of men with Éowyn and Merry hidden among them are no match against the swarming legions of enemies raining down on the kingdom. With each victory comes great sacrifice. Despite their great losses, The Fellowship charges forward in the greatest battle of their lifetime, united in their singular goal to give Frodo a chance to complete his quest. Traveling across treacherous enemy lands, Frodo must rely increasingly on Sam and Gollum as The Ring continues to test his allegiance and, ultimately, his soul.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">250</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
+		<Attribute AttributeType="SUBTITLES" OrderNo="80">SPANISH</Attribute>
+		<Attribute AttributeType="UPC_ID" OrderNo="0">794043-782626</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">NTSC</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">2003</Attribute>
+		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
+		</Instance>
+	</Item>
+</Items>

@@ -738,31 +738,30 @@ if(is_site_enabled())
 								if($resultOfImport !== TRUE)
 								{
 									$listingObject->setNoRowsMessage($importError);
+									echo format_error_block($importError);
 								}
-								else
+								
+								if($cfg_is_trial_run)
 								{
-									if($cfg_is_trial_run)
+									echo("<form action=\"$PHP_SELF\" method=\"POST\">");
+									echo(get_url_fields($HTTP_VARS, array('op'), array('op2')));
+									echo("<input type=\"button\" onclick=\"this.form.op.value='uploaded'; this.form.submit();\" value=\"".get_opendb_lang_var('back')."\">");
+									echo("<input type=\"button\" onclick=\"this.form.trial_run.value='N'; this.form.op.value='import'; this.form.submit();\" value=\"".get_opendb_lang_var('import_items')."\">");
+									echo("</form>");
+								}
+								else 
+								{
+									if(is_not_empty_array($itemImportHandler->getItemIDList()))
 									{
-										echo("<form action=\"$PHP_SELF\" method=\"POST\">");
-										echo(get_url_fields($HTTP_VARS, array('op'), array('op2')));
-										echo("<input type=\"button\" onclick=\"this.form.op.value='uploaded'; this.form.submit();\" value=\"".get_opendb_lang_var('back')."\">");
-										echo("<input type=\"button\" onclick=\"this.form.trial_run.value='N'; this.form.op.value='import'; this.form.submit();\" value=\"".get_opendb_lang_var('import_items')."\">");
-										echo("</form>");
+										$footer_links_r[] = array(
+											url=>'listings.php?item_id_range='.urlencode(get_item_id_range($itemImportHandler->getItemIDList())), 
+											text=>get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
 									}
-									else 
-									{
-										if(is_not_empty_array($itemImportHandler->getItemIDList()))
-										{
-											$footer_links_r[] = array(
-												url=>'listings.php?item_id_range='.urlencode(get_item_id_range($itemImportHandler->getItemIDList())), 
-												text=>get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
-										}
-										
-										//Get rid of the file now!
-										import_cache_delete($HTTP_VARS['ic_sequence_number']);
-										
-										echo format_footer_links($footer_links_r);
-									}
+									
+									//Get rid of the file now!
+									import_cache_delete($HTTP_VARS['ic_sequence_number']);
+									
+									echo format_footer_links($footer_links_r);
 								}
 								
 								// don't need it anymore.

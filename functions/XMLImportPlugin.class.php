@@ -72,7 +72,7 @@ class XMLImportPlugin
 	}
 	
 	function addAttribute($attributeType, $orderNo, $attributeVal) {
-		$this->_itemImportHandler->itemAttribute($attributeType, $orderNo, $attributeVal);
+		$this->_itemImportHandler->addAttribute($attributeType, $orderNo, $attributeVal);
 	}
 }
 ?>

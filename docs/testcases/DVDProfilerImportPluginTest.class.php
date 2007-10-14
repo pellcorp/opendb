@@ -22,14 +22,85 @@
 
 require_once 'PHPUnit.php';
 
-require_once("./functions/StringFileHandler.class.php");
-include_once("./import/XMLImportPlugin.class.php");
+include_once("./functions/WrapperFileHandler.class.php");
+include_once("./functions/XMLImportPluginHandler.class.php");
+include_once("./import/DVDProfilerImportPlugin.class.php");
+
+
 
 class DVDProfilerImportPluginTest extends PHPUnit_TestCase
 {
 	function DVDProfilerImportPluginTest($name) {
 		parent::PHPUnit_TestCase($name);
 	}
+	
+	function testXMLParse() {
+		$plugin =& new DVDProfilerImportPlugin();
+		$importHandler =& new TestItemImportHandler();
+		
+		$plugin->setItemImportHandler($importHandler);
+		
+		$f = fopen("./docs/testcases/resources/DVDProfilerCollection.xml", 'rb');
+		if($f) {
+			$fileHandler = new WrapperFileHandler($f);
+			
+			$xmlHandler = new XMLImportPluginHandler($plugin, $fileHandler);
+			if($xmlHandler->handleImport()) {
+				$this->assertEquals(4, $importHandler->getItemCount());
+			} else {
+				$this->fail("XML Parser failed");
+			}
+			
+			fclose($f);
+			
+		} else {
+			$this->fail("Could not open DVDProfilerCollection.xml");			
+		}
+	}
 }
 
+class TestItemImportHandler
+{
+	var $__items = array();
+	
+	function TestItemImportHandler() {
+	}
+	
+	function getItemCount() {
+		return count($this->__items);
+	}
+	
+	function addError($method, $error) {
+	}
+	
+	function startItem($itemType) {
+		echo $itemType;
+		
+		$this->__items[] = $itemType;
+	}
+	
+	function endItem() {
+	}
+	
+	function startItemInstance() {
+	}
+	
+	function endItemInstance() {
+	}
+	
+	function setTitle($title) {
+	}
+	
+	function setInstanceStatusType($statusType) {
+	}
+	
+	function setInstanceStatusComment($statusComment) {
+	}
+	
+	function setInstanceBorrowDuration($borrowDuration) {
+	}
+	
+	function addAttribute($attributeType, $orderNo, $attributeVal) {
+	}
+}
 ?>

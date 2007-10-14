@@ -18,13 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-
 include_once("./functions/XMLImportPlugin.class.php");
+include_once("./functions/import.php");
 
 class DVDProfilerImportPlugin extends XMLImportPlugin
 {
-	
-				
 	var $_image_prefix = "http://www.invelos.com/mpimages/";
 	
 	var $v_audio = NULL;

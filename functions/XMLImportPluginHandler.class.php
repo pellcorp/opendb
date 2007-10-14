@@ -43,8 +43,8 @@ class XMLImportPluginHandler
 		$parser = xml_parser_create('');
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
 		xml_set_object($parser, $this);
-		xml_set_element_handler($parser, "_start_element", "_end_element");
-		xml_set_character_data_handler($parser, "_characters");
+		xml_set_element_handler($parser, "__startElement", "__endElement");
+		xml_set_character_data_handler($parser, "__characterData");
 
 		while (($data = $this->fileHandler->readLine())!==FALSE)
 		{
@@ -60,7 +60,7 @@ class XMLImportPluginHandler
 		return TRUE;
 	}
 
-	function _start_element($parser, $name, $attribs)
+	function __startElement($parser, $name, $attribs)
 	{
 		// if previous element has not been sent, send it now
 		if(strlen($this->_startElementName)>0)
@@ -78,7 +78,7 @@ class XMLImportPluginHandler
 		$this->_characterData = NULL;
 	}
 
-	function _end_element($parser, $name)
+	function __endElement($parser, $name)
 	{
 		// if previous element has not been sent, send it now
 		if(strlen($this->_startElementName)>0)
@@ -101,7 +101,7 @@ class XMLImportPluginHandler
 		$elementName = array_pop($this->_elementXPath);
 	}
 
-	function _characters($parser, $data)
+	function __characterData($parser, $data)
 	{
 		$this->_characterData .= $data;
 	}

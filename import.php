@@ -675,7 +675,7 @@ if(is_site_enabled())
 								else
 									$cfg_default_status_type_r = fetch_status_type_r(fetch_default_status_type_for_owner($HTTP_VARS['owner_id']));
 
-								$itemImportHandler = new ItemImportHandler(
+								$itemImportHandler =& new ItemImportHandler(
 														$HTTP_VARS['owner_id'],
 														$cfg_is_trial_run,
 														$cfg_ignore_duplicate_title,

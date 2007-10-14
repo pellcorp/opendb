@@ -122,7 +122,7 @@ class RowImportPluginHandler
                                     $values_r = $value;
 								}
 
-								$this->itemImportHandler->itemAttribute(
+								$this->itemImportHandler->addAttribute(
 												$item_attribute_type_r['s_attribute_type'],
 												$item_attribute_type_r['order_no'],
 												$values_r);

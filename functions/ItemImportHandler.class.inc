@@ -405,7 +405,7 @@ class ItemImportHandler
 		}
 	}
 	
-	function itemAttribute($s_attribute_type, $order_no, $attribute_val)
+	function addAttribute($s_attribute_type, $order_no, $attribute_val)
 	{
 		if($this->_is_item_finished !== TRUE)
 		{

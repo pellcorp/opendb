@@ -800,6 +800,10 @@ if(is_site_enabled())
 					echo("<li>".getItemsPerPageControl($PHP_SELF, $HTTP_VARS)."</li>");
 					echo("</ul>");
 					
+					echo("<p class=\"listingDate\">".
+						get_opendb_lang_var('listing_generated', 'datetime', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))).
+						"</p>");
+					
 					echo(_theme_footer());
 					
 				}//end if($show_listings)		

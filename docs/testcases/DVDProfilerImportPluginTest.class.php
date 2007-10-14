@@ -74,8 +74,6 @@ class TestItemImportHandler
 	}
 	
 	function startItem($itemType) {
-		echo $itemType;
-		
 		$this->__items[] = $itemType;
 	}
 	

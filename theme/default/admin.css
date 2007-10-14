@@ -5,11 +5,12 @@
 }
 
 .tooltip { background: rgb(255, 238, 170); color: black; }
-.tooltip { width: 300px; }
+.tooltip { width: 350px; }
 .tooltip th { font-size: 90%; }
 .tooltip dt { font-weight: bold; }
 .tooltip-caption { background: black; color: rgb(255, 238, 170); }
-
+.tooltip h2 { white-space: normal; }
+	
 div.tabContainer
 {
 	padding-top: 10px;

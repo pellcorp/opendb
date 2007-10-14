@@ -84,80 +84,6 @@
 			<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
 		</Instance>
 	</Item>
-	<Item ItemId="2874" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2875" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2876" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2877" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2878" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2879" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2880" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2881" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-		<Instance InstanceNo="2" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
 	<Item ItemId="2885" ItemType="DVD">
 		<Title>Kaena, la prophÃ©tie</Title>
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
@@ -171,7 +97,7 @@
 		</Instance>
 	</Item>
 	<Item ItemId="2887" ItemType="DVD">
-		<Title>Final Fantasy, les créatures de l'esprit (Édition simple)</Title>
+		<Title>Final Fantasy, les crï¿½atures de l'esprit (ï¿½dition simple)</Title>
 		<Attribute AttributeType="ACTORS" OrderNo="30">Ming-Na Wen</Attribute>
 		<Attribute AttributeType="ACTORS" OrderNo="30">Alec Baldwin</Attribute>
 		<Attribute AttributeType="ACTORS" OrderNo="30">Ving Rhames</Attribute>
@@ -184,7 +110,7 @@
 		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Les films annonces&amp;#10;Le commentaire audio des co-ralisateurs et de l'quipe technique&amp;#10;Le commentaire audio des responsables de l'animation, du montage et de la direction artistique&amp;#10;La B.O.F isole avec les commentaires optionnels du compositeur&amp;#10;La version de travail avec factodes en vost (1h20)</Attribute>
 		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
 		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://ec1.images-amazon.com/images/I/51mIFyd54bL._SS500_.jpg</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">En 2065, la plus grande confusion règne sur notre planète. Seuls les plus résistants des humains vivent encore dans un univers de désolation dominé par l'ennemi absolu : de mystérieux fantômes qui se nourrissent en extrayant l'énergie de toute forme de vie terrestre. Le futur de notre espèce repose sur le courage et la volonté de quelques-uns. Déjouant les complots, évitant les pièges, ils doivent reconquérir la Terre en usant de toutes les magies. Deux clans s'opposent sur la manière la plus efficace d'éliminer les spectres : les premiers, commandés par un général belliqueux, souhaitent utiliser une arme de destruction totale ; les autres, conduits par le docteur Aki Ross, s'engagent dans une voie difficile : la reconstitution d'un rythme spirituel qui devrait chasser les fantômes et protéger les êtres vivants. L'aventure est risquée, mais ils n'ont plus rien à perdre.</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">En 2065, la plus grande confusion rï¿½gne sur notre planï¿½te. Seuls les plus rï¿½sistants des humains vivent encore dans un univers de dï¿½solation dominï¿½ par l'ennemi absolu : de mystï¿½rieux fantï¿½mes qui se nourrissent en extrayant l'ï¿½nergie de toute forme de vie terrestre. Le futur de notre espï¿½ce repose sur le courage et la volontï¿½ de quelques-uns. Dï¿½jouant les complots, ï¿½vitant les piï¿½ges, ils doivent reconquï¿½rir la Terre en usant de toutes les magies. Deux clans s'opposent sur la maniï¿½re la plus efficace d'ï¿½liminer les spectres : les premiers, commandï¿½s par un gï¿½nï¿½ral belliqueux, souhaitent utiliser une arme de destruction totale ; les autres, conduits par le docteur Aki Ross, s'engagent dans une voie difficile : la reconstitution d'un rythme spirituel qui devrait chasser les fantï¿½mes et protï¿½ger les ï¿½tres vivants. L'aventure est risquï¿½e, mais ils n'ont plus rien ï¿½ perdre.</Attribute>
 		<Attribute AttributeType="RATIO" OrderNo="110">1.85</Attribute>
 		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
 		<Attribute AttributeType="SUBTITLES" OrderNo="80">FRENCH</Attribute>
@@ -194,193 +120,6 @@
 	</Item>
 	<Item ItemId="2888" ItemType="DVD">
 		<Title>Sinbad, la lÃ©gende des sept mers</Title>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2890" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
-		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
-		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
-		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
-		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
-		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
-		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
-		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
-		</Instance>
-	</Item>
-	<Item ItemId="2892" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
-		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
-		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
-		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
-		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
-		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
-		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
-		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="W">
-			<Attribute AttributeType="ALT_ID" OrderNo="1">33333</Attribute>
-			<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
-		</Instance>
-	</Item>
-	<Item ItemId="2893" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
-		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
-		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
-		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
-		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
-		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
-		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
-		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
-		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
-		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
-		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
-		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="W">
-			<Attribute AttributeType="ALT_ID" OrderNo="1">33333</Attribute>
-			<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
-		</Instance>
-	</Item>
-	<Item ItemId="2924" ItemType="DVD">
-		<Title>First Blood</Title>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Crowley</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Chuck Tamburro</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Wright Huston</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Patrick Stack</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Stephen E. Miller</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Raimund Stamm</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Robert Metcalfe</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Stephen Dimopoulos</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Bruce Greenwood</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Earl Klein</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Danny Wozna</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Peter Lonstrup</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Mike Winlaw</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Donald Adams</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">David Menzies</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Frank Richter</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Grahman L. Galativk</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Ian Hutchinson</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Amy Alexander</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Gary Hetherington</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Alex Kliner</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">R. G. Miller</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">Suzee Pai</Attribute>
-		<Attribute AttributeType="ACTORS" OrderNo="30">John Rigg</Attribute>
-		<Attribute AttributeType="AGE_RATING" OrderNo="90">PG-13</Attribute>
-		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Dolby Digital Stereo</Attribute>
-		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">Commentary</Attribute>
-		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
-		<Attribute AttributeType="DVD_REGION" OrderNo="100">1</Attribute>
-		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.invelos.com/mpimages/01/012236115007f.jpg</Attribute>
-		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">He never fought a battle he couldn't win - except the conflict raging within his own soul. Academy Award nominee Sylvester Stallone stars as war hero John Tambo. An ex-Green Beret haunted by memories of Vietnam, he was once the perfect killing machine. Now he's searching for peace, but finds instead an over-zealous, small- toen sheriff who's spoiling for a fight. All hell breaks loose when an unjustly imprisoned Rambo excapes and becomes the target of a massive manhunt. Now he must use all his cunning, combat skills and weapons training to stay alive and outwit his pursuers. Co-starring Brian Dennehy and Richard Crenna, FIRST BLOOD is an explosive action-thriller that will keep you on teh edge of your seat until the final, powerful frame. This pulse-pounding saga has been digitally remastered and contains an exciting featurette, &amp;quot;First Blood: A Look Back&amp;quot;.</Attribute>
-		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
-		<Attribute AttributeType="RUN_TIME" OrderNo="60">96</Attribute>
-		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
-		<Attribute AttributeType="SUBTITLES" OrderNo="80">SPANISH</Attribute>
-		<Attribute AttributeType="UPC_ID" OrderNo="0">012236-115007</Attribute>
-		<Attribute AttributeType="VID_FORMAT" OrderNo="120">NTSC</Attribute>
-		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
 		<Instance InstanceNo="1" OwnerId="admin" BorrowDuration="" StatusType="A">
 		</Instance>
 	</Item>
@@ -504,7 +243,7 @@
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Fantasy</Attribute>
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Adventure</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Frodo Baggins and The Fellowship continue their quest to destroy The One Ring and stand against the evil of the dark Lord Sauron.&amp;#10;&amp;#10;The Fellowship has divided and now find themselves taking different paths to defeating Sauron and his allies. Their destinies now lie at two towers - Orthanc Tower in Isengard, where the corrupted wizard Saruman waits and Sauron's fortress at Barad-dûr, deep within the dark lands of Mordor.</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Frodo Baggins and The Fellowship continue their quest to destroy The One Ring and stand against the evil of the dark Lord Sauron.&amp;#10;&amp;#10;The Fellowship has divided and now find themselves taking different paths to defeating Sauron and his allies. Their destinies now lie at two towers - Orthanc Tower in Isengard, where the corrupted wizard Saruman waits and Sauron's fortress at Barad-dï¿½r, deep within the dark lands of Mordor.</Attribute>
 		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
 		<Attribute AttributeType="RUN_TIME" OrderNo="60">222</Attribute>
 		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>
@@ -570,7 +309,7 @@
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Fantasy</Attribute>
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
 		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Adventure</Attribute>
-		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">The Fellowship's journey is coming to an end. Sauron's forces have attacked Gondor's capital of Minas Tirith in his final siege against mankind. Watched over by a fading steward, the once great kingdom has never been in more desperate need of its king. But will Aragorn find the strength to become what he was born to be and rise to meet his destiny?&amp;#10;As Gandalf desperately tries to move the broken forces of Gondor to act, Théoden unites the warriors of Rohan to join in the fight. Even in their courage and passionate loyalty, the forces of men with Éowyn and Merry hidden among them are no match against the swarming legions of enemies raining down on the kingdom. With each victory comes great sacrifice. Despite their great losses, The Fellowship charges forward in the greatest battle of their lifetime, united in their singular goal to give Frodo a chance to complete his quest. Traveling across treacherous enemy lands, Frodo must rely increasingly on Sam and Gollum as The Ring continues to test his allegiance and, ultimately, his soul.</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">The Fellowship's journey is coming to an end. Sauron's forces have attacked Gondor's capital of Minas Tirith in his final siege against mankind. Watched over by a fading steward, the once great kingdom has never been in more desperate need of its king. But will Aragorn find the strength to become what he was born to be and rise to meet his destiny?&amp;#10;As Gandalf desperately tries to move the broken forces of Gondor to act, Thï¿½oden unites the warriors of Rohan to join in the fight. Even in their courage and passionate loyalty, the forces of men with ï¿½owyn and Merry hidden among them are no match against the swarming legions of enemies raining down on the kingdom. With each victory comes great sacrifice. Despite their great losses, The Fellowship charges forward in the greatest battle of their lifetime, united in their singular goal to give Frodo a chance to complete his quest. Traveling across treacherous enemy lands, Frodo must rely increasingly on Sam and Gollum as The Ring continues to test his allegiance and, ultimately, his soul.</Attribute>
 		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
 		<Attribute AttributeType="RUN_TIME" OrderNo="60">250</Attribute>
 		<Attribute AttributeType="SUBTITLES" OrderNo="80">ENGLISH</Attribute>

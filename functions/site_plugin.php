@@ -510,7 +510,16 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			
 			if($value!==NULL)
 			{
-				$new_attributes_r[$key] = $value;
+				// if more than one mapping, we want all possible values.
+				if(isset($new_attributes_r[$key])) {
+					if(is_array($value)) {
+						$new_attributes_r[$key] = array_merge($new_attributes_r[$key], $value);
+					} else {
+						$new_attributes_r[$key] = array($new_attributes_r[$key], $value);
+					}
+				} else {
+					 $new_attributes_r[$key] = $value;
+				}
 			}
 			
 			if($attribute_type_map_r['lookup_attribute_val_restrict_ind'] == 'Y')
@@ -579,12 +588,10 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 				{
 					for($i=0; $i<count($values_r); $i++)
 					{
-						// if match - case insensitive.
 						if(strcasecmp($values_r[$i], $lookup_map_r['value'])===0)
 						{
 							$found_entries_r[] = $values_r[$i];
-							
-							//jpell - 0.81p8
+
 							if(!in_array($lookup_map_r['lookup_attribute_val'], $new_values_r))
 							{
 								$new_values_r[] = $lookup_map_r['lookup_attribute_val'];
@@ -597,9 +604,6 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 				// now process all back into $values_r
 				for($i=0; $i<count($values_r); $i++)
 				{
-					// do not include if already in $new_values_r.  This may because a previous
-					// value was mapped to a value also passed, but with no mapping to add it to
-					// the $found_entries_r
 					if(!in_array($values_r[$i], $found_entries_r) && !in_array($values_r[$i], $new_values_r))
 					{
 						$new_values_r[] = $values_r[$i];
@@ -617,7 +621,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			// the next process prefers arrays to deal with, even if single element
 			$site_item_attributes_r[strtolower($s_attribute_type)] = $value;
 		}
-	}//while(list($key,$value) = @each($new_attributes_r))
+	}
 	
 	//
 	// now that we have expanded mappings, we need to map to s_item_attribute_type order number mappings
@@ -717,7 +721,6 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 		db_free_result($results);	
 	}
 	
-	//else
 	return $site_item_attributes_r;
 }
 ?>

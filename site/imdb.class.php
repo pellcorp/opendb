@@ -223,31 +223,32 @@ class imdb extends SitePlugin
 		if($start !== FALSE)
 		{
 			$end = strpos($pageBuffer,"</div>", $start);
-				
 			$certification = trim(substr($pageBuffer,$start,$end-$start));
 			
-			if(preg_match_all("!<a href=\"/[^\"]*\">([^:]*):([^<]*)</a>!", $certification, $matches))
+			$age_certification_codes_r = $this->getConfigValue('age_certification_codes');
+			if(!is_array($age_certification_codes_r) && strlen($age_certification_codes_r)>0) // single value
+				$age_certification_codes_r = array($age_certification_codes_r);
+			
+			if(is_array($age_certification_codes_r)) // single value
 			{
-				// Ensure we have a valid value here!
-				$age_certification_codes_r = $this->getConfigValue('age_certification_codes');
-				
-				// Default to USA if not defined!
-				if(!is_array($age_certification_codes_r))
-					$age_certification_codes_r = array("USA");
-				else
-					reset($age_certification_codes_r);
-				
+				reset($age_certification_codes_r);
 				while (list(,$age_code) = @each($age_certification_codes_r))
 				{
-					for($i=0; $i<count($matches[1]); $i++)
+					if(preg_match("!<a href=\"/[^\"]*\">".preg_quote($age_code, "!").":([^<]*)</a>!", $certification, $matches))
 					{
-						if($age_code == $matches[1][$i])
-						{
-							$this->addItemAttribute('age_rating', $matches[2][$i]);
-							
-							break 2; // break out of for and while
-						}
+						$this->addItemAttribute('age_rating', $matches[1]);
+						break; // found it!
 					}
+				}
+			}
+			
+			// get a list of all age ratings, with a country prefix.
+			if(preg_match_all("!<a href=\"/[^\"]*\">([^:]*):([^<]*)</a>!", $certification, $matches))
+			{
+				for($i=0; $i<count($matches[1]); $i++)
+				{
+					$country = strtolower(str_replace(' ', '_', $matches[1][$i]));
+					$this->addItemAttribute($country.'_age_rating', $matches[2][$i]);
 				}
 			}
 		}

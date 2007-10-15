@@ -510,14 +510,17 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			
 			if($value!==NULL)
 			{
-				// if more than one mapping, we want all possible values.
 				if(isset($new_attributes_r[$key])) {
+					if(!is_array($new_attributes_r[$key])) {
+						$new_attributes_r[$key] = array($new_attributes_r[$key]);
+					}
+					
 					if(is_array($value)) {
 						$new_attributes_r[$key] = array_merge($new_attributes_r[$key], $value);
 					} else {
-						$new_attributes_r[$key] = array($new_attributes_r[$key], $value);
+						$new_attributes_r[$key][] = $value;
 					}
-				} else {
+				} else { 
 					 $new_attributes_r[$key] = $value;
 				}
 			}

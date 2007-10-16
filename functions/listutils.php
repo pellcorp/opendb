@@ -51,7 +51,8 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS)
 		$context_vars = array(
 			'owner_id'=>$HTTP_VARS['owner_id'],
 			'order_by'=>$HTTP_VARS['order_by'],
-			'sortorder'=>$HTTP_VARS['sortorder']
+			'sortorder'=>$HTTP_VARS['sortorder'],
+			'listing_link'=>$HTTP_VARS['listing_link']
 		);
 	}
 	

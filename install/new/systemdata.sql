@@ -535,7 +535,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'print_listing_datetime_mask', 15, 'Print Listing Datetime Mask', '', 'datemask');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'save_listing_url', 16, 'Enable \'Back to Listing\' Links', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_exact_match_search_columns', 17, 'Include Exact Match Search Columns', 'Include a column for each exact match search column, by default this is disabled.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_exact_match_search_columns', 17, 'Include Exact Match Search Columns', 'Include a column for each exact match search column.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'alphalist_new_search_context', 18, 'Alpha List New Search Context', 'AlphaList should start a new search instead of further refining current search.', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'show_item_type_group_lov', 2, 'Show Item Type Group LOV', '', 'boolean');

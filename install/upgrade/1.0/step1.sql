@@ -230,3 +230,4 @@ DELETE FROM s_language_var WHERE varname = 'no_rating';
 # renamed export plugin
 UPDATE s_config_group_item_var SET value = 'OpenDbExportPlugin' WHERE group_id = 'item_display' AND id = 'export_link';
 
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'alphalist_new_search_context', 18, 'Alpha List New Search Context', 'AlphaList should start a new search instead of further refining current search.', 'boolean');

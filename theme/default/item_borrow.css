@@ -5,6 +5,11 @@ table.moreInfo
 
 table.listing-table
 {
+	width: 100%;
+}
+
+#moreInfoListing table.listing-table
+{
 	width: 50%;
 }
 

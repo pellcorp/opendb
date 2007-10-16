@@ -354,6 +354,8 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	// Display the items to be operated on.
 	if(is_not_empty_array($borrowed_item_rs))
 	{
+		echo("<div id=\"moreInfoListing\">");		
+		
 		// no pagination.
 		$HTTP_VARS['items_per_page'] = '';
 
@@ -490,6 +492,8 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 		}//while(list(,$borrowed_item_r) = each($borrowed_item_rs))
 		
 		$listingObject->endListing();
+		
+		echo("</div>");	
 	}
 	
 	echo("<table class=\"moreInfo\">");
@@ -1418,7 +1422,7 @@ if(is_site_enabled())
 							}
 							echo("</form>");
 							
-							
+							echo("<div id=\"adminQuickCheckOutListing\">");
 							$listingObject->startListing($page_title);
 		
 							$listingObject->addHeaderColumn(get_opendb_lang_var('type'), 's_item_type');
@@ -1459,6 +1463,7 @@ if(is_site_enabled())
 							}
 							
 							$listingObject->endListing();
+							echo("</div>");
 							
 							echo("<ul class=\"listingControls\">");
 							if(get_opendb_config_var('listings', 'allow_override_show_item_image')!==FALSE)

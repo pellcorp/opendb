@@ -1394,14 +1394,22 @@ if(is_site_enabled())
 							}
 						
 							// include the input field and other processing here.
+							echo("\n<table class=\"borrowerForm\">");
 							echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 							echo("\n<input type=\"hidden\" name=\"op\" value=\"admin_quick_check_out\">");
 							echo("\n<input type=\"hidden\" name=\"page_no\" value=\"\">");//dummy
 							echo("\n<input type=\"hidden\" name=\"borrower_id\" value=\"".$HTTP_VARS['borrower_id']."\">");
 							
-							echo("<label for=\"item_instance_if\">".get_opendb_lang_var('item_id')."</label><input id=\"item_instance_if\" type=\"text\" name=\"item_instance\" value=\"\">");
+							echo(get_input_field('item_instance',
+										NULL, // s_attribute_type
+										get_opendb_lang_var('item_id'), 
+										"number(10,10)", //input type.
+										"N", //compulsory!
+										NULL,//value
+										TRUE));
+							echo("\n</table>");
 							
-							echo("<br /><input type=submit value=\"".get_opendb_lang_var('add_item')."\">");
+							echo("<input type=submit value=\"".get_opendb_lang_var('add_item')."\">");
 							
 							if(is_not_empty_array($HTTP_VARS['checkout_item_instance_rs']))
 							{

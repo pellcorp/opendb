@@ -51,6 +51,14 @@ ul.category li
 	float: left;
 }
 
+/* need to overwrite for relatedItems table listing */
+#relatedItems ul.category li
+{
+	display: block;
+	float: none;
+	padding-right: none;
+}
+
 ul.names
 {
 	list-style-type: none;

@@ -46,6 +46,15 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS)
 {
 	$buffer = '<ul class="alphalist">';
 
+	$context_vars = $HTTP_VARS;
+	if(get_opendb_config_var('listings', 'alphalist_new_search_context')!==FALSE) {
+		$context_vars = array(
+			'owner_id'=>$HTTP_VARS['owner_id'],
+			'order_by'=>$HTTP_VARS['order_by'],
+			'sortorder'=>$HTTP_VARS['sortorder']
+		);
+	}
+	
 	foreach(array_merge(array('#'), range('A','Z')) as $char)
 	{
 		if($HTTP_VARS['letter'] == $char)
@@ -54,13 +63,13 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS)
 		}
 		else
 		{
-			$buffer .= "<li><a href=\"$PHP_SELF?".get_url_string($HTTP_VARS, array('letter'=>$char), array('page_no'))."\">".$char."</a></li>";
+			$buffer .= "<li><a href=\"$PHP_SELF?".get_url_string($context_vars, array('letter'=>$char), array('page_no'))."\">".$char."</a></li>";
 		}
 	}
 
 	if(strlen($HTTP_VARS['letter'])>0)
 	{
-		$buffer .= "<li class=\"all\"><a href=\"$PHP_SELF?".get_url_string($HTTP_VARS, array('letter'=>''))."\">".get_opendb_lang_var('all')."</a></li>";
+		$buffer .= "<li class=\"all\"><a href=\"$PHP_SELF?".get_url_string($context_vars, array('letter'=>''))."\">".get_opendb_lang_var('all')."</a></li>";
 	}
 		
 	$buffer .= '</ul>';

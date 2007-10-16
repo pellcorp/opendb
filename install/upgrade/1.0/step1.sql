@@ -224,6 +224,9 @@ DELETE FROM s_language_var WHERE varname = 'type_export_item_record';
 # this particular help no longer required.
 DELETE FROM s_language_var WHERE varname = 'listing_column_header_sort_help';
 
+# remove no rating from item display
+DELETE FROM s_language_var WHERE varname = 'no_rating';
+
 # renamed export plugin
 UPDATE s_config_group_item_var SET value = 'OpenDbExportPlugin' WHERE group_id = 'item_display' AND id = 'export_link';
 

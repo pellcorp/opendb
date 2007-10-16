@@ -344,7 +344,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_lin
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_logfile_defined', 'No log file defined.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_logfile_found', 'No logfile found.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_matches_found', 'No Matches Found'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_rating', 'No Rating'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_records_found', 'No Records Found'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_subject', 'No Subject'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_users_checked', 'No Users Checked'); 

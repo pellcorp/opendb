@@ -156,10 +156,6 @@ if(is_site_enabled())
 							FALSE);
 					echo("</p>");
 				}
-				else
-				{
-					echo("<p class=\"norating\">".get_opendb_lang_var('no_rating')."</p>");	
-				}
 				
 				$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 				if($results)

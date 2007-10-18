@@ -162,7 +162,7 @@ function get_menu_options($user_id, $user_type)
 				{
 					$menu_options['admin'][] = array(link=>get_opendb_lang_var('borrower_history'), url=>"borrow.php?op=admin_history");
 				}
-				$menu_options['admin'][] = array(link=>get_opendb_lang_var('quick_check_out'), url=>"item_borrow.php?op=admin_quick_check_out");
+				$menu_options['admin'][] = array(link=>get_opendb_lang_var('quick_check_out'), url=>"quick_checkout.php?op=checkout");
 			}
 	
 			if(is_file_upload_enabled())

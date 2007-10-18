@@ -773,6 +773,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'd
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'date_mask', 'DDth Month YYYY');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'datetime_mask', 'DD/MM/YYYY HH:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow.reminder', 'duration_range', '-1');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow.checkout', 'alt_id_attribute_type', 'S_ITEM_ID');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('search', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('announcements', 'datetime_mask', 'DD/MM/YYYY HH:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('feeds.new_items', 'total_num_items', '18');

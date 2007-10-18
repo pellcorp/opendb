@@ -23,9 +23,11 @@ include_once("./functions/user.php");
 
 function fetch_instance_attribute_type_rs()
 {
-	$query = "SELECT DISTINCT siat.s_attribute_type FROM
-			s_item_attribute_type siat
-			WHERE siat.instance_attribute_ind = 'Y'
+	$query = "SELECT DISTINCT sat.s_attribute_type, sat.description FROM
+			s_item_attribute_type siat, s_attribute_type sat
+			WHERE siat.s_attribute_type = sat.s_attribute_type AND
+			siat.instance_attribute_ind = 'Y' OR 
+			sat.s_field_type = 'ITEM_ID'
 			ORDER BY 1";
 	
 	$result = db_query($query);

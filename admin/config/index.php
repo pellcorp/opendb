@@ -87,7 +87,7 @@ function get_group_block_input_field($config_group_item_r, $value)
 	        break;
 
         case 'instance_attribute_type':
-        	return custom_select($fieldname, fetch_instance_attribute_type_rs(), '%s_attribute_type%', 1, $value, 'user_id');
+        	return custom_select($fieldname, fetch_instance_attribute_type_rs(), '%s_attribute_type% - %description%', 1, $value, 's_attribute_type');
         	break;
         	
         case 'guest_userid':

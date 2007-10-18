@@ -268,9 +268,13 @@ if(is_site_enabled())
 					{
 						$page_title = get_opendb_lang_var('item_quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
 							
-						$item_checkout_instance_rs = get_decoded_item_instance_rs($HTTP_VARS['checkout_item_instance_rs']);
-						$item_checkout_instance_rs = update_item_checkout_instance_rs($item_checkout_instance_rs, $admin_quick_check_out_error);
-							
+						$item_checkout_instance_rs = update_item_checkout_instance_rs(
+								get_decoded_item_instance_rs($HTTP_VARS['checkout_item_instance_rs']), 
+								$admin_quick_check_out_error);
+
+						//$HTTP_VARS['checkout_item_instance_rs'] = 
+						//		get_encoded_item_instance_rs($item_checkout_instance_rs);
+						
 						$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 						$listingObject->setNoRowsMessage(get_opendb_lang_var('no_records_found'));
 							

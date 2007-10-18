@@ -37,6 +37,7 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
 	http_redirect("login.php?op=login&redirect=".urlencode($redirect));
 }
 
+					
 /**
  * Simple HTTTP Location redirect
  *
@@ -46,10 +47,25 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
  */
 function http_redirect($link)
 {
-	if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-		header('Location: https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
-	else
-		header('Location: http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/'.$link);
+	if(!is_url_absolute($link)) {
+		$protocol = 'http';
+		if (isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			$protocol = 'https';
+		}
+		
+		$host = $_SERVER['HTTP_HOST'];
+		
+		$path = dirname($_SERVER['PHP_SELF']);
+		if(substr($path, -1, 1) != '/') {
+			$path .= '/';
+		}
+		$path .= $link;
+		
+		header('Location: '.$protocol.'://'.$host.$path);
+			
+	} else {
+		header("Location: $link");
+	}
 }
 
 /**
@@ -170,6 +186,11 @@ function get_site_path()
 		$index = strrpos($path,"/");
 		if($index !== FALSE)
 			$path = substr($path,0,$index+1);//include last slash!
+	
+		// if path does not end in /, at this character.
+		if(substr($path, -1, 1) != '/') {
+			$path .= '/';
+		}
 	
 		return $path;
 	}

@@ -48,7 +48,7 @@ include_once("./functions/logging.php");
 include_once("./functions/user.php");
 include_once("./functions/datetime.php");
 
-function _build_tooltip_popup($prompt, $value)
+function _build_tooltip($prompt, $value)
 {
 	$value = str_replace("\"", "&quot;", $value);
 	$value = str_replace("'", "\\'", $value);
@@ -99,7 +99,7 @@ if (is_opendb_valid_session())
 						}
 						
 						// return to log file without POST params so can do immediate refresh of log
-						http_redirect("$PHP_SELF?type=$ADMIN_TYPE");
+						http_redirect(basename($PHP_SELF)."?type=$ADMIN_TYPE");
 					}
 					else if($HTTP_VARS['confirmed'] != 'false')
 					{
@@ -118,7 +118,7 @@ if (is_opendb_valid_session())
 						$HTTP_VARS['op'] = '';
 						
 						// return to log file without POST params so can do immediate refresh of log
-						http_redirect("$PHP_SELF?type=$ADMIN_TYPE");
+						http_redirect(basename($PHP_SELF)."?type=$ADMIN_TYPE");
 					}
 				}
 				else if($HTTP_VARS['op'] == 'backup')
@@ -147,10 +147,6 @@ if (is_opendb_valid_session())
 				
 				if($HTTP_VARS['op'] == '')
 				{
-					echo('<script language="JavaScript">
-					OLpageDefaults(BGCLASS, \'tooltip\', FGCLASS, \'tooltip\', TEXTFONTCLASS, \'tooltip\', CGCLASS, \'tooltip-caption\', CAPTIONFONTCLASS, \'tooltip-caption\', STICKY, MOUSEOFF, WRAP, WRAPMAX, 400);
-				</script>');
-				
 					if(is_array($errors))
 						echo(format_error_block($errors));
 					else if(is_array($success))
@@ -195,7 +191,7 @@ if (is_opendb_valid_session())
 							
 							if($tokens['parameters'] != NULL)
 							{
-								$tokens['parameters'] = _build_tooltip_popup(get_opendb_lang_var('parameters'), $tokens['parameters']);
+								$tokens['parameters'] = _build_tooltip(get_opendb_lang_var('parameters'), $tokens['parameters']);
 							}
 							else
 							{
@@ -206,7 +202,7 @@ if (is_opendb_valid_session())
 							{
 								if(strlen($tokens['message'])>100)
 								{
-									$tokens['message'] = _build_tooltip_popup(get_opendb_lang_var('message'), $tokens['message']);
+									$tokens['message'] = _build_tooltip(get_opendb_lang_var('message'), $tokens['message']);
 								}										
 							}
 							else

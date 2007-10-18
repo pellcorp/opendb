@@ -58,8 +58,9 @@ class imdb extends SitePlugin
 			}
 			else
 			{
+				//<b>Titles (Exact Matches)</b> (Displaying 1 Result) <table>
 				//<p><b>Titles (Exact Matches)</b> (Displaying 4 Results)
-				if( preg_match_all("/<b>([a-zA-Z]+) \(([a-zA-Z]+) Matches\)<\/b> \(Displaying ([0-9]+) Result[s]*\)<ol>/m", $pageBuffer, $gmatches) )
+				if( preg_match_all("/<b>([a-zA-Z]+) \(([a-zA-Z]+) Matches\)<\/b> \(Displaying ([0-9]+) Result[s]*\)[\s]*<table>/m", $pageBuffer, $gmatches) )
 				{
 				    // we need to know what match types to support (exact, partial, approx).
 					$match_type_r = $this->getConfigValue('title_search_match_types');
@@ -72,51 +73,40 @@ class imdb extends SitePlugin
 							if($start!==FALSE)
 							{
 							    $start += strlen($gmatches[0][$i]);
-							    $end = strpos($pageBuffer, "</ol>", $start);
+							    $end = strpos($pageBuffer, "</table>", $start);
 
 							    $search_block = substr($pageBuffer, $start, $end-$start);
 							
-								if(preg_match_all("/<li>[\s]*<a href=\"([^\"]+)\"[^\>]*>(.*)<\/li>/Um", $search_block, $matches))
+								if(preg_match_all("!<tr>[\s]*<td.*?>(.*?)</td>[\s]*<td.*?>(.*?)</td>[\s]*<td.*?>(.*?)</td>[\s]*</tr>!", $search_block, $matches))
 								{
 									for ($j = 0; $j < count($matches[1]); $j++)
 									{
-										if( preg_match("!/title/tt([^/]+)/!", $matches[1][$j], $imdb_id_match))
+										$image = NULL;
+										$title = NULL;
+										$comments = NULL;
+										$imdb_id = NULL;
+										
+										if(preg_match("!<a href=\"/rg/photo-find/title-tiny/title/.*\"><img src=\"([^\"]+)\"!", $matches[1][$j], $regs))
 										{
-										    $comments = NULL;
-
-											// check for AKA entries and display them.
-											$index = strpos($matches[2][$j], "<br>");
-											if($index !== FALSE)
-											{
-												$title = trim(unhtmlentities(strip_tags(substr($matches[2][$j], 0, $index))));
-
-												$aka_block = substr($matches[2][$j], $index);//4=<br>
-												while(true)
-												{
-													$index = strpos($aka_block, "<br>&#160;aka ");
-													if($index !== FALSE)
-													{
-														$aka = substr($aka_block, 0, $index);
-														if(strlen($aka)>0)
-														{
-															$comments = "...aka ".trim(unhtmlentities(strip_tags($aka)));
-														}
-
-														$aka_block = substr($aka_block, $index+strlen("<br>&#160;aka "));
-													}
-													else // end of string
-													{
-														$comments = "...aka ".trim(unhtmlentities(strip_tags($aka_block)));
-														break;
-													}
-												}
-											}
-											else
-											{
-												$title = trim(unhtmlentities(strip_tags($matches[2][$j])));
-											}
-
-											$this->addListingRow($title, NULL, $comments, array('imdb_id'=>$imdb_id_match[1]));
+											$image = $regs[1];
+										}
+										
+										if( preg_match("!<a href=\"/title/tt([^/]+)/\">([^>]+)</a>(.*)!", $matches[3][$j], $matches2))
+										{
+											$title = $matches2[2];
+											$imdb_id = $matches2[1];
+											
+										    if(preg_match("/[\s]*\(([0-9]+)\)/", $matches2[3], $regs))
+										    {
+										    	$title .= " (".$regs[1].")";
+										    }
+										    
+											if(preg_match("/<br>&#160;aka(.*)/", $matches2[3], $regs))
+										    {
+										    	$comments = unhtmlentities(strip_tags($regs[1]));
+										    }
+										    
+											$this->addListingRow($title, $image, $comments, array('imdb_id'=>$imdb_id));
 										}
 									}
 								}
@@ -233,31 +223,32 @@ class imdb extends SitePlugin
 		if($start !== FALSE)
 		{
 			$end = strpos($pageBuffer,"</div>", $start);
-				
 			$certification = trim(substr($pageBuffer,$start,$end-$start));
 			
-			if(preg_match_all("!<a href=\"/[^\"]*\">([^:]*):([^<]*)</a>!", $certification, $matches))
+			$age_certification_codes_r = $this->getConfigValue('age_certification_codes');
+			if(!is_array($age_certification_codes_r) && strlen($age_certification_codes_r)>0) // single value
+				$age_certification_codes_r = array($age_certification_codes_r);
+			
+			if(is_array($age_certification_codes_r)) // single value
 			{
-				// Ensure we have a valid value here!
-				$age_certification_codes_r = $this->getConfigValue('age_certification_codes');
-				
-				// Default to USA if not defined!
-				if(!is_array($age_certification_codes_r))
-					$age_certification_codes_r = array("USA");
-				else
-					reset($age_certification_codes_r);
-				
+				reset($age_certification_codes_r);
 				while (list(,$age_code) = @each($age_certification_codes_r))
 				{
-					for($i=0; $i<count($matches[1]); $i++)
+					if(preg_match("!<a href=\"/[^\"]*\">".preg_quote($age_code, "!").":([^<]*)</a>!", $certification, $matches))
 					{
-						if($age_code == $matches[1][$i])
-						{
-							$this->addItemAttribute('age_rating', $matches[2][$i]);
-							
-							break 2; // break out of for and while
-						}
+						$this->addItemAttribute('age_rating', $matches[1]);
+						break; // found it!
 					}
+				}
+			}
+			
+			// get a list of all age ratings, with a country prefix.
+			if(preg_match_all("!<a href=\"/[^\"]*\">([^:]*):([^<]*)</a>!", $certification, $matches))
+			{
+				for($i=0; $i<count($matches[1]); $i++)
+				{
+					$country = strtolower(str_replace(' ', '_', $matches[1][$i]));
+					$this->addItemAttribute($country.'_age_rating', $matches[2][$i]);
 				}
 			}
 		}

@@ -36,6 +36,7 @@ include_once("./functions/scripts.php");
     usertype_array - Restrict to set of user types only.
 	value_select(option1,option2)
  	array - keys will be numeric and in sequence only.
+
 */
 function get_group_block_input_field($config_group_item_r, $value)
 {
@@ -85,10 +86,14 @@ function get_group_block_input_field($config_group_item_r, $value)
 			return custom_select($fieldname, get_user_types_rs(get_user_types_r()), '%value% - %display%', 1, $value);
 	        break;
 
+        case 'instance_attribute_type':
+        	return custom_select($fieldname, fetch_instance_attribute_type_rs(), '%s_attribute_type%', 1, $value, 'user_id');
+        	break;
+        	
         case 'guest_userid':
 			$results = fetch_user_rs(array('G'), NULL, 'fullname', 'ASC');
 			if($results)
-	        	return custom_select($fieldname, fetch_user_rs(array('G'), NULL, 'fullname', 'ASC'), '%fullname% (%user_id%)', 1, $value, 'user_id');
+	        	return custom_select($fieldname, $results, '%fullname% (%user_id%)', 1, $value, 'user_id');
 			else
                 return "<div class=\"error\">No Guest User(s) Found</div>";
 

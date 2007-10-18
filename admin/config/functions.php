@@ -21,6 +21,20 @@
 include_once("./functions/widgets.php");
 include_once("./functions/user.php");
 
+function fetch_instance_attribute_type_rs()
+{
+	$query = "SELECT DISTINCT siat.s_attribute_type FROM
+			s_item_attribute_type siat
+			WHERE siat.instance_attribute_ind = 'Y'
+			ORDER BY 1";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else
+		return FALSE;
+}
+
 /**
 Will query for all groups, where group_id does not have a '.' (period), which
 indicates a subgroup.

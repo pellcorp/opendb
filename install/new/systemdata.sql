@@ -371,6 +371,7 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_in
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_review', 11, 'Item Review', 'Item Review configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow', 12, 'Item Borrow', 'Borrow Functionality configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.reminder', 1, 'Item Borrow Reminders', 'Reminders Job configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.checkout', 2, 'Item Borrow Checkouts / Checkins', 'Borrow check in / check out configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'search', 13, 'Item Search', 'Item Search configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import', 14, 'Import', 'Import configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import.cache', 1, 'Import Cache', 'Import Cache configuration' );
@@ -580,6 +581,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'list_all_reserved', 24, 'All Reserved Items Listing', 'Allow listing of all reserved items', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow.reminder', 'duration_range', 1, 'Duration Range', 'Reminder job duration range, as follows: +X = X days overdue; 0 = on day due; -X = X days before due date', 'number');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow.checkout', 'alt_id_attribute_type', 1, 'Alt ID Attribute Type', 'The attribute type that will store the alternate ID used for auto checkin / checkout', 'instance_attribute_type');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('search', 'datetime_mask', 1, 'Datetime Mask', 'Search datetime mask', 'datemask');
 

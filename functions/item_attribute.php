@@ -26,6 +26,21 @@ include_once("./functions/filecache.php");
 include_once("./functions/file_type.php");
 include_once("./functions/http.php");
 
+function fetch_item_instance_for_attribute_val_rs($attribute_val, $s_attribute_type)
+{
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, i.title, i.s_item_type
+			FROM item_attribute ia, item_instance ii, item i
+			WHERE i.id = ii.item_id AND ii.item_id = ia.item_id AND ii.instance_no = ia.instance_no AND
+			ia.attribute_val = '$attribute_val' AND
+			ia.s_attribute_type = '$s_attribute_type' ";
+	
+	$results = db_query($query);
+	if($results && db_num_rows($results)>0)
+	{
+		return $results;
+	}
+}
+
 /**
 @param $filename - assumes its been basenamed
 */

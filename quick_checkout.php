@@ -135,7 +135,7 @@ function is_item_instance_in_array($item_instance_r, $item_instance_rs) {
 	return FALSE;
 }
 
-function get_new_checkout_item_instance_rs($alt_item_id, $attribute_type_r, $checkout_item_instance_rs)
+function get_new_altid_item_instance_rs($alt_item_id, $attribute_type_r, $altid_item_instance_rs)
 {
 	$alt_item_id = trim($alt_item_id);
 	if(strlen($alt_item_id)) {
@@ -147,7 +147,7 @@ function get_new_checkout_item_instance_rs($alt_item_id, $attribute_type_r, $che
 				$item_instance_rs = array();
 				
 				while($item_instance_r = db_fetch_assoc($results)) {
-					if(!is_item_instance_in_array($item_instance_r, $checkout_item_instance_rs)) {
+					if(!is_item_instance_in_array($item_instance_r, $altid_item_instance_rs)) {
 						$item_instance_rs[] = $item_instance_r;
 					}
 				}
@@ -164,7 +164,7 @@ function get_new_checkout_item_instance_rs($alt_item_id, $attribute_type_r, $che
 				
 				$item_instance_r = array('item_id'=>$item_id, 'instance_no'=>$instance_no);
 				
-				if(!is_item_instance_in_array($item_instance_r, $checkout_item_instance_rs)) {
+				if(!is_item_instance_in_array($item_instance_r, $altid_item_instance_rs)) {
 					$item_instance_r = fetch_item_instance_r($item_instance_r['item_id'], $item_instance_r['instance_no']);
 					if(is_array($item_instance_r))
 					{
@@ -218,57 +218,81 @@ function get_encoded_item_instance_rs($checkout_item_instance_rs)
 	return $encoded_item_instance_r;
 }
 
-function update_checkout_item_instance_rs($alt_item_id, $attribute_type_r, $checkout_item_instance_rs, &$error)
+function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $altid_item_instance_rs, &$error)
 {
-	if(!is_array($checkout_item_instance_rs)) {
-		$checkout_item_instance_rs = array();
+	if(!is_array($altid_item_instance_rs)) {
+		$altid_item_instance_rs = array();
 	}
 	
-	$item_instance_rs = get_new_checkout_item_instance_rs($alt_item_id, $attribute_type_r, $checkout_item_instance_rs);
+	$item_instance_rs = get_new_altid_item_instance_rs($alt_item_id, $attribute_type_r, $checkout_item_instance_rs);
 	if(is_array($item_instance_rs))
 	{
 		while(list(,$item_instance_r) = each($item_instance_rs))
 		{
-			if(!is_item_borrowed($item_instance_r['item_id'], $item_instance_r['instance_no']))
+			if($item_instance_r['owner_id'] != $HTTP_VARS['borrower_id'])
 			{
-				if($item_instance_r['owner_id'] != $HTTP_VARS['borrower_id'])
+				if($op == 'checkout')
 				{
-					$status_type_r = fetch_status_type_r($item_instance_r['s_status_type']);
-					if($status_type_r['borrow_ind'] == 'Y')
+					if(is_item_instance_checkoutable($item_instance_r, &$error))
 					{
-						$checkout_item_instance_rs[] = $item_instance_r;
-					}
-					else
-					{
-						$error[] = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+						$altid_item_instance_rs[] = $item_instance_r;
 					}
 				}
-				else
+				else if($op == 'checkin')
 				{
-					$error[] = get_opendb_lang_var('user_is_owner_of_item');
+					if(is_item_instance_checkinable($item_instance_r, &$error))
+					{
+						$altid_item_instance_rs[] = $item_instance_r;
+					}
 				}
 			}
 			else
 			{
-				$error[] = get_opendb_lang_var('item_is_already_checked_out');
+				$error[] = get_opendb_lang_var('user_is_owner_of_item');
 			}
-		}//while
-		
-		// TODO - re-encode checkout_item_instance_rs
+		}
 	}
 	else
 	{
 		$error[] = get_opendb_lang_var('item_not_found');
 	}
 	
-		//}
-		//else
-		//{
-		//	$error = get_opendb_lang_var('item_is_already_selected');
-		//}
-//	}
+	return $altid_item_instance_rs;
+}
+
+function is_item_instance_checkoutable($item_instance_r, &$error)
+{
+	if(!is_item_borrowed($item_instance_r['item_id'], $item_instance_r['instance_no']))
+	{
+		$status_type_r = fetch_status_type_r($item_instance_r['s_status_type']);
+		if($status_type_r['borrow_ind'] == 'Y')
+		{
+			return TRUE;
+		}
+		else
+		{
+			$error[] = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+		}
+	}
+	else
+	{
+		$error[] = get_opendb_lang_var('item_is_already_checked_out');
+	}
 	
-	return $checkout_item_instance_rs;
+	//else
+	return FALSE;
+}
+
+function is_item_instance_checkinable($item_instance_r, &$error)
+{
+	if(is_item_borrowed($item_instance_r['item_id'], $item_instance_r['instance_no']))
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 if(is_site_enabled())
@@ -279,56 +303,63 @@ if(is_site_enabled())
 		{
 			if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 			{
-				if($HTTP_VARS['op'] == 'checkout')
+				if($HTTP_VARS['op'] == 'checkout' || $HTTP_VARS['op'] == 'checkin')
 				{
-					$admin_quick_check_out_error = NULL;
-					
-					if(strlen($HTTP_VARS['borrower_id'])==0 ||
+					if($HTTP_VARS['op'] == 'checkout' && 
+							(strlen($HTTP_VARS['borrower_id'])==0 ||
 							!is_user_valid($HTTP_VARS['borrower_id']) ||
 							!is_user_active($HTTP_VARS['borrower_id']) ||
-							!is_user_allowed_to_borrow($HTTP_VARS['borrower_id']))
+							!is_user_allowed_to_borrow($HTTP_VARS['borrower_id'])))
 					{
 						display_borrower_form($HTTP_VARS);
 					}
 					else
 					{
-						$page_title = get_opendb_lang_var('item_quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
-						
+						if($HTTP_VARS['op'] == 'checkout')
+						{
+							$page_title = get_opendb_lang_var('item_quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
+						}
+						else if($HTTP_VARS['op'] == 'checkin')
+						{
+							$page_title = get_opendb_lang_var('item_quick_check_in', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
+						}
+					
 						$attribute_type_r = fetch_alt_item_id_attribute_type_r(); 
 						
-						$checkout_item_instance_rs = update_checkout_item_instance_rs(
+						$altid_item_instance_rs = update_altid_item_instance_rs(
+								$HTTP_VARS['op'],
 								$HTTP_VARS['alt_item_id'],
 								$attribute_type_r,
-								get_decoded_item_instance_rs($HTTP_VARS['checkout_item_instance_rs']), 
-								$admin_quick_check_out_error);
+								get_decoded_item_instance_rs($HTTP_VARS['altid_item_instance_rs']), 
+								$error);
 						
 						$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 						$listingObject->setNoRowsMessage(get_opendb_lang_var('no_records_found'));
 							
 						if(is_numeric($listingObject->getItemsPerPage()))
 						{
-							$listingObject->setTotalItems(count($checkout_item_instance_rs));
+							$listingObject->setTotalItems(count($altid_item_instance_rs));
 						}
 							
-						if(is_array($checkout_item_instance_rs))
+						if(is_array($altid_item_instance_rs))
 						{
 							sort_item_listing(
-								$checkout_item_instance_rs,
+								$altid_item_instance_rs,
 								$listingObject->getCurrentOrderBy(),
 								$listingObject->getCurrentSortOrder());
 
 							// Now get the bit we actually want for this page.
 							if(is_numeric($listingObject->getItemsPerPage()))
 							{
-								$checkout_item_instance_rs = array_slice(
-									$checkout_item_instance_rs,
+								$altid_item_instance_rs = array_slice(
+									$altid_item_instance_rs,
 									$listingObject->getStartIndex(),
 									$listingObject->getItemsPerPage());
 							}
 
 							// Ensure we are at the start of the array.
-							if(is_array($checkout_item_instance_rs))
-								reset($checkout_item_instance_rs);
+							if(is_array($altid_item_instance_rs))
+								reset($altid_item_instance_rs);
 						}
 							
 						echo(_theme_header($page_title));
@@ -336,9 +367,9 @@ if(is_site_enabled())
 							
 						echo(get_listings_javascript());
 
-						if(strlen($admin_quick_check_out_error)>0)
+						if(strlen($error)>0)
 						{
-							echo(format_error_block($admin_quick_check_out_error));
+							echo(format_error_block($error));
 						}
 
 						// include the input field and other processing here.
@@ -348,27 +379,23 @@ if(is_site_enabled())
 						echo("\n<input type=\"hidden\" name=\"page_no\" value=\"\">");//dummy
 						echo("\n<input type=\"hidden\" name=\"borrower_id\" value=\"".$HTTP_VARS['borrower_id']."\">");
 						
-						
-						
-						
-						
 						echo get_item_input_field('alt_item_id', $attribute_type_r, NULL);
 						
 						echo("\n</table>");
 							
 						echo("<input type=submit value=\"".get_opendb_lang_var('add_item')."\">");
 						
-						$HTTP_VARS['checkout_item_instance_rs'] = 
-								get_encoded_item_instance_rs($checkout_item_instance_rs);
+						$HTTP_VARS['altid_item_instance_rs'] = 
+								get_encoded_item_instance_rs($altid_item_instance_rs);
 								
-						if(is_not_empty_array($HTTP_VARS['checkout_item_instance_rs']))
+						if(is_not_empty_array($HTTP_VARS['altid_item_instance_rs']))
 						{
 							echo("<input type=button onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'quick_check_out')\" value=\"".get_opendb_lang_var('check_out_item(s)')."\">");
-							echo(get_url_fields(NULL, array('checkout_item_instance_rs'=>$HTTP_VARS['checkout_item_instance_rs'])));
+							echo(get_url_fields(NULL, array('altid_item_instance_rs'=>$HTTP_VARS['altid_item_instance_rs'])));
 						}
 						echo("</form>");
 							
-						echo("<div id=\"adminQuickCheckOutListing\">");
+						echo("<div id=\"checkOutListing\">");
 						$listingObject->startListing($page_title);
 
 						$listingObject->addHeaderColumn(get_opendb_lang_var('type'), 's_item_type');
@@ -380,24 +407,24 @@ if(is_site_enabled())
 							$listingObject->addHeaderColumn(get_opendb_lang_var('borrow_duration'), 'borrow_duration', FALSE);
 						}
 							
-						if(is_not_empty_array($checkout_item_instance_rs))
+						if(is_not_empty_array($altid_item_instance_rs))
 						{
-							while(list(,$borrowed_item_r) = each($checkout_item_instance_rs))
+							while(list(,$item_instance_r) = each($altid_item_instance_rs))
 							{
 								$listingObject->startRow();
 									
-								$listingObject->addItemTypeImageColumn($borrowed_item_r['s_item_type']);
-								$listingObject->addTitleColumn($borrowed_item_r);
-								$listingObject->addUserNameColumn($borrowed_item_r['owner_id'], array('bi_sequence_number'=>$borrowed_item_r['sequence_number']));
+								$listingObject->addItemTypeImageColumn($item_instance_r['s_item_type']);
+								$listingObject->addTitleColumn($item_instance_r);
+								$listingObject->addUserNameColumn($item_instance_r['owner_id']);
 									
-								if(is_numeric($borrowed_item_r['borrow_duration']) && $borrowed_item_r['borrow_duration']>0)
+								if(is_numeric($item_instance_r['borrow_duration']) && $item_instance_r['borrow_duration']>0)
 								{
-									$duration_attr_type_r = fetch_sfieldtype_item_attribute_type_r($borrowed_item_r['s_item_type'], 'DURATION');
+									$duration_attr_type_r = fetch_sfieldtype_item_attribute_type_r($item_instance_r['s_item_type'], 'DURATION');
 									$listingObject->addDisplayColumn(
 										$duration_attr_type_r['s_attribute_type'],
 										NULL,
 										$duration_attr_type_r['display_type'],
-										$borrowed_item_r['borrow_duration']);
+										$item_instance_r['borrow_duration']);
 								}
 								else
 								{

@@ -1092,24 +1092,21 @@ if(is_site_enabled())
 			// ----------------------------------------------------------------------------
 			// Save current url string, so we can return to last listings page if required.
 			// ----------------------------------------------------------------------------
-			if(get_opendb_config_var('listings', 'save_listing_url'))
-			{
-				// The Listing class has already removed any $HTTP_VARS which should not
-				// be passed onto the next request.
-				$v_listing_url_vars = $HTTP_VARS;
+			// The Listing class has already removed any $HTTP_VARS which should not
+			// be passed onto the next request.
+			$v_listing_url_vars = $HTTP_VARS;
 
-				$v_listing_url_vars['mode'] = NULL;
-				
-				// These variables should not be passed back from a 'Back to Listing' link!		
-				$v_listing_url_vars['listing_link'] = NULL;
+			$v_listing_url_vars['mode'] = NULL;
 			
-				// These are listing specific - we do not want to save them.
-				$v_listing_url_vars['item_id_instance_no'] = NULL;
-				$v_listing_url_vars['checked_item_id_instance_no'] = NULL;
-				$v_listing_url_vars['checked_item_id_instance_no_list'] = NULL;
-	
-				register_opendb_session_var('listing_url_vars', $v_listing_url_vars);
-			}
+			// These variables should not be passed back from a 'Back to Listing' link!		
+			$v_listing_url_vars['listing_link'] = NULL;
+		
+			// These are listing specific - we do not want to save them.
+			$v_listing_url_vars['item_id_instance_no'] = NULL;
+			$v_listing_url_vars['checked_item_id_instance_no'] = NULL;
+			$v_listing_url_vars['checked_item_id_instance_no_list'] = NULL;
+
+			register_opendb_session_var('listing_url_vars', $v_listing_url_vars);
 			
 			while($item_r = db_fetch_assoc($result))
 			{  	

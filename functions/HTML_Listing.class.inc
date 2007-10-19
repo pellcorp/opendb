@@ -266,7 +266,6 @@ class HTML_Listing extends Listing
                         $user_name = get_opendb_lang_var('user_name', array('fullname'=>$fullname, 'user_id'=>$user_id));
 						
                         if($this->_include_href_links && 
-									get_opendb_config_var('listings', 'user_email_link')!==FALSE && 
 									is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 						{
 							$item_title = '';

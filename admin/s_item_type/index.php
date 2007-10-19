@@ -675,8 +675,8 @@ if (is_opendb_valid_session())
 						echo get_input_field("order_no", NULL, "New Order No", "number(3)", "Y", $HTTP_VARS['order_no']);
 						echo("</table>");
 				
-						echo("\n<input type=\"button\" value=\" ".get_opendb_lang_var('continue')." \" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\"> ".
-							"\n<input type=\"button\" value=\" ".get_opendb_lang_var('cancel')." \" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">".
+						echo("\n<input type=\"button\" value=\"Submit\" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\"> ".
+							"\n<input type=\"button\" value=\"Cancel\" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">".
 						"</form>\n");
 					}
 					else // $HTTP_VARS['confirmed'] == 'true'

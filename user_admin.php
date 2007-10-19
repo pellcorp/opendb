@@ -60,7 +60,7 @@ function get_new_user_usertype_input_form($HTTP_VARS, $user_type_r, $user_type)
 	}
 	$buffer .= "</dl>";
 	
-	$buffer .= "\n<input type=\"submit\" value=\"".get_opendb_lang_var('continue')."\">";
+	$buffer .= "\n<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">";
 
 	$buffer .= "\n</form>";
 			
@@ -330,17 +330,16 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		{
 			$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='update'; $onclick_event\" value=\"".get_opendb_lang_var('update_user')."\">";
 			
-			if(is_user_active($HTTP_VARS['user_id']) && get_opendb_config_var('user_admin', 'user_delete_support') !== FALSE)
+			if(is_user_active($HTTP_VARS['user_id']))
 			{
-                if(get_opendb_config_var('user_admin', 'user_deactivate_support') === TRUE)
-                    $buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='deactivate'; this.form.submit();\" value=\"".get_opendb_lang_var('deactivate_user')."\">";
-				else if(get_opendb_config_var('user_admin', 'user_delete_support') === TRUE)
-					$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='delete'; this.form.submit();\" value=\"".get_opendb_lang_var('delete_user')."\">";
+				$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='deactivate'; this.form.submit();\" value=\"".get_opendb_lang_var('deactivate_user')."\">";
 			}
 			else if(!is_user_active($HTTP_VARS['user_id']))
 			{
 				$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='activate'; this.form.submit();\" value=\"".get_opendb_lang_var('activate_user')."\">";
 			}
+			
+			$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='delete'; this.form.submit();\" value=\"".get_opendb_lang_var('delete_user')."\">";
 		}
 		else
 		{
@@ -913,65 +912,57 @@ function handle_user_password_change($user_id, $HTTP_VARS, &$errors)
 */
 function handle_user_deactivate($user_id, $HTTP_VARS, &$errors)
 {
-	if(get_opendb_config_var('user_admin', 'user_deactivate_support') === TRUE)
+	if($user_id == get_opendb_session_var('user_id'))
 	{
-		if($user_id == get_opendb_session_var('user_id'))
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('cannot_deactivate_yourself'),'detail'=>'');
-			return FALSE;
-		}
-		else if(fetch_my_borrowed_item_cnt($user_id)>0)
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_borrows_not_deactivated'),'detail'=>'');
-			return FALSE;
-		}
-		else if(fetch_owner_borrowed_item_cnt($user_id)>0)
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_owner_borrows_not_deactivated'),'detail'=>'');
-			return FALSE;
-		}
-		else if($HTTP_VARS['confirmed'] == 'true')
-		{
-			// Cancel all reservations.
-			$results = fetch_owner_reserved_item_rs($user_id);
-			if($results)
-			{
-				while($borrowed_item_r = db_fetch_assoc($results))
-				{
-					cancel_reserve_item($borrowed_item_r['sequence_number']);
-				}
-				db_free_result($results);
-			}
-	
-			$results = fetch_my_reserved_item_rs($user_id);
-			if($results)
-			{
-				while($borrowed_item_r = db_fetch_assoc($results))
-				{
-					cancel_reserve_item($borrowed_item_r['sequence_number']);
-				}
-				db_free_result($results);
-			}
-
-			// deactivate user.
-			if(deactivate_user($user_id))
-				return TRUE;
-			else
-				return FALSE;
-		}
-		else if($HTTP_VARS['confirmed'] != 'false')// confirmation required.
-		{
-			return "__CONFIRM__";
-		}
-		else 
-		{
-			return "__ABORTED__";				
-		}
-	}
-	else // if(get_opendb_config_var('user_admin', 'user_deactivate_support') === TRUE)
-	{
-		$errors[] = array('error'=>get_opendb_lang_var('user_deactivate_not_supported'),'detail'=>'');
+		$errors[] = array('error'=>get_opendb_lang_var('cannot_deactivate_yourself'),'detail'=>'');
 		return FALSE;
+	}
+	else if(fetch_my_borrowed_item_cnt($user_id)>0)
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_borrows_not_deactivated'),'detail'=>'');
+		return FALSE;
+	}
+	else if(fetch_owner_borrowed_item_cnt($user_id)>0)
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_owner_borrows_not_deactivated'),'detail'=>'');
+		return FALSE;
+	}
+	else if($HTTP_VARS['confirmed'] == 'true')
+	{
+		// Cancel all reservations.
+		$results = fetch_owner_reserved_item_rs($user_id);
+		if($results)
+		{
+			while($borrowed_item_r = db_fetch_assoc($results))
+			{
+				cancel_reserve_item($borrowed_item_r['sequence_number']);
+			}
+			db_free_result($results);
+		}
+
+		$results = fetch_my_reserved_item_rs($user_id);
+		if($results)
+		{
+			while($borrowed_item_r = db_fetch_assoc($results))
+			{
+				cancel_reserve_item($borrowed_item_r['sequence_number']);
+			}
+			db_free_result($results);
+		}
+
+		// deactivate user.
+		if(deactivate_user($user_id))
+			return TRUE;
+		else
+			return FALSE;
+	}
+	else if($HTTP_VARS['confirmed'] != 'false')// confirmation required.
+	{
+		return "__CONFIRM__";
+	}
+	else 
+	{
+		return "__ABORTED__";				
 	}
 }
 
@@ -1006,131 +997,122 @@ function handle_user_activate($user_id, $HTTP_VARS, &$errors)
 */
 function handle_user_delete($user_id, $HTTP_VARS, &$errors)
 {
-	if(get_opendb_config_var('user_admin', 'user_delete_support') === TRUE)
+	// We need to ensure that the user does not have any titles or borrowed/reserved items.
+	if($user_id == get_opendb_session_var('user_id'))
 	{
-		// We need to ensure that the user does not have any titles or borrowed/reserved items.
-		if($user_id == get_opendb_session_var('user_id'))
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('cannot_delete_yourself'),'detail'=>'');
-			return FALSE;
-		}
-		else if(fetch_my_borrowed_item_cnt($user_id)>0)
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_borrows_not_deleted'),'detail'=>'');
-			return FALSE;
-		}
-		else if(fetch_owner_borrowed_item_cnt($user_id)>0)
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_owner_borrows_not_deleted'),'detail'=>'');
-			return FALSE;
-		}
-		
-		// Now that we can proceed, we need to know whether we are performing a Delete or Deactivate
-		// operation.
-		if(get_opendb_config_var('user_admin', 'user_delete_with_reviews')!==TRUE && is_user_author($user_id, TRUE))
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_reviews_not_deleted'),'detail'=>'');
-			$confirm_operation = "__CONFIRM_DEACTIVATE__";
-		}
-		else if(get_opendb_config_var('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records')!==TRUE && 
-					get_opendb_config_var('user_admin', 'user_delete_with_borrower_inactive_borrowed_items')!==TRUE && 
-					(fetch_my_reserved_item_cnt($user_id)>0 || fetch_my_history_item_cnt($user_id)>0))
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_inactive_borrows_not_deleted'),'detail'=>'');
-			$confirm_operation = "__CONFIRM_DEACTIVATE__";
-		}
-		else if(get_opendb_config_var('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records')!==TRUE && 
-					get_opendb_config_var('user_admin', 'user_delete_with_owner_inactive_borrowed_items')!==TRUE && 
-					(fetch_owner_reserved_item_cnt($user_id)>0 || fetch_owner_history_item_cnt($user_id)>0))
-		{
-			$errors[] = array('error'=>get_opendb_lang_var('user_with_owner_inactive_borrows_not_deleted'),'detail'=>'');
-			$confirm_operation = "__CONFIRM_DEACTIVATE__";
-		}
-		else // User can be completely deleted
-		{
-			$confirm_operation = "__CONFIRM__";
-		}
-				
-		// If already confirmed operation.
-		if($HTTP_VARS['confirmed'] == 'true')
-		{
-			// Cancel all reservations.
-			$results = fetch_owner_reserved_item_rs($user_id);
-			if($results)
-			{
-				while($borrowed_item_r = db_fetch_assoc($results))
-				{
-					cancel_reserve_item($borrowed_item_r['sequence_number']);
-				}
-				db_free_result($results);
-			}
+		$errors[] = array('error'=>get_opendb_lang_var('cannot_delete_yourself'),'detail'=>'');
+		return FALSE;
+	}
+	else if(fetch_my_borrowed_item_cnt($user_id)>0)
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_borrows_not_deleted'),'detail'=>'');
+		return FALSE;
+	}
+	else if(fetch_owner_borrowed_item_cnt($user_id)>0)
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_owner_borrows_not_deleted'),'detail'=>'');
+		return FALSE;
+	}
 	
-			$results = fetch_my_reserved_item_rs($user_id);
+	// Now that we can proceed, we need to know whether we are performing a Delete or Deactivate
+	// operation.
+	if(get_opendb_config_var('user_admin', 'user_delete_with_reviews')!==TRUE && is_user_author($user_id, TRUE))
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_reviews_not_deleted'),'detail'=>'');
+		$confirm_operation = "__CONFIRM_DEACTIVATE__";
+	}
+	else if(get_opendb_config_var('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records')!==TRUE && 
+				get_opendb_config_var('user_admin', 'user_delete_with_borrower_inactive_borrowed_items')!==TRUE && 
+				(fetch_my_reserved_item_cnt($user_id)>0 || fetch_my_history_item_cnt($user_id)>0))
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_inactive_borrows_not_deleted'),'detail'=>'');
+		$confirm_operation = "__CONFIRM_DEACTIVATE__";
+	}
+	else if(get_opendb_config_var('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records')!==TRUE && 
+				get_opendb_config_var('user_admin', 'user_delete_with_owner_inactive_borrowed_items')!==TRUE && 
+				(fetch_owner_reserved_item_cnt($user_id)>0 || fetch_owner_history_item_cnt($user_id)>0))
+	{
+		$errors[] = array('error'=>get_opendb_lang_var('user_with_owner_inactive_borrows_not_deleted'),'detail'=>'');
+		$confirm_operation = "__CONFIRM_DEACTIVATE__";
+	}
+	else // User can be completely deleted
+	{
+		$confirm_operation = "__CONFIRM__";
+	}
+			
+	// If already confirmed operation.
+	if($HTTP_VARS['confirmed'] == 'true')
+	{
+		// Cancel all reservations.
+		$results = fetch_owner_reserved_item_rs($user_id);
+		if($results)
+		{
+			while($borrowed_item_r = db_fetch_assoc($results))
+			{
+				cancel_reserve_item($borrowed_item_r['sequence_number']);
+			}
+			db_free_result($results);
+		}
+
+		$results = fetch_my_reserved_item_rs($user_id);
+		if($results)
+		{
+			while($borrowed_item_r = db_fetch_assoc($results))
+			{
+				cancel_reserve_item($borrowed_item_r['sequence_number']);
+			}
+			db_free_result($results);
+		}
+			
+		// We are proceeding with the delete operation here.
+		if($confirm_operation == "__CONFIRM__")
+		{
+			// Delete all user reviews.
+			if(is_user_author($user_id))
+			{
+				delete_author_reviews($user_id);
+			}
+			
+			// Delete all inactive borrowed items
+			delete_my_inactive_borrowed_items($user_id);
+			
+			// If no items, we can proceed to delete user.
+			$results = fetch_owner_item_instance_rs($user_id);
 			if($results)
 			{
-				while($borrowed_item_r = db_fetch_assoc($results))
+				// For each item, check if there are any dependencies.  If not, delete the
+				// item_instance, and the item itself if no other instances.  Delete all
+				// reviews, if this is the only dependency.
+				while($item_r = db_fetch_assoc($results))
 				{
-					cancel_reserve_item($borrowed_item_r['sequence_number']);
+					// The handle_item_delete does all the required checking before proceeding to
+					// delete the item, so call - and programmatically set the 'confirmed = true' setting.
+					if(!handle_item_delete($item_r, fetch_status_type_r($item_r['s_status_type']), array('confirmed'=>'true'), $error, TRUE))
+					{
+						$errors[] = $error;
+					}
 				}
 				db_free_result($results);
 			}
-				
-			// We are proceeding with the delete operation here.
-			if($confirm_operation == "__CONFIRM__")
+		}//if($confirm_operation == "__CONFIRM__")
+		
+		if($confirm_operation == "__CONFIRM_DEACTIVATE__" || 
+					is_user_author($user_id, TRUE) || // If user has any dependent records left we cannot continue.
+					is_exists_borrower_borrowed_item($user_id) || 
+					is_exists_item_instance_with_owner($user_id))
+		{
+			if(deactivate_user($user_id))
+				return "__DEACTIVATED__";
+			else
+				return FALSE;
+		}
+		else // user can be completely deleted.
+		{
+			// delete user addresses first.
+			if(delete_user_addresses($user_id))
 			{
-				// Delete all user reviews.
-				if(is_user_author($user_id))
-				{
-					delete_author_reviews($user_id);
-				}
-				
-				// Delete all inactive borrowed items
-				delete_my_inactive_borrowed_items($user_id);
-				
-				// If no items, we can proceed to delete user.
-				$results = fetch_owner_item_instance_rs($user_id);
-				if($results)
-				{
-					// For each item, check if there are any dependencies.  If not, delete the
-					// item_instance, and the item itself if no other instances.  Delete all
-					// reviews, if this is the only dependency.
-					while($item_r = db_fetch_assoc($results))
-					{
-						// The handle_item_delete does all the required checking before proceeding to
-						// delete the item, so call - and programmatically set the 'confirmed = true' setting.
-						if(!handle_item_delete($item_r, fetch_status_type_r($item_r['s_status_type']), array('confirmed'=>'true'), $error, TRUE))
-						{
-							$errors[] = $error;
-						}
-					}
-					db_free_result($results);
-				}
-			}//if($confirm_operation == "__CONFIRM__")
-			
-			if($confirm_operation == "__CONFIRM_DEACTIVATE__" || 
-						is_user_author($user_id, TRUE) || // If user has any dependent records left we cannot continue.
-						is_exists_borrower_borrowed_item($user_id) || 
-						is_exists_item_instance_with_owner($user_id))
-			{
-				if(deactivate_user($user_id))
-					return "__DEACTIVATED__";
-				else
-					return FALSE;
-			}
-			else // user can be completely deleted.
-			{
-				// delete user addresses first.
-				if(delete_user_addresses($user_id))
-				{
-					if(delete_user($user_id))
-						return TRUE;
-					else
-					{
-						$db_error = db_error();
-						$errors = array('error'=>get_opendb_lang_var('user_not_deleted'),'detail'=>$db_error);
-						return FALSE;
-					}
-				}
+				if(delete_user($user_id))
+					return TRUE;
 				else
 				{
 					$db_error = db_error();
@@ -1138,20 +1120,21 @@ function handle_user_delete($user_id, $HTTP_VARS, &$errors)
 					return FALSE;
 				}
 			}
-		}
-		else if($HTTP_VARS['confirmed'] != 'false')// confirmation required.
-		{
-			return $confirm_operation;
-		} 
-		else 
-		{
-			return "__ABORTED__";				
+			else
+			{
+				$db_error = db_error();
+				$errors = array('error'=>get_opendb_lang_var('user_not_deleted'),'detail'=>$db_error);
+				return FALSE;
+			}
 		}
 	}
-	else // if(get_opendb_config_var('user_admin', 'user_delete_support') === TRUE)
+	else if($HTTP_VARS['confirmed'] != 'false')// confirmation required.
 	{
-		$errors = array('error'=>get_opendb_lang_var('user_delete_not_supported'),'detail'=>'');
-		return FALSE;
+		return $confirm_operation;
+	} 
+	else 
+	{
+		return "__ABORTED__";				
 	}
 }
 
@@ -1169,9 +1152,8 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 	    get_opendb_lang_var('userid').": ".$HTTP_VARS['user_id'].
 		"\n".get_opendb_lang_var('fullname').": ".$HTTP_VARS['fullname'].
 		"\n".get_opendb_lang_var('user_type').": ".get_usertype_prompt($HTTP_VARS['user_type']).
-		"\n".get_opendb_lang_var('user_theme').": ".$HTTP_VARS['uid_theme'];
-
-	$email_addr = NULL;
+		"\n".get_opendb_lang_var('user_theme').": ".$HTTP_VARS['uid_theme'].
+	    "\n".get_opendb_lang_var('email').": ".$HTTP_VARS['email_addr'];
 
 	$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
 	if($addr_results)
@@ -1185,13 +1167,6 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 				while($addr_attribute_type_r = db_fetch_assoc($attr_results))
 				{
 					$fieldname = get_field_name($addr_attribute_type_r['s_attribute_type'], $addr_attribute_type_r['order_no']);
-
-					$email_attribute = get_opendb_config_var('email', 'user_address_attribute');
-					if(strlen($email_attribute)>0)
-					{
-						if(strcasecmp($addr_attribute_type_r['s_attribute_type'], $email_attribute) === 0)
-							$email_addr = $HTTP_VARS[$address_type][$fieldname];
-					}
 
 					// may have to change this if statement, if fieldname will contain array, instead of scalar value
 					if(is_not_empty_array($HTTP_VARS[$address_type][$fieldname]) ||
@@ -1237,7 +1212,7 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 				'activate_url'=>$activate_url,
 				'delete_url'=>$delete_url));
 
-	return send_email_to_site_admins(NULL, get_opendb_lang_var('new_account'), $message, $errors);
+	return send_email_to_site_admins($HTTP_VARS['email_addr'], get_opendb_lang_var('new_account'), $message, $errors);
 }
 
 if(is_site_enabled())
@@ -1710,6 +1685,8 @@ if(is_site_enabled())
 					    $new_activated_user = is_user_not_activated($userid);
 
                         $user_r = fetch_user_r($userid);
+                        
+                        $errors = NULL;
                         
 						if(handle_user_activate($userid, $HTTP_VARS, $errors))
 						{

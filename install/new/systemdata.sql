@@ -475,13 +475,11 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_themes_support', 1, 'User Themes Support', 'Users can change theme', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_language_support', 2, 'User Language Support', 'Users can change language', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_deactivate_support', 3, 'Deactivate User Support', 'Deactivate instead of deleting user', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_support', 4, 'Delete User Support', 'If Deactivate User Support unchecked, this will allow delete of users', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_reviews', 5, 'Delete User with reviews', 'User can be deleted even if they have authored review(s)', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_borrower_inactive_borrowed_items', 6, 'Delete User with inactive borrower records', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 7, 'Delete user with inactive lender records', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_passwd_change_allowed', 8, 'Change Password support', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'datetime_mask', 10, 'Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_reviews', 3, 'Delete User with reviews', 'User can be deleted even if they have authored review(s)', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_borrower_inactive_borrowed_items', 4, 'Delete User with inactive borrower records', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 5, 'Delete user with inactive lender records', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_passwd_change_allowed', 6, 'Change Password support', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'datetime_mask', 7, 'Datetime Mask', '', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'piechart_striped', 1, 'Piechart striped', 'Draw every other pie wedge a different colour', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'piechart_12oclock', 2, 'Piechart 12oclock', '', 'boolean');
@@ -530,12 +528,10 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_input_actions', 8, 'Show Item Input Actions', 'Show update, edit, delete actions', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_refresh_actions', 9, 'Show Item Refresh Action', '', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'user_email_link', 10, 'User Email Link', 'User name linkable to send email', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'title_mask_macro_theme_img_help', 11, 'Title Mask Help Entries', 'Display any \'theme_img\' title mask macro elements in the help section.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_borrowed_or_returned', 12, 'Show Previously Borrowed Indication', 'Show indication if a user has already borrowed/returned item', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'print_listing_datetime_mask', 15, 'Print Listing Datetime Mask', '', 'datemask');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'save_listing_url', 16, 'Enable \'Back to Listing\' Links', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_exact_match_search_columns', 17, 'Include Exact Match Search Columns', 'Include a column for each exact match search column.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'alphalist_new_search_context', 18, 'Alpha List New Search Context', 'AlphaList should start a new search instead of further refining current search.', 'boolean');
 
@@ -675,8 +671,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin'
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_themes_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_passwd_change_allowed', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_language_support', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_deactivate_support', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_reviews','TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_borrower_inactive_borrowed_items', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 'FALSE');
@@ -719,8 +713,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('list
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'items_per_page_options', '3', '41');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'items_per_page_options', '4', '51');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'item_image_size', 'width', '69');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'user_email_link', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'save_listing_url', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_exact_match_search_columns', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'title_mask_macro_theme_img_help', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'no_image', 'no-image.gif');

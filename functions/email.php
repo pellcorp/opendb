@@ -227,13 +227,13 @@ function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors)
 	if($mailer->Send())
 	{
 		// No errors returned indicates correct execution.
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Email sent', array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Email sent', array($to, $toname, $from, $fromname, $subject));
 		return TRUE;
 	}
 	else
 	{
 		// No errors returned indicates correct execution.
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, $subject, "<snip>", $append_site_to_subject));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, subject, $message));
 
 		$errors[] = $mailer->ErrorInfo;
 		return FALSE;

@@ -123,7 +123,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confir
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete_deactivate', 'Do you you want to deactivate user \"{fullname}\" ({user_id}) instead?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'connected_to', 'Connected to {dbname}@{host}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'content', 'Content'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'continue', 'Continue'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'current_item_instance', 'Current Item instance'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'current_user', 'Current user'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_itemtype_chart', 'DataBase Item Types Chart'); 
@@ -508,9 +507,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_a
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_address_not_added', 'User Address(es) not added.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_address_not_updated', 'User Address(es) not updated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deactivated', 'User deactivated.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deactivate_not_supported', 'User deactivation is not supported.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deleted', 'User deleted.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_delete_not_supported', 'User deletion is not supported.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_exists', 'User \"{user_id}\" already exists.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_has_reservation', 'User \'{user_id}\' has an existing reservation'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_info', 'User Info'); 

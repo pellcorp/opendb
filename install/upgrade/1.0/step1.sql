@@ -229,6 +229,13 @@ DELETE FROM s_language_var WHERE varname = 'no_rating';
 
 DELETE FROM s_language_var WHERE varname = 'item_is_already_selected';
 
+DELETE FROM s_language_var WHERE varname = 'continue';
+
+# removed functionality to disable user delete / deactivate, admin should be allowed to do either.
+DELETE FROM s_language_var WHERE varname IN('user_deactivate_not_supported', 'user_delete_not_supported');
+DELETE FROM s_config_group_item WHERE group_id = 'user_admin' AND id IN ('user_deactivate_support', 'user_delete_support');
+DELETE FROM s_config_group_item_var WHERE group_id = 'user_admin' AND id IN ('user_deactivate_support', 'user_delete_support');
+
 # renamed export plugin
 UPDATE s_config_group_item_var SET value = 'OpenDbExportPlugin' WHERE group_id = 'item_display' AND id = 'export_link';
 
@@ -237,3 +244,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.checkout', 2, 'Item Borrow Checkouts / Checkins', 'Borrow check in / check out configuration' );
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow.checkout', 'alt_id_attribute_type', 1, 'Alt ID Attribute Type', 'The attribute type that will store the alternate ID used for auto checkin / checkout', 'instance_attribute_type');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow.checkout', 'alt_id_attribute_type', 'S_ITEM_ID');
+
+DELETE FROM s_config_group_item WHERE group_id = 'listings' AND id IN ('save_listing_url', 'user_email_link');
+DELETE FROM s_config_group_item_var WHERE group_id = 'listings' AND id IN ('save_listing_url', 'user_email_link');
+

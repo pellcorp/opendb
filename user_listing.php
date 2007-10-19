@@ -103,13 +103,10 @@ if(is_site_enabled())
 
 			if($result)
 			{
-				//if(get_opendb_config_var('user_listings', 'save_listing_url'))
-				//{
-					$v_listing_url_vars = $HTTP_VARS;
-					$v_listing_url_vars['mode'] = NULL;
-					
-					register_opendb_session_var('user_listing_url_vars', $v_listing_url_vars);
-				//}
+				$v_listing_url_vars = $HTTP_VARS;
+				$v_listing_url_vars['mode'] = NULL;
+				
+				register_opendb_session_var('user_listing_url_vars', $v_listing_url_vars);
 			
 				while ($user_r = db_fetch_assoc($result))
 				{
@@ -133,21 +130,20 @@ if(is_site_enabled())
 					$action_links_rs = NULL;
 					$action_links_rs[] = array(url=>'user_admin.php?op=edit&user_id='.$user_r['user_id'].'&listing_link=y', img=>'edit_user.gif',text=>get_opendb_lang_var('edit'));
 
-					if($user_is_active)
+					if($user_r['user_id'] != get_opendb_session_var('user_id'))
 					{
-						if($user_r['user_id'] != get_opendb_session_var('user_id'))
+						if($user_is_active)
 						{
-							if(get_opendb_config_var('user_admin', 'user_deactivate_support') === TRUE)
-								$action_links_rs[] = array(url=>'user_admin.php?op=deactivate&user_id='.$user_r['user_id'].'&listing_link=y', img=>'deactivate_user.gif',text=>get_opendb_lang_var('deactivate_user'));
-                               else if(get_opendb_config_var('user_admin', 'user_delete_support') === TRUE)
-								$action_links_rs[] = array(url=>'user_admin.php?op=delete&user_id='.$user_r['user_id'].'&listing_link=y', img=>'delete_user.gif',text=>get_opendb_lang_var('delete_user'));
+							$action_links_rs[] = array(url=>'user_admin.php?op=deactivate&user_id='.$user_r['user_id'].'&listing_link=y', img=>'deactivate_user.gif',text=>get_opendb_lang_var('deactivate_user'));
 						}
+						else
+						{
+							$action_links_rs[] = array(url=>'user_admin.php?op=activate&user_id='.$user_r['user_id'].'&listing_link=y', img=>'activate_user.gif',text=>get_opendb_lang_var('activate_user'));
+						}
+						
+						$action_links_rs[] = array(url=>'user_admin.php?op=delete&user_id='.$user_r['user_id'].'&listing_link=y', img=>'delete_user.gif',text=>get_opendb_lang_var('delete_user'));
 					}
-					else//if(is_user_active($user_r['user_id']))
-					{
-						$action_links_rs[] = array(url=>'user_admin.php?op=activate&user_id='.$user_r['user_id'].'&listing_link=y', img=>'activate_user.gif',text=>get_opendb_lang_var('activate_user'));
-					}
-
+				
 					$action_links_rs[] = array(url=>'user_admin.php?op=change_password&user_id='.$user_r['user_id'].'&listing_link=y', img=>'change_password.gif',text=>get_opendb_lang_var('change_password'));
 
 					$listingObject->addActionColumn($action_links_rs);

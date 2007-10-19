@@ -239,6 +239,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_i
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_instance_not_updated', 'Item instance not updated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_instance_owner_not_changed', 'Item instance owner not changed.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_already_checked_out', 'Item already checked out'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_not_checked_out', 'Item is not checked out');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_already_reserved', 'Item already reserved'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_listing_for_name', 'Items for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_added', 'Item not added.'); 
@@ -247,8 +248,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_n
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_found', 'Item not found'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_updated', 'Item not updated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_ownership', 'Item Ownership'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_quick_check_out', 'Item Quick Check Out'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_quick_check_out_for_fullname', 'Item Quick Check Out for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_reserved_or_borrowed', 'Item is currently reserved or borrowed'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_reserve_list', 'My Reserve Basket'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_reviewed', 'Item has been reviewed'); 
@@ -264,13 +263,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'june',
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'june_abbrev', 'Jun'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'last_items_list', 'Last Items List'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'last_visit', 'Last Visit'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'link', 'Link'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_item', 'Linked item'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_item(s)', 'Linked Item(s)'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_items_cannot_be_reserved', 'Linked items cannot be reserved.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_items_not_supported', 'Linked item support is disabled'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_item_must_be_type', 'Linked Item must be a {s_item_type} item type'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'linked_item_not_found', 'Linked item not found'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listing_filters', 'Listing Filters'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listing_generated', 'Listing generated {datetime}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_all_items', 'List All Items'); 
@@ -338,7 +330,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_hel
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_items_checked', 'No items checked'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_items_found', 'No items found'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_item_reviews', 'No Reviews'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_linked_items', 'No linked items'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_logfile_defined', 'No log file defined.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_logfile_found', 'No logfile found.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_matches_found', 'No Matches Found'); 
@@ -383,11 +374,14 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'printa
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'prompt_must_be_format', '{prompt} must be {format} format.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'prompt_must_be_specified', '{prompt} must be specified.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'public_address_indicator', 'Public Address'); 
+
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'quick_check_out', 'Quick Checkout'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'quick_check_in', 'Quick Checkin');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'quick_check_out_for_fullname', 'Item Quick Check Out for {fullname} ({user_id})'); 
+
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'rating', 'Rating'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refresh', 'Refresh'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refreshed', 'Refreshed'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refresh_linked_title', 'Refresh linked \"{title}\"'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refresh_title', 'Refresh {display_title}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'required', 'Required'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'reserve', 'Reserve'); 
@@ -458,7 +452,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'there_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'thursday', 'Thursday'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'thursday_abbrev', 'Thu'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'title', 'Title'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'title_linked_item_exists', 'This linked item \"{title}\" already exists.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'title_same_type_and_owner_exists', 'You already have a {s_item_type} item \"{title}\"'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'title_same_type_exists', 'This {s_item_type} item \"{title}\" already exists.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'to', 'To'); 
@@ -492,7 +485,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update_date', 'Update Date'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update_details', 'Update Details'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update_item', 'Update Item'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update_linked_item', 'Update linked item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update_user', 'Update User'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'url_is_not_valid', '{prompt} url must have a valid extension. ({extensions})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user', 'User'); 

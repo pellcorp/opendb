@@ -60,8 +60,8 @@ function fetch_alt_item_id_attribute_type_r() {
 function display_borrower_form($HTTP_VARS)
 {
 	// display owner_id input field.
-	echo _theme_header(get_opendb_lang_var('item_quick_check_out'));
-	echo("<h2>".get_opendb_lang_var('item_quick_check_out')."</h2>");
+	echo _theme_header(get_opendb_lang_var('quick_check_out'));
+	echo("<h2>".get_opendb_lang_var('quick_check_out')."</h2>");
 		
 	// need to query for owner_id
 	if(strlen($HTTP_VARS['borrower_id'])>0)
@@ -233,14 +233,14 @@ function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $al
 			{
 				if($op == 'checkout')
 				{
-					if(is_item_instance_checkoutable($item_instance_r, &$error))
+					if(is_item_instance_checkoutable($item_instance_r, $error))
 					{
 						$altid_item_instance_rs[] = $item_instance_r;
 					}
 				}
 				else if($op == 'checkin')
 				{
-					if(is_item_instance_checkinable($item_instance_r, &$error))
+					if(is_item_instance_checkinable($item_instance_r, $error))
 					{
 						$altid_item_instance_rs[] = $item_instance_r;
 					}
@@ -291,6 +291,7 @@ function is_item_instance_checkinable($item_instance_r, &$error)
 	}
 	else
 	{
+		$error[] = get_opendb_lang_var('item_is_not_checked_out');
 		return FALSE;
 	}
 }
@@ -317,11 +318,11 @@ if(is_site_enabled())
 					{
 						if($HTTP_VARS['op'] == 'checkout')
 						{
-							$page_title = get_opendb_lang_var('item_quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
+							$page_title = get_opendb_lang_var('quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
 						}
 						else if($HTTP_VARS['op'] == 'checkin')
 						{
-							$page_title = get_opendb_lang_var('item_quick_check_in', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
+							$page_title = get_opendb_lang_var('quick_check_in');
 						}
 					
 						$attribute_type_r = fetch_alt_item_id_attribute_type_r(); 
@@ -375,9 +376,13 @@ if(is_site_enabled())
 						// include the input field and other processing here.
 						echo("\n<table class=\"borrowerForm\">");
 						echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
-						echo("\n<input type=\"hidden\" name=\"op\" value=\"checkout\">");
+						echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
 						echo("\n<input type=\"hidden\" name=\"page_no\" value=\"\">");//dummy
-						echo("\n<input type=\"hidden\" name=\"borrower_id\" value=\"".$HTTP_VARS['borrower_id']."\">");
+						
+						if($HTTP_VARS['op'] == 'checkout')
+						{
+							echo("\n<input type=\"hidden\" name=\"borrower_id\" value=\"".$HTTP_VARS['borrower_id']."\">");
+						}
 						
 						echo get_item_input_field('alt_item_id', $attribute_type_r, NULL);
 						
@@ -390,8 +395,17 @@ if(is_site_enabled())
 								
 						if(is_not_empty_array($HTTP_VARS['altid_item_instance_rs']))
 						{
-							echo("<input type=button onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'quick_check_out')\" value=\"".get_opendb_lang_var('check_out_item(s)')."\">");
-							echo(get_url_fields(NULL, array('altid_item_instance_rs'=>$HTTP_VARS['altid_item_instance_rs'])));
+							if($HTTP_VARS['op'] == 'checkout')
+							{
+								echo("<input type=button onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'quick_check_out')\" value=\"".get_opendb_lang_var('check_out_item(s)')."\">");
+								echo(get_url_fields(NULL, array('checkout_item_instance_rs'=>$HTTP_VARS['altid_item_instance_rs'])));
+							}
+							else
+							{
+								echo("<input type=button onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'quick_check_in')\" value=\"".get_opendb_lang_var('check_in_item(s)')."\">");
+								echo(get_url_fields(NULL, array('checkin_item_instance_rs'=>$HTTP_VARS['altid_item_instance_rs'])));
+							}
+							
 						}
 						echo("</form>");
 							

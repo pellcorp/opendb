@@ -1224,12 +1224,12 @@ if(is_site_enabled())
 				{
 					if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_allowed_to_borrow($HTTP_VARS['borrower_id']))
 					{
-						echo _theme_header(get_opendb_lang_var('item_quick_check_out'));
-						echo("<h2>".get_opendb_lang_var('item_quick_check_out')."</h2>");
+						echo _theme_header(get_opendb_lang_var('quick_check_out'));
+						echo("<h2>".get_opendb_lang_var('quick_check_out')."</h2>");
 					}
 					else
 					{
-						$page_title = get_opendb_lang_var('item_quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
+						$page_title = get_opendb_lang_var('quick_check_out_for_fullname', array('user_id'=>$HTTP_VARS['borrower_id'], 'fullname'=>fetch_user_name($HTTP_VARS['borrower_id'])));
 						echo _theme_header($page_title);
 						echo("<h2>".$page_title."</h2>");
 					}
@@ -1297,7 +1297,7 @@ if(is_site_enabled())
 							process_borrow_results(
 										$HTTP_VARS['op'],
 										$HTTP_VARS['mode'],
-										get_opendb_lang_var('item_quick_check_out'),
+										get_opendb_lang_var('quick_check_out'),
 										get_opendb_lang_var('items_have_been_checked_out'), 
 										get_opendb_lang_var('items_have_not_been_checked_out'),
 	 								    $HTTP_VARS['more_information'],

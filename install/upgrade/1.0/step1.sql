@@ -93,7 +93,18 @@ varname IN(
 	'delete_linked_item',
 	'edit_linked_item',
 	'edit_parent',
-	'email_site_administrator');
+	'email_site_administrator',
+	'link',
+	'linked_item',
+	'linked_item(s)',
+	'linked_items_cannot_be_reserved',
+	'linked_items_not_supported',
+	'linked_item_must_be_type',
+	'linked_item_not_found',
+	'no_linked_items',
+	'refresh_linked_title',
+	'title_linked_item_exists',
+	'update_linked_item');
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_item(s)', 'Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
@@ -248,3 +259,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow.chec
 DELETE FROM s_config_group_item WHERE group_id = 'listings' AND id IN ('save_listing_url', 'user_email_link');
 DELETE FROM s_config_group_item_var WHERE group_id = 'listings' AND id IN ('save_listing_url', 'user_email_link');
 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_not_checked_out', 'Item is not checked out');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'quick_check_in', 'Quick Checkin');
+
+UPDATE s_language_var SET varname = 'quick_check_out_for_fullname' WHERE varname = 'item_quick_check_out_for_fullname';
+DELETE FROM s_language_var WHERE varname = 'item_quick_check_out';

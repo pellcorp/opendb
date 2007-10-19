@@ -241,7 +241,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_i
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_instance_owner_not_changed', 'Item instance owner not changed.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_already_checked_out', 'Item already checked out'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_already_reserved', 'Item already reserved'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_is_already_selected', 'Item already selected'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_listing_for_name', 'Items for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_added', 'Item not added.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_cloned', 'Item not cloned'); 

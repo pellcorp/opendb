@@ -24,6 +24,32 @@ include_once("./functions/item_type_group.php");
 include_once("./functions/item_listing_conf.php");
 include_once("./admin/s_item_type/functions.php");
 
+function get_attribute_type_rs($attribute_type_rs)
+{
+	global $_attribute_type_list_rs;
+	
+	if(!is_array($_attribute_type_list_rs))
+	{
+		$results = fetch_item_type_s_attribute_type_rs();
+		if($results)
+		{
+			while($attribute_type_r = db_fetch_assoc($results))
+			{
+				$_attribute_type_list_rs[] = array('value'=>$attribute_type_r['s_attribute_type'], 'display'=>$attribute_type_r['description']);
+			}
+			db_free_result($results);
+		}
+	}
+	
+	reset($_attribute_type_list_rs);
+	while(list(,$_attribute_type_list_r) = each($_attribute_type_list_rs))
+	{
+		$attribute_type_rs[] = $_attribute_type_list_r;
+	}
+		
+	return $attribute_type_rs;
+}
+
 function get_column_prompts()
 {
 	return array(
@@ -108,6 +134,7 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'doOnChange(this.form, this)',
+				//'xajax_onColumnTypeChange('.$row.', copyRowToArray(this.form, '.$row.'))',
 				FALSE),  // disabled
 			FALSE));
 
@@ -149,27 +176,19 @@ function get_column_details($record_r, $row)
 				$new_record || is_field_disabled('s_field_type', $record_r)),
 			FALSE));
 
-	$attribute_type_rs = NULL;
+	$attribute_type_rs = array();
 	if($new_record || $record_r['column_type'] != 's_attribute_type')
 	{
 		$attribute_type_rs = array(
 			array('value'=>'', 'display'=>''));
 	}
 	
-	$results = fetch_item_type_s_attribute_type_rs();
-	if($results)
-	{
-		while($attribute_type_r = db_fetch_assoc($results))
-		{
-			$attribute_type_rs[] = array('value'=>$attribute_type_r['s_attribute_type'], 'display'=>$attribute_type_r['description']);
-		}
-		db_free_result($results);
-	}
-
+	$attribute_type_rs = get_attribute_type_rs($attribute_type_rs);
+	
 	// this is to avoid confusion if system data is defined for non-existent s_attribute_types
 	if(!$new_record && !in_array($record_r['s_attribute_type'], $attribute_type_rs))
 		$attribute_type_rs[] = array('value'=>$record_r['s_attribute_type'], 'display'=>$record_r['s_attribute_type']);
-		
+			
 	$columns_r[] = array(
 		'column'=>'s_attribute_type',
 		'field'=>format_field(
@@ -316,8 +335,9 @@ function get_column_details($record_r, $row)
 				'', // onChange
 				$new_record || is_field_disabled('orderby_sort_order', $record_r)), 
 			FALSE));
-			
+
 	$buffer = "<tr>";
+	$buffer .= '<input type="hidden" name="is_new_row['.$row.']" value="'.($new_record?'true':'false').'">';
 	
 	$class = 'data';
 	if(strlen($columns_r['error'])>0)
@@ -332,6 +352,8 @@ function get_column_details($record_r, $row)
 		'N',
 		$record_r['column_no'], 
 		FALSE);
+	
+	
 	
 	while(list(, $column_r) = each($columns_r))
 	{
@@ -447,12 +469,14 @@ if(is_opendb_valid_session())
 
 				$prompts_r = get_column_prompts();
             	
-        	    echo("\n<form name=\"s_item_listing_conf\" action=\"$PHP_SELF\" method=\"POST\">");
+        	    echo("\n<form id=\"s_item_listing_conf\" name=\"s_item_listing_conf\" action=\"$PHP_SELF\" method=\"POST\">");
     	        echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
 				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
     	        echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
     	        echo("\n<input type=\"hidden\" name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">");
 				
+    	        echo("<div id=\"debug\"></div>");
+    	        
     	        echo("\n<table>");
     	        echo '<tr class="navbar">';
 				// now we want to build the input form

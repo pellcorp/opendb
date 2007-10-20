@@ -58,7 +58,7 @@ function moveRowDown(form, element)
 }
 
 var listOfColumns = new Array(
-		'column_no', 'column_type', 's_field_type', 's_attribute_type' , 'override_prompt', 'printable_support_ind', 
+		'is_new_row', 'column_no', 'column_type', 's_field_type', 's_attribute_type' , 'override_prompt', 'printable_support_ind', 
 		'orderby_support_ind', 'orderby_datatype', 'orderby_default_ind', 'orderby_sort_order'
 		);
 

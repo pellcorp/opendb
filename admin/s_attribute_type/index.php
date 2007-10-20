@@ -307,9 +307,10 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 		if($count == 0)
 		{   
 			$tabBlock .= "<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$pageno', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">Page&nbsp;$pageno</li>";
-					
-			$paneBlock .= "<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">\n".
-							"<div style=\"{text-align: right;}\"><input type=submit value=\"Update\"></div>\n".
+			
+			$paneBlock .= "<div style=\"{text-align: right;}\"><input type=submit value=\"Update\"></div>\n".
+						"<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">\n".
+							
 				"<table>".
 				"<tr class=\"navbar\">"
 				."<th>Delete</th>"

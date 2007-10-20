@@ -442,10 +442,7 @@ if(is_opendb_valid_session())
   			{
   				if($config_group_r['id'] == $HTTP_VARS['group_id'])
   				{
-  					echo "<div class=\"tabContent\">\n".
-  					get_group_block($config_group_r).
-  					"</div>";
-  					
+  					echo get_group_block($config_group_r);
   					break;
   				}
 			}

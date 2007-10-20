@@ -446,14 +446,14 @@ if(is_opendb_valid_session())
 					echo format_error_block($errors);
 
 				$prompts_r = get_column_prompts();
-					
-            	echo("\n<table>");
+            	
         	    echo("\n<form name=\"s_item_listing_conf\" action=\"$PHP_SELF\" method=\"POST\">");
     	        echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
 				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
     	        echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
     	        echo("\n<input type=\"hidden\" name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">");
 				
+    	        echo("\n<table>");
     	        echo '<tr class="navbar">';
 				// now we want to build the input form
 				for($i=0; $i<count($prompts_r); $i++)
@@ -491,17 +491,12 @@ if(is_opendb_valid_session())
 					echo get_column_details(array(), $i);
 				}
 			
-				echo("<tr>");
-				echo("<td colspan=2 align=left>".
-					get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", $blank_rows, FALSE, NULL, "this.form.submit();")
-					."</td>");
-
-				echo("<td colspan=10 align=center>");
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\"></td>");
-				echo("</tr>");
+				echo '</table>';
+				
+				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", $blank_rows, FALSE, NULL, "this.form.submit();"));
+				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 				
 				echo("</form>");
-				echo '</table>';
 			}
 			else
 			{

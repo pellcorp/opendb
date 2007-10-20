@@ -970,92 +970,55 @@ if(is_opendb_valid_session())
             $HTTP_VARS['op'] = 'edit-lookups';
 		}
 
-		if($HTTP_VARS['op'] == 'new')
+		if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 		{
-            echo get_validation_javascript();
+			echo get_validation_javascript();
             
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
 			echo get_widget_tooltip_array();
 
 			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
-
-			echo("\n<h3>New Attribute type</h3>");
-
+			
+			if($HTTP_VARS['op'] == 'edit')
+			{
+				$attribute_type_r = fetch_s_attribute_type_r($HTTP_VARS['s_attribute_type']);
+				if($attribute_type_r===FALSE)
+					$errors[] = 'Attribute type ('.$HTTP_VARS['s_attribute_type'].') not found';
+					
+				echo("\n<h3>Edit Attribute type</h3>");
+				
+				$save_op = 'update';
+				$save_button = 'Update';
+			}
+			else
+			{
+				echo("\n<h3>New Attribute type</h3>");
+				$save_op = 'insert';
+				$save_button = 'Insert';
+			}
+			
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-			echo("\n<table cellspacing=2 border=0>");
 			echo("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"insert\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+			echo("\n<input type=\"hidden\" name=\"op\" value=\"$save_op\">");
 			
-			display_edit_form(NULL, $HTTP_VARS);
+			echo("\n<table>");
+			display_edit_form($attribute_type_r, $HTTP_VARS);
+			echo("\n</table>");
 			
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
-				echo("\n<tr><td align=left nowrap>".
-						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
-					"</td><td>&nbsp;</td></tr>");
+				echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
 			}
 			
-			echo("\n<tr><td colspan=\"2\" align=center>");
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=button value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
-				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
-			echo("\n</td></tr>");
+				echo("\n<input type=button value=\"$save_button\" onclick=\"this.form.submit();\">");
 			
 			echo("\n</form>");
-			echo("\n</table>");
-		}
-		else if($HTTP_VARS['op'] == 'edit')
-		{
-            echo get_validation_javascript();
-			
-			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
-            echo get_widget_tooltip_array();
-            
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
-
-			echo("\n<h3>Edit Attribute type</h3>");
-
-            if(is_not_empty_array($errors))
-				echo format_error_block($errors);
-
-			$attribute_type_r = fetch_s_attribute_type_r($HTTP_VARS['s_attribute_type']);
-			if($attribute_type_r!==FALSE)
-			{
-				echo("\n<table cellspacing=2 border=0>");
-				echo("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"update\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-
-				display_edit_form($attribute_type_r);
-				
-				if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-				{
-					echo("\n<tr><td align=left nowrap>".
-						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
-						"</td><td>&nbsp;</td></tr>");
-				}
-			
-				echo("\n<tr><td colspan=\"2\" align=center>");
-				
-				if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-					echo("\n<input type=button value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
-				else
-					echo("\n<input type=button value=\"Update\" onclick=\"this.form.submit();\">");
-				echo("\n</td></tr>");
-
-				echo("\n</form>");
-				echo("\n</table>");
-			}
-			else
-			{
-				echo format_error_block('Attribute type ('.$HTTP_VARS['s_attribute_type'].') not found');
-			}
 		}
         else if($HTTP_VARS['op'] == 'edit-lookups')
 		{

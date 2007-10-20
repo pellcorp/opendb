@@ -106,4 +106,5 @@ ul.announcement ul.footer-links li
 table.sqlList
 {
 	width: 50%;
+	margin-top: 10px;
 }

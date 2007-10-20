@@ -348,12 +348,12 @@ function display_edit_table($edit_op, $update_op, $headers, $display_functioname
 	global $ADMIN_TYPE;
 	global $HTTP_VARS;
 	
-	echo "<table cellspacing=2 border=0>";
 	echo "\n<form name=\"editform\" action=\"$PHP_SELF\" method=\"POST\">";
 	echo "\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">";
 	echo "\n<input type=\"hidden\" name=\"op\" value=\"$edit_op\">";
 	echo get_url_fields($context_http_vars, NULL, array('op', 'type'));
 	
+	echo "<table>";
 	$column_count = 0;
 	echo "\n<tr class=\"navbar\">";
 	for($i=0; $i<count($headers); $i++)
@@ -388,18 +388,15 @@ function display_edit_table($edit_op, $update_op, $headers, $display_functioname
 		echo "\n</tr>";	
 	}
 	
-	echo "<tr>";
-	echo "<td colspan=1 align=center>".
-		get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();")
-		."</td>";
+	echo "</table>";
 	
-	echo "<td colspan=".($column_count-1)." align=center>";
-	echo "<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].blank_rows.value='$blank_rows'; document.forms['navigate']['op'].value='$edit_op'; document.forms['navigate'].submit();\">";
-	echo "&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='$update_op'; this.form.submit();\">";
-	echo "</td></tr>";
+	echo get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();");
+	
+	echo "<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='$edit_op'; this.form.submit();\">";
+	echo "<input type=button value=\"Update\" onclick=\"this.form['op'].value='$update_op'; this.form.submit();\">";
 	
 	echo "</form>";
-	echo "</table>";
+	
 }
 
 function generate_site_plugin_sql($site_type_r)
@@ -1207,18 +1204,12 @@ if (is_opendb_valid_session())
 					
 					echo('<script src="./admin/s_site_plugin/select.js" language="JavaScript" type="text/javascript"></script>');
 					
-					echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-						"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-						"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-						"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-						"\n</form>");
-						
-					echo("<table>");
-					echo("\n<form name=\"s_status_type\" action=\"$PHP_SELF\" method=\"POST\">");
+					echo("\n<form name=\"edit_site_plugin_item_types\" action=\"$PHP_SELF\" method=\"POST\">");
 					echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
 					echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 					echo("\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">");
 					
+					echo("<table>");
 					$exists_item_type_rs = array();
 					$not_exists_item_type_rs = array();
 					
@@ -1258,10 +1249,10 @@ if (is_opendb_valid_session())
 					echo("</select></td>");
 					
 					echo("<td>");
-					echo("<input type=button value=\"&nbsp;>&nbsp;\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\"><br>".
+					echo("<input type=button value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\"><br>".
 						"<input type=button value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\"><br><br>");
 						
-					echo("<input type=button value=\"&nbsp;<&nbsp;\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\"><br>".
+					echo("<input type=button value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\"><br>".
 						"<input type=button value=\"<<\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">");
 						
 					echo("</td>");
@@ -1273,6 +1264,7 @@ if (is_opendb_valid_session())
 						echo("<option value=\"".$exists_item_type_rs[$i]['s_item_type']."\">".$exists_item_type_rs[$i]['s_item_type']." - ".$exists_item_type_rs[$i]['description']."\n");
 					}
 					echo("</select></td>");
+					echo("</table>");
 					
 					for($i=0; $i<count($not_exists_item_type_rs); $i++)
 					{
@@ -1284,13 +1276,11 @@ if (is_opendb_valid_session())
 						echo("\n<input type=hidden name=\"s_item_type[".$exists_item_type_rs[$i]['s_item_type']."]\" value=\"include\">");
 					}
 					
-					echo("\n<tr><td colspan=\"3\" align=center>");
-					echo("<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">");
-					echo("\n<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugin_item_types'; this.form.submit();\">");
-					echo("\n</td></tr>");
+					echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
+					echo("\n<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_site_plugin_item_types'; this.form.submit();\">");
 	
 					echo("</form>");
-					echo("</table>");
+					
 				}//if(is_not_empty_array($attribute_type_r))
 				else
 				{
@@ -1317,14 +1307,6 @@ if (is_opendb_valid_session())
 				
 				echo get_validation_javascript();
 				
-				echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-					"\n<input type=\"hidden\" name=\"blank_rows\" value=\"".$HTTP_VARS['blank_rows']."\">".
-					"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-					"\n<input type=\"hidden\" name=\"sequence_number\" value=\"\">".
-					"\n</form>");
-					
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_links', 
@@ -1351,15 +1333,6 @@ if (is_opendb_valid_session())
 					echo format_error_block($errors);
 				
 				echo get_validation_javascript();
-				
-				echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-					"\n<input type=\"hidden\" name=\"blank_rows\" value=\"".$HTTP_VARS['blank_rows']."\">".
-					"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-					"\n<input type=\"hidden\" name=\"name\" value=\"\">".
-					"\n<input type=\"hidden\" name=\"keyid\" value=\"\">".
-					"\n</form>");
 				
 				display_edit_table(
 						$HTTP_VARS['op'], 
@@ -1388,14 +1361,6 @@ if (is_opendb_valid_session())
 				
 				echo get_validation_javascript();
 				
-				echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-					"\n<input type=\"hidden\" name=\"blank_rows\" value=\"".$HTTP_VARS['blank_rows']."\">".
-					"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-					"\n<input type=\"hidden\" name=\"field\" value=\"\">".
-					"\n</form>");
-				
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_input_fields', 
@@ -1423,14 +1388,6 @@ if (is_opendb_valid_session())
 				
 				echo get_validation_javascript();
 				
-				echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-					"\n<input type=\"hidden\" name=\"blank_rows\" value=\"".$HTTP_VARS['blank_rows']."\">".
-					"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-					"\n<input type=\"hidden\" name=\"sequence_number\" value=\"\">".
-					"\n</form>");
-					
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_s_attribute_type_maps', 
@@ -1459,14 +1416,6 @@ if (is_opendb_valid_session())
 				echo get_validation_javascript();
 				echo '<script src="./scripts/search.js" language="JavaScript" type="text/javascript"></script>';
 				echo get_lookup_attribute_type_array();
-				
-				echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-					"\n<input type=\"hidden\" name=\"blank_rows\" value=\"".$HTTP_VARS['blank_rows']."\">".
-					"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-					"\n<input type=\"hidden\" name=\"sequence_number\" value=\"\">".
-					"\n</form>");
 				
 				display_edit_table(
 						$HTTP_VARS['op'], 
@@ -1497,29 +1446,26 @@ if (is_opendb_valid_session())
 				
 				echo get_validation_javascript();
 				
-				echo("\n<table cellspacing=2 border=0>");
 				echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
 				echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
 				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-					
+				
+				echo("\n<table>");
 				display_edit_site_plugin($site_plugin_r, $HTTP_VARS);
+				echo("\n</table>");
 				
 				if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 				{
-					echo("\n<tr><td align=left nowrap>".
-						format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
-						"</td><td>&nbsp;</td></tr>");
+					echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
 				}
 					
-				echo("\n<tr><td colspan=\"2\" align=center>");
 				if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 					echo("\n<input type=button value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.op.value='update_site_plugin'; this.form.submit();}\">");
 				else
 					echo("\n<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugin'; this.form.submit();\">");
-				echo("\n</td></tr>");
 	
 				echo("\n</form>");
-				echo("\n</table>");
+				
 			}
 			else//if(is_not_empty_array($site_plugin_r))
 			{
@@ -1538,29 +1484,25 @@ if (is_opendb_valid_session())
 				
 			echo get_validation_javascript();
 				
-			echo("\n<table cellspacing=2 border=0>");
 			echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_site_plugin\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-				
+			
+			echo("\n<table>");
 			display_edit_site_plugin(NULL, $HTTP_VARS);
+			echo("\n</table>");
 			
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
-				echo("\n<tr><td align=left nowrap>".
-					format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
-					"</td><td>&nbsp;</td></tr>");
+				echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
 			}
 					
-			echo("\n<tr><td colspan=\"2\" align=center>");
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
 				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
-			echo("\n</td></tr>");
 
 			echo("\n</form>");
-			echo("\n</table>");
 		}
 		else if($HTTP_VARS['op'] == 'sql')
 		{
@@ -1738,26 +1680,30 @@ if (is_opendb_valid_session())
 									{
 										$color = ($toggle?"oddRow":"evenRow");
 										$toggle = !$toggle;
-										echo("\n<tr>");
-										echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
+										
+										echo("\n<form name=\"import_file\" action=\"$PHP_SELF\" method=\"GET\">".
 											"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 											"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
 											"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
 											"\n<input type=\"hidden\" name=\"import_file\" value=\"".$file."\">");
-											
+										
+										echo("\n<tr>");	
 										echo("\n<td class=\"$color\" align=center width=50%>".$file."</td>");
 										echo("\n<td class=\"$color\"><input class=\"$color\" type=\"text\" name=\"range\" value=\"0-\" onChange=\"this.value=legalCharFilter(this.value, '0123456789-');\"></td>");
-										echo("<td class=\"$color\" align=center><input type=submit value=\"Import\"></td>");
-										echo("\n</form></tr>");
+										echo("<td class=\"$color\" align=center><input type=submit value=\"Import\"></td></tr>");
+										
+										echo("\n</form>");
+										
+										echo("</table>");
 									}
 								}
 								else
 								{
-									echo("<tr><td align=center colspan=3 class=\"error\">No files found</td></tr>");
+									echo("</table>");
+									echo("<div class=\"error\">No files found</div>");
 								}
-								echo("</table>");
 								
-								echo("<br><div class=footer>* Upload CSV files directly (using FTP or equivalent) to the <code>./admin/s_site_plugin/upload/</code> directory.</div>");
+								echo(format_help_block(array('text'=>'Upload CSV files directly (using FTP or equivalent) to the <code>./admin/s_site_plugin/upload/</code> directory.')));
 							}
 						}
 						else
@@ -1801,13 +1747,7 @@ if (is_opendb_valid_session())
 				echo format_error_block($errors);
 			}
 			
-			echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-				"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-				"\n<input type=\"hidden\" name=\"op\" value=\"\">".
-				"\n<input type=\"hidden\" name=\"site_type\" value=\"\">".
-				"\n</form>");
-			
-			echo("<table border=0>");
+			echo("<table>");
 				echo("<tr class=\"navbar\">"
 					."<th>Order</th>"
 					."<th>Site</th>"
@@ -1860,22 +1800,19 @@ if (is_opendb_valid_session())
 				}
 				db_free_result($results);
 				
-				echo("<tr>".
-				"<td colspan=6 align=center>".
-				"<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
-				"<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">".
-				"</td>".
-				"</tr>");
+				echo("</table>");
+				
+				echo("<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
+				"<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">");
 				
 				echo("</form>");
 				
 			}//if($results)
 			else
 			{
-				echo("<tr><td colspan=6 align=center><div class=error>No Site Plugins Installed</div></td></tr>");
+				echo("</table>");
+				echo("<div class=\"error\">No Site Plugins Installed</div>");
 			}
-				
-			echo("</table>");
 			
 			function is_not_exists_site_plugin($type)
 			{

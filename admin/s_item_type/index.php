@@ -971,19 +971,8 @@ if (is_opendb_valid_session())
 				{
 					display_s_item_attribute_type_row($HTTP_VARS['s_item_type'], array(), $i, FALSE, $s_attribute_type_list_rs);
 				}
-			
-				echo("<tr>");
-				echo("<td colspan=1 align=center>".
-					get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();")
-					."</td>");
-
-				echo("<td colspan=".($column_count-1)." align=center>");
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\"></td>");
-				echo("</tr>");
-				
-				echo("</form>");
 				echo("</table>");
-
+				
 				$help_entries_rs = NULL;
 				if(is_not_empty_array($sait_already_exists))
 				{
@@ -993,6 +982,10 @@ if (is_opendb_valid_session())
 				$help_entries_rs[] = array('text'=>'Order No. and Attribute Type are compulsory');
 				
 				echo(format_help_block($help_entries_rs));
+				
+				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();"));
+				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
+				echo("</form>");
 			}
 			else
 			{
@@ -1024,13 +1017,9 @@ if (is_opendb_valid_session())
 			}
 					
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			{
 				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
-			}
 			else
-			{
 				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
-			}
 
 			echo("\n</form>");
 		}
@@ -1046,14 +1035,14 @@ if (is_opendb_valid_session())
 			
 			echo get_validation_javascript();
 			
-			echo("<form name=\"sqlform\" action=\"$PHP_SELF\" method=\"GET\">".
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+				
+			echo("<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">".
 				"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 				"<input type=\"hidden\" name=\"op\" value=\"\">".
 				"<input type=\"hidden\" name=\"s_item_type\" value=\"\">".
 				"</form>");
-			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
 			
 			echo("<table>");
 			echo("<tr class=\"navbar\">"
@@ -1081,22 +1070,20 @@ if (is_opendb_valid_session())
 					$row++;
 				}
 				db_free_result($results);
+				echo("</table>");
 				
-				echo("<tr><td colspan=6 align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-					" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\"></tr>");
+				echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
+				
+				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+					" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
 					
 				echo("</form>");
 			}
 			else
 			{
-				echo("<tr><td colspan=6 align=center><div class=error>No Item Types Installed</div></td></tr>");
+				echo("</table>");
+				echo("<div class=\"error\">No Item Types Installed</div>");
 			}
-
-			echo("</table>");
-			
-			echo("</form>");
-			
-			echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
 
 			function is_not_exists_item_type($type)
 			{

@@ -148,6 +148,8 @@ p.error
 ul.help
 {
 	margin: 0px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 /* All help text */

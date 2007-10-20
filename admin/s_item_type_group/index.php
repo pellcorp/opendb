@@ -167,12 +167,6 @@ if (is_opendb_valid_session())
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 				
-			echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-					"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-					"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-					"\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"\">".
-					"\n</form>");
-						
 			echo("\n<form name=\"s_item_type_group\" action=\"$PHP_SELF\" method=\"POST\">");
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
@@ -208,23 +202,18 @@ if (is_opendb_valid_session())
 				{
 					display_s_item_type_group_row(array(), $i);	
 				}
-		
-				echo("<tr>");
-				echo("<td colspan=1 align=center>".
-					get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();")
-					."</td>");
-		
-
-				echo("<td colspan=".($column_count-1)." align=center><input type=button value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
-				echo("&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_item_type_groups'; this.form.submit();\"></td>");
-				echo("</tr>");
-		
-				echo("</form>");
 				echo("</table>");
 				
 				echo(format_help_block(
 						array('If System Indicator = \'Y\' item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
 						'If System Indicator = \'N\' item types can be treated as groups for item listings filters only.')));
+						
+				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();"));
+				
+				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
+				echo("<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_item_type_groups'; this.form.submit();\">");
+		
+				echo("</form>");
 		}
 		else if($HTTP_VARS['op'] == 'edit_item_type_group_rltshps')
 		{
@@ -242,7 +231,7 @@ if (is_opendb_valid_session())
 				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 				echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
 				
-				echo("<table cellspacing=2 border=0>");
+				echo("<table>");
 				$results = fetch_s_item_type_join_sitgr_rs($HTTP_VARS['s_item_type_group']);
 				if($results)
 				{
@@ -275,11 +264,12 @@ if (is_opendb_valid_session())
 					}
                     echo("\n</tr>");
 				}
-
-				echo("<tr><td colspan=4 align=center><input type=button value=\"Update\" onclick=\"this.form['op'].value='update_item_type_group_rltshps'; this.form.submit();\"></td></tr>");
+				echo("</table>");
+				
+				echo("<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_item_type_group_rltshps'; this.form.submit();\">");
 		
 				echo("</form>");
-				echo("</table>");
+				
 			}
 		}
 	}

@@ -418,7 +418,7 @@ if (is_opendb_valid_session())
 					"\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">".
 					"\n<input type=\"hidden\" name=\"s_address_type\" value=\"".$HTTP_VARS['s_address_type']."\">");
 
-				echo("<table cellspacing=2 border=0>");
+				echo("<table>");
 				echo("<tr class=\"navbar\">"
 					."<th>Delete</th>"
 					."<th>Order</th>"
@@ -471,17 +471,6 @@ if (is_opendb_valid_session())
 				{
 					display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], array(), $i, FALSE, $s_attribute_type_list_rs);
 				}
-			
-				echo("<tr>");
-				echo("<td colspan=2 align=center>".
-					get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();")
-					."</td>");
-
-				echo("<td colspan=".($column_count-2)." align=center>");
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\"> <input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\"></td>");
-				echo("</tr>");
-				
-				echo("</form>");
 				echo("</table>");
 				
 				$help_entries_rs = NULL;
@@ -492,6 +481,12 @@ if (is_opendb_valid_session())
 				
 				$help_entries_rs[] = array('text'=>'Entries without a <b>attribute type</b> AND <b>order no</b> specified will be ignored.');
 				echo(format_help_block($help_entries_rs));
+				
+				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();"));
+
+				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\"> <input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
+				
+				echo("</form>");
 			}
 			else
 			{
@@ -506,35 +501,27 @@ if (is_opendb_valid_session())
 			echo get_validation_javascript();
 				
 			echo("\n<h3>New Address Type</h3>");
-
-			echo("\n<table cellspacing=2 border=0>");
+			
 			echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
 	
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_type\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-				
+			
+			echo("\n<table>");
 			display_s_address_type_insert_form($HTTP_VARS['op']=='insert_type'?$HTTP_VARS:NULL);
+			echo("</table>");
 			
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
-				echo("\n<tr><td align=left nowrap>".
-							format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))).
-						"</td><td>&nbsp;</td></tr>");
+				echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
 			}
 	
-			echo("\n<tr><td colspan=\"2\" align=center>");
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			{
 				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
-			}
 			else
-			{
 				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
-			}
-			echo("\n</td></tr>");
 
 			echo("\n</form>");
-			echo("\n</table>");
 		}
 		
 		// There are specific operations where this form should be displayed.
@@ -545,23 +532,13 @@ if (is_opendb_valid_session())
 			echo get_validation_javascript();
 			
 			if(is_not_empty_array($errors))
-			{
 				echo format_error_block($errors);
-			}
 				
-			echo("<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-				"<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">".
-				"<input type=\"hidden\" name=\"op\" value=\"\">".
-				"<input type=\"hidden\" name=\"s_address_type\" value=\"\">".
-				"<input type=\"hidden\" name=\"blank_rows\" value=\"5\">".
-				"</form>");
-			
-			echo("<table cellspacing=2 border=0>");
 			echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
 
+			echo("<table>");
 			echo("<tr class=\"navbar\">"
 				."<th>Order</th>"
 				."<th>Type</th>"
@@ -586,16 +563,12 @@ if (is_opendb_valid_session())
 				}
 				db_free_result($results);
 			}
-
-			echo("<tr>".
-				"<td colspan=".($column_count)." align=center>".
-				"<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">".
-				"</td>".
-				"</tr>");
+			echo("</table>");
+			
+			echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
 
 			echo("</form>");
-			echo("</table>");
 		}			
 	}
 }

@@ -173,18 +173,12 @@ if(is_opendb_valid_session())
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-            echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-				"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-				"\n<input type=\"hidden\" name=\"op\" value=\"\">".
-				"\n<input type=\"hidden\" name=\"content_type\" value=\"\">".
-				"\n</form>");
-
-	        echo("\n<table>");
 			echo("\n<form name=\"s_file_type\" action=\"$PHP_SELF\" method=\"POST\">");
 
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 
+			echo("\n<table>");
 			echo("<tr class=\"navbar\">"
 				."<th>Content Type</th>"
 				."<th>Content Group</th>"
@@ -219,21 +213,17 @@ if(is_opendb_valid_session())
 			{
 				echo display_s_file_type_row(array(), $i);
 			}
-							
-			echo("<tr>");
-				echo("<td align=left>".
-					get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", $blank_rows, FALSE, NULL, "this.form.submit();")
-					."</td>".
-				"<td colspan=".($column_count-1)." align=center>".
-				"<input type=button value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">".
-				"&nbsp;".
-				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">".
-				"</td>".
-				"</tr>");
+
+			echo("</tr></table>");
+			
+			echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)",  
+								"N", $blank_rows, FALSE, NULL, "this.form.submit();"));
+			
+			echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">".
+				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 
 			echo("</form>");
-			echo("</table>");
-		}//else if(strlen($HTTP_VARS['op'])==0)
-	}//if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-}//if(is_opendb_valid_session())
+		}
+	}
+}
 ?>

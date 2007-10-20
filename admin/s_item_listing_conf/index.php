@@ -134,7 +134,6 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'doOnChange(this.form, this)',
-				//'xajax_onColumnTypeChange('.$row.', copyRowToArray(this.form, '.$row.'))',
 				FALSE),  // disabled
 			FALSE));
 

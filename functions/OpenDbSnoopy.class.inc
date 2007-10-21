@@ -195,7 +195,7 @@ class OpenDbSnoopy extends Snoopy
 			}
 			else
 			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $this->error, array($URI));
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, ifempty($this->error, 'Status '.$this->status), array($URI));
 				return FALSE;
 			}
 		}

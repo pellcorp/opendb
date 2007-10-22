@@ -21,7 +21,6 @@ include_once("./functions/datetime.php");
 include_once("./functions/item_type.php");
 include_once("./functions/item_type_group.php");
 include_once("./functions/import.php");
-include_once("./functions/browser.php");
 include_once("./admin/s_item_type/functions.php");
 include_once("./admin/s_attribute_type/functions.php");
 include_once("./functions/install.php");

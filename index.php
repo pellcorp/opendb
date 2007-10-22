@@ -23,11 +23,10 @@ require_once("./include/begin.inc.php");
 			
 include_once("./functions/install.php");
 include_once("./functions/database.php");
-include_once("./functions/browser.php");
 
 /**
 */
-if(is_browser_supported())
+if($_OpendbBrowserSniffer->isBrowserSupported())
 {
 	if(is_opendb_configured())
 	{

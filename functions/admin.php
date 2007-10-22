@@ -18,6 +18,48 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 include_once('./functions/utils.php');
+include_once('./functions/http.php');
+
+/**
+	Taken from phpMyAdmin libraries/defines.lib.php
+
+	Determines platform (OS)
+	Based on a phpBuilder article:
+		see http://www.phpbuilder.net/columns/tim20000821.php
+*/
+function get_user_browser_os()
+{
+	$http_user_agent = get_http_env('HTTP_USER_AGENT');
+
+    // 1. Platform
+    if (strstr($http_user_agent, 'Win'))
+		return 'Win';
+	else if (strstr($http_user_agent, 'Mac'))
+		return 'Mac';
+	else if (strstr($http_user_agent, 'Linux'))
+		return 'Linux';
+	else if (strstr($http_user_agent, 'Unix'))
+		return 'Unix';
+	else if (strstr($http_user_agent, 'OS/2'))
+		return 'OS/2';
+	else
+		return 'Other';
+}
+
+/**
+	Taken from phpMyAdmin libraries/common.lib.php
+*/
+function get_user_browser_crlf()
+{
+	$browser_os = get_user_browser_os();
+	
+	if ($browser_os == 'Win')// Win case
+		return "\r\n";
+	else if (PMA_USR_OS == 'Mac')// Mac case
+		return "\r";
+	else // Others
+		return "\n";
+}
 
 /**
 */

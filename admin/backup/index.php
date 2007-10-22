@@ -30,7 +30,6 @@ include_once("./functions/logging.php");
 include_once("./functions/user.php");
 include_once("./functions/widgets.php");
 include_once("./functions/http.php");
-include_once("./functions/browser.php");
 include_once("./functions/utils.php");
 include_once("./functions/datetime.php");
 

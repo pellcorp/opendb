@@ -22,7 +22,6 @@ include_once("./functions/user.php");
 include_once("./functions/utils.php");
 include_once("./functions/fileutils.php");
 include_once("./functions/language.php");
-include_once("./functions/SniffBrowser.php");
 include_once("./functions/cssparser/cssparser.php");
 include_once("./functions/rss.php");
 
@@ -123,17 +122,9 @@ function _theme_menu()
  */
 function get_theme_css($pageid, $mode = NULL)
 {
-	//$browser = SniffBrowser();
 	// TODO - replace SniffBrowser with more modern sniffer for firefox / ie / opera
 	// and update this code to support _ff, _op, _ie
-	
-	$userAgent = get_http_env('HTTP_USER_AGENT');
-	
-	$isIeBrowser = FALSE;
-	if (eregi('MSIE[ \/]([0-9\.]+)', $userAgent, $a))
-	{
-		$isIeBrowser = TRUE;
-	}
+	global $_OpendbBrowserSniffer;
 	
 	$buffer = "\n";
 	$file_list = _theme_css_file_list($pageid);
@@ -143,7 +134,7 @@ function get_theme_css($pageid, $mode = NULL)
 		{
 			if($css_file_r['browser'] == 'ie')
 			{
-				if($isIeBrowser)
+				if($_OpendbBrowserSniffer->isBrowser('ie'))
 				{
 					$buffer .= "<!--[if IE ".$css_file_r['version']."]>\n";
 					$buffer .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$css_file_r['file']."\">\n";

@@ -21,11 +21,7 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/browser.php");
-
-$browserSupported = is_browser_supported();
-
-if($browserSupported)
+if($_OpendbBrowserSniffer->isBrowserSupported())
 	$pageTitle = get_opendb_lang_var('browser_supported');
 else
 	$pageTitle = get_opendb_lang_var('browser_not_supported');
@@ -33,30 +29,31 @@ else
 echo _theme_header($pageTitle, FALSE);
 echo("<h1>".$pageTitle."</h1>");
 
-if($browserSupported)
-{
-	$footer_links_r[] = array(url=>"login.php?op=login",text=>get_opendb_lang_var('return_to_login_page'));
-	echo format_footer_links($footer_links_r);
-}
-else
+if(!$_OpendbBrowserSniffer->isBrowserSupported())
 {
 	echo("<p class=\"error\">".
 		get_opendb_lang_var('browser_not_supported_text').
 		"</p>");
+}
 
-	$supportedBrowsers = get_opendb_supported_browsers();
-	
-	echo("<ul class=\"browsers\">");
-	while(list(,$browser_r) = each($supportedBrowsers))
-	{
-		if(file_exists('./images/browsers/'.$browser_r['icon']))
-			$browser_r['icon'] = './images/browsers/'.$browser_r['icon'];
-		else
-			$browser_r['icon'] = NULL;
-				
-			echo("<li><a href=\"".$browser_r['url']."\" title=\"".$browser_r['name']."\"><img src=\"".$browser_r['icon']."\"> ".$browser_r['name']."</a></li>");
-	}
-	echo("</ul>");
+$supportedBrowsers = $_OpendbBrowserSniffer->getSupportedBrowsers();
+
+echo("<ul class=\"browsers\">");
+while(list(,$browser_r) = each($supportedBrowsers))
+{
+	if(file_exists('./images/browsers/'.$browser_r['icon']))
+		$browser_r['icon'] = './images/browsers/'.$browser_r['icon'];
+	else
+		$browser_r['icon'] = NULL;
+			
+		echo("<li><a href=\"".$browser_r['url']."\" title=\"".$browser_r['name']."\"><img src=\"".$browser_r['icon']."\"> ".$browser_r['name']."</a></li>");
+}
+echo("</ul>");
+
+if($_OpendbBrowserSniffer->isBrowserSupported())
+{
+	$footer_links_r[] = array(url=>"login.php?op=login",text=>get_opendb_lang_var('return_to_login_page'));
+	echo format_footer_links($footer_links_r);
 }
 
 echo _theme_footer();

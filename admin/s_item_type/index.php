@@ -25,7 +25,6 @@ include_once("./functions/site_plugin.php");
 include_once("./functions/item_type.php");
 include_once("./functions/item_type_group.php");
 include_once("./functions/install.php");
-include_once("./functions/browser.php");
 
 // attributes delivered as part of core installation or included in optional patches
 $_CORE_ATTRIBUTE_TYPES = array(

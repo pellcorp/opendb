@@ -68,6 +68,9 @@ include_once("./functions/theme.php");
 include_once("./functions/language.php");
 include_once("./functions/menu.php");
 
+include_once("./functions/OpenDbBrowserSniffer.class.php");
+
+
 // OpenDb will not work with this on!!!
 if(get_magic_quotes_runtime())
 {
@@ -93,6 +96,9 @@ else if(!empty($_POST))
 {
 	$HTTP_VARS = $_POST;
 }
+
+//define a global browser sniffer object for use by theme and elsewhere
+$_OpendbBrowserSniffer = new OpenDbBrowserSniffer();
 
 // Strip all slashes from this array.
 if(get_magic_quotes_gpc())

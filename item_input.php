@@ -1695,6 +1695,7 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 		if($HTTP_VARS['op'] == 'site-search')
 		{
 			$return_val = handle_site_search($sitePlugin, $HTTP_VARS, $errors, $footer_links_r);
+			
 			if($return_val === "__EXACT_TITLE_MATCH__")
 			{
 				// do nothing - we have an exact match, so shall fall down
@@ -1704,13 +1705,27 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 			{
 				// display search page and break out.
 				do_op_title($item_r, $status_type_r, 'site-search');
+				
 				echo $return_val;
+				
+				if(get_opendb_config_var('item_input.site', 'debug') === TRUE)
+				{
+					echo $sitePlugin->getDebugItemDataAsHtml();
+				}
+				
 				return;
 			}
-			else
+			else // $return_val === FALSE)
 			{
 				do_op_title($item_r, $status_type_r, 'site-search');
+				
 				echo format_error_block($errors);
+				
+				if(get_opendb_config_var('item_input.site', 'debug') === TRUE)
+				{
+					echo $sitePlugin->getDebugItemDataAsHtml();
+				}
+				
 				return;
 			}
 		}//if($HTTP_VARS['op'] == 'site-search')
@@ -1728,13 +1743,14 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 					$errors = get_opendb_lang_var('undefined_error');
 						
 				echo format_error_block($errors);
+				
+				if(get_opendb_config_var('item_input.site', 'debug') === TRUE)
+				{
+					echo $sitePlugin->getDebugItemDataAsHtml();
+				}
+				
 				return;
 			}
-		}
-
-		if(get_opendb_config_var('item_input.site', 'debug') === TRUE)
-		{
-			theme_header_append($sitePlugin->getDebugItemDataBlock());
 		}
 			
 		// at this point we have an exact match!
@@ -1767,6 +1783,7 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 			else
 			{
 				$HTTP_VARS['op'] = 'site';
+				
 //				if(get_opendb_config_var('item_input', 'auto_site_insert')===TRUE)
 //				{
 					// expand $HTTP_VARS to bypass edit form.
@@ -1778,6 +1795,11 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 //				{
 					perform_new_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
 //				}
+			}
+			
+			if(get_opendb_config_var('item_input.site', 'debug') === TRUE)
+			{
+				echo $sitePlugin->getDebugItemDataAsHtml();
 			}
 		}
 		else

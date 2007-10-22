@@ -22,8 +22,8 @@ include_once("./functions/user.php");
 include_once("./functions/utils.php");
 include_once("./functions/fileutils.php");
 include_once("./functions/language.php");
+include_once("./functions/SniffBrowser.php");
 include_once("./functions/cssparser/cssparser.php");
-// include here, so that the theme index.php can call rss.php functions.
 include_once("./functions/rss.php");
 
 /**
@@ -36,6 +36,7 @@ include_once("./functions/rss.php");
 $_OPENDB_THEME_CSS_MAP = array(
 	'borrow'=>array('listings', 'item_display'),
 	'item_borrow'=>array('listings', 'item_display'),
+	'quick_checkout'=>array('listings', 'item_display'),
 	'item_input'=>array('listings'),
 	'import'=>array('listings', 'item_display'),
 	'item_display'=>array('listings'),
@@ -43,26 +44,6 @@ $_OPENDB_THEME_CSS_MAP = array(
 	//'listings'=>array('item_display'),
 	'admin'=>array('listings')
 );
-
-$_OPENDB_THEME_HEADER_HTML = null;
-
-/**
- * This is a nasty hack to allow inclusion of arbritrary HTML content immedialy
- * after the theme_header is called.
- */
-function theme_header_append($html)
-{
-	global $_OPENDB_THEME_HEADER_HTML;
-	
-	$_OPENDB_THEME_HEADER_HTML .= $html;
-}
-
-function get_theme_header_appended_html()
-{
-	global $_OPENDB_THEME_HEADER_HTML;
-
-	return $_OPENDB_THEME_HEADER_HTML;
-}
 
 function get_content_type_charset() {
 	$contentType = "text/html";
@@ -115,13 +96,6 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 				$user_id,
 				$user_type);
 
-		// a hack at best to get some debug HTML into the page.
-		$header_html = get_theme_header_appended_html();
-		if(strlen($header_html)>0)
-		{
-			$theme_header .= $header_html;
-		}
-		
 		return $theme_header;
 	}
 	else
@@ -149,12 +123,15 @@ function _theme_menu()
  */
 function get_theme_css($pageid, $mode = NULL)
 {
+	//$browser = SniffBrowser();
+	// TODO - replace SniffBrowser with more modern sniffer for firefox / ie / opera
+	// and update this code to support _ff, _op, _ie
+	
 	$userAgent = get_http_env('HTTP_USER_AGENT');
 	
 	$isIeBrowser = FALSE;
 	if (eregi('MSIE[ \/]([0-9\.]+)', $userAgent, $a))
 	{
-		//print_r($a);
 		$isIeBrowser = TRUE;
 	}
 	
@@ -234,19 +211,22 @@ function add_css_files($pageid, $mode, &$css_file_list)
 			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}.css");
 		}
 		
-		if(file_exists("./theme/$_OPENDB_THEME/${pageid}_ie6.css"))
-		{
-			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_ie6.css", browser=>'ie', version=>'6');
-		}
+		$hacks_r = array(
+				array(hack=>'ie', browser=>'ie', version=>''),
+				array(hack=>'ie6', browser=>'ie', version=>'6'),
+				array(hack=>'ie7', browser=>'ie', version=>'7'),
+				array(hack=>'ff', browser=>'firefox', version=>''),
+				array(hack=>'op', browser=>'opera', version=>''));
 		
-		if(file_exists("./theme/$_OPENDB_THEME/${pageid}_ie7.css"))
+		while(list(,$hack_r) = each($hacks_r))
 		{
-			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_ie7.css", browser=>'ie', version=>'7');
-		}
-		
-		if(file_exists("./theme/$_OPENDB_THEME/${pageid}_ie.css"))
-		{
-			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_ie.css", browser=>'ie', version=>'');
+			if(file_exists("./theme/$_OPENDB_THEME/${pageid}_".$hack_r['hack'].".css"))
+			{
+				$css_file_list[] = array(
+					file=>"./theme/$_OPENDB_THEME/${pageid}_".$hack_r['hack'].".css", 
+					browser=>$hack_r['browser'], 
+					version=>$hack_r['version']);
+			}
 		}
 	}
 	else if($mode == 'printable')

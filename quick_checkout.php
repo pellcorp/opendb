@@ -59,24 +59,6 @@ function fetch_alt_item_id_attribute_type_r() {
 
 function display_borrower_form($HTTP_VARS)
 {
-	// display owner_id input field.
-	echo _theme_header(get_opendb_lang_var('quick_check_out'));
-	echo("<h2>".get_opendb_lang_var('quick_check_out')."</h2>");
-		
-	// need to query for owner_id
-	if(strlen($HTTP_VARS['borrower_id'])>0)
-	{
-		if(!is_user_valid($HTTP_VARS['borrower_id']) || !is_user_active($HTTP_VARS['borrower_id']))
-		{
-			echo(format_error_block(get_opendb_lang_var('invalid_borrower_user', 'user_id', $HTTP_VARS['borrower_id'])));
-		}
-		else // !is_user_allowed_to_borrow($HTTP_VARS['borrower_id']))
-		{
-			// display error because invalid user chosen.
-			echo(format_error_block(get_opendb_lang_var('user_must_be_borrower', 'user_id', $HTTP_VARS['borrower_id'])));
-		}
-	}
-		
 	echo("\n<form action=\"$PHP_SELF\" method=\"GET\">");
 	echo("\n<input type=\"hidden\" name=\"op\" value=\"checkout\">");
 		
@@ -234,7 +216,7 @@ function get_borrowed_item_sequence_number_r($altid_item_instance_rs) {
 	return $sequence_number;
 }
 									
-function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $altid_item_instance_rs, &$error)
+function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $altid_item_instance_rs, &$errors)
 {
 	if(!is_array($altid_item_instance_rs)) {
 		$altid_item_instance_rs = array();
@@ -249,7 +231,7 @@ function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $al
 			{
 				if($op == 'checkout')
 				{
-					if(is_item_instance_checkoutable($item_instance_r, $error))
+					if(is_item_instance_checkoutable($item_instance_r, $errors))
 					{
 						$altid_item_instance_rs[] = $item_instance_r;
 					}
@@ -264,25 +246,25 @@ function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $al
 					}
 					else 
 					{
-						$error[] = get_opendb_lang_var('item_is_not_checked_out');	
+						$errors[] = get_opendb_lang_var('item_is_not_checked_out');	
 					}
 				}
 			}
 			else
 			{
-				$error[] = get_opendb_lang_var('user_is_owner_of_item');
+				$errors[] = get_opendb_lang_var('user_is_owner_of_item');
 			}
 		}
 	}
 	else
 	{
-		$error[] = get_opendb_lang_var('item_not_found');
+		$errors[] = get_opendb_lang_var('item_not_found');
 	}
 	
 	return $altid_item_instance_rs;
 }
 
-function is_item_instance_checkoutable($item_instance_r, &$error)
+function is_item_instance_checkoutable($item_instance_r, &$errors)
 {
 	if(!is_item_borrowed($item_instance_r['item_id'], $item_instance_r['instance_no']))
 	{
@@ -293,16 +275,41 @@ function is_item_instance_checkoutable($item_instance_r, &$error)
 		}
 		else
 		{
-			$error[] = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+			$errors[] = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
 		}
 	}
 	else
 	{
-		$error[] = get_opendb_lang_var('item_is_already_checked_out');
+		$errors[] = get_opendb_lang_var('item_is_already_checked_out');
 	}
 	
 	//else
 	return FALSE;
+}
+
+function validate_borrower_id($borrower_id, &$errors)
+{
+	if(strlen($borrower_id)>0)
+	{
+		if(!is_user_active($borrower_id))
+		{
+			$errors[] = get_opendb_lang_var('invalid_borrower_user', 'user_id', $HTTP_VARS['borrower_id']);
+			return FALSE;
+		}
+		else if(!is_user_allowed_to_borrow($borrower_id))
+		{
+			$errors[] = get_opendb_lang_var('user_must_be_borrower', 'user_id', $HTTP_VARS['borrower_id']);
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 if(is_site_enabled())
@@ -315,12 +322,14 @@ if(is_site_enabled())
 			{
 				if($HTTP_VARS['op'] == 'checkout' || $HTTP_VARS['op'] == 'checkin')
 				{
-					if($HTTP_VARS['op'] == 'checkout' && 
-							(strlen($HTTP_VARS['borrower_id'])==0 ||
-							!is_user_valid($HTTP_VARS['borrower_id']) ||
-							!is_user_active($HTTP_VARS['borrower_id']) ||
-							!is_user_allowed_to_borrow($HTTP_VARS['borrower_id'])))
+					if($HTTP_VARS['op'] == 'checkout' && !validate_borrower_id($HTTP_VARS['borrower_id'], $errors))
 					{
+						echo _theme_header(get_opendb_lang_var('quick_check_out'));
+						echo("<h2>".get_opendb_lang_var('quick_check_out')."</h2>");
+							
+						if(is_array($errors)>0)
+							echo(format_error_block($errors));
+						
 						display_borrower_form($HTTP_VARS);
 					}
 					else
@@ -332,12 +341,19 @@ if(is_site_enabled())
 						
 						echo(_theme_header($page_title));
 						echo('<h2>'.$page_title.' '.$page_image.'</h2>');
-							
-						if(strlen($error)>0)
-							echo(format_error_block($error));
 
-						// include the input field and other processing here.
+						$attribute_type_r = fetch_alt_item_id_attribute_type_r();
 						
+						$altid_item_instance_rs = update_altid_item_instance_rs(
+								$HTTP_VARS['op'],
+								$HTTP_VARS['alt_item_id'],
+								$attribute_type_r,
+								get_decoded_item_instance_rs($HTTP_VARS['op'], $HTTP_VARS['checkout_item_instance_rs']), 
+								$errors);
+								
+						if(is_array($errors)>0)
+							echo(format_error_block($errors));
+
 						echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 						echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
 						echo("\n<input type=\"hidden\" name=\"page_no\" value=\"\">");//dummy
@@ -347,20 +363,11 @@ if(is_site_enabled())
 							echo("\n<input type=\"hidden\" name=\"borrower_id\" value=\"".$HTTP_VARS['borrower_id']."\">");
 						}
 						
-						$attribute_type_r = fetch_alt_item_id_attribute_type_r(); 
-						
 						echo("\n<table class=\"borrowerForm\">");
 						echo get_item_input_field('alt_item_id', $attribute_type_r, NULL);
 						echo("\n</table>");
 							
 						echo("<input type=submit value=\"".get_opendb_lang_var('add_item')."\">");
-						
-						$altid_item_instance_rs = update_altid_item_instance_rs(
-								$HTTP_VARS['op'],
-								$HTTP_VARS['alt_item_id'],
-								$attribute_type_r,
-								get_decoded_item_instance_rs($HTTP_VARS['op'], $HTTP_VARS['checkout_item_instance_rs']), 
-								$error);
 								
 						$HTTP_VARS['checkout_item_instance_rs'] = get_encoded_item_instance_rs($altid_item_instance_rs);
 						echo(get_url_fields(NULL, array('checkout_item_instance_rs'=>$HTTP_VARS['checkout_item_instance_rs'])));

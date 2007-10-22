@@ -22,6 +22,7 @@ include_once("./functions/filecache.php");
 include_once("./functions/logging.php");
 include_once("./functions/utils.php");
 include_once("./functions/fileutils.php");
+include_once("./functions/widgets.php");
 
 /**
 * This class does assume that the $HTTP_VARS array has been defined before this
@@ -29,11 +30,12 @@ include_once("./functions/fileutils.php");
 */
 class OpenDbSnoopy extends Snoopy
 {
+	var $_debugMessages;
 	var $_debug;
 	var $_file_cache_r;
 	var $_file_cache_enabled;
 
-	function OpenDbSnoopy($override_http_debug = NULL)
+	function OpenDbSnoopy()
 	{
 		// if file cache table is not installed, we cannot use file cache.
 		$this->_file_cache_enabled = get_opendb_config_var('http.cache', 'enable');
@@ -43,16 +45,9 @@ class OpenDbSnoopy extends Snoopy
 		
 		// in how many cases is this going to work?
 		$this->passcookies = FALSE;
-		
-		if(is_bool($override_http_debug))
-		{
-		    if($override_http_debug === TRUE)
-		    	$this->_debug = TRUE;
-		}
-		else if(get_opendb_config_var('http', 'debug') !== FALSE)
-		{
-			$this->_debug = TRUE;
-		}
+
+		// forget about turning off / on - always debug
+		$this->_debug = TRUE;
 		
         $proxy_server_config_r = get_opendb_config_var('http.proxy_server');
 		if ( $proxy_server_config_r['enable']==TRUE )
@@ -61,6 +56,22 @@ class OpenDbSnoopy extends Snoopy
 			$this->proxy_port = $proxy_server_config_r['port'];
 			$this->proxy_user = $proxy_server_config_r['userid'];
 			$this->proxy_pass = $proxy_server_config_r['password'];
+		}
+	}
+
+	function getDebugMessagesAsHtml()
+	{
+		if(is_array($this->_debugMessages))
+			return format_error_block($this->_debugMessages, 'information');
+		else
+			return NULL;
+	}
+	
+	function __debug($method, $message, $detail = NULL)
+	{
+		if($this->_debug)
+		{
+			$this->_debugMessages[] = array(error=>"OpenDbSnoopy::$method - $message", detail=>$detail);	
 		}
 	}
 	
@@ -74,13 +85,9 @@ class OpenDbSnoopy extends Snoopy
 	{
 		@set_time_limit(600);
 		
-		// trim it first in case any extraneous spaces
 		$URI = trim($URI);
 		
-		if($this->_debug)
-		{
-			theme_header_append("\n<p class=\"snoopyDebug\">OpenDbSnoopy::fetchURI() - URL: $URI");
-		}
+		$this->__debug('fetchURI', "URI: $URI");
 		
 		$this->_file_cache_r = NULL;
 		
@@ -98,13 +105,9 @@ class OpenDbSnoopy extends Snoopy
 					$this->_file_cache_r['content'] = file_get_contents($file_location);
 					if(strlen($this->_file_cache_r['content'])==0)
 					{
+						$this->__debug('fetchURI', 'URL cache invalid');
+						
 						$overwrite_cache_entry = TRUE;
-						
-						if($this->_debug)
-						{
-							theme_header_append("<p>OpenDbSnoopy::fetchURI() - URL cache invalid</p>");
-						}
-						
 						unset($this->_file_cache_r);	
 					}
 				}
@@ -117,19 +120,12 @@ class OpenDbSnoopy extends Snoopy
 			
 		if(is_not_empty_array($this->_file_cache_r))
 		{
-			if($this->_debug)
-			{
-				theme_header_append("<p>OpenDbSnoopy::fetchURI() - URL cached</p>");
-			}
-			
+			$this->__debug('fetchURI', 'URL cached');
 			return $this->_file_cache_r['content'];
 		}
 		else
 		{
-			if($this->_debug)
-			{
-				theme_header_append("<p>OpenDbSnoopy::fetchURI() - URL NOT cached</p>");
-			}
+			$this->__debug('fetchURI', 'URL NOT cached');
 		
 			if($this->fetch($URI) && $this->status >= 200 && $this->status < 300)
 			{
@@ -138,16 +134,11 @@ class OpenDbSnoopy extends Snoopy
 				$this->_file_cache_r['url'] = $URI;
 				$this->_file_cache_r['content'] = $this->results;
 				
-				// clear results
 				$this->results = NULL;
 		
-				// don't write an empty result page.
 				if(strlen($this->_file_cache_r['content'])>0)
 				{
-					if($this->_debug)
-					{
-						theme_header_append("<p>OpenDbSnoopy::fetchURI() - URL fetched (Size=".strlen($this->_file_cache_r['content']).")</p>");
-					}
+					$this->__debug('fetchURI', 'URL fetched (Size='.strlen($this->_file_cache_r['content']).')');
 			
 					// assume a default.
 					$this->_file_cache_r['content_type'] = 'text/html';
@@ -158,7 +149,6 @@ class OpenDbSnoopy extends Snoopy
 						{
 							if(preg_match("/^([^:]*):([^$]*)$/i", $this->headers[$i], $matches))
 							{
-								// only save content-type
 								if(strcasecmp(trim($matches[1]), 'content-type')===0)
 								{
 									$this->_file_cache_r['content_type'] = trim($matches[2]);
@@ -170,32 +160,27 @@ class OpenDbSnoopy extends Snoopy
 						
 					$this->_file_cache_r['location'] = $this->lastredirectaddr;
 					
-					// if caching, save it.
 					if($http_cache!==FALSE && $this->_file_cache_enabled)
 					{	
 						if(file_cache_insert_file($this->_file_cache_r['url'], $this->_file_cache_r['location'], $this->_file_cache_r['content_type'], $this->_file_cache_r['content'], 'HTTP', $overwrite_cache_entry)!==FALSE)
 						{
-							if($this->_debug)
-							{
-								theme_header_append("<p>OpenDbSnoopy::fetchURI() - Added $URI to file cache</p>");
-							}
+							$this->__debug('fetchURI', "Added $URI to file cache");
 						}
 						else
 						{
-							if($this->_debug)
-							{
-								theme_header_append("<p>OpenDbSnoopy::fetchURI() - Failed to add $URI to file cache</p>");
-							}
+							$this->__debug('fetchURI', "Failed to add $URI to file cache");
 						}
 					}//if($http_cache!==FALSE && $this->_file_cache_enabled)
 				}//if(strlen($_file_cache_r['content'])>0)
 				
-				// return content.
 				return $this->_file_cache_r['content'];
 			}
 			else
 			{
+				$this->__debug('fetchURI', "Failed to fetch $URI", ifempty($this->error, 'Status '.$this->status));
+				
 				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, ifempty($this->error, 'Status '.$this->status), array($URI));
+				
 				return FALSE;
 			}
 		}

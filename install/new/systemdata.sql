@@ -417,8 +417,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'file', 2, 'Log File', '', 'readonly');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'backup_ext_date_format', 3, 'Date Format', 'Logfile Backup Extension Date Format', 'datemask');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http', 'debug', 1, 'Debug', '', 'boolean');
-
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.stream_external_images', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) 	VALUES ('http.stream_external_images', 'domain_list', 2, 'Domain List', 'Restrict streaming to specified domain names.', 'array', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http', 'datetime_mask', 3, 'Cache Datetime Mask', 'Http / Item Cache Admin Tool Datetime Mask', 'datemask');
@@ -627,7 +625,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('logi
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'file', './log/usagelog.txt');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'backup_ext_date_format', 'DDMONYYYY');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http', 'debug', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.stream_external_images', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '0', 'imdb.com');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '1', 'imdb.org');

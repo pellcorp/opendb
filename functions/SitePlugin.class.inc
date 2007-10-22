@@ -80,7 +80,7 @@ class SitePlugin
 		}
 
 		// Construct a single copy of this object for use within the site plugin
-		$this->_httpClient =& new OpenDbSnoopy();
+		$this->_httpClient =& new OpenDbSnoopy(TRUE); //debugging always on
 		
 		$this->_titleMaskCfg = new TitleMask();
 	}
@@ -487,20 +487,27 @@ class SitePlugin
 	 * @param unknown_type $buffer
 	 * @return unknown
 	 */
-	function getDebugItemDataBlock($itemData = NULL, $buffer = NULL)
+	function getDebugItemDataAsHtml($s_item_type = NULL)
 	{
-		$start = FALSE;
-		if($itemData == NULL)
-		{
-			$start = TRUE;
-			$buffer = '<div class="sitePluginDebug">
-						<h2>Debug '.$this->getTitle().' Site Data</h2>';
-
-			$itemData = $this->getItemData();
-		}
+		$buffer = '<div class="sitePluginDebug">';
+		$buffer .= '<h2>Debug HTTP Requests</h2>'; 
+		$buffer .= $this->_httpClient->getDebugMessagesAsHtml();
 		
+		$itemData = $this->getItemData($s_item_type);
+		if(is_not_empty_array($itemData))
+		{
+			$buffer .= '<h2>Debug '.$this->getTitle().' Site Data</h2>';
+			$buffer .= $this->__getDebugItemData($itemData);
+		}
+		$buffer .= "</div>";
+
+		return $buffer;
+	}
+
+	function __getDebugItemData($itemData)
+	{
 		@reset($itemData);
-		$buffer .= "<ul>";
+		$buffer = "<ul>";
 		while(list($key,$value) = each($itemData))
 		{
 			$buffer .= "\n<li>";
@@ -510,7 +517,7 @@ class SitePlugin
 			}
 			if(is_array($value))
 			{
-				$buffer .= $this->getDebugItemDataBlock($value);				
+				$buffer .= $this->__getDebugItemData($value);				
 			}
 			else
 			{
@@ -520,14 +527,9 @@ class SitePlugin
 		}
 		
 		$buffer .= "</ul>";
-		
-		if($start)
-		{
-			$buffer .= "</div>";
-		}
 		return $buffer;
 	}
-
+	
 	/**
 	* need to work out page_no, items_per_page, offset, etc
 	*

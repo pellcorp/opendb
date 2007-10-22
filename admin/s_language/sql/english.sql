@@ -269,7 +269,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_a
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_duplicate_title(s)', 'List Duplicate Title(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_imported_items', 'List Imported Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_items_with_same_prompt', 'List items with same {prompt}'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_my_items', 'List My Items'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_my_items', 'List My Items');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_user_items', 'List User Items'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'location', 'Location'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'login', 'Login'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'login_failure', 'Login failure'); 

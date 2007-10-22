@@ -274,3 +274,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http', 'deb
 
 DELETE FROM s_config_group_item WHERE group_id = 'http' AND id IN ('debug');
 DELETE FROM s_config_group_item_var WHERE group_id = 'http' AND id IN ('debug');
+
+# change link text on user profile page to something less misleading.
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_user_items', 'List User Items'); 

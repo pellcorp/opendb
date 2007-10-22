@@ -220,13 +220,11 @@ div.urlOptionsContainer
 
 div.sitePluginDebug 
 {
-	border: 1px solid gray;
 	padding: 5px;
-	padding-top: 0px;
+	margin: 5px;
+	width: 75%;
+	border:1px dashed black;
 	float: right;
-	overflow: scroll;
-	width: 600px;
-	height: 300px;
 }
 
 div.sitePluginDebug h2

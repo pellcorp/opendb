@@ -122,26 +122,16 @@ function _theme_menu()
  */
 function get_theme_css($pageid, $mode = NULL)
 {
-	// TODO - replace SniffBrowser with more modern sniffer for firefox / ie / opera
-	// and update this code to support _ff, _op, _ie
 	global $_OpendbBrowserSniffer;
 	
 	$buffer = "\n";
+	
 	$file_list = _theme_css_file_list($pageid);
 	if(count($file_list)>0)
 	{
 		while(list(, $css_file_r) = each($file_list))
 		{
-			if($css_file_r['browser'] == 'ie')
-			{
-				if($_OpendbBrowserSniffer->isBrowser('ie'))
-				{
-					$buffer .= "<!--[if IE ".$css_file_r['version']."]>\n";
-					$buffer .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$css_file_r['file']."\">\n";
-					$buffer .= "<![endif]-->\n";
-				}
-			}
-			else
+			if(strlen($css_file_r['browser'])==0 || $_OpendbBrowserSniffer->isBrowser($css_file_r['browser']))
 			{
 				$buffer .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$css_file_r['file']."\">\n";
 			}
@@ -202,21 +192,14 @@ function add_css_files($pageid, $mode, &$css_file_list)
 			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}.css");
 		}
 		
-		$hacks_r = array(
-				array(hack=>'ie', browser=>'ie', version=>''),
-				array(hack=>'ie6', browser=>'ie', version=>'6'),
-				array(hack=>'ie7', browser=>'ie', version=>'7'),
-				array(hack=>'ff', browser=>'firefox', version=>''),
-				array(hack=>'op', browser=>'opera', version=>''));
-		
-		while(list(,$hack_r) = each($hacks_r))
+		$browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf');
+		while(list(,$browser) = each($browsers_r))
 		{
-			if(file_exists("./theme/$_OPENDB_THEME/${pageid}_".$hack_r['hack'].".css"))
+			$suffix = str_replace(".", NULL, $browser);
+			
+			if(file_exists("./theme/$_OPENDB_THEME/${pageid}_${suffix}.css"))
 			{
-				$css_file_list[] = array(
-					file=>"./theme/$_OPENDB_THEME/${pageid}_".$hack_r['hack'].".css", 
-					browser=>$hack_r['browser'], 
-					version=>$hack_r['version']);
+				$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_${suffix}.css", browser=>$browser);
 			}
 		}
 	}

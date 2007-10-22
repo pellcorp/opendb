@@ -35,7 +35,7 @@ class OpenDbSnoopy extends Snoopy
 	var $_file_cache_r;
 	var $_file_cache_enabled;
 
-	function OpenDbSnoopy()
+	function OpenDbSnoopy($debug = FALSE)
 	{
 		// if file cache table is not installed, we cannot use file cache.
 		$this->_file_cache_enabled = get_opendb_config_var('http.cache', 'enable');
@@ -46,8 +46,7 @@ class OpenDbSnoopy extends Snoopy
 		// in how many cases is this going to work?
 		$this->passcookies = FALSE;
 
-		// forget about turning off / on - always debug
-		$this->_debug = TRUE;
+		$this->_debug = $debug;
 		
         $proxy_server_config_r = get_opendb_config_var('http.proxy_server');
 		if ( $proxy_server_config_r['enable']==TRUE )

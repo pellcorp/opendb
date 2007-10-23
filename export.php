@@ -31,7 +31,6 @@ include_once("./functions/user.php");
 include_once("./functions/widgets.php");
 include_once("./functions/utils.php");
 include_once("./functions/export.php");
-include_once("./functions/scripts.php");
 include_once("./functions/TitleMask.class.php");
 
 /*
@@ -440,8 +439,6 @@ function send_footer(&$exportPlugin)
 function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 {
 	global $PHP_SELF;
-	
-	$buffer .= get_forms_javascript();
 	
 	$buffer .= "\n<form method=\"POST\" action=\"$PHP_SELF\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"export\">";

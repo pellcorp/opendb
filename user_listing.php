@@ -47,8 +47,6 @@ if(is_site_enabled())
 			echo(_theme_header($page_title));
 			echo("<h2>".$page_title."</h2>");
 			
-			echo(get_listings_javascript());
-
 			$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS, $HTTP_VARS['mode']);
 			
 			$listingObject->setNoRowsMessage(get_opendb_lang_var('no_users_found'));

@@ -38,10 +38,6 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 		
 	$formContents = "";
 	
-	// Include validation javascript here.
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-		$formContents .= get_validation_javascript();
-	
 	$formContents .= "<form action=\"$PHP_SELF\" method=\"POST\">";
 	
 	$formContents .= "<table>";

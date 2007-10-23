@@ -216,8 +216,8 @@ VALUES('feeds', '*', 'GAME', '"{title}"{if(instance_no>1," #{instance_no}")}');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '2', 'ia.media-imdb.com');
 
 # provide option to set a theme content type character set
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.theme', 4, 'Theme Configuration', 'Configure themes' );
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.theme', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'themes', 5, 'Themes', 'Themes Configuration' );
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('themes', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
 
 UPDATE s_language_var SET VALUE = 'Import {description}' WHERE language = 'ENGLISH' AND varname = 'type_import';
 UPDATE s_language_var SET VALUE = 'Import {description} for {fullname} ({user_id})' WHERE language = 'ENGLISH' AND varname = 'type_import_items_for_name';

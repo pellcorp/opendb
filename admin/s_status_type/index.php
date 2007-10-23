@@ -314,9 +314,6 @@ if(is_opendb_valid_session())
 
 		if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 		{
-            // Include validation javascript here.
-			echo get_validation_javascript();
-            
             echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
             if($HTTP_VARS['op'] == 'edit')

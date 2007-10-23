@@ -29,7 +29,6 @@ include_once("./functions/datetime.php");
 include_once("./functions/email.php");
 include_once("./functions/status_type.php");
 include_once("./functions/theme.php");
-include_once("./functions/scripts.php");
 include_once("./functions/file_type.php");
 include_once("./functions/TitleMask.class.php");
 
@@ -709,20 +708,6 @@ function filter_item_input_field($item_attribute_type_r, $value)
 		return $value[0];
 }
 
-function remove_illegal_chars($value, $legalChars)
-{
-	$buffer = '';
-	for($i=0; $i<strlen($value); $i++)
-	{
-		if(strstr($legalChars, substr($value,$i,1)) !== FALSE)
-		{
-			$buffer .= substr($value,$i,1);
-		}
-	}
-					
-	return $buffer;
-}
-
 /*
  Will format onchange event check if $compulsory_ind == 'Y'
 */
@@ -1045,7 +1030,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 			}
 
 			$url_is_not_valid_message = addslashes(get_opendb_lang_var('url_is_not_valid', array('prompt'=>$prompt,'extensions'=>$extensions)));
-			$onchange = "onchange=\"if(!isValidExtension(this.value, ".get_javascript_array($extensions_r).")){alert('".$url_is_not_valid_message."'); this.focus(); return false;} $onchange_event return true;\"";
+			$onchange = "onchange=\"if(!isValidExtension(this.value, ".encode_javascript_array($extensions_r).")){alert('".$url_is_not_valid_message."'); this.focus(); return false;} $onchange_event return true;\"";
 		}
 	}
 	else
@@ -1881,51 +1866,9 @@ function get_attribute_and_order_no($fieldname)
 }
 
 /**
-	Will split the $value into separate array elements for each line encountered.  As of
-	0.50-dev7 empty lines within the text of the $value will be added to the array as 
-	well.  (Because this function is called from get_display_field, lines which are on the
-	start or end of the $value will be trimmed as before).
-
-	A line is considered to be terminated by any one of a line feed ('\n'), a carriage
-	return ('\r'), or a carriage return followed immediately by a linefeed.
-*/
-function explode_lines($value)
-{
-	$count = 0;
-	$start = 0;
-	while($count < strlen($value))
-	{
-		if($value[$count] == "\r" || $value[$count] == "\n")
-		{
-			if($value[$count] == "\r" && ($count+1)<strlen($value) && $value[$count+1] == "\n")
-				$count++;//Skip dos extra end-of-line character.
-
-			$line = trim(substr($value, $start, $count-$start));
-			
-			//Even if an empty line, still count it!
-			$lines[] = $line;
-				
-			$start = $count;
-		}
-		$count++;
-	}
-	
-	// Get last line.
-	if($count > $start)
-	{
-		$line = trim(substr($value, $start, $count-$start));
-		// But does not include the last line break if empty.
-		if(strlen($line)>0)
-			$lines[] = $line;
-	}
-			 
-	return $lines;
-}
-
-/**
 	Convert $args array into equivalent Javascript array statement.
 */
-function get_javascript_array($args)
+function encode_javascript_array($args)
 {
 	$buf="";
 	for ($i=0; $i<count($args); $i++)
@@ -1939,152 +1882,7 @@ function get_javascript_array($args)
 	return "new Array($buf)";			
 }
 
-/**
-	Will expand any ?-? expressions into their actual
-	range.  If you want to include '-' as an option escape
-	it with \
-*/	
-function expand_chars_exp($exp)
-{
-	$retval="";
-	$i=0;
-	while($i<strlen($exp))
-	{
-		if(substr($exp, $i, 1) == '-' && $i>0 && substr($exp, $i-1, 1) != '\\') 
-		{
-			$start = ord(substr($exp, $i-1, 1));
-			$end = ord(substr($exp, ++$i, 1));
-			
-			if($start < $end && is_alphanum($start) && is_alphanum($end))
-			{
-				for($j=($start+1); $j<=$end; $j++)
-					$retval .= chr($j);
-			}
-			else//else - not a range
-			{
-				$retval .= substr($exp, $i-1, 1);
-				$retval .= substr($exp, $i, 1);
-			}
-		}
-		else if(substr($exp, $i, 1) == '\\')
-		{
-			// If this is escaping a character other than  '\'
-			// then do not include.  The test will still look
-			// at the original exp, for the '\', so getting rid
-			// of it here will be alright!
-			if($i>0 && substr($exp, $i-1, 1) == '\\')
-				$retval .= '\\'; 
-		}
-		else
-		{
-			$retval .= substr($exp, $i, 1);
-		}
-		$i++;
-	}
-	
-	return $retval;
-}
 
-/**
- * Could have used ctype_alpnum, but thats not guaranteed to exist, so this is more bullet proof.
- *
- * @param unknown_type $asciivalue
- * @return unknown
- */
-function is_alphanum($asciivalue)
-{
-	if($asciivalue >= ord('0') && $asciivalue <= ord('9'))
-		return true; 
-	else if($asciivalue >= ord('a') && $asciivalue <= ord('z'))
-		return true;
-	else if($asciivalue >= ord('A') && $asciivalue <= ord('Z'))
-		return true;
-	else
-		return false;
-}
-
-function expand_range($left, $right)
-{
-	$retval = '';
-	for($i=$left; $i<=$right; $i++)
-	{
-		if(strlen($retval)>0)
-			$retval .= ',';
-		
-		$retval .= $i;
-	}
-	
-	return $retval;
-}
-
-/**
-* Specify a range of characters in the following format:
-* 	1-15,10,1,12,423,312312,123-124.  If you specify
-* a range, that is not valid, that portion will be ignored.
-*/
-function expand_number_range($range)
-{
-	$retval='';
-	$i=0;
-
-	$number = '';
-	$left_number = '';
-	$right_number = '';
-	while($i<strlen($range))
-	{
-		if(is_numeric($range{$i}))
-		{
-			 if(is_numeric($left_number))
-				$right_number .= $range{$i};
-			else
-				$number .= $range{$i};
-		}
-		else if($range{$i} == '-') // end of left range number
-		{
-			$left_number = $number;
-			
-			//reset
-			$number = '';
-		}
-		else if($range{$i} == ',') // end of right range number, or lone number
-		{
-			if(is_numeric($left_number) && is_numeric($right_number))
-			{
-				$retval .= expand_range($left_number, $right_number);
-				
-				//reset
-				$left_number = '';
-				$right_number = '';
-			}
-			else
-			{
-				$retval .= $number;
-				
-				//reset
-				$number = '';
-			}
-			
-			$retval .= ',';
-		}
-		
-		$i++;
-	}
-	
-	if(is_numeric($left_number) && is_numeric($right_number))
-	{
-		$retval .= expand_range($left_number, $right_number);
-	}
-	else
-	{
-		$retval .= $number;
-	}
-	
-	// get rid of last character, if a comma.
-	if($retval{strlen($retval)-1} == ',')
-		$retval = substr($retval, 0, strlen($retval)-1);
-		
-	return $retval;
-}
 
 /**
 	$display_type can have the following values:

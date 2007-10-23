@@ -28,6 +28,7 @@ include_once("./functions/datetime.php");
 include_once("./functions/status_type.php");
 include_once("./functions/BooleanParser.class.inc");
 include_once("./functions/widgets.php");
+include_once("./functions/parseutils.php");
 include_once("./functions/item_type_group.php");
 
 /**

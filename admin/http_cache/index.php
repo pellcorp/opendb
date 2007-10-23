@@ -67,8 +67,6 @@ if (is_opendb_valid_session())
 			if(is_not_empty_array($success))
 				echo format_error_block($success, 'information');
 			
-			echo get_popup_javascript();
-			
 			echo("<p>[<a href=\"admin.php?type=$ADMIN_TYPE&op=flushexpired\">Delete expired cache entries</a>]&nbsp;"
 					."[<a href=\"admin.php?type=$ADMIN_TYPE&op=flush\">Delete all cache entries</a>]</p>");
 			

@@ -32,6 +32,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Search\" href=\"./searchplugins.php\">".
 		get_theme_css($pageid, $mode).
 		get_opendb_rss_feeds_links().
+		get_theme_javascript($pageid).
 		"</head>".
 		"\n<body>");
 

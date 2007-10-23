@@ -221,10 +221,9 @@ div.urlOptionsContainer
 div.sitePluginDebug 
 {
 	padding: 5px;
-	margin: 5px;
-	width: 75%;
+	margin-top: 25px;
 	border:1px dashed black;
-	float: right;
+	clear: left;
 }
 
 div.sitePluginDebug h2

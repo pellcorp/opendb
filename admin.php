@@ -78,7 +78,8 @@ if(is_site_enabled())
 				echo("\n<title>".get_opendb_title_and_version()." - $title"."</title>".
 						"\n<link rel=\"icon\" href=\"images/icon.gif\" type=\"image/gif\" />".
 						"\n<meta http-equiv=\"Content-Type\" content=\"".get_content_type_charset()."\">".
-						get_theme_css('admin'));
+						get_theme_css('admin').
+						get_theme_javascript('install'));
 				
                    echo('<script language="JavaScript" type="text/javascript" src="./scripts/overlibmws/overlibmws.js"></script>
 		            <script language="JavaScript" type="text/javascript" src="./scripts/overlibmws/overlibmws_function.js"></script>

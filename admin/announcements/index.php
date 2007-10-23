@@ -34,12 +34,6 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 {
 	global $PHP_SELF;
 				  
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		// Include validation javascript, which will validate data input.
-		$buffer = get_validation_javascript();
-	}
-
 	$buffer .= "<form action=\"$PHP_SELF\" method=\"POST\">";
 	
 	$buffer .= "\n<input type=\"hidden\" name=\"type\" value=\"announcements\">";

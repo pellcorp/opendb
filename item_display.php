@@ -37,7 +37,6 @@ include_once("./functions/item_type.php");
 include_once("./functions/listutils.php");
 include_once("./functions/status_type.php");
 include_once("./functions/export.php");
-include_once("./functions/scripts.php");
 include_once("./functions/item_attribute.php");
 include_once("./functions/TitleMask.class.php");
 include_once("./functions/item_display.php");
@@ -59,10 +58,6 @@ if(is_site_enabled())
 
 			    $page_title = $titleMaskCfg->expand_item_title($item_r);
 				echo _theme_header($page_title, $HTTP_VARS['inc_menu']);
-				
-				echo(get_popup_javascript());
-				echo(get_common_javascript());
-				echo(get_tabs_javascript());
 				
 				echo ("<h2>".$page_title." ".get_item_image($item_r['s_item_type'], $item_r['item_id'])."</h2>");
                 

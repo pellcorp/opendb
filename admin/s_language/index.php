@@ -19,7 +19,6 @@
 */
 
 include_once("./functions/install.php");
-include_once("./functions/scripts.php");
 
 function generate_language_sql($language, $options = NULL)
 {
@@ -471,9 +470,6 @@ if (is_opendb_valid_session())
 		{	
 			if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
 			{
-				echo(get_common_javascript());
-				echo get_tabs_javascript();
-				
 				echo build_table_page($HTTP_VARS['language']);
 			}
 			else
@@ -485,8 +481,6 @@ if (is_opendb_valid_session())
 		{
 			if(is_exists_language($HTTP_VARS['language']))
 			{
-				echo(get_common_javascript());
-				echo get_tabs_javascript();
 				build_langvar_page($HTTP_VARS['language']);
 			}
 			else

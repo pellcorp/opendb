@@ -402,9 +402,6 @@ if (is_opendb_valid_session())
 			$address_type_r = fetch_s_address_type_r($HTTP_VARS['s_address_type']);
 			if($address_type_r!==FALSE)
 			{
-				echo get_validation_javascript();
-
-				// Get the theme specific source of the image.
 				echo("\n<h3>".$item_type_r['s_address_type']." System Address Attributes</h3>");
 				
 				if(is_not_empty_array($errors))
@@ -498,7 +495,6 @@ if (is_opendb_valid_session())
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
 			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
-			echo get_validation_javascript();
 				
 			echo("\n<h3>New Address Type</h3>");
 			
@@ -528,8 +524,6 @@ if (is_opendb_valid_session())
 		if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types')
 		{
 			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
-			
-			echo get_validation_javascript();
 			
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);

@@ -24,6 +24,7 @@ include_once("./functions/fileutils.php");
 include_once("./functions/language.php");
 include_once("./functions/cssparser/cssparser.php");
 include_once("./functions/rss.php");
+include_once("./functions/scripts.php");
 
 /**
  * Any additional CSS that should be included in addition to a css of the same name
@@ -47,7 +48,7 @@ $_OPENDB_THEME_CSS_MAP = array(
 function get_content_type_charset() {
 	$contentType = "text/html";
 	
-	$charSet = get_opendb_config_var('site.theme', 'charset');
+	$charSet = get_opendb_config_var('themes', 'charset');
 	if(strlen($charSet)>0) {
 		$contentType .= ";charset=".$charSet;
 	}
@@ -112,6 +113,19 @@ function _theme_menu()
 		return theme_menu(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'));
 	else
 		return NULL;
+}
+
+function get_theme_javascript($pageid)
+{
+	return get_javascript('common.js').
+			get_javascript('date.js').
+			get_javascript('forms.js').
+			get_javascript('listings.js').
+			get_javascript('marquee.js').
+			get_javascript('popup.js').
+			get_javascript('search.js').
+			get_javascript('tabs.js').
+			get_javascript('validation.js');					
 }
 
 /**
@@ -184,6 +198,7 @@ function _theme_css_file_list($pageid, $mode = NULL)
 function add_css_files($pageid, $mode, &$css_file_list)
 {
 	global $_OPENDB_THEME;
+	global $_OpendbBrowserSniffer;
 	
 	if(strlen($mode)==0)
 	{
@@ -192,7 +207,7 @@ function add_css_files($pageid, $mode, &$css_file_list)
 			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}.css");
 		}
 		
-		$browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf');
+		$browsers_r = $_OpendbBrowserSniffer->getSupportedBrowsers();
 		while(list(,$browser) = each($browsers_r))
 		{
 			$suffix = str_replace(".", NULL, $browser);

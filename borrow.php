@@ -431,8 +431,6 @@ if(is_site_enabled())
 					echo(_theme_header($page_title));
 					echo('<h2>'.$page_title.' '.$page_image.'</h2>');
 					
-					echo(get_listings_javascript());
-										
 					$listingObject->startListing($page_title);
 
 					if($checkbox_column!==FALSE)

@@ -36,7 +36,11 @@ if(!$_OpendbBrowserSniffer->isBrowserSupported())
 		"</p>");
 }
 
-$supportedBrowsers = $_OpendbBrowserSniffer->getSupportedBrowsers();
+$supportedBrowsers = array(
+	array('name'=>'Firefox 1.5, 2.0', 'url'=>'http://www.mozilla.com/firefox/', 'icon'=>'firefox.jpg'),
+	array('name'=>'Internet Explorer 7.0', 'url'=>'http://www.microsoft.com/windows/products/winfamily/ie/default.mspx', 'icon'=>'icon_ie7.gif'),
+	array('name'=>'Internet Explorer 6.0', 'url'=>'http://www.microsoft.com/windows/ie/ie6/default.mspx', 'icon'=>'ie6.gif'),
+);
 
 echo("<ul class=\"browsers\">");
 while(list(,$browser_r) = each($supportedBrowsers))

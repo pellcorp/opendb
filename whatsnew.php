@@ -55,8 +55,8 @@ if(is_site_enabled())
 		
 		if($HTTP_VARS['op'] == 'marquee')
 		{
-			echo(get_common_javascript());
-			echo(get_marquee_javascript());
+			echo(get_javascript('common.js'));
+			echo(get_javascript('marquee.js'));
 			
 			echo("\n<div id=\"lastitemlist-container\">".
 				get_last_item_list_marquee(

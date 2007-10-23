@@ -58,8 +58,6 @@ if(is_site_enabled())
 				echo(_theme_header($page_title));
 				echo('<h2>'.$page_title.'</h2>');
 	
-				echo get_popup_javascript();
-	
 				echo("<table>");
 	
 				echo(format_field(

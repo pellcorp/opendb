@@ -1005,10 +1005,6 @@ if(is_site_enabled())
 		echo(_theme_header($page_title, $HTTP_VARS['inc_menu']));
 		echo('<h2>'.$page_title.'</h2>');
 			
-		echo(get_common_javascript());
-		echo(get_listings_javascript());
-		echo(get_popup_javascript());
-		
 		$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
 		if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0 && is_not_empty_array($v_item_types))
 		{

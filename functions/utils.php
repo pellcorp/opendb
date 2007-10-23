@@ -135,6 +135,48 @@ function trim_explode($delimiter, $value)
 	}
 }
 
+/**
+	Will split the $value into separate array elements for each line encountered.  As of
+	0.50-dev7 empty lines within the text of the $value will be added to the array as 
+	well.  (Because this function is called from get_display_field, lines which are on the
+	start or end of the $value will be trimmed as before).
+
+	A line is considered to be terminated by any one of a line feed ('\n'), a carriage
+	return ('\r'), or a carriage return followed immediately by a linefeed.
+*/
+function explode_lines($value)
+{
+	$count = 0;
+	$start = 0;
+	while($count < strlen($value))
+	{
+		if($value[$count] == "\r" || $value[$count] == "\n")
+		{
+			if($value[$count] == "\r" && ($count+1)<strlen($value) && $value[$count+1] == "\n")
+				$count++;//Skip dos extra end-of-line character.
+
+			$line = trim(substr($value, $start, $count-$start));
+			
+			//Even if an empty line, still count it!
+			$lines[] = $line;
+				
+			$start = $count;
+		}
+		$count++;
+	}
+	
+	// Get last line.
+	if($count > $start)
+	{
+		$line = trim(substr($value, $start, $count-$start));
+		// But does not include the last line break if empty.
+		if(strlen($line)>0)
+			$lines[] = $line;
+	}
+			 
+	return $lines;
+}
+
 /*
 * Check if $s1 startsWith $s2
 * 

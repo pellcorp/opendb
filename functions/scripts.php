@@ -19,48 +19,6 @@
 */
 function get_javascript($filename)
 {
-	return '<script src="./scripts/'.$filename.'" language="JavaScript" type="text/javascript"></script>';
-}
-
-function get_common_javascript()
-{
-	return get_javascript('common.js');
-}
-
-function get_tabs_javascript()
-{
-	return get_javascript('tabs.js');
-}
-
-function get_marquee_javascript()
-{
-	return get_javascript('marquee.js');
-}
-
-function get_popup_javascript()
-{
-	return get_javascript('popup.js');
-}
-
-function get_forms_javascript()
-{
-	return get_javascript('forms.js');
-}
-					
-function get_validation_javascript()
-{
-	return get_javascript('validation.js').
-			get_javascript('date.js').
-			get_javascript('popup.js');
-}
-
-function get_search_javascript()
-{
-	return get_javascript('search.js');
-}
-
-function get_listings_javascript()
-{
-	return get_javascript('listings.js');
+	return "<script src=\"./scripts/${filename}\" language=\"JavaScript\" type=\"text/javascript\"></script>\n";
 }
 ?>

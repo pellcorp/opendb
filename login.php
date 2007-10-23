@@ -35,7 +35,6 @@ include_once("./functions/status_type.php");
 include_once("./functions/borrowed_item.php");
 include_once("./functions/whatsnew.php");
 include_once("./functions/announcement.php");
-include_once("./functions/scripts.php");
 
 function get_lastitems_list_blocks_r($update_on, $user_id)
 {
@@ -242,8 +241,6 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 			get_opendb_lang_var('login'),
 			is_show_login_menu_enabled());
 
-	echo get_popup_javascript();
-			
 	echo("<h2>".get_opendb_lang_var('login')."</h2>");
 
     if(is_not_empty_array($errors))
@@ -494,8 +491,6 @@ else  // invalid session - go to login
 			// no point if site disabled, email is not available
 			if(is_site_enabled() && is_valid_opendb_mailer() && get_opendb_config_var('email', 'send_to_site_admin')!==FALSE)
 			{
-				echo get_popup_javascript();
-
 				$footer_links_r[] = array(
 					text=>get_opendb_lang_var('email_administrator'),
 					target=>"popup(640,480)",

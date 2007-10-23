@@ -20,7 +20,6 @@
 
 include_once("./functions/site_plugin.php");
 include_once("./functions/parseutils.php");
-include_once("./functions/scripts.php");
 
 $input_type_functions_cats = array(
 			'file'=>array('url'),
@@ -185,7 +184,7 @@ function get_widget_js_entry($name, $type, $definition)
 		$args[] = $arg;
 	}
 	
-	return "new WidgetToolTip('$name', '$type', '".addslashes($description)."', '".addslashes($spec)."', ".get_javascript_array($args).");\n";
+	return "new WidgetToolTip('$name', '$type', '".addslashes($description)."', '".addslashes($spec)."', ".encode_javascript_array($args).");\n";
 }
 
 function get_function_help_link($type)
@@ -972,8 +971,6 @@ if(is_opendb_valid_session())
 
 		if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 		{
-			echo get_validation_javascript();
-            
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
 			echo get_widget_tooltip_array();
 
@@ -1026,8 +1023,6 @@ if(is_opendb_valid_session())
 			// Do for both 'update' and 'edit'
 			// ################################################################
 
-			echo get_validation_javascript();
-
 			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
 
             echo("<script language=\"JavaScript1.2\">
@@ -1046,9 +1041,6 @@ if(is_opendb_valid_session())
 				}
 			}</script>");
 			
-            echo(get_common_javascript());
-			echo get_tabs_javascript();
-			
             echo("\n<h3>Edit ".$HTTP_VARS['s_attribute_type']." Attribute Type Lookups</h3>");
 
 			if(is_not_empty_array($errors))
@@ -1065,8 +1057,6 @@ if(is_opendb_valid_session())
 
 			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a> ]");
 				 
-			echo(get_common_javascript());
-			echo get_tabs_javascript();
             echo(display_attribute_type_form($HTTP_VARS));
             
            

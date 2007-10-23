@@ -344,7 +344,7 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site', 
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.public_access', 1, 'Public Access', 'Public Access configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.url', 2, 'Opendb Site URL', 'Override OpenDb Site URL configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.gzip_compression', 3, 'GZIP Compression', 'Configure gzip compression' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'site.theme', 4, 'Theme Configuration', 'Configure themes' );
+
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'logging', 2, 'Logging', 'Logging configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'http', 3, 'Http', 'HTTP configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'http.cache', 1, 'Http Cache', 'HTTP Cache configuration' );
@@ -354,29 +354,30 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'http.pr
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'email', 4, 'Email', 'Email configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'email.smtp', 1, 'Smtp Configuration', 'SMTP Server configuration' );
 
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'widgets', 5, 'Widgets', 'Widgets configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login', 6, 'Login', 'Login / Logout configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'themes', 5, 'Themes', 'Themes Configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'widgets', 6, 'Widgets', 'Widgets configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login', 7, 'Login', 'Login / Logout configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.signup', 1, 'Signup', 'Signup configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.last_items_list', 2, 'Login Last Items List', 'Login last items listing configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.whats_new', 3, 'Login Whats New', 'Login whats new summary configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.announcements', 4, 'Login Announcements', 'Login announcements configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin', 7, 'User Administration', 'User Administration configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings', 8, 'Item Listings', 'Item Listings configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin', 8, 'User Administration', 'User Administration configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings', 9, 'Item Listings', 'Item Listings configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings.filters', 1, 'Item Listing Filters', 'Item Listing filter configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings.borrow', 2, 'Item Listing Borrow', 'Item Listing Borrow configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings.multi_borrow', 3, 'Item Listing Multi Borrow', 'Item Listing Multi Borrow configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_display', 9, 'Item Display', 'Item Display configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input', 10, 'Item Input', 'Item Input configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_display', 10, 'Item Display', 'Item Display configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input', 11, 'Item Input', 'Item Input configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.site', 1, 'Site Plugins', 'Item Input Site Plugins configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_review', 11, 'Item Review', 'Item Review configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow', 12, 'Item Borrow', 'Borrow Functionality configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_review', 12, 'Item Review', 'Item Review configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow', 13, 'Item Borrow', 'Borrow Functionality configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.reminder', 1, 'Item Borrow Reminders', 'Reminders Job configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.checkout', 2, 'Item Borrow Checkouts / Checkins', 'Borrow check in / check out configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'search', 13, 'Item Search', 'Item Search configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import', 14, 'Import', 'Import configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'search', 14, 'Item Search', 'Item Search configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import', 15, 'Import', 'Import configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import.cache', 1, 'Import Cache', 'Import Cache configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'stats', 15, 'Statistics', 'Statistics configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds', 16, 'Feeds', 'Feeds configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'stats', 16, 'Statistics', 'Statistics configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds', 17, 'Feeds', 'Feeds configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.new_items', 1, 'New Items Feed', 'New Items Feed configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.announcements', 2, 'Announcements Feed', 'Announcements Feed configuration' );
 
@@ -407,7 +408,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'user_id', 2, 'Guest User', 'You must choose a valid \'guest\' User', 'guest_userid');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, standard guest user restrictions will apply.  Otherwise only pages listed will be accessible while public access is in effect.', 'array', 'text');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.theme', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('theme', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'enable_javascript_validation', 1, 'Enable Javascript Validation', 'Enforce javascript data validations in addition to backend validations.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'show_prompt_compulsory_ind', 2, 'Show Prompt Compulsory Indicator', 'Any Mandatory data elements will show a visual mandatory element identifier', 'boolean');

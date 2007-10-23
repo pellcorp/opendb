@@ -41,7 +41,7 @@ include_once("./functions/item_input.php");
 include_once("./functions/status_type.php");
 include_once("./functions/TitleMask.class.php");
 include_once("./functions/HTML_Listing.class.inc");
-include_once("./functions/scripts.php");
+
 
 /**
 * Will test the old against the new value.
@@ -248,9 +248,6 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 	$site_plugin_rs = get_site_plugin_rs($HTTP_VARS, $item_r);
 	if(is_array($site_plugin_rs))
 	{
-		echo(get_common_javascript());
-		echo(get_tabs_javascript());
-		
 		echo("<div id=\"site-add-container\">");
 		
 		echo("<ul id=\"site-add-menu\">");
@@ -1011,15 +1008,6 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 	{
 		$pageContents = '';
 		
-		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			$pageContents .= get_validation_javascript();
-		else
-			$pageContents .= get_popup_javascript();
-	
-		$pageContents .= get_common_javascript();
-		$pageContents .= get_tabs_javascript();
-		$pageContents .= get_forms_javascript();
-		
 		$pageContents .= "<div class=\"tabContainer\">";
 		
 		if($upload_file_fields && is_file_upload_enabled())
@@ -1196,8 +1184,6 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
 	$HTTP_VARS['op'] = 'site';
 	
 	$formContents = '<div id="site-search">';
-	
-	$formContents .= get_popup_javascript();
 	
  	if($sitePlugin->_queryListing($HTTP_VARS) !== FALSE)
  	{
@@ -1424,8 +1410,6 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 									
 		do_op_title($item_r, $status_type_r, $HTTP_VARS['start-op'] == 'clone_item'?'clone_item':'insert');
 								
-		echo get_popup_javascript();
-									
 		echo get_op_confirm_form(
 							$PHP_SELF, 
 							get_opendb_lang_var($message_lang_var, array('title'=>$item_r['title'],'s_item_type'=>$item_r['s_item_type'])),

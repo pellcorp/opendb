@@ -117,11 +117,6 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 		$from = $from_userid; // this is an email address
 	}
 	
-	// Include validation javascript here.
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-		echo get_validation_javascript();
-	
-	
 	if(is_array($errors)) {
 		echo format_error_block($errors);
 	}

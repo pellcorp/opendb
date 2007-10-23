@@ -422,4 +422,165 @@ function remove_function_arg($function_spec, $arg_text)
 		return $function_spec;
 	}
 }
+
+function remove_illegal_chars($value, $legalChars)
+{
+	$buffer = '';
+	for($i=0; $i<strlen($value); $i++)
+	{
+		if(strstr($legalChars, substr($value,$i,1)) !== FALSE)
+		{
+			$buffer .= substr($value,$i,1);
+		}
+	}
+					
+	return $buffer;
+}
+
+/**
+	Will expand any ?-? expressions into their actual
+	range.  If you want to include '-' as an option escape
+	it with \
+*/	
+function expand_chars_exp($exp)
+{
+	$retval="";
+	$i=0;
+	while($i<strlen($exp))
+	{
+		if(substr($exp, $i, 1) == '-' && $i>0 && substr($exp, $i-1, 1) != '\\') 
+		{
+			$start = ord(substr($exp, $i-1, 1));
+			$end = ord(substr($exp, ++$i, 1));
+			
+			if($start < $end && is_alphanum($start) && is_alphanum($end))
+			{
+				for($j=($start+1); $j<=$end; $j++)
+					$retval .= chr($j);
+			}
+			else//else - not a range
+			{
+				$retval .= substr($exp, $i-1, 1);
+				$retval .= substr($exp, $i, 1);
+			}
+		}
+		else if(substr($exp, $i, 1) == '\\')
+		{
+			// If this is escaping a character other than  '\'
+			// then do not include.  The test will still look
+			// at the original exp, for the '\', so getting rid
+			// of it here will be alright!
+			if($i>0 && substr($exp, $i-1, 1) == '\\')
+				$retval .= '\\'; 
+		}
+		else
+		{
+			$retval .= substr($exp, $i, 1);
+		}
+		$i++;
+	}
+	
+	return $retval;
+}
+
+/**
+ * Could have used ctype_alpnum, but thats not guaranteed to exist, so this is more bullet proof.
+ *
+ * @param unknown_type $asciivalue
+ * @return unknown
+ */
+function is_alphanum($asciivalue)
+{
+	if($asciivalue >= ord('0') && $asciivalue <= ord('9'))
+		return true; 
+	else if($asciivalue >= ord('a') && $asciivalue <= ord('z'))
+		return true;
+	else if($asciivalue >= ord('A') && $asciivalue <= ord('Z'))
+		return true;
+	else
+		return false;
+}
+
+function expand_range($left, $right)
+{
+	$retval = '';
+	for($i=$left; $i<=$right; $i++)
+	{
+		if(strlen($retval)>0)
+			$retval .= ',';
+		
+		$retval .= $i;
+	}
+	
+	return $retval;
+}
+
+/**
+* Specify a range of characters in the following format:
+* 	1-15,10,1,12,423,312312,123-124.  If you specify
+* a range, that is not valid, that portion will be ignored.
+*/
+function expand_number_range($range)
+{
+	$retval='';
+	$i=0;
+
+	$number = '';
+	$left_number = '';
+	$right_number = '';
+	while($i<strlen($range))
+	{
+		if(is_numeric($range{$i}))
+		{
+			 if(is_numeric($left_number))
+				$right_number .= $range{$i};
+			else
+				$number .= $range{$i};
+		}
+		else if($range{$i} == '-') // end of left range number
+		{
+			$left_number = $number;
+			
+			//reset
+			$number = '';
+		}
+		else if($range{$i} == ',') // end of right range number, or lone number
+		{
+			if(is_numeric($left_number) && is_numeric($right_number))
+			{
+				$retval .= expand_range($left_number, $right_number);
+				
+				//reset
+				$left_number = '';
+				$right_number = '';
+			}
+			else
+			{
+				$retval .= $number;
+				
+				//reset
+				$number = '';
+			}
+			
+			$retval .= ',';
+		}
+		
+		$i++;
+	}
+	
+	if(is_numeric($left_number) && is_numeric($right_number))
+	{
+		$retval .= expand_range($left_number, $right_number);
+	}
+	else
+	{
+		$retval .= $number;
+	}
+	
+	// get rid of last character, if a comma.
+	if($retval{strlen($retval)-1} == ',')
+		$retval = substr($retval, 0, strlen($retval)-1);
+		
+	return $retval;
+}
 ?>

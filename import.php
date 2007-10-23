@@ -33,7 +33,6 @@ include_once("./functions/user.php");
 include_once("./functions/import.php");
 include_once("./functions/importcache.php");
 include_once("./functions/parseutils.php");
-include_once("./functions/scripts.php");
 include_once("./functions/ItemImportHandler.class.inc");
 include_once("./functions/HTML_Listing.class.inc");
 
@@ -418,8 +417,6 @@ function get_upload_form($HTTP_VARS)
 {
 	global $PHP_SELF;
 		
-	$buffer = get_validation_javascript();
-	
 	$buffer .= "\n<form name=\"main\" action=\"$PHP_SELF\" method=\"POST\" enctype=\"multipart/form-data\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"upload\">";
 	

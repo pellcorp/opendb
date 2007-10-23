@@ -40,6 +40,7 @@ function install_header($title)
 		"\n	<title>".get_opendb_title_and_version()." - $title"."</title>".
 		"\n<link rel=\"icon\" href=\"images/icon.gif\" type=\"image/gif\" />".
 		get_theme_css('install', 'no-menu').
+		get_theme_javascript('install').
 		"\n</head>".
 		"\n<body>");
 	
@@ -893,8 +894,6 @@ if(strlen($HTTP_VARS['step'])==0)
 {
 	echo install_header('OpenDb Installation', FALSE);
 	echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
-	
-	echo(get_common_javascript());
 	
   	$next_step = 'pre-install';
 	

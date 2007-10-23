@@ -20,6 +20,7 @@
 
 include_once("./functions/widgets.php");
 include_once("./functions/user.php");
+include_once("./functions/parseutils.php");
 
 function fetch_instance_attribute_type_rs()
 {

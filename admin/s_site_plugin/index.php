@@ -1304,8 +1304,6 @@ if (is_opendb_valid_session())
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
 				
-				echo get_validation_javascript();
-				
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_links', 
@@ -1330,8 +1328,6 @@ if (is_opendb_valid_session())
 				
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
-				
-				echo get_validation_javascript();
 				
 				display_edit_table(
 						$HTTP_VARS['op'], 
@@ -1358,8 +1354,6 @@ if (is_opendb_valid_session())
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
 				
-				echo get_validation_javascript();
-				
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_input_fields', 
@@ -1384,8 +1378,6 @@ if (is_opendb_valid_session())
 				
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
-				
-				echo get_validation_javascript();
 				
 				display_edit_table(
 						$HTTP_VARS['op'], 
@@ -1412,8 +1404,6 @@ if (is_opendb_valid_session())
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
 				
-				echo get_validation_javascript();
-				echo '<script src="./scripts/search.js" language="JavaScript" type="text/javascript"></script>';
 				echo get_lookup_attribute_type_array();
 				
 				display_edit_table(
@@ -1442,8 +1432,6 @@ if (is_opendb_valid_session())
 			
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
-				
-				echo get_validation_javascript();
 				
 				echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
 				echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
@@ -1480,8 +1468,6 @@ if (is_opendb_valid_session())
 			
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
-				
-			echo get_validation_javascript();
 				
 			echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
 			echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_site_plugin\">");
@@ -1642,8 +1628,6 @@ if (is_opendb_valid_session())
 								echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
 								echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Update ".strtoupper($installPlugin->getInstallTable())." table</h3>");
 								
-								echo(get_validation_javascript());
-								
 								$recordCount = $installPlugin->getRecordCount();
 								if(is_numeric($recordCount))
 								{
@@ -1739,12 +1723,8 @@ if (is_opendb_valid_session())
 		{
 			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a> ]");
 			
-			echo get_popup_javascript();
-			
 			if(is_not_empty_array($errors))
-			{
 				echo format_error_block($errors);
-			}
 			
 			echo("<table>");
 				echo("<tr class=\"navbar\">"

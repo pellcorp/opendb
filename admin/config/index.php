@@ -23,7 +23,6 @@ include_once("./functions/export.php");
 include_once("./functions/user.php");
 include_once("./functions/theme.php");
 include_once("./functions/language.php");
-include_once("./functions/scripts.php");
 
 /**
  	boolean - TRUE or FALSE only
@@ -397,10 +396,7 @@ if(is_opendb_valid_session())
 		if(is_not_empty_array($errors))
 			echo format_error_block($errors);
 		
-		echo get_validation_javascript();
 		echo('<script src="./admin/config/select.js" language="JavaScript" type="text/javascript"></script>');
-		echo(get_common_javascript());
-		echo(get_tabs_javascript());
 		
 		echo("<div class=\"tabContainer\">");
 		

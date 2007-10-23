@@ -896,9 +896,6 @@ if (is_opendb_valid_session())
 			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
 			if($item_type_r!==FALSE)
 			{
-				echo get_validation_javascript();
-				
-				// Get the theme specific source of the image.
 				echo("\n<h3>");
 				if(strlen($item_type_r['image'])>0)
 				{
@@ -996,7 +993,6 @@ if (is_opendb_valid_session())
 			echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 			
 			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
-			echo get_validation_javascript();
 				
 			echo("\n<h3>New Item Type</h3>");
 			
@@ -1031,8 +1027,6 @@ if (is_opendb_valid_session())
 				$HTTP_VARS['op'] == 'update_types')
 		{
 			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a> ]");
-			
-			echo get_validation_javascript();
 			
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);

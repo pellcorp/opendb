@@ -75,12 +75,6 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	global $_OPENDB_THEME;
 	global $PHP_SELF;
 	
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		// Include validation javascript, which will validate data input.
-		echo get_validation_javascript();
-	}
-
 	$buffer .= "<form action=\"$PHP_SELF\" method=\"POST\">";
 	
 	$buffer .= "<table class=\"userInputForm\">";
@@ -396,12 +390,6 @@ function get_user_password_change_form($user_r, $HTTP_VARS)
 {
 	global $PHP_SELF;
 
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		// Include validation javascript, which will validate data input.
-		echo get_validation_javascript();
-	}
-			
 	$buffer .= "<form action=\"$PHP_SELF\" method=\"POST\">";
 
 	$buffer .= "<table class=\"changePasswordForm\">";

@@ -35,7 +35,6 @@ include_once("./functions/item_attribute.php");
 include_once("./functions/item_type.php");
 include_once("./functions/widgets.php");
 include_once("./functions/review.php");
-include_once("./functions/scripts.php");
 include_once("./functions/listutils.php");
 include_once("./functions/status_type.php");
 include_once("./functions/HTML_Listing.class.inc");
@@ -389,7 +388,6 @@ if(is_site_enabled())
 						}
 						echo("</form>");
 						
-						echo(get_listings_javascript());
 						$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 						$listingObject->setNoRowsMessage(get_opendb_lang_var('no_records_found'));
 							

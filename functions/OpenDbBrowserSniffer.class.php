@@ -25,31 +25,34 @@ class OpenDbBrowserSniffer
 	
 	var $isSupported;
 	
+	var $browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf');
+	
 	function OpenDbBrowserSniffer()
 	{
 		$this->phpSniffer = new phpSniff(get_http_env('HTTP_USER_AGENT'));
 		$this->__initIsSupported();
 	}
 	
+	/**
+	 * This method returns true if browser is not ns4, ie5 or IE5.5
+	 *
+	 * @return unknown
+	 */
 	function isBrowserSupported()
 	{
 		return $this->isSupported;
 	}
 	
+	/**
+	 */
+	function getSupportedBrowsers()
+	{
+		return $this->browsers_r;	
+	}
+	
 	function isBrowser($b)
 	{
 		return $this->phpSniffer->browser_is($b);
-	}
-	
-	function getSupportedBrowsers()
-	{
-		$supportedBrowsers = array(
-			array('name'=>'Firefox 1.5, 2.0', 'url'=>'http://www.mozilla.com/firefox/', 'icon'=>'firefox.jpg'),
-			array('name'=>'Internet Explorer 7.0', 'url'=>'http://www.microsoft.com/windows/products/winfamily/ie/default.mspx', 'icon'=>'icon_ie7.gif'),
-			array('name'=>'Internet Explorer 6.0', 'url'=>'http://www.microsoft.com/windows/ie/ie6/default.mspx', 'icon'=>'ie6.gif'),
-		);
-	
-		return $supportedBrowsers;	
 	}
 	
 	function __initIsSupported()

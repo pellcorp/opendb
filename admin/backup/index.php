@@ -142,8 +142,6 @@ if (is_opendb_valid_session())
 		{
 			echo("<h3>Which tables should be backed up?</h3>");
 			
-			echo(get_forms_javascript());
-			
 			echo("<form method=\"POST\" action=\"$PHP_SELF\">"
 				."<input type=hidden name=\"type\" value=\"$ADMIN_TYPE\">"
 				."<input type=hidden name=\"op\" value=\"export\">"

@@ -33,7 +33,7 @@ include_once("./functions/parseutils.php");
 include_once("./functions/user.php");
 include_once("./functions/status_type.php");
 
-function get_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategories, &$item_attribute_type_rs)
+function encode_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategories, &$item_attribute_type_rs)
 {
 	$buffer = "";
 	
@@ -150,10 +150,7 @@ if(is_site_enabled())
 		$page_title = get_opendb_lang_var('advanced_search');
 		echo _theme_header($page_title);
 
-		// Include validation javascript here.
-		echo(get_validation_javascript());
-		echo(get_search_javascript());
-		echo(get_search_javascript_arrays($item_type_rs, $category_type_rs, $item_attribute_type_rs));
+		echo(encode_search_javascript_arrays($item_type_rs, $category_type_rs, $item_attribute_type_rs));
 
 		echo("<h2>".$page_title."</h2>");
 		

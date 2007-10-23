@@ -159,10 +159,10 @@ if(is_site_enabled())
 		// global declaration of the datetimemask, to be used by all Date fields in search page.
 		echo("\n<input type=hidden name=\"datetimemask\" value=\"".get_opendb_config_var('search', 'datetime_mask')."\">");
 
-		echo("<table class=\"searchForm\">");
-
 		// Indicate to listings.php that search.php initiated it.
 		echo("\n<input type=hidden name=\"search_list\" value=\"y\">");
+		
+		echo("<table class=\"searchForm\">");
 
 		// ------------------------
 		// TITLE FIELD

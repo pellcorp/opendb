@@ -47,7 +47,6 @@ function opendb_version_compare($to_version, $from_version, $operator)
 	$to_version = fix_10_version($to_version);
 	$from_version = fix_10_version($from_version);
 	
-	//echo("<br>$to_version $operator $from_version");
 	return version_compare($to_version, $from_version, $operator);
 }
 
@@ -892,9 +891,6 @@ function get_upgrader_r($db_version)
 */
 function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 {
-	//echo '<br>db_version:'.$db_version;
-	//echo '<br>opendb_version:'.$opendb_version;
-	
 	$all_upgrader_rs = NULL;
 	
   	build_upgrader_list($all_upgrader_rs, $latest_to_version);

@@ -186,7 +186,7 @@ if(is_opendb_valid_session())
 				."<th>Extension</th>"
 				."<th>Alternate Extensions</th>"
                 ."<th colspan=2>Image</th>"
-                ."<th>Thumbnail<br>Support</th>"
+                ."<th>Thumbnail<br />Support</th>"
 				."<th></th>"
 				."</tr>");
 			$column_count = 9;

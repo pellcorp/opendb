@@ -52,7 +52,7 @@ function _build_tooltip($prompt, $value)
 {
 	$value = str_replace("\"", "&quot;", $value);
 	$value = str_replace("'", "\\'", $value);
-	$value = str_replace("\n", "<br>", $value);
+	$value = str_replace("\n", "<br />", $value);
 	
 	return "<a href=\"#\" onmouseover=\"show_tooltip('".$value."','".$prompt."');\" onmouseout=\"return hide_tooltip();\">(?)</a>";
 }

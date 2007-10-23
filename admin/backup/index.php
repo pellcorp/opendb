@@ -189,11 +189,13 @@ if (is_opendb_valid_session())
 			echo("</tr>");
 			echo("</table>");
 			
-			echo("<input type=button value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\">&nbsp;".
-						"<input type=button value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\">&nbsp;".
-						"<input type=reset value=\"".get_opendb_lang_var('reset')."\">");
+			echo("<ul class=\"actionButtons\">".
+				"<li><input type=button value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\"></li>".
+				"<li><input type=button value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\"></li>".
+				"<li><input type=reset value=\"".get_opendb_lang_var('reset')."\"></li>".
+				"</ul>");
 
-			echo("<br /><br /><input type=\"submit\" value=\"".get_opendb_lang_var('backup_database')."\">
+			echo("<input type=\"submit\" value=\"".get_opendb_lang_var('backup_database')."\">
 				</form>");
 		}
 	}

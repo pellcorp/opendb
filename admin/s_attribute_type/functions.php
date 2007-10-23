@@ -131,7 +131,7 @@ $argument_types = array(
 			'legalchars'=>array('prompt'=>'Legal Char List',
 							'description'=>'Specify a list of legal characters that can be used for this field. '
 											.'You can specify this as a comma delimited list, or as a range. '
-											.'<br>Example: <b>a-z,1,2,3</b> This list will allow all lowercase '
+											.'<br />Example: <b>a-z,1,2,3</b> This list will allow all lowercase '
 											.'characters and the numbers 1 2 and 3 to be used.',
 							'input_type'=>'text(50,100)'),
 
@@ -153,26 +153,26 @@ $argument_types = array(
 
 			'orientation'=>array('prompt'=>'Orientation',
 							'description'=>'Which way should this field be formatted?'
-										.'<br><br>Options are:'
+										.'<p>Options are:'
 										.'<ul>'
 										.'<li>VERTICAL</li>'
 										.'<li>HORIZONTAL</li>'
-										.'</ul><br>',
+										.'</ul></p>',
 							'input_type'=>'value_select("VERTICAL,HORIZONTAL", 1)'),
 
 			'alignment'=>array('prompt'=>'Alignment',
 							'description'=>'Which way should this field be aligned?'
-										.'<br><br>Options are:'
+										.'<p>Options are:'
 										.'<ul>'
 										.'<li>LEFT</li>'
 										.'<li>RIGHT</li>'
 										.'<li>CENTRE</li>'
-										.'</ul><br>',
+										.'</ul></p>',
 							'input_type'=>'value_select("LEFT,RIGHT,CENTRE", 1)'),
 
 			'content_group'=>array('prompt'=>'Content Group',
 							'description'=>'Specify which content group(s) this field will accept as legal.'
-											.'<br>Example: <b>IMAGE, VIDEO</b>',
+											.'<p>Example: <b>IMAGE, VIDEO</b></p>',
 							'input_type'=>'text(50)'),
 
 			'columns'=>array('prompt'=>'Columns',
@@ -190,7 +190,7 @@ $argument_types = array(
 
 			'value_list'=>array('prompt'=>'Value List',
 							'description'=>'Provide the value options for the widget, comma delimited.'
-											.'<br>Example: <b>one,two,three</b>',
+											.'<p>Example: <b>one,two,three</b></p>',
 							'input_type'=>'text(50,100)'),
 
 			'delimiter'=>array('prompt'=>'Delimiter',

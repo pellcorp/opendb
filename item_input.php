@@ -394,7 +394,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 						'user_id').
 					"\n</select>");
 
-			echo("<br /><input type=\"submit\" value=\"".get_opendb_lang_var('add_new_item')."\">");
+			echo("<input type=\"submit\" value=\"".get_opendb_lang_var('add_new_item')."\">");
 			echo("</form>");
 		}//if($show_owner_field || $show_status_type_field)
 		else

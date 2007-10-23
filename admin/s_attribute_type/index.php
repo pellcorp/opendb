@@ -317,7 +317,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 				."<th>Value</th>"
 				."<th>Display</th>"
 				."<th colspan=2>Image</th>"
-				."<th>No<br>Image</th>"
+				."<th>No<br />Image</th>"
     			."<th>Checked</th>"
 				."</tr>";
 		}
@@ -613,7 +613,7 @@ function build_attribute_ind_type_widget($attribute_ind_type)
 
 		$count++;		
 		if($count > 0 && $count % 2 == 0)
-			$field .= "<br>";
+			$field .= "<br />";
 	}
 	
 	return $field;

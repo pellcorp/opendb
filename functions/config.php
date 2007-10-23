@@ -334,7 +334,6 @@ function get_db_config_var($type, $vars_r, $group, $id, $keyid)
 					    return $value;
 					else
 					{
-//						echo '<br>type:'.$type;
 						return $vars_r;
 					}
 				}

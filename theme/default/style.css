@@ -196,7 +196,7 @@ ul.footer-links li.first
 	border-left: 1px solid gray;
 }
 
-ul.action-links
+ul.action-links, ul.actionButtons
 {
 	list-style-type: none;
 	padding-left: 0px;
@@ -204,7 +204,7 @@ ul.action-links
 	white-space: nowrap;
 }
 
-ul.action-links li
+ul.action-links li, ul.actionButtons li
 {
 	float: left;
 	padding-right: 2px;

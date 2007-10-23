@@ -50,7 +50,7 @@ function get_site_plugin_links($page_title, $item_r)
 				if(strlen($site_plugin_type_r['image'])>0)
 					$link_text = "<img src=\"./site/images/".$site_plugin_type_r['image']."\" border=\"0\" title=\"".htmlspecialchars($site_plugin_type_r['title'])."\" alt=\"".htmlspecialchars($site_plugin_type_r['title'])."\">";
 				else
-					$link_text = "[".$site_plugin_type_r['title']."]";
+					$link_text = $site_plugin_type_r['title'];
 							
 				$results2 = fetch_site_plugin_link_rs($site_plugin_type_r['site_type'], $item_r['s_item_type']);
 				if($results2)
@@ -72,7 +72,7 @@ function get_site_plugin_links($page_title, $item_r)
 							$parse_url = trim($titleMaskCfg->expand_title($item_r, $parse_url, $site_plugin_conf_rs));
 							if(strlen($parse_url)>0) {
 								$pageContents .= "<li><a href=\"".$parse_url."\" target=\"_new\">$link_text";
-								$pageContents .= "<br />[".$site_plugin_link_r['description']."]";
+								$pageContents .= "<span class=\"sitePluginDescription\">[".$site_plugin_link_r['description']."]</span>";
 								$pageContents .= "</a></li>";
 							}
 						}

@@ -421,9 +421,9 @@ if (is_opendb_valid_session())
 					."<th>Order</th>"
 					."<th colspan=2>Attribute Type</th>"
 					."<th>Prompt</th>"
-					."<th>Min Create<br>User Type</th>"
-					."<th>Min Display<br>User Type</th>"
-					."<th>Min Compulsory<br>User Type</th>"
+					."<th>Min Create<br />User Type</th>"
+					."<th>Min Display<br />User Type</th>"
+					."<th>Min Compulsory<br />User Type</th>"
 					."<th>Closed</th>"
 					."</tr>");	
 				
@@ -537,9 +537,9 @@ if (is_opendb_valid_session())
 				."<th>Order</th>"
 				."<th>Type</th>"
 				."<th>Description</th>"
-				."<th>Min Create<br>User Type</th>"
-				."<th>Min Display<br>User Type</th>"
-				."<th>Min Compulsory<br>User Type</th>"
+				."<th>Min Create<br />User Type</th>"
+				."<th>Min Display<br />User Type</th>"
+				."<th>Min Compulsory<br />User Type</th>"
 				."<th>Closed</th>"
 				."<th></th>"
 				."</tr>");	

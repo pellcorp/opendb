@@ -148,8 +148,8 @@ function install_check_directories(&$doContinue)
 	{
 		$buffer .= "<p class='error'>All the directories above must be writable in order for OpenDb to function correctly.</p>";
 		
-		$buffer .= "<p><em>The following command can be executed from the OpenDb installation directory on a unix or linux operating system:</em>
-			<br />&nbsp;&nbsp;&nbsp;&nbsp;<code>chmod ugo+w include log itemcache httpcache importcache</code></p>";
+		$buffer .= "<p><em>The following command can be executed from the OpenDb installation directory on a unix or linux operating system:</em></p>
+			<p><code>chmod ugo+w include log itemcache httpcache importcache</code></p>";
 	}
 	
 	return $buffer;

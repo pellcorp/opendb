@@ -1248,10 +1248,10 @@ if (is_opendb_valid_session())
 					echo("</select></td>");
 					
 					echo("<td>");
-					echo("<input type=button value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\"><br>".
-						"<input type=button value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\"><br><br>");
+					echo("<input type=button value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">".
+						"<input type=button value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">");
 						
-					echo("<input type=button value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\"><br>".
+					echo("<input type=button value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">".
 						"<input type=button value=\"<<\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">");
 						
 					echo("</td>");
@@ -1307,7 +1307,7 @@ if (is_opendb_valid_session())
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_links', 
-						array('Order', 'Item Type<br>Group', 'Item Type', 'Description', 'URL', 'Title URL', ''), 
+						array('Order', 'Item Type<br />Group', 'Item Type', 'Description', 'URL', 'Title URL', ''), 
 						'display_site_plugin_link_row', 
 						array('site_type'=>$HTTP_VARS['site_type']),
 						fetch_site_plugin_link_rs($HTTP_VARS['site_type']));
@@ -1382,7 +1382,7 @@ if (is_opendb_valid_session())
 				display_edit_table(
 						$HTTP_VARS['op'], 
 						'update_site_plugin_s_attribute_type_maps', 
-						array('Variable', 'Item Type<br>Group', 'Item Type', 'Attribute Type', 'Restrict to <br>Lookup Values', ''),
+						array('Variable', 'Item Type<br />Group', 'Item Type', 'Attribute Type', 'Restrict to <br />Lookup Values', ''),
 						'display_site_plugin_s_attribute_type_map_row', 
 						array('site_type'=>$HTTP_VARS['site_type']),
 						fetch_site_plugin_s_attribute_type_map_rs($HTTP_VARS['site_type']));
@@ -1545,7 +1545,6 @@ if (is_opendb_valid_session())
 											echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Updating ".strtoupper($installPlugin->getInstallTable())." table</h3>");
 
 											echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&site_type=".$HTTP_VARS['site_type']."&op=maintain_site_plugin_install\">Back to CSV File List</a>]</div>");
-											echo("<br>");
 											echo("<p>Importing ".$HTTP_VARS['import_file']."...</p>");
 											
 											if(preg_match("/([0-9]*)[\s]*-[\s]*([0-9]*)/", $HTTP_VARS['range'], $matches))
@@ -1574,7 +1573,7 @@ if (is_opendb_valid_session())
 											}
 											fclose($fh);
 											
-											echo("<br><table>");
+											echo("<table>");
 											echo("<tr><td class=\"prompt\">Rows Processed:</td><td class=\"data\">".$installPlugin->getProcessedCount()."</td></tr>");
 											echo("<tr><td class=\"prompt\">Rows Inserted:</td><td class=\"data\">".$installPlugin->getInsertCount()."</td></tr>");
 											echo("<tr><td class=\"prompt\">Rows Updated:</td><td class=\"data\">".$installPlugin->getUpdateCount()."</td></tr>");
@@ -1584,7 +1583,7 @@ if (is_opendb_valid_session())
 											$errors_r = $installPlugin->getErrors();
 											if(is_not_empty_array($errors_r))
 											{
-												echo("\n<br><br><div class=\"error\">Error Details</div><br>");
+												echo("\n<div class=\"error\">Error Details</div>");
 												echo("<table>");
 												reset($errors_r);
 												echo("<tr class=\"navbar\">

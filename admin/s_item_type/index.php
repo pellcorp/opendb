@@ -250,7 +250,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	}
 	
 	echo("\n<td class=\"$class\" align=left>");
-	echo(get_input_field("rss_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['rss_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Rss Feed<br>");
+	echo(get_input_field("rss_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['rss_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Rss Feed<br />");
 	echo(get_input_field("printable_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['printable_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Printable");
 	echo("</td>");
 	
@@ -260,7 +260,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 		echo("[");
 		if(!is_s_item_attribute_type_deletable($s_item_type, $s_item_attribute_type_r['s_attribute_type'], $s_item_attribute_type_r['order_no']))
 		{
-			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=change_order_no&s_item_type=".$s_item_type."&s_attribute_type=".$s_item_attribute_type_r['s_attribute_type']."&order_no=".$s_item_attribute_type_r['order_no']."\">Change Order No.</a>&nbsp;/&nbsp;");				
+			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=change_order_no&s_item_type=".$s_item_type."&s_attribute_type=".$s_item_attribute_type_r['s_attribute_type']."&order_no=".$s_item_attribute_type_r['order_no']."\">Change Order No.</a> / ");				
 		}
 		
 		// if instance attribute set, but there are item attributes with a instance_no of zero, provide a warning
@@ -507,12 +507,12 @@ if (is_opendb_valid_session())
 					$op_confirm_prompt = "";
 					if(!is_s_item_type_deletable($HTTP_VARS['s_item_type']))
 					{
-						$op_confirm_prompt .= "<div class=\"error\">Dependant items exist for the ".$HTTP_VARS['s_item_type']." Item Type - These will also be deleted including all dependant records (review, borrowed_item, item_attribute, item_instance, item)</div><br>";
+						$op_confirm_prompt .= "<div class=\"error\">Dependant items exist for the ".$HTTP_VARS['s_item_type']." Item Type - These will also be deleted including all dependant records (review, borrowed_item, item_attribute, item_instance, item)</div>";
 					}
 					
 					if(is_exists_item_type_item_type_group($HTTP_VARS['s_item_type']))
 					{
-						$op_confirm_prompt .= "<div class=\"error\">The ".$HTTP_VARS['s_item_type']." Item Type is referenced in at least one System Item Type Group record, this will also be deleted.</div><br>";
+						$op_confirm_prompt .= "<div class=\"error\">The ".$HTTP_VARS['s_item_type']." Item Type is referenced in at least one System Item Type Group record, this will also be deleted.</div>";
 					}
 					
 					$op_confirm_prompt .= "Are you sure you want to delete Item Type \"".$HTTP_VARS['s_item_type']."\"?";
@@ -738,7 +738,7 @@ if (is_opendb_valid_session())
 							
 							if(!is_s_item_attribute_type_deletable($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['order_no']))
 							{
-								$op_confirm_prompt .= "<div class=\"error\">Dependant items attribute exist for the \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\" Item Attribute Type - these will be deleted!</div><br>";
+								$op_confirm_prompt .= "<div class=\"error\">Dependant items attribute exist for the \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\" Item Attribute Type - these will be deleted!</div>";
 							}
 							
 							if($attribute_type_r['s_field_type'] == 'TITLE' || 
@@ -748,7 +748,7 @@ if (is_opendb_valid_session())
 										(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('borrow', 'duration_support')!==FALSE && 
 												$attribute_type_r['s_field_type'] == 'DURATION'))
 							{
-								$op_confirm_prompt .= "<div class=\"error\">Item Attribute Type is a compulsory Field Type (".$attribute_type_r['s_field_type'].") - deleting this attribute will invalidate the ".$HTTP_VARS['s_item_type']." Item Type structure.</div><br>";
+								$op_confirm_prompt .= "<div class=\"error\">Item Attribute Type is a compulsory Field Type (".$attribute_type_r['s_field_type'].") - deleting this attribute will invalidate the ".$HTTP_VARS['s_item_type']." Item Type structure.</div>";
 							}
 							
 							$op_confirm_prompt .= "Are you sure you want to delete Item Attribute Type \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\"?";
@@ -915,7 +915,7 @@ if (is_opendb_valid_session())
 				
 				echo("<table>");
 				echo("<tr class=\"navbar\">"
-					."<th>Order<br>No.</th>"
+					."<th>Order<br />No.</th>"
 					."<th colspan=2>Attribute Type [Field Type]</th>"
 					."<th>Prompt</th>"
 					."<th>Instance Ind.</th>"

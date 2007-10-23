@@ -37,7 +37,7 @@ function echo_install_sql_file($sqlfile)
 	while (list(,$line) = each($lines))
 	{
 		if(strlen(trim($line))===0)
-			echo("<br>");
+			echo("<br />");
 		else
 		{
 			if(strpos($line,"#") === 0)

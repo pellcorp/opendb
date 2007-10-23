@@ -136,12 +136,14 @@ function get_group_block_input_field($config_group_item_r, $value)
 	        	            $buffer .= "<option value=\"".$val."\" SELECTED>".$val."\n";
 						}
 					}
-		            $buffer .= "</select><br />";
+		            $buffer .= "</select>";
 					
-                    $buffer .= "<input type=button value=\"Edit\" onClick=\"updateSelectedOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\">";
-					$buffer .= "<input type=button value=\"Add\" onClick=\"addSelectOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\">";
-		            $buffer .= "<input type=button value=\"Delete\" onClick=\"removeSelectedOption(this.form['".$element_name."']);\">";
-		            
+		            $buffer .= "<ul class=\"actionButtons\">";
+                    $buffer .= "<li><input type=button value=\"Edit\" onClick=\"updateSelectedOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\"></li>";
+					$buffer .= "<li><input type=button value=\"Add\" onClick=\"addSelectOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\"></li>";
+		            $buffer .= "<li><input type=button value=\"Delete\" onClick=\"removeSelectedOption(this.form['".$element_name."']);\"></li>";
+		             $buffer .= "</ul>";
+		             
 		            break;
 			}
 			

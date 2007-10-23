@@ -175,7 +175,7 @@ if (is_opendb_valid_session())
 				echo("\n<tr class=\"navbar\">"
 					."\n<th>Group</th>"
 					."\n<th>Description</th>"
-					."\n<th>System<br>Indicator</th>"
+					."\n<th>System<br />Indicator</th>"
 					."\n<th></th>"
 					."\n</tr>");	
 				$column_count = 4;

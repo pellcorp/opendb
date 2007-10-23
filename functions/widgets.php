@@ -1127,7 +1127,7 @@ function value_radio_grid($name, $lookup_rs, $columns, $border, $value, $disable
 	}
 	
 	// Now return complete table.
-	return "<table cellpadding=1 cellspacing=0 border=\"".(is_numeric($border)?$border:0)."\">".
+	return "<table border=\"".(is_numeric($border)?$border:0)."\">".
 			$field.
 			"</table>";
 }

@@ -144,9 +144,9 @@ function build_select($name, $lookup_results, $value, $include_none_option=TRUE)
 	$var.="\n</select>";
 
 	if($display_used)
-		$var.="<br>(%value% - %display%)";
+		$var.=" (%value% - %display%)";
 	else
-		$var.="<br>(%value%)";
+		$var.=" (%value%)";
 	return $var;
 }
 

@@ -9,6 +9,11 @@ div#instanceInfo, div#relatedItems
 	float: left;
 }
 
+span.sitePluginDescription
+{
+	display: block;
+}
+
 div.item_displayContent td.data
 {
 	background-color: #DCE6FB;

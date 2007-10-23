@@ -513,18 +513,19 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	}
 	
 	$buffer .= '</table>';
-
+	
 	if(method_exists($exportPlugin, 'prompt_header') || method_exists($exportPlugin, 'data_header'))
 	{		
-		$buffer .= "<label for=\"cb-include_header\">".get_opendb_lang_var('include_header')."</label>";
-		$buffer .= "<input type=checkbox id=\"cb-include_header\" name=\"include_header\" value=\"Y\" CHECKED>";
+		$buffer .= "<input type=\"checkbox\" name=\"include_header\" value=\"Y\" CHECKED>".get_opendb_lang_var('include_header');
 	}
 	
-	$buffer .= "<br /><input type=button value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', true);\"> ".
-							"<input type=button value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', false);\"> ".
-							"<input type=reset value=\"".get_opendb_lang_var('reset')."\">";
+	$buffer .= "<ul class=\"actionButtons\">".
+				"<li><input type=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', true);\"></li>".
+			   "<li><input type=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', false);\"></li>".
+			   "<li><input type=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
+				"</ul>";
 	
-	$buffer .= '<br /><input type=submit value="'.get_opendb_lang_var('export_items').'">';
+	$buffer .= '<input type="submit" value="'.get_opendb_lang_var('export_items').'">';
 							
 	$buffer .= '</form>';
 	

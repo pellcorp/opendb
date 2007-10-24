@@ -932,9 +932,14 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 	
 				if($lookup_results && db_num_rows($lookup_results)>0)
 				{
-					$formContents .= format_field($item_attribute_type_r['prompt'],
-												NULL,
-												status_type_input_field('s_status_type', $lookup_results, $status_type));
+					$formContents .= format_field(
+						$item_attribute_type_r['prompt'],
+						NULL,
+						radio_grid('s_status_type',
+							$lookup_results, 
+							'%img%', // mask
+							'VERTICAL', 
+							$status_type)); // value
 				}
 			}
 			else if($item_attribute_type_r['s_field_type'] == 'STATUSCMNT')

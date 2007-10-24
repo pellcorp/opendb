@@ -103,7 +103,7 @@ class AdminAjaxJobs
 	
 		$divContents = '<div id="status" style="{width:300; margin: 4px}">
 		<div id="debug"></div>
-		<table width=100% border=0>
+		<table width=\"100%\" border=\"0\">
 		<tr>
 			<td align=center colspan=10 id="message" class="success">&nbsp;</td>
 		</tr>

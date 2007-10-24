@@ -230,3 +230,17 @@ div.sitePluginDebug h2
 {
 	margin-top: 0px;
 }
+
+ul.checkboxGridOptionsVertical, ul.checkboxGridOptions, ul.radioGridOptionsVertical, ul.radioGridOptions
+{
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+ul.checkboxGridOptionsVertical li, ul.radioGridOptionsVertical li
+{
+	margin: 5px;
+	float: left;
+	width: 20%;
+	white-space: nowrap;
+}

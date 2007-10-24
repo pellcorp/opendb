@@ -70,13 +70,8 @@ include_once("./functions/TitleMask.class.php");
   	number(length,field_mask)					Display a text field, which can only have numeric input.
   												Numeric fields also have a maxlength exactly the same as 
   												their length.
-  	check_boxes(display_mask, orientation)		A checkbox for each value in lookup table
-  	radio_group(display_mask, orientation)		A set of radio buttons, one for each lookup value.
-	
-	url(length,maxlength,"ext,ext2,etc")
 
-	For check_boxes and radio_group versions with a vertical_ or horizontal_ prefix and no orientation will
-	still resolve correctly.
+	url(length,maxlength,"ext,ext2,etc")
 
 	**** Special case - only used in item_review.php
 	review_options(display_mask, orientation)	Displays a list of options, with stars beside.  Replaces
@@ -84,8 +79,8 @@ include_once("./functions/TitleMask.class.php");
 
 	Note: For all the above orientation corresponds to HORIZONTAL or VERTICAL
 
-	radio_grid(display_mask,columns,border)		Display radio group in a grid of columns wide.
-	checkbox_grid(display_mask,columns,border)	Display checkboxes in a grid of columns wide.
+	radio_grid(display_mask,orientation)		Display radio group in a grid of columns wide.
+	checkbox_grid(display_mask,orientation)		Display checkboxes in a grid of columns wide.
 
   	single_select(display_mask, length)			A single select list
 	multi_select(display_mask, length, size)	A multi select list
@@ -265,51 +260,25 @@ function get_item_input_field(
         $field_mask = $widget['args']['2'];
 		$field = enhanced_checkbox_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'checkbox_grid' || $item_attribute_type_r['input_type'] == 'check_boxes' || $item_attribute_type_r['input_type'] == 'vertical_check_boxes' || $item_attribute_type_r['input_type'] == 'horizontal_check_boxes')
+	else if($item_attribute_type_r['input_type'] == 'checkbox_grid')
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type, 'order_no, '.get_lookup_order_by($widget['args']['0']).' ASC');
-		if($lookup_results)//arg[0] = display_mask, arg[1] = columns, arg[2] = border
+		if($lookup_results)//arg[0] = display_mask, arg[1] = orientation
 		{
-			//backwards compatible
-			if($item_attribute_type_r['input_type'] == 'vertical_check_boxes')
-				$widget['args']['1'] = '1';
-			else if($item_attribute_type_r['input_type'] == 'horizontal_check_boxes')
-				$widget['args']['1'] = '*';
-			else if($item_attribute_type_r['input_type'] == 'check_boxes')
-			{
-				if(strcasecmp($widget['args']['1'], 'VERTICAL')===0)
-					$widget['args']['1'] = '1';
-				else
-					$widget['args']['1'] = '*';
-			}
-
-			$field = checkbox_grid($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $disabled);
+			$field = checkbox_grid($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $value, $disabled);
 		}
 	}
-	else if($item_attribute_type_r['input_type'] == 'radio_grid' || $item_attribute_type_r['input_type'] == 'radio_group' || $item_attribute_type_r['input_type'] == 'vertical_radio_group' || $item_attribute_type_r['input_type'] == 'horizontal_radio_group')
+	else if($item_attribute_type_r['input_type'] == 'radio_grid')
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type, 'order_no, '.get_lookup_order_by($widget['args']['0']).' ASC');
-		if($lookup_results)//arg[0] = display_mask, arg[1] = columns, arg[2] = border
+		if($lookup_results)//arg[0] = display_mask, arg[1] = orientation
 		{
-			//backwards compatible
-			if($item_attribute_type_r['input_type'] == "vertical_radio_group")
-				$widget['args']['1'] = '1';
-			else if($item_attribute_type_r['input_type'] == "horizontal_radio_group")
-				$widget['args']['1'] = '*';
-			else if($item_attribute_type_r['input_type'] == "radio_group")
-			{
-				if(strcasecmp($widget['args']['1'], 'VERTICAL')===0)
-					$widget['args']['1'] = '1';
-				else
-					$widget['args']['1'] = '*';
-			}
-
-			$field = radio_grid($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $disabled);
+			$field = radio_grid($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $value, $disabled);
 		}
 	}
-	else if($item_attribute_type_r['input_type'] == 'value_radio_grid')//arg[0] = "comma delimited list of values"; arg[1] = number of visible rows (Defaults to single select
+	else if($item_attribute_type_r['input_type'] == 'value_radio_grid')//arg[0] = "comma delimited list of values"
 	{
-		$field = value_radio_grid($fieldname, explode(',', $widget['args']['0']), $widget['args']['1'], $widget['args']['2'], $value, $disabled);
+		$field = value_radio_grid($fieldname, explode(',', $widget['args']['0']), $value, $disabled);
 	}
 	else if($item_attribute_type_r['input_type'] == 'single_select')
 	{
@@ -1084,52 +1053,25 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 /**
 * @param $lookup_rs - array of values
 */
-function value_radio_grid($name, $lookup_rs, $columns, $border, $value, $disabled = FALSE)
+function value_radio_grid($name, $lookup_rs, $value, $disabled = FALSE)
 {
-	$count=0;
-	$grid_row=0;
-	$field = "";
+	$field = "<ul class=\"radioGridOptionsVertical\">";
 
 	$is_checked = FALSE;
 	while(list(,$val) = each($lookup_rs))
 	{	
-		if($count==0)
-		{
-			$field .= "<tr>";
-			$grid_row++;
-		}
-		
 		if((strlen($value)>0 && strcasecmp(trim($value), $val)===0) || (strlen($value)==0 && !$is_checked))
 		{
-			$field .= format_data(NULL, "\n<input type=\"radio\" name=\"$name\" value=\"$val\" CHECKED".($disabled?' DISABLED':'').">$val&nbsp;&nbsp;");
+			$field .= "\n<li><input type=\"radio\" name=\"$name\" value=\"$val\" CHECKED".($disabled?' DISABLED':'').">$val</li>";
 			$is_checked=TRUE;
 		}
 		else
-			$field .= format_data(NULL, "\n<input type=\"radio\" name=\"$name\" value=\"$val\"".($disabled?' DISABLED':'').">$val&nbsp;&nbsp;");
-		
-    	$count++;
-		
-		if(is_numeric($columns) && $count == $columns)
-		{
-			$count=0;
-			$field .= "</tr>";
-		}
+			$field .= "\n<li><input type=\"radio\" name=\"$name\" value=\"$val\"".($disabled?' DISABLED':'').">$val</li>";
 	}
-	
-	// Now close current row if required.
-	if(is_numeric($columns) && $count!=0 && $grid_row>1)
-	{
-		for ($i=0; $i<($columns-$count); $i++)
-		{
-			$field.= format_data(NULL, "&nbsp;");
-		}
-		$field .= "</tr>";
-	}
-	
-	// Now return complete table.
-	return "<table border=\"".(is_numeric($border)?$border:0)."\">".
-			$field.
-			"</table>";
+
+	$field .= "</ul>";
+
+	return $field;
 }
 
 /**
@@ -1141,14 +1083,18 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 		$orientation=trim(strtolower($orientation));
 	else
 		$orientation="horizontal";
-
+		
 	$total_count = 0;
 	$is_first_value=TRUE;
 	$value_found=FALSE;
 
 	$value = trim($value);
 	
-	$var = "<tr>";
+	if(strcasecmp($orientation, 'VERTICAL')==0)
+		$field = "<ul class=\"reviewOptionsVertical\">";
+	else
+		$field = "<ul class=\"reviewOptions\">";
+		
 	while($lookup_r = db_fetch_assoc($lookup_results))
 	{
 		if($is_first_value === TRUE)
@@ -1157,7 +1103,8 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 			$total_count = (int)$lookup_r['value'];
 		}
 
-		$field = "";
+		$field .= "<li>";
+		
 		if($value===NULL && $lookup_r['checked_ind']=='Y')
 			$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
 		else
@@ -1181,116 +1128,71 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 			$field .= _theme_image("gs.gif");
 
 		// now the display value.
-		$field .= "&nbsp;".format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display']);
-		$var .= format_data(NULL, $field);
-
-        if ($orientation == "vertical")
-			$var .= "</tr><tr>\n";
+		$field .= format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display']);
+		$field .= "</li>";
 	}
 	db_free_result($lookup_results);
 	
-	$var .= "</tr>";
+	$field .= "</ul>";
 	
-	// Now return complete table.
-	return "<table cellpadding=1 border=0 cellspacing=0>$var</table>";
+	return $field;
 }
 
 /*
-	Will format a complete table grid with the number of specified columns.  Will fill out the
-	last columns in the last row with &nbsp;
+	Will format a ul list with the number of specified columns.
  
 	@param $columns 1 for VERTICAL, * for HORIZONTAL one row, otherwise a numeric column value
 	 		will build a table.
 
 	@param $value - will not be array.
 */
-function radio_grid($name, $lookup_results, $mask, $columns, $border, $value, $disabled = FALSE)
+function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabled = FALSE)
 {
-	$count=0;
-	$grid_row=0;
-	$value_found=FALSE;
-	
-	// sanity check
 	if(is_array($value))// convert single element array, to string
 		$value = $value[0];
+
+	$value_found=FALSE;
 	
+	$lookup_val_r = NULL;
 	while($lookup_r = db_fetch_assoc($lookup_results))
 	{
-		if($count==0)
+		if( $value !== NULL && strcasecmp($value, $lookup_r['value'])===0)
 		{
-			$var .= "<tr>";
-			$grid_row++;
+			$lookup_r['checked_ind'] = 'Y';
+			$value_found=TRUE;
 		}
 		
-		$field = "";
-		if($value === NULL && $lookup_r['checked_ind'] == 'Y')
-		{
-			$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
-		}
-		else
-		{
-			// Case insensitive!
-			if( $value !== NULL && strcasecmp($value, $lookup_r['value'])===0)
-			{
-				$value_found=TRUE;
-				$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
-			}
-			else
-			{
-				$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($disabled?' DISABLED':'').">";
-			}
-		}
-		
-		// now the display value.
-		$field .= format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."&nbsp;&nbsp;\n";
-		$var .= format_data(NULL, $field);
-    	$count++;
-		
-		if(is_numeric($columns) && $count == $columns)
-		{
-			$count=0;
-			$var .="</tr>";
-		}
+		$lookup_val_r[] = $lookup_r;
 	}
-	
+	db_free_result($lookup_results);
+
 	// Add the value to the list of options and select it.
 	if(!$value_found && $value !== NULL)
 	{
-		if($count==0)
-			$var .= "<tr>";
-		$var .= format_data(NULL, "<input type=\"radio\" name=\"$name\" value=\"".$value."\" CHECKED".($disabled?' DISABLED':'').">".$value);
-		$count++;
+		$lookup_val_r[] = array(value=>$value, checked_ind=>'Y');
 	}
-	
-	// Now close current row if required.
-	if(is_numeric($columns) && $count!=0 && $grid_row>1)
+
+	if(strcasecmp($orientation, 'VERTICAL')==0)
+		$buffer = "<ul class=\"radioGridOptionsVertical\">";
+	else
+		$buffer = "<ul class=\"radioGridOptions\">";
+		
+	while(list(,$lookup_r) = each($lookup_val_r))
 	{
-		for ($i=0; $i<($columns-$count); $i++)
-		{
-			$var.= format_data(NULL, "&nbsp;");
-		}
-		$var.="</tr>";
+		$buffer .= "\n<li><input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
+				format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."</li>";
 	}
-	db_free_result($lookup_results);
 	
-	// Now return complete table.
-	return "<table cellpadding=1 cellspacing=0 border=\"".(is_numeric($border)?$border:0)."\">$var</table>";
+	$buffer .= "</ul>";
+	
+	return $buffer;
 }
 
 /*
-	Will format a complete table grid with the number of specified columns.  Will fill out the
-	last columns in the last row with &nbsp;
-	
-	@param $columns 1 for VERTICAL, * for HORIZONTAL one row, otherwise a numeric column value
-	 		will build a table.
-	
 	@param $value - array of values.
 */
-function checkbox_grid($name, $lookup_results, $mask, $columns, $border, $value, $disabled = FALSE)
+function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $disabled = FALSE)
 {
-	$count=0;
-	$grid_row=0;
-	
 	// sanity check
 	if(is_array($value) && count($value)>0)
 		$values_r = $value;
@@ -1299,74 +1201,46 @@ function checkbox_grid($name, $lookup_results, $mask, $columns, $border, $value,
 	else // is_empty_array!
 		$values_r = NULL;
 
+	$lookup_val_r = NULL;
 	while($lookup_r = db_fetch_assoc($lookup_results))
 	{
-		if($count==0)
+		if(is_array($values_r) && ($lookup_key = array_search2($lookup_r['value'], $values_r, TRUE)) !== FALSE)
 		{
-			$var .= "<tr>";
-			$grid_row++;
+			$lookup_r['checked_ind'] = 'Y';
+			
+			// Remove the matched element
+			array_splice($values_r, $lookup_key, 1);
 		}
 		
-		$field = "";
-		if(!is_array($values_r) && $lookup_r['checked_ind'] == 'Y')
-			$field .= "\n<input type=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
-		else
-		{
-			// Case insensitive!
-			if(is_array($values_r) && ($lookup_key = array_search2($lookup_r['value'], $values_r, TRUE)) !== FALSE)
-			{
-				// Remove the matched element
-				array_splice($values_r, $lookup_key, 1);
-
-				$field .= "\n<input type=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
-			}
-			else
-			{
-				$field .= "\n<input type=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\"".($disabled?' DISABLED':'').">";
-			}
-		}
-		
-		// now the display value.
-		$field .= format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."&nbsp;&nbsp;\n";
-		$var .= format_data(NULL, $field);
-    	$count++;
-		
-		if(is_numeric($columns) && $count == $columns)
-		{
-			$count=0;
-			$var .="</tr>";
-		}
+		$lookup_val_r[] = $lookup_r;
 	}
+	db_free_result($lookup_results);
 
 	if(is_array($values_r))
 	{
 		// Add the value to the list of options and select it.
 		reset($values_r);
-		while(list(,$val) = each($values_r))
+		while(list(,$value) = each($values_r))
 		{
-			if(strlen($val)>0)
-			{
-				if($count==0)
-					$var .= "<tr>";
-				$var .= format_data(NULL, "<input type=\"checkbox\" name=\"".$name."[]\" value=\"$val\" CHECKED".($disabled?' DISABLED':'').">$val");
-				$count++;
-			}
+			if(strlen($value)>0)
+				$lookup_val_r[] = array(value=>$value, checked_ind=>'Y');
 		}
 	}
 	
-	// Now close current row if required.
-	if(is_numeric($columns) && $count!=0 && $grid_row>1)
+	if(strcasecmp($orientation, 'VERTICAL')==0)
+		$buffer = "<ul class=\"checkboxGridOptionsVertical\">";
+	else
+		$buffer = "<ul class=\"checkboxGridOptions\">";
+		
+	while(list(,$lookup_r) = each($lookup_val_r))	
 	{
-		for ($i=0; $i<($columns-$count); $i++)
-		{
-			$var.= format_data(NULL, "&nbsp;");
-		}
-		$var.="</tr>";
+		$buffer .= "<li><input type=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
+				format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."</li>";
 	}
-	db_free_result($lookup_results);
-	
-	// Now return complete table.
-	return "<table cellpadding=1 cellspacing=0 border=\"".(is_numeric($border)?$border:0)."\">$var</table>";
+
+	$buffer .= "</ul>";
+
+	return $buffer;
 }
 
 /**

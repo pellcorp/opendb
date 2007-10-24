@@ -391,7 +391,15 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 		$results = fetch_newitem_status_type_rs($HTTP_VARS['owner_id']);
 		if($results && db_num_rows($results)>1)
 		{
-			$buffer .= format_field(get_opendb_lang_var('s_status_type'), NULL, status_type_input_field("s_status_type", $results, $HTTP_VARS['s_status_type']));
+			$buffer .= format_field(
+						get_opendb_lang_var('s_status_type'),
+						NULL,
+						radio_grid('s_status_type',
+							$results,
+							'%img%', // mask
+							'VERTICAL', 
+							$HTTP_VARS['s_status_type'])); // value
+							
 			$buffer .= format_field(get_opendb_lang_var('override_status_type'), NULL, "<input type=checkbox name=\"override_status_type\" value=\"Y\"".(strcmp($HTTP_VARS['override_status_type'],'Y')===0?' CHECKED':'').">");
 		}
 		else if(db_num_rows($results)>0) // handle single status silently

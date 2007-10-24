@@ -45,7 +45,7 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 	}
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(30,255)", 'Y', $item_type_group_r['description'], FALSE)."</td>");
-	echo("<td class=\"data\">".get_input_field("system_ind[$row]", NULL, "System Indicator", "value_radio_grid('Y,N',*)", 'Y', $item_type_group_r['system_ind'], FALSE)."</td>");
+	echo("<td class=\"data\">".get_input_field("system_ind[$row]", NULL, "System Indicator", "value_radio_grid('Y,N')", 'Y', $item_type_group_r['system_ind'], FALSE)."</td>");
 
 	echo("\n<td class=\"data\">&nbsp;");	
 	if(is_not_empty_array($item_type_group_r))

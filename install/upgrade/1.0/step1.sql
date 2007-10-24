@@ -274,3 +274,10 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'http' AND id IN ('debug');
 
 # change link text on user profile page to something less misleading.
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'list_user_items', 'List User Items'); 
+
+# border attribute no longer required
+UPDATE s_attribute_type SET input_type_arg3 = NULL WHERE input_type IN('checkbox_grid', 'radio_grid');
+
+# change columns value to an orientation, and let CSS work out which is which.
+UPDATE s_attribute_type SET input_type_arg2 = 'VERTICAL' WHERE input_type IN('checkbox_grid', 'radio_grid') AND (input_type_arg2 = '*' OR input_type_arg2 IS NULL OR input_type_arg2 <> '1');
+UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE input_type IN('checkbox_grid', 'radio_grid') AND input_type_arg2 <> 'VERTICAL';

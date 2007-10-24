@@ -38,11 +38,13 @@ $_OPENDB_THEME_CSS_MAP = array(
 	'item_borrow'=>array('listings', 'item_display'),
 	'quick_checkout'=>array('listings', 'item_display'),
 	'item_input'=>array('listings'),
-	'import'=>array('listings', 'item_display'),
+	'import'=>array('listings', 'item_display', 'item_input'),
 	'item_display'=>array('listings'),
 	'user_listing'=>array('listings'),
 	//'listings'=>array('item_display'),
-	'admin'=>array('listings')
+	'admin'=>array('listings'),
+	'search'=>array('item_review', 'item_input'),
+	'item_review'=>array('item_input')
 );
 
 function get_content_type_charset() {

@@ -325,8 +325,7 @@ if(is_site_enabled())
 				checkbox_grid('s_status_type',
 							$lookup_results, 
 							'%img%', // mask
-							'3', // columns
-							'', // border
+							'VERTICAL',
 							array())); // value
 		}
 		

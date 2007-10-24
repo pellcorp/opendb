@@ -273,19 +273,16 @@ $input_type_functions = array(
 						'description'=>'External URL or file upload (file upload configuration permitting), with popup file viewer'),
 
 			'radio_grid'=>array(
-						'args'=>array('display_mask','columns','border'),
-						'description'=>'A formatted (according to columns and border parameters) grid of radio buttons, one '
-										.'for each matching (according to the item_attribute s_attribute_type) lookup record.'),
+						'args'=>array('display_mask','orientation'),
+						'description'=>'A formatted list of radio buttons, one for each matching (according to the item_attribute s_attribute_type) lookup record.'),
 
 			'checkbox_grid'=>array(
-						'args'=>array('display_mask','columns','border'),
-						'description'=>'A formatted (according to columns and border parameters) grid of checkboxes, one '
-										.'for each matching (according to the item_attribute s_attribute_type) lookup record.'),
+						'args'=>array('display_mask','orientation'),
+						'description'=>'A formatted list of checkboxes, one for each matching (according to the item_attribute s_attribute_type) lookup record.'),
 
 			'value_radio_grid'=>array(
-						'args'=>array('value_list[Y]','columns','border'),
-						'description'=>'A formatted (according to columns and border parameters) grid of radio buttons, '
-										.'for each value in the comma delimited value_list.'),
+						'args'=>array('value_list[Y]'),
+						'description'=>'A list of radio buttons, for each value in the comma delimited value_list.'),
 
 			'single_select'=>array(
 						'args'=>array('display_mask','length'),

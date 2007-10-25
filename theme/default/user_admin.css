@@ -12,3 +12,17 @@ dl.userType dt
 {
 	font-weight: bold;
 }
+
+ul.addressIndicators {
+	paddding-left: 0px;
+	list-style-type: none;
+}
+
+ul.addressIndicators li {
+	float: left;
+}
+
+table.addressInputForm
+{
+	clear: both;
+}

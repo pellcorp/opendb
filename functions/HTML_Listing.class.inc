@@ -322,11 +322,9 @@ class HTML_Listing extends Listing
 					{
 						$this->_write(
 							_theme_image(
-									$this->_item_type_rs[$s_item_type]['image'],
-									$s_item_type,
-									$this->_item_type_rs[$s_item_type]['description'],
-									NULL,// alignment
-									's_item_type'));
+								$this->_item_type_rs[$s_item_type]['image'],
+								$this->_item_type_rs[$s_item_type]['description'],
+								's_item_type'));
 					}
 					else
 					{
@@ -342,9 +340,7 @@ class HTML_Listing extends Listing
 					$this->_write(
 						_theme_image(
 							$row_column_rs[$i]['src'], 
-							htmlspecialchars($row_column_rs[$i]['alt']),
 							htmlspecialchars($row_column_rs[$i]['title']),
-							NULL, // alignment
 							$row_column_rs[$i]['type']));
 					$this->_write('</td>');
 					break;
@@ -365,13 +361,13 @@ class HTML_Listing extends Listing
 					{
 						// show star if rated - Add it to the actual title, so we can do a bit more with title masks
 						$this->addHelpEntry(get_opendb_lang_var('item_reviewed'), 'rs.gif', 'item_reviewed');
-						$item_title .= _theme_image('rs.gif', NULL, get_opendb_lang_var('item_reviewed'));
+						$item_title .= _theme_image('rs.gif', get_opendb_lang_var('item_reviewed'));
 					}
 			
 					if($is_borrowed_or_returned)
 					{
 						$this->addHelpEntry(get_opendb_lang_var('youve_borrow_or_return'), 'tick.gif', 'borrow_or_return');
-						$item_title .= _theme_image("tick.gif", NULL, get_opendb_lang_var('youve_borrow_or_return')); // show tick if previously borrowed or returned.
+						$item_title .= _theme_image("tick.gif", get_opendb_lang_var('youve_borrow_or_return')); // show tick if previously borrowed or returned.
 					}
 
 					

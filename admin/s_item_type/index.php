@@ -198,7 +198,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	{
 		// order_no
 		echo("<td class=\"$class\" align=center>".
-			($exists_error_ind?_theme_image("rs.gif", NULL, "Duplicate Attribute Type & Order No"):"").
+			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE)."</td>");
 		
 		echo("<td class=\"$class\" align=center>".

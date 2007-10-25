@@ -107,7 +107,7 @@ if(is_site_enabled())
 								
 								echo("<a href=\"".$file_r['url']."\" onclick=\"popup('".$file_r['fullsize']['url']."', ".$file_r['fullsize']['width'].", ".$file_r['fullsize']['height']."); return false;\">");
 							}
-							echo("<img src=\"".$file_r['thumbnail']['url']."\" border=0 title=\"".htmlspecialchars($coverimage_r['prompt'])."\" ");
+							echo("<img src=\"".$file_r['thumbnail']['url']."\" title=\"".htmlspecialchars($coverimage_r['prompt'])."\" ");
 							
 							if(is_numeric($file_r['thumbnail']['width']))
 								echo(' width="'.$file_r['thumbnail']['width'].'"');

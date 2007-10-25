@@ -78,7 +78,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	
 		if(is_exists_my_reserve_basket($user_id))
 		{
-			echo("<li><a href=\"borrow.php?op=my_reserve_basket\">"._theme_image("basket.png", NULL, get_opendb_lang_var('item_reserve_list'))."</a></li>");
+			echo("<li><a href=\"borrow.php?op=my_reserve_basket\">"._theme_image("basket.png", get_opendb_lang_var('item_reserve_list'))."</a></li>");
 		}
 
 		echo("</ul>");

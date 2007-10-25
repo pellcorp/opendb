@@ -167,7 +167,7 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	$field = get_input_field("img", NULL, $_COLUMN_DESC['img'], "url(15,*,\"gif,jpg,png\",N)", "N", ifempty($status_type_r['img'],$HTTP_VARS['img']), FALSE);
 	$image_src = _theme_image_src(ifempty($status_type_r['img'],$HTTP_VARS['img']));
 	if($image_src!==FALSE && strlen($image_src)>0)
-		$field .= " <img align=absmiddle valign=absmiddle src=\"$image_src\">";
+		$field .= " <img src=\"$image_src\">";
 	echo format_field($_COLUMN_DESC['img'], NULL, $field, TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('img')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	echo get_input_field("delete_ind", NULL, $_COLUMN_DESC['delete_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['delete_ind'],$HTTP_VARS['delete_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('delete_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");

@@ -46,11 +46,14 @@ function get_site_plugin_links($page_title, $item_r)
 			{
 				$site_plugin_conf_rs = get_site_plugin_conf_r($site_plugin_type_r['site_type']);
 				
-				// Get the primary link, which will be extended with details for each individual link.
 				if(strlen($site_plugin_type_r['image'])>0)
-					$link_text = "<img src=\"./site/images/".$site_plugin_type_r['image']."\" border=\"0\" title=\"".htmlspecialchars($site_plugin_type_r['title'])."\" alt=\"".htmlspecialchars($site_plugin_type_r['title'])."\">";
+				{
+					$link_text = "<img src=\"./site/images/".$site_plugin_type_r['image']."\" title=\"".htmlspecialchars($site_plugin_type_r['title'])."\" alt=\"".htmlspecialchars($site_plugin_type_r['title'])."\">";
+				}
 				else
+				{
 					$link_text = $site_plugin_type_r['title'];
+				}
 							
 				$results2 = fetch_site_plugin_link_rs($site_plugin_type_r['site_type'], $item_r['s_item_type']);
 				if($results2)
@@ -68,7 +71,6 @@ function get_site_plugin_links($page_title, $item_r)
 						{
 						    $titleMaskCfg->reset();
 						    
-							// now we want to expand the $parse_url
 							$parse_url = trim($titleMaskCfg->expand_title($item_r, $parse_url, $site_plugin_conf_rs));
 							if(strlen($parse_url)>0) {
 								$pageContents .= "<li><a href=\"".$parse_url."\" target=\"_new\">$link_text";
@@ -268,7 +270,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	if($selected)
 	{
 		$rowcontents .= $item_r['instance_no'];
-		$rowcontents .= " "._theme_image("tick.gif", NULL, get_opendb_lang_var('current_item_instance'));
+		$rowcontents .= " "._theme_image("tick.gif", get_opendb_lang_var('current_item_instance'));
 	}
 	else
 	{
@@ -390,7 +392,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	
 	// Item Status Image.
 	$rowcontents .= "\n<td>";
-	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], $status_type_r['description'], NULL, "s_status_type");
+	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type");
 	$rowcontents .= "\n</td>";
 	
 	// If a comment is allowed and defined, add it in.
@@ -423,11 +425,11 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		$rowcontents .= "\n<td>";
 		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 		{
-			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), get_opendb_lang_var('borrowed'), NULL, "borrowed_item");
+			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), "borrowed_item");
 		}
 		else if(is_item_reserved($item_r['item_id'], $item_r['instance_no']))
 		{
-			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), get_opendb_lang_var('reserved'), NULL, "borrowed_item");
+			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), "borrowed_item");
 		}
 		else
 		{

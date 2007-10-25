@@ -173,9 +173,7 @@ function get_last_item_list(
 		{
 			$itemimageblock = _theme_image(
 					$list_item_r['itemtypeimage']['url'],
-					$list_item_r['itemtypeimage']['s_item_type'],
 					$list_item_r['itemtypeimage']['title'],
-					NULL,// alignment
 					's_item_type');
 					
 			$titleblock = $href_link . $itemimageblock." ".$list_item_r['title']."</a>";	

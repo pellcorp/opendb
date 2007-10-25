@@ -699,7 +699,7 @@ function get_search_query_matrix($HTTP_VARS)
 		for($i=0; $i<count($HTTP_VARS['s_item_type']); $i++)
 		{
 			$item_type_r = fetch_item_type_r($HTTP_VARS['s_item_type'][$i]);
-			$field .= _theme_image($item_type_r['image'], $HTTP_VARS['s_item_type'], $item_type_r['description'],	'absmiddle', 's_item_type');
+			$field .= _theme_image($item_type_r['image'], $item_type_r['description'], 's_item_type');
 		}
 					
 		$searches[] = array(
@@ -711,7 +711,7 @@ function get_search_query_matrix($HTTP_VARS)
 		$item_type_r = fetch_item_type_r($HTTP_VARS['s_item_type']);
 		$searches[] = array(
 						prompt=>get_opendb_lang_var('s_item_type'),
-						field=>_theme_image($item_type_r['image'], $HTTP_VARS['s_item_type'], $item_type_r['description'],	'absmiddle', 's_item_type'));
+						field=>_theme_image($item_type_r['image'], $item_type_r['description'], 's_item_type'));
 	}
 	
 	if(is_numeric($HTTP_VARS['rating']))

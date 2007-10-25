@@ -14,6 +14,11 @@ select, input, textarea, td
 	font-size: small;
 }
 
+img
+{
+	border: none;
+}
+
 a:link, a:visited, a:active
 {
 	text-decoration: none;
@@ -176,7 +181,6 @@ ul.footer-links
 ul.footer-links img
 {
 	height: 12px;
-	border: 0;
 }
 
 ul.footer-links li
@@ -213,7 +217,6 @@ ul.action-links li, ul.actionButtons li
 
 ul.action-links img
 {
-	border: 0;
 	vertical-align: middle;
 }
 
@@ -311,11 +314,6 @@ ul.menu li a:hover, ul.menu li.active a
 {
 	display: inline;
 	padding-right: 5px;
-}
-
-#header img
-{
-	border: 0;
 }
 
 #header ul.headerLinks li.login

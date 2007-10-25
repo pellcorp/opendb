@@ -679,7 +679,7 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		$prompt_mask = NULL;
 		if($refresh_field)
 		{
-			$prompt_mask = _theme_image('rs.gif', NULL, get_opendb_lang_var('refreshed'))."%prompt%";
+			$prompt_mask = _theme_image('rs.gif', get_opendb_lang_var('refreshed'))."%prompt%";
 		}
 		
 		return format_input_field(

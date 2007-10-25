@@ -78,12 +78,12 @@ function display_s_file_type_row($file_type_r, $row)
 	if($src!==FALSE && strlen($src)>0)
 		echo("<img src=\"$src\">");
 	else
-		echo("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		echo("&nbsp;");
 	echo("</td>");
 
 	echo("\n<td class=\"data\">".get_input_field("image[$row]", NULL, NULL, "url(15,*,\"gif,jpg,png\",N)", "N", $file_type_r['image'], FALSE)."</td>");
 	
-	echo ("\n<td class=\"data\" align=\"center\">".get_input_field("thumbnail_support_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($file_type_r['thumbnail_support_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."</td>");
+	echo ("\n<td class=\"data\" align=\"middle\">".get_input_field("thumbnail_support_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($file_type_r['thumbnail_support_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."</td>");
 	
     echo("\n<td class=\"data\">");
    	if(is_not_empty_array($file_type_r))

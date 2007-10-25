@@ -26,26 +26,6 @@ include_once("./functions/cssparser/cssparser.php");
 include_once("./functions/rss.php");
 include_once("./functions/scripts.php");
 
-/**
- * Any additional CSS that should be included in addition to a css of the same name
- * 
- * Note that this map is not recursive, so if you have say borrow that needs
- * listings, and listings needs item display, borrow will not automatically get
- * item display included.
- */
-$_OPENDB_THEME_CSS_MAP = array(
-	'borrow'=>array('listings', 'item_display'),
-	'item_borrow'=>array('listings', 'item_display'),
-	'quick_checkout'=>array('listings', 'item_display'),
-	'item_input'=>array('listings'),
-	'import'=>array('listings', 'item_display', 'item_input'),
-	'item_display'=>array('listings'),
-	'user_listing'=>array('listings'),
-	//'listings'=>array('item_display'),
-	'admin'=>array('listings'),
-	'search'=>array('item_review', 'item_input'),
-	'item_review'=>array('item_input')
-);
 
 function get_content_type_charset() {
 	$contentType = "text/html";
@@ -170,6 +150,35 @@ function get_theme_css($pageid, $mode = NULL)
 }
 
 /**
+ * Any additional CSS that should be included in addition to a css of the same name
+ * 
+ * Note that this map is not recursive, so if you have say borrow that needs
+ * listings, and listings needs item display, borrow will not automatically get
+ * item display included.
+ */
+$_OPENDB_THEME_CSS_MAP = array(
+	'borrow'=>array('listings', 'item_display'),
+	'item_borrow'=>array('listings', 'item_display'),
+	'quick_checkout'=>array('listings', 'item_display'),
+	'import'=>array('listings', 'item_display', 'item_input'),
+	'item_display'=>array('listings'),
+	'user_listing'=>array('listings'),
+	'admin'=>array('listings'),
+	'search'=>array('item_review', 'item_input'),
+	'item_review'=>array('item_input')
+);
+
+function _theme_css_map($pageid)
+{
+	global $_OPENDB_THEME_CSS_MAP;
+	
+	if(function_exists('theme_css_map'))
+		return theme_css_map($pageid);
+	else
+		return $_OPENDB_THEME_CSS_MAP[$pageid];
+}
+
+/**
  * Returns an array of css files to render for the current page.
  * 
  * 	array(file=>"./theme/$_OPENDB_THEME/$name.css", media=>'print')
@@ -177,16 +186,16 @@ function get_theme_css($pageid, $mode = NULL)
 function _theme_css_file_list($pageid, $mode = NULL)
 {
 	global $_OPENDB_THEME;
-	global $_OPENDB_THEME_CSS_MAP;
 	
 	$css_file_list = array();
 	
 	add_css_files('style', $mode, $css_file_list);
-	
-	if(is_not_empty_array($_OPENDB_THEME_CSS_MAP[$pageid]))
+
+	$css_map = _theme_css_map($pageid);
+	if(is_not_empty_array($css_map))
 	{
-		reset($_OPENDB_THEME_CSS_MAP[$pageid]);
-		while(list(,$page) = each($_OPENDB_THEME_CSS_MAP[$pageid]))
+		reset($css_map);
+		while(list(,$page) = each($css_map))
 		{
 			add_css_files($page, $mode, $css_file_list);
 		}
@@ -315,21 +324,15 @@ function _theme_image_src($src)
 	Will format a complete image url.
 
 	@param $src		The image.ext without any path information.
-	@param $alt		The text to provide if the image is not found, or
-					The browser does not support images.
 	@param $title	The tooltip to include in the image.
-	@param $align	The align="???" valign="???" value.
 	@param $type	Specifies the origin of the image.  Current types being
 					used are:
 						s_item_type - for 's_item_type' table images.
 						borrowed_item - Borrow system status images.
 						action - Item operation (input,borrow actions)
 								
-	@param $class	The CSS class of the image.	
-	@param $width	The width of the image.
-	@param $height	The height of the image.
-
 	These are the steps it uses to work out which image to display:
+
 	1)  Checks if 'theme_image' function is defined.  This function
 		should return a fully formed <img src="" ...> or a textual 
 		equivalent.
@@ -346,39 +349,30 @@ function _theme_image_src($src)
 			images/$_OPENDB_LANGUAGE/
 			images/
 
-	3)	If $alt is not null, the $alt text will be returned instead 
-		of <img ...> tag.  This is even if the $alt=="" (empty string)
-
 	4)	Otherwise return the $src, without extension, in initcap format.
 */
-function _theme_image($src, $alt=NULL, $title=NULL, $align=NULL, $type=NULL, $class=NULL, $width=NULL, $height=NULL)
+function _theme_image($src, $title=NULL, $type=NULL)
 {
-	if(function_exists('theme_image') && ($value = theme_image($src, $alt, $title, $align, $type, $class, $width, $height))!==FALSE)
+	$file_r = parse_file(basename($src));
+	$alt = ucfirst($file_r['name']);
+		
+	if(function_exists('theme_image') && ($value = theme_image($src, $title, $type))!==FALSE)
 		return $value;
 	else if ( ($src = _theme_image_src($src)) !== FALSE)
 	{
 		return "<img src=\"$src\""
-			.(strlen($alt)>0?" alt=\"$alt\"":"")
+			.(strlen($alt)>0?" alt=\"".$alt."\"":"")
 			.(strlen($title)>0?" title=\"$title\"":"")
-			.(strlen($class)>0?" class=\"$class\"":"")
-			.(strlen($align)>0?" align=\"$align\" valign=\"$align\"":"")
-			.(strlen($width)>0?" width=\"$width\"":"")
-			.(strlen($height)>0?" height=\"$height\"":"")
-			." border=\"0\">";
+			.(strlen($type)>0?" class=\"$type\"":"")
+			.">";
 	}
 	else if($type == "action") // Special type, that if not handled, will be handled back at caller instead!
-		return FALSE;
-	else if($alt!==NULL)
-		return $alt;
-	else  
 	{
-		// Get the $src without extension and initcap the result for return.
-		// There is not much else we can do in this case, as the $title is not
-		// designed to be used in place of the image - it is a tooltip!
-		$index = strrpos($src, ".");
-		if($index !== FALSE)
-			$src = substr($src,0,$index);
-		return ucfirst($src);
+		return FALSE;
+	}
+	else
+	{
+		return $alt;
 	}	
 }
 

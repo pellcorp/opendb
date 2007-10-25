@@ -566,7 +566,7 @@ class TitleMask
 									$this->_opendb_title_mask_macro_rs['theme_img'] = array_merge($this->_opendb_title_mask_macro_rs['theme_img'], array($mask_element_rs[$i]['img']=>$vtitle));
 								}
 
-								$mask_element_rs[$i]['value'] = _theme_image($mask_element_rs[$i]['img'], NULL, $vtitle, 'absmiddle');
+								$mask_element_rs[$i]['value'] = _theme_image($mask_element_rs[$i]['img'], $vtitle);
 								$value = $mask_element_rs[$i]['value'];
 							}
 							else // no, then leave for item_id context.
@@ -575,7 +575,7 @@ class TitleMask
 								$mask_element_rs[$i]['value'] = '';
 
 								$vtitle = $this->_expand_title_mask($item_instance_r, $mask_element_rs[$i]['title_mask'], $mask_element_rs[$i]['title_mask_elements']);
-								$value = _theme_image($mask_element_rs[$i]['img'], NULL, $vtitle, 'absmiddle');
+								$value = _theme_image($mask_element_rs[$i]['img'], $vtitle);
 							}
 						}
 						break;
@@ -906,7 +906,7 @@ class TitleMask
 					if($lookup_attr_r!==false)
 					{
 						if(strlen($lookup_attr_r['img'])>0 && $lookup_attr_r['img'] != 'none')
-							$value = _theme_image($lookup_attr_r['img'], NULL, $lookup_attr_r['display'], 'absmiddle');
+							$value = _theme_image($lookup_attr_r['img'], $lookup_attr_r['display']);
 						else // if no image, then use (value).
 							$value = '('.$lookup_attr_r['value'].')';
 					}

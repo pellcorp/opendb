@@ -1173,10 +1173,12 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 	}
 
 	if(strcasecmp($orientation, 'VERTICAL')==0)
-		$buffer = "<ul class=\"radioGridOptionsVertical\">";
+		$class = 'radioGridOptionsVertical';
 	else
-		$buffer = "<ul class=\"radioGridOptions\">";
+		$class = 'radioGridOptions';
 		
+	$buffer = "<ul id=\"$name\" class=\"$class\">";
+	
 	while(list(,$lookup_r) = each($lookup_val_r))
 	{
 		$buffer .= "\n<li><input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
@@ -1228,10 +1230,12 @@ function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $dis
 	}
 	
 	if(strcasecmp($orientation, 'VERTICAL')==0)
-		$buffer = "<ul class=\"checkboxGridOptionsVertical\">";
+		$class = 'radioGridOptionsVertical';
 	else
-		$buffer = "<ul class=\"checkboxGridOptions\">";
-		
+		$class = 'radioGridOptions';
+
+	$buffer = "<ul id=\"$name\" class=\"$class\">";
+	
 	while(list(,$lookup_r) = each($lookup_val_r))	
 	{
 		$buffer .= "<li><input type=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
@@ -1689,7 +1693,7 @@ function format_input_field($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_
 			$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
 		}
 		
-		return "<tr><th class=\"prompt\">".$prompt.(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && $compulsory_ind=='Y'?_theme_image("compulsory.gif", NULL, get_opendb_lang_var('compulsory_field'), 'top'):"").":</th>".
+		return "<tr><th class=\"prompt\">".$prompt.(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && $compulsory_ind=='Y'?_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field')):"").":</th>".
 				format_data($field_mask, $field, NULL)."</tr>";
 	}
 	else
@@ -2358,7 +2362,7 @@ function format_display_value($mask, $img, $value, $display, $theme_image_type=N
 	// Note: We are only modifying local copy of $mask for return.
 	if(strlen(trim($img))>0 && $img!=="none")
 	{
-		$image = _theme_image($img, strlen($theme_image_type)>0?$display:NULL, $display, "absmiddle", $theme_image_type);
+		$image = _theme_image($img, $display, $theme_image_type);
 		if(strlen($image)>0)
 			$mask = str_replace("%img%", $image, $mask);
 		else if(strlen($display)>0)
@@ -2500,7 +2504,7 @@ function _format_help_entry($help_entry_r)
 	if(is_array($help_entry_r))
 	{
 		if(isset($help_entry_r['img']))
-			$entry .= _theme_image($help_entry_r['img'], NULL, $help_entry_r['text'])."&nbsp;";
+			$entry .= _theme_image($help_entry_r['img'], $help_entry_r['text'])." ";
 		$entry .= $help_entry_r['text'];
 		
 		return $entry;
@@ -2574,7 +2578,7 @@ function format_action_links($action_links_rs)
 	while(list(,$action_link_r) = @each($action_links_rs))
 	{
 		if(strlen($action_link_r['img'])>0)
-			$action_image = _theme_image('action_'.$action_link_r['img'], $action_link_r['text'], $action_link_r['text'], NULL, "action");
+			$action_image = _theme_image('action_'.$action_link_r['img'], $action_link_r['text'], "action");
 		else
 			$action_image = FALSE;
 		
@@ -2758,7 +2762,7 @@ function get_item_image($s_item_type, $item_id = NULL)
 				else
 					$title_text = NULL;
 
-				$imagetext = _theme_image($item_type_r['image'], $s_item_type, $title_text, NULL, 's_item_type', 's_item_type');
+				$imagetext = _theme_image($item_type_r['image'], $title_text, 's_item_type');
 			}
 
 			return $imagetext;

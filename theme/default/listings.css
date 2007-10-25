@@ -60,11 +60,6 @@ table.listing-table
 	width: 100%;
 }
 
-table.listing-table img
-{
-	border: 0;
-}
-
 /* These two are for the listings, where the colors alternate. */
 .oddRow td, .evenRow td
 {

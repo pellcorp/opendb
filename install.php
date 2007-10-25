@@ -56,8 +56,8 @@ function install_footer()
 $_opendb_install_required_writedirs = array(
 		'log', 'include', 'itemcache', 'httpcache', 'importcache');
 
-$TICK_IMAGE = _theme_image('tick.gif', '', NULL, 'absmiddle');
-$CROSS_IMAGE = _theme_image('cross.gif', '', NULL, 'absmiddle');
+$TICK_IMAGE = _theme_image('tick.gif', '', NULL);
+$CROSS_IMAGE = _theme_image('cross.gif', '', NULL);
 	
 function install_check_missing_081_upload_item_attributes()
 {

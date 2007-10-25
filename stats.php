@@ -309,7 +309,7 @@ if(is_site_enabled())
 			    while(list(, $status_type_r) = each($status_type_rs))
 				{
 					echo("<th>".
-						_theme_image($status_type_r['img'], $status_type_r['description'], NULL, NULL, "s_status_type").
+						_theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type").
 						"</th>");
 				}
 			}
@@ -393,8 +393,8 @@ if(is_site_enabled())
 				
 				echo("<tr class=\"navbar\">");
 				echo("<th>".get_opendb_lang_var('owner')."</th>");
-				echo("<th>"._theme_image('reserved.gif', get_opendb_lang_var('reserved'), NULL, NULL, "borrowed_item")."</th>");
-				echo("<th>"._theme_image('borrowed.gif', get_opendb_lang_var('borrowed'), NULL, NULL, "borrowed_item")."</th>");
+				echo("<th>"._theme_image('reserved.gif', get_opendb_lang_var('reserved'), "borrowed_item")."</th>");
+				echo("<th>"._theme_image('borrowed.gif', get_opendb_lang_var('borrowed'), "borrowed_item")."</th>");
 				echo("</tr>");
 				
 				$result = fetch_user_rs(get_owner_user_types_r());//only ACTIVE owner users!

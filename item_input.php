@@ -270,7 +270,7 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 			
 			echo("<h3>".$site_plugin_r['title']."</h3>");
 			
-			echo("<img class=\"siteLogo\" src=\"./site/images/".$site_plugin_r['image']."\" title=\"".strip_tags($site_plugin_r['description'])."\" alt=\"".strip_tags($site_plugin_r['description'])."\">");
+			echo _theme_image("site/images/".$site_plugin_r['image'], strip_tags($site_plugin_r['description']), "siteLogo");
 			
 			echo("<h4>".$site_plugin_r['description']."</h4>");
 			

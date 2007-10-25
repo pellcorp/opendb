@@ -276,7 +276,6 @@ function _theme_footer()
 function _theme_image_src($src)
 {
 	global $_OPENDB_THEME;
-	// This theme should be used to search for images, before the theme/default/ directory.
 	global $_OPENDB_DEFAULT_THEME;
 	global $_OPENDB_LANGUAGE;
 
@@ -291,33 +290,57 @@ function _theme_image_src($src)
 		}
 		
 		if(starts_with($src, 'theme/') || starts_with($src, 'images/') && file_exists($src)) // in case we have already expanded with _theme_image_src previously.
+		{
 			return $src;
-		else if(isset($_OPENDB_THEME) && isset($_OPENDB_LANGUAGE) && file_exists("./theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/$src"))
-			return "theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/$src";
-		else if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/images/$src"))
-			return "theme/$_OPENDB_THEME/images/$src";
-		else if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/$src"))
-			return "theme/$_OPENDB_THEME/$src";
-		else if(isset($_OPENDB_DEFAULT_THEME)&& isset($_OPENDB_LANGUAGE) && file_exists("theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/$src"))
-			return "theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/$src";
-		else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("theme/$_OPENDB_DEFAULT_THEME/images/$src"))
-			return "theme/$_OPENDB_DEFAULT_THEME/images/$src";
-		else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("theme/$_OPENDB_DEFAULT_THEME/$src"))
-			return "theme/$_OPENDB_DEFAULT_THEME/$src";
-		else if(isset($_OPENDB_LANGUAGE) && file_exists("./theme/default/images/$_OPENDB_LANGUAGE/$src"))
-			return "theme/default/images/$_OPENDB_LANGUAGE/$src";
-		else if(file_exists("./theme/default/images/$src"))
-			return "theme/default/images/$src";
-		else if(file_exists("./theme/default/$src"))
-			return "theme/default/$src";
-		else if(isset($_OPENDB_LANGUAGE) && file_exists("./images/$_OPENDB_LANGUAGE/$src"))
-			return "images/$_OPENDB_LANGUAGE/$src";
-		else if(file_exists("./images/$src"))
-			return "images/$src";
+		}
+		else if(starts_with($src, 'site/images/'))
+		{
+			return theme_site_image_src($src);
+		}
+		else
+		{
+			if(isset($_OPENDB_THEME) && isset($_OPENDB_LANGUAGE) && file_exists("./theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/$src"))
+				return "theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/$src";
+			else if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/images/$src"))
+				return "theme/$_OPENDB_THEME/images/$src";
+			else if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/$src"))
+				return "theme/$_OPENDB_THEME/$src";
+			else if(isset($_OPENDB_DEFAULT_THEME)&& isset($_OPENDB_LANGUAGE) && file_exists("theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/$src"))
+				return "theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/$src";
+			else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("theme/$_OPENDB_DEFAULT_THEME/images/$src"))
+				return "theme/$_OPENDB_DEFAULT_THEME/images/$src";
+			else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("theme/$_OPENDB_DEFAULT_THEME/$src"))
+				return "theme/$_OPENDB_DEFAULT_THEME/$src";
+			else if(isset($_OPENDB_LANGUAGE) && file_exists("./theme/default/images/$_OPENDB_LANGUAGE/$src"))
+				return "theme/default/images/$_OPENDB_LANGUAGE/$src";
+			else if(file_exists("./theme/default/images/$src"))
+				return "theme/default/images/$src";
+			else if(file_exists("./theme/default/$src"))
+				return "theme/default/$src";
+			else if(isset($_OPENDB_LANGUAGE) && file_exists("./images/$_OPENDB_LANGUAGE/$src"))
+				return "images/$_OPENDB_LANGUAGE/$src";
+			else if(file_exists("./images/$src"))
+				return "images/$src";
+		}
 	}
 
 	//else
 	return FALSE; // no image found.
+}
+
+function theme_site_image_src($src)
+{
+	global $_OPENDB_THEME;
+	global $_OPENDB_DEFAULT_THEME;
+	
+	$src = basename($src);
+	
+	if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/images/site/$src"))
+		return "./theme/$_OPENDB_THEME/images/site/$src";
+	else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("./theme/$_OPENDB_DEFAULT_THEME/images/site/$src"))
+		return "./theme/$_OPENDB_DEFAULT_THEME/images/site/$src";
+	else
+		return "./site/images/$src";
 }
 
 /**

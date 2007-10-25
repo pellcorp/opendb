@@ -47,13 +47,9 @@ function get_site_plugin_links($page_title, $item_r)
 				$site_plugin_conf_rs = get_site_plugin_conf_r($site_plugin_type_r['site_type']);
 				
 				if(strlen($site_plugin_type_r['image'])>0)
-				{
-					$link_text = "<img src=\"./site/images/".$site_plugin_type_r['image']."\" title=\"".htmlspecialchars($site_plugin_type_r['title'])."\" alt=\"".htmlspecialchars($site_plugin_type_r['title'])."\">";
-				}
+					$link_text = _theme_image("site/images/".$site_plugin_type_r['image'], htmlspecialchars($site_plugin_type_r['title']));
 				else
-				{
 					$link_text = $site_plugin_type_r['title'];
-				}
 							
 				$results2 = fetch_site_plugin_link_rs($site_plugin_type_r['site_type'], $item_r['s_item_type']);
 				if($results2)

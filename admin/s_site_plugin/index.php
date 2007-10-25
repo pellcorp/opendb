@@ -41,12 +41,13 @@ function display_edit_site_plugin($record_r, $HTTP_VARS=NULL)
 	$field = get_input_field('image', NULL, 'Image', 'url(25,*,"gif,jpg,png",N)', 'N', $record_r['image'], FALSE, NULL, 'if(this.value.length>0){document.images[\'s_site_plugin_image\'].src=\'./site/images/\'+this.value;}else{document.images[\'s_site_plugin_image\'].src=\'./admin/s_site_plugin/spacer.gif\';}');
 	
 	if(strlen($record_r['image'])>0)
-		$image_src = "./site/images/".$record_r['image'];
+		$image_src = "site/images/".$record_r['image'];
 
 	if($image_src!==FALSE && strlen($image_src)>0 && file_exists($image_src))
-		$field .= " <img align=absmiddle valign=absmiddle src=\"".$image_src."\" name=\"s_site_plugin_image\">";
-	else
-		$field .= " <img align=absmiddle valign=absmiddle src=\"./admin/s_site_plugin/spacer.gif\" name=\"s_site_plugin_image\">";
+	{
+		$field .= _theme_image("site/images/".$image_src);
+	}
+	
 	echo format_field('Image', NULL, $field);
 	
 	echo get_input_field('description', NULL, 'Description', 'text(50,255)', 'Y', $record_r['description']);

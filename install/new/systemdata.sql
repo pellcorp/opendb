@@ -47,7 +47,7 @@ INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type,
 # System Address Type
 # 
 INSERT INTO s_address_type ( s_address_type, description, display_order, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind )
-VALUES ( 'SNAIL', 'Postal Address', '1', 'B', 'B', '*', 'Y' );
+VALUES ( 'SNAIL', 'Postal Address', '1', 'B', 'B', '*', 'N' );
 
 #
 # System Address Type relationship

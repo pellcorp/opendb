@@ -27,6 +27,13 @@ include_once("./functions/logging.php");
 include_once("./functions/borrowed_item.php");
 include_once("./functions/email.php");
 
+/**
+ * Is current user able to see UID address 
+ *
+ * @param unknown_type $HTTP_VARS
+ * @param unknown_type $address_type_r
+ * @return unknown
+ */
 function is_user_address_visible($HTTP_VARS, $address_type_r)
 {
 	if($address_type_r['public_address_ind'] == 'Y')
@@ -34,8 +41,8 @@ function is_user_address_visible($HTTP_VARS, $address_type_r)
 	else if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 		return TRUE;
 	else if($address_type_r['borrow_address_ind'] == 'Y' && 
-			is_numeric($HTTP_VARS['bi_sequence_number']) && 
-			is_borrowed_item_accessible_to_user($HTTP_VARS['bi_sequence_number'], get_opendb_session_var('user_id'), $HTTP_VARS['uid']))
+		(is_owner_and_borrower(get_opendb_session_var('user_id'), $HTTP_VARS['uid'])) ||
+				is_owner_and_borrower($HTTP_VARS['uid'], get_opendb_session_var('user_id')))
 	{
 		return TRUE;
 	}

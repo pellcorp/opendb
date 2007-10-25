@@ -60,50 +60,34 @@ function get_item_id_and_instance_no($item_id_instance_no)
 	party against the borrowed item record at any time. If the item is reserved, then 
 	the uid must correspond to the owner.  If the item is borrowed, then the uid must 
 	correspond to the borrower.
+
+	if current user is owner of any items borrowed / reserved by other user
+	if other user is owner of any items borrowed / reserved by current user
 	
-	@param $sequence_number sequence number of the borrowed item record
 	@param $current_user    user checking access for
 	@param $other_user		double check to ensure that in any case, the other user attached to this
 	borrowed item is that specified.  This is a time saving measure
 */
-function is_borrowed_item_accessible_to_user($sequence_number, $current_user, $other_user = NULL)
+function is_owner_and_borrower($owner_id, $borrower_id)
 {
-	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
-	if(is_array($borrowed_item_r) && ($borrowed_item_r['status'] == 'R' || $borrowed_item_r['status'] == 'B'))
-	{
-		if($borrowed_item_r['status'] == 'R') // need to be able to checkout item to borrower
-		{
-			if($borrowed_item_r['borrower_id'] == $other_user) 
-			{
-				if($other_user == NULL || is_borrowed_item_owner($sequence_number, $current_user))
-					return TRUE;
-			}
-		}
-		else if($borrowed_item_r['status'] == 'B') // need to be able to return item to owner
-		{
-			if($borrowed_item_r['borrower_id'] == $current_user)
-			{
-				if($other_user == NULL || is_borrowed_item_owner($sequence_number, $other_user))
-					return TRUE;
-			}
-		}
-	}
-
-	//else
-	return FALSE;
-}
-
-function is_borrowed_item_owner($sequence_number, $owner_id)
-{
-	$item_r = fetch_borrowed_item_pk_r($sequence_number);
-	if(is_array($item_r))
-	{
-		if(is_user_owner_of_item($item_r['item_id'], $item_r['instance_no'], $owner_id))
-		{
-			return TRUE;
-		}
-	}
+	$query = "SELECT 'X'
+		FROM borrowed_item b,
+			item_instance ii
+		WHERE b.item_id = ii.item_id AND
+			b.instance_no = ii.instance_no AND
+			b.status IN ('R', 'B') AND
+			ii.owner_id = '$owner_id' AND
+			b.borrower_id = '$borrower_id'";
 	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($found!==FALSE)
+			return TRUE;
+	}
+
 	//else
 	return FALSE;
 }

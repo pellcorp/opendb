@@ -55,7 +55,7 @@ function ImageHexColorAllocate(&$img, $HexColorString)
 					'dark_border-color'=>$HTTP_VARS['dark_border-color'],
 					'background-color'=>$HTTP_VARS['background-color']);
 */
-function build_and_send_graph($data, $sortorder, $chartType, $chartOptions, $graphCfg, $imgType)
+function build_and_send_graph($itemCount, $data, $sortorder, $chartType, $chartOptions, $graphCfg, $imgType)
 {
 	// size of pie-chart (not counting text borders)
 	$imgsize = $graphCfg['size'];
@@ -92,9 +92,9 @@ function build_and_send_graph($data, $sortorder, $chartType, $chartOptions, $gra
 	if(is_array($data))
 	{
 		// process data
-		$itemCount = @count($data);
+		$dataCount = @count($data);
 	
-		if($itemCount > 0 && !empty($sortorder))
+		if($dataCount > 0 && !empty($sortorder))
 		{
 			if($sortorder == 'asc')	
 				asort($data);
@@ -103,21 +103,18 @@ function build_and_send_graph($data, $sortorder, $chartType, $chartOptions, $gra
 		}
 		
 		$TotalArrayValues = @array_sum($data);
-		if($TotalArrayValues > 0)
+		if($TotalArrayValues > 0 && $itemCount > 0)
 		{	
 			$maxdata = 0;
 			
-			if($TotalArrayValues>0)
+			foreach ($data as $key => $value)
 			{
-				foreach ($data as $key => $value)
+				$value = number_format(@($value / $itemCount) * 100, 1);
+				$data[$key] = $value;
+				
+				if ($maxdata < $value)
 				{
-					$value = number_format(@($value / $TotalArrayValues) * 100, 1);
-					$data[$key] = $value;
-					
-					if ($maxdata < $value)
-					{
-						$maxdata = $value + 1;
-					}
+					$maxdata = $value + 1;
 				}
 			}
 		}
@@ -133,15 +130,15 @@ function build_and_send_graph($data, $sortorder, $chartType, $chartOptions, $gra
 				// It will perform only one loop, unless you have so many items that
 				// the box width is smaller than the font height.  Then it will
 				// recompute with fewer items.
-				$itemCount++;			// We undo this on the next line.
+				$dataCount++;			// We undo this on the next line.
 				do {
-					$itemCount--;
-					$boxwidth = round(($xsize - ($sidegap*2)) / ($itemCount + 1));
+					$dataCount--;
+					$boxwidth = round(($xsize - ($sidegap*2)) / ($dataCount + 1));
 					$gapwidth = round($boxwidth / 10);
 					if ($gapwidth < 1) $gapwidth = 1;
-					$boxwidth = floor(($xsize - ($sidegap*2) - ($gapwidth * ($itemCount-1))) / $itemCount);
-					$totalwidth = $boxwidth * $itemCount + $gapwidth * ($itemCount-1);
-				} while ($itemCount>0 && $boxwidth < $fontheight + 2);
+					$boxwidth = floor(($xsize - ($sidegap*2) - ($gapwidth * ($dataCount-1))) / $dataCount);
+					$totalwidth = $boxwidth * $dataCount + $gapwidth * ($dataCount-1);
+				} while ($dataCount>0 && $boxwidth < $fontheight + 2);
 	
 				// centre it:
 				$sidegap = ($xsize - $totalwidth) / 2;

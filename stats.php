@@ -170,10 +170,13 @@ function do_stats_graph($HTTP_VARS)
 	else
 		$chartOptions['striped'] = FALSE;
 
+	$total_items = fetch_item_instance_cnt();
+	
 	switch($HTTP_VARS['graphtype'])
 	{
 		case 'item_ownership':
 			build_and_send_graph(
+				$total_items,
 				build_item_ownership_chart_info(), 
 				$sortorder, 
 				'piechart', //chartype
@@ -184,6 +187,7 @@ function do_stats_graph($HTTP_VARS)
 		
 		case 'item_types':
 			build_and_send_graph(
+				$total_items,
 				build_item_types_chart_info(), 
 				$sortorder, 
 				'barchart', //chartype
@@ -194,6 +198,7 @@ function do_stats_graph($HTTP_VARS)
 		
 		case 'item_type_ownership':
 			build_and_send_graph(
+				$total_items,
 				build_owner_item_chart_info($HTTP_VARS['s_item_type']), 
 				$sortorder, 
 				'piechart', //chartype
@@ -214,6 +219,7 @@ function do_stats_graph($HTTP_VARS)
 				$chartOptions['12oclock'] = FALSE;
 				
 				build_and_send_graph(
+					$total_items,
 					build_item_category_chart_info($HTTP_VARS['s_item_type']),
 					$sortorder, 
 					'barchart', //chartype
@@ -224,6 +230,7 @@ function do_stats_graph($HTTP_VARS)
 			else
 			{
 				build_and_send_graph(
+					$total_items,
 					build_item_category_chart_info($HTTP_VARS['s_item_type']), 
 					$sortorder, 
 					'piechart', //chartype

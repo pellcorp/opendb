@@ -225,7 +225,7 @@ function validate_s_config_group_item($group_id, $id, $keyid, $value)
 						return FALSE;
 
                 case 'theme':
-                    if(is_legal_user_theme($value))
+                    if(is_exists_theme($value))
 						return $value;
 					else
 						return FALSE;

@@ -1,4 +1,5 @@
 ul.reviewOptions, ul.reviewOptionsVertical {
 	list-style-type: none;
-	padding-left: 0px;
+	padding: 0px;
+	margin: 0px;
 }

@@ -180,13 +180,13 @@ if(function_exists('db_connect'))
 			init_public_access_session();
 			
 			//allows specific pages to overide themes
-			if(!is_legal_theme($_OVRD_OPENDB_THEME))
+			if(!is_exists_theme($_OVRD_OPENDB_THEME))
 			{
 				if(strlen(get_opendb_session_var('user_id'))>0)
 				{
 					$user_theme = fetch_user_theme(get_opendb_session_var('user_id'));
 				
-					if(is_legal_theme($user_theme))
+					if(is_exists_theme($user_theme))
 					{
 						$_OPENDB_THEME = $user_theme;
 					}
@@ -194,7 +194,7 @@ if(function_exists('db_connect'))
 			
 				if(strlen($_OPENDB_THEME)==0)
 				{
-					if(is_legal_theme(get_opendb_config_var('site', 'theme')))
+					if(is_exists_theme(get_opendb_config_var('site', 'theme')))
 					{
 						$_OPENDB_THEME = get_opendb_config_var('site', 'theme');
 					}

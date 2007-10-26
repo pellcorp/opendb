@@ -198,63 +198,69 @@ function display_attribute_type_form($HTTP_VARS)
 {
 	global $PHP_SELF;
 	global $ADMIN_TYPE;
-	
-	$block = "<div class=\"tabContainer\"><form name=\"s_attribute_type_lookup\" action=\"$PHP_SELF\" method=\"POST\">".
-		"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-		"<input type=\"hidden\" name=\"op\" value=\"\">".
-		"<input type=\"hidden\" name=\"s_attribute_type\" value=\"".$HTTP_VARS['s_attribute_type']."\">";
-	
-	$tabBlock = '';
-   	$paneBlock = '';
-   	$pageno = 1;
-   	$count = 0;
    	
-	$results = fetch_attribute_type_rs();
+	$initLetter = NULL;
+	$currentInitLetter = NULL;
+	
+   	$alpha_attribute_type_rs = array();
+   	$results = fetch_attribute_type_rs();
 	if($results)
 	{
-		// value, display, img, checked_ind, order_no
-		$row = 0;
 		while($attribute_type_r = db_fetch_assoc($results))
 		{
-			if($count == 20)
+			$initLetter = strtoupper(substr($attribute_type_r['s_attribute_type'], 0, 1));
+			
+			if( $currentInitLetter == NULL || $currentInitLetter != $initLetter)
 			{
-				$count = 0;
-				$pageno++;
-				$paneBlock .= "</table></div>";
+				$currentInitLetter = $initLetter;
 			}
 			
-			if($count == 0)
-			{   
-				$tabBlock .= "<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$pageno', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">Page&nbsp;$pageno</li>";
-					
-				$paneBlock .= "<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">\n".
-					    "\n<table>".
-						"<tr class=\"navbar\">".
-						"<th>Type</th>".
-						"<th>Description</th>";
-			
-				if($ADMIN_TYPE != 's_address_attribute_type')
-				{
-					$paneBlock .= "<th>Field Type</th>";
-				}
-			
-				$paneBlock .= "<th colspan=2></th></tr>";
-			}
-		
-			$paneBlock .= display_s_attribute_type_row($attribute_type_r, $row);
-			$count++;
-			$row++;
+			$alpha_attribute_type_rs[$currentInitLetter][] = $attribute_type_r;
 		}
 		db_free_result($results);
 	}
-	$paneBlock .= "</table></div>";
-
-	$block .= "<ul class=\"tabMenu\" id=\"tab-menu\">".$tabBlock."</ul>";
-	$block .= '<div id="tab-content">'.$paneBlock.'</div>';
 	
-	$block .= '</form></div>';
-				
-	return $block;
+   	echo("<div class=\"tabContainer\">".
+   		"<form name=\"s_attribute_type_lookup\" action=\"$PHP_SELF\" method=\"POST\">".
+		"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
+		"<input type=\"hidden\" name=\"op\" value=\"\">".
+		"<input type=\"hidden\" name=\"s_attribute_type\" value=\"".$HTTP_VARS['s_attribute_type']."\">");
+   	
+	$isFirst = true;
+	echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
+	while(list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs))
+	{
+		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$letter', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">&nbsp;$letter&nbsp;</li>");
+		$isFirst = false;
+	}
+	echo("</ul>");
+	
+	reset($alpha_attribute_type_rs);
+	$isFirst = true;
+	echo('<div id="tab-content">');
+	while(list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs))
+	{
+		echo("<div id=\"pane$letter\" class=\"".($isFirst?"tabContent":"tabContentHidden")."\">\n".
+		    "\n<table>".
+			"<tr class=\"navbar\">".
+			"<th>Type</th>".
+			"<th>Description</th>".
+			"<th>Field Type</th>".
+			"<th colspan=\"2\"></th>".
+			"</tr>");
+		
+		while(list(,$attribute_type_r) = each($attribute_type_rs))
+		{
+			echo(get_s_attribute_type_row($attribute_type_r, $row));	
+		}
+		
+		echo("</table></div>");
+		
+		$isFirst = false;
+	}
+	echo("</div>");
+
+	echo('</form></div>');
 }
 
 function display_lookup_attribute_type_form($HTTP_VARS)
@@ -275,7 +281,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
         // value, display, img, checked_ind, order_no
 		while($attribute_type_lookup_r = db_fetch_assoc($results))
 		{
-			$attribute_type_rows[] = display_s_attribute_type_lookup_row($attribute_type_lookup_r, $row++);
+			$attribute_type_rows[] = get_s_attribute_type_lookup_row($attribute_type_lookup_r, $row++);
 		}
 		db_free_result($results);
 	}
@@ -286,30 +292,46 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	
 	for($i=0; $i<$emptyrows; $i++)
 	{
-		$attribute_type_rows[] = display_s_attribute_type_lookup_row(array(), $row++);
+		$attribute_type_rows[] = get_s_attribute_type_lookup_row(array(), $row++);
 	}
 	
-	$tabBlock = '';
-   	$paneBlock = '';
    	$pageno = 1;
    	$count = 0;
 	
+   	echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 	for($i=0; $i<count($attribute_type_rows); $i++)
 	{
 		if($count == 20)
 		{
 			$count = 0;
 			$pageno++;
-			$paneBlock .= "</table></div>";
 		}
 		
 		if($count == 0)
 		{   
-			$tabBlock .= "<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$pageno', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">Page&nbsp;$pageno</li>";
-			
-			$paneBlock .= "<div style=\"{text-align: right;}\"><input type=submit value=\"Update\"></div>\n".
+			echo("<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$pageno', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">Page&nbsp;$pageno</li>");
+		}
+		$count++;
+	}
+	echo("</ul>");
+	
+	$pageno = 1;
+   	$count = 0;
+   	
+   	echo('<div id="tab-content">');
+	for($i=0; $i<count($attribute_type_rows); $i++)
+	{
+		if($count == 20)
+		{
+			$count = 0;
+			$pageno++;
+			echo("</table></div>");
+		}
+		
+		if($count == 0)
+		{   
+			echo("<div style=\"{text-align: right;}\"><input type=submit value=\"Update\"></div>\n".
 						"<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">\n".
-							
 				"<table>".
 				"<tr class=\"navbar\">"
 				."<th>Delete</th>"
@@ -319,27 +341,17 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 				."<th colspan=2>Image</th>"
 				."<th>No<br />Image</th>"
     			."<th>Checked</th>"
-				."</tr>";
+				."</tr>");
 		}
 		
-		$paneBlock .= $attribute_type_rows[$i];
+		echo($attribute_type_rows[$i]);
 		$count++;
 	}
-	
-	$paneBlock .= "</table></div>";
-
-	$block .= "<ul class=\"tabMenu\" id=\"tab-menu\">".$tabBlock."</ul>";
-	$block .= '<div id="tab-content">'.$paneBlock.'</div>';
-	
-	
-	$block .= '</form>';
-	
-	$block .= '</div>';
-
-	return $block;
+	echo("</table></div></div>");
+	echo("</form></div>");
 }
 
-function display_s_attribute_type_row($attribute_type_r, $row)
+function get_s_attribute_type_row($attribute_type_r, $row)
 {
 	global $ADMIN_TYPE;
 	global $PHP_SELF;
@@ -348,11 +360,7 @@ function display_s_attribute_type_row($attribute_type_r, $row)
 
 	$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['s_attribute_type']."</td>";
 	$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['description']."</td>";
-
-	if($ADMIN_TYPE != 's_address_attribute_type')
-	{
-		$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['s_field_type']."</td>";
-	}
+	$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['s_field_type']."</td>";
 
 	$block .= "\n<td class=\"data\">[";
 	$block .= " <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit</a>";
@@ -366,7 +374,7 @@ function display_s_attribute_type_row($attribute_type_r, $row)
 	return $block;
 }
 
-function display_s_attribute_type_lookup_row($lookup_r, $row)
+function get_s_attribute_type_lookup_row($lookup_r, $row)
 {
 	$block = "<tr>";
 	
@@ -1046,7 +1054,7 @@ if(is_opendb_valid_session())
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-			echo(display_lookup_attribute_type_form($HTTP_VARS));
+			display_lookup_attribute_type_form($HTTP_VARS);
 
 			echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
 		}
@@ -1057,9 +1065,7 @@ if(is_opendb_valid_session())
 
 			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a> ]");
 				 
-            echo(display_attribute_type_form($HTTP_VARS));
-            
-           
+            display_attribute_type_form($HTTP_VARS);
 		}
 	}
 }//if(is_opendb_valid_session())

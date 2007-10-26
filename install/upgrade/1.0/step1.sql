@@ -281,3 +281,6 @@ UPDATE s_attribute_type SET input_type_arg3 = NULL WHERE input_type IN('checkbox
 # change columns value to an orientation, and let CSS work out which is which.
 UPDATE s_attribute_type SET input_type_arg2 = 'VERTICAL' WHERE input_type IN('checkbox_grid', 'radio_grid') AND (input_type_arg2 = '*' OR input_type_arg2 IS NULL OR input_type_arg2 <> '1');
 UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE input_type IN('checkbox_grid', 'radio_grid') AND input_type_arg2 <> 'VERTICAL';
+
+ratio should be horizontal - looks better
+UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE s_attribute_type = 'RATIO';

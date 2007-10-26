@@ -26,7 +26,6 @@ include_once("./functions/cssparser/cssparser.php");
 include_once("./functions/rss.php");
 include_once("./functions/scripts.php");
 
-
 function get_content_type_charset() {
 	$contentType = "text/html";
 	
@@ -38,9 +37,6 @@ function get_content_type_charset() {
 	return $contentType;
 }
 
-/**
-	Do not return anything if not defined.
-*/
 function _theme_header($title=NULL, $inc_menu=TRUE)
 {
 	global $PHP_SELF;
@@ -48,7 +44,6 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 	
 	if(function_exists('theme_header'))
 	{
-		// todo - revisit this!
 	    header("Cache-control: no-store");
 		header("Pragma: no-store");
 		header("Expires: 0");
@@ -86,9 +81,6 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 	}
 }
 
-/**
-	Do not return anything if not defined.
-*/
 function _theme_menu()
 {
 	if(function_exists('theme_menu'))
@@ -110,12 +102,6 @@ function get_theme_javascript($pageid)
 			get_javascript('validation.js');					
 }
 
-/**
- * will render the css links for a page
- *
- * @param $include_menu where include_menu = N, will need to activate special page to
- * remove menu.
- */
 function get_theme_css($pageid, $mode = NULL)
 {
 	global $_OpendbBrowserSniffer;
@@ -149,13 +135,6 @@ function get_theme_css($pageid, $mode = NULL)
 	return $buffer;
 }
 
-/**
- * Any additional CSS that should be included in addition to a css of the same name
- * 
- * Note that this map is not recursive, so if you have say borrow that needs
- * listings, and listings needs item display, borrow will not automatically get
- * item display included.
- */
 $_OPENDB_THEME_CSS_MAP = array(
 	'borrow'=>array('listings', 'item_display'),
 	'item_borrow'=>array('listings', 'item_display'),
@@ -168,6 +147,13 @@ $_OPENDB_THEME_CSS_MAP = array(
 	'item_review'=>array('item_input')
 );
 
+/**
+ * Any additional CSS that should be included in addition to a css of the same name
+ * 
+ * Note that this map is not recursive, so if you have say borrow that needs
+ * listings, and listings needs item display, borrow will not automatically get
+ * item display included.
+ */
 function _theme_css_map($pageid)
 {
 	global $_OPENDB_THEME_CSS_MAP;
@@ -181,7 +167,7 @@ function _theme_css_map($pageid)
 /**
  * Returns an array of css files to render for the current page.
  * 
- * 	array(file=>"./theme/$_OPENDB_THEME/$name.css", media=>'print')
+ * 	array(file=>"./theme/$_OPENDB_THEME/$name.css")
  */
 function _theme_css_file_list($pageid, $mode = NULL)
 {
@@ -245,9 +231,6 @@ function add_css_files($pageid, $mode, &$css_file_list)
 	}
 }
 
-/**
-	Do not return anything if not defined.
-*/
 function _theme_footer()
 {
 	if(function_exists('theme_footer'))
@@ -256,32 +239,60 @@ function _theme_footer()
 		return NULL;
 }
 
-/**
-	@param $src		The image.ext without any path information.
+function get_theme_search_dir_list()
+{
+	global $_OPENDB_THEME;
+	global $_OPENDB_LANGUAGE;
+	
+	$dirPath = array();
+			
+	if(isset($_OPENDB_THEME) && isset($_OPENDB_LANGUAGE))
+	{
+		$dirPath[] = "theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/";
+	}
+	
+	if(isset($_OPENDB_THEME))
+	{
+		$dirPath[] = "theme/$_OPENDB_THEME/images/";
+		$dirPath[] = "theme/$_OPENDB_THEME/";
+	}			
+	
+	if(isset($_OPENDB_LANGUAGE))
+	{
+		$dirPath[] = "theme/default/images/$_OPENDB_LANGUAGE/";
+	}
+	
+	$dirPath[] = "theme/default/images/";
+	$dirPath[] = "theme/default/";
+	$dirPath[] = "images/$_OPENDB_LANGUAGE/";
+	$dirPath[] = "images/";
 
-	Checks for $src in the following directories:
-		theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/
-		theme/$_OPENDB_THEME/images/
-		theme/$_OPENDB_THEME/
+	return $dirPath;
+}
 
-		theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/
-		theme/$_OPENDB_DEFAULT_THEME/images/
-		theme/$_OPENDB_DEFAULT_THEME/
+function get_theme_search_site_dir_list()
+{
+	global $_OPENDB_THEME;
+	
+	$dirPath = array();
+	
+	if(isset($_OPENDB_THEME))
+	{
+		$dirPath[] = "theme/$_OPENDB_THEME/images/site/";
+	}
+	
+	$dirPath[] = "site/images/";
+	
+	return $dirPath;
+}
 
-		images/$_OPENDB_LANGUAGE/
-		images/
-
-	Otherwise return FALSE indicating image was not found.
-*/
 function _theme_image_src($src)
 {
 	global $_OPENDB_THEME;
-	global $_OPENDB_DEFAULT_THEME;
 	global $_OPENDB_LANGUAGE;
 
 	if(strlen($src)>0)
 	{
-		// Allow a theme to point at a specific theme image, perhaps in another theme location.
 		if(function_exists('theme_image_src'))
 		{
 			$theme_image_src = theme_image_src($src);
@@ -289,58 +300,30 @@ function _theme_image_src($src)
 				return $theme_image_src;
 		}
 		
-		if(starts_with($src, 'theme/') || starts_with($src, 'images/') && file_exists($src)) // in case we have already expanded with _theme_image_src previously.
-		{
-			return $src;
-		}
-		else if(starts_with($src, 'site/images/'))
-		{
-			return theme_site_image_src($src);
-		}
+		if(starts_with($src, 'site/images/'))
+			$dirPaths = get_theme_search_site_dir_list();
 		else
+			$dirPaths = get_theme_search_dir_list();
+		
+		$file_r = parse_file(basename($src));
+		$src = $file_r['name'];
+		
+		$extension_r = array('gif', 'png', 'jpg');
+		while(list(,$dir) = each($dirPaths))
 		{
-			if(isset($_OPENDB_THEME) && isset($_OPENDB_LANGUAGE) && file_exists("./theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/$src"))
-				return "theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/$src";
-			else if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/images/$src"))
-				return "theme/$_OPENDB_THEME/images/$src";
-			else if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/$src"))
-				return "theme/$_OPENDB_THEME/$src";
-			else if(isset($_OPENDB_DEFAULT_THEME)&& isset($_OPENDB_LANGUAGE) && file_exists("theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/$src"))
-				return "theme/$_OPENDB_DEFAULT_THEME/images/$_OPENDB_LANGUAGE/$src";
-			else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("theme/$_OPENDB_DEFAULT_THEME/images/$src"))
-				return "theme/$_OPENDB_DEFAULT_THEME/images/$src";
-			else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("theme/$_OPENDB_DEFAULT_THEME/$src"))
-				return "theme/$_OPENDB_DEFAULT_THEME/$src";
-			else if(isset($_OPENDB_LANGUAGE) && file_exists("./theme/default/images/$_OPENDB_LANGUAGE/$src"))
-				return "theme/default/images/$_OPENDB_LANGUAGE/$src";
-			else if(file_exists("./theme/default/images/$src"))
-				return "theme/default/images/$src";
-			else if(file_exists("./theme/default/$src"))
-				return "theme/default/$src";
-			else if(isset($_OPENDB_LANGUAGE) && file_exists("./images/$_OPENDB_LANGUAGE/$src"))
-				return "images/$_OPENDB_LANGUAGE/$src";
-			else if(file_exists("./images/$src"))
-				return "images/$src";
+			reset($extension_r);
+			while(list(,$extension) = each($extension_r))
+			{
+				$file = './'.$dir.$src.'.'.$extension;
+				if(file_exists($file))
+				{
+					return $file;
+				}
+			}			
 		}
 	}
 
-	//else
 	return FALSE; // no image found.
-}
-
-function theme_site_image_src($src)
-{
-	global $_OPENDB_THEME;
-	global $_OPENDB_DEFAULT_THEME;
-	
-	$src = basename($src);
-	
-	if(isset($_OPENDB_THEME) && file_exists("./theme/$_OPENDB_THEME/images/site/$src"))
-		return "./theme/$_OPENDB_THEME/images/site/$src";
-	else if(isset($_OPENDB_DEFAULT_THEME) && file_exists("./theme/$_OPENDB_DEFAULT_THEME/images/site/$src"))
-		return "./theme/$_OPENDB_DEFAULT_THEME/images/site/$src";
-	else
-		return "./site/images/$src";
 }
 
 /**
@@ -350,9 +333,9 @@ function theme_site_image_src($src)
 	@param $title	The tooltip to include in the image.
 	@param $type	Specifies the origin of the image.  Current types being
 					used are:
-						s_item_type - for 's_item_type' table images.
+						s_item_type - for 's_item_type' images.
 						borrowed_item - Borrow system status images.
-						action - Item operation (input,borrow actions)
+						action - Item operation (edit, delete, etc)
 								
 	These are the steps it uses to work out which image to display:
 
@@ -365,14 +348,9 @@ function theme_site_image_src($src)
 		the image in this case.  We should continue as though the theme
 		specific 'theme_image' function did not exist.
 			
-	2)	Checks for $src in the following directories:
-			theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/
-			theme/$_OPENDB_THEME/images/
-			theme/$_OPENDB_THEME/
-			images/$_OPENDB_LANGUAGE/
-			images/
+	2)	Calls _theme_image_src 
 
-	4)	Otherwise return the $src, without extension, in initcap format.
+	4)	If _theme_image_src returns FALSE, then return the $src, without extension, in initcap format.
 */
 function _theme_image($src, $title=NULL, $type=NULL)
 {
@@ -418,28 +396,12 @@ function _theme_graph_config()
 	return FALSE;
 }
 
-/**
-	All we need to do is check if there is a matching theme/$theme/index.php
-	script.
-*/
-function is_legal_theme($theme)
-{
-	if(strlen($theme) && file_exists("./theme/$theme/theme.php"))
-		return true;
-	else
-		return false;
-}
-
-/**
-	All we need to do is check if there is a matching theme/$theme/index.php
-	script.
-*/
-function is_legal_user_theme($theme)
+function is_exists_theme($theme)
 {
 	if(strlen($theme)<=20 && file_exists("./theme/$theme/theme.php"))
-		return true;
+		return TRUE;
 	else
-		return false;
+		return FALSE;
 }
 
 /**
@@ -452,15 +414,15 @@ function get_user_theme_r()
     {
 		if(!ereg("^[.]",$file) && is_dir("./theme/$file"))
 		{
-			if(is_legal_user_theme($file))
+			if(is_exists_theme($file))
 			{
 				$themes[] = $file;
 			}
 		}
 	}
 	closedir($handle);
-    
-    if(is_array($themes) && count($themes)>0)
+
+	if(is_not_empty_array($themes))
 		return $themes;
 	else // empty array as last resort.
 		return array();

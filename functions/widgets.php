@@ -1166,7 +1166,6 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 	}
 	db_free_result($lookup_results);
 
-	// Add the value to the list of options and select it.
 	if(!$value_found && $value !== NULL)
 	{
 		$lookup_val_r[] = array(value=>$value, checked_ind=>'Y');
@@ -1177,7 +1176,7 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 	else
 		$class = 'radioGridOptions';
 		
-	$buffer = "<ul id=\"$name\" class=\"$class\">";
+	$buffer = "<ul class=\"$class\">";
 	
 	while(list(,$lookup_r) = each($lookup_val_r))
 	{
@@ -1234,7 +1233,7 @@ function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $dis
 	else
 		$class = 'radioGridOptions';
 
-	$buffer = "<ul id=\"$name\" class=\"$class\">";
+	$buffer = "<ul class=\"$class\">";
 	
 	while(list(,$lookup_r) = each($lookup_val_r))	
 	{

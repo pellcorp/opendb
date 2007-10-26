@@ -131,7 +131,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		$uid_theme = ifempty($HTTP_VARS['uid_theme'],$user_r['theme']);
 		$buffer .= format_field(get_opendb_lang_var('user_theme'), 
 						NULL, 
-						custom_select("uid_theme", get_user_theme_r(), "%value%", 1, is_legal_user_theme($uid_theme)?$uid_theme:get_opendb_config_var('site', 'theme')));// If theme no longer exists, then set to default!
+						custom_select("uid_theme", get_user_theme_r(), "%value%", 1, is_exists_theme($uid_theme)?$uid_theme:get_opendb_config_var('site', 'theme')));// If theme no longer exists, then set to default!
 	}
 	
 	if(get_opendb_config_var('user_admin', 'user_language_support')!==FALSE)
@@ -512,13 +512,12 @@ function validate_user_info($user_type, &$HTTP_VARS, &$address_provided_r, &$err
 		return FALSE;	
 	}
 		
-	// Do not allow update with illegal theme!
-	if(get_opendb_config_var('user_admin', 'user_themes_support')===FALSE || !is_legal_user_theme($HTTP_VARS['uid_theme']))
+	if(get_opendb_config_var('user_admin', 'user_themes_support')===FALSE || !is_exists_theme($HTTP_VARS['uid_theme']))
 	{
 		$HTTP_VARS['uid_theme'] = FALSE; // Do not update theme!
 	}
 		
-	// Do not allow update with illegal language.			
+	// Do not allow update with illegal language.
 	if(get_opendb_config_var('user_admin', 'user_language_support')===FALSE || !is_exists_language($HTTP_VARS['uid_language']))
 	{
 		$HTTP_VARS['uid_language'] = NULL;

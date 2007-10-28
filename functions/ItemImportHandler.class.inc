@@ -611,7 +611,7 @@ class ItemImportHandler
 			$column = '';
 			if(is_array($attribute_rs))
 			{
-				$column .= '<table class="importAttribs">';
+				$column .= '<dl class="importAttribs">';
 				reset($attribute_rs);
 				while(list($key,$attribute_val) = each($attribute_rs))
 				{
@@ -634,14 +634,15 @@ class ItemImportHandler
 		
 								$attribute_type_r['listing_link_ind'] = 'N';
 								
-								$column .= get_item_display_field(NULL, $attribute_type_r, $attribute_val);
+								$column .= '<dt>'.$attribute_type_r['prompt'].'</dt>';
+								$column .= '<dd>'.get_item_display_field(NULL, $attribute_type_r, $attribute_val, FALSE).'</dd>';
 
 								break;
 					        }
 					    }
         			}
 				}
-				$column .= '</table>';
+				$column .= '</dl>';
 			}
 			$this->_listingsObject->addColumn($column);
 		}

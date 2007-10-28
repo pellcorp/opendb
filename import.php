@@ -293,17 +293,14 @@ function get_import_options_table(&$importPlugin, $HTTP_VARS)
 	
 	if($importPlugin->get_plugin_type() == 'row' && $importPlugin->is_header_row())
 	{
-		$buffer .= "<li><label for=\"include_first_line_cbox\">".get_opendb_lang_var('include_first_line')."</label>".
-				"<input id=\"include_first_line_cbox\" type=checkbox name=\"include_header_row\" value=\"Y\"".(strcmp($HTTP_VARS['include_header_row'],'Y')===0?' CHECKED':'')."></li>";
+		$buffer .= "<input type=\"checkbox\" name=\"include_header_row\" value=\"Y\"".(strcmp($HTTP_VARS['include_header_row'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('include_first_line')."</li>";
 	}
 	
-	$buffer .= 	"<li><label for=\"ignore_duplicate_title_cbox\">".get_opendb_lang_var('ignore_duplicate_title')."</label>".
-				"<input id=\"ignore_duplicate_title_cbox\" type=checkbox name=\"ignore_duplicate_title\" value=\"Y\"".(strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0?' CHECKED':'')."></li>";
+	$buffer .= 	"<input type=\"checkbox\" name=\"ignore_duplicate_title\" value=\"Y\"".(strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('ignore_duplicate_title')."</li>";
 	
 	if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
 	{
-		$buffer .= "<li><label for=\"trial_run_cbox\">".get_opendb_lang_var('trial_run')."</label>".
-			"<input id=\"trial_run_cbox\" type=checkbox name=\"trial_run\" value=\"Y\" CHECKED></li>";
+		$buffer .= "<input type=checkbox name=\"trial_run\" value=\"Y\" CHECKED>".get_opendb_lang_var('trial_run')."</li>";
 	}
 	
 	$buffer .= "</ul>";
@@ -379,7 +376,7 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 		
 		if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
 		{
-	        $buffer .= "\n<input type=submit value=\"".get_opendb_lang_var('import_items')."\">";
+	        $buffer .= "\n<input type=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
 		}
 	}
 	else if($importPlugin->get_plugin_type() == 'xml')
@@ -401,6 +398,8 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 							$HTTP_VARS['s_status_type'])); // value
 							
 			$buffer .= format_field(get_opendb_lang_var('override_status_type'), NULL, "<input type=checkbox name=\"override_status_type\" value=\"Y\"".(strcmp($HTTP_VARS['override_status_type'],'Y')===0?' CHECKED':'').">");
+			
+			$buffer .= '</table>';
 		}
 		else if(db_num_rows($results)>0) // handle single status silently
 		{
@@ -408,11 +407,10 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 			$buffer .= "<input type=\"hidden\" name=\"s_status_type\" value=\"".$status_type_r['s_status_type']."\">";
 			db_free_result($results);
 		}			
-		$buffer .= '</table>';
 		
         if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
         {
-	        $buffer .= "<input type=submit value=\"".get_opendb_lang_var('import_items')."\">";
+	        $buffer .= "<input type=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
         }
 	}
 	
@@ -493,7 +491,6 @@ if(is_site_enabled())
 									if($inFile)
 									{
 										$fileHandler =& new WrapperFileHandler($inFile);
-										
 										
 										echo(get_uploaded_form(
 													$importPlugin, 

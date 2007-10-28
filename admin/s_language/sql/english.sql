@@ -184,7 +184,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'friday
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'from', 'From'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'fullname', 'Fullname'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'function', 'Function'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'general_facts', 'General Facts'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'general_stats', 'General Stats'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'guest', 'Guest'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'guest_usertype_description', 'This account type allows browsing of items only.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'help', 'Help'); 

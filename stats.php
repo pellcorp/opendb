@@ -258,18 +258,16 @@ if(is_site_enabled())
 			echo _theme_header(get_opendb_lang_var('statistics'));
 			echo("<h2>".get_opendb_lang_var('statistics')."</h2>");
 	
-			echo("<h3>".get_opendb_lang_var('general_facts')."</h3>");
-	
-			$num_users = fetch_user_cnt(get_owner_user_types_r());//only users who can own
-		
-			// This count should not include owner's items, where the owner has been DEACTIVATED.
-			$total_items = fetch_item_instance_cnt();
+			echo("<h3>".get_opendb_lang_var('general_stats')."</h3>");
 			
 			echo("<dl class=\"generalStats\">");
 			echo("<dt>".get_opendb_lang_var('owner(s)')."</dt>");
+			$num_users = fetch_user_cnt(get_owner_user_types_r());//only users who can own
 			echo("<dd>".$num_users."</dd>");
 			
 			echo("<dt>".get_opendb_lang_var('item(s)')."</dt>");
+			// This count should not include owner's items, where the owner has been DEACTIVATED.
+			$total_items = fetch_item_instance_cnt();
 			echo("<dd>".$total_items."</dd>");
 	
 			$avgrate = fetch_review_rating();

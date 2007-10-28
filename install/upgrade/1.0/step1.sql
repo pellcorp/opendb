@@ -289,3 +289,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password_msg', 'You must change your password.  Go to <a href="{change_password_link}">Change My Password</a>');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email', 'Change Admin User Email');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email_msg', 'You must change your email address.  Go to <a href="{edit_my_info_link}">Edit My Info</a>');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'general_stats', 'General Stats');
+DELETE FROM s_language_var WHERE varname = 'general_facts';

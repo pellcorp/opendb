@@ -18,5 +18,5 @@ table.installDirList td.data, table.userPrivilegesList td.data
 .installwarning
 {
 	font-size: 100%;
-	color: red;
+	font-weight: bold;
 }

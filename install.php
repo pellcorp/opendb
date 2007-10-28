@@ -892,7 +892,7 @@ function perform_upgrade_step($HTTP_VARS, $opendb_release_r, $latest_to_version 
 
 if(strlen($HTTP_VARS['step'])==0)
 {
-	echo install_header('OpenDb Installation', FALSE);
+	echo install_header('OpenDb Installation');
 	echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
 	
   	$next_step = 'pre-install';
@@ -928,7 +928,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
   	
 	if(!is_db_connected()) // database does not exist or cannot be connected to
 	{
-		echo install_header('OpenDb Installation', FALSE);
+		echo install_header('OpenDb Installation');
 		echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
 	
 		echo("<h2>Pre Installation</h2>");
@@ -1057,7 +1057,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 		// if the s_opendb_release table does not exist, we need to install it, and populate with
 		// a specific version record.
 			
-		echo install_header('OpenDb Installation', FALSE);
+		echo install_header('OpenDb Installation');
 		echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
 
 		echo("<h2>Pre Installation</h2>");
@@ -1149,7 +1149,7 @@ else
 { 
 	@set_time_limit(600);
 	
-	echo install_header('OpenDb Installation', FALSE);
+	echo install_header('OpenDb Installation');
 	echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
 	
 	$is_new_install = FALSE;
@@ -1221,7 +1221,7 @@ else
 				</ul>");
 			}
 			
-			echo("<p><a href=\"login.php\">Login to OpenDb</a></p>");
+			echo("<p><a href=\"index.php\">Login to OpenDb</a></p>");
 		}
 	}//database exists, and opendb release table has at least 1 record in it
 	echo install_footer();

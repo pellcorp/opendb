@@ -207,6 +207,8 @@ CREATE TABLE mailbox (
 PRIMARY KEY ( sequence_number )
 ) TYPE=MyISAM COMMENT = 'mailbox';
 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'advanced_search', 'Advanced Search');
+
 INSERT INTO s_title_display_mask ( id, description ) VALUES ( 'feeds', 'RSS Feeds' );
 
 INSERT INTO s_title_display_mask_item(stdm_id, s_item_type_group, s_item_type, display_mask)

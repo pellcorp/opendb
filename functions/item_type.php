@@ -22,6 +22,18 @@ include_once("./functions/database.php");
 include_once("./functions/logging.php");
 include_once("./functions/site_plugin.php");
 
+function is_exists_any_item_type()
+{
+	$query = "SELECT 'x' FROM s_item_type";
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 function is_exists_item_type($s_item_type)
 {
 	if(strlen($s_item_type)>0)

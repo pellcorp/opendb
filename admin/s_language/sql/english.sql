@@ -560,6 +560,11 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_item_help', 'Related items will not be cloned');
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password', 'Change Admin User Password'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password_msg', 'You must change your password.  Go to <a href="{change_password_link}">Change My Password</a>');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password_msg', 'You must change your password.');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email', 'Change Admin User Email');
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email_msg', 'You must change your email address.  Go to <a href="{edit_my_info_link}">Edit My Info</a>');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email_msg', 'You must change your email address.');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_item_types', 'No Item Types');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item_type_msg', 'There are no Item Types installed.');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_site_plugins', 'No Item Types');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_site_plugin_msg', 'There are no Site Plugins installed.');

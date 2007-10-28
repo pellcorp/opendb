@@ -102,6 +102,12 @@
 	font-size: 100%;
 }
 
+#announcements a.adminLink
+{
+	margin-top: 5px;
+	display: block;
+}
+
 #whatsnew
 {
 	float: right;

@@ -26,6 +26,18 @@ include_once("./functions/item_type_group.php");
 include_once("./functions/parseutils.php");
 include_once("./functions/TitleMask.class.php");
 
+function is_exists_any_site_plugin()
+{
+	$query = "SELECT 'x' FROM s_site_plugin";
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 function &get_site_plugin_instance($site_type)
 {
 	$site_plugin_classname = fetch_site_plugin_classname($site_type);

@@ -72,17 +72,28 @@ function get_announcements_block()
     // display activate users block
 	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 	{
-		// TODO - include in language vars
         // include a login warning if user password and email are still the defaults
-		if(get_opendb_session_var('user_id') == 'admin' && 
-					(fetch_user_email(get_opendb_session_var('user_id') ) == 'opendb@iamvegan.net' || 
-        			validate_user_passwd(get_opendb_session_var('user_id') , 'admin')))
-		{
-			$buffer .= "<li><h4>Change Admin User Password and Email address</h4>
-					<p class=\"content\">You must change your password and/or email address immediately.</p>
-					<p class=\"content\">Go to <a href=\"user_admin.php?op=edit&user_id=".get_opendb_session_var('user_id')."\">".get_opendb_lang_var('edit_my_info')."</a>
-					to change your email address and <a href=\"user_admin.php?op=change_password&user_id=".get_opendb_session_var('user_id')."\">".get_opendb_lang_var('change_my_password')."</a> to change your password.
-					</li>";
+		if(get_opendb_session_var('user_id') == 'admin')
+		{ 
+			if(validate_user_passwd(get_opendb_session_var('user_id') , 'admin'))
+			{
+				$buffer .= "<li><h4>".get_opendb_lang_var('change_admin_user_password')."</h4>
+					<p class=\"content\">".
+					get_opendb_lang_var('change_admin_user_password_msg',
+							'change_password_link',
+							"user_admin.php?op=change_password&user_id=".get_opendb_session_var('user_id')).
+					"</p>";
+			}
+		
+			if(fetch_user_email(get_opendb_session_var('user_id') ) == 'opendb@iamvegan.net') 
+			{	
+				$buffer .= "<li><h4>".get_opendb_lang_var('change_admin_user_email')."</h4>
+					<p class=\"content\">".
+					get_opendb_lang_var('change_admin_user_email_msg',
+							'edit_my_info_link',
+							"user_admin.php?op=edit&user_id=".get_opendb_session_var('user_id')).
+					"</p>";
+			}
 		}
 		
 	    // Display users awaiting activation message

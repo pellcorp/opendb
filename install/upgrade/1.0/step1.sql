@@ -282,5 +282,10 @@ UPDATE s_attribute_type SET input_type_arg3 = NULL WHERE input_type IN('checkbox
 UPDATE s_attribute_type SET input_type_arg2 = 'VERTICAL' WHERE input_type IN('checkbox_grid', 'radio_grid') AND (input_type_arg2 = '*' OR input_type_arg2 IS NULL OR input_type_arg2 <> '1');
 UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE input_type IN('checkbox_grid', 'radio_grid') AND input_type_arg2 <> 'VERTICAL';
 
-ratio should be horizontal - looks better
+# ratio should be horizontal - looks better
 UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE s_attribute_type = 'RATIO';
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password', 'Change Admin User Password'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password_msg', 'You must change your password.  Go to <a href="{change_password_link}">Change My Password</a>');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email', 'Change Admin User Email');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_email_msg', 'You must change your email address.  Go to <a href="{edit_my_info_link}">Edit My Info</a>');

@@ -2690,10 +2690,8 @@ function format_error_block($errors, $err_type = 'error')
 	$error_entries = NULL;
 	while(list(,$error) = each($error_rs))
 	{
-		//print_r($error);
 		if(is_not_empty_array($error))
 		{
-			//print_r($error);
 			$error_entry = $error['error'];
 		
 			if(!is_array($error['detail']) && strlen($error['detail'])>0)
@@ -2714,7 +2712,9 @@ function format_error_block($errors, $err_type = 'error')
 			}
 		}
 		else
+		{
 			$error_entry = $error;
+		}
 		
 		$error_entries[] = $error_entry;
 	}
@@ -2735,7 +2735,9 @@ function format_error_block($errors, $err_type = 'error')
 		return "\n<p class=\"$class\">".$error_entries[0]."</p>";
 	}
 	else
+	{
 		return NULL;
+	}
 }
 
 /**

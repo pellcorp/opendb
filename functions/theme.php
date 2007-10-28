@@ -147,13 +147,6 @@ $_OPENDB_THEME_CSS_MAP = array(
 	'item_review'=>array('item_input')
 );
 
-/**
- * Any additional CSS that should be included in addition to a css of the same name
- * 
- * Note that this map is not recursive, so if you have say borrow that needs
- * listings, and listings needs item display, borrow will not automatically get
- * item display included.
- */
 function _theme_css_map($pageid)
 {
 	global $_OPENDB_THEME_CSS_MAP;

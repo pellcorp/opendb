@@ -35,7 +35,7 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'ISBN', 30, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'PUBLISHER', 40, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'PUB_DATE', 50, NULL, 'N', 'N', 'Y', 'N' );
-INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'COVERPRICE', 60, NULL, 'Y', 'N', 'Y', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'COVERPRICE', 60, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'COMMENTS', 70, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'S_STATUS', 253, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BOOK', 'S_STATCMNT', 254, NULL, 'N', 'N', 'Y', 'N' );

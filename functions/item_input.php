@@ -472,6 +472,8 @@ function handle_item_instance_insert(&$item_r, $status_type_r, $HTTP_VARS, &$err
 					$item_r['borrow_duration'] = $borrow_duration;
 					$item_r['owner_id'] = $owner_id;
 
+   					copy_related_item_instance_relationships($item_r['item_id'], $item_r['instance_no']);
+    				
 				    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $_FILES, $errors);
 
 					return TRUE;
@@ -777,7 +779,6 @@ function handle_item_delete($item_r, $status_type_r, $HTTP_VARS, &$errors, $dele
 			
 			if(!is_exists_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']))
 			{
-				// item instance relationships will be removed in this step.
 				if(!delete_item_instance($item_r['item_id'], $item_r['instance_no']))
 				{
 					$db_error = db_error();

@@ -297,5 +297,5 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_item_types', 'No Item Types');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item_type_msg', 'There are no Item Types installed.');
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_site_plugins', 'No Item Types');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_site_plugins', 'No Site Plugins');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_site_plugin_msg', 'There are no Site Plugins installed.');

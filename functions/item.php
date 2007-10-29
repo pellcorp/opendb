@@ -317,7 +317,7 @@ define('RELATED_PARENTS_MODE', 'PARENTS');
  */
 function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $related_mode = RELATED_CHILDREN_MODE)
 {
-	$query = "SELECT ii.item_id, 
+	$query = "SELECT DISTINCT ii.item_id, 
 					ii.instance_no, 
 					i.title,
 					i.s_item_type 
@@ -1261,7 +1261,7 @@ function insert_item($s_item_type, $title)
 {
 	if(strlen($title)>0)
 	{
-		$title = addslashes(replace_newlines(trim($title)));
+		$title = addslashes(replace_newlines(trim(strip_tags($title))));
 		
 		$query = "INSERT INTO item (s_item_type, title)".				   
 				" VALUES ('$s_item_type', '$title')";
@@ -1286,21 +1286,12 @@ function insert_item($s_item_type, $title)
 	}		
 }
 
-/**
-	Update item - only called from update_item_instance from now on.
-
-	The only problem we have is that when an update of an item occurs, none of the item_instances
-	will reflect this.  So we cannot actually tell if an item has been updated.  But since we are
-	probably only interested in new items, that is alright.
-
-* 	@param $category - expects an array, which will be converted to a space delimited value.
-*/
 function update_item($item_id, $title)
 {
 	if(strlen($title)>0)
 	{
         $query = "UPDATE item ".
-				"SET title = '".addslashes(replace_newlines(trim($title)))."'".
+				"SET title = '".addslashes(replace_newlines(trim(strip_tags($title))))."'".
 				"WHERE id = '$item_id'";
 
 		$update = db_query($query);
@@ -1604,7 +1595,6 @@ function delete_item_instance($item_id, $instance_no)
 
 function insert_item_instance_relationships($item_id, $related_item_id, $related_instance_no)
 {
-	// do not lock tables for this bit!
 	$instance_no_r = NULL;
 	$results = fetch_item_instance_rs($item_id);
 	if($results)
@@ -1616,23 +1606,13 @@ function insert_item_instance_relationships($item_id, $related_item_id, $related
 		db_free_result($results);
 	}
 
-	if(db_query("LOCK TABLES item_instance WRITE, item_instance_relationship WRITE"))
+	// todo - should this be locked?!
+	if(is_array($instance_no_r))
 	{
-		if(is_array($instance_no_r))
+		while(list(,$instance_no) = each($instance_no_r))
 		{
-			while(list(,$instance_no) = each($instance_no_r))
-			{
-				insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_instance_no);
-			}
+			insert_item_instance_relationship($item_id, $instance_no, $related_item_id, $related_instance_no);
 		}
-		
-		db_query("UNLOCK TABLES");
-		return TRUE;
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $related_item_id, $related_instance_no));
-		return FALSE;
 	}
 }
 
@@ -1682,6 +1662,37 @@ function delete_item_instance_relationships($item_id, $instance_no = NULL)
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no));
 		return FALSE;
+	}
+}
+
+/**
+ * Take item_id and get DISTINCT list of related items, and copy for new instance.
+ *
+ * @param unknown_type $item_id
+ * @param unknown_type $instance_no
+ */
+function copy_related_item_instance_relationships($item_id, $instance_no)
+{
+	$item_instance_rs = NULL;
+	$results = fetch_item_instance_relationship_rs($item_id);
+	if($results)
+	{
+		while($item_instance_r = db_fetch_assoc($results))
+		{
+			if($item_instance_r['instance_no'] != $instance_no)
+			{
+				$item_instance_rs[] = $item_instance_r;
+			}
+		}
+		db_free_result($results);
+	}
+	
+	if(is_array($item_instance_rs))
+	{
+		while(list(,$item_instance_r) = each($item_instance_rs))
+		{
+			insert_item_instance_relationship($item_id, $instance_no, $item_instance_r['item_id'], $item_instance_r['instance_no']);
+		}
 	}
 }
 

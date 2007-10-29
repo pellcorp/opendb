@@ -1383,11 +1383,11 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
     	$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
     	if($return_val !== FALSE)
 		{
-			// ignore parent info if not supported.
 			if(get_opendb_config_var('item_input', 'related_item_support') !== FALSE)
 			{
-				// TODO - allow addition of related items per instance, with a parameter or similiar.
-				if(is_numeric($HTTP_VARS['parent_instance_no']) && 
+				// is this a add related item action - parent_item_id is the key here! 
+				if(is_numeric($HTTP_VARS['parent_item_id']) && 
+						is_numeric($HTTP_VARS['parent_instance_no']) && 
 						is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']))
 				{
 	    			insert_item_instance_relationships(

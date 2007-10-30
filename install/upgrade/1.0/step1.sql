@@ -302,3 +302,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_ne
 # use s_item_attribute_type attribute_id instead of order_no which should purely be for order!!!
 #ALTER TABLE s_item_attribute_type CHANGE order_no s_attribute_type_id TINYINT(3) UNSIGNED NOT NULL;
 #ALTER TABLE item_attribute CHANGE order_no s_attribute_type_id TINYINT(3) UNSIGNED NOT NULL;
+
+UPDATE s_language_var SET value = 'Status Comment' WHERE varname =  'status_comment' AND language = 'ENGLISH';
+UPDATE s_language_var SET value = 'Borrow Status' WHERE varname =  'borrow_status' AND language = 'ENGLISH';
+UPDATE s_language_var SET value = 'Due Date / Borrow Duration' WHERE varname =  'due_date_or_duration' AND language = 'ENGLISH';
+

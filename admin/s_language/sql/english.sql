@@ -67,7 +67,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_item_title_listing', '{display_title}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_not_supported', 'Borrow functionality is disabled.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_stats', 'Borrower Statistics'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_status', 'Borrow<br>Status'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_status', 'Borrow Status'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'browser_not_supported', 'Browser not supported'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'browser_not_supported_text', 'You are using a browser that is not supported.  Go download a more up to date browser to use this site!'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'browser_supported', 'Browser is supported'); 
@@ -148,7 +148,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'double
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'download_usagelog', 'Download Usagelog'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date', 'Due Date'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_detail', 'Due: {date}'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_or_duration', 'Due Date /<br>Borrow Duration'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_or_duration', 'Due Date / Borrow Duration'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_duration_detail', 'Duration: {borrow_duration} day(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'dumping_data_for_table', 'Dumping data for table \'{table}\''); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit', 'Edit'); 
@@ -431,7 +431,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'site_s
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'specify_datetime', 'Specify a date/time'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'statistics', 'Statistics'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'status', 'Status'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'status_comment', 'Status<br>Comment'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'status_comment', 'Status Comment'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'subject', 'Subject'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'submit', 'Submit'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'sunday', 'Sunday'); 

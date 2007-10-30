@@ -468,63 +468,6 @@ function delete_s_item_attribute_type($s_item_type, $s_attribute_type, $order_no
 	}
 }
 
-function update_item_attribute_order_no($s_item_type, $s_attribute_type, $old_order_no, $order_no)
-{
-	// have to use alias to lock table! -- http://dev.mysql.com/doc/mysql/en/LOCK_TABLES.html
-	if(db_query("LOCK TABLES item AS i WRITE, item_attribute AS ia WRITE, item_attribute WRITE"))
-	{
-		$results = db_query(
-					"SELECT DISTINCT ia.item_id ".
-					"FROM item i, item_attribute ia ".
-					"WHERE i.id = ia.item_id AND ".
-					"i.s_item_type = '$s_item_type' AND ".
-					"ia.s_attribute_type = '$s_attribute_type' AND ".
-					"ia.order_no = $old_order_no");
-					
-		if($results)
-		{
-			while($item_attribute_r = db_fetch_assoc($results))
-			{
-				$update = db_query(
-						"UPDATE item_attribute ".
-						"SET order_no = '$order_no' ".
-						"WHERE item_id = ".$item_attribute_r['item_id']." AND s_attribute_type = '$s_attribute_type' AND order_no = '$old_order_no'");
-		
-				// We should not treat updates that were not actually updated because value did not change as failures.
-				$rows_affected = db_affected_rows();
-				if($update && $rows_affected !== -1)
-				{
-					if($rows_affected>0)
-						opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_item_type, $s_attribute_type, $old_order_no, $order_no));
-				}
-				else
-				{
-                    db_query("UNLOCK TABLES");
-                    
-                    opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type, $s_attribute_type, $old_order_no, $order_no));
-					return FALSE;
-				}
-			}
-			db_free_result($results);
-			
-			db_query("UNLOCK TABLES");
-			return TRUE;
-		}
-		else
-		{
-            db_query("UNLOCK TABLES");
-            
-            opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type, $s_attribute_type, $old_order_no, $order_no));
-			return FALSE;
-		}
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type, $s_attribute_type, $old_order_no, $order_no));
-		return FALSE;
-	}
-}
-
 function delete_item_attribute_order_no($s_item_type, $s_attribute_type, $order_no)
 {
 	// have to use alias to lock table! -- http://dev.mysql.com/doc/mysql/en/LOCK_TABLES.html

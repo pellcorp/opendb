@@ -318,7 +318,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	$pageno = 1;
    	$count = 0;
    	
-   	echo('<div id="tab-content">');
+   	echo('<div id="tab-content"><div style="{text-align: right;}"><input type=submit value="Update"></div>');
 	for($i=0; $i<count($attribute_type_rows); $i++)
 	{
 		if($count == 20)
@@ -330,18 +330,17 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 		
 		if($count == 0)
 		{   
-			echo("<div style=\"{text-align: right;}\"><input type=submit value=\"Update\"></div>\n".
-						"<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">\n".
-				"<table>".
-				"<tr class=\"navbar\">"
-				."<th>Delete</th>"
-				."<th>Order</th>"
-				."<th>Value</th>"
-				."<th>Display</th>"
-				."<th colspan=2>Image</th>"
-				."<th>No<br />Image</th>"
-    			."<th>Checked</th>"
-				."</tr>");
+			echo("<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">
+				<table>
+				tr class=\"navbar\">
+				<th>Delete</th>
+				<th>Order</th>
+				<th>Value</th>
+				<th>Display</th>
+				<th colspan=2>Image</th>
+				<th>No<br />Image</th>
+    			<th>Checked</th>
+				</tr>");
 		}
 		
 		echo($attribute_type_rows[$i]);
@@ -521,7 +520,9 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 
 	echo get_input_field("listing_link_ind", NULL, "Listing Link Indicator", "checkbox(Y,N)", "N", ifempty($attribute_type_r['listing_link_ind'],$HTTP_VARS['listing_link_ind']));
 	
-    if(!$is_reserved_attribute_type && $attribute_type_r['s_field_type'] != 'ADDRESS' && $attribute_type_r['s_field_type'] != 'RATING')
+    if(!$is_reserved_attribute_type && 
+    		$attribute_type_r['s_field_type'] != 'ADDRESS' && 
+    		$attribute_type_r['s_field_type'] != 'RATING')
 	{
 		echo format_field("Field type",
 				NULL,

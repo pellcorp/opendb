@@ -30,7 +30,8 @@ $_FIELD_TYPES = array(
 		'DURATION'=>'Borrow Duration',
 		'ITEM_ID'=>'Item ID',
 		'IMAGE'=>'Cover Image',
-		'RATING'=>'System rating attribute'
+		'RATING'=>'System rating attribute',
+		'ADDRESS'=>'System address attribute'
 	);
 
 $argument_types = array(
@@ -471,19 +472,8 @@ function is_exists_addr_attribute_type_rltshp($s_address_type, $s_attribute_type
 */
 function fetch_user_attribute_type_rs($orderby = "s_attribute_type", $order = "asc")
 {
-	global $ADMIN_TYPE;
-	
 	$query = "SELECT s_attribute_type, description, prompt, input_type, display_type, s_field_type, site_type, lookup_attribute_ind, multi_attribute_ind FROM s_attribute_type ".
 			"WHERE s_attribute_type NOT LIKE 'S\_%'";
-	
-	if($ADMIN_TYPE == 's_address_attribute_type' || $ADMIN_TYPE == 's_address_attribute_type_lookup')
-	{
-		$query .= " AND s_field_type = 'ADDRESS'";
-	}
-	else
-	{
-		$query .= " AND (s_field_type IS NULL OR s_field_type <> 'ADDRESS')";
-	}
 	
 	$query .= " ORDER BY $orderby $order";
 	
@@ -499,20 +489,9 @@ function fetch_user_attribute_type_rs($orderby = "s_attribute_type", $order = "a
 */
 function fetch_attribute_type_rs($orderby = "s_attribute_type", $order = "asc")
 {
-	global $ADMIN_TYPE;
-	
-	$query = "SELECT s_attribute_type, description, prompt, s_field_type, site_type, lookup_attribute_ind, multi_attribute_ind FROM s_attribute_type ";
-	
-	if($ADMIN_TYPE == 's_address_attribute_type' || $ADMIN_TYPE == 's_address_attribute_type_lookup')
-	{
-		$query .= "WHERE s_field_type = 'ADDRESS'";
-	}
-	else
-	{
-		$query .= "WHERE (s_field_type IS NULL OR s_field_type <> 'ADDRESS')";
-	}
-	
-	$query .= "ORDER BY $orderby $order";
+	$query = "SELECT s_attribute_type, description, prompt, s_field_type, site_type, lookup_attribute_ind, multi_attribute_ind 
+			FROM s_attribute_type
+			ORDER BY $orderby $order";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

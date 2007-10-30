@@ -390,7 +390,6 @@ if(is_opendb_valid_session())
 			$results = fetch_status_type_rs();
 			if($results)
 			{
-				// value, display, img, checked_ind, order_no
 				$row = 0;
 				while($status_type_r = db_fetch_assoc($results))
 				{

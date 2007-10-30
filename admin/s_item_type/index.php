@@ -258,22 +258,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	if(is_not_empty_array($s_item_attribute_type_r))
 	{
 		echo("[");
-		if(!is_s_item_attribute_type_deletable($s_item_type, $s_item_attribute_type_r['s_attribute_type'], $s_item_attribute_type_r['order_no']))
-		{
-			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=change_order_no&s_item_type=".$s_item_type."&s_attribute_type=".$s_item_attribute_type_r['s_attribute_type']."&order_no=".$s_item_attribute_type_r['order_no']."\">Change Order No.</a> / ");				
-		}
-		
-		// if instance attribute set, but there are item attributes with a instance_no of zero, provide a warning
-		/*if($s_item_attribute_type_r['instance_attribute_ind'] == "Y")
-		{
-			if(is_exists_non_instance_item_attributes($s_item_type, $s_item_attribute_type_r['s_attribute_type'], $s_item_attribute_type_r['order_no']))
-			{
-				echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=resolve_instance_attribs&s_item_type=".$s_item_type."&s_attribute_type=".$s_item_attribute_type_r['s_attribute_type']."&order_no=".$s_item_attribute_type_r['order_no']."\">Resolve Instance Attributes</a>&nbsp;/&nbsp;");
-			}
-		}*/
-		
 		echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_item_type=".$s_item_type."&s_attribute_type=".$s_item_attribute_type_r['s_attribute_type']."&order_no=".$s_item_attribute_type_r['order_no']."\">Delete</a>");
-
 		echo("]");
 	}
 	echo("</td>");
@@ -631,78 +616,6 @@ if (is_opendb_valid_session())
 					{
 						$errors[] = array('error'=>'Item Type ('.$HTTP_VARS['s_item_type'][$i].') not found.', 'detail'=>'');
 					}							
-				}
-			}
-		}
-		else if($HTTP_VARS['op'] == 'change_order_no')
-		{
-			$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
-			if($item_type_r!==FALSE)
-			{
-				$attribute_type_r = fetch_s_attribute_type_r($HTTP_VARS['s_attribute_type']);
-				if($attribute_type_r!==FALSE)
-				{
-					if($HTTP_VARS['confirmed'] == 'false')
-					{
-						// return to edit form
-						$HTTP_VARS['op'] = 'edit';
-					}
-					else if($HTTP_VARS['confirmed'] != 'true')
-					{
-						// Get the theme specific source of the image.
-						echo("\n<h3>");
-						if(strlen($item_type_r['image'])>0)
-						{
-							$src = _theme_image_src($item_type_r['image']);
-							if($src!==FALSE && strlen($src)>0)
-								echo("<img src=\"$src\">&nbsp;");
-						}
-					
-						echo "Change Item Attribute Type Order No</h3>";
-					
-						if(!is_s_item_attribute_type_deletable($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['order_no']))
-						{
-							echo("<p class=\"error\">Dependant items attribute exist for the \"".$HTTP_VARS['s_attribute_type']."[".$HTTP_VARS['order_no']."]\" Item Attribute Type - these will be updated to reflect this change!</p>");
-						}
-						
-						echo("<form action=\"$PHP_SELF\" method=\"GET\">".
-							get_url_fields($HTTP_VARS, array('confirmed'=>'false'), array('s_attribute_type', 'order_no', 'old_order_no')));
-							
-						echo("<table>");
-						echo get_input_field("s_attribute_type", NULL, "Attribute Type", "readonly", "Y", $HTTP_VARS['s_attribute_type']);
-						echo get_input_field("old_order_no", NULL, "Old Order No", "readonly", "Y", $HTTP_VARS['order_no']);
-						echo get_input_field("order_no", NULL, "New Order No", "number(3)", "Y", $HTTP_VARS['order_no']);
-						echo("</table>");
-				
-						echo("\n<input type=\"button\" value=\"Submit\" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\"> ".
-							"\n<input type=\"button\" value=\"Cancel\" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">".
-						"</form>\n");
-					}
-					else // $HTTP_VARS['confirmed'] == 'true'
-					{
-						if(is_s_item_attribute_type_with_order_no($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['old_order_no']))
-						{
-							if(!is_s_item_attribute_type_with_order_no($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['order_no']))
-							{
-								if(update_item_attribute_order_no($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['old_order_no'], $HTTP_VARS['order_no']))
-								{
-									if(!update_s_item_attribute_type_order_no($HTTP_VARS['s_item_type'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['old_order_no'], $HTTP_VARS['order_no']))
-										$errors[] = array('error'=>'Item Attribute Type "'.$HTTP_VARS['s_attribute_type'].'['.$HTTP_VARS['old_order_no'].']" order_no not updated.','detail'=>db_error());
-								}
-								else
-								{
-									$errors[] = array('error'=>'Item Attribute "'.$HTTP_VARS['s_attribute_type'].'['.$HTTP_VARS['old_order_no'].']" order_no\'s not updated.','detail'=>db_error());
-								}
-							}
-							else
-							{
-								$errors[] = array('error'=>'Item Attribute Type "'.$HTTP_VARS['s_attribute_type'].'['.$HTTP_VARS['old_order_no'].']" order_no not updated.','detail'=>'Item attribute Type with new order_no exists');
-							}
-						}// do nothing here
-						
-						// return to edit form
-						$HTTP_VARS['op'] = 'edit';
-					}
 				}
 			}
 		}

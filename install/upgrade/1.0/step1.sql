@@ -286,7 +286,6 @@ UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE input_type IN('checkbox
 
 # ratio should be horizontal - looks better
 UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE s_attribute_type = 'RATIO';
-
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'general_stats', 'General Stats');
 DELETE FROM s_language_var WHERE varname = 'general_facts';
 
@@ -299,3 +298,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_ite
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item_type_msg', 'There are no Item Types installed.');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_site_plugins', 'No Site Plugins');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_site_plugin_msg', 'There are no Site Plugins installed.');
+
+# use s_item_attribute_type attribute_id instead of order_no which should purely be for order!!!
+#ALTER TABLE s_item_attribute_type CHANGE order_no s_attribute_type_id TINYINT(3) UNSIGNED NOT NULL;
+#ALTER TABLE item_attribute CHANGE order_no s_attribute_type_id TINYINT(3) UNSIGNED NOT NULL;

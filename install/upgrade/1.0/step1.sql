@@ -307,3 +307,7 @@ UPDATE s_language_var SET value = 'Status Comment' WHERE varname =  'status_comm
 UPDATE s_language_var SET value = 'Borrow Status' WHERE varname =  'borrow_status' AND language = 'ENGLISH';
 UPDATE s_language_var SET value = 'Due Date / Borrow Duration' WHERE varname =  'due_date_or_duration' AND language = 'ENGLISH';
 
+UPDATE s_language_var SET value = 'There are {no_of_users} user(s) awaiting activation.' WHERE varname =  'there_are_no_of_users_awaiting_activation' AND language = 'ENGLISH';
+
+DELETE FROM s_language_var WHERE language = 'ENGLISH' and varname = 'activate_user_list'; 
+

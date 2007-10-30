@@ -70,6 +70,16 @@ function get_admin_announcements_rs()
 {
 	$announcements_rs = array();
 	
+	$user_cnt = fetch_user_cnt(NULL, 'X', TRUE);
+	if($user_cnt>0)
+	{
+		$announcements_rs[] = array(
+		heading=>get_opendb_lang_var('activate_users'),
+		message=>get_opendb_lang_var('there_are_no_of_users_awaiting_activation', array('no_of_users'=>$user_cnt)),
+		link=>"user_listing.php?restrict_active_ind=X",
+		link_text=>get_opendb_lang_var('activate_users'));
+	}
+	
 	if(validate_user_passwd(get_opendb_session_var('user_id') , 'admin'))
 	{
 		$announcements_rs[] = array(
@@ -107,7 +117,7 @@ function get_admin_announcements_rs()
 			link=>"admin.php?type=s_site_plugin",
 			link_text=>$admin_type_r['link'].' Admin Tool');
 	}
-	
+        
 	return $announcements_rs;
 }
 
@@ -132,15 +142,6 @@ function get_announcements_block()
 					"</a></p>";
 			}
 		}
-		
-	    // Display users awaiting activation message
-	    $user_cnt = fetch_user_cnt(NULL, 'X', TRUE);
-	    if($user_cnt>0)
-	    {
-			$buffer .= "<li><h4>".get_opendb_lang_var('activate_users')."</h4>".
-				"<p class=\"content\">".get_opendb_lang_var('there_are_no_of_users_awaiting_activation', array('no_of_users'=>$user_cnt, 'activate_url'=>'user_listing.php?restrict_active_ind=X')).
-				"</p></li>";
-        }
 	}
 
     if(get_opendb_config_var('login.announcements', 'enable')!==FALSE)

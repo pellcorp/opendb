@@ -10,7 +10,6 @@ INSERT INTO s_language (language, description, default_ind) VALUES ('ENGLISH', '
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'action', 'Action'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'activate_user', 'Activate User'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'activate_users', 'Activate Users'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'activate_user_list', 'Activate Users'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add', 'Add'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_item', 'Add Item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item', 'Add New Item'); 
@@ -449,7 +448,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_stat
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_not_supported', '{s_status_type_desc} item support is disabled'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_status_comments_not_supported', 'Status Comments not supported for {s_status_type_desc} items'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'table', 'Table(s)'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'there_are_no_of_users_awaiting_activation', 'There are {no_of_users} user(s) awaiting activation.  You can <a href=\"{activate_url}\">activate</a> them now.'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'there_are_no_of_users_awaiting_activation', 'There are {no_of_users} user(s) awaiting activation.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'thursday', 'Thursday'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'thursday_abbrev', 'Thu'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'title', 'Title'); 

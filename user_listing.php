@@ -40,7 +40,7 @@ if(is_site_enabled())
 		    if(strlen($HTTP_VARS['override_page_title'])>0)
 		        $page_title = $HTTP_VARS['override_page_title'];
 			else if($HTTP_VARS['restrict_active_ind'] == 'X')
-			    $page_title = get_opendb_lang_var('activate_user_list');
+			    $page_title = get_opendb_lang_var('activate_users');
 			else
 				$page_title = get_opendb_lang_var('user_list');
 

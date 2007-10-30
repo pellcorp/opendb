@@ -143,7 +143,7 @@ function get_menu_options($user_id, $user_type)
 		{
 			if(is_exist_users_not_activated())
 		    {
-		    	$menu_options['admin'][] = array(link=>get_opendb_lang_var('activate_user_list'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
+		    	$menu_options['admin'][] = array(link=>get_opendb_lang_var('activate_users'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
 			}
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('user_list'), url=>"user_listing.php?order_by=fullname&sortorder=ASC");
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('add_new_user'), url=>"user_admin.php?op=new_user");

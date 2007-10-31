@@ -122,4 +122,6 @@ ul.actionButtons
 ul.configSaveButtons
 {
 	float: right;
+	margin: 0px;
+	padding: 0px;
 }

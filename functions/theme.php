@@ -142,7 +142,7 @@ $_OPENDB_THEME_CSS_MAP = array(
 	'import'=>array('listings', 'item_display', 'item_input'),
 	'item_display'=>array('listings'),
 	'user_listing'=>array('listings'),
-	'admin'=>array('listings'),
+	'admin'=>array('listings', 'item_input'),
 	'search'=>array('item_review', 'item_input'),
 	'item_review'=>array('item_input')
 );

@@ -63,13 +63,13 @@ function display_site_plugin_conf_row($record_r, $row)
 	
 	if(is_not_empty_array($record_r))
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
 		echo("<td class=\"data\">".get_input_field("name[$row]", NULL, "Name", "readonly", "Y", $record_r['name'], FALSE)."</td>");
 		echo("<td class=\"data\">".get_input_field("keyid[$row]", NULL, "Key ID", "readonly", "Y", $record_r['keyid'], FALSE)."</td>");
 	}
 	else
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"N\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">");
 		echo("<td class=\"data\">".get_input_field("name[$row]", NULL, "Name", "text(20,50)", "Y", $record_r['name'], FALSE)."</td>");
 		echo("<td class=\"data\">".get_input_field("keyid[$row]", NULL, "Key ID", "text(10,50)", "Y", $record_r['keyid'], FALSE)."</td>");
 	}
@@ -96,12 +96,12 @@ function display_site_plugin_link_row($record_r, $row)
 	
 	if(is_not_empty_array($record_r))
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">");
-		echo("<input type=hidden name=\"sequence_number[$row]\" value=\"".$record_r['sequence_number']."\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
+		echo("<input type=\"hidden\" name=\"sequence_number[$row]\" value=\"".$record_r['sequence_number']."\">");
 	}
 	else
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"N\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">");
 	}
 	
 	echo("<td class=\"data\">".get_input_field("order_no[$row]", NULL, "Order No", "number(3)", "Y", $record_r['order_no'], FALSE)."</td>");
@@ -117,7 +117,7 @@ function display_site_plugin_link_row($record_r, $row)
 		db_free_result($results);
 	}
 	
-	echo ("\n<td class=\"data\" align=center>".format_field(NULL, NULL, custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, is_array($record_r)?$record_r['s_item_type_group']:'*', 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\" align=\"center\">".format_field(NULL, NULL, custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, is_array($record_r)?$record_r['s_item_type_group']:'*', 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}"), FALSE)."</td>");
 
 	$item_types[] = '*';
 	$results = fetch_item_type_rs();
@@ -129,7 +129,7 @@ function display_site_plugin_link_row($record_r, $row)
 		}
 		db_free_result($results);
 	}
-	echo ("\n<td class=\"data\" align=center>".format_field(NULL, NULL, custom_select("s_item_type[$row]", $item_types, "%value%", 1, is_array($record_r)?$record_r['s_item_type']:NULL, 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\" align=\"center\">".format_field(NULL, NULL, custom_select("s_item_type[$row]", $item_types, "%value%", 1, is_array($record_r)?$record_r['s_item_type']:NULL, 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}"), FALSE)."</td>");
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(20,255)", 'N', $record_r['description'], FALSE)."</td>");
 	echo("<td class=\"data\">".get_input_field("url[$row]", NULL, "URL", "text(20,255)", 'N', $record_r['url'], FALSE)."</td>");
@@ -154,13 +154,13 @@ function display_site_plugin_input_field_row($record_r, $row)
 	
 	if(is_not_empty_array($record_r))
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
 		echo("<td class=\"data\">".get_input_field("order_no[$row]", NULL, "Order No", "number(3)", "Y", $record_r['order_no'], FALSE)."</td>");
 		echo("<td class=\"data\">".get_input_field("field[$row]", NULL, "Field Name", "readonly", "Y", $record_r['field'], FALSE)."</td>");
 	}
 	else
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"N\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">");
 		echo("<td class=\"data\">".get_input_field("order_no[$row]", NULL, "Order No", "number(3)", "Y", NULL, FALSE)."</td>");
 		echo("<td class=\"data\">".get_input_field("field[$row]", NULL, "Field Name", "text(10,20)", "Y", NULL, FALSE)."</td>");
 	}
@@ -190,13 +190,13 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	
 	if(is_not_empty_array($record_r))
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">");
-		echo("<input type=hidden name=\"sequence_number[$row]\" value=\"".$record_r['sequence_number']."\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
+		echo("<input type=\"hidden\" name=\"sequence_number[$row]\" value=\"".$record_r['sequence_number']."\">");
 		echo("<td class=\"data\">".get_input_field("variable[$row]", NULL, "Variable", "readonly", "Y", $record_r['variable'], FALSE)."</td>");
 	}
 	else
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"N\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">");
 		echo("<td class=\"data\">".get_input_field("variable[$row]", NULL, "Variable", "text(10,20)", "Y", NULL, FALSE)."</td>");
 	}
 
@@ -215,7 +215,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	if(!in_array($record_r['s_item_type_group'], $item_type_groups))
 		$item_type_groups[] = $record_r['s_item_type_group'];
 		
-	echo ("\n<td class=\"data\" align=center>".format_field(NULL, NULL, custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, $record_r['s_item_type_group'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\" align=\"center\">".format_field(NULL, NULL, custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, $record_r['s_item_type_group'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}"), FALSE)."</td>");
 
 	$item_types[] = '*';		
 	$results = fetch_item_type_rs();
@@ -232,7 +232,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	if(!in_array($record_r['s_item_type'], $item_types))
 		$item_types[] = $record_r['s_item_type'];
 		
-	echo ("\n<td class=\"data\" align=center>".format_field(NULL, NULL, custom_select("s_item_type[$row]", $item_types, "%value%", 1, $record_r['s_item_type'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\" align=\"center\">".format_field(NULL, NULL, custom_select("s_item_type[$row]", $item_types, "%value%", 1, $record_r['s_item_type'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}"), FALSE)."</td>");
 	
 	$attribute_types[] = '';
 	$results = fetch_item_type_s_attribute_type_rs();
@@ -252,7 +252,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_attribute_type[$row]", $attribute_types, "%value%", 1, $record_r['s_attribute_type']), FALSE)."</td>");
 	
 	if(is_array($record_r) && is_lookup_attribute_type($record_r['s_attribute_type']))
-		echo("<td class=\"data\" align=center><input type=\"checkbox\" name=\"lookup_attribute_val_restrict_ind[$row]\" value=\"Y\"".(strtoupper($record_r['lookup_attribute_val_restrict_ind'])== 'Y'?'CHECKED':'').">");
+		echo("<td class=\"data\" align=\"center\"><input type=\"checkbox\" class=\"checkbox\" name=\"lookup_attribute_val_restrict_ind[$row]\" value=\"Y\"".(strtoupper($record_r['lookup_attribute_val_restrict_ind'])== 'Y'?'CHECKED':'').">");
 	else
 	    echo("\n<td class=\"data\">&nbsp;</td>");
 	    
@@ -300,8 +300,8 @@ function display_site_plugin_s_attribute_type_lookup_map_row($record_r, $row)
 	
 	if(is_not_empty_array($record_r))
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">");
-		echo("<input type=hidden name=\"sequence_number[$row]\" value=\"".$record_r['sequence_number']."\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
+		echo("<input type=\"hidden\" name=\"sequence_number[$row]\" value=\"".$record_r['sequence_number']."\">");
 		echo("<td class=\"data\">".get_input_field("s_attribute_type[$row]", NULL, "Attribute Type", "readonly", "Y", $record_r['s_attribute_type'], FALSE)."</td>");
 		echo("<td class=\"data\">".get_input_field("value[$row]", NULL, "Site Value", "readonly", "Y", $record_r['value'], FALSE)."</td>");
 		
@@ -310,7 +310,7 @@ function display_site_plugin_s_attribute_type_lookup_map_row($record_r, $row)
 	}
 	else
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"N\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">");
 		$attribute_types[] = '';
 		$results = fetch_lookup_s_attribute_type_rs();
 		if($results)
@@ -354,12 +354,10 @@ function display_edit_table($edit_op, $update_op, $headers, $display_functioname
 	echo get_url_fields($context_http_vars, NULL, array('op', 'type'));
 	
 	echo "<table>";
-	$column_count = 0;
 	echo "\n<tr class=\"navbar\">";
 	for($i=0; $i<count($headers); $i++)
 	{
-		echo  "\n<th>".$headers[$i]."</th>";
-		$column_count++;
+		echo "\n<th>".$headers[$i]."</th>";
 	}
 	echo "\n</tr>";
 	
@@ -392,8 +390,8 @@ function display_edit_table($edit_op, $update_op, $headers, $display_functioname
 	
 	echo get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();");
 	
-	echo "<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='$edit_op'; this.form.submit();\">";
-	echo "<input type=button value=\"Update\" onclick=\"this.form['op'].value='$update_op'; this.form.submit();\">";
+	echo "<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='$edit_op'; this.form.submit();\">";
+	echo "<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='$update_op'; this.form.submit();\">";
 	
 	echo "</form>";
 	
@@ -1240,7 +1238,7 @@ if (is_opendb_valid_session())
 					<th></th>
 					<th>Include</th>
 					</tr>");
-					echo("<tr><td><select name=\"from_item_types\" size=15 MULTIPLE>");
+					echo("<tr><td><select name=\"from_item_types\" size=\"15\" MULTIPLE>");
 					echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
 					for($i=0; $i<count($not_exists_item_type_rs); $i++)
 					{
@@ -1249,15 +1247,15 @@ if (is_opendb_valid_session())
 					echo("</select></td>");
 					
 					echo("<td>");
-					echo("<input type=button value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">".
-						"<input type=button value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">");
+					echo("<input type=\"button\" class=\"button\" value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">".
+						"<input type=\"button\" class=\"button\" value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">");
 						
-					echo("<input type=button value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">".
-						"<input type=button value=\"<<\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">");
+					echo("<input type=\"button\" class=\"button\" value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">".
+						"<input type=\"button\" class=\"button\" value=\"<<\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">");
 						
 					echo("</td>");
 					
-					echo("<td><select name=\"to_item_types\" size=15 MULTIPLE>");
+					echo("<td><select name=\"to_item_types\" size=\"15\" MULTIPLE>");
                     echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
 					for($i=0; $i<count($exists_item_type_rs); $i++)
 					{
@@ -1268,16 +1266,16 @@ if (is_opendb_valid_session())
 					
 					for($i=0; $i<count($not_exists_item_type_rs); $i++)
 					{
-						echo("\n<input type=hidden name=\"s_item_type[".$not_exists_item_type_rs[$i]['s_item_type']."]\" value=\"exclude\">");
+						echo("\n<input type=\"hidden\" name=\"s_item_type[".$not_exists_item_type_rs[$i]['s_item_type']."]\" value=\"exclude\">");
 					}
 					
 					for($i=0; $i<count($exists_item_type_rs); $i++)
 					{
-						echo("\n<input type=hidden name=\"s_item_type[".$exists_item_type_rs[$i]['s_item_type']."]\" value=\"include\">");
+						echo("\n<input type=\"hidden\" name=\"s_item_type[".$exists_item_type_rs[$i]['s_item_type']."]\" value=\"include\">");
 					}
 					
-					echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
-					echo("\n<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_site_plugin_item_types'; this.form.submit();\">");
+					echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
+					echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_site_plugin_item_types'; this.form.submit();\">");
 	
 					echo("</form>");
 					
@@ -1448,9 +1446,9 @@ if (is_opendb_valid_session())
 				}
 					
 				if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-					echo("\n<input type=button value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.op.value='update_site_plugin'; this.form.submit();}\">");
+					echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.op.value='update_site_plugin'; this.form.submit();}\">");
 				else
-					echo("\n<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugin'; this.form.submit();\">");
+					echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form.op.value='update_site_plugin'; this.form.submit();\">");
 	
 				echo("\n</form>");
 				
@@ -1484,9 +1482,9 @@ if (is_opendb_valid_session())
 			}
 					
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
-				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
 
 			echo("\n</form>");
 		}
@@ -1647,7 +1645,7 @@ if (is_opendb_valid_session())
 								}
 								
 								echo("\n<h4>Listing <code>./admin/s_site_plugin/upload/</code> directory</h4>");
-								echo("\n<table border=0 width=50%>");
+								echo("\n<table>");
 								echo("\n<tr class=\"navbar\">"
 									."<th>CSV File</th>"
 									."<th>Row Range</th>"
@@ -1671,9 +1669,9 @@ if (is_opendb_valid_session())
 											"\n<input type=\"hidden\" name=\"import_file\" value=\"".$file."\">");
 										
 										echo("\n<tr>");	
-										echo("\n<td class=\"$color\" align=center width=50%>".$file."</td>");
-										echo("\n<td class=\"$color\"><input class=\"$color\" type=\"text\" name=\"range\" value=\"0-\" onChange=\"this.value=legalCharFilter(this.value, '0123456789-');\"></td>");
-										echo("<td class=\"$color\" align=center><input type=submit value=\"Import\"></td></tr>");
+										echo("\n<td class=\"$color\">".$file."</td>");
+										echo("\n<td class=\"$color\"><input text=\"text\" class=\"text\" name=\"range\" value=\"0-\" onChange=\"this.value=legalCharFilter(this.value, '0123456789-');\"></td>");
+										echo("<td class=\"$color\"><input type=\"submit\" class=\"submit\" value=\"Import\"></td></tr>");
 										
 										echo("\n</form>");
 										
@@ -1726,14 +1724,6 @@ if (is_opendb_valid_session())
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 			
-			echo("<table>");
-				echo("<tr class=\"navbar\">"
-					."<th>Order</th>"
-					."<th>Site</th>"
-					."<th>Title</th>"
-					."<th colspan=3></th>"
-					."</tr>");
-					
 			$results = fetch_site_plugin_rs();
 			if($results)
 			{
@@ -1741,15 +1731,23 @@ if (is_opendb_valid_session())
 				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 				echo("\n<input type=\"hidden\" name=\"op\" value=\"new_site_plugin\">");
 				echo("\n<input type=\"hidden\" name=\"site_type\" value=\"\">");
-				
+
+				echo("<table>");
+				echo("<tr class=\"navbar\">"
+					."<th>Order</th>"
+					."<th>Site</th>"
+					."<th>Title</th>"
+					."<th colspan=3></th>"
+					."</tr>");
+					
 				$row = 0;
 				while($site_plugin_r = db_fetch_assoc($results))
 				{
 					$href = "<a href=\"admin.php?type=$ADMIN_TYPE&op=edit&site_type=".$site_plugin_r['site_type']."\">";
 					
 					echo("<tr>");
-					echo("\n<td class=\"data\" align=center>".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $site_plugin_r['order_no'], FALSE)."</td>");
-					echo("<td class=\"data\" align=center>".$site_plugin_r['site_type']."<input type=hidden name=\"site_type[$row]\" value=\"".$site_plugin_r['site_type']."\"></td>");
+					echo("\n<td class=\"data\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $site_plugin_r['order_no'], FALSE)."</td>");
+					echo("<td class=\"data\" align=\"center\">".$site_plugin_r['site_type']."<input type=\"hidden\" name=\"site_type[$row]\" value=\"".$site_plugin_r['site_type']."\"></td>");
 					echo("<td class=\"data\">".$site_plugin_r['title']."</td>");
 					
 					echo("<td class=\"data\" nowrap>");
@@ -1781,16 +1779,15 @@ if (is_opendb_valid_session())
 				
 				echo("</table>");
 				
-				echo("<input type=button value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
-				"<input type=button value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
+				"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">");
 				
 				echo("</form>");
 				
 			}//if($results)
 			else
 			{
-				echo("</table>");
-				echo("<div class=\"error\">No Site Plugins Installed</div>");
+				echo("<p class=\"error\">No Site Plugins Installed</p>");
 			}
 			
 			function is_not_exists_site_plugin($type)

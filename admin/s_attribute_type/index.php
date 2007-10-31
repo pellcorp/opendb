@@ -318,7 +318,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	$pageno = 1;
    	$count = 0;
    	
-   	echo('<div id="tab-content"><div style="{text-align: right;}"><input type=submit value="Update"></div>');
+   	echo('<div id="tab-content"><div style="{text-align: right;}"><input type=\"submit\" class=\"submit\" value="Update"></div>');
 	for($i=0; $i<count($attribute_type_rows); $i++)
 	{
 		if($count == 20)
@@ -357,9 +357,9 @@ function get_s_attribute_type_row($attribute_type_r, $row)
 
 	$block = "\n<tr>";
 
-	$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['s_attribute_type']."</td>";
-	$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['description']."</td>";
-	$block .= "\n<td class=\"data\" align=center>".$attribute_type_r['s_field_type']."</td>";
+	$block .= "\n<td class=\"data\" align=\"center\">".$attribute_type_r['s_attribute_type']."</td>";
+	$block .= "\n<td class=\"data\" align=\"center\">".$attribute_type_r['description']."</td>";
+	$block .= "\n<td class=\"data\" align=\"center\">".$attribute_type_r['s_field_type']."</td>";
 
 	$block .= "\n<td class=\"data\">[";
 	$block .= " <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit</a>";
@@ -377,26 +377,26 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 {
 	$block = "<tr>";
 	
-	$block .= "<td class=\"data\" align=center>";
+	$block .= "<td class=\"data\" align=\"center\">";
 	if(is_not_empty_array($lookup_r))
 		$block .= get_input_field("delete_ind[$row]", NULL, NULL, "simple_checkbox()", "N", "Y", FALSE);
 	else
 		$block .= "&nbsp;";
 	$block .= "</td>";
 	
-	$block .= "<td class=\"data\" align=center>".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $lookup_r['order_no'], FALSE)."</td>";
+	$block .= "<td class=\"data\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $lookup_r['order_no'], FALSE)."</td>";
 
 	// value
 	if(is_not_empty_array($lookup_r))
 	{
 		$block .= "<td class=\"data\">".get_input_field("value[$row]", NULL, "Value", "readonly", "Y", $lookup_r['value'], FALSE).
-			"<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">".
+			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 			"</td>";
 	}
 	else // Limit value to 50 characters, because this is really as large as they should get!
 	{
 		$block .= "<td class=\"data\">".get_input_field("value[$row]", NULL, "Value", "text(10,50)", "Y", NULL, FALSE).
-			"<input type=hidden name=\"exists_ind[$row]\" value=\"N\">".
+			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">".
 			"</td>";
 	}
 
@@ -407,7 +407,7 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 	if($lookup_r['img'] != 'none')
 		$src = _theme_image_src($lookup_r['img']);
 
-	$block .= "<td class=\"data\" align=center>";
+	$block .= "<td class=\"data\" align=\"center\">";
 	if($src!==FALSE && strlen($src)>0)
 		$block .= "<img src=\"$src\">";
 	else
@@ -415,8 +415,8 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 	$block .= "</td>";
 
 	$block .= "<td class=\"data\">".get_input_field("img[$row]", NULL, "Image", "url(15,*,\"gif,jpg,png\",N)", "N", $lookup_r['img']!="none"?$lookup_r['img']:NULL, FALSE, NULL, "if(this.value.length>0){this.form['none_img[$row]'].checked=false;}")."</td>";
-	$block .= "<td class=\"data\" align=center>".get_input_field("none_img[$row]", NULL, NULL, "simple_checkbox(".($lookup_r['img'] == "none"?"CHECKED":"").")", "N", "Y", FALSE, NULL, "if(this.checked){this.form['img[$row]'].value='';}")."</td>";
-	$block .= "<td class=\"data\" align=center><input type=\"checkbox\" name=\"checked_ind[{$row}]\" value=\"Y\" onclick=\"toggleChecked(this, 'checked_ind')\" ".(strtoupper($lookup_r['checked_ind'])== 'Y'?'CHECKED':'').">";
+	$block .= "<td class=\"data\" align=\"center\">".get_input_field("none_img[$row]", NULL, NULL, "simple_checkbox(".($lookup_r['img'] == "none"?"CHECKED":"").")", "N", "Y", FALSE, NULL, "if(this.checked){this.form['img[$row]'].value='';}")."</td>";
+	$block .= "<td class=\"data\" align=\"center\"><input type=\"checkbox\" class=\"checkbox\" name=\"checked_ind[{$row}]\" value=\"Y\" onclick=\"toggleChecked(this, 'checked_ind')\" ".(strtoupper($lookup_r['checked_ind'])== 'Y'?'CHECKED':'').">";
 
 	$block .= "</tr>";
 	
@@ -614,7 +614,7 @@ function build_attribute_ind_type_widget($attribute_ind_type)
 	$field = '';
 	while(list($key,$value) = each($options))
 	{
-		$field .= "<input type=\"radio\" name=\"attribute_ind_type\" value=\"$key\" onClick=\"populateInputSelect(this.form['input_type'], '$key');\"";
+		$field .= "<input type=\"radio\" class=\"radio\" name=\"attribute_ind_type\" value=\"$key\" onClick=\"populateInputSelect(this.form['input_type'], '$key');\"";
 		if($key == $attribute_ind_type)
 			$field .= ' CHECKED';
 				
@@ -1020,9 +1020,9 @@ if(is_opendb_valid_session())
 			}
 			
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=button value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
-				echo("\n<input type=button value=\"$save_button\" onclick=\"this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"this.form.submit();\">");
 			
 			echo("\n</form>");
 		}

@@ -143,26 +143,19 @@ if (is_opendb_valid_session())
 			echo("<h3>Which tables should be backed up?</h3>");
 			
 			echo("<form method=\"POST\" action=\"$PHP_SELF\">"
-				."<input type=hidden name=\"type\" value=\"$ADMIN_TYPE\">"
-				."<input type=hidden name=\"op\" value=\"export\">"
-				."<input type=hidden name=\"mode\" value=\"job\">");
+				."<input type=\"hidden\" name=\"type\" value=\"$ADMIN_TYPE\">"
+				."<input type=\"hidden\" name=\"op\" value=\"export\">"
+				."<input type=\"hidden\" name=\"mode\" value=\"job\">");
 			
-			echo("<table>\n<tr>");
-			$count=0;
+			echo("<ul class=\"checkboxGridOptionsVertical\">");
 
-               $opendb_tables_r = fetch_opendb_table_list_r();
+            $opendb_tables_r = fetch_opendb_table_list_r();
 			while(list(,$table) = each( $opendb_tables_r ))
 			{
 				// the cache tables cannot be backed up as they might contain
 				// binary data, which we don't yet support.
 				if(!ends_with($table, '_cache'))
 				{
-					if($count>=2)
-					{
-						echo("\n</tr>\n<tr>");
-						$count=0;
-					}
-
                     $checked = FALSE;
 					if(strcasecmp(substr($table,0,2),'s_')!==0 &&
 								$table != 'import_cache' &&
@@ -172,30 +165,21 @@ if (is_opendb_valid_session())
 						$checked = TRUE;
 					}
 
-					echo("<td><input type=checkbox name=\"tables[]\" value=\"$table\" ".($checked?"CHECKED":"").">$table</td>");
+					echo("<li><input type=\"checkbox\" class=\"checkbox\" name=\"tables[]\" value=\"$table\" ".($checked?"CHECKED":"").">$table</li>");
 					
 					$count++;
 				}
 			}
 			
-			if($count>0 && $count < 2) // $count == 1 would have been easier, but might change to 3 columns, so logic is easier to maintain
-			{
-				for($i=$count; $i<2; $i++)
-				{
-					echo("<td>&nbsp;</td>");
-				}					
-			}
-			
-			echo("</tr>");
-			echo("</table>");
+			echo("</ul>");
 			
 			echo("<ul class=\"actionButtons\">".
-				"<li><input type=button value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\"></li>".
-				"<li><input type=button value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\"></li>".
-				"<li><input type=reset value=\"".get_opendb_lang_var('reset')."\"></li>".
+				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\"></li>".
+				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\"></li>".
+				"<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
 				"</ul>");
 
-			echo("<input type=\"submit\" value=\"".get_opendb_lang_var('backup_database')."\">
+			echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('backup_database')."\">
 				</form>");
 		}
 	}

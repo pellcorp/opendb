@@ -119,7 +119,7 @@ function getToggleControl($PHP_SELF, $HTTP_VARS, $text, $fieldname, $value)
 	$buffer .= "<form class=\"toggleControl\" id=\"toggle-$fieldname\" action=\"".$PHP_SELF."\" method=\"GET\">".
 				get_url_fields($HTTP_VARS, NULL, array($fieldname, 'listing_link')).
 				"<input type=\"hidden\" name=\"$fieldname\" value=\"$value\">".
-				"<label for=\"toggle-$fieldname-cbox\">".$text."</label><input id=\"toggle-$fieldname-cbox\" type=checkbox name=\"${fieldname}_cbox\" value=\"Y\" onclick=\"if(this.checked){this.form['${fieldname}'].value='Y';}else{this.form['${fieldname}'].value='N';} this.form.submit()\"".(strcasecmp($value, 'Y')===0?" CHECKED":"").">".
+				"<label for=\"toggle-$fieldname-cbox\">".$text."</label><input type=\"checkbox\" class=\"checkbox\" id=\"toggle-$fieldname-cbox\" name=\"${fieldname}_cbox\" value=\"Y\" onclick=\"if(this.checked){this.form['${fieldname}'].value='Y';}else{this.form['${fieldname}'].value='N';} this.form.submit()\"".(strcasecmp($value, 'Y')===0?" CHECKED":"").">".
 				"</form>";
 	return $buffer;
 }

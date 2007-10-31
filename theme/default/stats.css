@@ -21,6 +21,7 @@ dl.generalStats
 {
 	width: 30%;
 	float: left;
+	margin-top: 0px;
 }
 
 dl.generalStats dt
@@ -30,6 +31,7 @@ dl.generalStats dt
 	font-weight: bold;
 	width: 60%;
 	white-space: nowrap;
+	
 }
 
 table.itemStats td

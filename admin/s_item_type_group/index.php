@@ -21,7 +21,6 @@
 include_once("./functions/item_type.php");
 include_once("./functions/item_type_group.php");
 
-
 function display_s_item_type_group_row($item_type_group_r, $row)
 {
 	global $PHP_SELF;
@@ -31,8 +30,8 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 
 	if(is_not_empty_array($item_type_group_r))
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">");
-        echo("<td class=\"data\" align=center>");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
+        echo("<td class=\"data\" align=\"center\">");
 		echo(get_input_field("s_item_type_group[$row]", NULL, "Item Type Group", "readonly", "Y", $item_type_group_r['s_item_type_group'], FALSE));
    		if(fetch_item_type_item_type_group_cnt($item_type_group_r['s_item_type_group'])===0)
 			echo("*");
@@ -40,18 +39,18 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 	}		
 	else
 	{
-		echo("<input type=hidden name=\"exists_ind[$row]\" value=\"N\">");
+		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">");
 		echo ("\n<td class=\"data\">".get_input_field("s_item_type_group[$row]", NULL, "Item Type Group", "text(10,10)", "Y", NULL, FALSE)."</td>");
 	}
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(30,255)", 'Y', $item_type_group_r['description'], FALSE)."</td>");
-	echo("<td class=\"data\">".get_input_field("system_ind[$row]", NULL, "System Indicator", "value_radio_grid('Y,N')", 'Y', $item_type_group_r['system_ind'], FALSE)."</td>");
+	echo("<td class=\"data\">".get_input_field("system_ind[$row]", NULL, "System Indicator", "checkbox(Y,N)", 'Y', $item_type_group_r['system_ind'], FALSE)."</td>");
 
-	echo("\n<td class=\"data\">&nbsp;");	
+	echo("\n<td class=\"data\">");	
 	if(is_not_empty_array($item_type_group_r))
 	{
-		echo("[&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_item_type_group_rltshps&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Edit</a>".
-			"&nbsp;/&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete_item_type_group&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Delete</a>&nbsp;]");
+		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_item_type_group_rltshps&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Edit</a>".
+			" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete_item_type_group&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Delete</a> ]");
 	}
 	echo("\n</td>");
 	echo("</tr>");
@@ -205,13 +204,13 @@ if (is_opendb_valid_session())
 				echo("</table>");
 				
 				echo(format_help_block(
-						array('If System Indicator = \'Y\' item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
-						'If System Indicator = \'N\' item types can be treated as groups for item listings filters only.')));
+						array('If System Indicator is checked item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
+						'If System Indicator is not checked item types can be treated as groups for item listings filters only.')));
 						
 				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();"));
 				
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
-				echo("<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_item_type_groups'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_item_type_groups'; this.form.submit();\">");
 		
 				echo("</form>");
 		}
@@ -221,55 +220,34 @@ if (is_opendb_valid_session())
 			if(is_not_empty_array($item_type_group_r))
 			{
 				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Main</a>]</div>");
+				
 				echo("\n<h3>Edit ".$HTTP_VARS['s_item_type_group']." Item Type Group Relationships</h3>");
 				
 				if(is_not_empty_array($errors))
 					echo format_error_block($errors);
 				
-				echo("\n<form name=\"editform\" action=\"$PHP_SELF\" method=\"POST\">");
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-				echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
-				
-				echo("<table>");
 				$results = fetch_s_item_type_join_sitgr_rs($HTTP_VARS['s_item_type_group']);
 				if($results)
 				{
-					$count = 0;
+					echo("\n<form name=\"editform\" action=\"$PHP_SELF\" method=\"POST\">");
+					echo("\n<input type=\"hidden\" name=\"op\" value=\"update_item_type_group_rltshps\">");
+					echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+					echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
+				
+					echo("<ul class=\"itemTypes\">");
 					while($item_type_r = db_fetch_assoc($results))
 					{
-						if($count == 0)
-							echo("\n<tr>");
-
-						echo("<td class=\"data\" align=center valign=center nowrap>".
-                            "<input type=\"checkbox\" name=\"s_item_type[]\" value=\"".$item_type_r['s_item_type']."\"".($item_type_r['exists_ind']=='Y'?'CHECKED':'').">".
+						echo("<li>".
+                            "<input type=\"checkbox\" class=\"checkbox\" name=\"s_item_type[]\" value=\"".$item_type_r['s_item_type']."\"".($item_type_r['exists_ind']=='Y'?'CHECKED':'').">".
 							$item_type_r['s_item_type'].
-							"</td>");
-
-                        $count ++;
-						if($count == 4)
-						{
-                            echo("\n</tr>");
-                            $count = 0;
-						}
+							"</li>");
 					}
 					db_free_result($results);
+					echo("</ul>");
+					
+					echo("<input type=\"submit\" class=\"submit\" value=\"Update\">");
+					echo("</form>");
 				}
-
-				if($count > 0)
-				{
-            	    for($i=$count; $i<4; $i++)
-					{
-						echo("<td class=\"data\">&nbsp;</td>");
-					}
-                    echo("\n</tr>");
-				}
-				echo("</table>");
-				
-				echo("<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_item_type_group_rltshps'; this.form.submit();\">");
-		
-				echo("</form>");
-				
 			}
 		}
 	}

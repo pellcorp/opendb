@@ -723,7 +723,7 @@ function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value
 		$onchange = "onchange=\"$onchange_event\"";
 	}
 	
-	return "\n<input type=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -751,12 +751,12 @@ function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_
 	{
 		for($i=0; $i<count($value); $i++)
 		{
-			$buffer .= "\n<li><input type=\"input\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value[$i]."\"></li>";
+			$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value[$i]."\"></li>";
 		}
 	}
 	else
 	{
-		$buffer .= "\n<li><input type=\"input\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"\"></li>";
+		$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"\"></li>";
 	}
 	
 	$buffer .= "</ul>";
@@ -785,7 +785,7 @@ function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $v
 	else
 		$onchange = "onchange=\"$onchange_event\"";
 
-	return "\n<input type=\"password\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"password\" class=\"password\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -804,7 +804,7 @@ function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $valu
 	else
 		$onchange = "onchange=\"$onchange_event\"";
 	
-	return "\n<input type=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -834,7 +834,7 @@ function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $co
 	else
 		$onchange = "onchange=\"$onchange_event\"";
 		
-	return "\n<input type=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -859,7 +859,7 @@ function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $val
 	else
 		$onchange = "onchange=\"$onchange_event\"";
 
-	return "\n<input type=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -914,7 +914,7 @@ function datetime_field($fieldname, $prompt, $format_mask, $auto_datetime, $comp
 			$datetime = '';
 		}
 	}
-	return "\n<input type=text name=\"".$fieldname."\" value=\"".$datetime."\" ".$onchange."".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"text\" class=\"text\" name=\"".$fieldname."\" value=\"".$datetime."\" ".$onchange."".($disabled?' DISABLED':'').">";
 }
 
 /*
@@ -946,7 +946,7 @@ function checkbox_field($name, $prompt, $checked, $value, $onclick_event=NULL, $
 	else
 		$onchange = "onchange=\"$onclick_event\"";
 
-	return "\n<input type=\"checkbox\" name=\"$name\" value=\"$value\" $onclick ".($checked?"CHECKED":"")."".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"checkbox\" class=\"checkbox\" name=\"$name\" value=\"$value\" $onclick ".($checked?"CHECKED":"")."".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -970,8 +970,8 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 	else
 		$onchange = "onchange=\"$onclick_event\"";
 
-	return "\n<input type=hidden name=\"$name\" value=\"".($is_checked?$checked_value:$unchecked_value)."\">"
-			."\n\t<input type=checkbox name=\"".$name."_cbox\" onclick=\"if (this.checked){this.form['$name'].value='$checked_value';}else{this.form['$name'].value='$unchecked_value';}\" $onclick ".($is_checked?"CHECKED":"")."".($disabled?' DISABLED':'').">";
+	return "\n<input type=\"hidden\" name=\"$name\" value=\"".($is_checked?$checked_value:$unchecked_value)."\">"
+			."\n\t<input type=\"checkbox\" class=\"checkbox\" name=\"".$name."_cbox\" onclick=\"if (this.checked){this.form['$name'].value='$checked_value';}else{this.form['$name'].value='$unchecked_value';}\" $onclick ".($is_checked?"CHECKED":"")."".($disabled?' DISABLED':'').">";
 }
 
 /**
@@ -1024,9 +1024,9 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		$field .= "<div class=\"urlOptionsContainer\" id=\"${name}-tab-content\">";
 
 		$field .= "<div class=\"fieldContent\" id=\"${name}_saveurl\">";
-		$field .= "<input type=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
+		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
 		// here we are testing for either absolute URL or else at least 1 / which indicates a pre 1.0 cached image - in the upload/ directory for example.
-		$field .= "<input type=button onclick=\"if(this.form['$name'].value.length>0){if(isUrlAbsolute(this.form['$name'].value) || this.form['$name'].value.indexOf('/')!=-1){popup('url.php?url='+escape(this.form['$name'].value),'400','300');}else{popup('url.php?url='+escape('".$fileUploadPrefix."'+this.form['$name'].value),'400','300');}}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
+		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){if(isUrlAbsolute(this.form['$name'].value) || this.form['$name'].value.indexOf('/')!=-1){popup('url.php?url='+escape(this.form['$name'].value),'400','300');}else{popup('url.php?url='+escape('".$fileUploadPrefix."'+this.form['$name'].value),'400','300');}}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
 		$field .= "</div>";
 
 		if(is_file_upload_enabled())
@@ -1037,7 +1037,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 				$size = 50;
 	
 			$field .= "<div class=\"fieldContentHidden\" id=\"${name}_upload\">";
-			$field .= "<input type=\"FILE\" name=\"${name}_upload\" $onchange size=\"".$size."\"".($disabled?' DISABLED':'').">";
+			$field .= "<input type=\"file\" class=\"file\" name=\"${name}_upload\" $onchange size=\"".$size."\"".($disabled?' DISABLED':'').">";
 			$field .= "</div>";
 		}
 	
@@ -1045,7 +1045,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 	}
 	else
 	{
-		$field .= "<input type=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
+		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
 	}
 	return $field;
 }
@@ -1062,11 +1062,11 @@ function value_radio_grid($name, $lookup_rs, $value, $disabled = FALSE)
 	{	
 		if((strlen($value)>0 && strcasecmp(trim($value), $val)===0) || (strlen($value)==0 && !$is_checked))
 		{
-			$field .= "\n<li><input type=\"radio\" name=\"$name\" value=\"$val\" CHECKED".($disabled?' DISABLED':'').">$val</li>";
+			$field .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"$val\" CHECKED".($disabled?' DISABLED':'').">$val</li>";
 			$is_checked=TRUE;
 		}
 		else
-			$field .= "\n<li><input type=\"radio\" name=\"$name\" value=\"$val\"".($disabled?' DISABLED':'').">$val</li>";
+			$field .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"$val\"".($disabled?' DISABLED':'').">$val</li>";
 	}
 
 	$field .= "</ul>";
@@ -1106,18 +1106,18 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 		$field .= "<li>";
 		
 		if($value===NULL && $lookup_r['checked_ind']=='Y')
-			$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
+			$field .= "\n<input type=\"radio\" class=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
 		else
 		{
 			// Case insensitive!
 			if($value!==NULL && strcasecmp($value, $lookup_r['value'])===0)
 			{
 				$value_found=TRUE;
-				$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
+				$field .= "\n<input type=\"radio\" class=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\" CHECKED".($disabled?' DISABLED':'').">";
 			}
 			else
 			{
-				$field .= "\n<input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($disabled?' DISABLED':'').">";
+				$field .= "\n<input type=\"radio\" class=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($disabled?' DISABLED':'').">";
 			}
 		}
 
@@ -1180,7 +1180,7 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 	
 	while(list(,$lookup_r) = each($lookup_val_r))
 	{
-		$buffer .= "\n<li><input type=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
+		$buffer .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
 				format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."</li>";
 	}
 	
@@ -1237,7 +1237,7 @@ function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $dis
 	
 	while(list(,$lookup_r) = each($lookup_val_r))	
 	{
-		$buffer .= "<li><input type=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
+		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
 				format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."</li>";
 	}
 
@@ -1559,7 +1559,7 @@ function custom_select(
 	if($size !== 'NA')
 	{
 		if(is_numeric($size) && $size>1)
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" multiple size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
+			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'')." MULTIPLE>";
 		else
 			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
 	}
@@ -2405,11 +2405,11 @@ function get_op_confirm_form($PHP_SELF, $confirm_message, $HTTP_VARS)
 		get_url_fields($HTTP_VARS, NULL, array('confirmed')). // Pass all http variables
 		"<fieldset>".
 		"<label for=\"confirm_yes\">".get_opendb_lang_var('yes')."</label>".
-		"<input type=\"radio\" name=\"confirmed\" value=\"true\">".
+		"<input type=\"radio\" class=\"radio\" name=\"confirmed\" id=\"confirm_yes\" value=\"true\">".
 		"<label for=\"confirm_no\">".get_opendb_lang_var('no')."</label>".
-		"<input id=\"confirm_no\" type=\"radio\" name=\"confirmed\" value=\"false\" CHECKED>".
+		"<input type=\"radio\" class=\"radio\" name=\"confirmed\" id=\"confirm_no\" value=\"false\" CHECKED>".
 		"</fieldset>".
-		"<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">".
+		"<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">".
 	"</form>\n";
 
 	return $formContents;

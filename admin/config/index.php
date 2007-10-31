@@ -126,7 +126,7 @@ function get_group_block_input_field($config_group_item_r, $value)
 				case 'number':
 					$element_name = $config_group_item_r['group_id']."[".$config_group_item_r['id']."][]";
 
-					$buffer .= "<select name=\"".$element_name."\" MULTIPLE size=5>\n";
+					$buffer .= "<select name=\"".$element_name."\" MULTIPLE size=\"5\">\n";
 
 					if(is_array($value))
 					{
@@ -139,9 +139,9 @@ function get_group_block_input_field($config_group_item_r, $value)
 		            $buffer .= "</select>";
 					
 		            $buffer .= "<ul class=\"actionButtons\">";
-                    $buffer .= "<li><input type=button value=\"Edit\" onClick=\"updateSelectedOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\"></li>";
-					$buffer .= "<li><input type=button value=\"Add\" onClick=\"addSelectOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\"></li>";
-		            $buffer .= "<li><input type=button value=\"Delete\" onClick=\"removeSelectedOption(this.form['".$element_name."']);\"></li>";
+                    $buffer .= "<li><input type=\"button\" class=\"button\" value=\"Edit\" onClick=\"updateSelectedOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\"></li>";
+					$buffer .= "<li><input type=\"button\" class=\"button\" value=\"Add\" onClick=\"addSelectOption(this.form['".$element_name."'], '".$config_group_item_r['prompt']."', '".$config_group_item_r['subtype']."');\"></li>";
+		            $buffer .= "<li><input type=\"button\" class=\"button\" value=\"Delete\" onClick=\"removeSelectedOption(this.form['".$element_name."']);\"></li>";
 		             $buffer .= "</ul>";
 		             
 		            break;
@@ -167,8 +167,8 @@ function get_group_block($config_group_r)
 			"<input type=\"hidden\" name=\"op\" value=\"\">".
 			"<input type=\"hidden\" name=\"group_id\" value=\"".$config_group_r['id']."\">";
 			
-	$buffer .= "<div style=\"{text-align: right;}\"><input type=submit value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">
-			<input type=submit value=\"Save\" onclick=\"this.form['op'].value='save'; this.form.submit();\"></div>\n";
+	$buffer .= "<div style=\"{text-align: right;}\"><input type=\"submit\" class=\"submit\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">
+			<input type=\"submit\" class=\"submit\" value=\"Save\" onclick=\"this.form['op'].value='save'; this.form.submit();\"></div>\n";
 	
 	$buffer .= "<h3 nowrap>".$config_group_r['name']."</h3>\n";
 	
@@ -177,7 +177,7 @@ function get_group_block($config_group_r)
 		$buffer .= $config_group_r['description'];
 	}
 
-	$buffer .= "<table style=\"{margin-top: 5px;}\">";
+	$buffer .= "<table>";
     $results = fetch_s_config_group_item_rs($config_group_r['id']);
 	if($results)
 	{
@@ -211,7 +211,7 @@ function get_group_block($config_group_r)
 				$buffer .= $config_subgroup_r['description'];
 			}
 			
-            $buffer .= "<table style=\"{margin-top: 5px;}\">";
+            $buffer .= "<table>";
 			
             $results2 = fetch_s_config_group_item_rs($config_subgroup_r['id']);
 			if($results2)

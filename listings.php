@@ -144,14 +144,14 @@ function getListingFiltersBlock()
 		if($HTTP_VARS['owner_id'] != get_opendb_session_var('user_id'))
 		{
 			$buffer .= "<li><label for=\"exclude-current-user\">".get_opendb_lang_var('exclude_current_user')."</label>".
-				"<input id=\"exclude-current-user\" type=\"checkbox\" name=\"not_owner_id\" value=\"".get_opendb_session_var('user_id')."\"".($HTTP_VARS['not_owner_id']==get_opendb_session_var('user_id')?' CHECKED':'')."></li>";
+				"<input type=\"checkbox\" class=\"checkbox\" id=\"exclude-current-user\" name=\"not_owner_id\" value=\"".get_opendb_session_var('user_id')."\"".($HTTP_VARS['not_owner_id']==get_opendb_session_var('user_id')?' CHECKED':'')."></li>";
 				
 			$excluded_vars_list[] = 'not_owner_id';
 		}
 		
 		$buffer .= "</ul>";
 		$buffer .= get_url_fields($HTTP_VARS, NULL, $excluded_vars_list);
-		$buffer .= "<input type=\"submit\" value=\"".get_opendb_lang_var('search')."\">";
+		$buffer .= "<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('search')."\">";
 		$buffer .= "</form>";
 		$buffer .= "</div>";
 		$buffer .= "</div>";

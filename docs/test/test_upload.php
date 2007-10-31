@@ -62,8 +62,8 @@ else
 	echo("\n<h1>Upload</h1>");
 	echo("\n<form name=\"main\" action=\"".$_SERVER['PHP_SELF']."\" method=\"POST\" enctype=\"multipart/form-data\">");
 	echo("\n<input type=\"hidden\" name=\"op\" value=\"upload\">");
-	echo("<input type=file size=25 name=\"uploadfile\">");
-	echo("\n<input type=submit value=\"Upload\">");
+	echo("<input type=\"file\" class=\"file\" size=\"25\" name=\"uploadfile\">");
+	echo("\n<input type=\"submit\" class=\"submit\" value=\"Upload\">");
 	echo("\n</form>");
 }
 ?>

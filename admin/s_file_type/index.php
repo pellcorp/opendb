@@ -29,13 +29,13 @@ function display_s_file_type_row($file_type_r, $row)
 	if(is_not_empty_array($file_type_r))
 	{
 		echo("\n<td align=\"center\" class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "readonly", "N", $file_type_r['content_type'], FALSE).
-			"<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">".
+			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 			"</td>");
 	}
 	else
 	{
 		echo("\n<td align=\"center\" class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "text(20,100)", "Y", $file_type_r['content_type'], FALSE).
-			"<input type=hidden name=\"exists_ind[$row]\" value=\"N\">".
+			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">".
 			"</td>");
 	}
 	
@@ -69,7 +69,7 @@ function display_s_file_type_row($file_type_r, $row)
 	// convert array of extensiosn to a string
 	echo("\n<td class=\"data\">".get_input_field("alt_extensions[$row]", NULL, "Alternate Extensions", "text(20,255)", "N", $alt_extensions, FALSE)."</td>");
 	
-	echo("<td class=\"data\" align=center>");
+	echo("<td class=\"data\" align=\"center\">");
 	// Get the theme specific source of the image.
 	if(strlen($file_type_r['image'])>0)
 	{
@@ -218,8 +218,8 @@ if(is_opendb_valid_session())
 			echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)",  
 								"N", $blank_rows, FALSE, NULL, "this.form.submit();"));
 			
-			echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">".
-				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
+			echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">".
+				"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 
 			echo("</form>");
 		}

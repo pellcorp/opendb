@@ -50,7 +50,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 			//"<input type=\"hidden\" name=\"attr_match\" value=\"partial\">".
 			//"<input type=\"text\" name=\"attribute_val\" size=\"10\">".
 			"<input type=\"hidden\" name=\"title_match\" value=\"partial\">".
-			"<input type=\"text\" name=\"title\" size=\"10\">".
+			"<input type=\"text\" class=\"text\" name=\"title\" size=\"10\">".
 			"</form></li>");
 
 		echo("<li><a href=\"search.php\">".get_opendb_lang_var('advanced')."</a></li>");

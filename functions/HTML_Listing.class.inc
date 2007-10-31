@@ -178,7 +178,7 @@ class HTML_Listing extends Listing
 			
 			if($this->_header_column_rs[$i]['type'] == 'checkbox')
 			{
-				 $this->_write("<input type=\"checkbox\" onclick=\"doChecks(this.checked, this.form, '".$header_column_rs[$i]['fieldname']."[]');return true;\">");			
+				 $this->_write("<input type=\"checkbox\" class=\"checkbox\" onclick=\"doChecks(this.checked, this.form, '".$header_column_rs[$i]['fieldname']."[]');return true;\">");			
 			}
 			else if($this->_header_column_rs[$i]['sortcolumn'] !== FALSE)
 			{
@@ -428,7 +428,7 @@ class HTML_Listing extends Listing
 				case 'checkbox':
 					$this->_write('<td class="checkbox">');
 					$value = $row_column_rs[$i]['value'];
-					$this->_write('<input type="checkbox" name="'.$this->_header_column_rs[$i]['fieldname'].'[]" value="'.$value.'">');
+					$this->_write('<input type="checkbox" class="checkbox" name="'.$this->_header_column_rs[$i]['fieldname'].'[]" value="'.$value.'">');
 					$this->_write('</td>');
 					break;
 						

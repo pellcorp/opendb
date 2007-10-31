@@ -115,7 +115,7 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 	else
 		$onclick_event = "this.form.submit();";
 					
-	$buffer .= "<input type=\"button\" onclick=\"$onclick_event\" value=\"Save\">";
+	$buffer .= "<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"Save\">";
 
 	$buffer .= "\n</form>";
 
@@ -188,10 +188,10 @@ if (is_opendb_valid_session())
 		
 		if($HTTP_VARS['op'] == 'list')
 		{
+			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Announcement</a> ]");
+			
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
-
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Announcement</a> ]");
 				
 			$result = fetch_announcement_rs('A', NULL, NULL); 
 			if($result)
@@ -224,7 +224,7 @@ if (is_opendb_valid_session())
 			} //if($result)
 			else
 			{
-                echo("\n<p class=\"error\">".get_opendb_lang_var('no_records_found')."</p>");
+                echo("\n<p class=\"error\">No Announcements Found</p>");
 			}
 		}
 		else if($HTTP_VARS['op'] == 'new') //display new announcement form.

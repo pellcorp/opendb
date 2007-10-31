@@ -97,7 +97,7 @@ function display_borrower_form($HTTP_VARS)
 	}
 	echo("</table>");
 		
-	echo("<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
+	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("</form>");
 }
 
@@ -366,7 +366,7 @@ if(is_site_enabled())
 						echo get_item_input_field('alt_item_id', $attribute_type_r, NULL);
 						echo("\n</table>");
 							
-						echo("<input type=submit value=\"".get_opendb_lang_var('add_item')."\">");
+						echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('add_item')."\">");
 								
 						$HTTP_VARS['checkout_item_instance_rs'] = get_encoded_item_instance_rs($altid_item_instance_rs);
 						echo(get_url_fields(NULL, array('checkout_item_instance_rs'=>$HTTP_VARS['checkout_item_instance_rs'])));
@@ -375,14 +375,14 @@ if(is_site_enabled())
 						{
 							if($HTTP_VARS['op'] == 'checkout')
 							{
-								echo("<input type=button onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'quick_check_out')\" value=\"".get_opendb_lang_var('check_out_item(s)')."\">");
+								echo("<input type=\"button\" class=\"button\" onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'quick_check_out')\" value=\"".get_opendb_lang_var('check_out_item(s)')."\">");
 							}
 							else
 							{
 								$HTTP_VARS['sequence_number'] = get_borrowed_item_sequence_number_r($altid_item_instance_rs);
 								echo(get_url_fields(NULL, array('sequence_number'=>$HTTP_VARS['sequence_number'])));
 						
-								echo("<input type=button onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'check_in')\" value=\"".get_opendb_lang_var('check_in_item(s)')."\">");
+								echo("<input type=\"button\" class=\"button\" onclick=\"doFormSubmit(this.form, 'item_borrow.php', 'check_in')\" value=\"".get_opendb_lang_var('check_in_item(s)')."\">");
 							}
 							
 						}

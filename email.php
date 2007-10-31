@@ -164,7 +164,7 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 		echo format_help_block($help_block_r);
 	}
 	
-	echo("<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
+	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("\n</form>");
 	
 }

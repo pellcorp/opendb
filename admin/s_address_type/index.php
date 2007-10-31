@@ -90,11 +90,11 @@ function display_s_address_type_row($address_type_r, $row)
 	echo("\n<tr>");
 	
 	// order_no
-	echo("\n<td class=\"data\" align=center>".get_input_field("display_order[$row]", NULL, NULL, "number(3)", "N", $address_type_r['display_order'], FALSE)."</td>");
+	echo("\n<td class=\"data\" align=\"center\">".get_input_field("display_order[$row]", NULL, NULL, "number(3)", "N", $address_type_r['display_order'], FALSE)."</td>");
 	
 	// s_address_type
 	echo("\n<td class=\"data\">".get_input_field("s_address_type[$row]", NULL, NULL, "readonly", "Y", $address_type_r['s_address_type'], FALSE).
-		"<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">".
+		"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 		"</td>");
 	
 	//description
@@ -106,7 +106,7 @@ function display_s_address_type_row($address_type_r, $row)
 	echo ("\n<td class=\"data\">".custom_select("compulsory_for_user_type[$row]", array_merge(array(array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, ifempty($address_type_r['compulsory_for_user_type'],$HTTP_VARS['compulsory_for_user_type']))."</td>");
 	
 	if(is_array($address_type_r))
-		echo ("\n<td class=\"data\" align=center>".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($address_type_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
+		echo ("\n<td class=\"data\" align=\"center\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($address_type_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
 			
 	echo("\n<td class=\"data\" nowrap>");
 	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_address_type=".$address_type_r['s_address_type']."\">Edit</a>");
@@ -130,7 +130,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 		$class = "data";
 		
 	// Delete ind
-	echo("<td class=\"$class\" align=center>");
+	echo("<td class=\"$class\" align=\"center\">");
 	if(!$exists_error_ind && is_not_empty_array($s_addr_attribute_type_rltshp_r) && is_s_addr_attribute_type_rltshp_deletable($s_address_type, $s_addr_attribute_type_rltshp_r['s_attribute_type'], $s_addr_attribute_type_rltshp_r['order_no']))
 		echo get_input_field("delete_ind[$row]", NULL, NULL, "simple_checkbox()", "N", "Y", FALSE);
 	else
@@ -141,12 +141,12 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	if(is_not_empty_array($s_addr_attribute_type_rltshp_r) && $exists_error_ind==FALSE)
 	{
 		// order_no
-		echo("<td class=\"$class\" align=center>".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "Y", $s_addr_attribute_type_rltshp_r['order_no'], FALSE).
-			"<input type=hidden name=\"old_order_no[$row]\" value=\"".$s_addr_attribute_type_rltshp_r['order_no']."\">".
+		echo("<td class=\"$class\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "Y", $s_addr_attribute_type_rltshp_r['order_no'], FALSE).
+			"<input type=\"hidden\" name=\"old_order_no[$row]\" value=\"".$s_addr_attribute_type_rltshp_r['order_no']."\">".
 			"</td>");
 		
 		echo("\n<td class=\"$class\">".get_input_field("s_attribute_type[$row]", NULL, NULL, "readonly", "Y", $s_addr_attribute_type_rltshp_r['s_attribute_type'], FALSE).
-			"<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">".
+			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 			"</td>");
 		
 		echo("<td class=\"$class\"><a href=\"#\" onmouseover=\"return show_sat_tooltip('".$s_addr_attribute_type_rltshp_r['s_attribute_type']."', arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a></td>");
@@ -154,11 +154,11 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	else
 	{
 		// order_no
-		echo("<td class=\"$class\" align=center nowrap>".
+		echo("<td class=\"$class\" align=\"center\" nowrap>".
 			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_addr_attribute_type_rltshp_r['order_no'], FALSE)."</td>");
 
-  		echo("<td class=\"$class\" align=center>".
+  		echo("<td class=\"$class\" align=\"center\">".
 			"<select name=\"s_attribute_type[$row]\">".
 			"\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
@@ -183,7 +183,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	echo ("\n<td class=\"$class\">".custom_select("compulsory_for_user_type[$row]", array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, $s_addr_attribute_type_rltshp_r['compulsory_for_user_type'])."</td>");
 	
 	if(is_array($s_addr_attribute_type_rltshp_r))
-		echo ("\n<td class=\"$class\" align=center>".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($s_addr_attribute_type_rltshp_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
+		echo ("\n<td class=\"$class\" align=\"center\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($s_addr_attribute_type_rltshp_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
 	echo("</td>");
 	
 	echo("</tr>");
@@ -481,7 +481,8 @@ if (is_opendb_valid_session())
 				
 				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();"));
 
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\"> <input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">
+				<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 				
 				echo("</form>");
 			}
@@ -513,9 +514,9 @@ if (is_opendb_valid_session())
 			}
 	
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
-				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
 
 			echo("\n</form>");
 		}
@@ -528,26 +529,25 @@ if (is_opendb_valid_session())
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 				
-			echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-
-			echo("<table>");
-			echo("<tr class=\"navbar\">"
-				."<th>Order</th>"
-				."<th>Type</th>"
-				."<th>Description</th>"
-				."<th>Min Create<br />User Type</th>"
-				."<th>Min Display<br />User Type</th>"
-				."<th>Min Compulsory<br />User Type</th>"
-				."<th>Closed</th>"
-				."<th></th>"
-				."</tr>");	
-			$column_count = 7;
-			
 			$results = fetch_s_address_type_rs();
 			if($results)
 			{
+				echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
+				echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
+				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+
+				echo("<table>");
+				echo("<tr class=\"navbar\">"
+					."<th>Order</th>"
+					."<th>Type</th>"
+					."<th>Description</th>"
+					."<th>Min Create<br />User Type</th>"
+					."<th>Min Display<br />User Type</th>"
+					."<th>Min Compulsory<br />User Type</th>"
+					."<th>Closed</th>"
+					."<th></th>"
+					."</tr>");	
+				
 				// value, display, img, checked_ind, order_no
 				$row = 0;
 				while($address_type_r = db_fetch_assoc($results))
@@ -556,13 +556,18 @@ if (is_opendb_valid_session())
 					$row++;
 				}
 				db_free_result($results);
-			}
-			echo("</table>");
+				
+				echo("</table>");
 			
-			echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				"<input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+					"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
 
-			echo("</form>");
+				echo("</form>");
+			}
+			else
+			{
+				echo("<p class=\"error\">No Address Types Installed</p>");
+			}
 		}			
 	}
 }

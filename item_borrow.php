@@ -609,7 +609,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	
 	echo("</table>");
 	
-	echo("<input type=submit value=\"".get_opendb_lang_var('submit')."\">");
+	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("</form>");
 }
 

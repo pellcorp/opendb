@@ -70,7 +70,7 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 		$formContents .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')));
 	}
 
-	$formContents .= "<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_review')."\">
+	$formContents .= "<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_review')."\">
 		<input type=\"hidden\" name=\"op\" value=\"$op\">
 		<input type=\"hidden\" name=\"sequence_number\" value=\"".$review_r['sequence_number']."\">
 		<input type=\"hidden\" name=\"item_id\" value=\"".$HTTP_VARS['item_id']."\">

@@ -277,7 +277,7 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 			echo("\n<form action=\"item_input.php\" method=\"GET\">");
 			if(is_exists_item_type($HTTP_VARS['s_item_type']))
 			{
-				echo("\n<input type=hidden name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">");
+				echo("\n<input type=\"hidden\" name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">");
 			}
 			else
 			{
@@ -331,13 +331,13 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 		echo("<h3>".get_opendb_lang_var('manual_entry')."</h3>");
 		
 		echo("\n<form action=\"item_input.php\" method=\"GET\">");
-		echo("<input type=hidden name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">");
-		echo("<input type=hidden name=\"s_status_type\" value=\"".$HTTP_VARS['s_status_type']."\">");
-		echo("<input type=hidden name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">");
-		echo("<input type=hidden name=\"item_id\" value=\"".$HTTP_VARS['item_id']."\">");
-		echo("<input type=hidden name=\"instance_no\" value=\"".$HTTP_VARS['instance_no']."\">");
-		echo("<input type=hidden name=\"parent_item_id\" value=\"".$HTTP_VARS['parent_item_id']."\">");
-		echo("<input type=hidden name=\"parent_instance_no\" value=\"".$HTTP_VARS['parent_instance_no']."\">");
+		echo("<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">");
+		echo("<input type=\"hidden\" name=\"s_status_type\" value=\"".$HTTP_VARS['s_status_type']."\">");
+		echo("<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">");
+		echo("<input type=\"hidden\" name=\"item_id\" value=\"".$HTTP_VARS['item_id']."\">");
+		echo("<input type=\"hidden\" name=\"instance_no\" value=\"".$HTTP_VARS['instance_no']."\">");
+		echo("<input type=\"hidden\" name=\"parent_item_id\" value=\"".$HTTP_VARS['parent_item_id']."\">");
+		echo("<input type=\"hidden\" name=\"parent_instance_no\" value=\"".$HTTP_VARS['parent_instance_no']."\">");
 			
 		if(is_exists_item_type($HTTP_VARS['s_item_type']))
 		{
@@ -350,7 +350,7 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 		}
 		
 		echo "\n<input type=\"hidden\" name=\"op\" value=\"new\">";
-		echo("<input class=\"submit\" type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
+		echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 		
 		echo("</form>");
 		
@@ -394,7 +394,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 						'user_id').
 					"\n</select>");
 
-			echo("<input type=\"submit\" value=\"".get_opendb_lang_var('add_new_item')."\">");
+			echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('add_new_item')."\">");
 			echo("</form>");
 		}//if($show_owner_field || $show_status_type_field)
 		else
@@ -632,14 +632,14 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		{
 			$field .= "<li id=\"menu-${fieldname}_new${i}\"".($i==1?" class=\"activeTab\"":"").">
 					<label for=\"menu-${fieldname}_new${i}-cbox\">".$item_attribute_type_r['prompt']."</label>".
-					"<input id=\"menu-${fieldname}_new${i}-cbox\" type=radio name=\"".$fieldname."\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content', 'activeTab', 'tabContent');\"".($i==1?" CHECKED":"")."></li>";
+					"<input type=\"radio\" class=\"radio\" name=\"".$fieldname."\" id=\"menu-${fieldname}_new${i}-cbox\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content', 'activeTab', 'tabContent');\"".($i==1?" CHECKED":"")."></li>";
 		}
 	
 		if($refresh_field)
 		{
 			$field .= "<li id=\"menu-${fieldname}_old\" >
 				<label for=\"menu-${fieldname}_old-cbox\">".get_opendb_lang_var('old_prompt', 'prompt', $item_attribute_type_r['prompt'])."</label>".
-				"<input id=\"menu-${fieldname}_old-cbox\" type=radio name=\"".$fieldname."\" value=\"old\" onclick=\"return activateTab('${fieldname}_old', '${fieldname}-tab-menu', '${fieldname}-tab-content', 'activeTab', 'tabContent');\"></li>";
+				"<input type=\"radio\" class=\"radio\" id=\"menu-${fieldname}_old-cbox\" name=\"".$fieldname."\" value=\"old\" onclick=\"return activateTab('${fieldname}_old', '${fieldname}-tab-menu', '${fieldname}-tab-content', 'activeTab', 'tabContent');\"></li>";
 		}
 		$field .= "</ul>";
 		
@@ -1037,7 +1037,7 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		
 		$pageContents .= "<div id=\"tab-content\">";
 		
-		$pageContents .= "<input type=\"button\" class=\"saveButton\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
+		$pageContents .= "<input type=\"button\" class=\"button saveButton\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
 		
 		$pageContents .= "<div class=\"tabContent\" id=\"details\">";
 		
@@ -1570,7 +1570,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 						's_item_type', NULL, NULL, NULL, FALSE, 'clone-s_item_type').'</td></tr>');
 		
 		echo('</table>');			
-		echo('<input type="submit" value="'.get_opendb_lang_var('submit').'">');
+		echo('<input type="submit" class="submit" value="'.get_opendb_lang_var('submit').'">');
 		
 		echo('</form>');
 		

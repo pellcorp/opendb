@@ -293,14 +293,14 @@ function get_import_options_table(&$importPlugin, $HTTP_VARS)
 	
 	if($importPlugin->get_plugin_type() == 'row' && $importPlugin->is_header_row())
 	{
-		$buffer .= "<input type=\"checkbox\" name=\"include_header_row\" value=\"Y\"".(strcmp($HTTP_VARS['include_header_row'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('include_first_line')."</li>";
+		$buffer .= "<input type=\"checkbox\" class=\"checkbox\" name=\"include_header_row\" value=\"Y\"".(strcmp($HTTP_VARS['include_header_row'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('include_first_line')."</li>";
 	}
 	
-	$buffer .= 	"<input type=\"checkbox\" name=\"ignore_duplicate_title\" value=\"Y\"".(strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('ignore_duplicate_title')."</li>";
+	$buffer .= 	"<input type=\"checkbox\" class=\"checkbox\" name=\"ignore_duplicate_title\" value=\"Y\"".(strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('ignore_duplicate_title')."</li>";
 	
 	if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
 	{
-		$buffer .= "<input type=checkbox name=\"trial_run\" value=\"Y\" CHECKED>".get_opendb_lang_var('trial_run')."</li>";
+		$buffer .= "<input type=\"checkbox\" class=\"checkbox\" name=\"trial_run\" value=\"Y\" CHECKED>".get_opendb_lang_var('trial_run')."</li>";
 	}
 	
 	$buffer .= "</ul>";
@@ -376,7 +376,7 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 		
 		if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
 		{
-	        $buffer .= "\n<input type=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
+	        $buffer .= "\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
 		}
 	}
 	else if($importPlugin->get_plugin_type() == 'xml')
@@ -397,7 +397,7 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 							'VERTICAL', 
 							$HTTP_VARS['s_status_type'])); // value
 							
-			$buffer .= format_field(get_opendb_lang_var('override_status_type'), NULL, "<input type=checkbox name=\"override_status_type\" value=\"Y\"".(strcmp($HTTP_VARS['override_status_type'],'Y')===0?' CHECKED':'').">");
+			$buffer .= format_field(get_opendb_lang_var('override_status_type'), NULL, "<input type=\"checkbox\" class=\"checkbox\" name=\"override_status_type\" value=\"Y\"".(strcmp($HTTP_VARS['override_status_type'],'Y')===0?' CHECKED':'').">");
 			
 			$buffer .= '</table>';
 		}
@@ -410,7 +410,7 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 		
         if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
         {
-	        $buffer .= "<input type=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
+	        $buffer .= "<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
         }
 	}
 	
@@ -439,11 +439,11 @@ function get_upload_form($HTTP_VARS)
 	}
 							
 	$buffer .= format_field(get_opendb_lang_var('item_type'), NULL, single_select("s_item_type", fetch_item_type_rs(TRUE), "%value% - %display%", NULL, $HTTP_VARS['s_item_type']));
-	$buffer .= format_field(get_opendb_lang_var('file'), NULL, "<input type=\"file\" size=\"25\" name=\"uploadfile\">");
+	$buffer .= format_field(get_opendb_lang_var('file'), NULL, "<input type=\"file\" class=\"file\" size=\"25\" name=\"uploadfile\">");
 	
 	$buffer .= "\n</table>";
 	
-	$buffer .= "\n<input type=submit value=\"".get_opendb_lang_var('import_items')."\">";
+	$buffer .= "\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
 	$buffer .= "\n</form>";
 	
 	return $buffer;
@@ -747,8 +747,8 @@ if(is_site_enabled())
 								{
 									echo("<form action=\"$PHP_SELF\" method=\"POST\">");
 									echo(get_url_fields($HTTP_VARS, array('op'), array('op2')));
-									echo("<input type=\"button\" onclick=\"this.form.op.value='uploaded'; this.form.submit();\" value=\"".get_opendb_lang_var('back')."\">");
-									echo("<input type=\"button\" onclick=\"this.form.trial_run.value='N'; this.form.op.value='import'; this.form.submit();\" value=\"".get_opendb_lang_var('import_items')."\">");
+									echo("<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='uploaded'; this.form.submit();\" value=\"".get_opendb_lang_var('back')."\">");
+									echo("<input type=\"button\" class=\"button\" onclick=\"this.form.trial_run.value='N'; this.form.op.value='import'; this.form.submit();\" value=\"".get_opendb_lang_var('import_items')."\">");
 									echo("</form>");
 								}
 								else 

@@ -305,15 +305,15 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 		echo("<input type=\"hidden\" name=\"redirect\" value=\"".$HTTP_VARS['redirect']."\">");
 	}
 	
-	echo("<input type=hidden name=\"op\" value=\"login\">");
+	echo("<input type=\"hidde\"n name=\"op\" value=\"login\">");
 	
 	echo("\n<ul>".
 		"\n<li><label for=\"uid\">".get_opendb_lang_var('userid')."</label>".
-		"<input id=\"uid\" type=\"text\" name=\"uid\" value=\"".$HTTP_VARS['uid']."\"></li>".
+		"<input type=\"text\" class=\"text\" id=\"uid\" name=\"uid\" value=\"".$HTTP_VARS['uid']."\"></li>".
 		"\n<li><label for=\"password\">".get_opendb_lang_var('password')."</label>".
-		"<input id=\"passwd\" type=\"password\" name=\"passwd\"></li>".
+		"<input type=\"password\" class=\"password\" id=\"passwd\" name=\"passwd\"></li>".
 		"</ul>".
-		"\n<input type=\"submit\" value=\"".get_opendb_lang_var('login')."\">");
+		"\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('login')."\">");
 
    echo("</form>");
 	
@@ -395,7 +395,7 @@ function show_changeuser_form()
 	}
 	echo("</table>");
 	
-	echo("<input type=submit value=\"".get_opendb_lang_var('submit')."\">");
+	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("</form>");
 	
 	echo(_theme_footer());

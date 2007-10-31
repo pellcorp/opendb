@@ -386,12 +386,12 @@ function install_pre_check($next_step)
 	if($doContinue)
 	{
 		$buffer .= "<input type=\"hidden\" name=\"step\" value=\"$next_step\">".
-		"<input type=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">";
+		"<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">";
 	}
 	else
 	{
 		$buffer .= "<input type=\"hidden\" name=\"step\" value=\"\">".
-		"<input type=\"button\" value=\"Retry\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">";
+		"<input type=\"button\" class=\"button\" value=\"Retry\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">";
 	}
 	$buffer .= "</form>\n";
 	
@@ -498,7 +498,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 		$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>'Compulsory Field'));
 	}
     
-	$buffer .= "<input type=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n";
+	$buffer .= "<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n";
 	$buffer .= "</form>\n";
 	
 	return $buffer;
@@ -678,7 +678,7 @@ function install_opendb_new_install($HTTP_VARS, &$errors)
 	  	echo("<form action=\"$PHP_SELF\" method=\"GET\">".
 			"<input type=\"hidden\" name=\"step\" value=\"install\">".
 			"<input type=\"hidden\" name=\"confirmed\" value=\"true\">".
-			"<input type=\"button\" value=\"Install\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">".
+			"<input type=\"button\" class=\"button\" value=\"Install\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">".
 			"</form>");
 		
 		return FALSE;
@@ -867,11 +867,11 @@ function perform_upgrade_step($HTTP_VARS, $opendb_release_r, $latest_to_version 
 			}
 			
 			echo("<input type=\"hidden\" name=\"confirm_step\" value=\"$upgrade_step\">
-			<input type=\"button\" name=\"execute\" value=\"Execute Step\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
+			<input type=\"button\" class=\"button\" name=\"execute\" value=\"Execute Step\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
 			
 			if($upgraderPlugin->isStepSkippable($upgrade_step))
 			{
-				echo("<input type=\"checkbox\" name=\"skipStep\" value=\"true\" onclick=\"if(this.checked){this.form['execute'].value='Skip Step';}else{this.form['execute'].value='Execute Step';}}\">Skip Step");
+				echo("<input type=\"checkbox\" class=\"checkbox\" name=\"skipStep\" value=\"true\" onclick=\"if(this.checked){this.form['execute'].value='Skip Step';}else{this.form['execute'].value='Execute Step';}}\">Skip Step");
 			}
 
 			echo("</form>");
@@ -996,8 +996,8 @@ else if($HTTP_VARS['step'] == 'pre-install')
 				
 				echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 				echo(get_url_fields($HTTP_VARS, array('confirmed'=>'false')));
-				echo("\n<input type=\"button\" value=\" Go Back \" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">
-					<input type=\"button\" value=\" Continue \" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\" Go Back \" onclick=\"this.form['confirmed'].value='false'; this.form.submit();\">
+					<input type=\"button\" class=\"button\" value=\" Continue \" onclick=\"this.form['confirmed'].value='true'; this.form.submit();\">");
 				echo("</form>\n");
 			}
 			else
@@ -1019,7 +1019,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 				
 				echo("\n<form action=\"$PHP_SELF\" method=\"GET\">");
 				echo("<input type=\"hidden\" name=\"step\" value=\"pre-install\">\n");
-				echo("<input type=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
+				echo("<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
 				echo("</form>");
 			}
 			else
@@ -1038,7 +1038,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 				
 				echo("\n<form action=\"$PHP_SELF\" method=\"POST\">");
 				echo(get_url_fields($HTTP_VARS));
-				echo("\n<input type=\"button\" value=\"Retry\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Retry\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">");
 				echo("</form>\n");
 				
 				echo("<p>If you cannot resolve the issue, you can save the configuration file manually.  The contents of the textarea should be saved to  
@@ -1133,7 +1133,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 				echo("<input type=\"hidden\" name=\"step\" value=\"pre-install\">\n");
 			}
 			
-			echo("<input type=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
+			echo("<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
 				
 			echo("</form>");
 		}
@@ -1179,7 +1179,7 @@ else
 					echo("The upgrade was completed successfully.  There are still additional upgrades required.</p>");
 					echo("\n<form action=\"$PHP_SELF\" method=\"GET\">");
 					echo("<input type=\"hidden\" name=\"step\" value=\"upgrade\">\n");
-					echo("<input type=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
+					echo("<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n");
 					echo("</form>");	
 				}
 			}

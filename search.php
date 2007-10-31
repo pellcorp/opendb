@@ -157,10 +157,10 @@ if(is_site_enabled())
 		echo("\n<form name=\"search\" method=\"GET\" action=\"listings.php\">");
 
 		// global declaration of the datetimemask, to be used by all Date fields in search page.
-		echo("\n<input type=hidden name=\"datetimemask\" value=\"".get_opendb_config_var('search', 'datetime_mask')."\">");
+		echo("\n<input type=\"hidden\" name=\"datetimemask\" value=\"".get_opendb_config_var('search', 'datetime_mask')."\">");
 
 		// Indicate to listings.php that search.php initiated it.
-		echo("\n<input type=hidden name=\"search_list\" value=\"y\">");
+		echo("\n<input type=\"hidden\" name=\"search_list\" value=\"y\">");
 		
 		echo("<table class=\"searchForm\">");
 
@@ -170,12 +170,12 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('title'),
 			NULL,
-				"\n<input type=text size=50 name=\"title\">".
+				"\n<input type=\"text\" class=\"text\" size=\"50\" name=\"title\">".
 				"\n<ul class=\"searchInputOptions\">".
-				"\n<li><input type=radio name=\"title_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
-				"\n<li><input type=radio name=\"title_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
-				"\n<li><input type=radio name=\"title_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
-				"\n<li><input type=checkbox name=\"title_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
+				"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"title_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
 				"\n</ul>"
 			);
 		
@@ -259,12 +259,12 @@ if(is_site_enabled())
 		 echo format_field(
 			get_opendb_lang_var('attribute_val'), 
 			NULL,
-				"<input type=\"text\" name=\"attribute_val\" size=50 value=\"\">".
+				"<input type=\"text\" class=\"text\" name=\"attribute_val\" size=\"50\" value=\"\">".
 				"\n<ul class=\"searchInputOptions\">".
-				"\n<li><input type=radio name=\"attr_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
-				"\n<li><input type=radio name=\"attr_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
-				"\n<li><input type=radio name=\"attr_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
-				"\n<li><input type=checkbox name=\"attr_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
+				"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"attr_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
 				"\n</ul>"
 			);
 				
@@ -290,7 +290,7 @@ if(is_site_enabled())
 		// Must pass on not_owner_id if specified.
 		if(strlen($HTTP_VARS['not_owner_id'])>0)
 		{
-			echo("\n<input type=hidden name=\"not_owner_id\" value=\"".$HTTP_VARS['not_owner_id']."\">");
+			echo("\n<input type=\"hidden\" name=\"not_owner_id\" value=\"".$HTTP_VARS['not_owner_id']."\">");
 		}
 		
 		echo(
@@ -335,12 +335,12 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('status_comment'), 
 			NULL,
-				"\n<input type=text size=50 name=\"status_comment\">".
+				"\n<input type=\"text\" size=\"50\" name=\"status_comment\">".
 				"\n<ul class=\"searchInputOptions\">".
-				"\n<li><input type=radio name=\"status_comment_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
-				"\n<li><input type=radio name=\"status_comment_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
-				"\n<li><input type=radio name=\"status_comment_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
-				"\n<li><input type=checkbox name=\"status_comment_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
+				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
+				"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"status_comment_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
 				"\n</ul>"
 			);
 
@@ -371,12 +371,12 @@ if(is_site_enabled())
 				"\n<option value=\"update_on\">".get_opendb_lang_var('update_date').
 				"\n</select>".
 			
-				"\n<input type=radio name=\"sortorder\" value=\"ASC\" CHECKED>".get_opendb_lang_var('asc').
-				"\n<input type=radio name=\"sortorder\" value=\"DESC\">".get_opendb_lang_var('desc'));
+				"\n<input type=\"radio\" class=\"radio\" name=\"sortorder\" value=\"ASC\" CHECKED>".get_opendb_lang_var('asc').
+				"\n<input type=\"radio\" class=\"radio\" name=\"sortorder\" value=\"DESC\">".get_opendb_lang_var('desc'));
 		
 		echo("</table>");
 		
-		echo("\n<input type=submit value=\"".get_opendb_lang_var('search')."\">");
+		echo("\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('search')."\">");
 		echo("</form>");
 
 		echo _theme_footer();

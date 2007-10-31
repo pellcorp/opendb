@@ -105,7 +105,7 @@ class AdminAjaxJobs
 		<div id="debug"></div>
 		<table width=\"100%\" border=\"0\">
 		<tr>
-			<td align=center colspan=10 id="message" class="success">&nbsp;</td>
+			<td align="center" colspan="10" id="message" class="success">&nbsp;</td>
 		</tr>
 		<tr>';
 		
@@ -115,15 +115,15 @@ class AdminAjaxJobs
 		
 		$divContents .= '</tr>
 		<tr>
-			<td align=center colspan=10 id="percentage">0%</td>
+			<td align="center" colspan="10" id="percentage">0%</td>
 		</tr>
 		</table>
 		
 		<form id="progressForm">
 			<input type="hidden" name="continue" value="true" />
-			<input type="button" id="startButton" value="Start" 
+			<input type="button" class="button" id="startButton" value="Start" 
 					onclick="this.form[\'continue\'].value=\'true\'; xajax_'.$this->_id.'.dojob(\''.$this->_job.'\', \'true\', \'0\', \'0\'); this.disabled=true; return false;" />
-			<input type="button" id="cancelButton" value="Cancel" 
+			<input type="button" class="button" id="cancelButton" value="Cancel" 
 					onclick="this.form[\'continue\'].value=\'false\'; this.disabled=true; " />
 		</form>
 		</div>';

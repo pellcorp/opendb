@@ -54,13 +54,13 @@ function get_new_user_usertype_input_form($HTTP_VARS, $user_type_r, $user_type)
 	while(list(,$user_type_r) = each($user_type_rs))
 	{
 		$buffer .= "\n<dt>".
-				"<input type=\"radio\" name=\"user_type\" value=\"".$user_type_r['value']."\"".($user_type_r['checked_ind']=='Y'?' CHECKED':'').">${user_type_r['display']}".
+				"<input type=\"radio\" class=\"radio\" name=\"user_type\" value=\"".$user_type_r['value']."\"".($user_type_r['checked_ind']=='Y'?' CHECKED':'').">${user_type_r['display']}".
 				"</dt>";
 		$buffer .= "<dd>".$user_type_r['description']."</dd>";
 	}
 	$buffer .= "</dl>";
 	
-	$buffer .= "\n<input type=\"submit\" value=\"".get_opendb_lang_var('submit')."\">";
+	$buffer .= "\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">";
 
 	$buffer .= "\n</form>";
 			
@@ -107,7 +107,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	
 	if(!is_array($user_r))
 	{
-		$buffer .= "<input type=hidden name=\"user_type\" value=\"".$HTTP_VARS['user_type']."\">";
+		$buffer .= "<input type=\"hidden\" name=\"user_type\" value=\"".$HTTP_VARS['user_type']."\">";
 	}
 							
 	$buffer .= get_input_field("fullname",
@@ -188,9 +188,9 @@ function get_user_input_form($user_r, $HTTP_VARS)
 				$buffer .= '<h3>'.$address_type_r['description'].'</h3>';
 				
 				$buffer .= "<ul class=\"addressIndicators\">";
-				$buffer .= '<li><input type="checkbox" name="'.$v_address_type.'[public_address_ind]" value="Y"'.(ifempty($address_type_r['public_address_ind'], $HTTP_VARS[$v_address_type]['public_address_ind'])=='Y'?' CHECKED':'').'">'.
+				$buffer .= '<li><input type="checkbox" class="checkbox" name="'.$v_address_type.'[public_address_ind]" value="Y"'.(ifempty($address_type_r['public_address_ind'], $HTTP_VARS[$v_address_type]['public_address_ind'])=='Y'?' CHECKED':'').'">'.
 							get_opendb_lang_var('public_address_indicator').'</li>';
-				$buffer .= '<li><input type="checkbox" name="'.$v_address_type.'[borrow_address_ind]" value="Y"'.(ifempty($address_type_r['borrow_address_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind'])=='Y'?' CHECKED':'').'">'.
+				$buffer .= '<li><input type="checkbox" class="checkbox" name="'.$v_address_type.'[borrow_address_ind]" value="Y"'.(ifempty($address_type_r['borrow_address_ind'], $HTTP_VARS[$v_address_type]['borrow_address_ind'])=='Y'?' CHECKED':'').'">'.
 							get_opendb_lang_var('borrow_address_indicator').'</li>';
 				$buffer .= "</ul>";
 				
@@ -305,7 +305,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 
 	   	$buffer .= "<p class=\"verifyCode\"><label for=\"gfx_code_check\">".get_opendb_lang_var('verify_code')."</label>".
 	   				"<img src=\"$PHP_SELF?op=signup&op2=gfx_code_check&gfx_random_number=$random_num\">".
-					"<input id=\"gfx_code_check\" type=\"text\" name=\"gfx_code_check\" size=\"15\" maxlength=\"6\"></p>";
+					"<input type=\"text\" class=\"text\" id=\"gfx_code_check\" name=\"gfx_code_check\" size=\"15\" maxlength=\"6\"></p>";
 	}
 	
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -319,22 +319,22 @@ function get_user_input_form($user_r, $HTTP_VARS)
 			
 		if($HTTP_VARS['user_id'] != get_opendb_session_var('user_id'))
 		{
-			$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='update'; $onclick_event\" value=\"".get_opendb_lang_var('update_user')."\">";
+			$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='update'; $onclick_event\" value=\"".get_opendb_lang_var('update_user')."\">";
 			
 			if(is_user_active($HTTP_VARS['user_id']))
 			{
-				$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='deactivate'; this.form.submit();\" value=\"".get_opendb_lang_var('deactivate_user')."\">";
+				$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='deactivate'; this.form.submit();\" value=\"".get_opendb_lang_var('deactivate_user')."\">";
 			}
 			else if(!is_user_active($HTTP_VARS['user_id']))
 			{
-				$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='activate'; this.form.submit();\" value=\"".get_opendb_lang_var('activate_user')."\">";
+				$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='activate'; this.form.submit();\" value=\"".get_opendb_lang_var('activate_user')."\">";
 			}
 			
-			$buffer .= "\n<input type=\"button\" onclick=\"this.form.op.value='delete'; this.form.submit();\" value=\"".get_opendb_lang_var('delete_user')."\">";
+			$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='delete'; this.form.submit();\" value=\"".get_opendb_lang_var('delete_user')."\">";
 		}
 		else
 		{
-			$buffer .= "\n<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('update_details')."\">";
+			$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('update_details')."\">";
 		}
 	}
 	else
@@ -356,18 +356,18 @@ function get_user_input_form($user_r, $HTTP_VARS)
 				else
 					$checked = "CHECKED";
 			
-				$buffer .= "<p><input id=\"email_user\" type=\"checkbox\" name=\"email_user\" value=\"Y\" $checked>".get_opendb_lang_var('send_welcome_email')."</p>";
+				$buffer .= "<p><input type=\"checkbox\" class=\"checkbox\" id=\"email_user\" name=\"email_user\" value=\"Y\" $checked>".get_opendb_lang_var('send_welcome_email')."</p>";
 			}
 			
 			$buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"insert\">".
-					"\n<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('add_user')."\">";
+					"\n<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('add_user')."\">";
 			
 		}
 		else
 		{
 			$buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"signup\">".
 						"<input type=\"hidden\" name=\"op2\" value=\"send_info\">".
-						"<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('submit')."\">";
+						"<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('submit')."\">";
 		}
 	}		
 	
@@ -424,7 +424,7 @@ function get_user_password_change_form($user_r, $HTTP_VARS)
 		$onclick_event = "this.form.submit();";
 	
     $buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"update_password\">".
-					"\n<input type=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('change_password')."\">";
+					"\n<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('change_password')."\">";
 	
 	$buffer .= "<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">";
 	

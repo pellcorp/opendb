@@ -108,3 +108,13 @@ table.sqlList
 	width: 50%;
 	margin-top: 10px;
 }
+
+ul.itemTypes
+{
+	list-style-type: none;
+}
+
+ul.actionButtons
+{
+	clear: both;
+}

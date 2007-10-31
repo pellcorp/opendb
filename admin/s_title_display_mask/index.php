@@ -110,20 +110,19 @@ if(is_opendb_valid_session())
 				{
 					while($title_mask_r = db_fetch_assoc($results))
 					{
-                        echo("<tr><td class=\"data\" align=center nowrap>".$title_mask_r['description']."</td>");
+                        echo("<tr><td class=\"data\" align=\"center\" nowrap>".$title_mask_r['description']."</td>");
                         $title_mask_items_r = fetch_title_mask_items_r($title_mask_r['id'], $HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
-                        echo("<td class=\"data\" align=center><textarea WRAP=OFF cols=125 rows=3 name=\"display_mask[".$title_mask_r['id']."]\">".htmlspecialchars($title_mask_items_r['display_mask'])."</textarea></td>");
+                        echo("<td class=\"data\" align=\"center\"><textarea wrap=\"off\" cols=\"125\" rows=\"3\" name=\"display_mask[".$title_mask_r['id']."]\">".htmlspecialchars($title_mask_items_r['display_mask'])."</textarea></td>");
 						echo("</tr>");
 					}
 					db_free_result($results);
 				}
 
-			    echo("\n<tr><td colspan=2>");
-				echo("\n<input type=button onclick=\"this.form.op.value='update'; this.form.submit();\" value=\"Update\">");
-				echo("\n</td></tr>");
+				echo("</table>");
+				
+				echo("\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='update'; this.form.submit();\" value=\"Update\">");
 
 				echo("</form>");
-				echo("</table>");
 			}
 			else
 			{
@@ -136,54 +135,41 @@ if(is_opendb_valid_session())
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-			echo("<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-				"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-				"<input type=\"hidden\" name=\"op\" value=\"\">".
-				"<input type=\"hidden\" name=\"s_item_type_group\" value=\"\">".
-				"<input type=\"hidden\" name=\"s_item_type\" value=\"\">".
-				"</form>");
-
-			echo("<table cellspacing=2 border=0 width=200>");
 			echo("\n<form name=\"s_title_display_mask\" action=\"$PHP_SELF\" method=\"POST\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 
-			echo("<tr class=\"navbar\"><th colspan=2>Item Type Groups</th></tr>");
-					
             $results = fetch_item_type_group_rs();
 			if($results)
 			{
+				echo("<h3>Item Type Groups</h3>");
+				echo("<ul>");
 				while($item_type_group_r = db_fetch_assoc($results))
 				{
-				    echo("\n<tr><td class=\"data\" align=center>".$item_type_group_r['s_item_type_group']."</td>");
-				    echo("\n<td class=\"data\" align=center>");
-					echo("\n<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=".$item_type_group_r['s_item_type_group']."&s_item_type=*\">Edit</a>");
-					echo("\n</td></tr>");
+					echo("\n<li><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=".$item_type_group_r['s_item_type_group']."&s_item_type=*\">Edit ".$item_type_group_r['s_item_type_group']."</a></li>");
 				}
 				db_free_result($results);
+				echo("</ul>");
 			}
 	
-	        echo("<tr class=\"navbar\"><th colspan=2>Item Types</th></tr>");
-
 			$results = fetch_s_item_type_rs('s_item_type');
 			if($results)
 			{
+				echo("<h3>Item Types</h3>");
+				echo("<ul>");
 				while($item_type_r = db_fetch_assoc($results))
 				{
-					echo("\n<tr><td class=\"data\" align=center>".$item_type_r['s_item_type']."</td>");
-				    echo("\n<td class=\"data\" align=center>");
-					echo("\n<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=".$item_type_r['s_item_type']."\">Edit</a>");
-					echo("\n</td></tr>");
+					echo("\n<li><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=".$item_type_r['s_item_type']."\">Edit ".$item_type_r['s_item_type']."</a></li>");
 				}
 				db_free_result($results);
+				echo("</ul>");
 			}
 			
-			echo("\n<tr><td class=\"data\" align=center><strong>Default</strong></td>");
-			echo("\n<td class=\"data\" align=center>");
-			echo("\n<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=*\">Edit</a>");
-			echo("\n</td></tr>");
+			echo("\n<h3>Default</h3>");
+			echo("\n<ul>");
+			echo("\n<li><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=*\">Edit Default</a></li>");
+			echo("\n</ul>");
 		
 			echo("</form>");
-			echo("</table>");
 	    }
 	}
 }//if(is_opendb_valid_session())

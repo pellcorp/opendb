@@ -409,7 +409,7 @@ if(is_site_enabled())
 					echo(format_field(get_opendb_lang_var('borrower'), NULL, custom_select('uid', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')));
 					echo("</table>");
 					
-					echo("<input type=submit value=\"".get_opendb_lang_var('submit')."\">");
+					echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 				
 					echo("</form>");
 					

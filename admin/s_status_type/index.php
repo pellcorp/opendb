@@ -83,10 +83,10 @@ function display_s_status_type_row($status_type_r, $row)
 	
 	echo("\n<tr>");
 
-	echo("\n<td class=\"data\" align=center>".$status_type_r['s_status_type']."</td>");
-	echo("\n<td class=\"data\" align=center>".$status_type_r['description']."</td>");
+	echo("\n<td class=\"data\" align=\"center\">".$status_type_r['s_status_type']."</td>");
+	echo("\n<td class=\"data\" align=\"center\">".$status_type_r['description']."</td>");
 
-	echo("<td class=\"data\" align=center>");
+	echo("<td class=\"data\" align=\"center\">");
 	// Get the theme specific source of the image.
 	if(strlen($status_type_r['img'])>0)
 	{
@@ -98,8 +98,8 @@ function display_s_status_type_row($status_type_r, $row)
 		echo("&nbsp;");
 	echo("</td>");
 
-	echo("\n<td class=\"data\" align=center>".ifempty($status_type_r['default_ind'], 'N')."</td>");
-    echo("\n<td class=\"data\" align=center>".$status_type_r['closed_ind']."</td>");
+	echo("\n<td class=\"data\" align=\"center\">".ifempty($status_type_r['default_ind'], 'N')."</td>");
+    echo("\n<td class=\"data\" align=\"center\">".$status_type_r['closed_ind']."</td>");
 
 	echo("\n<td class=\"data\">[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
 		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a> ]</td>");
@@ -351,9 +351,9 @@ if(is_opendb_valid_session())
 			}
 				
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=button value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
-				echo("\n<input type=button value=\"$save_button\" onclick=\"this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"this.form.submit();\">");
 
 			echo("\n</form>");
 			
@@ -365,42 +365,37 @@ if(is_opendb_valid_session())
             if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-            echo("\n<form name=\"navigate\" action=\"$PHP_SELF\" method=\"GET\">".
-				"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-				"\n<input type=\"hidden\" name=\"op\" value=\"\">".
-				"\n<input type=\"hidden\" name=\"s_status_type\" value=\"\">".
-				"\n</form>");
-
-	        echo("\n<table cellspacing=2 border=0>");
-			echo("\n<form name=\"s_status_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-
-			echo("<tr class=\"navbar\">"
-				."<th>Type</th>"
-				."<th>Description</th>"
-				."<th>Image</th>"
-                ."<th>Default</th>"
-                ."<th>Closed</th>"
-				."<th></th>"
-				."</tr>");
-			$column_count = 6;
-
 			$results = fetch_status_type_rs();
 			if($results)
 			{
+				echo("\n<form name=\"s_status_type\" action=\"$PHP_SELF\" method=\"POST\">");
+				echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
+				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+
+				echo("\n<table>");
+				echo("<tr class=\"navbar\">"
+					."<th>Type</th>"
+					."<th>Description</th>"
+					."<th>Image</th>"
+            	    ."<th>Default</th>"
+            	    ."<th>Closed</th>"
+					."<th></th>"
+					."</tr>");
+				
 				$row = 0;
 				while($status_type_r = db_fetch_assoc($results))
 				{
-					display_s_status_type_row($status_type_r, $row);
-					$row++;
+					display_s_status_type_row($status_type_r, $row++);
 				}
 				db_free_result($results);
+				
+				echo("</form>");
+				echo("</table>");
 			}
-
-			echo("</form>");
-			echo("</table>");
+			else
+			{
+				echo("<p class=\"error\">No Status Types Installed</p>");
+			}
 
 			function is_not_valid_s_status_type($type)
 			{

@@ -154,7 +154,7 @@ function build_langvar_page($language)
 	reset($alpha_lang_var_rs);
 	
 	echo('<div id="tab-content">');
-	echo("<div style=\"{text-align: right;}\"><input class=\"saveButton\" type=\"submit\" value=\"Update\"></div>");
+	echo("<div style=\"{text-align: right;}\"><input type=\"submit\" class=\"submit\" value=\"Update\"></div>");
 	
 	$isFirst = true;
 	while(list($letter, $lang_var_rs) = each($alpha_lang_var_rs))
@@ -178,7 +178,7 @@ function build_langvar_page($language)
 			{
 				echo('<td class="data">'.htmlspecialchars($lang_var_r['default_value']).'</td>');
 			}
-			echo('<td class="data"><input type="text" size=60 name="lang_var['.$lang_var_r['varname'].']" value="'.htmlspecialchars($lang_var_r['value']).'"></td>');
+			echo('<td class="data"><input type="text" class="text" size="60" name="lang_var['.$lang_var_r['varname'].']" value="'.htmlspecialchars($lang_var_r['value']).'"></td>');
 			echo('</tr>');
 		}
 		echo('</table>');
@@ -239,7 +239,7 @@ function build_table_page($language)
 								$tabBlock .= "<li id=\"menu-pane$count\"".($count==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$count', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">$id</li>";
 				
 					    	    $paneBlock .= "<div id=\"pane$count\" class=\"".($count==1?"tabContent":"tabContentHidden")."\">\n".
-					    	    			  "<input type=\"submit\" value=\"Update\">".
+					    	    			  "<input type=\"submit\" class=\"submit\" value=\"Update\">".
 												build_div_table($language, $table, $column, $table_lang_rs, $row).
 												"</div>";
 								
@@ -265,7 +265,7 @@ function build_table_page($language)
 					$tabBlock .= "<li id=\"menu-pane$count\"".($count==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$count', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">$id</li>";
 					
 					$paneBlock .= "<div id=\"pane$count\" class=\"".($count==1?"tabContent":"tabContentHidden")."\">\n".
-												"<input type=\"submit\" value=\"Update\">".
+												"<input type=\"submit\" class=\"submit\" value=\"Update\">".
 												build_div_table($language, $table, $column, $table_lang_rs, $row).
 												"\n</div>";
 												
@@ -308,7 +308,7 @@ function build_div_table($language, $table, $column, $table_lang_rs, &$row)
 		}
 
 		$block .= '<td class="data">'.htmlspecialchars($table_lang_r[$column]).'</td>';
-		$block .= '<td class="data"><input type="text" name="lang_var['.$table.']['.$column.']['.$row.'][langvar]" value="'.htmlspecialchars($table_lang_r['value']).'"></td>';
+		$block .= '<td class="data"><input type="text" class="text" name="lang_var['.$table.']['.$column.']['.$row.'][langvar]" value="'.htmlspecialchars($table_lang_r['value']).'"></td>';
 		
 		$block .= '</tr>';
 		

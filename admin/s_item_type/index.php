@@ -107,16 +107,16 @@ function display_s_item_type_row($item_type_r, $row)
 		$class = "error";
 	
 	// order_no
-	echo("\n<td class=\"$class\" align=center>".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $item_type_r['order_no'], FALSE)."</td>");
+	echo("\n<td class=\"$class\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $item_type_r['order_no'], FALSE)."</td>");
 	
 	echo("\n<td class=\"$class\">".get_input_field("s_item_type[$row]", NULL, "Item Type", "readonly", "Y", $item_type_r['s_item_type'], FALSE).
-		"<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">".
+		"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 		"</td>");
 	
 	//description
 	echo("\n<td class=\"$class\">".get_input_field("description[$row]", NULL, NULL, "text(30,30)", "N", $item_type_r['description'], FALSE)."</td>");
 
-	echo("<td class=\"$class\" align=center>");
+	echo("<td class=\"$class\" align=\"center\">");
 	// Get the theme specific source of the image.
 	if(strlen($item_type_r['image'])>0)
 	{
@@ -170,12 +170,12 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	if(is_not_empty_array($s_item_attribute_type_r) && $exists_error_ind==FALSE)
 	{
 		// order_no
-		echo("<td class=\"$class\" align=center>");
+		echo("<td class=\"$class\" align=\"center\">");
 		if(!is_s_item_attribute_type_deletable($s_item_type, $s_item_attribute_type_r['s_attribute_type'], $s_item_attribute_type_r['order_no']))
 			echo(get_input_field("order_no[$row]", NULL, "Order No.", "readonly", "N", $s_item_attribute_type_r['order_no'], FALSE));
 		else
 			echo(get_input_field("order_no[$row]", NULL, "Order No.", "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE));
-		echo("<input type=hidden name=\"old_order_no[$row]\" value=\"".$s_item_attribute_type_r['order_no']."\"></td>");
+		echo("<input type=\"hidden\" name=\"old_order_no[$row]\" value=\"".$s_item_attribute_type_r['order_no']."\"></td>");
 		
 		// See if a s_field_type defined for this attribute type
 		$attribute_type_r = fetch_s_attribute_type_r($s_item_attribute_type_r['s_attribute_type']);
@@ -187,8 +187,8 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 		echo("<td class=\"$class\">".
 				format_field("Attribute Type",
 						NULL,
-						$value."<input type=hidden name=\"s_attribute_type[$row]\" value=\"".$s_item_attribute_type_r['s_attribute_type']."\">".
-							"<input type=hidden name=\"exists_ind[$row]\" value=\"Y\">",FALSE).
+						$value."<input type=\"hidden\" name=\"s_attribute_type[$row]\" value=\"".$s_item_attribute_type_r['s_attribute_type']."\">".
+							"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">",FALSE).
 			"</td>");
 		
 		echo("<td class=\"$class\"><a href=\"#\" onmouseover=\"return show_sat_tooltip('".$s_item_attribute_type_r['s_attribute_type']."', arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a></td>");
@@ -197,11 +197,11 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	else
 	{
 		// order_no
-		echo("<td class=\"$class\" align=center>".
+		echo("<td class=\"$class\" align=\"center\">".
 			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE)."</td>");
 		
-		echo("<td class=\"$class\" align=center>".
+		echo("<td class=\"$class\" align=\"center\">".
 			"<select name=\"s_attribute_type[$row]\">".
 			"\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
@@ -230,11 +230,11 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 				$attribute_type_r['s_field_type'] != 'TITLE' && 
 				$attribute_type_r['s_field_type'] != 'ITEM_ID'))
 	{
-        echo("<td class=\"$class\" align=center>");
+        echo("<td class=\"$class\" align=\"center\">");
 		echo(get_input_field("instance_attribute_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['instance_attribute_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE));
         echo("</td>");
 
-        echo("<td class=\"$class\" align=center>");
+        echo("<td class=\"$class\" align=\"center\">");
 		echo(get_input_field("compulsory_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['compulsory_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE));
         echo("</td>");
 	}
@@ -242,14 +242,14 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	{
 		// title is not supported at instance level
         if($attribute_type_r['s_field_type'] == 'TITLE')
-			echo("<td class=\"$class\" align=center>N</td>");
+			echo("<td class=\"$class\" align=\"center\">N</td>");
 		else
-	        echo("<td class=\"$class\" align=center>Y</td>");
+	        echo("<td class=\"$class\" align=\"center\">Y</td>");
 
-		echo("<td class=\"$class\" align=center>Y</td>");
+		echo("<td class=\"$class\" align=\"center\">Y</td>");
 	}
 	
-	echo("\n<td class=\"$class\" align=left>");
+	echo("\n<td class=\"$class\" align=\"left\">");
 	echo(get_input_field("rss_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['rss_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Rss Feed<br />");
 	echo(get_input_field("printable_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['printable_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Printable");
 	echo("</td>");
@@ -893,7 +893,8 @@ if (is_opendb_valid_session())
 				echo(format_help_block($help_entries_rs));
 				
 				echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();"));
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">&nbsp;<input type=button value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">
+				<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 				echo("</form>");
 			}
 			else
@@ -925,9 +926,9 @@ if (is_opendb_valid_session())
 			}
 					
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=button value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
 			else
-				echo("\n<input type=button value=\"Insert\" onclick=\"this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
 
 			echo("\n</form>");
 		}
@@ -944,30 +945,23 @@ if (is_opendb_valid_session())
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
 				
-			echo("<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">".
-				"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-				"<input type=\"hidden\" name=\"op\" value=\"\">".
-				"<input type=\"hidden\" name=\"s_item_type\" value=\"\">".
-				"</form>");
-			
-			echo("<table>");
-			echo("<tr class=\"navbar\">"
+			$results = fetch_s_item_type_rs();
+			if($results)
+			{
+				echo("<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">".
+					"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
+					"<input type=\"hidden\" name=\"op\" value=\"\">".
+					"<input type=\"hidden\" name=\"s_item_type\" value=\"\">");
+				
+				echo("<table>");
+				echo("<tr class=\"navbar\">"
 				."<th>Order</th>"
 				."<th>Type</th>"
 				."<th>Description</th>"
 				."<th colspan=2>Image</th>"
 				."<th colspan=2></th>"
 				."</tr>");	
-			$column_count = 6;
-			
-			$results = fetch_s_item_type_rs();
-			if($results)
-			{
-				echo("\n<form name=\"s_item_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-			
+				
 				// value, display, img, checked_ind, order_no
 				$row = 0;
 				while($item_type_r = db_fetch_assoc($results))
@@ -980,15 +974,14 @@ if (is_opendb_valid_session())
 				
 				echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
 				
-				echo("<input type=button value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-					" <input type=button value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+					" <input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
 					
 				echo("</form>");
 			}
 			else
 			{
-				echo("</table>");
-				echo("<div class=\"error\">No Item Types Installed</div>");
+				echo("<p class=\"error\">No Item Types Installed</p>");
 			}
 
 			function is_not_exists_item_type($type)

@@ -305,7 +305,7 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 		echo("<input type=\"hidden\" name=\"redirect\" value=\"".$HTTP_VARS['redirect']."\">");
 	}
 	
-	echo("<input type=\"hidde\"n name=\"op\" value=\"login\">");
+	echo("<input type=\"hidden\" name=\"op\" value=\"login\">");
 	
 	echo("\n<ul>".
 		"\n<li><label for=\"uid\">".get_opendb_lang_var('userid')."</label>".

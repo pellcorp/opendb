@@ -167,10 +167,11 @@ function get_group_block($config_group_r)
 			"<input type=\"hidden\" name=\"op\" value=\"\">".
 			"<input type=\"hidden\" name=\"group_id\" value=\"".$config_group_r['id']."\">";
 			
-	$buffer .= "<div style=\"{text-align: right;}\"><input type=\"submit\" class=\"submit\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">
-			<input type=\"submit\" class=\"submit\" value=\"Save\" onclick=\"this.form['op'].value='save'; this.form.submit();\"></div>\n";
+	$buffer .= "<ul class=\"actionButtons configSaveButtons\">
+			<li><input type=\"submit\" class=\"submit\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\"></li>
+			<li><input type=\"submit\" class=\"submit\" value=\"Save\" onclick=\"this.form['op'].value='save'; this.form.submit();\"></li></ul>\n";
 	
-	$buffer .= "<h3 nowrap>".$config_group_r['name']."</h3>\n";
+	$buffer .= "<h3>".$config_group_r['name']."</h3>\n";
 	
 	if(strlen($config_group_r['description'])>0)
 	{
@@ -190,7 +191,7 @@ function get_group_block($config_group_r)
 
 		    $buffer .=
 				"<tr>"
-				."\n<td nowrap class=\"prompt\" align=right>".$config_group_item_r['prompt']." <a href=\"#\" onmouseover=\"show_tooltip('".addslashes(str_replace('"', '&quot;', $config_group_item_r['description']))."','".addslashes($config_group_item_r['prompt'])."');\" onmouseout=\"return hide_tooltip();\">(?)</a>:</td>"
+				."\n<td class=\"prompt\">".$config_group_item_r['prompt']." <a href=\"#\" onmouseover=\"show_tooltip('".addslashes(str_replace('"', '&quot;', $config_group_item_r['description']))."','".addslashes($config_group_item_r['prompt'])."');\" onmouseout=\"return hide_tooltip();\">(?)</a>:</td>"
 				."<td class=\"data\">".get_group_block_input_field($config_group_item_r, $values_r)
 				."</td></tr>";
 		}
@@ -205,7 +206,7 @@ function get_group_block($config_group_r)
 	{
 		while($config_subgroup_r = db_fetch_assoc($results))
 		{
-			$buffer .= "<h3 nowrap>".str_replace(" ", "&nbsp;", $config_subgroup_r['name'])."</h3>";
+			$buffer .= "<h3>".$config_subgroup_r['name']."</h3>";
 			if(strlen($config_subgroup_r['description'])>0)
 			{
 				$buffer .= $config_subgroup_r['description'];
@@ -225,7 +226,7 @@ function get_group_block($config_group_r)
 
                     $buffer .=
 			            "<tr>"
-			            ."\n<td nowrap class=\"prompt\" align=right>".$config_group_item_r['prompt']."<a href=\"#\" onmouseover=\"show_tooltip('".addslashes(str_replace('"', '&quot;', $config_group_item_r['description']))."','".addslashes($config_group_item_r['prompt'])."');\" onmouseout=\"return hide_tooltip();\">(?)</a>:</td>"
+			            ."\n<td class=\"prompt\">".$config_group_item_r['prompt']."<a href=\"#\" onmouseover=\"show_tooltip('".addslashes(str_replace('"', '&quot;', $config_group_item_r['description']))."','".addslashes($config_group_item_r['prompt'])."');\" onmouseout=\"return hide_tooltip();\">(?)</a>:</td>"
 			            ."<td class=\"data\">".get_group_block_input_field($config_group_item_r, $values_r)
 						."</td></tr>";
 				}

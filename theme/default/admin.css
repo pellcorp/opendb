@@ -118,3 +118,8 @@ ul.actionButtons
 {
 	clear: both;
 }
+
+ul.configSaveButtons
+{
+	float: right;
+}

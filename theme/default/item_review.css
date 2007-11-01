@@ -3,3 +3,5 @@ ul.reviewOptions, ul.reviewOptionsVertical {
 	padding: 0px;
 	margin: 0px;
 }
+
+span.starRating { padding: 0 5px; }

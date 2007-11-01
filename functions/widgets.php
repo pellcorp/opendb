@@ -1123,12 +1123,14 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 			}
 		}
 
+		$field .= '<span class="starRating">';
 		// Now display the images.
 		for ($i=0; $i<(int)$lookup_r['value']; $i++)
 			$field .= _theme_image("rs.gif");
 		for ($i=0; $i<(int)($total_count-(int)$lookup_r['value']); $i++)
 			$field .= _theme_image("gs.gif");
-
+		$field .= '</span>';
+		
 		// now the display value.
 		$field .= format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display']);
 		$field .= "</li>";

@@ -83,10 +83,10 @@ function display_s_status_type_row($status_type_r, $row)
 	
 	echo("\n<tr>");
 
-	echo("\n<td class=\"data\" align=\"center\">".$status_type_r['s_status_type']."</td>");
-	echo("\n<td class=\"data\" align=\"center\">".$status_type_r['description']."</td>");
+	echo("\n<td class=\"data\">".$status_type_r['s_status_type']."</td>");
+	echo("\n<td class=\"data\">".$status_type_r['description']."</td>");
 
-	echo("<td class=\"data\" align=\"center\">");
+	echo("<td class=\"data\">");
 	// Get the theme specific source of the image.
 	if(strlen($status_type_r['img'])>0)
 	{
@@ -98,8 +98,8 @@ function display_s_status_type_row($status_type_r, $row)
 		echo("&nbsp;");
 	echo("</td>");
 
-	echo("\n<td class=\"data\" align=\"center\">".ifempty($status_type_r['default_ind'], 'N')."</td>");
-    echo("\n<td class=\"data\" align=\"center\">".$status_type_r['closed_ind']."</td>");
+	echo("\n<td class=\"data\">".ifempty($status_type_r['default_ind'], 'N')."</td>");
+    echo("\n<td class=\"data\">".$status_type_r['closed_ind']."</td>");
 
 	echo("\n<td class=\"data\">[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
 		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a> ]</td>");

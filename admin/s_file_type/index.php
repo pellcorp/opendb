@@ -28,13 +28,13 @@ function display_s_file_type_row($file_type_r, $row)
 	
 	if(is_not_empty_array($file_type_r))
 	{
-		echo("\n<td align=\"center\" class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "readonly", "N", $file_type_r['content_type'], FALSE).
+		echo("\n<td class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "readonly", "N", $file_type_r['content_type'], FALSE).
 			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 			"</td>");
 	}
 	else
 	{
-		echo("\n<td align=\"center\" class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "text(20,100)", "Y", $file_type_r['content_type'], FALSE).
+		echo("\n<td class=\"data\">".get_input_field("content_type[$row]", NULL, NULL, "text(20,100)", "Y", $file_type_r['content_type'], FALSE).
 			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">".
 			"</td>");
 	}
@@ -54,7 +54,7 @@ function display_s_file_type_row($file_type_r, $row)
 	//description
 	echo("\n<td class=\"data\">".get_input_field("description[$row]", NULL, NULL, "text(20,255)", "N", $file_type_r['description'], FALSE)."</td>");
 	
-	echo("\n<td align=\"center\" class=\"data\">".get_input_field("extension[$row]", NULL, "Extension", "text(10,10)", "Y",  $file_type_r['extension'], FALSE)."</td>");
+	echo("\n<td class=\"data\">".get_input_field("extension[$row]", NULL, "Extension", "text(10,10)", "Y",  $file_type_r['extension'], FALSE)."</td>");
 	
 	$alt_extensions = '';
 	if(is_not_empty_array($file_type_r))
@@ -69,7 +69,7 @@ function display_s_file_type_row($file_type_r, $row)
 	// convert array of extensiosn to a string
 	echo("\n<td class=\"data\">".get_input_field("alt_extensions[$row]", NULL, "Alternate Extensions", "text(20,255)", "N", $alt_extensions, FALSE)."</td>");
 	
-	echo("<td class=\"data\" align=\"center\">");
+	echo("<td class=\"data\">");
 	// Get the theme specific source of the image.
 	if(strlen($file_type_r['image'])>0)
 	{
@@ -83,7 +83,7 @@ function display_s_file_type_row($file_type_r, $row)
 
 	echo("\n<td class=\"data\">".get_input_field("image[$row]", NULL, NULL, "url(15,*,\"gif,jpg,png\",N)", "N", $file_type_r['image'], FALSE)."</td>");
 	
-	echo ("\n<td class=\"data\" align=\"middle\">".get_input_field("thumbnail_support_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($file_type_r['thumbnail_support_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."</td>");
+	echo ("\n<td class=\"data\">".get_input_field("thumbnail_support_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($file_type_r['thumbnail_support_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."</td>");
 	
     echo("\n<td class=\"data\">");
    	if(is_not_empty_array($file_type_r))

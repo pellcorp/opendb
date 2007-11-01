@@ -110,9 +110,9 @@ if(is_opendb_valid_session())
 				{
 					while($title_mask_r = db_fetch_assoc($results))
 					{
-                        echo("<tr><td class=\"data\" align=\"center\" nowrap>".$title_mask_r['description']."</td>");
+                        echo("<tr><td class=\"data\">".$title_mask_r['description']."</td>");
                         $title_mask_items_r = fetch_title_mask_items_r($title_mask_r['id'], $HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
-                        echo("<td class=\"data\" align=\"center\"><textarea wrap=\"off\" cols=\"125\" rows=\"3\" name=\"display_mask[".$title_mask_r['id']."]\">".htmlspecialchars($title_mask_items_r['display_mask'])."</textarea></td>");
+                        echo("<td class=\"data\"><textarea wrap=\"off\" cols=\"125\" rows=\"3\" name=\"display_mask[".$title_mask_r['id']."]\">".htmlspecialchars($title_mask_items_r['display_mask'])."</textarea></td>");
 						echo("</tr>");
 					}
 					db_free_result($results);

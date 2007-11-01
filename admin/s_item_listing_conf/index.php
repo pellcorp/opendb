@@ -356,7 +356,7 @@ function get_column_details($record_r, $row)
 	
 	while(list(, $column_r) = each($columns_r))
 	{
-		$buffer .= '<td align="center" class="'.$class.'" id="'.$column_r['column'].'['.$row.']" nowrap>'.$column_r['field'].'</td>';
+		$buffer .= '<td class="'.$class.'" id="'.$column_r['column'].'['.$row.']" nowrap>'.$column_r['field'].'</td>';
 	}
 	$buffer .= '</tr>';
 	return $buffer;

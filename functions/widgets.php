@@ -978,7 +978,9 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 	@param $item_r where provided will give the item_id / instance_no, where not provided is safe to assume that this
 	is a new item insert field and this information is not relevant.
 */
-function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlength, $content_groups, $value, $disabled = FALSE)
+url($fieldname, $item_r, $item_attribute_type_r, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled);
+
+function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlength, $content_groups, $value, $onchange_event, $disabled = FALSE)
 {
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 	{
@@ -1261,7 +1263,7 @@ function single_select($name, $lookup_results, $mask, $length, $value, $onchange
 	if(is_array($value))// convert single element array, to string
 		$value = $value[0];
 
-	$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
+	$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" class=\"select\" $onchange".($disabled?' DISABLED':'').">";
 			
 	$value_found=FALSE;
 	while($lookup_r = db_fetch_assoc($lookup_results))
@@ -1317,9 +1319,9 @@ function multi_select($name, $lookup_results, $mask, $length, $size, $value, $on
 		$onchange = "onchange=\"$onchange_event\"";
 	
 	if(is_numeric($size) && $size>1)
-		$var="\n<select multiple name=\"".$name."[]\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
+		$var="\n<select multiple name=\"".$name."[]\" class=\"select\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
 	else
-		$var = "\n<select name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
+		$var = "\n<select name=\"$name\" class=\"select\" $onchange".($disabled?' DISABLED':'').">";
 
 	// sanity check
 	if(is_array($value) && count($value)>0)
@@ -1389,9 +1391,9 @@ function value_select($name, $values_r, $size, $value, $onchange_event=NULL, $di
 		$onchange = "onchange=\"$onchange_event\"";
 			
 	if(is_numeric($size) && $size>1)
-		$var="\n<select multiple name=\"".$name."[]\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
+		$var="\n<select multiple name=\"".$name."[]\" class=\"select\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
 	else
-		$var = "\n<select name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
+		$var = "\n<select name=\"$name\" class=\"select\" $onchange".($disabled?' DISABLED':'').">";
 
 	while(list(,$val) = @each($values_r))
 	{
@@ -1559,9 +1561,9 @@ function custom_select(
 	if($size !== 'NA')
 	{
 		if(is_numeric($size) && $size>1)
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'')." MULTIPLE>";
+			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" class=\"select\" size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'')." MULTIPLE>";
 		else
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
+			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" class=\"select\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
 	}
 	else
 	{
@@ -1633,7 +1635,7 @@ function custom_select(
 	within context of the rest of the $display_mask.  It all gets placed into a
 	TD table cell.
 */
-function format_data($field_mask, $field, $align = NULL)
+function format_data($field_mask, $field)
 {
 	// If $display_mask is defined, then format $field to include it.
 	if(strlen($field_mask)>0 && strpos($field_mask,"%field%")!==FALSE)
@@ -1667,17 +1669,17 @@ function format_prompt($prompt, $prompt_mask = NULL)
 function format_field($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_mask=NULL)
 {
 	// stub for old functionality.
-	return format_field2($prompt, $field_mask, $field, NULL, $dowrap, $prompt_mask);
+	return format_field2($prompt, $field_mask, $field, $dowrap, $prompt_mask);
 }
 
 /*
 * A second version of the format_field function to use in get_display_field, but we
 * avoid the impact of changing every call to format_field.
 */
-function format_field2($prompt, $field_mask, $field, $align = NULL, $dowrap=TRUE, $prompt_mask=NULL)
+function format_field2($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_mask=NULL)
 {
 	if($dowrap)
-		return "\n<tr>".format_prompt($prompt,$prompt_mask).format_data($field_mask, $field, $align)."</tr>";
+		return "\n<tr>".format_prompt($prompt,$prompt_mask).format_data($field_mask, $field)."</tr>";
 	else
 		return $field;
 }
@@ -1693,7 +1695,7 @@ function format_input_field($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_
 		}
 		
 		return "<tr><th class=\"prompt\">".$prompt.(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && $compulsory_ind=='Y'?_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field')):"").":</th>".
-				format_data($field_mask, $field, NULL)."</tr>";
+				format_data($field_mask, $field)."</tr>";
 	}
 	else
 	{
@@ -2099,7 +2101,7 @@ function get_item_display_field(
 					$field = format_listing_link($value, $field, $item_attribute_type_r, NULL);
 				}
 
-				return format_field2($item_attribute_type_r['prompt'], NULL, $field, NULL, $dowrap, $prompt_mask);
+				return format_field2($item_attribute_type_r['prompt'], NULL, $field, $dowrap, $prompt_mask);
 			}
 		}
 		else
@@ -2114,9 +2116,9 @@ function get_item_display_field(
 		$value = nl2br(trim($value));
 		
 		if($item_attribute_type_r['listing_link_ind'] == 'Y')
-			return format_field2($item_attribute_type_r['prompt'], NULL, format_listing_links($value, $item_attribute_type_r, 'word'), NULL, $dowrap, $prompt_mask);
+			return format_field2($item_attribute_type_r['prompt'], NULL, format_listing_links($value, $item_attribute_type_r, 'word'), $dowrap, $prompt_mask);
 		else
-			return format_field2($item_attribute_type_r['prompt'], NULL, $value, $align, $dowrap, $prompt_mask);
+			return format_field2($item_attribute_type_r['prompt'], NULL, $value, $dowrap, $prompt_mask);
 	}
 	else if($item_attribute_type_r['display_type'] == 'category' || $item_attribute_type_r['display_type'] == 'display')
 	{	

@@ -126,7 +126,7 @@ function get_group_block_input_field($config_group_item_r, $value)
 				case 'number':
 					$element_name = $config_group_item_r['group_id']."[".$config_group_item_r['id']."][]";
 
-					$buffer .= "<select name=\"".$element_name."\" MULTIPLE size=\"5\">\n";
+					$buffer .= "<select name=\"".$element_name."\" class=\"select\" size=\"5\" MULTIPLE>\n";
 
 					if(is_array($value))
 					{
@@ -164,12 +164,13 @@ function get_group_block($config_group_r)
 	
 	$buffer .= "<form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">".
 			"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-			"<input type=\"hidden\" name=\"op\" value=\"\">".
+			"<input type=\"hidden\" name=\"op\" value=\"save\">".
 			"<input type=\"hidden\" name=\"group_id\" value=\"".$config_group_r['id']."\">";
 			
-	$buffer .= "<ul class=\"actionButtons configSaveButtons\">
-			<li><input type=\"submit\" class=\"submit\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\"></li>
-			<li><input type=\"submit\" class=\"submit\" value=\"Save\" onclick=\"this.form['op'].value='save'; this.form.submit();\"></li></ul>\n";
+	$buffer .= "<ul class=\"saveButtons\">
+				<li><input type=\"submit\" class=\"submit\" value=\"Refresh\" onclick=\"this.form['op'].value='';\"></li>
+				<li><input type=\"submit\" class=\"submit\" value=\"Save\"></li>
+			</ul>\n";
 	
 	$buffer .= "<h3>".$config_group_r['name']."</h3>\n";
 	

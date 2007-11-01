@@ -215,15 +215,15 @@ if (is_opendb_valid_session())
 							
 							$tokens['file'] = get_relative_opendb_filename($tokens['file']);
 							
-							echo("\n<tr>".
-							"<td class=\"$class\" align=\"center\">".$tokens['type']."</td>".
-							"<td class=\"$class\" align=\"center\">".$tokens['user_id']."</td>".
-							"<td class=\"$class\" align=\"center\">".$tokens['ip']."</td>".
-							"<td class=\"$class\" align=\"center\" nowrap>".$tokens['datetime']."</td>".
-							"<td class=\"$class\" align=\"center\">".$tokens['file']."</td>".
-							"<td class=\"$class\" align=\"center\">".$tokens['function']."</td>".
-							"<td class=\"$class\" align=\"center\">".$tokens['message']."</td>".
-							"<td class=\"$class\" align=\"center\">".$tokens['parameters']."</td>".
+							echo("\n<tr class=\"logRow\">".
+							"<td class=\"$class\">".$tokens['type']."</td>".
+							"<td class=\"$class\">".$tokens['user_id']."</td>".
+							"<td class=\"$class\">".$tokens['ip']."</td>".
+							"<td class=\"$class dateTime\">".$tokens['datetime']."</td>".
+							"<td class=\"$class\">".$tokens['file']."</td>".
+							"<td class=\"$class\">".$tokens['function']."</td>".
+							"<td class=\"$class\">".$tokens['message']."</td>".
+							"<td class=\"$class\">".$tokens['parameters']."</td>".
 							"</tr>");
 						}
 						fclose($logfile);

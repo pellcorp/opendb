@@ -92,7 +92,7 @@ function get_column_select_block($fieldname, $lookup_array, $selectedindex)
 {
 	// So we can access the language variables.
 	
-	$var="\n<select name=\"$fieldname\">";
+	$var="\n<select name=\"$fieldname\" class=\"select\">";
 	$var.="\n<option value=\"\">-- ".get_opendb_lang_var('none')." --";
 	for ($i=0; $i<count($lookup_array); $i++)
 	{
@@ -113,7 +113,7 @@ function build_select($name, $lookup_results, $value, $include_none_option=TRUE)
 	// If at least one $lookup_r['value'] is different from $lookup_r['display'] set this variable to true.
 	$display_used=FALSE;
 	
-	$var="\n<select name=\"$name\">";
+	$var="\n<select name=\"$name\" class=\"select\">";
 	if($include_none_option)
 		$var.="\n<option value=\"\">-- ".get_opendb_lang_var('none')." --";
 		
@@ -179,7 +179,7 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 		.format_prompt(get_opendb_lang_var('s_item_type'))
 		.format_data(NULL, get_column_select_block("field_column[s_item_type]", $header_row, $field_column_r['s_item_type']))
 		.format_data(NULL, NULL)
-		.format_data(NULL, NULL, "center")
+		.format_data(NULL, NULL)
 		."</tr>";
 									
 	// --------- Now the main input fields start....
@@ -274,7 +274,7 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 					.format_prompt($item_attribute_type_r['prompt'])
 					.format_data(NULL, get_column_select_block("field_column[$fieldname]", $header_row, $field_column_r[$fieldname]))
 					.format_data(NULL, $default_field)
-					.format_data(NULL, $initcap_field, "center")
+					.format_data(NULL, $initcap_field)
 					."</tr>";
 					
 			}//if($item_attribute_type_r['s_field_type'] !== 'ITEM_ID')

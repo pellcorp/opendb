@@ -107,7 +107,7 @@ function display_s_item_type_row($item_type_r, $row)
 		$class = "error";
 	
 	// order_no
-	echo("\n<td class=\"$class\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $item_type_r['order_no'], FALSE)."</td>");
+	echo("\n<td class=\"$class\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $item_type_r['order_no'], FALSE)."</td>");
 	
 	echo("\n<td class=\"$class\">".get_input_field("s_item_type[$row]", NULL, "Item Type", "readonly", "Y", $item_type_r['s_item_type'], FALSE).
 		"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
@@ -116,7 +116,7 @@ function display_s_item_type_row($item_type_r, $row)
 	//description
 	echo("\n<td class=\"$class\">".get_input_field("description[$row]", NULL, NULL, "text(30,30)", "N", $item_type_r['description'], FALSE)."</td>");
 
-	echo("<td class=\"$class\" align=\"center\">");
+	echo("<td class=\"$class\">");
 	// Get the theme specific source of the image.
 	if(strlen($item_type_r['image'])>0)
 	{
@@ -170,7 +170,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	if(is_not_empty_array($s_item_attribute_type_r) && $exists_error_ind==FALSE)
 	{
 		// order_no
-		echo("<td class=\"$class\" align=\"center\">");
+		echo("<td class=\"$class\">");
 		if(!is_s_item_attribute_type_deletable($s_item_type, $s_item_attribute_type_r['s_attribute_type'], $s_item_attribute_type_r['order_no']))
 			echo(get_input_field("order_no[$row]", NULL, "Order No.", "readonly", "N", $s_item_attribute_type_r['order_no'], FALSE));
 		else
@@ -197,12 +197,12 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	else
 	{
 		// order_no
-		echo("<td class=\"$class\" align=\"center\">".
+		echo("<td class=\"$class\">".
 			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE)."</td>");
 		
-		echo("<td class=\"$class\" align=\"center\">".
-			"<select name=\"s_attribute_type[$row]\">".
+		echo("<td class=\"$class\">".
+			"<select name=\"s_attribute_type[$row]\" class=\"select\">".
 			"\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
 		while(list(,$attribute_type_r) = each($s_attribute_type_list_rs))
@@ -230,11 +230,11 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 				$attribute_type_r['s_field_type'] != 'TITLE' && 
 				$attribute_type_r['s_field_type'] != 'ITEM_ID'))
 	{
-        echo("<td class=\"$class\" align=\"center\">");
+        echo("<td class=\"$class\">");
 		echo(get_input_field("instance_attribute_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['instance_attribute_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE));
         echo("</td>");
 
-        echo("<td class=\"$class\" align=\"center\">");
+        echo("<td class=\"$class\">");
 		echo(get_input_field("compulsory_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['compulsory_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE));
         echo("</td>");
 	}
@@ -242,19 +242,19 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	{
 		// title is not supported at instance level
         if($attribute_type_r['s_field_type'] == 'TITLE')
-			echo("<td class=\"$class\" align=\"center\">N</td>");
+			echo("<td class=\"$class\">N</td>");
 		else
-	        echo("<td class=\"$class\" align=\"center\">Y</td>");
+	        echo("<td class=\"$class\">Y</td>");
 
-		echo("<td class=\"$class\" align=\"center\">Y</td>");
+		echo("<td class=\"$class\">Y</td>");
 	}
 	
-	echo("\n<td class=\"$class\" align=\"left\">");
+	echo("\n<td class=\"$class\">");
 	echo(get_input_field("rss_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['rss_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Rss Feed<br />");
 	echo(get_input_field("printable_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['printable_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE)."&nbsp;Printable");
 	echo("</td>");
 	
-	echo("\n<td class=\"$class\" nowrap>");
+	echo("\n<td class=\"$class\">");
 	if(is_not_empty_array($s_item_attribute_type_r))
 	{
 		echo("[");

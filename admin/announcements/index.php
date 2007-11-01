@@ -68,7 +68,7 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 
 	$user_type_rs = get_user_types_rs(get_user_types_r(), ifempty($announcement_r['min_user_type'], ifempty($HTTP_VARS['min_user_type'],'N')));
 	
-	$field = "<select name=\"min_user_type\">";
+	$field = "<select name=\"min_user_type\" class=\"select\">";
 	while(list(,$user_type_r) = each($user_type_rs))
 	{
 		$field .= "\n<option value=\"".$user_type_r['value']."\"".($user_type_r['checked_ind']=='Y'?' SELECTED':'').">".$user_type_r['display']."</option>";

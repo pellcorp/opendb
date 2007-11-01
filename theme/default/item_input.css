@@ -1,9 +1,21 @@
 /* item input widgets */
 
-input.saveButton
+ul.saveButtons
 {
+	clear: both;
 	float: right;
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
 }
+
+ul.saveButtons li
+{
+	float: left;
+	padding-right: 2px;
+	border: none;
+}
+
 
 div.item_inputContent th.prompt
 {

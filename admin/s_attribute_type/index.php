@@ -84,7 +84,7 @@ function get_attribute_ind_type_function_list($type)
 */
 function build_function_list($name, $list_array, $function_type, $onchange_event=NULL)
 {
-	$select = "\n<select name=\"$name\" onchange=\"$onchange_event\">";
+	$select = "\n<select name=\"$name\" class=\"select\" onchange=\"$onchange_event\">";
 
 	while(list($key,) = each($list_array))
 	{
@@ -318,7 +318,9 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	$pageno = 1;
    	$count = 0;
    	
-   	echo('<div id="tab-content"><div style="{text-align: right;}"><input type=\"submit\" class=\"submit\" value="Update"></div>');
+   	echo('<div id="tab-content"><ul class="saveButtons">
+   			<li><input type="submit" class="submit" value="Update"></li>
+   			</ul>');
 	for($i=0; $i<count($attribute_type_rows); $i++)
 	{
 		if($count == 20)
@@ -332,7 +334,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 		{   
 			echo("<div id=\"pane$pageno\" class=\"".($pageno==1?"tabContent":"tabContentHidden")."\">
 				<table>
-				tr class=\"navbar\">
+				<tr class=\"navbar\">
 				<th>Delete</th>
 				<th>Order</th>
 				<th>Value</th>
@@ -357,9 +359,9 @@ function get_s_attribute_type_row($attribute_type_r, $row)
 
 	$block = "\n<tr>";
 
-	$block .= "\n<td class=\"data\" align=\"center\">".$attribute_type_r['s_attribute_type']."</td>";
-	$block .= "\n<td class=\"data\" align=\"center\">".$attribute_type_r['description']."</td>";
-	$block .= "\n<td class=\"data\" align=\"center\">".$attribute_type_r['s_field_type']."</td>";
+	$block .= "\n<td class=\"data\">".$attribute_type_r['s_attribute_type']."</td>";
+	$block .= "\n<td class=\"data\">".$attribute_type_r['description']."</td>";
+	$block .= "\n<td class=\"data\">".$attribute_type_r['s_field_type']."</td>";
 
 	$block .= "\n<td class=\"data\">[";
 	$block .= " <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit</a>";
@@ -377,14 +379,14 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 {
 	$block = "<tr>";
 	
-	$block .= "<td class=\"data\" align=\"center\">";
+	$block .= "<td class=\"data\">";
 	if(is_not_empty_array($lookup_r))
 		$block .= get_input_field("delete_ind[$row]", NULL, NULL, "simple_checkbox()", "N", "Y", FALSE);
 	else
 		$block .= "&nbsp;";
 	$block .= "</td>";
 	
-	$block .= "<td class=\"data\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $lookup_r['order_no'], FALSE)."</td>";
+	$block .= "<td class=\"data\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $lookup_r['order_no'], FALSE)."</td>";
 
 	// value
 	if(is_not_empty_array($lookup_r))
@@ -407,7 +409,7 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 	if($lookup_r['img'] != 'none')
 		$src = _theme_image_src($lookup_r['img']);
 
-	$block .= "<td class=\"data\" align=\"center\">";
+	$block .= "<td class=\"data\">";
 	if($src!==FALSE && strlen($src)>0)
 		$block .= "<img src=\"$src\">";
 	else
@@ -415,8 +417,8 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 	$block .= "</td>";
 
 	$block .= "<td class=\"data\">".get_input_field("img[$row]", NULL, "Image", "url(15,*,\"gif,jpg,png\",N)", "N", $lookup_r['img']!="none"?$lookup_r['img']:NULL, FALSE, NULL, "if(this.value.length>0){this.form['none_img[$row]'].checked=false;}")."</td>";
-	$block .= "<td class=\"data\" align=\"center\">".get_input_field("none_img[$row]", NULL, NULL, "simple_checkbox(".($lookup_r['img'] == "none"?"CHECKED":"").")", "N", "Y", FALSE, NULL, "if(this.checked){this.form['img[$row]'].value='';}")."</td>";
-	$block .= "<td class=\"data\" align=\"center\"><input type=\"checkbox\" class=\"checkbox\" name=\"checked_ind[{$row}]\" value=\"Y\" onclick=\"toggleChecked(this, 'checked_ind')\" ".(strtoupper($lookup_r['checked_ind'])== 'Y'?'CHECKED':'').">";
+	$block .= "<td class=\"data\">".get_input_field("none_img[$row]", NULL, NULL, "simple_checkbox(".($lookup_r['img'] == "none"?"CHECKED":"").")", "N", "Y", FALSE, NULL, "if(this.checked){this.form['img[$row]'].value='';}")."</td>";
+	$block .= "<td class=\"data\"><input type=\"checkbox\" class=\"checkbox\" name=\"checked_ind[{$row}]\" value=\"Y\" onclick=\"toggleChecked(this, 'checked_ind')\" ".(strtoupper($lookup_r['checked_ind'])== 'Y'?'CHECKED':'').">";
 
 	$block .= "</tr>";
 	

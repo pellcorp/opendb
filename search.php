@@ -184,7 +184,7 @@ if(is_site_enabled())
 			// ------------------------
 			// CATEGORY FIELD
 			// ------------------------
-			$catTypeSelect = "<select name=\"category\">".
+			$catTypeSelect = "<select name=\"category\" class=\"select\">".
 				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
 			reset($category_type_rs);	
@@ -214,8 +214,7 @@ if(is_site_enabled())
 		// ------------------------
 		if(@count($item_type_rs)>1)
 		{
-			$itemTypeSelect = "<select name=\"s_item_type\" 
-						onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
+			$itemTypeSelect = "<select name=\"s_item_type\"  class=\"select\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
 			reset($item_type_rs);		
@@ -234,7 +233,7 @@ if(is_site_enabled())
 		// ------------------------
 		// ATTRIBUTE_TYPE FIELD
 		// ------------------------
-		$attrTypeSelect = "<select name=\"attribute_type\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
+		$attrTypeSelect = "<select name=\"attribute_type\" class=\"select\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
 				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 		
 		@reset($item_attribute_type_rs);		
@@ -252,7 +251,7 @@ if(is_site_enabled())
 		 echo format_field(
 			get_opendb_lang_var('s_attribute_type_lookup'),
 			NULL,
-			"\n<select name=\"lookup_attribute_val\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attribute_val'].disabled=true;}else{this.form['attribute_val'].disabled=false;}\">".
+			"\n<select name=\"lookup_attribute_val\" class=\"select\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attribute_val'].disabled=true;}else{this.form['attribute_val'].disabled=false;}\">".
 				"\n<option value=\"\">".get_opendb_lang_var('use_the_value_field')." ---->".
 				"\n</select>");
 				
@@ -274,7 +273,7 @@ if(is_site_enabled())
 		echo format_field(
 		get_opendb_lang_var('updated'), 
 		NULL,
-		"\n<select name=\"attr_update_on_days\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attr_update_on'].disabled=true;}else{this.form['attr_update_on'].disabled=false;}\">".
+		"\n<select name=\"attr_update_on_days\" class=\"select\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attr_update_on'].disabled=true;}else{this.form['attr_update_on'].disabled=false;}\">".
 			"\n<option value=\"\">".get_opendb_lang_var('specify_datetime')." ---->".
 			"\n<option value=\"1\">".get_opendb_lang_var('one_day_ago').
 			"\n<option value=\"7\">".get_opendb_lang_var('one_week_ago').
@@ -297,7 +296,7 @@ if(is_site_enabled())
 			format_field(
 				get_opendb_lang_var('owner'), 
 				NULL,
-				"\n<select name=\"owner_id\">".
+				"\n<select name=\"owner_id\" class=\"select\">".
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 					custom_select(
 						'owner_id', 
@@ -350,7 +349,7 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('updated'), 
 			NULL,
-			"\n<select name=\"update_on_days\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".
+			"\n<select name=\"update_on_days\" class=\"select\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".
 				"\n<option value=\"\">".get_opendb_lang_var('specify_datetime')." ---->".
 				"\n<option value=\"1\">".get_opendb_lang_var('one_day_ago').
 				"\n<option value=\"7\">".get_opendb_lang_var('one_week_ago').
@@ -362,7 +361,7 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('order_by'), 
 			NULL,
-			"\n<select name=\"order_by\">".
+			"\n<select name=\"order_by\" class=\"select\">".
 				"\n<option value=\"title\" SELECTED>".get_opendb_lang_var('title').
 				"\n<option value=\"owner_id\">".get_opendb_lang_var('owner').
 				"\n<option value=\"category\">".get_opendb_lang_var('category').

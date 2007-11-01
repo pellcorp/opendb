@@ -145,7 +145,7 @@ function validate_orderby_datatype($datatype)
 {
 	if(strcasecmp($datatype, 'numeric') === 0)
 		return 'numeric';
-	else //if(strcasecmp($align, 'alpha') === 0)
+	else //if(strcasecmp($datatype, 'alpha') === 0)
 		return 'alpha';
 }
 

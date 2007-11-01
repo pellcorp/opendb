@@ -90,7 +90,7 @@ function display_s_address_type_row($address_type_r, $row)
 	echo("\n<tr>");
 	
 	// order_no
-	echo("\n<td class=\"data\" align=\"center\">".get_input_field("display_order[$row]", NULL, NULL, "number(3)", "N", $address_type_r['display_order'], FALSE)."</td>");
+	echo("\n<td class=\"data\">".get_input_field("display_order[$row]", NULL, NULL, "number(3)", "N", $address_type_r['display_order'], FALSE)."</td>");
 	
 	// s_address_type
 	echo("\n<td class=\"data\">".get_input_field("s_address_type[$row]", NULL, NULL, "readonly", "Y", $address_type_r['s_address_type'], FALSE).
@@ -106,9 +106,9 @@ function display_s_address_type_row($address_type_r, $row)
 	echo ("\n<td class=\"data\">".custom_select("compulsory_for_user_type[$row]", array_merge(array(array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, ifempty($address_type_r['compulsory_for_user_type'],$HTTP_VARS['compulsory_for_user_type']))."</td>");
 	
 	if(is_array($address_type_r))
-		echo ("\n<td class=\"data\" align=\"center\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($address_type_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
+		echo ("\n<td class=\"data\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($address_type_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
 			
-	echo("\n<td class=\"data\" nowrap>");
+	echo("\n<td class=\"data\">");
 	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_address_type=".$address_type_r['s_address_type']."\">Edit</a>");
 	echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_address_type=".$address_type_r['s_address_type']."\">Delete</a>");
 	echo(" ]</td>");
@@ -130,7 +130,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 		$class = "data";
 		
 	// Delete ind
-	echo("<td class=\"$class\" align=\"center\">");
+	echo("<td class=\"$class\">");
 	if(!$exists_error_ind && is_not_empty_array($s_addr_attribute_type_rltshp_r) && is_s_addr_attribute_type_rltshp_deletable($s_address_type, $s_addr_attribute_type_rltshp_r['s_attribute_type'], $s_addr_attribute_type_rltshp_r['order_no']))
 		echo get_input_field("delete_ind[$row]", NULL, NULL, "simple_checkbox()", "N", "Y", FALSE);
 	else
@@ -141,7 +141,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	if(is_not_empty_array($s_addr_attribute_type_rltshp_r) && $exists_error_ind==FALSE)
 	{
 		// order_no
-		echo("<td class=\"$class\" align=\"center\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "Y", $s_addr_attribute_type_rltshp_r['order_no'], FALSE).
+		echo("<td class=\"$class\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "Y", $s_addr_attribute_type_rltshp_r['order_no'], FALSE).
 			"<input type=\"hidden\" name=\"old_order_no[$row]\" value=\"".$s_addr_attribute_type_rltshp_r['order_no']."\">".
 			"</td>");
 		
@@ -154,12 +154,12 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	else
 	{
 		// order_no
-		echo("<td class=\"$class\" align=\"center\" nowrap>".
+		echo("<td class=\"$class\">".
 			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_addr_attribute_type_rltshp_r['order_no'], FALSE)."</td>");
 
-  		echo("<td class=\"$class\" align=\"center\">".
-			"<select name=\"s_attribute_type[$row]\">".
+  		echo("<td class=\"$class\">".
+			"<select name=\"s_attribute_type[$row]\" class=\"select\">".
 			"\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
 		while(list(,$attribute_type_r) = each($s_attribute_type_list_rs))
@@ -183,7 +183,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	echo ("\n<td class=\"$class\">".custom_select("compulsory_for_user_type[$row]", array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, $s_addr_attribute_type_rltshp_r['compulsory_for_user_type'])."</td>");
 	
 	if(is_array($s_addr_attribute_type_rltshp_r))
-		echo ("\n<td class=\"$class\" align=\"center\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($s_addr_attribute_type_rltshp_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
+		echo ("\n<td class=\"$class\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($s_addr_attribute_type_rltshp_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
 	echo("</td>");
 	
 	echo("</tr>");

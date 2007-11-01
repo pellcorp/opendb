@@ -101,23 +101,20 @@ class AdminAjaxJobs
 	function printJobProgressBar() {
 		$gsimage = _theme_image_src('gs.gif');
 	
-		$divContents = '<div id="status" style="{width:300; margin: 4px}">
+		$divContents = '
+		<div id="status" style="{width:300; margin: 4px}">
 		<div id="debug"></div>
-		<table width=\"100%\" border=\"0\">
-		<tr>
-			<td align="center" colspan="10" id="message" class="success">&nbsp;</td>
-		</tr>
-		<tr>';
+		<div style="{width:100%;}" id="message" class="success"></div>
+		
+		<ul id="progressBar">';
 		
 		for($i=1;  $i<=10; $i++) {
-			$divContents .= "\n<td><img id=\"status$i\" src=\"$gsimage\"></td>";
+			$divContents .= "\n<li><img id=\"status$i\" src=\"$gsimage\"></li>";
 		}
+				
+		$divContents .= '</ul>
 		
-		$divContents .= '</tr>
-		<tr>
-			<td align="center" colspan="10" id="percentage">0%</td>
-		</tr>
-		</table>
+		<div id="percentage">0%</div>
 		
 		<form id="progressForm">
 			<input type="hidden" name="continue" value="true" />

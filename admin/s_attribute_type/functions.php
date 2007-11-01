@@ -161,16 +161,6 @@ $argument_types = array(
 										.'</ul></p>',
 							'input_type'=>'value_select("VERTICAL,HORIZONTAL", 1)'),
 
-			'alignment'=>array('prompt'=>'Alignment',
-							'description'=>'Which way should this field be aligned?'
-										.'<p>Options are:'
-										.'<ul>'
-										.'<li>LEFT</li>'
-										.'<li>RIGHT</li>'
-										.'<li>CENTRE</li>'
-										.'</ul></p>',
-							'input_type'=>'value_select("LEFT,RIGHT,CENTRE", 1)'),
-
 			'content_group'=>array('prompt'=>'Content Group',
 							'description'=>'Specify which content group(s) this field will accept as legal.'
 											.'<p>Example: <b>IMAGE, VIDEO</b></p>',

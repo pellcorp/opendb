@@ -63,7 +63,7 @@ function getListingFiltersBlock()
 			$excluded_vars_list[] = 'owner_id';
 			
 			$buffer .= "<li><label for=\"select-owner_id\">".get_opendb_lang_var('owner_id')."</label>
-				<select id=\"select-owner_id\" name=\"owner_id\">
+				<select id=\"select-owner_id\" name=\"owner_id\" class=\"select\">
 				<option value=\"\"></option>".
 				custom_select(
 						'owner_id', 
@@ -85,7 +85,7 @@ function getListingFiltersBlock()
 					$excluded_vars_list[] = 's_status_type';					
 					
 					$buffer .= "<li><label for=\"select-s_status_type\">".get_opendb_lang_var('s_status_type')."</label>
-						<select id=\"select-s_status_type\" name=\"s_status_type\">
+						<select id=\"select-s_status_type\" name=\"s_status_type\" class=\"select\">
 						<option value=\"\"></option>".
 						custom_select(
 							'owner_id', 
@@ -107,7 +107,7 @@ function getListingFiltersBlock()
 				$excluded_vars_list[] = 's_item_type_group';
 				
 				$buffer .= "<li><label for=\"select-s_item_type_group\">".get_opendb_lang_var('s_item_type_group')."</label>
-					<select id=\"select-s_item_type_group\" name=\"s_item_type_group\">
+					<select id=\"select-s_item_type_group\" name=\"s_item_type_group\" class=\"select\">
 					<option value=\"\"></option>".
 					custom_select(
 						's_item_type_group', 
@@ -128,7 +128,7 @@ function getListingFiltersBlock()
 				$excluded_vars_list[] = 's_item_type';
 				
 				$buffer .= "<li><label for=\"select-s_item_type\">".get_opendb_lang_var('s_item_type')."</label>
-					<select id=\"select-s_item_type\" name=\"s_item_type\">
+					<select id=\"select-s_item_type\" name=\"s_item_type\" class=\"select\">
 					<option value=\"\"></option>".
 					custom_select(
 						's_item_type', 

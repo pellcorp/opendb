@@ -46,7 +46,7 @@ if($_GET['op'] == 'generate')
 	// generate & output thumbnail
 	if ($phpThumb->GenerateThumbnail() && $phpThumb->RenderToFile('./itemcache/5_THUMB.cache.jpeg')) 
 	{
-		echo '<td align="center">Thumbnail generated<br>';
+		echo '<td>Thumbnail generated<br />';
 		echo('<img src="./itemcache/5_THUMB.cache.jpeg"></td>');
 	}
 	else

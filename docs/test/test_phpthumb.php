@@ -38,7 +38,7 @@ $gd_info                  = gd_info();
 
 This page analyzes your settings (server/PHP) for <a href="http://phpthumb.sourceforge.net"><b>phpThumb()</a> package embedded in OpenDb</b><br>
 <br>
-<p align="center">
+<p>
 <table border="1">
 	<tr><th colspan="8">&lt;-- bad . . . . . good --&gt;</th></tr>
 	<tr>

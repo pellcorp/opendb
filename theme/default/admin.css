@@ -119,9 +119,25 @@ ul.actionButtons
 	clear: both;
 }
 
-ul.configSaveButtons
+ul#progressBar
 {
-	float: right;
-	margin: 0px;
-	padding: 0px;
+	list-style-type: none;
+}
+
+ul#progressBar li
+{
+	float: left;
+	padding-right: 15px;
+}
+
+div#percentage
+{
+	clear: both;
+	text-align: center;
+	width: 300px;
+}
+
+tr.logRow td
+{
+	text-align: center;
 }

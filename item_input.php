@@ -384,7 +384,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 
 			echo("<h3>".get_opendb_lang_var('what_owner_add_new_item')."</h3>");
 			
-			echo("\n<select name=\"owner_id\">".
+			echo("\n<select name=\"owner_id\" class=\"select\">".
 					custom_select(
 						'owner_id',
 						fetch_user_rs(get_owner_user_types_r()),
@@ -891,7 +891,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 			$formContents .= format_field(
 				get_opendb_lang_var('owner'),
 				NULL,
-				"\n<select name=\"owner_id\">".
+				"\n<select name=\"owner_id\" class=\"select\">".
 				custom_select(
 					'owner_id',
 					fetch_user_rs(get_owner_user_types_r(), NULL, 'user_id', 'ASC', FALSE),
@@ -1037,7 +1037,9 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		
 		$pageContents .= "<div id=\"tab-content\">";
 		
-		$pageContents .= "<input type=\"button\" class=\"button saveButton\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\">";
+		$pageContents .= "<ul class=\"saveButtons\">
+				<li><input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_item')."\"></li>
+			</ul>";
 		
 		$pageContents .= "<div class=\"tabContent\" id=\"details\">";
 		

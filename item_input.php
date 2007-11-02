@@ -384,7 +384,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 
 			echo("<h3>".get_opendb_lang_var('what_owner_add_new_item')."</h3>");
 			
-			echo("\n<select name=\"owner_id\" class=\"select\">".
+			echo("\n<select name=\"owner_id\">".
 					custom_select(
 						'owner_id',
 						fetch_user_rs(get_owner_user_types_r()),
@@ -891,7 +891,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 			$formContents .= format_field(
 				get_opendb_lang_var('owner'),
 				NULL,
-				"\n<select name=\"owner_id\" class=\"select\">".
+				"\n<select name=\"owner_id\">".
 				custom_select(
 					'owner_id',
 					fetch_user_rs(get_owner_user_types_r(), NULL, 'user_id', 'ASC', FALSE),

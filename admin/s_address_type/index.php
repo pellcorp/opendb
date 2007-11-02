@@ -159,7 +159,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_addr_attribute_type_rltshp_r['order_no'], FALSE)."</td>");
 
   		echo("<td class=\"$class\">".
-			"<select name=\"s_attribute_type[$row]\" class=\"select\">".
+			"<select name=\"s_attribute_type[$row]\">".
 			"\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
 		while(list(,$attribute_type_r) = each($s_attribute_type_list_rs))

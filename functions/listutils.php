@@ -98,7 +98,7 @@ function getItemsPerPageControl($PHP_SELF, $HTTP_VARS)
 		$buffer .= "<form class=\"itemsPerPageControl\" id=\"form-items_per_page\" action=\"".$PHP_SELF."\" method=\"GET\">".
 				get_url_fields($HTTP_VARS, NULL, array('listing_link')).
 				"<label for=\"select-items_per_page\">".get_opendb_lang_var('items_per_page').'</label>'.
-				"<select id=\"select-items_per_page\" name=\"items_per_page\" class=\"select footer\" onChange=\"this.form.submit()\">".
+				"<select id=\"select-items_per_page\" name=\"items_per_page\" class=\"footer\" onChange=\"this.form.submit()\">".
 					custom_select('items_per_page', 
 							$items_per_page_rs,
 							'%display%',

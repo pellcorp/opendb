@@ -84,7 +84,7 @@ function get_attribute_ind_type_function_list($type)
 */
 function build_function_list($name, $list_array, $function_type, $onchange_event=NULL)
 {
-	$select = "\n<select name=\"$name\" class=\"select\" onchange=\"$onchange_event\">";
+	$select = "\n<select name=\"$name\" onchange=\"$onchange_event\">";
 
 	while(list($key,) = each($list_array))
 	{

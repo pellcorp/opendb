@@ -126,7 +126,7 @@ function get_group_block_input_field($config_group_item_r, $value)
 				case 'number':
 					$element_name = $config_group_item_r['group_id']."[".$config_group_item_r['id']."][]";
 
-					$buffer .= "<select name=\"".$element_name."\" class=\"select\" size=\"5\" MULTIPLE>\n";
+					$buffer .= "<select name=\"".$element_name."\" size=\"5\" MULTIPLE>\n";
 
 					if(is_array($value))
 					{

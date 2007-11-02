@@ -100,8 +100,8 @@ if(is_site_enabled())
 
 				if($HTTP_VARS['inc_menu'] != 'N')
 				{
-					echo('<form id="toolType" action="admin.php"><select name="type" class=\"select\" onChange="this.form.submit();">');
-					
+					echo('<form id="toolType" action="admin.php"><select name="type" onChange="this.form.submit();">');
+						
 					reset($system_admin_tools_menu_options);
 					while(list($tool, $menu_option_r) = each($system_admin_tools_menu_options))
 					{

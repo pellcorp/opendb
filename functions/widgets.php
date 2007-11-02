@@ -1265,7 +1265,7 @@ function single_select($name, $lookup_results, $mask, $length, $value, $onchange
 	if(is_array($value))// convert single element array, to string
 		$value = $value[0];
 
-	$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" class=\"select\" $onchange".($disabled?' DISABLED':'').">";
+	$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
 			
 	$value_found=FALSE;
 	while($lookup_r = db_fetch_assoc($lookup_results))
@@ -1321,9 +1321,9 @@ function multi_select($name, $lookup_results, $mask, $length, $size, $value, $on
 		$onchange = "onchange=\"$onchange_event\"";
 	
 	if(is_numeric($size) && $size>1)
-		$var="\n<select multiple name=\"".$name."[]\" class=\"select\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
+		$var="\n<select multiple name=\"".$name."[]\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
 	else
-		$var = "\n<select name=\"$name\" class=\"select\" $onchange".($disabled?' DISABLED':'').">";
+		$var = "\n<select name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
 
 	// sanity check
 	if(is_array($value) && count($value)>0)
@@ -1393,9 +1393,9 @@ function value_select($name, $values_r, $size, $value, $onchange_event=NULL, $di
 		$onchange = "onchange=\"$onchange_event\"";
 			
 	if(is_numeric($size) && $size>1)
-		$var="\n<select multiple name=\"".$name."[]\" class=\"select\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
+		$var="\n<select multiple name=\"".$name."[]\" size=\"$size\" $onchange".($disabled?' DISABLED':'').">";
 	else
-		$var = "\n<select name=\"$name\" class=\"select\" $onchange".($disabled?' DISABLED':'').">";
+		$var = "\n<select name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
 
 	while(list(,$val) = @each($values_r))
 	{
@@ -1563,9 +1563,9 @@ function custom_select(
 	if($size !== 'NA')
 	{
 		if(is_numeric($size) && $size>1)
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" class=\"select\" size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'')." MULTIPLE>";
+			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'')." MULTIPLE>";
 		else
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" class=\"select\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
+			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
 	}
 	else
 	{

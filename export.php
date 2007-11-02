@@ -677,7 +677,7 @@ if(is_site_enabled())
 					echo format_field(
 							get_opendb_lang_var('owner'), 
 							NULL,
-							"\n<select name=\"owner_id\" class=\"select\">".
+							"\n<select name=\"owner_id\">".
 								"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 								custom_select(
 									'owner_id', 
@@ -699,7 +699,7 @@ if(is_site_enabled())
 				echo format_field(
 						get_opendb_lang_var('item_type'), 
 						NULL,
-						"<select name=\"s_item_type\" class=\"select\">".
+						"<select name=\"s_item_type\">".
 							"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 							custom_select(
 									's_item_type', 
@@ -711,7 +711,7 @@ if(is_site_enabled())
 						"\n</select>"
 					);
 					
-				$field = "\n<select name=\"plugin\" class=\"select\">\n";
+				$field = "\n<select name=\"plugin\">\n";
 				$plugin_list_r = get_export_plugin_list_r();
 				if(is_array($plugin_list_r))
 				{

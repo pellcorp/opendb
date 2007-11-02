@@ -202,7 +202,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE)."</td>");
 		
 		echo("<td class=\"$class\">".
-			"<select name=\"s_attribute_type[$row]\" class=\"select\">".
+			"<select name=\"s_attribute_type[$row]\">".
 			"\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
 		while(list(,$attribute_type_r) = each($s_attribute_type_list_rs))

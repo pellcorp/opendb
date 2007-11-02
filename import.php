@@ -92,7 +92,7 @@ function get_column_select_block($fieldname, $lookup_array, $selectedindex)
 {
 	// So we can access the language variables.
 	
-	$var="\n<select name=\"$fieldname\" class=\"select\">";
+	$var="\n<select name=\"$fieldname\">";	
 	$var.="\n<option value=\"\">-- ".get_opendb_lang_var('none')." --";
 	for ($i=0; $i<count($lookup_array); $i++)
 	{
@@ -113,7 +113,7 @@ function build_select($name, $lookup_results, $value, $include_none_option=TRUE)
 	// If at least one $lookup_r['value'] is different from $lookup_r['display'] set this variable to true.
 	$display_used=FALSE;
 	
-	$var="\n<select name=\"$name\" class=\"select\">";
+	$var="\n<select name=\"$name\">";
 	if($include_none_option)
 		$var.="\n<option value=\"\">-- ".get_opendb_lang_var('none')." --";
 		

@@ -170,7 +170,7 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('title'),
 			NULL,
-				"\n<input type=\"text\" class=\"text\" size=\"50\" name=\"title\">".
+				"\n<input type=\"text\" class=\"text\" id=\"search-title\" size=\"50\" name=\"title\">".
 				"\n<ul class=\"searchInputOptions\">".
 				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
 				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
@@ -184,7 +184,7 @@ if(is_site_enabled())
 			// ------------------------
 			// CATEGORY FIELD
 			// ------------------------
-			$catTypeSelect = "<select name=\"category\" class=\"select\">".
+			$catTypeSelect = "<select name=\"category\" id=\"search-category\">".
 				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
 			reset($category_type_rs);	
@@ -214,7 +214,7 @@ if(is_site_enabled())
 		// ------------------------
 		if(@count($item_type_rs)>1)
 		{
-			$itemTypeSelect = "<select name=\"s_item_type\"  class=\"select\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
+			$itemTypeSelect = "<select name=\"s_item_type\" id=\"search-itemtype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
 			reset($item_type_rs);		
@@ -233,7 +233,7 @@ if(is_site_enabled())
 		// ------------------------
 		// ATTRIBUTE_TYPE FIELD
 		// ------------------------
-		$attrTypeSelect = "<select name=\"attribute_type\" class=\"select\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
+		$attrTypeSelect = "<select name=\"attribute_type\" id=\"search-attributetype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
 				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 		
 		@reset($item_attribute_type_rs);		
@@ -251,14 +251,14 @@ if(is_site_enabled())
 		 echo format_field(
 			get_opendb_lang_var('s_attribute_type_lookup'),
 			NULL,
-			"\n<select name=\"lookup_attribute_val\" class=\"select\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attribute_val'].disabled=true;}else{this.form['attribute_val'].disabled=false;}\">".
+			"\n<select name=\"lookup_attribute_val\" id=\"search-lookupattributeval\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attribute_val'].disabled=true;}else{this.form['attribute_val'].disabled=false;}\">".
 				"\n<option value=\"\">".get_opendb_lang_var('use_the_value_field')." ---->".
 				"\n</select>");
 				
 		 echo format_field(
 			get_opendb_lang_var('attribute_val'), 
 			NULL,
-				"<input type=\"text\" class=\"text\" name=\"attribute_val\" size=\"50\" value=\"\">".
+				"<input type=\"text\" class=\"text\" name=\"attribute_val\" id=\"search-attributeval\" size=\"50\" value=\"\">".
 				"\n<ul class=\"searchInputOptions\">".
 				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
 				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
@@ -267,21 +267,6 @@ if(is_site_enabled())
 				"\n</ul>"
 			);
 				
-		// ------------------------
-		// UPDATE_ON FIELD
-		// ------------------------
-		echo format_field(
-		get_opendb_lang_var('updated'), 
-		NULL,
-		"\n<select name=\"attr_update_on_days\" class=\"select\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attr_update_on'].disabled=true;}else{this.form['attr_update_on'].disabled=false;}\">".
-			"\n<option value=\"\">".get_opendb_lang_var('specify_datetime')." ---->".
-			"\n<option value=\"1\">".get_opendb_lang_var('one_day_ago').
-			"\n<option value=\"7\">".get_opendb_lang_var('one_week_ago').
-			"\n<option value=\"28\">".get_opendb_lang_var('one_month_ago').
-			"\n<option value=\"365\">".get_opendb_lang_var('one_year_ago').
-			"\n</select>".
-			get_input_field("attr_update_on", NULL, NULL,"datetime(".get_opendb_config_var('search', 'datetime_mask').")","N",NULL,FALSE));
-		
 		// ------------------------
 		// OWNER FIELD
 		// ------------------------
@@ -296,7 +281,7 @@ if(is_site_enabled())
 			format_field(
 				get_opendb_lang_var('owner'), 
 				NULL,
-				"\n<select name=\"owner_id\" class=\"select\">".
+				"\n<select name=\"owner_id\" id=\"search-owner\">".
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 					custom_select(
 						'owner_id', 
@@ -334,7 +319,7 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('status_comment'), 
 			NULL,
-				"\n<input type=\"text\" size=\"50\" name=\"status_comment\">".
+				"\n<input type=\"text\" class=\"text\" name=\"status_comment\" id=\"search-statuscomment\" size=\"50\">".
 				"\n<ul class=\"searchInputOptions\">".
 				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
 				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
@@ -349,7 +334,7 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('updated'), 
 			NULL,
-			"\n<select name=\"update_on_days\" class=\"select\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".
+			"\n<select name=\"update_on_days\" id=\"search-updateondays\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".
 				"\n<option value=\"\">".get_opendb_lang_var('specify_datetime')." ---->".
 				"\n<option value=\"1\">".get_opendb_lang_var('one_day_ago').
 				"\n<option value=\"7\">".get_opendb_lang_var('one_week_ago').
@@ -361,7 +346,7 @@ if(is_site_enabled())
 		echo format_field(
 			get_opendb_lang_var('order_by'), 
 			NULL,
-			"\n<select name=\"order_by\" class=\"select\">".
+			"\n<select name=\"order_by\"  id=\"search-orderby\">".
 				"\n<option value=\"title\" SELECTED>".get_opendb_lang_var('title').
 				"\n<option value=\"owner_id\">".get_opendb_lang_var('owner').
 				"\n<option value=\"category\">".get_opendb_lang_var('category').

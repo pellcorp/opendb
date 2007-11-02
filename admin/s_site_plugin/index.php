@@ -1238,7 +1238,7 @@ if (is_opendb_valid_session())
 					<th></th>
 					<th>Include</th>
 					</tr>");
-					echo("<tr><td><select name=\"from_item_types\" class=\"select\" size=\"15\" MULTIPLE>");
+					echo("<tr><td><select name=\"from_item_types\" size=\"15\" MULTIPLE>");
 					echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
 					for($i=0; $i<count($not_exists_item_type_rs); $i++)
 					{
@@ -1255,7 +1255,7 @@ if (is_opendb_valid_session())
 						
 					echo("</td>");
 					
-					echo("<td><select name=\"to_item_types\" class=\"select\" size=\"15\" MULTIPLE>");
+					echo("<td><select name=\"to_item_types\" size=\"15\" MULTIPLE>");
                     echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
 					for($i=0; $i<count($exists_item_type_rs); $i++)
 					{

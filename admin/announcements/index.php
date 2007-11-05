@@ -75,10 +75,7 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 	}
 	$field .= "</select>";
 				
-	$buffer .= format_field(
-				'Min User Type',
-				NULL, 
-				$field);//value
+	$buffer .= format_field('Min User Type', $field);//value
 
 	$buffer .= get_input_field("display_days",
 				NULL, //s_attribute_type

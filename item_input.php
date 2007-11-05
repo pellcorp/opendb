@@ -682,13 +682,11 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 			$prompt_mask = _theme_image('rs.gif', get_opendb_lang_var('refreshed'))."%prompt%";
 		}
 		
-		return format_input_field(
-				$item_attribute_type_r['prompt'], 
-				NULL,
+		return format_item_data_field(
+				$item_attribute_type_r, 
 				$field,
-				TRUE,
 				$prompt_mask,
-				$item_attribute_type_r['compulsory_ind']);
+				NULL); // field mask
 			
 	} // not a choose attribute
 	else
@@ -890,7 +888,6 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 		{
 			$formContents .= format_field(
 				get_opendb_lang_var('owner'),
-				NULL,
 				"\n<select name=\"owner_id\">".
 				custom_select(
 					'owner_id',
@@ -934,7 +931,6 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 				{
 					$formContents .= format_field(
 						$item_attribute_type_r['prompt'],
-						NULL,
 						radio_grid('s_status_type',
 							$lookup_results, 
 							'%img%', // mask

@@ -141,6 +141,7 @@ $_OPENDB_THEME_CSS_MAP = array(
 	'quick_checkout'=>array('listings', 'item_display'),
 	'import'=>array('listings', 'item_display', 'item_input'),
 	'item_display'=>array('listings'),
+	'item_input'=>array('listings'),
 	'user_listing'=>array('listings'),
 	'admin'=>array('listings', 'item_input'),
 	'search'=>array('item_review', 'item_input'),

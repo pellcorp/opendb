@@ -102,7 +102,6 @@ function get_user_input_form($user_r, $HTTP_VARS)
 
 	$buffer .= format_field(
 					get_opendb_lang_var('user_type'),
-					NULL, 
 					get_usertype_prompt(ifempty($HTTP_VARS['user_type'],$user_r['type'])));
 	
 	if(!is_array($user_r))
@@ -130,7 +129,6 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	{	
 		$uid_theme = ifempty($HTTP_VARS['uid_theme'],$user_r['theme']);
 		$buffer .= format_field(get_opendb_lang_var('user_theme'), 
-						NULL, 
 						custom_select("uid_theme", get_user_theme_r(), "%value%", 1, is_exists_theme($uid_theme)?$uid_theme:get_opendb_config_var('site', 'theme')));// If theme no longer exists, then set to default!
 	}
 	
@@ -143,7 +141,6 @@ function get_user_input_form($user_r, $HTTP_VARS)
 			
 			$buffer .= format_field(
 							get_opendb_lang_var('user_language'), 
-							NULL, 
 							custom_select(
 								'uid_language', 
 								fetch_language_rs(), 

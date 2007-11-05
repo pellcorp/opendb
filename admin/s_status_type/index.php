@@ -158,33 +158,36 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	global $_COLUMN_DESC;
 	
 	if(is_array($status_type_r))
-		echo get_input_field("s_status_type", NULL, $_COLUMN_DESC['s_status_type'], "readonly", "Y", $status_type_r['s_status_type'], TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('s_status_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+		echo get_input_field("s_status_type", NULL, $_COLUMN_DESC['s_status_type'], "readonly", "Y", $status_type_r['s_status_type'], TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('s_status_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	else
-		echo get_input_field("s_status_type", NULL, $_COLUMN_DESC['s_status_type'], "text(1,1)", "Y", $HTTP_VARS['s_status_type'], TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('s_status_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+		echo get_input_field("s_status_type", NULL, $_COLUMN_DESC['s_status_type'], "text(1,1)", "Y", $HTTP_VARS['s_status_type'], TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('s_status_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 
-	echo get_input_field("description", NULL, $_COLUMN_DESC['description'], "text(30,60)", "Y", ifempty($status_type_r['description'],$HTTP_VARS['description']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('description')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("description", NULL, $_COLUMN_DESC['description'], "text(30,60)", "Y", ifempty($status_type_r['description'],$HTTP_VARS['description']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('description')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 
 	$field = get_input_field("img", NULL, $_COLUMN_DESC['img'], "url(15,*,\"gif,jpg,png\",N)", "N", ifempty($status_type_r['img'],$HTTP_VARS['img']), FALSE);
 	$image_src = _theme_image_src(ifempty($status_type_r['img'],$HTTP_VARS['img']));
 	if($image_src!==FALSE && strlen($image_src)>0)
 		$field .= " <img src=\"$image_src\">";
-	echo format_field($_COLUMN_DESC['img'], NULL, $field, TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('img')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
-	echo get_input_field("delete_ind", NULL, $_COLUMN_DESC['delete_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['delete_ind'],$HTTP_VARS['delete_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('delete_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-	echo get_input_field("change_owner_ind", NULL, $_COLUMN_DESC['change_owner_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['change_owner_ind'], ifempty($HTTP_VARS['change_owner_ind'],"N")), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('change_owner_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo format_field($_COLUMN_DESC['img'], $field, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('img')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	
+	echo get_input_field("delete_ind", NULL, $_COLUMN_DESC['delete_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['delete_ind'],$HTTP_VARS['delete_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('delete_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("change_owner_ind", NULL, $_COLUMN_DESC['change_owner_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['change_owner_ind'], ifempty($HTTP_VARS['change_owner_ind'],"N")), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('change_owner_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	$display_user_type_rs = array_merge(array(array('value'=>'', 'display'=>'')), get_user_types_rs(get_user_types_r()));
-	echo format_field($_COLUMN_DESC['min_display_user_type'], NULL, custom_select("min_display_user_type", $display_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_display_user_type'],$HTTP_VARS['min_display_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_display_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo format_field($_COLUMN_DESC['min_display_user_type'], custom_select("min_display_user_type", $display_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_display_user_type'],$HTTP_VARS['min_display_user_type'])), "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_display_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	$create_user_type_rs = array_merge(array(array('value'=>'', 'display'=>'')), get_user_types_rs(get_owner_user_types_r()));
-	echo format_field($_COLUMN_DESC['min_create_user_type'], NULL, custom_select("min_create_user_type", $create_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_create_user_type'],$HTTP_VARS['min_create_user_type'])), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_create_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo format_field($_COLUMN_DESC['min_create_user_type'], custom_select("min_create_user_type", $create_user_type_rs, '%value% - %display%', 1, ifempty($status_type_r['min_create_user_type'],$HTTP_VARS['min_create_user_type'])), "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('min_create_user_type')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
-	echo get_input_field("borrow_ind", NULL, $_COLUMN_DESC['borrow_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['borrow_ind'],$HTTP_VARS['borrow_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('borrow_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-	echo get_input_field("status_comment_ind", NULL, $_COLUMN_DESC['status_comment_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['status_comment_ind'],$HTTP_VARS['status_comment_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('status_comment_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-	echo get_input_field("default_ind", NULL, $_COLUMN_DESC['default_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['default_ind'],$HTTP_VARS['default_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('default_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("borrow_ind", NULL, $_COLUMN_DESC['borrow_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['borrow_ind'],$HTTP_VARS['borrow_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('borrow_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("status_comment_ind", NULL, $_COLUMN_DESC['status_comment_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['status_comment_ind'],$HTTP_VARS['status_comment_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('status_comment_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("default_ind", NULL, $_COLUMN_DESC['default_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['default_ind'],$HTTP_VARS['default_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('default_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	if(is_array($status_type_r))
-		echo get_input_field("closed_ind", NULL, $_COLUMN_DESC['closed_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['closed_ind'],$HTTP_VARS['closed_ind']), TRUE, "%prompt%&nbsp;<a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('closed_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	{
+		echo get_input_field("closed_ind", NULL, $_COLUMN_DESC['closed_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['closed_ind'],$HTTP_VARS['closed_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('closed_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	}
 }
 
 if(is_opendb_valid_session())
@@ -199,12 +202,12 @@ if(is_opendb_valid_session())
 				
 				if( $status_type_r['closed_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y' && fetch_default_status_type_cnt() <= 1)
 				{
-					$errors[] = array('error'=>'Status type not deleted','detail'=>'Status type is default and cannot be deleted');
+					$errors[] = array('error'=>'Status Type not deleted','detail'=>'Status Type is default and cannot be deleted');
                     $HTTP_VARS['op'] = NULL;
 				}
 				else if(is_exists_items_with_status_type($HTTP_VARS['s_status_type']))// Validate that no items are attached for this status type.
 				{
-					$errors[] = array('error'=>'Status type not deleted','detail'=>'Status type cannot be deleted while '.$status_type_r['description'].' item instance(s) exist.');
+					$errors[] = array('error'=>'Status Type not deleted','detail'=>'Status Type cannot be deleted while '.$status_type_r['description'].' item instance(s) exist.');
                     $HTTP_VARS['op'] = NULL;
 				}
 				else
@@ -212,15 +215,15 @@ if(is_opendb_valid_session())
 					if($HTTP_VARS['confirmed'] == 'true')
 					{
 						if(!delete_s_status_type($HTTP_VARS['s_status_type']))
-							$errors[] = array('error'=>'Status type not deleted','detail'=>db_error());
+							$errors[] = array('error'=>'Status Type not deleted','detail'=>db_error());
 
                         $HTTP_VARS['op'] = NULL;
 					}
 					else if($HTTP_VARS['confirmed'] != 'false')
 					{
-						echo("\n<h3>Delete Status type</h3>");
+						echo("\n<h3>Delete Status Type</h3>");
 						echo(get_op_confirm_form($PHP_SELF, 
-								"Are you sure you want to delete status type '".$HTTP_VARS['s_status_type']." - ".$status_type_r['description']."'?", 
+								"Are you sure you want to delete Status Type '".$HTTP_VARS['s_status_type']." - ".$status_type_r['description']."'?", 
 								array('type'=>$HTTP_VARS['type'], 'op'=>'delete', 's_status_type'=>$HTTP_VARS['s_status_type'])));
 					}
 					else // confirmation required.
@@ -231,7 +234,7 @@ if(is_opendb_valid_session())
 			}
 			else
 			{
-				$errors[] = array('error'=>'Invalid status type specified');
+				$errors[] = array('error'=>'Invalid Status Type specified');
                 $HTTP_VARS['op'] = NULL;
 			}
 		}
@@ -246,13 +249,13 @@ if(is_opendb_valid_session())
 					($HTTP_VARS['closed_ind'] == 'Y' && $status_type_r['closed_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y')) &&
 						fetch_default_status_type_cnt() <= 1)
 				{
-					$errors[] = array('error'=>'Status type not updated',
-										'detail'=>'Status type is default and cannot be closed');
+					$errors[] = array('error'=>'Status Type not updated',
+										'detail'=>'Status Type is default and cannot be closed');
 				}
 				else if(user_type_cmp($status_type_r['min_create_user_type'], $HTTP_VARS['min_create_user_type']) > 0 && 
 						is_exists_items_for_user_type_and_status_type($status_type_r['s_status_type'], $status_type_r['min_create_user_type']))
 				{
-					$errors[] =	array('error'=>'Status type not updated',
+					$errors[] =	array('error'=>'Status Type not updated',
 									'detail'=>'Item instance(s) exist for user(s) whose type, is not compatible with the new \''.$_COLUMN_DESC['min_create_user_type'].'\' (min_create_user_type) value.');
 				}
 				else
@@ -264,7 +267,7 @@ if(is_opendb_valid_session())
 								$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind'],
 								$HTTP_VARS['closed_ind']))
 					{
-						$errors[] = array('error'=>'Status type not updated','detail'=>db_error());
+						$errors[] = array('error'=>'Status Type not updated','detail'=>db_error());
 					}
 				}
 
@@ -272,7 +275,7 @@ if(is_opendb_valid_session())
 			}
 			else
 			{
-                $errors[] = array('error'=>'Invalid status type specified');
+                $errors[] = array('error'=>'Invalid Status Type specified');
                 $HTTP_VARS['op'] = NULL;
 			}
 		}
@@ -288,7 +291,7 @@ if(is_opendb_valid_session())
 								$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
 								$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind']))
 				{
-					$errors[] = array('error'=>'Status type ('.$HTTP_VARS['s_status_type'].') not inserted','detail'=>db_error());
+					$errors[] = array('error'=>'Status Type ('.$HTTP_VARS['s_status_type'].') not inserted','detail'=>db_error());
 				}
 
                 $HTTP_VARS['op'] = 'edit';
@@ -297,11 +300,11 @@ if(is_opendb_valid_session())
 			{
 				if(strlen($HTTP_VARS['s_status_type'])>0)
 				{
-					$errors[] = array('error'=>'Status type exists');
+					$errors[] = array('error'=>'Status Type exists');
 				}
 				else
 				{
-					$errors[] = array('error'=>'Invalid status type specified');
+					$errors[] = array('error'=>'Invalid Status Type specified');
 				}
                 $HTTP_VARS['op'] = 'new';
 			}
@@ -320,15 +323,15 @@ if(is_opendb_valid_session())
 			{
 				$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
 				if($status_type_r===FALSE)
-					$errors[] = 'Status type ('.$HTTP_VARS['s_status_type'].') not found';
+					$errors[] = 'Status Type ('.$HTTP_VARS['s_status_type'].') not found';
 				
-				echo("\n<h3>Edit Status type</h3>");
+				echo("\n<h3>Edit Status Type</h3>");
 				$save_op = 'update';
 				$save_button = 'Update';
 			}
 			else
 			{
-				echo("\n<h3>New Status type</h3>");
+				echo("\n<h3>New Status Type</h3>");
 				$save_op = 'insert';
 				$save_button = 'Insert';
 			}

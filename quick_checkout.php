@@ -79,7 +79,6 @@ function display_borrower_form($HTTP_VARS)
 		{
 			echo(
 				format_field(get_opendb_lang_var('borrower'),
-						NULL,
 						custom_select('borrower_id', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')
 					)
 			);
@@ -89,7 +88,6 @@ function display_borrower_form($HTTP_VARS)
 			echo(
 				format_field(
 					get_opendb_lang_var('borrower'),
-					NULL,
 					get_opendb_lang_var('no_records_found'))
 				);
 		}

@@ -406,7 +406,7 @@ if(is_site_enabled())
 	
 					echo("\n<table>");
 					$results = fetch_user_rs(get_borrower_user_types_r(), NULL, "fullname", "ASC");
-					echo(format_field(get_opendb_lang_var('borrower'), NULL, custom_select('uid', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')));
+					echo(format_field(get_opendb_lang_var('borrower'), custom_select('uid', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')));
 					echo("</table>");
 					
 					echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");

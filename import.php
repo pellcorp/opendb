@@ -177,9 +177,9 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 	// can ignore records that are not of the chosen item_type.
 	$buffer .= "\n<tr>"
 		.format_prompt(get_opendb_lang_var('s_item_type'))
-		.format_data(NULL, get_column_select_block("field_column[s_item_type]", $header_row, $field_column_r['s_item_type']))
-		.format_data(NULL, NULL)
-		.format_data(NULL, NULL)
+		.format_data(get_column_select_block("field_column[s_item_type]", $header_row, $field_column_r['s_item_type']))
+		.format_data(NULL)
+		.format_data(NULL)
 		."</tr>";
 									
 	// --------- Now the main input fields start....
@@ -272,9 +272,9 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 				
 				$buffer .= "\n<tr>"
 					.format_prompt($item_attribute_type_r['prompt'])
-					.format_data(NULL, get_column_select_block("field_column[$fieldname]", $header_row, $field_column_r[$fieldname]))
-					.format_data(NULL, $default_field)
-					.format_data(NULL, $initcap_field)
+					.format_data(get_column_select_block("field_column[$fieldname]", $header_row, $field_column_r[$fieldname]))
+					.format_data($default_field)
+					.format_data($initcap_field)
 					."</tr>";
 					
 			}//if($item_attribute_type_r['s_field_type'] !== 'ITEM_ID')
@@ -390,14 +390,13 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 		{
 			$buffer .= format_field(
 						get_opendb_lang_var('s_status_type'),
-						NULL,
 						radio_grid('s_status_type',
 							$results,
 							'%img%', // mask
 							'VERTICAL', 
 							$HTTP_VARS['s_status_type'])); // value
 							
-			$buffer .= format_field(get_opendb_lang_var('override_status_type'), NULL, "<input type=\"checkbox\" class=\"checkbox\" name=\"override_status_type\" value=\"Y\"".(strcmp($HTTP_VARS['override_status_type'],'Y')===0?' CHECKED':'').">");
+			$buffer .= format_field(get_opendb_lang_var('override_status_type'), "<input type=\"checkbox\" class=\"checkbox\" name=\"override_status_type\" value=\"Y\"".(strcmp($HTTP_VARS['override_status_type'],'Y')===0?' CHECKED':'').">");
 			
 			$buffer .= '</table>';
 		}
@@ -431,15 +430,15 @@ function get_upload_form($HTTP_VARS)
 	if(strlen($HTTP_VARS['owner_id'])==0)
 	{
 		$results = fetch_user_rs(get_owner_user_types_r());
-		$buffer .= format_field(get_opendb_lang_var('owner'), NULL, custom_select('owner_id', $results, '%fullname% (%user_id%)', 1, get_opendb_session_var('user_id'), 'user_id'));
+		$buffer .= format_field(get_opendb_lang_var('owner'), custom_select('owner_id', $results, '%fullname% (%user_id%)', 1, get_opendb_session_var('user_id'), 'user_id'));
 	}
 	else
 	{
 		$buffer .= "\n<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">";
 	}
 							
-	$buffer .= format_field(get_opendb_lang_var('item_type'), NULL, single_select("s_item_type", fetch_item_type_rs(TRUE), "%value% - %display%", NULL, $HTTP_VARS['s_item_type']));
-	$buffer .= format_field(get_opendb_lang_var('file'), NULL, "<input type=\"file\" class=\"file\" size=\"25\" name=\"uploadfile\">");
+	$buffer .= format_field(get_opendb_lang_var('item_type'), single_select("s_item_type", fetch_item_type_rs(TRUE), "%value% - %display%", NULL, $HTTP_VARS['s_item_type']));
+	$buffer .= format_field(get_opendb_lang_var('file'), "<input type=\"file\" class=\"file\" size=\"25\" name=\"uploadfile\">");
 	
 	$buffer .= "\n</table>";
 	

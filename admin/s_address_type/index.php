@@ -65,9 +65,9 @@ function display_s_address_type_insert_form($HTTP_VARS)
 	echo get_input_field("description", NULL, "Description", "text(30,60)", "Y", $HTTP_VARS['description']);
 	
 	$user_types_rs = get_user_types_rs(get_user_types_r());
-	echo format_field('Minimum Display User', NULL, custom_select("min_display_user_type", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['min_display_user_type'],'B')));
-	echo format_field('Minimum Create User', NULL, custom_select("min_create_user_type", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['min_create_user_type'],'N')));
-	echo format_field('Compulsory For User', NULL, custom_select("compulsory_for_user_type", array_merge(array(array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['compulsory_for_user_type'],'B')));
+	echo format_field('Minimum Display User', custom_select("min_display_user_type", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['min_display_user_type'],'B')));
+	echo format_field('Minimum Create User', custom_select("min_create_user_type", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['min_create_user_type'],'N')));
+	echo format_field('Compulsory For User', custom_select("compulsory_for_user_type", array_merge(array(array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['compulsory_for_user_type'],'B')));
 }
 
 

@@ -126,7 +126,7 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	echo get_url_fields($HTTP_VARS, array('op2'=>'send'), array('subject', 'message'));
 	
 	echo("\n<table class=\"emailForm\">");
-	echo format_field(get_opendb_lang_var('to'),NULL,$to);
+	echo format_field(get_opendb_lang_var('to'), $to);
 	
 	echo get_input_field("from",
 			NULL, // s_attribute_type

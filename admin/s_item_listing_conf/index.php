@@ -121,9 +121,7 @@ function get_column_details($record_r, $row)
 		
 	$columns_r[] = array(
 		'column'=>'column_type',
-		'field'=>format_field(
-			'Column Type',
-			NULL,
+		'field'=>
 			custom_select(
 				"column_type[$row]", 
 				$column_types_r, 
@@ -134,8 +132,7 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'doOnChange(this.form, this)',
-				FALSE),  // disabled
-			FALSE));
+				FALSE)); // disabled
 
 	$field_type_r = array();
 	if($new_record || $record_r['column_type'] != 's_field_type')
@@ -159,9 +156,7 @@ function get_column_details($record_r, $row)
 
 	$columns_r[] = array(
 		'column'=>'s_field_type',
-		'field'=>format_field(
-			'Field Type',
-			NULL,
+		'field'=>
 			custom_select(
 				"s_field_type[$row]", 
 				$field_type_r, 
@@ -172,8 +167,7 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'doOnChange(this.form, this)',
-				$new_record || is_field_disabled('s_field_type', $record_r)),
-			FALSE));
+				$new_record || is_field_disabled('s_field_type', $record_r)));
 
 	$attribute_type_rs = array();
 	if($new_record || $record_r['column_type'] != 's_attribute_type')
@@ -190,9 +184,7 @@ function get_column_details($record_r, $row)
 			
 	$columns_r[] = array(
 		'column'=>'s_attribute_type',
-		'field'=>format_field(
-			'Attribute Type', 
-			NULL, 
+		'field'=>
 			custom_select(
 				"s_attribute_type[$row]", 
 				$attribute_type_rs,
@@ -203,8 +195,7 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'doOnChange(this.form, this)',
-				$new_record || is_field_disabled('s_attribute_type', $record_r)),
-			FALSE));
+				$new_record || is_field_disabled('s_attribute_type', $record_r)));
 	
 	$columns_r[] = array(
 		'column'=>'override_prompt',
@@ -271,9 +262,7 @@ function get_column_details($record_r, $row)
 
 	$columns_r[] = array(
 		'column'=>'orderby_datatype',
-		'field'=>format_field(
-			'Orderby Datatypes',
-			NULL,
+		'field'=>
 			custom_select(
 				"orderby_datatype[$row]", 
 				$orderby_datatypes_r, 
@@ -284,8 +273,7 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'', // onChange
-				$new_record || is_field_disabled('orderby_datatype', $record_r)), 
-			FALSE));
+				$new_record || is_field_disabled('orderby_datatype', $record_r)));
 			
 	$disabled = ($new_record || is_field_disabled('orderby_default_ind', $record_r));
 	if($disabled)
@@ -319,9 +307,7 @@ function get_column_details($record_r, $row)
 
 	$columns_r[] = array(
 		'column'=>'orderby_sort_order',
-		'field'=>format_field(
-			'Orderby Sort Order',
-			NULL,
+		'field'=>
 			custom_select(
 				"orderby_sort_order[$row]", 
 				$sortorder_r, 
@@ -332,8 +318,7 @@ function get_column_details($record_r, $row)
 				NULL,
 				'',
 				'', // onChange
-				$new_record || is_field_disabled('orderby_sort_order', $record_r)), 
-			FALSE));
+				$new_record || is_field_disabled('orderby_sort_order', $record_r)));
 
 	$buffer = "<tr>";
 	$buffer .= '<input type="hidden" name="is_new_row['.$row.']" value="'.($new_record?'true':'false').'">';
@@ -351,8 +336,6 @@ function get_column_details($record_r, $row)
 		'N',
 		$record_r['column_no'], 
 		FALSE);
-	
-	
 	
 	while(list(, $column_r) = each($columns_r))
 	{

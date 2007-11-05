@@ -326,6 +326,15 @@ ul.menu li a:hover, ul.menu li.active a
 	display: inline;
 }
 
+#header form.quickSearch input.text
+{
+	background-image: url(../../images/magnify.png);
+	background-repeat: no-repeat;
+	background-position: top left; 
+	padding: 0px;
+	padding-left: 20px;
+}
+
 form.quickSearch img
 {
 	padding-left: 2px;

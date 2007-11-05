@@ -31,6 +31,15 @@ $_CORE_ATTRIBUTE_TYPES = array(
 		'S_DURATION', 'S_ITEM_ID', 'S_STATUS', 'S_TITLE', 'S_RATING', 'S_STATCMNT'
 	);
 
+function display_item_type_insert_field($title, $fieldType)
+{
+	$lookup_results = fetch_sfieldtype_attribute_type_rs($fieldType);
+	echo("<tr><td class=\"prompt\">".
+			"$title <a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_type']['s_field_type[$fieldType]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a>: ".	
+			"</td><td class=\"data\">".custom_select("s_field_type[$fieldType]", $lookup_results, "%s_attribute_type% - %description%", 1, is_array($HTTP_VARS['s_field_type'])?$HTTP_VARS['s_field_type'][$fieldType]:NULL, "s_attribute_type").
+			"</td></tr>");
+}
+
 function display_s_item_type_insert_form($HTTP_VARS)
 {
 	$sat_results = fetch_sfieldtype_attribute_type_rs(array('TITLE', 'CATEGORY', 'STATUSTYPE', 'STATUSCMNT', 'DURATION'));
@@ -59,32 +68,14 @@ function display_s_item_type_insert_form($HTTP_VARS)
 	
 	echo("\n<table>");
 	
-	$lookup_results = fetch_sfieldtype_attribute_type_rs('TITLE');
-	echo format_field("Title", NULL, 	
-			custom_select("s_field_type[TITLE]", $lookup_results, "%s_attribute_type% - %description%", 1, is_array($HTTP_VARS['s_field_type'])?$HTTP_VARS['s_field_type']['TITLE']:NULL, "s_attribute_type").
-			"&nbsp;<a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_type']['s_field_type[TITLE]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-
-	$lookup_results = fetch_sfieldtype_attribute_type_rs('CATEGORY');
-	echo format_field("Category", NULL, 	
-			custom_select("s_field_type[CATEGORY]", $lookup_results, "%s_attribute_type% - %description%", 1, is_array($HTTP_VARS['s_field_type'])?$HTTP_VARS['s_field_type']['CATEGORY']:NULL, "s_attribute_type").
-			"&nbsp;<a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_type']['s_field_type[CATEGORY]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	display_item_type_insert_field('Title', 'TITLE');
+	display_item_type_insert_field('Category', 'CATEGORY');
+	display_item_type_insert_field('Status Type', 'STATUSTYPE');
+	display_item_type_insert_field('Status Comment', 'STATUSCMNT');
 	
-	$lookup_results = fetch_sfieldtype_attribute_type_rs('STATUSTYPE');
-	echo format_field("Status Type", NULL, 	
-			custom_select("s_field_type[STATUSTYPE]", $lookup_results, "%s_attribute_type% - %description%", 1, is_array($HTTP_VARS['s_field_type'])?$HTTP_VARS['s_field_type']['STATUSTYPE']:NULL, "s_attribute_type").
-			"&nbsp;<a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_type']['s_field_type[STATUSTYPE]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-
-	$lookup_results = fetch_sfieldtype_attribute_type_rs('STATUSCMNT');
-	echo format_field("Status Comment", NULL, 	
-			custom_select("s_field_type[STATUSCMNT]", $lookup_results, "%s_attribute_type% - %description%", 1, is_array($HTTP_VARS['s_field_type'])?$HTTP_VARS['s_field_type']['STATUSCMNT']:NULL, "s_attribute_type").
-			"&nbsp;<a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_type']['s_field_type[STATUSCMNT]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a>");
-						
 	if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('borrow', 'duration_support')!==FALSE)
 	{
-		$lookup_results = fetch_sfieldtype_attribute_type_rs('DURATION');
-		echo format_field("Borrow Duration", NULL, 	
-				custom_select("s_field_type[DURATION]", $lookup_results, "%s_attribute_type% - %description%", 1, is_array($HTTP_VARS['s_field_type'])?$HTTP_VARS['s_field_type']['DURATION']:NULL, "s_attribute_type").
-               "&nbsp;<a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_type']['s_field_type[DURATION]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+		display_item_type_insert_field('Borrow Duration', 'DURATION');
 	}
 
 	echo("\n</table>");
@@ -184,15 +175,12 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 		else
 			$value = $s_item_attribute_type_r['s_attribute_type']; 
 		
-		echo("<td class=\"$class\">".
-				format_field("Attribute Type",
-						NULL,
-						$value."<input type=\"hidden\" name=\"s_attribute_type[$row]\" value=\"".$s_item_attribute_type_r['s_attribute_type']."\">".
-							"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">",FALSE).
-			"</td>");
+		echo("<input type=\"hidden\" name=\"s_attribute_type[$row]\" value=\"".$s_item_attribute_type_r['s_attribute_type']."\">".
+			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
+		
+		echo("<td class=\"$class\">".$value."</td>");
 		
 		echo("<td class=\"$class\"><a href=\"#\" onmouseover=\"return show_sat_tooltip('".$s_item_attribute_type_r['s_attribute_type']."', arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a></td>");
-		
 	}
 	else
 	{
@@ -220,7 +208,6 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 		echo("<td class=\"$class\"><a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_item_attribute_type']['s_attribute_type[$row]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a></td>");
 	}
 
-	//prompt
 	echo("<td class=\"$class\">".get_input_field("prompt[$row]", NULL, NULL, "text(15,30)", "N", $s_item_attribute_type_r['prompt'], FALSE)."</td>");
 	
 	if(!is_array($s_item_attribute_type_r) ||

@@ -162,7 +162,7 @@ input.submit
 #site-search td.moreInfo a
 {
 	display: block;
-	background-image: url(../../images/magnify.gif);
+	background-image: url(../../images/magnify.png);
 	background-repeat: no-repeat;
 	background-position: top left; 
 	padding-left: 20px;

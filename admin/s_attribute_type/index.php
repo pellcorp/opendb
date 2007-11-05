@@ -448,29 +448,28 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 	{
 		edit_attribute_ind_type_js();
 		$attribute_ind_type = get_attribute_ind_type($attribute_type_r, $HTTP_VARS);
-		echo format_field('Attribute Type Indicator', NULL, build_attribute_ind_type_widget($attribute_ind_type));
+		echo format_field('Attribute Type Indicator', build_attribute_ind_type_widget($attribute_ind_type));
 	}			
    
 	if($is_reserved_attribute_type)
 	{
-        echo format_field("Input Type", NULL, $attribute_type_r['input_type']);
+        echo format_field("Input Type", $attribute_type_r['input_type']);
         
         if(strlen($attribute_type_r['input_type_arg1'])>0)
-			echo format_field("Input Type Arg 1", NULL, $attribute_type_r['input_type_arg1']);
+			echo format_field("Input Type Arg 1", $attribute_type_r['input_type_arg1']);
 		if(strlen($attribute_type_r['input_type_arg2'])>0)
-			echo format_field("Input Type Arg 2", NULL, $attribute_type_r['input_type_arg2']);
+			echo format_field("Input Type Arg 2", $attribute_type_r['input_type_arg2']);
 		if(strlen($attribute_type_r['input_type_arg3'])>0)
-			echo format_field("Input Type Arg 3", NULL, $attribute_type_r['input_type_arg3']);
+			echo format_field("Input Type Arg 3", $attribute_type_r['input_type_arg3']);
 		//if(strlen($attribute_type_r['input_type_arg4'])>0)
-		//	echo format_field("Input Type Arg 4", NULL, $attribute_type_r['input_type_arg4']);
+		//	echo format_field("Input Type Arg 4", $attribute_type_r['input_type_arg4']);
 		//if(strlen($attribute_type_r['input_type_arg5'])>0)
-		//	echo format_field("Input Type Arg 5", NULL, $attribute_type_r['input_type_arg5']);
+		//	echo format_field("Input Type Arg 5", $attribute_type_r['input_type_arg5']);
 	}
 	else
 	{
 		$input_function_list = get_attribute_ind_type_function_list($attribute_ind_type);
 		echo format_field("Input Type", 
-						NULL, 
 						build_function_list("input_type", $input_function_list, ifempty($attribute_type_r['input_type'], $HTTP_VARS['input_type'])).
 						get_function_help_link('input'));
 		
@@ -489,13 +488,12 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
             $function_list = build_function_list("display_type", $display_type_functions, ifempty($attribute_type_r['display_type'], $HTTP_VARS['display_type']));
 
 		echo format_field("Display Type",
-					NULL,
 					$function_list.
 					get_function_help_link('display'));
 	}
 	else
 	{
-		echo format_field("Display Type", NULL, $attribute_type_r['display_type']);
+		echo format_field("Display Type", $attribute_type_r['display_type']);
 	}
 	
 	if(!$is_reserved_attribute_type)
@@ -509,15 +507,15 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 	else
 	{
         if(strlen($attribute_type_r['display_type_arg1'])>0)
-			echo format_field("Display Type Arg 1", NULL, $attribute_type_r['display_type_arg1']);
+			echo format_field("Display Type Arg 1", $attribute_type_r['display_type_arg1']);
 		if(strlen($attribute_type_r['display_type_arg2'])>0)
-			echo format_field("Input Type Arg 2", NULL, $attribute_type_r['display_type_arg2']);
+			echo format_field("Input Type Arg 2", $attribute_type_r['display_type_arg2']);
 		if(strlen($attribute_type_r['display_type_arg3'])>0)
-			echo format_field("Display Type Arg 3", NULL, $attribute_type_r['display_type_arg3']);
+			echo format_field("Display Type Arg 3", $attribute_type_r['display_type_arg3']);
 		//if(strlen($attribute_type_r['display_type_arg4'])>0)
-		//	echo format_field("Display Type Arg 4", NULL, $attribute_type_r['display_type_arg4']);
+		//	echo format_field("Display Type Arg 4", $attribute_type_r['display_type_arg4']);
 		//if(strlen($attribute_type_r['display_type_arg5'])>0)
-		//	echo format_field("Display Type Arg 5", NULL, $attribute_type_r['display_type_arg5']);
+		//	echo format_field("Display Type Arg 5", $attribute_type_r['display_type_arg5']);
 	}
 
 	echo get_input_field("listing_link_ind", NULL, "Listing Link Indicator", "checkbox(Y,N)", "N", ifempty($attribute_type_r['listing_link_ind'],$HTTP_VARS['listing_link_ind']));
@@ -527,7 +525,6 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
     		$attribute_type_r['s_field_type'] != 'RATING')
 	{
 		echo format_field("Field type",
-				NULL,
 				custom_select("s_field_type", $_FIELD_TYPES, "%key% - %value%", 1, ifempty($attribute_type_r['s_field_type'], $HTTP_VARS['s_field_type']), "key"));
 			
 			$sites = get_site_plugin_list_r();
@@ -540,12 +537,11 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 				$sites[] = $attribute_type_r['site_type'];
 			
 			echo format_field("Site type", 
-						NULL,
 						custom_select("site_type", $sites, "%value%", 1, ifempty($attribute_type_r['site_type'], $HTTP_VARS['site_type'])));
 	}
 	else
 	{
-		echo format_field("Field type", NULL, $attribute_type_r['s_field_type']);
+		echo format_field("Field type", $attribute_type_r['s_field_type']);
 	}
 }
 

@@ -48,7 +48,7 @@ function display_edit_site_plugin($record_r, $HTTP_VARS=NULL)
 		$field .= _theme_image("site/images/".$image_src, NULL, NULL);
 	}
 	
-	echo format_field('Image', NULL, $field);
+	echo format_field('Image', $field);
 	
 	echo get_input_field('description', NULL, 'Description', 'text(50,255)', 'Y', $record_r['description']);
 	echo get_input_field('external_url', NULL, 'External URL', 'text(50,255)', 'Y', $record_r['external_url']);
@@ -117,7 +117,8 @@ function display_site_plugin_link_row($record_r, $row)
 		db_free_result($results);
 	}
 	
-	echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, is_array($record_r)?$record_r['s_item_type_group']:'*', 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\">".
+		custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, is_array($record_r)?$record_r['s_item_type_group']:'*', 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}")."</td>");
 
 	$item_types[] = '*';
 	$results = fetch_item_type_rs();
@@ -129,7 +130,8 @@ function display_site_plugin_link_row($record_r, $row)
 		}
 		db_free_result($results);
 	}
-	echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_item_type[$row]", $item_types, "%value%", 1, is_array($record_r)?$record_r['s_item_type']:NULL, 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\">".
+		custom_select("s_item_type[$row]", $item_types, "%value%", 1, is_array($record_r)?$record_r['s_item_type']:NULL, 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}")."</td>");
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(20,255)", 'N', $record_r['description'], FALSE)."</td>");
 	echo("<td class=\"data\">".get_input_field("url[$row]", NULL, "URL", "text(20,255)", 'N', $record_r['url'], FALSE)."</td>");
@@ -167,7 +169,7 @@ function display_site_plugin_input_field_row($record_r, $row)
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(20,255)", 'N', $record_r['description'], FALSE)."</td>");
 	echo("<td class=\"data\">".get_input_field("prompt[$row]", NULL, "URL", "text(10,30)", 'N', $record_r['prompt'], FALSE)."</td>");
-	echo("<td class=\"data\">".format_field(NULL, NULL, custom_select("field_type[$row]", get_legal_input_field_types(), "%value%", 1, $record_r['field_type']), FALSE)."</td>");
+	echo("<td class=\"data\">".custom_select("field_type[$row]", get_legal_input_field_types(), "%value%", 1, $record_r['field_type'])."</td>");
 	echo("<td class=\"data\">".get_input_field("refresh_mask[$row]", NULL, "Refresh Mask", "text(20,255)", 'N', $record_r['refresh_mask'], FALSE)."</td>");
 	echo("<td class=\"data\">".get_input_field("default_value[$row]", NULL, "Default Value", "text(7,50)", 'N', $record_r['default_value'], FALSE)."</td>");
 
@@ -215,7 +217,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	if(!in_array($record_r['s_item_type_group'], $item_type_groups))
 		$item_type_groups[] = $record_r['s_item_type_group'];
 		
-	echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, $record_r['s_item_type_group'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\">".custom_select("s_item_type_group[$row]", $item_type_groups, "%value%", 1, $record_r['s_item_type_group'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type[$row]'].options[0].selected=true;}")."</td>");
 
 	$item_types[] = '*';		
 	$results = fetch_item_type_rs();
@@ -232,7 +234,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	if(!in_array($record_r['s_item_type'], $item_types))
 		$item_types[] = $record_r['s_item_type'];
 		
-	echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_item_type[$row]", $item_types, "%value%", 1, $record_r['s_item_type'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}"), FALSE)."</td>");
+	echo ("\n<td class=\"data\">".custom_select("s_item_type[$row]", $item_types, "%value%", 1, $record_r['s_item_type'], 'value', NULL, NULL, "if(this.options[this.options.selectedIndex].value != '*'){this.form['s_item_type_group[$row]'].options[0].selected=true;}")."</td>");
 	
 	$attribute_types[] = '';
 	$results = fetch_item_type_s_attribute_type_rs();
@@ -249,7 +251,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	if(!in_array($record_r['s_attribute_type'], $attribute_types))
 		$attribute_types[] = $record_r['s_attribute_type'];
 		
-	echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_attribute_type[$row]", $attribute_types, "%value%", 1, $record_r['s_attribute_type']), FALSE)."</td>");
+	echo ("\n<td class=\"data\">".custom_select("s_attribute_type[$row]", $attribute_types, "%value%", 1, $record_r['s_attribute_type'])."</td>");
 	
 	if(is_array($record_r) && is_lookup_attribute_type($record_r['s_attribute_type']))
 		echo("<td class=\"data\"><input type=\"checkbox\" class=\"checkbox\" name=\"lookup_attribute_val_restrict_ind[$row]\" value=\"Y\"".(strtoupper($record_r['lookup_attribute_val_restrict_ind'])== 'Y'?'CHECKED':'').">");
@@ -306,7 +308,7 @@ function display_site_plugin_s_attribute_type_lookup_map_row($record_r, $row)
 		echo("<td class=\"data\">".get_input_field("value[$row]", NULL, "Site Value", "readonly", "Y", $record_r['value'], FALSE)."</td>");
 		
 		$results = fetch_attribute_type_lookup_rs($record_r['s_attribute_type'], 'order_no, value ASC');
-		echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("lookup_attribute_val[$row]", $results, "%value% - %display%", 1, $record_r['lookup_attribute_val']), FALSE)."</td>");
+		echo ("\n<td class=\"data\">".custom_select("lookup_attribute_val[$row]", $results, "%value% - %display%", 1, $record_r['lookup_attribute_val'])."</td>");
 	}
 	else
 	{
@@ -321,9 +323,9 @@ function display_site_plugin_s_attribute_type_lookup_map_row($record_r, $row)
 			}
 			db_free_result($results);
 		}
-		echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("s_attribute_type[$row]", $attribute_types, "%value%", 1, NULL, 'value', NULL, NULL, "populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val[$row]'], arrayOfLookupValues, false, null, false);"), FALSE)."</td>");
+		echo ("\n<td class=\"data\">".custom_select("s_attribute_type[$row]", $attribute_types, "%value%", 1, NULL, 'value', NULL, NULL, "populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val[$row]'], arrayOfLookupValues, false, null, false);")."</td>");
 		echo("<td class=\"data\">".get_input_field("value[$row]", NULL, "Site Value", "text(20,255)", "Y", NULL, FALSE)."</td>");
-		echo ("\n<td class=\"data\">".format_field(NULL, NULL, custom_select("lookup_attribute_val[$row]", array(array('value'=>'', 'display'=>'')), "%value% - %display%", 1, NULL), FALSE)."</td>");
+		echo ("\n<td class=\"data\">".custom_select("lookup_attribute_val[$row]", array(array('value'=>'', 'display'=>'')), "%value% - %display%", 1, NULL)."</td>");
 	}
 	
 	echo("\n<td class=\"data\">");	

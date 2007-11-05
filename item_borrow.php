@@ -519,7 +519,6 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 			{
 				echo(
 					format_field(get_opendb_lang_var('borrower'), 
-							NULL, 
 							custom_select('borrower_id', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')
 						)
 					);
@@ -529,7 +528,6 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 				echo(
 					format_field(
 						get_opendb_lang_var('borrower'),
-						NULL,
 						get_opendb_lang_var('no_records_found'))
 					);
 			}
@@ -583,8 +581,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 						"default_borrow_duration",
 						$duration_attr_type_r,
 						NULL, //$item_r
-						($op!='quick_check_out')?$default_borrow_duration:NULL,
-						TRUE));
+						($op!='quick_check_out')?$default_borrow_duration:NULL));
 		
 			// Not appropriate for extension operation
 			if($op == 'check_out' || $op == 'quick_check_out')

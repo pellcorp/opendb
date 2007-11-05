@@ -53,10 +53,9 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 	// We are now able to configure this in the database.
 	$attribute_type_r = fetch_attribute_type_r('S_RATING');
 	$formContents .= get_item_input_field("rating",
-				$attribute_type_r,
-				NULL, //$item_r
-				$review_r['rating'],
-				TRUE);
+						$attribute_type_r,
+						NULL, //$item_r
+						$review_r['rating']);
 
 	$formContents .= "</table>";
 				

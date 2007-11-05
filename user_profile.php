@@ -69,17 +69,14 @@ if(is_site_enabled())
 	
 				echo(format_field(
 						get_opendb_lang_var('userid'),
-						NULL,
 						$user_r['user_id']));
 	
 				echo(format_field(
 						get_opendb_lang_var('user_type'),
-						NULL,
 						get_usertype_prompt(ifempty($HTTP_VARS['user_type'],$user_r['type']))));
 	
 				echo(format_field(
 						get_opendb_lang_var('fullname'),
-						NULL,
 						$user_r['fullname']));
 	
 				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || 
@@ -87,7 +84,6 @@ if(is_site_enabled())
 				{
 					echo(format_field(
 						get_opendb_lang_var('email'),
-						NULL,
 						$user_r['email_addr']));
 				}
 						

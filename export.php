@@ -676,7 +676,6 @@ if(is_site_enabled())
 					// Item Type field.
 					echo format_field(
 							get_opendb_lang_var('owner'), 
-							NULL,
 							"\n<select name=\"owner_id\">".
 								"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 								custom_select(
@@ -698,7 +697,6 @@ if(is_site_enabled())
 				// Item Type select block.
 				echo format_field(
 						get_opendb_lang_var('item_type'), 
-						NULL,
 						"<select name=\"s_item_type\">".
 							"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 							custom_select(
@@ -722,11 +720,7 @@ if(is_site_enabled())
 				}
 				$field .= "</select>";
 				
-				echo format_field(
-					get_opendb_lang_var('type'), 
-					NULL, 
-					$field
-				);
+				echo format_field(get_opendb_lang_var('type'), $field);
 				
 				echo("</table>");
 					

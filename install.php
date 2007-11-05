@@ -183,32 +183,32 @@ function install_check_php_settings()
 	
 	if (opendb_version_compare(phpversion(), "4.3.0", ">="))
 	{
-		$buffer .= format_field("PHP Version", NULL, phpversion());
+		$buffer .= format_field("PHP Version", phpversion());
 	}
 	else
 	{
-		$buffer .= format_field("PHP Version", NULL, "<span class='error'>".phpversion()." (must be >= 4.3.0)</span>");
+		$buffer .= format_field("PHP Version", "<span class='error'>".phpversion()." (must be >= 4.3.0)</span>");
 	}
 
 	if(preg_match("/([0-9]+)M/", ini_get('memory_limit'), $matches))
 	{
 		if(is_numeric($matches[1]) && $matches[1] >= 8)
 		{
-			$buffer .= format_field("Memory Limit", NULL, $matches[0]);
+			$buffer .= format_field("Memory Limit", $matches[0]);
 		}
 		else
 		{
-			$buffer .= format_field("Memory Limit", NULL, "<span class='error'>".$matches[0]." (should be >= 8M)</span>");
+			$buffer .= format_field("Memory Limit", "<span class='error'>".$matches[0]." (should be >= 8M)</span>");
 		}
 	}
 	
 	if(ini_get('safe_mode') == 0 || strtolower(ini_get('safe_mode')) == 'off')
 	{
-		$buffer .= format_field("Safe Mode", NULL, "off");
+		$buffer .= format_field("Safe Mode", "off");
 	}
 	else
 	{
-		$buffer .= format_field("Safe Mode", NULL, "<span class='error'>on (item / http cache, file uploads, and potentially other parts of the system do not function well with safe mode enabled.)</span>");
+		$buffer .= format_field("Safe Mode", "<span class='error'>on (item / http cache, file uploads, and potentially other parts of the system do not function well with safe mode enabled.)</span>");
 	}
 	
 	$max_execution_time = ini_get('max_execution_time');
@@ -220,29 +220,29 @@ function install_check_php_settings()
 			$max_execution_time = 600; // set_time_limit can be activated, so for display purposes, up it to the 600, which is what we use
 		}
 		
-		$buffer .= format_field("Max Execution Time", NULL, $max_execution_time);
+		$buffer .= format_field("Max Execution Time", $max_execution_time);
 	}
 	else
 	{
-		$buffer .= format_field("Max Execution Time", NULL, "<span class='error'>".$max_execution_time." (set_time_limit disabled - set_time_limit should be enabled or max_execution_time >= 600)</span>");
+		$buffer .= format_field("Max Execution Time", "<span class='error'>".$max_execution_time." (set_time_limit disabled - set_time_limit should be enabled or max_execution_time >= 600)</span>");
 	}
 
 	if(ini_get('register_globals') == 0 || strtolower(ini_get('register_globals')) == 'off')
 	{
-		$buffer .= format_field("Register Globals", NULL, "off");
+		$buffer .= format_field("Register Globals", "off");
 	}
 	else
 	{
-		$buffer .= format_field("Register Globals", NULL, "<span class='warn'>on (register globals is not required)</span>");
+		$buffer .= format_field("Register Globals", "<span class='warn'>on (register globals is not required)</span>");
 	}
 	
 	if(ini_get('file_uploads') == 1 || strtolower(ini_get('file_uploads')) == 'on')
 	{
-		$buffer .= format_field("File Uploads", NULL, "on");
+		$buffer .= format_field("File Uploads", "on");
 	}
 	else
 	{
-		$buffer .= format_field("File Uploads", NULL, "<span class='error'>off (import functionality will be disabled)</span>");
+		$buffer .= format_field("File Uploads", "<span class='error'>off (import functionality will be disabled)</span>");
 	}
 
 	$buffer .= "</table>";

@@ -379,7 +379,6 @@ function show_changeuser_form()
 	{
 		echo(
 			format_field(get_opendb_lang_var('user'),
-						NULL,
 						custom_select('uid', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')
 					)
 			);
@@ -389,7 +388,6 @@ function show_changeuser_form()
 		echo(
 			format_field(
 					get_opendb_lang_var('user'),
-					NULL,
 					get_opendb_lang_var('no_records_found'))
 		);
 	}

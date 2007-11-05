@@ -184,11 +184,14 @@ if(is_site_enabled())
 									$item_attribute_type_r,
 									$value,
 									FALSE);
-
+				
 							if(strlen($field)>0)
 							{
-								echo "\n<tr><th class=\"prompt\" scope=\"row\">".$item_attribute_type_r['prompt'].":</th>".
-									"<td class=\"data\">".$field."</td></tr>";
+								echo format_item_data_field(
+											$item_attribute_type_r, 
+											$field,
+											$prompt_mask,
+											NULL); // field mask
 							}
 						}
 					}

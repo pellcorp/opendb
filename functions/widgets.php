@@ -217,13 +217,9 @@ function get_item_input_field(
 	{
         $field_mask = $widget['args']['2'];
         if($item_attribute_type_r['multi_attribute_ind'] == 'Y')
-        {
         	$field = multivalue_text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
-        }
         else
-        {
 			$field = text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
-		}
 	}
 	else if($item_attribute_type_r['input_type'] == 'password') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = field_mask
 	{
@@ -264,17 +260,13 @@ function get_item_input_field(
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type, 'order_no, '.get_lookup_order_by($widget['args']['0']).' ASC');
 		if($lookup_results)//arg[0] = display_mask, arg[1] = orientation
-		{
 			$field = checkbox_grid($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $value, $disabled);
-		}
 	}
 	else if($item_attribute_type_r['input_type'] == 'radio_grid')
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type, 'order_no, '.get_lookup_order_by($widget['args']['0']).' ASC');
 		if($lookup_results)//arg[0] = display_mask, arg[1] = orientation
-		{
 			$field = radio_grid($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $value, $disabled);
-		}
 	}
 	else if($item_attribute_type_r['input_type'] == 'value_radio_grid')//arg[0] = "comma delimited list of values"
 	{
@@ -283,18 +275,14 @@ function get_item_input_field(
 	else if($item_attribute_type_r['input_type'] == 'single_select')
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type, 'order_no, '.get_lookup_order_by($widget['args']['0']).' ASC');
-		if($lookup_results)
-		{//arg[0] = display mask, arg[1] = max value length
+		if($lookup_results) //arg[0] = display mask, arg[1] = max value length
 			$field = single_select($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $value, $onchange_event, $disabled);
-		}
 	}
 	else if($item_attribute_type_r['input_type'] == 'multi_select')
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type,'order_no, '.get_lookup_order_by($widget['args']['0']).' ASC');
-		if($lookup_results)
-		{//arg[0] = display mask, arg[1] = max value length, arg[2] = select box number of visible rows
+		if($lookup_results) //arg[0] = display mask, arg[1] = max value length, arg[2] = select box number of visible rows
 			$field = multi_select($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled);
-		}
 	}
 	else if($item_attribute_type_r['input_type'] == 'value_select')//arg[0] = "comma delimited list of values"; arg[1] = number of visible rows (Defaults to single select
 	{
@@ -304,24 +292,21 @@ function get_item_input_field(
 	{
 		$lookup_results = fetch_attribute_type_lookup_rs($s_attribute_type, 'value DESC');//We want the rows highest value first.
 		if($lookup_results)
-		{
 			$field = review_options($fieldname, $lookup_results, $widget['args']['0'], $widget['args']['1'], $value, $disabled);
-		}
 	}
 	else if($item_attribute_type_r['input_type'] == 'url')//arg[0] = length of field, arg[1] = maxlength of field, arg[2] = extensions
 	{
 		$field = url($fieldname, $item_r, $item_attribute_type_r, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled);
 	}
-
-	if($field!=NULL)
-	{
-    	//else
-    	return format_input_field($prompt, $field_mask, $field, $dowrap, $prompt_mask, $compulsory_ind);
-	}
 	else
 	{
-        return format_input_field($prompt, NULL, ">>> ERROR (input_type = $input_type) <<<", $dowrap, $prompt_mask, $compulsory_ind);
+		$field = ">>> ERROR (input_type = $input_type) <<<";
 	}
+	
+	if($dowrap)
+   		return format_item_data_field($item_attribute_type_r, $field, $prompt_mask, $field_mask);
+   	else
+   		return $field;
 }
 
 /*
@@ -1631,15 +1616,8 @@ function custom_select(
 	return $var;	
 }
 
-/**
-	Used to format the display of the input/display field.  You specify the %field%
-	which represents the actual $field parameter, and then it will be positioned
-	within context of the rest of the $display_mask.  It all gets placed into a
-	TD table cell.
-*/
-function format_data($field_mask, $field)
+function format_data($field, $field_mask = NULL)
 {
-	// If $display_mask is defined, then format $field to include it.
 	if(strlen($field_mask)>0 && strpos($field_mask,"%field%")!==FALSE)
 	{
 		$field = str_replace("%field%", $field, $field_mask);
@@ -1652,57 +1630,33 @@ function format_data($field_mask, $field)
 	return "<td class=\"data\">$field</td>";
 }
 
-/**
-*/
 function format_prompt($prompt, $prompt_mask = NULL)
 {
-	// If $prompt_mask is defined, then format $prompt to include it.
 	if(strlen($prompt_mask)>0 && strpos($prompt_mask,"%prompt%")!==FALSE)
-	{
 		$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
-	}
 
-	return "<th class=\"prompt\">$prompt:&nbsp;</th>";
+	return "<th class=\"prompt\" scope=\"row\">$prompt:</th>";
 }
 
-/**
-	Formats field within the $display_mask specified.
-*/
-function format_field($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_mask=NULL)
+function format_field($prompt, $field, $prompt_mask=NULL, $field_mask = NULL)
 {
-	// stub for old functionality.
-	return format_field2($prompt, $field_mask, $field, $dowrap, $prompt_mask);
+	return "\n<tr>".format_prompt($prompt, $prompt_mask).format_data($field, $field_mask)."</tr>";
 }
 
-/*
-* A second version of the format_field function to use in get_display_field, but we
-* avoid the impact of changing every call to format_field.
-*/
-function format_field2($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_mask=NULL)
+function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL, $field_mask=NULL)
 {
-	if($dowrap)
-		return "\n<tr>".format_prompt($prompt,$prompt_mask).format_data($field_mask, $field)."</tr>";
-	else
-		return $field;
-}
-
-function format_input_field($prompt, $field_mask, $field, $dowrap=TRUE, $prompt_mask=NULL, $compulsory_ind = 'N')
-{
-	if($dowrap)
+	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && 
+			$attribute_type_r['compulsory_ind'] == 'Y')
 	{
-		// If $prompt_mask is defined, then format $prompt to include it.
-		if(strlen($prompt_mask)>0 && strpos($prompt_mask,"%prompt%")!==FALSE)
-		{
-			$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
-		}
-		
-		return "<tr><th class=\"prompt\">".$prompt.(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && $compulsory_ind=='Y'?_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field')):"").":</th>".
-				format_data($field_mask, $field)."</tr>";
+		if(strlen($prompt_mask)==0)
+			$prompt_mask = '%prompt%';
+			
+		$prompt_mask .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'));
 	}
-	else
-	{
-		return $field;
-	}
+	
+	$fieldid = strtolower($attribute_type_r['s_attribute_type'].$attribute_type_r['order_no']);
+	
+	return "\n<tr class=\"field\" id=\"$fieldid\">".format_prompt($attribute_type_r['prompt'], $prompt_mask).format_data($field, $field_mask)."</tr>";
 }
 
 /**
@@ -1896,11 +1850,12 @@ function get_item_display_field(
 		// any upload file will have a properly encoded file://opendb/upload/ url if the file exists
 		if(is_url_absolute($value))
 		{
-			return format_field(
-						$item_attribute_type_r['prompt'], 
-						NULL, "<a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$format_mask</a>", 
-						$dowrap, 
-						$prompt_mask);
+			$field = "<a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$format_mask</a>";
+			
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+			else
+				return $field;
 		}
 		else
 		{
@@ -1934,12 +1889,11 @@ function get_item_display_field(
 			}
 		}
 
-		return format_field(
-				$item_attribute_type_r['prompt'], 
-				NULL, 
-				format_list_from_array($values, $item_attribute_type_r, $item_attribute_type_r['listing_link_ind']=='Y'?$attr_match:FALSE),
-				$dowrap, 
-				$prompt_mask);
+		$field = format_list_from_array($values, $item_attribute_type_r, $item_attribute_type_r['listing_link_ind']=='Y'?$attr_match:FALSE);
+		if($dowrap)
+			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+		else
+			return $field;
 	}
 	else if($item_attribute_type_r['display_type'] == 'datetime')
 	{
@@ -1953,14 +1907,19 @@ function get_item_display_field(
 
 			$datetime = get_localised_timestamp($item_attribute_type_r['display_type_arg1'], $timestamp);
 			if($datetime!==FALSE)
-				return format_field($item_attribute_type_r['prompt'], NULL, $datetime, $dowrap, $prompt_mask);
+				$field = $datetime;
 			else
-				return format_field($item_attribute_type_r['prompt'], NULL, $value, $dowrap, $prompt_mask);
+				$field = $value;
 		}
 		else
 		{
-			return format_field($item_attribute_type_r['prompt'], NULL, $value, $dowrap, $prompt_mask);
+			$field = $value;
 		}
+		
+		if($dowrap)
+			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+		else
+			return $field;
 	}
 	else if($item_attribute_type_r['display_type'] == 'format_mins')
 	{
@@ -2019,12 +1978,18 @@ function get_item_display_field(
 			}
 
 			// Now return mask with parts of value inserted.
-			return format_field($item_attribute_type_r['prompt'], NULL, $display_mask, $dowrap, $prompt_mask);
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $display_mask, $prompt_mask);
+			else
+				return $display_mask;
 		}
 		else
 		{
 			// what else can we do here?!
-			return format_field($item_attribute_type_r['prompt'], NULL, $time_value, $dowrap, $prompt_mask);
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $time_value, $prompt_mask);
+			else
+				return $time_value;
 		}
 	}
 	else if($item_attribute_type_r['display_type'] == 'review')
@@ -2103,7 +2068,10 @@ function get_item_display_field(
 					$field = format_listing_link($value, $field, $item_attribute_type_r, NULL);
 				}
 
-				return format_field2($item_attribute_type_r['prompt'], NULL, $field, $dowrap, $prompt_mask);
+				if($dowrap)
+					return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+				else
+					return $field;
 			}
 		}
 		else
@@ -2118,9 +2086,14 @@ function get_item_display_field(
 		$value = nl2br(trim($value));
 		
 		if($item_attribute_type_r['listing_link_ind'] == 'Y')
-			return format_field2($item_attribute_type_r['prompt'], NULL, format_listing_links($value, $item_attribute_type_r, 'word'), $dowrap, $prompt_mask);
+			$field = format_listing_links($value, $item_attribute_type_r, 'word');
 		else
-			return format_field2($item_attribute_type_r['prompt'], NULL, $value, $dowrap, $prompt_mask);
+			$field = $value;
+		
+		if($dowrap)
+			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+		else
+			return $field;
 	}
 	else if($item_attribute_type_r['display_type'] == 'category' || $item_attribute_type_r['display_type'] == 'display')
 	{	
@@ -2172,7 +2145,10 @@ function get_item_display_field(
 			if(strlen($field)>0)
 			{
 				// $var would be empty, if we had not been inside while and inner if!
-				return format_field($item_attribute_type_r['prompt'], NULL, $field, $dowrap, $prompt_mask);
+				if($dowrap)
+					return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+				else
+					return $field;
 			}
 			else
 			{
@@ -2182,7 +2158,10 @@ function get_item_display_field(
 	}
 
    	//else -- no display type match.
-	return format_field($item_attribute_type_r['prompt'], NULL, nl2br($value), $dowrap, $prompt_mask);
+   	if($dowrap)
+		return format_field($item_attribute_type_r['prompt'], nl2br($value), $prompt_mask);
+	else
+		return nl2br($value);
 }
 
 /*

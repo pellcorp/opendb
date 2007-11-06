@@ -522,10 +522,14 @@ if(is_opendb_valid_session())
 			if($results)
 			{
 				echo("<h3>Item Type Groups</h3>");
-				echo("<ul>");
+				echo("<ul class=\"itemTypeGroupList\">");
 				while($item_type_group_r = db_fetch_assoc($results))
 				{
-					echo("\n<li><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=".$item_type_group_r['s_item_type_group']."&s_item_type=*\">Edit ".$item_type_group_r['s_item_type_group']."</a></li>");
+					$classattr = NULL;
+					if(fetch_s_item_listing_conf_id($item_type_group_r['s_item_type_group'], NULL)!== FALSE)
+						$classattr = 'class="active"';
+						
+					echo("\n<li $classattr><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=".$item_type_group_r['s_item_type_group']."&s_item_type=*\">Edit ".$item_type_group_r['s_item_type_group']."</a></li>");
 				}
 				db_free_result($results);
 				echo("</ul>");
@@ -535,18 +539,25 @@ if(is_opendb_valid_session())
 			if($results)
 			{
 				echo("<h3>Item Types</h3>");
-				echo("<ul>");
+				echo("<ul class=\"itemTypeGroupList\">");
 				while($item_type_r = db_fetch_assoc($results))
 				{
-					echo("\n<li><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=".$item_type_r['s_item_type']."\">Edit ".$item_type_r['s_item_type']."</a></li>");
+					$classattr = NULL;
+					if(fetch_s_item_listing_conf_id(NULL, $item_type_r['s_item_type']) !== FALSE)
+						$classattr = 'class="active"';
+						
+					echo("\n<li $classattr><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=".$item_type_r['s_item_type']."\">Edit ".$item_type_r['s_item_type']."</a></li>");
 				}
 				db_free_result($results);
 				echo("</ul>");
 			}
 			
 			echo("\n<h3>Default</h3>");
-			echo("\n<ul>");
-			echo("\n<li><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=*\">Edit Default</a></li>");
+			echo("\n<ul class=\"itemTypeGroupList\">");
+			$classattr = NULL;
+			if(fetch_s_item_listing_conf_id(NULL, NULL)!== FALSE)
+				$classattr = 'class="active"';
+			echo("\n<li $classattr><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type_group=*&s_item_type=*\">Edit Default</a></li>");
 			echo("\n</ul>");
 		
 			echo("</form>");

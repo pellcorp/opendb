@@ -1,3 +1,8 @@
+ul.itemTypeGroupList li.active
+{
+	font-weight: bold;
+}
+
 #content
 {
 	padding-left:0px;

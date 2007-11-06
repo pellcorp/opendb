@@ -74,6 +74,27 @@ function is_exists_s_title_display_mask($stdm_id)
 	return FALSE;
 }
 
+function is_exists_s_title_display_mask_group($s_item_type_group, $s_item_type)
+{
+	if($s_item_type_group == NULL)
+		$s_item_type_group = '*';
+	
+	if($s_item_type == NULL)
+		$s_item_type = '*';
+		
+	$query = "SELECT 'X' FROM s_title_display_mask_item WHERE s_item_type_group = '$s_item_type_group' AND s_item_type = '$s_item_type'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
+}
+
 function is_exists_s_title_display_mask_item($stdm_id, $s_item_type_group, $s_item_type)
 {
 	if(strlen($stdm_id)>0)

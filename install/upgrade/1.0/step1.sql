@@ -213,7 +213,10 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'advanc
 INSERT INTO s_title_display_mask ( id, description ) VALUES ( 'feeds', 'RSS Feeds' );
 
 INSERT INTO s_title_display_mask_item(stdm_id, s_item_type_group, s_item_type, display_mask)
-VALUES('feeds', '*', 'GAME', '"{title}"{if(instance_no>1," #{instance_no}")}');
+VALUES('feeds', '*', 'GAME', '{title}{if(instance_no>1," #{instance_no}")}');
+
+INSERT INTO s_title_display_mask_item(stdm_id, s_item_type_group, s_item_type, display_mask)
+VALUES('feeds', '*', '*', '{title}{ifdef(year, " ({year})")}{if(instance_no>1," #{instance_no}")}');
 
 # resolve imdb image not showing issue.
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '2', 'ia.media-imdb.com');

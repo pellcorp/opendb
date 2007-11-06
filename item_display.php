@@ -105,7 +105,20 @@ if(is_site_enabled())
 									$file_r['url'] = $parsed_r['filename'];
 								}
 								
-								echo("<a href=\"".$file_r['url']."\" onclick=\"popup('".$file_r['fullsize']['url']."', ".$file_r['fullsize']['width'].", ".$file_r['fullsize']['height']."); return false;\">");
+								$width = $file_r['fullsize']['width'];
+								$height = $file_r['fullsize']['height'];
+								
+								// IE hack
+								if($_OpendbBrowserSniffer->isBrowser('ie'))
+								{
+									if(is_numeric($width))
+										$width += 40;
+									
+									if(is_numeric($height))
+										$height += 40;
+								}
+
+								echo("<a href=\"".$file_r['url']."\" onclick=\"popup('".$file_r['fullsize']['url']."', ".$width.", ".$height."); return false;\">");
 							}
 							echo("<img src=\"".$file_r['thumbnail']['url']."\" title=\"".htmlspecialchars($coverimage_r['prompt'])."\" ");
 							

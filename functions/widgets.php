@@ -963,8 +963,6 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 	@param $item_r where provided will give the item_id / instance_no, where not provided is safe to assume that this
 	is a new item insert field and this information is not relevant.
 */
-url($fieldname, $item_r, $item_attribute_type_r, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled);
-
 function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlength, $content_groups, $value, $onchange_event, $disabled = FALSE)
 {
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -1218,9 +1216,9 @@ function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $dis
 	}
 	
 	if(strcasecmp($orientation, 'VERTICAL')==0)
-		$class = 'radioGridOptionsVertical';
+		$class = 'checkboxGridOptionsVertical';
 	else
-		$class = 'radioGridOptions';
+		$class = 'checkboxGridOptions';
 
 	$buffer = "<ul class=\"$class\">";
 	

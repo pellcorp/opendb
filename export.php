@@ -446,13 +446,13 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	$buffer .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"plugin\" value=\"".$HTTP_VARS['plugin']."\">";
 	
-	$buffer .= "\n<ul class=\"radioGridOptionsVertical\">";
+	$buffer .= "\n<ul class=\"checkboxGridOptionsVertical\">";
 	
-	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[item_id]" value="Y">'.get_opendb_lang_var('item_id').'</li>';
-	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[instance_no]" value="Y">'.get_opendb_lang_var('instance_no').'</li>';
-	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[owner_id]" value="Y">'.get_opendb_lang_var('owner_id').'</li>';
-	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[item_id]" value="Y"'.(strlen($HTTP_VARS['owner_id'])==0?' CHECKED':'').'>'.get_opendb_lang_var('item_id').'</li>';
-	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[s_item_type]" value="Y">'.get_opendb_lang_var('s_item_type').'</li>';
+	$buffer .= "\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"export_columns[item_id]\" value=\"Y\">".get_opendb_lang_var('item_id')."</li>";
+	$buffer .= "\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"export_columns[instance_no]\" value=\"Y\">".get_opendb_lang_var('instance_no')."</li>";
+	$buffer .= "\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"export_columns[owner_id]\" value=\"Y\">".get_opendb_lang_var('owner_id')."</li>";
+	$buffer .= "\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"export_columns[item_id]\" value=\"Y\"".(strlen($HTTP_VARS['owner_id'])==0?' CHECKED':'').">".get_opendb_lang_var('item_id')."</li>";
+	$buffer .= "\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"export_columns[s_item_type]\" value=\"Y\">".get_opendb_lang_var('s_item_type')."</li>";
 	
 	if(strlen($HTTP_VARS['s_item_type'])>0)
 	{
@@ -482,7 +482,7 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 						$buffer .= ' CHECKED';
 					}
 					
-					$buffer .= '>'.$item_attribute_type_r['prompt'].'</li>';
+					$buffer .= '>'.$item_attribute_type_r['prompt']."</li>";
 				}
 			}
 			db_free_result($results);
@@ -490,23 +490,22 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	}
 	else
 	{
-		$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[title]" value="Y">'.get_opendb_lang_var('title').'</li>';
+		$buffer .= "\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"export_columns[title]\" value=\"Y\">".get_opendb_lang_var('title')."</li>";
 	}
 	
 	if(method_exists($exportPlugin, 'prompt_header') || method_exists($exportPlugin, 'data_header'))
 	{		
-		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"include_header\" value=\"Y\" CHECKED>".get_opendb_lang_var('include_header')."</li>";
+		$buffer .= "\n<li id=\"include-header\"><input type=\"checkbox\" class=\"checkbox\" name=\"include_header\" value=\"Y\" CHECKED>".get_opendb_lang_var('include_header')."</li>";
 	}
 	
-	$buffer .= '</ul>';
+	$buffer .= "</ul>";
 	
-	$buffer .= "<ul class=\"actionButtons\">";
-	$buffer .= "<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', true);\"></li>".
-	"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', false);\"></li>".
-	"<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
+	$buffer .= "\n<ul class=\"actionButtons\">";
+	$buffer .= "\n<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', true);\"></li>".
+	"\n<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', false);\"></li>".
+	"\n<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
+	"\n<li class=\"submitButton\"><input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('export_items')."\"></li>".
 	"</ul>";
-	
-	$buffer .= '<input type="submit" class="submit" value="'.get_opendb_lang_var('export_items').'">';
 							
 	$buffer .= '</form>';
 	

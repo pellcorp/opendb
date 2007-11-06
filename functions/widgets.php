@@ -1617,11 +1617,8 @@ function custom_select(
 function format_data($field, $field_mask = NULL)
 {
 	if(strlen($field_mask)>0 && strpos($field_mask,"%field%")!==FALSE)
-	{
 		$field = str_replace("%field%", $field, $field_mask);
-	}
 	
-	//Ensure a valid table value.
 	if(strlen($field)==0)
 		$field = "&nbsp;";
 
@@ -1643,18 +1640,29 @@ function format_field($prompt, $field, $prompt_mask=NULL, $field_mask = NULL)
 
 function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL, $field_mask=NULL)
 {
+	$prompt = $attribute_type_r['prompt'];
+	if(strlen($prompt_mask)>0 && strpos($prompt_mask, "%prompt%")!==FALSE)
+		$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
+		
 	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && 
 			$attribute_type_r['compulsory_ind'] == 'Y')
 	{
 		if(strlen($prompt_mask)==0)
 			$prompt_mask = '%prompt%';
 			
-		$prompt_mask .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'));
+		$prompt .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'));
 	}
 	
-	$fieldid = strtolower($attribute_type_r['s_attribute_type'].$attribute_type_r['order_no']);
+	if(strlen($field_mask)>0 && strpos($field_mask,"%field%")!==FALSE)
+		$field = str_replace("%field%", $field, $field_mask);
 	
-	return "\n<tr class=\"field\" id=\"$fieldid\">".format_prompt($attribute_type_r['prompt'], $prompt_mask).format_data($field, $field_mask)."</tr>";
+	$fieldid = strtolower(str_replace('_', '-', $attribute_type_r['s_attribute_type']).'-'.$attribute_type_r['order_no']);
+	$fieldclass = strtolower(str_replace('_', NULL, $attribute_type_r['s_attribute_type']));
+	
+	return "\n<tr id=\"$fieldid\">".
+				"<th class=\"prompt\" scope=\"row\">$prompt:</th>".
+				"<td class=\"data $fieldclass\">".ifempty($field,'&nbsp;')."</td>".
+			"</tr>";
 }
 
 /**

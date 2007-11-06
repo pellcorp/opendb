@@ -178,6 +178,7 @@ if(is_site_enabled())
 						if(is_not_empty_array($value) || (!is_array($value) && strlen($value)>0))
 						{
 							$item_attribute_type_r['display_type'] = $display_type;
+							$item_attribute_type_r['compulsory_ind'] = 'N';
 							
 							$field = get_item_display_field(
 									$item_r,

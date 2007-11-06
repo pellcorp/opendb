@@ -59,14 +59,9 @@ class cmbkdbt extends SitePlugin
 			return TRUE;
 		}
 
-		print_r($search_vars_r);
-		
 		$pageBuffer = $this->fetchURI("http://www.comicbookdb.com/search.php?form_search=".urlencode(strtolower(trim($search_vars_r['title'])))."&form_searchtype=Title");
-
 		if(strlen($pageBuffer)>0)
 		{
-			//$pageB = $this->fetchURI("http://www.comicbookdb.com/title.php?ID=2399");
-
 			$start = strpos($pageBuffer, "<strong>Your search:</strong>");
 			if($start)
 			{

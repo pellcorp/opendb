@@ -504,6 +504,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 		while($attribute_type_map_r = db_fetch_assoc($results))
 		{
 		    $key = strtolower($attribute_type_map_r['s_attribute_type']);
+		    $value = NULL;
 		    
 			if($variable == NULL || $variable != $attribute_type_map_r['variable'])
 			{
@@ -522,17 +523,18 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			
 			if($value!==NULL)
 			{
-				if(isset($new_attributes_r[$key])) {
-					if(!is_array($new_attributes_r[$key])) {
+				if(isset($new_attributes_r[$key]))
+				{
+					if(!is_array($new_attributes_r[$key]))
 						$new_attributes_r[$key] = array($new_attributes_r[$key]);
-					}
 					
-					if(is_array($value)) {
+					if(is_array($value))
 						$new_attributes_r[$key] = array_merge($new_attributes_r[$key], $value);
-					} else {
+					else
 						$new_attributes_r[$key][] = $value;
-					}
-				} else { 
+				}
+				else
+				{ 
 					 $new_attributes_r[$key] = $value;
 				}
 			}
@@ -541,7 +543,8 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			{
 				$lookup_attribute_val_restrict_ind_r[$key] = 'Y';
 			}
-		}
+			
+		}//while
 		db_free_result($results);
 	}
 	
@@ -550,22 +553,23 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 	while(list($key,$value) = @each($site_item_attributes_r))
 	{
 		$key = strtolower($key);
-		
-		if(isset($new_attributes_r[$key]) && $new_attributes_r[$key] != $value)
+		if(isset($new_attributes_r[$key]))
 		{
-			// we want the direct mapping attributes first.
-			$tmp_value = $new_attributes_r[$key];
-			unset($new_attributes_r[$key]);
-		
-			$new_attributes_r[$key] = array($value);
+			$oldValue = NULL;
 			
-			if(is_array($tmp_value)) {
-				$new_attributes_r[$key] = array_merge(
-						$new_attributes_r[$key], 
-						$tmp_value);
-			} else {
-				$new_attributes_r[$key][] = $tmp_value;
-			}
+			// we want the direct mapping attributes first.
+			if(is_array($new_attributes_r[$key]))
+				$oldValue = $new_attributes_r[$key];
+			else
+				$oldValue[] = $new_attributes_r[$key];
+			unset($new_attributes_r[$key]);
+			
+			if(is_array($value))
+				$new_attributes_r[$key] = $value;
+			else
+				$new_attributes_r[$key][] = $value;
+			
+			$new_attributes_r[$key] = array_merge($new_attributes_r[$key], $oldValue);
 		}
 		else
 		{

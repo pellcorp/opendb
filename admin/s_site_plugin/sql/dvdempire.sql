@@ -35,9 +35,7 @@ INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, orde
 #
 
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'blurb', 'MOVIE_PLOT', 'N' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'genre', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'genre', 'MOVIEGENRE', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'genre', 'SUBTITLES', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'listprice', 'COVERPRICE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '', 'CD', 'listprice', 'RET_PRICE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', 'VIDEO', '*', 'listprice', 'RET_PRICE', 'N' );

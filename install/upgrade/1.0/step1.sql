@@ -77,7 +77,8 @@ DELETE FROM s_language_var WHERE varname IN (
 	'site_login',
 	'print_item_cover',
 	'item_search',
-	'tbl_dump_header'
+	'tbl_dump_header',
+	'backup_database'
 );
 
 # delete linked item vars, replace with related item vars

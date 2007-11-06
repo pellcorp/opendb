@@ -39,7 +39,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'august
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'august_abbrev', 'Aug'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'average_rating', 'Average Rating'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'back', 'Back'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'backup_database', 'Backup Database'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'backup_successful', 'Usagelog back up to {filename} successful.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'backup_unsuccessful', 'Usagelog back up to {filename} failed.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'backup_usagelog', 'Backup Usagelog'); 

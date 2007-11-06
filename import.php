@@ -442,7 +442,7 @@ function get_upload_form($HTTP_VARS)
 	
 	$buffer .= "\n</table>";
 	
-	$buffer .= "\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('import_items')."\">";
+	$buffer .= "\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">";
 	$buffer .= "\n</form>";
 	
 	return $buffer;

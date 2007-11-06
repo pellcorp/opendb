@@ -698,7 +698,7 @@ if(is_site_enabled())
 				
 				echo("</table>");
 					
-				echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('export_items')."\">");
+				echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 				
 				echo("</form>");
 				

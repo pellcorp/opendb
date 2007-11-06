@@ -177,9 +177,10 @@ if (is_opendb_valid_session())
 				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\"></li>".
 				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\"></li>".
 				"<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
+				"<li class=\"submitButton\"><input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\"></li>".
 				"</ul>");
 
-			echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('backup_database')."\">
+			echo("
 				</form>");
 		}
 	}

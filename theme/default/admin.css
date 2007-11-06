@@ -141,3 +141,9 @@ tr.logRow td
 {
 	text-align: center;
 }
+
+li.submitButton
+{
+	padding-top: 10px;
+	clear: left;
+}

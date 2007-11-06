@@ -206,6 +206,7 @@ ul.action-links, ul.actionButtons
 	padding-left: 0px;
 	margin-left: 0px;
 	white-space: nowrap;
+	clear: both;
 }
 
 ul.action-links li, ul.actionButtons li

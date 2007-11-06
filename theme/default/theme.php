@@ -102,4 +102,24 @@ function theme_footer($user_id, $user_type)
 	echo("<div id=\"footer\"><a href=\"http://opendb.iamvegan.net/\">".get_opendb_lang_var('powered_by_site', 'site', get_opendb_title_and_version())."</a></div>");
 	echo("</body></html>");
 }
+
+$_OPENDB_THEME_CSS_MAP = array(
+	'borrow'=>array('listings', 'item_display'),
+	'item_borrow'=>array('listings', 'item_display'),
+	'quick_checkout'=>array('listings', 'item_display'),
+	'import'=>array('listings', 'item_display', 'item_input'),
+	'item_display'=>array('listings'),
+	'item_input'=>array('listings'),
+	'user_listing'=>array('listings'),
+	'admin'=>array('listings', 'item_input'),
+	'export'=>array('item_input'),
+	'search'=>array('item_review', 'item_input'),
+	'item_review'=>array('item_input')
+);
+
+function theme_css_map($pageid)
+{
+	global $_OPENDB_THEME_CSS_MAP;
+	return $_OPENDB_THEME_CSS_MAP[$pageid];
+}
 ?>

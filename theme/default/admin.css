@@ -119,11 +119,6 @@ ul.itemTypes
 	list-style-type: none;
 }
 
-ul.actionButtons
-{
-	clear: both;
-}
-
 ul#progressBar
 {
 	list-style-type: none;

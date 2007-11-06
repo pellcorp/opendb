@@ -135,19 +135,6 @@ function get_theme_css($pageid, $mode = NULL)
 	return $buffer;
 }
 
-$_OPENDB_THEME_CSS_MAP = array(
-	'borrow'=>array('listings', 'item_display'),
-	'item_borrow'=>array('listings', 'item_display'),
-	'quick_checkout'=>array('listings', 'item_display'),
-	'import'=>array('listings', 'item_display', 'item_input'),
-	'item_display'=>array('listings'),
-	'item_input'=>array('listings'),
-	'user_listing'=>array('listings'),
-	'admin'=>array('listings', 'item_input'),
-	'search'=>array('item_review', 'item_input'),
-	'item_review'=>array('item_input')
-);
-
 function _theme_css_map($pageid)
 {
 	global $_OPENDB_THEME_CSS_MAP;
@@ -155,7 +142,7 @@ function _theme_css_map($pageid)
 	if(function_exists('theme_css_map'))
 		return theme_css_map($pageid);
 	else
-		return $_OPENDB_THEME_CSS_MAP[$pageid];
+		return NULL;
 }
 
 /**

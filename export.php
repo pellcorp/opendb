@@ -446,35 +446,21 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 	$buffer .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"".$HTTP_VARS['s_item_type']."\">";
 	$buffer .= "\n<input type=\"hidden\" name=\"plugin\" value=\"".$HTTP_VARS['plugin']."\">";
 	
-	$buffer .= "\n<table>";
+	$buffer .= "\n<ul class=\"radioGridOptionsVertical\">";
 	
-	$buffer .= "\n<tr>";
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('item_id').':</td><td class="data">
-				<input type="checkbox" class="checkbox" name="export_columns[item_id]" value="Y"></td>';
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('instance_no').':</td><td class="data">
-				<input type="checkbox" class="checkbox" name="export_columns[instance_no]" value="Y"></td>';
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('owner_id').':</td><td class="data">
-				<input type="checkbox" class="checkbox" name="export_columns[owner_id]" value="Y"'.(strlen($HTTP_VARS['owner_id'])==0?' CHECKED':'').'></td>';
-	
-	$buffer .= "</tr>\n<tr>";
-	$buffer .= '<td class="prompt">'.get_opendb_lang_var('s_item_type').':</td><td class="data">
-				<input type="checkbox" class="checkbox" name="export_columns[s_item_type]" value="Y" CHECKED></td>';
+	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[item_id]" value="Y">'.get_opendb_lang_var('item_id').'</li>';
+	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[instance_no]" value="Y">'.get_opendb_lang_var('instance_no').'</li>';
+	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[owner_id]" value="Y">'.get_opendb_lang_var('owner_id').'</li>';
+	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[item_id]" value="Y"'.(strlen($HTTP_VARS['owner_id'])==0?' CHECKED':'').'>'.get_opendb_lang_var('item_id').'</li>';
+	$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[s_item_type]" value="Y">'.get_opendb_lang_var('s_item_type').'</li>';
 	
 	if(strlen($HTTP_VARS['s_item_type'])>0)
 	{
-		$column_count = 2;
-		// Get the item_attribute headings.
 		$results = fetch_item_attribute_type_rs($HTTP_VARS['s_item_type']);
 		if($results)
 		{
 			while($item_attribute_type_r = db_fetch_assoc($results))
 			{
-				if($column_count == 3)
-				{
-					$buffer .= "</tr>\n<tr>";
-					$column_count = 0;
-				}
-			
 				// Only legal s_field_type's - ignore ITEM_ID!!!
 				if(strlen($item_attribute_type_r['s_field_type'])==0 || 
 							$item_attribute_type_r['s_field_type'] == 'CATEGORY' || 
@@ -484,8 +470,8 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 							$item_attribute_type_r['s_field_type'] == 'STATUSCMNT' ||
 							$item_attribute_type_r['s_field_type'] == 'IMAGE')
 				{
-					$buffer .= '<td class="prompt">'.$item_attribute_type_r['prompt'].':</td><td class="data">
-						<input type="checkbox" class="checkbox" name="export_columns['.get_field_name($item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']).']" value="Y"';
+					$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns['.get_field_name($item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']).']" value="Y"';
+								
 					
 					// work out what columns to have checked by default.
 					if( $item_attribute_type_r['s_field_type'] == 'TITLE' || 
@@ -496,40 +482,29 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 						$buffer .= ' CHECKED';
 					}
 					
-					$buffer .= '></td>';
-					$column_count++;
+					$buffer .= '>'.$item_attribute_type_r['prompt'].'</li>';
 				}
 			}
 			db_free_result($results);
 		}
-	
-		if($column_count>0)
-		{
-			for($i=$column_count; $i<3; $i++)
-			{
-				$buffer .= '<td colspan=2>&nbsp;</td>';
-			}
-		}
 	}
 	else
 	{
-		$buffer .= '<td class="prompt">'.get_opendb_lang_var('title').':</td><td class="data">
-				<input type="checkbox" class="checkbox" name="export_columns[title]" value="Y" CHECKED></td>';
-		$buffer .= "</tr>";
+		$buffer .= '<li><input type="checkbox" class="checkbox" name="export_columns[title]" value="Y">'.get_opendb_lang_var('title').'</li>';
 	}
-	
-	$buffer .= '</table>';
 	
 	if(method_exists($exportPlugin, 'prompt_header') || method_exists($exportPlugin, 'data_header'))
 	{		
-		$buffer .= "<input type=\"checkbox\" class=\"checkbox\" name=\"include_header\" value=\"Y\" CHECKED>".get_opendb_lang_var('include_header');
+		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"include_header\" value=\"Y\" CHECKED>".get_opendb_lang_var('include_header')."</li>";
 	}
 	
-	$buffer .= "<ul class=\"actionButtons\">".
-				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', true);\"></li>".
-			   "<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', false);\"></li>".
-			   "<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
-				"</ul>";
+	$buffer .= '</ul>';
+	
+	$buffer .= "<ul class=\"actionButtons\">";
+	$buffer .= "<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', true);\"></li>".
+	"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'export_columns', false);\"></li>".
+	"<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
+	"</ul>";
 	
 	$buffer .= '<input type="submit" class="submit" value="'.get_opendb_lang_var('export_items').'">';
 							

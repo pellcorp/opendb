@@ -2063,10 +2063,9 @@ function get_item_display_field(
 				$ratingmask = $item_attribute_type_r['display_type_arg2'];
 				if(strlen($ratingmask)>0)
 				{
-					$field = str_replaces(
-								array('%value%', '%maxrange%', '%starrating%'),
-								array($value, $total_count, $field),
-								$ratingmask);
+					$ratingmask = str_replace('%value%', $value, $ratingmask);
+					$ratingmask = str_replace('%maxrange%', $total_count, $ratingmask);
+					$field = str_replace('%starrating%', $field, $ratingmask);
 				}
 
 				if($item_attribute_type_r['listing_link_ind'] == 'Y')

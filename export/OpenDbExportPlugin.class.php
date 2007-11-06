@@ -116,7 +116,7 @@ class OpenDbExportPlugin
 			$str = utf8_encode($str);
 		}*/
 		
-		$str = str_replaces(
+		$str = str_replace(
 						array("\"", "<", ">", "\n", "\r", "&"), // find
 						array("&quot;", "&lt;", "&gt;", "&#10;", "&#13;", "&amp;"), // replace
 						$str);

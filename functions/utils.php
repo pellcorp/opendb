@@ -82,30 +82,6 @@ function laststrpos($haystack, $needle)
 }
 
 /**
-	Extended version of str_replace.  Even though the doco says that
-	you can specify arrays for both find and replace, it does not seem
-	to work properly on the version of PHP I am using.  (4.0.4p1), so
-	I have written my own.
-*/
-function str_replaces($find_r, $replace_r, $buf)
-{
-	if(strlen($buf)>0)
-	{
-		for ($j=0; $j<count($find_r); $j++)
-		{
-			if(strlen($find_r[$j])>0)
-			{
-				if($replace_r[$j])
-					$buf = str_replace($find_r[$j], $replace_r[$j], $buf);
-				else
-					$buf = str_replace($find_r[$j], "", $buf);
-			}
-		}
-	}
-	return $buf;
-}
-
-/**
 * Perform explode, but then trim each array
 * element before returning.
 */
@@ -236,8 +212,11 @@ function array_search2($needle, $haystack, $strcasecmp=FALSE)
 		reset($haystack);
 		while(list($key,$value) = each($haystack))
 		{
-			if(($strcasecmp!==TRUE && strcmp($value, $needle)===0) || ($strcasecmp===TRUE && strcasecmp($value, $needle)===0))
+			if(($strcasecmp!==TRUE && strcmp($value, $needle)===0) || 
+						($strcasecmp===TRUE && strcasecmp($value, $needle)===0))
+			{
 				return $key;
+			}
 		}
 	}
 

@@ -392,7 +392,7 @@ class amazonde extends SitePlugin
 	
 		if( ($sqidx = strpos($this->getItemAttribute('title'), "["))!==FALSE)
 		{
-			$this->addItemAttribute('comments', str_replaces(array('[',']'), array("\n",''), substr($this->getItemAttribute('title'),$sqidx)));
+			$this->addItemAttribute('comments', str_replace(array('[',']'), array("\n",''), substr($this->getItemAttribute('title'),$sqidx)));
 			$this->replaceItemAttribute('title', substr($this->getItemAttribute('title'),0,$sqidx));
 		}
 	
@@ -593,7 +593,7 @@ function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 		{
 			$this->replaceItemAttribute('title', substr($this->getItemAttribute('title'),0,$sqidx));
 			
-			$comments = str_replaces(array('[',']'), array("\n",''), substr($this->getItemAttribute('title'),$sqidx));
+			$comments = str_replace(array('[',']'), array("\n",''), substr($this->getItemAttribute('title'),$sqidx));
 			
 			$dvd_extras = $this->getItemAttribute('dvd_extras');
 			if(strlen($dvd_extras)>0)

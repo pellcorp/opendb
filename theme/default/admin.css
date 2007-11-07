@@ -15,7 +15,14 @@ ul.itemTypeGroupList li.active
 .tooltip dt { font-weight: bold; }
 .tooltip-caption { background: black; color: rgb(255, 238, 170); }
 .tooltip h2 { white-space: normal; }
-	
+
+ul.checkboxGridOptionsVertical li
+{
+       /* prevent text on the Backup Database
+       page from being cut off on smaller screens */
+       width: 350px;
+}
+
 div.tabContainer
 {
 	padding-top: 10px;

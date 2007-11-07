@@ -293,14 +293,14 @@ function get_import_options_table(&$importPlugin, $HTTP_VARS)
 	
 	if($importPlugin->get_plugin_type() == 'row' && $importPlugin->is_header_row())
 	{
-		$buffer .= "<input type=\"checkbox\" class=\"checkbox\" name=\"include_header_row\" value=\"Y\"".(strcmp($HTTP_VARS['include_header_row'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('include_first_line')."</li>";
+		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"include_header_row\" value=\"Y\"".(strcmp($HTTP_VARS['include_header_row'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('include_first_line')."</li>";
 	}
 	
-	$buffer .= 	"<input type=\"checkbox\" class=\"checkbox\" name=\"ignore_duplicate_title\" value=\"Y\"".(strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('ignore_duplicate_title')."</li>";
+	$buffer .= 	"<li><input type=\"checkbox\" class=\"checkbox\" name=\"ignore_duplicate_title\" value=\"Y\"".(strcmp($HTTP_VARS['ignore_duplicate_title'],'Y')===0?' CHECKED':'').">".get_opendb_lang_var('ignore_duplicate_title')."</li>";
 	
 	if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
 	{
-		$buffer .= "<input type=\"checkbox\" class=\"checkbox\" name=\"trial_run\" value=\"Y\" CHECKED>".get_opendb_lang_var('trial_run')."</li>";
+		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"trial_run\" value=\"Y\" CHECKED>".get_opendb_lang_var('trial_run')."</li>";
 	}
 	
 	$buffer .= "</ul>";

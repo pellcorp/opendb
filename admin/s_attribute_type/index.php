@@ -268,10 +268,10 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	global $PHP_SELF;
 	global $ADMIN_TYPE;
 	
-	$block = "<div class=\"tabContainer\"><form name=\"s_attribute_type_lookup\" action=\"$PHP_SELF\" method=\"POST\">".
+	echo("<div class=\"tabContainer\"><form name=\"s_attribute_type_lookup\" action=\"$PHP_SELF\" method=\"POST\">".
 		"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 		"<input type=\"hidden\" name=\"op\" value=\"update-lookups\">".
-		"<input type=\"hidden\" name=\"s_attribute_type\" value=\"".$HTTP_VARS['s_attribute_type']."\">";
+		"<input type=\"hidden\" name=\"s_attribute_type\" value=\"".$HTTP_VARS['s_attribute_type']."\">");
 		
 	$row = 0;
 	$attribute_type_rows = NULL;

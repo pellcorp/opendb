@@ -242,10 +242,14 @@ class HTML_Listing extends Listing
 		{
 			$header_column_r = $this->_header_column_rs[$i];
 			
+			$columnClass = NULL;
+			if(strlen($header_column_r['fieldname'])>0)
+				$columnClass = $header_column_r['fieldname'];
+			
 			switch($row_column_rs[$i]['column_type'])
 			{
 				case 'action_links':
-					$this->_write('<td class="action_links">');
+					$this->_write('<td class="action_links '.$columnClass.'">');
 					$this->_write(ifempty(
 								format_action_links($row_column_rs[$i]['action_links']),
 								get_opendb_lang_var('not_applicable')));
@@ -253,7 +257,7 @@ class HTML_Listing extends Listing
 					break;
 					
 				case 'username':
-					$this->_write('<td class="username">');
+					$this->_write('<td class="username '.$columnClass.'">');
 					$user_id = $row_column_rs[$i]['user_id'];
 					$fullname = $row_column_rs[$i]['fullname'];
 					
@@ -299,7 +303,7 @@ class HTML_Listing extends Listing
 					break;
 				
 				case 'item_type_image':
-					$this->_write('<td class="item_type_image">');
+					$this->_write('<td class="item_type_image '.$columnClass.'">');
 					$s_item_type = $row_column_rs[$i]['s_item_type'];
 					
 					if(!is_array($this->_item_type_rs[$s_item_type]) || strlen($this->_item_type_rs[$s_item_type]['image'])==0)
@@ -336,7 +340,7 @@ class HTML_Listing extends Listing
 					break;
 					
 				case 'theme_image':
-					$this->_write('<td class="'.$header_column_r['fieldname'].'">');
+					$this->_write('<td class="'.$columnClass.'">');
 					$this->_write(
 						_theme_image(
 							$row_column_rs[$i]['src'], 
@@ -371,7 +375,7 @@ class HTML_Listing extends Listing
 					}
 
 					
-					$this->_write('<td class="title">');
+					$this->_write('<td class="title '.$columnClass.'">');
 					$this->_write($item_title);
 					$this->_write('</td>');
 					break;
@@ -380,7 +384,7 @@ class HTML_Listing extends Listing
 					$item_cover_image = $row_column_rs[$i]['item_cover_image'];
 					$title_href_link = $row_column_rs[$i]['title_href_link'];
 					
-					$this->_write('<td class="coverimage">');
+					$this->_write('<td class="coverimage '.$columnId.'Column">');
 					$file_r = file_cache_get_image_r($item_cover_image, 'listing');
 					if(is_array($file_r))
 					{
@@ -405,7 +409,7 @@ class HTML_Listing extends Listing
 					break;
 					
 				case 'display':
-					$this->_write('<td class="'.$header_column_r['fieldname'].'">');
+					$this->_write('<td class="'.$columnClass.'">');
 					$this->_write(get_display_field(
 								$row_column_rs[$i]['attribute_type'], 
 								$row_column_rs[$i]['prompt'], 
@@ -416,7 +420,7 @@ class HTML_Listing extends Listing
 					break;
 					
 				case 'attribute_display':
-						$this->_write('<td class="'.$header_column_r['fieldname'].'">');
+						$this->_write('<td class="'.$columnClass.'">');
 						$this->_write(get_item_display_field(
 									$row_column_rs[$i]['item_r'], 
 									$row_column_rs[$i]['attribute_type_r'], 
@@ -433,12 +437,12 @@ class HTML_Listing extends Listing
 					break;
 						
 				default:
-					$this->_write('<td class="'.$header_column_r['fieldname'].'">');
+					$this->_write('<td class="'.$columnClass.'">');
 					$this->_write($row_column_rs[$i]['value']);
 					$this->_write('</td>');
 					break;
 			}
-		}//for($i=0; $i<count($this->_row_column_rs); $i++)
+		}
 		$this->_write("\n</tr>");	
 	}
 	

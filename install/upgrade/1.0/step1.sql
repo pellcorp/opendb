@@ -78,7 +78,9 @@ DELETE FROM s_language_var WHERE varname IN (
 	'print_item_cover',
 	'item_search',
 	'tbl_dump_header',
-	'backup_database'
+	'backup_database',
+	'column',
+	'choose_export_columns'
 );
 
 # delete linked item vars, replace with related item vars
@@ -315,3 +317,9 @@ UPDATE s_language_var SET value = 'There are {no_of_users} user(s) awaiting acti
 
 DELETE FROM s_language_var WHERE language = 'ENGLISH' and varname = 'activate_user_list'; 
 
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ACT_COMMENT', 'Actor''s Commentary', 'director.gif', 'N');
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'Producer''s Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'OTHER_COMMENT', 'Other Commentary', 'director.gif', 'N' );
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'field', 'Field');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_export_fields', 'Choose Export Fields');

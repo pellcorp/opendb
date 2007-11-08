@@ -130,17 +130,10 @@ if (is_opendb_valid_session())
 					
 					if(file_cache_get_cache_file($file_cache_r))
 					{
-						if($file_cache_r['upload_file_ind'] == 'Y')
-						{
-							$hrefUrl = "url.php?url=".urlencode($file_cache_r['url']);
-						}
-						else
-						{
-							$hrefUrl = $file_cache_r['url'];
-						}
+						$hrefUrl = "url.php?url=".urlencode($file_cache_r['url']);
 						
 						$listingObject->addColumn(
-							"<a href=\"$hrefUrl\" target=\"_new\">".
+							"<a href=\"".$file_cache_r['url']."\" onclick=\"popup('$hrefUrl'); return false;\" target=\"_new\">".
 							get_overflow_tooltip_column($file_cache_r['url'], 100).
 							"</a>");
 					}

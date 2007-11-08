@@ -37,3 +37,11 @@ function hide_tooltip()
 {
 	return nd();
 }
+
+OLpageDefaults(
+	BGCLASS, 'tooltip', 
+	FGCLASS, 'tooltip', 
+	TEXTFONTCLASS, 'tooltip', 
+	CGCLASS, 'tooltip-caption', 
+	CAPTIONFONTCLASS, 'tooltip-caption', 
+	WRAP, WRAPMAX, 400);

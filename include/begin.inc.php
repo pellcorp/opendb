@@ -70,7 +70,6 @@ include_once("./functions/menu.php");
 
 include_once("./functions/OpenDbBrowserSniffer.class.php");
 
-
 // OpenDb will not work with this on!!!
 if(get_magic_quotes_runtime())
 {
@@ -130,9 +129,7 @@ if(function_exists('db_connect'))
 	{	
 		if(is_db_connected())
 	    {
-		    //
 			// Cache often used configuration entries
-			//
 		    $CONFIG_VARS['logging'] = get_opendb_config_var('logging');
 	
 			// Buffer output for possible pushing through ob_gzhandler handler
@@ -257,7 +254,6 @@ if(function_exists('db_connect'))
 }
 else
 {
-	// todo - pretty this up!
 	die('MySQL extension is not available');
 }	
 ?>

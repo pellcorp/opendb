@@ -90,3 +90,15 @@ function toggleVisible(linkElement, element)
 	}
 	return true;
 }
+
+function popup(url, width, height)
+{
+	if(width != null)
+	{
+		window.open(url, '_blank', 'resizable=yes,toolbar=no,scrollbars=yes,location=no,menubar=no,status=no,width='+width+',height='+height);
+	}
+	else
+	{
+		window.open(url, '_blank');
+	}
+}

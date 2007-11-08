@@ -556,7 +556,7 @@ if(is_site_enabled())
 								echo _theme_header($page_title);
 								echo("<h2>".$page_title."</h2>");
 								
-								echo("<h3>".get_opendb_lang_var('choose_export_columns')."</h3>");
+								echo("<h3>".get_opendb_lang_var('choose_export_fields')."</h3>");
 									
 								echo(get_row_export_column_form($exportPlugin, $HTTP_VARS));
 									

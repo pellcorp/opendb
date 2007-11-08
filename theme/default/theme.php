@@ -22,11 +22,17 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	global $_OPENDB_THEME;
 	global $PHP_SELF;
 	global $HTTP_VARS;
+	global $ADMIN_TYPE;
 	
+	if($pageid == 'admin')
+		$pageTitle = get_opendb_title_and_version(). " System Admin Tools";
+	else
+		$pageTitle = get_opendb_title();
+			
 	echo("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">".
 		"\n<html>".
 		"\n<head>".
-		"\n<title>".get_opendb_title().(!empty($title)?" - $title":"")."</title>".
+		"\n<title>".$pageTitle.(!empty($title)?" - $title":"")."</title>".
 		"\n<meta http-equiv=\"Content-Type\" content=\"".get_content_type_charset()."\">".
 		"\n<link rel=\"icon\" href=\""._theme_image_src("icon.gif")."\" type=\"image/gif\" />".
 		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Search\" href=\"./searchplugins.php\">".
@@ -37,8 +43,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 		"\n<body>");
 
 	echo("<div id=\"header\">");
-	
-	echo("<h1><a href=\"index.php\">".get_opendb_title()."</a></h1>");
+	echo("<h1><a href=\"index.php\">".$pageTitle."</a></h1>");
 	
 	if($include_menu)
 	{
@@ -83,11 +88,11 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 
 		echo("</ul>");
 	}
-		
+			
 	echo("</div>");
 	
 	echo("<div id=\"content\" class=\"${pageid}Content\">");
-	
+
 	if($include_menu)
 	{
 		echo("<div id=\"menu\">");

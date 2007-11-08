@@ -95,7 +95,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_in_reminder_not_for_items', 'No check in reminder for the following items(s):'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_out_item', 'Check Out Item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_out_item(s)', 'Check Out Item(s)'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_export_columns', 'Choose Export Columns'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_export_fields', 'Choose Export Fields'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_user_type', 'Choose the user type?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clear', 'Clear'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clear_usagelog', 'Clear Usagelog'); 
@@ -106,7 +106,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_it
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_item(s)_reserved', '{count} Item(s) reserved.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_item(s)_returned', '{count} Item(s) returned.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_review(s)', '{count} Review(s)'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'column', 'Column'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'field', 'Field'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'compulsory_field', 'Compulsory'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_clear_log', 'Are you sure you want to delete the log?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_inactive_borrowed_items_and_title', 'Are you sure you want to permanently delete (including any closed and/or cancelled borrow records) {display_title}?'); 

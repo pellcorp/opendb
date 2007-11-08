@@ -91,15 +91,33 @@ function _theme_menu()
 
 function get_theme_javascript($pageid)
 {
-	return get_javascript('common.js').
-			get_javascript('date.js').
-			get_javascript('forms.js').
-			get_javascript('listings.js').
-			get_javascript('marquee.js').
-			get_javascript('popup.js').
-			get_javascript('search.js').
-			get_javascript('tabs.js').
-			get_javascript('validation.js');					
+	$scripts[] = 'common.js';
+	$scripts[] = 'date.js';
+	$scripts[] = 'forms.js';
+	$scripts[] = 'listings.js';
+	$scripts[] = 'marquee.js';
+	$scripts[] = 'popup.js';
+	$scripts[] = 'search.js';
+	$scripts[] = 'tabs.js';
+	$scripts[] = 'validation.js';	
+
+	if($pageid == 'admin')
+	{
+		$scripts[] = './scripts/overlibmws/overlibmws.js';
+		$scripts[] = './scripts/overlibmws/overlibmws_function.js';
+		$scripts[] = './scripts/overlibmws_iframe.js';
+		$scripts[] = './scripts/overlibmws_hide.js';
+		$scripts[] = './admin/tooltips.js';
+	}
+	
+	$buffer = '';
+	
+	while(list(,$script) = each($scripts))
+	{
+		$buffer .= get_javascript($script);
+	}
+	
+	return $buffer;
 }
 
 function get_theme_css($pageid, $mode = NULL)

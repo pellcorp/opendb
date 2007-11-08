@@ -36,62 +36,8 @@ include_once("./functions/parseutils.php");
 include_once("./functions/ItemImportHandler.class.inc");
 include_once("./functions/HTML_Listing.class.inc");
 
-function get_item_id_range($item_id_r)
-{
-	$item_id_range = '';
-	$start_item_id = NULL;
-	$last_item_id = NULL;
-	if(is_array($item_id_r))
-	{
-		for($i=0; $i<count($item_id_r); $i++)
-		{
-			$new_id = $item_id_r[$i];
-			
-			if($last_item_id !== NULL)
-			{
-				// If the new_id, has jumped a number, we need to close range, and start again
-				if( ($last_item_id+1) < $new_id)
-				{
-					// If we actually have a range, of at least one.
-					if($start_item_id < $last_item_id)
-					{
-						$item_id_range .= $start_item_id.'-'.$last_item_id.',';
-					}
-					else if(is_numeric($start_item_id))
-					{
-						$item_id_range .= $start_item_id.',';
-					}
-					$start_item_id = $new_id;
-				}
-				$last_item_id = $new_id;
-			}
-			else
-			{
-				$start_item_id = $new_id;
-				$last_item_id = $new_id;
-			}
-		}
-	}
-	
-	// Do final 
-	if($start_item_id < $last_item_id)
-	{
-		$item_id_range .= $start_item_id.'-'.$last_item_id;
-	}
-	else if(is_numeric($start_item_id))
-	{
-		$item_id_range .= $start_item_id;
-	}
-	
-	return $item_id_range;
-}
-
-/**
-*/
 function get_column_select_block($fieldname, $lookup_array, $selectedindex)
 {
-	// So we can access the language variables.
-	
 	$var="\n<select name=\"$fieldname\">";	
 	$var.="\n<option value=\"\">-- ".get_opendb_lang_var('none')." --";
 	for ($i=0; $i<count($lookup_array); $i++)
@@ -156,7 +102,7 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 {
 	$buffer = "\n<table>";
 	$buffer .= "\n<tr class=\"navbar\"><th></th>".
-				"<th>".get_opendb_lang_var('column')."</th>".
+				"<th>".get_opendb_lang_var('field')."</th>".
 				"<th>".get_opendb_lang_var('default')."</th>".
 				"<th> ".get_opendb_lang_var('initcap')." </th></tr>";
 	
@@ -176,10 +122,10 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 	// If your data includes the item_type, then specify the column, so we
 	// can ignore records that are not of the chosen item_type.
 	$buffer .= "\n<tr>"
-		.format_prompt(get_opendb_lang_var('s_item_type'))
-		.format_data(get_column_select_block("field_column[s_item_type]", $header_row, $field_column_r['s_item_type']))
-		.format_data(NULL)
-		.format_data(NULL)
+		."<th class=\"prompt\" scope=\"row\">".get_opendb_lang_var('s_item_type')."</th>"
+		."<td class=\"data fieldColumn\">".get_column_select_block("field_column[s_item_type]", $header_row, $field_column_r['s_item_type'])."</td>"
+		."<td class=\"data defaultColumn\">&nbsp;</td>"
+		."<td class=\"data initcapColumn\">&nbsp;</td>"
 		."</tr>";
 									
 	// --------- Now the main input fields start....
@@ -201,10 +147,6 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 				}
 				else if($item_attribute_type_r['input_type'] !== "textarea" && $item_attribute_type_r['input_type'] !== "url")
 				{
-					// The url widgets can not work as default fields! 
-					// Also because of their nature, it does not make any sense to have a default field
-					// for textarea widgets either!
-
 					// Check if any lookup values for this field.
 					$lookup_results = fetch_attribute_type_lookup_rs($item_attribute_type_r['s_attribute_type'], 'order_no, value ASC');
 					if($lookup_results)
@@ -271,10 +213,10 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 				}
 				
 				$buffer .= "\n<tr>"
-					.format_prompt($item_attribute_type_r['prompt'])
-					.format_data(get_column_select_block("field_column[$fieldname]", $header_row, $field_column_r[$fieldname]))
-					.format_data($default_field)
-					.format_data($initcap_field)
+					."<th class=\"prompt\" scope=\"row\">".$item_attribute_type_r['prompt']."</th>"
+					."<td class=\"data fieldColumn\">".get_column_select_block("field_column[$fieldname]", $header_row, $field_column_r[$fieldname])."</td>"
+					."<td class=\"data defaultColumn\">".$default_field."</td>"
+					."<td class=\"data initcapColumn\">".$initcap_field."</td>"
 					."</tr>";
 					
 			}//if($item_attribute_type_r['s_field_type'] !== 'ITEM_ID')
@@ -669,6 +611,7 @@ if(is_site_enabled())
 								
 								// force disable of duplicate titles.
 								set_opendb_config_ovrd_var('item_input', 'duplicate_title_support', $cfg_ignore_duplicate_title);
+								set_opendb_config_ovrd_var('listings', 'show_item_image', FALSE);
 								//set_opendb_config_ovrd_var('item_input', 'confirm_duplicate_insert', TRUE);
 
                                 if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
@@ -702,13 +645,13 @@ if(is_site_enabled())
 								
 								$listingObject->startListing();
 						
-								$listingObject->addHeaderColumn(''); // Success or Failure column
-								$listingObject->addHeaderColumn(get_opendb_lang_var('type'));
-								$listingObject->addHeaderColumn(get_opendb_lang_var('title'));
+								$listingObject->addHeaderColumn('', 'flag', FALSE); // Success or Failure column
+								$listingObject->addHeaderColumn(get_opendb_lang_var('type'), 's_item_type', FALSE);
+								$listingObject->addHeaderColumn(get_opendb_lang_var('title'), 'title', FALSE);
 								//$listingObject->addHeaderColumn(get_opendb_lang_var('owner'));
 								if($cfg_override_status_type!==TRUE)
-									$listingObject->addHeaderColumn(get_opendb_lang_var('s_status_type'));
-								$listingObject->addHeaderColumn(get_opendb_lang_var('attributes'));
+									$listingObject->addHeaderColumn(get_opendb_lang_var('s_status_type'), 's_status_type', FALSE);
+								$listingObject->addHeaderColumn(get_opendb_lang_var('attributes'), 'attributes', FALSE);
 						
 								if($importPlugin->get_plugin_type() == 'row')
 								{

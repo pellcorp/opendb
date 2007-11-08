@@ -27,6 +27,56 @@ include_once("./functions/RowImportPluginHandler.class.php");
 include_once("./functions/PreviewImportPlugin.class.php");
 include_once("./functions/WrapperFileHandler.class.php");
 
+function get_item_id_range($item_id_r)
+{
+	$item_id_range = '';
+	$start_item_id = NULL;
+	$last_item_id = NULL;
+	if(is_array($item_id_r))
+	{
+		for($i=0; $i<count($item_id_r); $i++)
+		{
+			$new_id = $item_id_r[$i];
+			
+			if($last_item_id !== NULL)
+			{
+				// If the new_id, has jumped a number, we need to close range, and start again
+				if( ($last_item_id+1) < $new_id)
+				{
+					// If we actually have a range, of at least one.
+					if($start_item_id < $last_item_id)
+					{
+						$item_id_range .= $start_item_id.'-'.$last_item_id.',';
+					}
+					else if(is_numeric($start_item_id))
+					{
+						$item_id_range .= $start_item_id.',';
+					}
+					$start_item_id = $new_id;
+				}
+				$last_item_id = $new_id;
+			}
+			else
+			{
+				$start_item_id = $new_id;
+				$last_item_id = $new_id;
+			}
+		}
+	}
+	
+	// Do final 
+	if($start_item_id < $last_item_id)
+	{
+		$item_id_range .= $start_item_id.'-'.$last_item_id;
+	}
+	else if(is_numeric($start_item_id))
+	{
+		$item_id_range .= $start_item_id;
+	}
+	
+	return $item_id_range;
+}
+
 function isXpathMatch($xpath, $match) {
 	if(strcmp($xpath, $match)===0) {
 		return TRUE;

@@ -18,7 +18,6 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-$_OVRD_OPENDB_THEME = 'default';
 $_OVRD_OPENDB_LANGUAGE = 'english';
 
 // This must be first - includes config.php
@@ -64,40 +63,17 @@ if(is_site_enabled())
 
 			if($HTTP_VARS['mode'] != 'job')
 			{
-				$menu_option_r = get_system_admin_tools_menu($HTTP_VARS['type']);
-				$title = 'System Admin Tools - '.$menu_option_r['link'];
+				$menu_option_r = get_system_admin_tools_menu($ADMIN_TYPE);
+				$title = $menu_option_r['link'];
 				
-				echo("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">".
-						"\n<html>".
-						"\n<head>");
-				
+				_theme_header($title, FALSE);
+
+				// todo - this should really be in the <head>...</head> - does it matter?
 				if($xajax) {
 					$xajax->printJavascript();
 				}
 				
-				echo("\n<title>".get_opendb_title_and_version()." - $title"."</title>".
-						"\n<link rel=\"icon\" href=\"images/icon.gif\" type=\"image/gif\" />".
-						"\n<meta http-equiv=\"Content-Type\" content=\"".get_content_type_charset()."\">".
-						get_theme_css('admin').
-						get_theme_javascript('install'));
-				
-                   echo('<script language="JavaScript" type="text/javascript" src="./scripts/overlibmws/overlibmws.js"></script>
-		            <script language="JavaScript" type="text/javascript" src="./scripts/overlibmws/overlibmws_function.js"></script>
-		            <script language="JavaScript" type="text/javascript" src="./scripts/overlibmws/overlibmws_iframe.js"></script>
-		            <script language="JavaScript" type="text/javascript" src="./scripts/overlibmws/overlibmws_hide.js"></script>
-                    <script language="JavaScript" type="text/javascript" src="./admin/tooltips.js"></script>
-			    	<script language="JavaScript">
- 					OLpageDefaults(BGCLASS, \'tooltip\', FGCLASS, \'tooltip\', TEXTFONTCLASS, \'tooltip\', CGCLASS, \'tooltip-caption\', CAPTIONFONTCLASS, \'tooltip-caption\', WRAP, WRAPMAX, 400);
-					</script>');
-				echo("\n</head>".
-						"\n<body>");
-
-				echo("<div id=\"header\">");
-				
-				echo("<h1>".get_opendb_title_and_version()." Admin Tools</h1>");
-				
 				$system_admin_tools_menu_options = get_system_admin_tools_menu();
-
 				if($HTTP_VARS['inc_menu'] != 'N')
 				{
 					echo('<form id="toolType" action="admin.php"><select name="type" onChange="this.form.submit();">');
@@ -112,18 +88,13 @@ if(is_site_enabled())
 					echo("\n</select></form>");
 				}
 				echo("<h2>".$system_admin_tools_menu_options[$ADMIN_TYPE]['link']."</h2>");
-				echo("</div>");
-				
-				echo("<div id=\"content\" class=\"adminContent\">");
 			}
 
 			include_once("./admin/".$ADMIN_TYPE."/index.php");
 			
 			if($HTTP_VARS['mode'] != 'job')
 			{
-				echo("</div>");
-				echo("<div id=\"footer\"><a href=\"http://opendb.iamvegan.net/\">".get_opendb_lang_var('powered_by_site', 'site', get_opendb_title_and_version())."</a></div>");
-				echo("</body></html>");
+				echo _theme_footer();
 			}
 		}
 		else //not an administrator or own user.

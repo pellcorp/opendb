@@ -28,7 +28,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						'1.0',
 						'1.1.0',
 						array(
-							array('description'=>'New Item Relationship Table'),
+							array('description'=>'New Related Items Table and Misc Updates'),
 							array('description'=>'New Related Status Type'),
 							array('description'=>'Transfer Linked Items'),
 							array('description'=>'Transfer Email Addresses'),

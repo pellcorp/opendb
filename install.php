@@ -620,7 +620,6 @@ function install_opendb_new_install($HTTP_VARS, &$errors)
   	
 	if($HTTP_VARS['confirmed'] === 'true')
   	{
-  	  	// insert first record.
 		if(exec_install_sql_file("./install/new/tables.sql", $errors))
 	   	{
 	   	  	if(exec_install_sql_file("./install/new/systemdata.sql", $errors) && 
@@ -1182,7 +1181,7 @@ else
 		
 		if(is_opendb_partially_installed() && check_opendb_version())
 		{
-			echo("Your OpenDb installation is up to date.");
+			echo("<p>Your OpenDb installation is up to date.</p>");
 
 			// do not show this section unless a new install
 			if($is_new_install)

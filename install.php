@@ -33,7 +33,7 @@ include_once("./functions/install.php");
 include_once("./functions/widgets.php");
 
 $_opendb_install_required_writedirs = array(
-		'log', 'include', 'itemcache', 'httpcache', 'importcache');
+		'log', 'include', 'itemcache', 'httpcache', 'importcache', 'upload');
 
 $TICK_IMAGE = _theme_image('tick.gif');
 $CROSS_IMAGE = _theme_image('cross.gif');
@@ -128,7 +128,15 @@ function install_check_directories(&$doContinue)
 		$buffer .= "<p class='error'>All the directories above must be writable in order for OpenDb to function correctly.</p>";
 		
 		$buffer .= "<p><em>The following command can be executed from the OpenDb installation directory on a unix or linux operating system:</em></p>
-			<p><code>chmod ugo+w include log itemcache httpcache importcache</code></p>";
+			<p><code>chmod ugo+w "; 
+			
+		reset($_opendb_install_required_writedirs);
+		while(list(,$directory) = each($_opendb_install_required_writedirs))
+		{
+			$buffer .= "$directory ";
+		}
+		
+		$buffer .= "</code></p>";
 	}
 	
 	return $buffer;

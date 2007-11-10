@@ -368,6 +368,7 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listing
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings.multi_borrow', 3, 'Item Listing Multi Borrow', 'Item Listing Multi Borrow configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_display', 10, 'Item Display', 'Item Display configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input', 11, 'Item Input', 'Item Input configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.upload', 1, 'File Uploads', 'Item Input File Uploads configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.site', 1, 'Site Plugins', 'Item Input Site Plugins configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_review', 12, 'Item Review', 'Item Review configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow', 13, 'Item Borrow', 'Borrow Functionality configuration' );
@@ -404,7 +405,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.url', 'path', 3, 'Path', '', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.url', 'protocol', 4, 'Protocol', '', 'value_select', ',http,https');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'enable', 1, 'Enable', 'Expose the OpenDb as a public site, with \'guest\' User ID', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'enable', 1, 'Enable', 'Enable guest public access', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'user_id', 2, 'Guest User', 'You must choose a valid \'guest\' User', 'guest_userid');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, standard guest user restrictions will apply.  Otherwise only pages listed will be accessible while public access is in effect.', 'array', 'text');
 
@@ -506,6 +507,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_item_delete', 12, 'Confirm Item Delete', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 13, 'Allow Item Delete with inactive borrow records', ' exist', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('item_input', 'title_articles', 14, 'Title Articles', 'Format title, so that articles appear at the end of the title.', 'array', 'text');
+
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.upload', 'file_location', 1, 'File Upload Location', '', 'readonly');
+
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.site', 'debug', 1, 'Debug Site Plugins', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'width', 3, 'Item Image Width', '', 'number');
@@ -698,6 +702,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '0', 'The');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '1', 'A');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '2', 'An');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input.upload', 'file_location', './upload/');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input.site', 'item_image_size', 'height', '50');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'update_support', 'TRUE');

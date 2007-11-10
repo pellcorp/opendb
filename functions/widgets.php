@@ -996,7 +996,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 	{
 		// TODO: its a bit of a hack to pass in a empty URL to get the correct file URL prefix, however this will break if the format of
 		// the url ever changes so that the URL is not last. 
-		$fileUploadPrefix = get_upload_file_url($item_r['item_id'], $attribute_type_r['instance_attribute_ind']=='Y'? $item_r['instance_no']:"0", $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], 1, '');
+		//$fileUploadPrefix = get_upload_file_url($item_r['item_id'], $attribute_type_r['instance_attribute_ind']=='Y'? $item_r['instance_no']:"0", $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], 1, '');
 
 		$field .= "<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
@@ -1010,8 +1010,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 
 		$field .= "<div class=\"fieldContent\" id=\"${name}_saveurl\">";
 		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
-		// here we are testing for either absolute URL or else at least 1 / which indicates a pre 1.0 cached image - in the upload/ directory for example.
-		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){if(isUrlAbsolute(this.form['$name'].value) || this.form['$name'].value.indexOf('/')!=-1){popup('url.php?url='+escape(this.form['$name'].value),'400','300');}else{popup('url.php?url='+escape('".$fileUploadPrefix."'+this.form['$name'].value),'400','300');}}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
+		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){popup('url.php?url='+escape(this.form['$name'].value),'400','300');}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
 		$field .= "</div>";
 
 		if(is_file_upload_enabled())

@@ -824,9 +824,11 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
    	if(!is_instance_item_attribute_type($s_item_type, $s_attribute_type))
        	$instance_no = NULL;
 
+    // hack
+    get_opendb_config_var('item_input.upload', 'file_location');
+       
 	$is_file_resource_attribute_type = is_file_resource_attribute_type($s_attribute_type);
 
-	// must lock file cache and s_file_type, s_file_type_alt_extension too
 	if(db_query("LOCK TABLES item_attribute WRITE"))
 	{
 		$item_attribute_type_rs = fetch_arrayof_item_attribute_rs($item_id, $instance_no, $s_attribute_type, $order_no);
@@ -865,17 +867,35 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 				}
 				else
 				{
-					if($op == 'insert')
-						insert_item_attribute($item_id, $instance_no, $s_attribute_type, $order_no, $attribute_no, NULL, $attribute_val_r[$i]);
-					else if($item_attribute_type_rs[$i]['attribute_val'] != $attribute_val_r[$i])
-						update_item_attribute($item_id, $instance_no, $s_attribute_type, $order_no, $attribute_no, NULL, $attribute_val_r[$i]);
-						
 					if($is_file_resource_attribute_type)
 					{
-						$file_attributes_r[] = array('attribute_no'=>$attribute_no, 'attribute_val'=>$attribute_val_r[$i], 'file_r'=>$file_r);
+						if(is_array($file_r) && is_uploaded_file($file_r['tmp_name']))
+						{
+							// TODO - get unique filename for uploaded file here.
+							// ISSUES - if this is a refresh of a file with the same name, how do we know we are not overwriting 
+							// an existing uploaded file, or refreshing existing one?!!?  Is this just based on the upload item attribute
+							// - what happens if two different attributes share the same uploaded file?  It would seem to make sense that
+							// if its an update, and the filenames match, its a refresh, otherwise its considered a new file...
+							// we know what the current value is - $item_attribute_type_rs[$i]['attribute_val']!! 
+							
+							//$attribute_val_r[$i] = get_unique_filename($attribute_val_r[$i]); 
+							
+							//$fileLocation = get_upload_item_attribute_file_location($attribute_val_r[$i]);
+							if(!save_uploaded_file($file_r['tmp_name'], $attribute_val_r[$i]))
+							{
+								$attribute_val_r[$i] = NULL;
+							}
+						}
 						
-						// only process first
-						break;
+						$file_attributes_r[] = array('attribute_no'=>$attribute_no, 'attribute_val'=>$attribute_val_r[$i]);
+					}
+					
+					if(strlen($attribute_val_r[$i])>0)
+					{
+						if($op == 'insert')
+							insert_item_attribute($item_id, $instance_no, $s_attribute_type, $order_no, $attribute_no, NULL, $attribute_val_r[$i]);
+						else if($item_attribute_type_rs[$i]['attribute_val'] != $attribute_val_r[$i])
+							update_item_attribute($item_id, $instance_no, $s_attribute_type, $order_no, $attribute_no, NULL, $attribute_val_r[$i]);
 					}
 				}
 			}
@@ -886,13 +906,48 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 			{
 				while(list(,$file_attribute_val_r) = each($file_attributes_r))
 				{
-					if(is_array($file_attribute_val_r['file_r']) && is_uploaded_file($file_attribute_val_r['file_r']['tmp_name']))
+					/*if(is_array($file_attribute_val_r['file_r']) && is_uploaded_file($file_attribute_val_r['file_r']['tmp_name']))
 					{
-						$url = get_upload_file_url($item_id, $instance_no, $s_attribute_type, $order_no, $file_attribute_val_r['attribute_no'], $file_attribute_val_r['attribute_val']);
-						file_cache_insert_file($url, NULL, NULL, $file_attribute_val_r['file_r'], 'ITEM', TRUE);
+						//$url = get_upload_file_url($item_id, $instance_no, $s_attribute_type, $order_no, $file_attribute_val_r['attribute_no'], $file_attribute_val_r['attribute_val']);
+						//file_cache_insert_file($url, NULL, NULL, $file_attribute_val_r['file_r'], 'ITEM', TRUE);
+						
+						
 						
 					} // save url
-					else if(is_url_absolute($file_attribute_val_r['attribute_val']) && fetch_url_file_cache_r($file_attribute_val_r['attribute_val'], 'ITEM')===FALSE)
+					else*/ 
+					
+					/*
+					 *  For an upload - prefix the attribute_val with:
+					 * 	in actual fact lets make it a proper URL - specific to where opendb is installed, so
+					 * 	get_site_url()+'upload'+'/'+filename.ext
+					 * 
+					 * The file cache functionality can be updated to target all the cache records that have file_upload_ind to refresh the URL
+					 * if the domain is shifted.  This will mean that at runtime, the URL can be used directly.  The basename of the object will
+					 * still be saved in the item_attribute so that it can be re-derived to the filecache table.  The cache_file will reference the
+					 * ./upload/filename.ext and a generated thumbnail.
+					 *
+					 * So the basic limitation of uploaded files is that if the filename is the same as a different attribute and its a new upload
+					 * will have to generate unique form of the basename name.
+					 *  
+					 * when we perform a delete of a attribute with an uploaded file, how do we know the attribute points at an uploaded file?
+					 * its a file_attribute_ind = 'Y' and the attribute_val has a filename with no path.
+					 * 
+					 * should we establish that there is indeed a 
+					 * 
+					 * NOTE - the filecache process should store a reference to the uploaded file location instead of the generated location, and
+					 * generate a cache file as required.  The update process should look for existing uploaded files that are not recorded and
+					 * record new entries for them.
+					 * 
+					 * The existing ./upload/item_999.jpg files from 0.81 should be updated to not include the ./upload/ and be integrated into
+					 * the filecache system as uploaded files complete with thumbnails as required.
+					 * 
+					 * deal with orphaned uploaded files as a separate cleanup process, which can be run from item cache
+					 * 
+					 * An uploaded file should only be overwritten if the current value of the attribute_val corresponds to the newly uploaded
+					 * file.
+					*/
+					if(is_url_absolute($file_attribute_val_r['attribute_val']) && 
+							fetch_url_file_cache_r($file_attribute_val_r['attribute_val'], 'ITEM')===FALSE)
 					{
 						file_cache_insert_file($file_attribute_val_r['attribute_val'], NULL, NULL, NULL, 'ITEM', FALSE);
 					}

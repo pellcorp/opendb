@@ -31,6 +31,80 @@ include_once("./functions/OpenDbSnoopy.class.inc");
 include_once('./functions/phpthumb/phpthumb.class.php');
 include_once("./functions/item_attribute.php");
 
+function get_item_input_file_upload_directory()
+{
+	$uploadDir = get_opendb_config_var('item_input.upload', 'file_location');
+	if(is_dir($uploadDir))
+	{
+		if(ends_with($uploadDir, '/'))
+			$uploadDir = substr($uploadDir, 0, -1);
+			
+		return $uploadDir;	
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Item Input Upload Directory does not exist', array($uploadDir));
+		return FALSE;
+	}
+}
+
+function get_item_input_file_upload_url($url)
+{
+	$filename = basename($url);
+	$uploadDir = get_item_input_file_upload_directory();
+	if($uploadDir!=FALSE)
+	{
+		$newFile = $uploadDir.'/'.$filename;
+		if(file_exists($newFile))
+		{
+			return $newFile;
+		}
+	}
+	
+	//else
+	return FALSE;
+}
+
+function save_uploaded_file($tmpFile, $name)
+{
+	$uploadDir = get_item_input_file_upload_directory();
+	if($uploadDir!==FALSE)
+	{
+		if(is_writable($uploadDir))
+		{
+			if(is_uploaded_file($tmpFile))
+			{
+				$newFile = $uploadDir.'/'.$name;
+			
+				if(@copy($tmpFile, $newFile))
+				{
+					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Item Input Upload file saved', array($tmpFile, $newFile));
+					return TRUE;
+				}
+				else
+				{
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Item Input Upload file not written', array($tmpFile, $newFile));
+					return FALSE;
+				}
+			}
+			else
+			{
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Item Input Upload file is not valid', array($tmpFile));
+				return FALSE;
+			}
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Item Input Upload Directory is not writable', array($uploadDir));
+			return FALSE;
+		}
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
 function file_cache_get_config($cache_type='HTTP')
 {
 	if($cache_type == 'HTTP')

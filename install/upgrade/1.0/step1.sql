@@ -323,3 +323,7 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'field', 'Field');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_export_fields', 'Choose Export Fields');
+
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.upload', 1, 'File Uploads', 'Item Input File Uploads configuration' );
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.upload', 'file_location', 1, 'File Upload Location', '', 'readonly');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input.upload', 'file_location', './upload/');

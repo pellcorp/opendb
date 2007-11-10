@@ -54,6 +54,10 @@ function output_cache_file($cache_type, $url)
 		}
 		unset($snoopy);
 	}
+	else if( ($file = get_item_input_file_upload_url($url))!==FALSE )  // file upload - that is not cached
+	{
+		http_redirect($file);
+	}
 	else
 	{
 		http_redirect($url);
@@ -67,14 +71,6 @@ if(is_site_enabled())
 		// The most basic required parameter for this script is the 'url' parameter
 		if(strlen($HTTP_VARS['url'])>0)
 		{
-			/*if(isset($HTTP_VARS['item_id']) && 
-						isset($HTTP_VARS['instance_no']) && 
-						isset($HTTP_VARS['s_attribute_type']) && 
-						isset($HTTP_VARS['order_no']))
-			{
-				$HTTP_VARS['url'] = get_upload_file_url($HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['s_attribute_type'], $HTTP_VARS['order_no'], 1, $HTTP_VARS['url']);
-			}*/
-			
 			$HTTP_VARS['cache_type'] = ifempty($HTTP_VARS['cache_type'], 'ITEM');
 			if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
 			{

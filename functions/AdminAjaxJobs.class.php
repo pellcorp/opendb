@@ -31,15 +31,6 @@ class AdminAjaxJobs
 		if($continue !== 'false') {
 			$this->__executeJob($job);
 			
-			// get the previous level
-			$previousLevel = 0;
-			if($completedCount > 0) {
-				$previousPercentage = floor($completedCount / ($completedCount / 100));
-				if($previousPercentage > 0) {
-					$previousLevel = floor($previousPercentage / 10);
-				}
-			}
-			
 			$completedCount += $this->_processed;
 			$failureCount += $this->_failures;
 			
@@ -47,16 +38,13 @@ class AdminAjaxJobs
 			$totalItems = $completedCount + $this->_remaining;
 			
 			if($this->_processed == 0 && $this->_failures > 0) {
-				
 				$objResponse->assign("message", "className", "error");
 				$objResponse->assign("message", "innerHTML", "Job Failure (Completed: $completedCount, Failures: $failureCount)");
-				
 			} else {
-				
 				$percentage = 0;
 				if($this->_remaining > 0) {
 					if($completedCount > 0) {
-						$percentage = floor($completedCount / ($completedCount + $this->_remaining / 100));
+						$percentage = floor($completedCount / ($totalItems / 100));
 					}
 				} else {
 					$percentage = 100;
@@ -66,11 +54,11 @@ class AdminAjaxJobs
 				if($percentage > 0) {
 					$level = floor($percentage / 10);
 				}
-					
-				if( $level > 0 && $level != $previousLevel ) {
+				
+				if( $level > 0 ) {
 					$rsimage = _theme_image_src('rs.gif');
 					
-					for($i=($previousLevel+1); $i<=$level; $i++) {
+					for($i=0; $i<=$level; $i++) {
 						$objResponse->assign("status$i", "src", $rsimage);
 					}
 				}

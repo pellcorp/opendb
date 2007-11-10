@@ -26,6 +26,8 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	
 	if($pageid == 'admin')
 		$pageTitle = get_opendb_title_and_version(). " System Admin Tools";
+	else if($pageid == 'install')
+		$pageTitle = get_opendb_title_and_version(). " Installation";
 	else
 		$pageTitle = get_opendb_title();
 			
@@ -101,10 +103,13 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	}
 }
 
-function theme_footer($user_id, $user_type)
+function theme_footer($pageid, $user_id, $user_type)
 {
 	echo("</div>");
-	echo("<div id=\"footer\"><a href=\"http://opendb.iamvegan.net/\">".get_opendb_lang_var('powered_by_site', 'site', get_opendb_title_and_version())."</a></div>");
+	
+	if($pageid != 'install')
+		echo("<div id=\"footer\"><a href=\"http://opendb.iamvegan.net/\">".get_opendb_lang_var('powered_by_site', 'site', get_opendb_title_and_version())."</a></div>");
+		
 	echo("</body></html>");
 }
 

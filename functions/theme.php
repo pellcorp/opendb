@@ -58,15 +58,16 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 		}
 		
 		$include_menu = ($inc_menu!==FALSE && $inc_menu!=='N'?TRUE:FALSE);
-		
 		if(!$include_menu && strlen($HTTP_VARS['mode'])==0)
 		{
 			$HTTP_VARS['mode'] = 'no-menu';	
 		}
 		
+		$pageId = basename($PHP_SELF, '.php');
+		
 		$theme_header =
 			 theme_header(
-				basename($PHP_SELF, '.php'),
+				$pageId,
 				$title,
     			$include_menu,
     			$HTTP_VARS['mode'],
@@ -81,12 +82,32 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 	}
 }
 
-function _theme_menu()
+function _theme_footer()
 {
-	if(function_exists('theme_menu'))
-		return theme_menu(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'));
+	global $PHP_SELF;
+	
+	$user_id = get_opendb_session_var('user_id');
+	$user_type = get_opendb_session_var('user_type');
+	
+	if(is_site_public_access_enabled())
+	{
+		$user_id = NULL;
+		$user_type = NULL;
+	}
+
+	$pageId = basename($PHP_SELF, '.php');
+	
+	if(function_exists('theme_footer'))
+	{
+		return theme_footer(
+			$pageId,
+			$user_id,
+			$user_type);
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
 function get_theme_javascript($pageid)
@@ -230,14 +251,6 @@ function add_css_files($pageid, $mode, &$css_file_list)
 	}
 }
 
-function _theme_footer()
-{
-	if(function_exists('theme_footer'))
-		return theme_footer(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'));
-	else
-		return NULL;
-}
-
 function get_theme_search_dir_list()
 {
 	global $_OPENDB_THEME;
@@ -263,7 +276,6 @@ function get_theme_search_dir_list()
 	
 	$dirPath[] = "theme/default/images/";
 	$dirPath[] = "theme/default/";
-	$dirPath[] = "images/$_OPENDB_LANGUAGE/";
 	$dirPath[] = "images/";
 
 	return $dirPath;

@@ -32,32 +32,11 @@ include_once("./functions/http.php");
 include_once("./functions/install.php");
 include_once("./functions/widgets.php");
 
-function install_header($title)
-{
-	echo("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">".
-		"\n<html>".
-		"\n<head>".
-		"\n	<title>".get_opendb_title_and_version()." - $title"."</title>".
-		"\n<link rel=\"icon\" href=\"images/icon.gif\" type=\"image/gif\" />".
-		get_theme_css('install', 'no-menu').
-		get_theme_javascript('install').
-		"\n</head>".
-		"\n<body>");
-	
-	echo("<div id=\"content\" class=\"installContent\">");
-}
-
-function install_footer()
-{
-	echo("</div>");
-	echo("</body></html>");
-}
-
 $_opendb_install_required_writedirs = array(
 		'log', 'include', 'itemcache', 'httpcache', 'importcache');
 
-$TICK_IMAGE = _theme_image('tick.gif', '', NULL);
-$CROSS_IMAGE = _theme_image('cross.gif', '', NULL);
+$TICK_IMAGE = _theme_image('tick.gif');
+$CROSS_IMAGE = _theme_image('cross.gif');
 	
 function install_check_missing_081_upload_item_attributes()
 {
@@ -178,7 +157,7 @@ function install_check_php_settings()
 {
 	$buffer = "<h3>PHP Settings</h3>\n";
     
-	$buffer .= "\n<form action=\"$PHP_SELF\" method=\"GET\">";
+	
 	$buffer .= "<table>";
 	
 	if (opendb_version_compare(phpversion(), "4.3.0", ">="))
@@ -359,8 +338,8 @@ function install_check_user_permissions()
 		
 function install_pre_check($next_step)
 {
-	$doContinue = TRUE;
-		
+	global $PHP_SELF;
+	
     $buffer = "<h2>Pre Installation</h2>\n";
     
     $buffer .= "<h3>Have you backed up?</h3>
@@ -379,9 +358,12 @@ function install_pre_check($next_step)
 	
 	$buffer .= install_check_user_permissions();
 	
+	$doContinue = TRUE;
 	$buffer .= install_check_directories($doContinue);
 	
 	$buffer .= install_check_missing_081_upload_item_attributes();
+	
+	$buffer .= "\n<form action=\"$PHP_SELF\" method=\"GET\">";
 	
 	if($doContinue)
 	{
@@ -892,8 +874,7 @@ function perform_upgrade_step($HTTP_VARS, $opendb_release_r, $latest_to_version 
 
 if(strlen($HTTP_VARS['step'])==0)
 {
-	echo install_header('OpenDb Installation');
-	echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
+	echo _theme_header("OpenDb ".get_opendb_version()." Installation", FALSE);
 	
   	$next_step = 'pre-install';
 	
@@ -918,7 +899,7 @@ if(strlen($HTTP_VARS['step'])==0)
     
 	echo install_pre_check($next_step);
 	
-	echo install_footer();
+	echo _theme_footer();
 }
 else if($HTTP_VARS['step'] == 'pre-install')
 {
@@ -928,9 +909,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
   	
 	if(!is_db_connected()) // database does not exist or cannot be connected to
 	{
-		echo install_header('OpenDb Installation');
-		echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
-	
+		echo _theme_header("OpenDb ".get_opendb_version()." Installation", FALSE);
 		echo("<h2>Pre Installation</h2>");
 	
 		$db_created = install_create_opendb_user_and_database($HTTP_VARS, $db_details_r, $errors);
@@ -1050,16 +1029,14 @@ else if($HTTP_VARS['step'] == 'pre-install')
 			}
 		}
 		
-		echo install_footer();
+		echo _theme_footer();
 	}
 	else
 	{
 		// if the s_opendb_release table does not exist, we need to install it, and populate with
 		// a specific version record.
 			
-		echo install_header('OpenDb Installation');
-		echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
-
+		echo _theme_header("OpenDb ".get_opendb_version()." Installation", FALSE);
 		echo("<h2>Pre Installation</h2>");
 		
 		$preinstall_details = NULL;
@@ -1142,15 +1119,14 @@ else if($HTTP_VARS['step'] == 'pre-install')
 			echo("<p class=\"error\">There is no support to upgrade from versions of OpenDb prior to 0.80.  You will have to
 				download and install an older version and upgrade to at least 0.80 first.</p>");
 		}
-		echo install_footer();
+		echo _theme_footer();
 	}
 }
 else
 { 
 	@set_time_limit(600);
 	
-	echo install_header('OpenDb Installation');
-	echo("<h1>OpenDb ".get_opendb_version()." Installation</h1>\n");
+	echo _theme_header("OpenDb ".get_opendb_version()." Installation", FALSE);
 	
 	$is_new_install = FALSE;
 	
@@ -1224,7 +1200,7 @@ else
 			echo("<p><a href=\"index.php\">Login to OpenDb</a></p>");
 		}
 	}//database exists, and opendb release table has at least 1 record in it
-	echo install_footer();
+	echo _theme_footer();
 }
 
 // Cleanup after begin.inc.php

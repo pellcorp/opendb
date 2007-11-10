@@ -95,6 +95,9 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 # Attribute Type Lookup (AUDIO_LANG)
 #
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'DIR_COMMENT', 'Director\'s Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ACT_COMMENT', 'Actor''s Commentary', 'director.gif', 'N');
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'PROD_COMMENT', 'Producer''s Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'OTHER_COMMENT', 'Other Commentary', 'director.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH', 'English', 'english.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_2.0', 'English(2.0)', 'english.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_5.0', 'English(5.0)', 'dolby.gif', 'N' );

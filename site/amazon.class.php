@@ -151,32 +151,23 @@ class amazon extends SitePlugin
 			$this->addItemAttribute('upc_id', $search_attributes_r['search.title']);
 		}
 
-		$imageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/images/".$search_attributes_r['amazonasin']."/");
-		if($imageBuffer!==FALSE)
-	    {
-	        //fetchImage("alt_image_0", "http://images.amazon.com/images/P/B0000640RX.01._SS400_SCLZZZZZZZ_.jpg" );
-	        if(preg_match_all("!fetchImage\(\"[^\"]+\", \"([^\"]+)\"!", $imageBuffer, $regs))
-	        {
-	        	$this->addItemAttribute('imageurl', $regs[1]);
-	        } //<img src="http://images.amazon.com/images/P/B000FMH8RG.01._SS500_SCLZZZZZZZ_V52187861_.jpg" id="prodImage" />
-	        else if(preg_match_all("!<img src=\"([^\"]+)\" id=\"prodImage\" />!", $imageBuffer, $regs))
-	        {
-	        	$this->addItemAttribute('imageurl', $regs[1]);	
-	        }
-	    }
-
-	    if(preg_match("!<a href=\"(http://www.amazon.com/gp/product/customer-images/[^\"]*)\"!", $pageBuffer, $regs))
-	    {
-	    	$imageBuffer = $this->fetchURI($regs[1]);
-			if($imageBuffer!==FALSE)
-	    	{
-	    		//ciCreateImgObj('3396341','3396341','A1I1OR5F9QROZQ','http://g-ec2.images-amazon.com/images/G/01/ciu/19/c2/80794310fca09352806e8010.L.jpg'
-				if(preg_match_all("!ciCreateImgObj\('[^']*','[^']*','[^']*','(http://[^']*)!", $imageBuffer, $matches))
-				{
-					$this->addItemAttribute('cust_image_url', $matches[1]);	
-				}
-	    	}
-	    }
+		/*http://ecx.images-amazon.com/images/I/41CJBZZSQFL._AA240_.jpg
+		http://ecx.images-amazon.com/images/I/41CJBZZSQFL._SS500_.jpg
+		*/		
+		if(preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs))
+		{
+			$image = str_replace('AA240', 'SS500', $regs[1]);
+			$this->addItemAttribute('imageurl', $image);
+		}
+		
+		if(preg_match_all("!registerImage\(\"cust_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs))
+		{
+			while(list(,$image) = each($regs[1]))
+			{
+				$image = str_replace('AA240', 'SS500', $image);
+				$this->addItemAttribute('cust_imageurl', $image);
+			}
+		}
 	    
 	    //http://www.amazon.com/gp/product/product-description/0007136587/ref=dp_proddesc_0/002-1041562-0884857?ie=UTF8&n=283155&s=books
 		if(preg_match("!<a href=\"http://www.amazon.com/gp/product/product-description/".$search_attributes_r['amazonasin']."/[^>]*>See all Editorial Reviews</a>!", $pageBuffer, $regs) ||

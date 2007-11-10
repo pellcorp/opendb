@@ -76,9 +76,15 @@ function parse_upload_file_url($url)
  */
 function get_file_attribute_url($item_id, $instance_no, $attribute_type_r, $attribute_val)
 {
-	if(!is_url_absolute($attribute_val) && !file_exists($attribute_val)) // neither http URL or pre 1.0 upload/ cache file
+	if(!is_url_absolute($attribute_val)) // neither http URL or pre 1.0 upload/ cache file
 	{
-		$url = get_upload_file_url(
+		$fileLocation = get_item_input_file_upload_url($attribute_val);
+		if($fileLocation!==FALSE) 
+		{
+			$attribute_val = $fileLocation;
+		}
+		
+/*		$url = get_upload_file_url(
 					$item_id,
 					$attribute_type_r['instance_attribute_ind']=='Y'?$instance_no:"0",
 					$attribute_type_r['s_attribute_type'],
@@ -90,7 +96,7 @@ function get_file_attribute_url($item_id, $instance_no, $attribute_type_r, $attr
 		{
 			$attribute_val = $url;
 		}
-	}
+*/	}
 	
 	return $attribute_val;
 }

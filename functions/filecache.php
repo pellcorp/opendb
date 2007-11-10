@@ -51,13 +51,16 @@ function get_item_input_file_upload_directory()
 function get_item_input_file_upload_url($url)
 {
 	$filename = basename($url);
-	$uploadDir = get_item_input_file_upload_directory();
-	if($uploadDir!=FALSE)
+	if(strlen($filename)>0)
 	{
-		$newFile = $uploadDir.'/'.$filename;
-		if(file_exists($newFile))
+		$uploadDir = get_item_input_file_upload_directory();
+		if($uploadDir!=FALSE)
 		{
-			return $newFile;
+			$newFile = $uploadDir.'/'.$filename;
+			if(file_exists($newFile))
+			{
+				return $newFile;
+			}
 		}
 	}
 	
@@ -78,7 +81,7 @@ function save_uploaded_file($tmpFile, $name)
 			
 				if(@copy($tmpFile, $newFile))
 				{
-					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Item Input Upload file saved', array($tmpFile, $newFile));
+					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($tmpFile, $newFile));
 					return TRUE;
 				}
 				else

@@ -72,3 +72,8 @@ dl.importAttribs dd li
 	float: left;
 	margin-right: 10px;
 }
+
+span.selectMask
+{
+	display: block;
+}

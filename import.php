@@ -90,9 +90,9 @@ function build_select($name, $lookup_results, $value, $include_none_option=TRUE)
 	$var.="\n</select>";
 
 	if($display_used)
-		$var.=" (%value% - %display%)";
+		$var.="<span class=\"selectMask\">(%value% - %display%)</span>";
 	else
-		$var.=" (%value%)";
+		$var.="<span class=\"selectMask\">(%value%)</span>";
 	return $var;
 }
 
@@ -104,7 +104,7 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 	$buffer .= "\n<tr class=\"navbar\"><th></th>".
 				"<th>".get_opendb_lang_var('field')."</th>".
 				"<th>".get_opendb_lang_var('default')."</th>".
-				"<th> ".get_opendb_lang_var('initcap')." </th></tr>";
+				"<th> ".get_opendb_lang_var('initcap')."</th></tr>";
 	
 	// If the prompt for this field, matches any of the $tokens, then select that token.
 	if(!is_numeric($field_column_r['s_item_type']))

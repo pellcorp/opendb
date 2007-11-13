@@ -258,6 +258,9 @@ function import_cache_delete_for_user($user_id)
 
 function import_cache_deleteall()
 {
+	// hack
+	import_cache_get_cache_directory();
+	
 	if(db_query("LOCK TABLES import_cache WRITE"))
 	{
 		$query = "SELECT sequence_number FROM import_cache";

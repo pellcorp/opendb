@@ -76,6 +76,10 @@ function opendb_tempnam($prefix)
  */
 function dir_tempnam($dir, $prefix)
 {
+	// ensure relative directory does not have last slash
+	if(ends_with($dir, '/'))
+		$dir = substr($dir, 0, -1);
+		
 	$real_dir_path = realpath($dir);
 	if (substr($real_dir_path, -1) != '/')
 		$real_dir_path .= '/';
@@ -84,9 +88,13 @@ function dir_tempnam($dir, $prefix)
 	$name = basename($tempfile);
 	
 	if(is_file($real_dir_path.$name))
-		return $name;
+	{
+		return $dir.'/'.$name;
+	}
 	else
 	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Temporary file could not be created', array($dir, $prefix, $real_dir_path));
+		
 		@unlink($name);
 		return FALSE;
 	}
@@ -169,6 +177,33 @@ function get_valid_extension($filename, $extensions)
 	return FALSE;
 }
 
+/**
+ * Validate that a file reference is a legal relative opendb file to
+ * save into the following locations:
+ * 	importcache
+ * 	itemcache
+ * 	upload
+ *
+ * @param unknown_type $filename
+ */
+function is_exists_opendb_file($fileLocation)
+{
+	if(strlen($fileLocation)>0 && $fileLocation!='.' && $fileLocation != '..')
+	{
+		return TRUE;
+	}
+	
+	//else
+	return FALSE;
+}
+
+/**
+ * TODO - perform validation on $filename to ensure it is a relative directory
+ * in a legal location within opendb.
+ *
+ * @param unknown_type $filename
+ * @return unknown
+ */
 function delete_file($filename)
 {
 	if(@is_file($filename))

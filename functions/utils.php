@@ -18,6 +18,15 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+function generate_random_num()
+{
+    mt_srand ((double)microtime()*1000000);
+	$maxran = 1000000;
+	$random_num = mt_rand(0, $maxran);
+	
+	return $random_num;
+}
+
 /**
 	If strlen($value)==0 will return $ifnull value
 	instead.

@@ -77,3 +77,8 @@ span.selectMask
 {
 	display: block;
 }
+
+ul.radioGridOptionsVertical li
+{
+	width: 100px;
+}

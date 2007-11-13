@@ -20,6 +20,19 @@
 include_once("./functions/fileutils.php");
 include_once("./functions/import.php");
 
+/**
+ * Add randomness to avoid 
+ *
+ * @param unknown_type $directory
+ * @param unknown_type $new_sequence_number
+ * @return unknown
+ */
+function import_get_cache_file($directory, $new_sequence_number)
+{
+	$randomNum = generate_random_num();
+	return $directory.'/'.$new_sequence_number.'_'.$randomNum.'.cache';
+}
+
 function import_cache_get_cache_directory()
 {
 	$dir = get_opendb_config_var('import.cache', 'file_location');
@@ -27,8 +40,9 @@ function import_cache_get_cache_directory()
 	$dir = trim($dir);
 	if($dir!='.' && $dir!='..' && is_dir($dir))
 	{
-		if(!ends_with($dir, '/'))
-			$dir .= '/';
+		if(ends_with($dir, '/'))
+			$dir = substr($dir, 0, -1);
+			
 		return $dir;
 	}
 	else
@@ -84,18 +98,19 @@ function import_cache_fetch_file($sequence_number)
 		db_free_result($result);
 		if ($record_r!== FALSE)
 		{
-			$directory = import_cache_get_cache_directory();
-			$file_location = $directory.$record_r['cache_file'];
-
-			$import_file = fopen($file_location, 'rb');
-			if($import_file)
+			if(is_exists_opendb_file($record_r['cache_file']))
 			{
-				return $import_file;
-			}
-			else
-			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number));
-				return FALSE;
+				$import_file = fopen($record_r['cache_file'], 'rb');
+				if($import_file)
+				{
+					return $import_file;
+				}
+				else
+				{
+					
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number));
+					return FALSE;
+				}
 			}
 		}
 	}
@@ -112,38 +127,40 @@ function import_cache_insert($user_id, $plugin_name, $infile_location)
 		if($content_length>0)
 		{
 			$directory = import_cache_get_cache_directory();
-			
-			$cache_file = @dir_tempnam($directory, 'import');
-			if($cache_file!==FALSE)
+			if(is_dir($directory))
 			{
-				if(copy($infile_location, $directory.$cache_file)!==FALSE)
+				$query = "INSERT INTO import_cache(user_id, plugin_name, content_length, cache_file)".
+						" VALUES ('$user_id','$plugin_name','$content_length', '$cache_file')";
+		
+				$insert = db_query($query);
+				if ($insert && db_affected_rows() > 0)
 				{
-					$query = "INSERT INTO import_cache(user_id, plugin_name, content_length, cache_file)".
-							" VALUES ('$user_id','$plugin_name','$content_length', '$cache_file')";
-			
-					$insert = db_query($query);
-					if ($insert && db_affected_rows() > 0)
+					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($user_id, $plugin_name, $cache_file));
+					
+					$new_sequence_number = db_insert_id();
+					
+					$cache_file = import_get_cache_file($directory, $new_sequence_number);
+					if(copy($infile_location, $cache_file)!==FALSE)
 					{
-						$new_sequence_number = db_insert_id();
-						
-						opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($user_id, $plugin_name, $cache_file));
-						return $new_sequence_number;	
+						import_cache_update_cachefile($new_sequence_number, $cache_file);
 					}
 					else
 					{
-						opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($user_id, $plugin_name, $cache_file));
+						opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Error copying files', array($user_id, $plugin_name, $infile_location, $directory.$cache_file));
 						return FALSE;
 					}
+					
+					return $new_sequence_number;	
 				}
 				else
 				{
-					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Error copying files', array($user_id, $plugin_name, $infile_location, $directory.$cache_file));
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($user_id, $plugin_name, $cache_file));
 					return FALSE;
 				}
 			}
 			else
 			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Importcache directory is not accessible.', array($user_id, $plugin_name));
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Importcache directory is not accessible', array($user_id, $plugin_name));
 				return FALSE;
 			}
 		}
@@ -160,6 +177,24 @@ function import_cache_insert($user_id, $plugin_name, $infile_location)
 	}
 }
 
+function import_cache_update_cachefile($sequence_number, $cache_file)
+{
+	$cache_file = addslashes($cache_file);
+	
+	$update = db_query("UPDATE import_cache SET cache_file = '$cache_file' WHERE sequence_number = '$sequence_number'");
+	$rows_affected = db_affected_rows();
+	if ($update && db_affected_rows() > 0)
+	{
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $cache_file));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $cache_file));
+		return FALSE;
+	}
+}
+
 function import_cache_delete($sequence_number)
 {
 	$cache_r = fetch_import_cache_r($sequence_number);
@@ -170,9 +205,7 @@ function import_cache_delete($sequence_number)
 		if( $delete && db_affected_rows() > 0)
 		{
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Deleted import_cache record', array($sequence_number));
-			
-			$directory = import_cache_get_cache_directory();
-			return delete_file($directory.$cache_r['cache_file']);
+			return delete_file($cache_r['cache_file']);
 		}
 		else
 		{
@@ -189,9 +222,6 @@ function import_cache_delete($sequence_number)
 
 function import_cache_delete_for_user($user_id)
 {
-	// a hack to cache the configuration before lock tables
-	import_cache_get_cache_directory();
-	
 	if(db_query("LOCK TABLES import_cache WRITE"))
 	{
 		$query = "SELECT sequence_number FROM import_cache WHERE user_id = '$user_id'";

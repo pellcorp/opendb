@@ -142,7 +142,11 @@ function import_cache_insert($user_id, $plugin_name, $infile_location)
 					$cache_file = import_get_cache_file($directory, $new_sequence_number);
 					if(copy($infile_location, $cache_file)!==FALSE)
 					{
-						import_cache_update_cachefile($new_sequence_number, $cache_file);
+						// failure to store reference to cache file makes the whole process pointless.
+						if(!import_cache_update_cachefile($new_sequence_number, $cache_file))
+						{
+							return FALSE;
+						}
 					}
 					else
 					{

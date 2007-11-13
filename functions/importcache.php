@@ -27,10 +27,10 @@ include_once("./functions/import.php");
  * @param unknown_type $new_sequence_number
  * @return unknown
  */
-function import_get_cache_file($directory, $new_sequence_number)
+function import_get_cache_file($new_sequence_number)
 {
 	$randomNum = generate_random_num();
-	return $directory.'/'.$new_sequence_number.'_'.$randomNum.'.cache';
+	return $new_sequence_number.'_'.$randomNum.'.cache';
 }
 
 function import_cache_get_cache_directory()
@@ -98,9 +98,10 @@ function import_cache_fetch_file($sequence_number)
 		db_free_result($result);
 		if ($record_r!== FALSE)
 		{
-			if(is_exists_opendb_file($record_r['cache_file']))
+			$directory = import_cache_get_cache_directory();
+			if(is_exists_opendb_file($directory.'/'.$record_r['cache_file']))
 			{
-				$import_file = fopen($record_r['cache_file'], 'rb');
+				$import_file = fopen($directory.'/'.$record_r['cache_file'], 'rb');
 				if($import_file)
 				{
 					return $import_file;
@@ -139,8 +140,8 @@ function import_cache_insert($user_id, $plugin_name, $infile_location)
 					
 					$new_sequence_number = db_insert_id();
 					
-					$cache_file = import_get_cache_file($directory, $new_sequence_number);
-					if(copy($infile_location, $cache_file)!==FALSE)
+					$cache_file = import_get_cache_file($new_sequence_number);
+					if(copy($infile_location, $directory.'/'.$cache_file)!==FALSE)
 					{
 						// failure to store reference to cache file makes the whole process pointless.
 						if(!import_cache_update_cachefile($new_sequence_number, $cache_file))
@@ -150,7 +151,7 @@ function import_cache_insert($user_id, $plugin_name, $infile_location)
 					}
 					else
 					{
-						opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Error copying files', array($user_id, $plugin_name, $infile_location, $directory.$cache_file));
+						opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Error copying files', array($user_id, $plugin_name, $infile_location, $directory.'/'.$cache_file));
 						return FALSE;
 					}
 					
@@ -209,7 +210,9 @@ function import_cache_delete($sequence_number)
 		if( $delete && db_affected_rows() > 0)
 		{
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Deleted import_cache record', array($sequence_number));
-			return delete_file($cache_r['cache_file']);
+			
+			$directory = import_cache_get_cache_directory();
+			return delete_file($directory.'/'.$cache_r['cache_file']);
 		}
 		else
 		{
@@ -226,6 +229,9 @@ function import_cache_delete($sequence_number)
 
 function import_cache_delete_for_user($user_id)
 {
+	// hack
+	import_cache_get_cache_directory();
+	
 	if(db_query("LOCK TABLES import_cache WRITE"))
 	{
 		$query = "SELECT sequence_number FROM import_cache WHERE user_id = '$user_id'";

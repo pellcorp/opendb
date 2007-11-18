@@ -121,5 +121,36 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		db_query("ALTER TABLE item DROP parent_id");
 		return TRUE;
 	}
+	
+	/**
+	 * @param unknown_type $stepPart
+	 */
+	function executeStep7($stepPart)
+	{
+		// need to copy all uploaded records from file_cache into upload directory creating using a 
+		// unique filename
+		
+		$results = db_query("SELECT fc.cache_file, ia.item_id, ia.instance_no, ia.s_attribute_type, ia.order_no, ia.attribute_val
+						FROM file_cache fc,
+							item_attribute ia
+						WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND
+						fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val )
+						");
+		if($results)
+		{
+			while($fc_attrib_r = db_fetch_assoc($results))
+			{
+				if(file_exists('./itemcache/'.$fc_attrib_r['cache_file']))
+				{
+					// todo - ensure attribute_val is unique filename, this can be done by locking the
+					// item_attribute table and ensuring that where s_attribute_type file_attribute_ind = 'Y'
+					// and attribute_val is not absolute that filename is unique, excluding current
+					// attribute_val. 
+					save_upload_file('./itemcache/'.$fc_attrib_r['cache_file'], $fc_attrib_r['attribute_val']);		
+				}
+			}
+			db_free_result($results);
+		}
+	}
 }
 ?>

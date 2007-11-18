@@ -572,13 +572,13 @@ CREATE TABLE file_cache (
   cache_type			VARCHAR(10) NOT NULL DEFAULT 'HTTP',
   cache_date			DATETIME NOT NULL,
   expire_date			DATETIME,
-  url					TEXT NOT NULL,
+  url					TEXT,
   # if url was redirected, this stores the redirected URL
   location				TEXT,
   upload_file_ind 		VARCHAR(1) NOT NULL DEFAULT 'N',
-  content_type			VARCHAR(100) NOT NULL,
-  content_length		INTEGER(10) UNSIGNED NOT NULL,
-  cache_file			VARCHAR(255) NOT NULL,
+  content_type			VARCHAR(100),
+  content_length		INTEGER(10) UNSIGNED,
+  cache_file			VARCHAR(255),
   cache_file_thumb		VARCHAR(255),
   PRIMARY KEY ( sequence_number )
 ) TYPE=MyISAM COMMENT='File Cache table';

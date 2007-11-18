@@ -80,7 +80,6 @@ if(is_site_enabled())
 				$file_cache_r = fetch_url_file_cache_r($HTTP_VARS['url'], $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
 				if($file_cache_r!==FALSE)
 				{
-					$file_type_r = fetch_file_type_r($file_cache_r['content_type']);
 					if($HTTP_VARS['cache_type'] == 'ITEM')
 					{
 						if(ifempty($HTTP_VARS['op'], 'fullsize') == 'fullsize')
@@ -105,11 +104,8 @@ if(is_site_enabled())
 				
 					if($file)
 					{
-						// TODO: derive a better filename, perhaps derived from a basename of the URL itself
-						$filename = strtolower($file_type_r['content_group']).$sequence_number.'.'.$file_type_r['extension'];
-						
-						header("Content-disposition: inline; filename=".$filename);
-						header("Content-type: ".$file_type_r['content_type']);
+						header("Content-disposition: inline; filename=".$file_cache_r['cache_file']);
+						header("Content-type: ".$file_cache_r['content_type']);
 						fpassthru($file);
 						fclose($file);
 					}

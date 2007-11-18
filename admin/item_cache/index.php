@@ -75,24 +75,24 @@ if (is_opendb_valid_session())
 			
 			if(fetch_file_cache_new_item_attribute_cnt() > 0)
 			{
-				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=update\">Update</a>]&nbsp;");
+				echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=update\">Update</a> ]");
 			}
 			
 			if(fetch_file_cache_refresh_cnt('ITEM') > 0)
 			{
-				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh\">Refresh</a>]&nbsp;");
+				echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh\">Refresh</a> ] ");
 			}
 			
 			if(fetch_file_cache_missing_thumbs_cnt('ITEM') > 0)
 			{
-				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh_thumbnails\">Refresh Thumbnails</a>]&nbsp;");
+				echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh_thumbnails\">Refresh Thumbnails</a> ] ");
 			}
 			
 			// the item attribute orphan count is really slow, so do not use it.
 			if(fetch_file_cache_missing_file_cnt('ITEM') > 0 ) //|| 
 //							fetch_file_cache_item_attribute_orphans_cnt() > 0)
 			{
-				echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a>]&nbsp;");
+				echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a> ] ");
 			}
 			
 			echo("</p>");

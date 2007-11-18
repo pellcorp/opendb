@@ -391,8 +391,6 @@ class Listing
 				$attribute_type_r = $this->_item_type_rs[$s_item_type]['image_attribute_type_r'];
 				
 				$item_cover_image = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $attribute_type_r['s_attribute_type']);
-
-				$item_cover_image = get_file_attribute_url($item_r['item_id'], $item_r['instance_no'], $attribute_type_r, $item_cover_image);
 				
 				// a kludge to use FALSE to test whether a default image should be displayed				
 				if($item_cover_image === FALSE)

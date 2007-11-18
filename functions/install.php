@@ -50,6 +50,24 @@ function opendb_version_compare($to_version, $from_version, $operator)
 	return version_compare($to_version, $from_version, $operator);
 }
 
+function fetch_081_upload_item_attributes_rs()
+{
+	$query = "SELECT ia.attribute_val 
+			FROM item_attribute ia, s_attribute_type sat
+			WHERE ia.s_attribute_type = sat.s_attribute_type AND 
+				sat.file_attribute_ind = 'Y' AND
+				attribute_val LIKE './upload/%'";
+	
+	$results = db_query($query);
+	if($results && db_num_rows($results)>0)
+	{
+		return $results;
+	}
+
+	//else
+	return FALSE;
+}
+
 function fetch_missing_081_upload_item_attributes(&$errors)
 {
 	$missing_files_r = array();

@@ -106,8 +106,6 @@ function get_last_num_items_rs(
 					
 					$imageurl = fetch_attribute_val($item_r['item_id'], NULL, $attribute_type_r['s_attribute_type']);
 					
-					$imageurl = get_file_attribute_url($item_r['item_id'], $item_r['instance_no'], $attribute_type_r, $imageurl);
-					
 					$file_r = file_cache_get_image_r($imageurl, 'display');
 
 					$item_r['imageurl']['url'] = $file_r['thumbnail']['url'];

@@ -73,8 +73,6 @@ if(is_site_enabled())
 						{
 							$imageurl = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $image_attribute_type_r['s_attribute_type'], $image_attribute_type_r['order_no']);
 
-							$imageurl = get_file_attribute_url($item_r['item_id'], $item_r['instance_no'], $image_attribute_type_r, $imageurl);
-							
 							if(strlen($imageurl)>0)
 							{
 								$coverimages_rs[] = array(
@@ -98,13 +96,6 @@ if(is_site_enabled())
 							
 							if(strlen($file_r['fullsize']['url'])>0)
 							{
-								// a dirty hack!
-								if(starts_with($file_r['url'], 'file://'))
-								{
-									$parsed_r = parse_upload_file_url($file_r['url']);
-									$file_r['url'] = $parsed_r['filename'];
-								}
-								
 								$width = $file_r['fullsize']['width'];
 								$height = $file_r['fullsize']['height'];
 								

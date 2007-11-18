@@ -42,84 +42,6 @@ function fetch_item_instance_for_attribute_val_rs($attribute_val, $s_attribute_t
 }
 
 /**
-@param $filename - assumes its been basenamed
-*/
-function get_upload_file_url($item_id, $instance_no, $s_attribute_type, $order_no, $attribute_no, $filename)
-{
-	return "file://opendb/upload/${item_id}/".(is_numeric($instance_no)?$instance_no:0)."/${s_attribute_type}/${order_no}/${attribute_no}/$filename";
-}
-
-/**
-	Example:
-		file://opendb/upload/123/2/IMAGEURL/1/1/JasonPell.doc
-*/
-function parse_upload_file_url($url)
-{
-	if(preg_match("!file://opendb/upload/([\d]+)/([\d]+)/([^/]+)/([\d]+)/([\d]+)/([^\$]+)!", $url, $matches))
-	{
-		return array(
-			'item_id'=>$matches[1],
-			'instance_no'=>$matches[2],
-			's_attribute_type'=>$matches[3],
-			'order_no'=>$matches[4],
-			'attribute_no'=>$matches[5],
-			'filename'=>$matches[6]);
-	}
-	else
-	{
-		return NULL;
-	}
-}
-
-/**
- * Optionally expands URL for file upload cached files.
- */
-function get_file_attribute_url($item_id, $instance_no, $attribute_type_r, $attribute_val)
-{
-	if(!is_url_absolute($attribute_val)) // neither http URL or pre 1.0 upload/ cache file
-	{
-		$fileLocation = get_item_input_file_upload_url($attribute_val);
-		if($fileLocation!==FALSE) 
-		{
-			$attribute_val = $fileLocation;
-		}
-		
-/*		$url = get_upload_file_url(
-					$item_id,
-					$attribute_type_r['instance_attribute_ind']=='Y'?$instance_no:"0",
-					$attribute_type_r['s_attribute_type'],
-					$attribute_type_r['order_no'],
-					'1', // attribute_no - file attributes cannot be multivalue - so this will always be 1
-					$attribute_val);
-	
-		if(fetch_url_file_cache_r($url, 'ITEM', INCLUDE_EXPIRED)!==FALSE)
-		{
-			$attribute_val = $url;
-		}
-*/	}
-	
-	return $attribute_val;
-}
-
-function fetch_081_upload_item_attributes_rs()
-{
-	$query = "SELECT ia.attribute_val 
-			FROM item_attribute ia, s_attribute_type sat
-			WHERE ia.s_attribute_type = sat.s_attribute_type AND 
-				sat.file_attribute_ind = 'Y' AND
-				attribute_val LIKE './upload/%'";
-	
-	$results = db_query($query);
-	if($results && db_num_rows($results)>0)
-	{
-		return $results;
-	}
-
-	//else
-	return FALSE;
-}
-
-/**
 	Checks that the $s_attribute_type actually exists
 */
 function is_exists_attribute_type($s_attribute_type)
@@ -715,7 +637,6 @@ function is_item_attribute_set($item_id, $instance_no, $s_attribute_type, $order
 {
 	if(is_numeric($item_id) && strlen($s_attribute_type)>0)
 	{
-		// Only load previous record if edit.
 		$query = "SELECT count('x') as count FROM item_attribute ".
 	    		"WHERE item_id = '".$item_id."' AND ".
 	            	"s_attribute_type = '".$s_attribute_type."' ";
@@ -723,8 +644,6 @@ function is_item_attribute_set($item_id, $instance_no, $s_attribute_type, $order
 	    if(is_numeric($instance_no))
 			$query .= " AND (instance_no = 0 OR instance_no = $instance_no) ";
 	
-		// Only add order_no where condition if order_no defined, otherwise we
-		// will return the first instance of s_attribute_type.
 		if(is_numeric($order_no))
 			$query .= "AND order_no = '".$order_no."'";
 	    
@@ -891,9 +810,13 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 							{
 								$attribute_val_r[$i] = NULL;
 							}
+							
+							$file_attributes_rs[] = array('file_attribute_ind'=>'Y', 'attribute_no'=>$attribute_no, 'attribute_val'=>$attribute_val_r[$i]);
 						}
-						
-						$file_attributes_r[] = array('attribute_no'=>$attribute_no, 'attribute_val'=>$attribute_val_r[$i]);
+						else
+						{
+							$file_attributes_rs[] = array('attribute_no'=>$attribute_no, 'attribute_val'=>$attribute_val_r[$i]);
+						}
 					}
 					
 					if(strlen($attribute_val_r[$i])>0)
@@ -908,55 +831,17 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 	
 	        db_query("UNLOCK TABLES");
 	        
-			if(is_array($file_attributes_r))
+			if(is_array($file_attributes_rs))
 			{
-				while(list(,$file_attribute_val_r) = each($file_attributes_r))
+				while(list(,$file_attribute_r) = each($file_attributes_rs))
 				{
-					/*if(is_array($file_attribute_val_r['file_r']) && is_uploaded_file($file_attribute_val_r['file_r']['tmp_name']))
-					{
-						//$url = get_upload_file_url($item_id, $instance_no, $s_attribute_type, $order_no, $file_attribute_val_r['attribute_no'], $file_attribute_val_r['attribute_val']);
-						//file_cache_insert_file($url, NULL, NULL, $file_attribute_val_r['file_r'], 'ITEM', TRUE);
-						
-						
-						
-					} // save url
-					else*/ 
-					
-					/*
-					 *  For an upload - prefix the attribute_val with:
-					 * 	in actual fact lets make it a proper URL - specific to where opendb is installed, so
-					 * 	get_site_url()+'upload'+'/'+filename.ext
-					 * 
-					 * The file cache functionality can be updated to target all the cache records that have file_upload_ind to refresh the URL
-					 * if the domain is shifted.  This will mean that at runtime, the URL can be used directly.  The basename of the object will
-					 * still be saved in the item_attribute so that it can be re-derived to the filecache table.  The cache_file will reference the
-					 * ./upload/filename.ext and a generated thumbnail.
-					 *
-					 * So the basic limitation of uploaded files is that if the filename is the same as a different attribute and its a new upload
-					 * will have to generate unique form of the basename name.
-					 *  
-					 * when we perform a delete of a attribute with an uploaded file, how do we know the attribute points at an uploaded file?
-					 * its a file_attribute_ind = 'Y' and the attribute_val has a filename with no path.
-					 * 
-					 * should we establish that there is indeed a 
-					 * 
-					 * NOTE - the filecache process should store a reference to the uploaded file location instead of the generated location, and
-					 * generate a cache file as required.  The update process should look for existing uploaded files that are not recorded and
-					 * record new entries for them.
-					 * 
-					 * The existing ./upload/item_999.jpg files from 0.81 should be updated to not include the ./upload/ and be integrated into
-					 * the filecache system as uploaded files complete with thumbnails as required.
-					 * 
-					 * deal with orphaned uploaded files as a separate cleanup process, which can be run from item cache
-					 * 
-					 * An uploaded file should only be overwritten if the current value of the attribute_val corresponds to the newly uploaded
-					 * file.
-					*/
-					if(is_url_absolute($file_attribute_val_r['attribute_val']) && 
-							fetch_url_file_cache_r($file_attribute_val_r['attribute_val'], 'ITEM')===FALSE)
-					{
-						file_cache_insert_file($file_attribute_val_r['attribute_val'], NULL, NULL, NULL, 'ITEM', FALSE);
-					}
+					file_cache_insert_file(
+						$file_attribute_r['attribute_val'], 
+						NULL, 
+						NULL, 
+						NULL, 
+						'ITEM',
+						$file_attribute_r['file_attribute_ind']=='Y');
 				}
 			}
 		}

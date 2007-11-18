@@ -327,3 +327,10 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.upload', 1, 'File Uploads', 'Item Input File Uploads configuration' );
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.upload', 'file_location', 1, 'File Upload Location', '', 'readonly');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input.upload', 'file_location', './upload/');
+
+# need to be able to use the auto-increment sequence number for cache_file name, so will save
+# cache record and then update it with the cache_file reference.
+ALTER TABLE file_cache CHANGE cache_file cache_file VARCHAR(255);
+ALTER TABLE file_cache CHANGE content_type content_type VARCHAR(100);
+ALTER TABLE file_cache CHANGE content_length content_length INTEGER(10) UNSIGNED;
+ALTER TABLE file_cache CHANGE url url TEXT;

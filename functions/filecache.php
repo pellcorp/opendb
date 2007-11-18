@@ -31,6 +31,18 @@ include_once("./functions/OpenDbSnoopy.class.inc");
 include_once('./functions/phpthumb/phpthumb.class.php');
 include_once("./functions/item_attribute.php");
 
+function filecache_get_cache_file($file_cache_r, $thumbnail = FALSE)
+{
+	$prefix = strtolower($file_cache_r['cache_type']);
+	if($thumbnail)
+		$prefix .= 'Thumb';
+		
+	$randomNum = $file_cache_r['sequence_number'].'_'.generate_random_num();
+	$extension = $file_cache_r['extension'];
+	
+	return $prefix.$sequence_number.'_'.$randomNum.'.'.$extension;
+}
+
 function get_item_input_file_upload_directory()
 {
 	$uploadDir = get_opendb_config_var('item_input.upload', 'file_location');
@@ -48,18 +60,26 @@ function get_item_input_file_upload_directory()
 	}
 }
 
-function get_item_input_file_upload_url($url)
+/**
+ * For the moment this is a relative URL, but clients of this
+ * function should not assume this.  In other words do not use
+ * to get a file system reference to an upload file.
+ *
+ * @param unknown_type $filename
+ * @return unknown
+ */
+function get_item_input_file_upload_url($filename)
 {
-	$filename = basename($url);
+	$filename = basename($filename);
 	if(strlen($filename)>0)
 	{
 		$uploadDir = get_item_input_file_upload_directory();
 		if($uploadDir!=FALSE)
 		{
-			$newFile = $uploadDir.'/'.$filename;
-			if(file_exists($newFile))
+			$url = $uploadDir.'/'.$filename;
+			if(file_exists($url))
 			{
-				return $newFile;
+				return $url;
 			}
 		}
 	}
@@ -155,7 +175,7 @@ function file_cache_get_image_r($url, $type)
 
 	$file_r = array();
 
-	if(strlen($url)>0 && (is_url_absolute($url) || file_exists($url)))
+	if(strlen($url)>0 && ( is_url_absolute($url) || ($uploadUrl = get_item_input_file_upload_url($url))!==FALSE ))
 	{
 		$file_r['thumbnail']['url'] = 'url.php?url='.urlencode($url).'&op=thumbnail';
 
@@ -163,15 +183,18 @@ function file_cache_get_image_r($url, $type)
 		$file_r['fullsize']['url'] = 'url.php?url='.urlencode($url);
 
 		// kludge so that the item display can display the originating URL instead.
-		$file_r['url'] = $url;
-
+		if($uploadUrl!==FALSE)
+			$file_r['url'] = $uploadUrl;
+		else
+			$file_r['url'] = $url;
+			
 		$file_cache_r = fetch_url_file_cache_r($url, 'ITEM', INCLUDE_EXPIRED);
 		if(is_array($file_cache_r))
 		{
 			$file = file_cache_get_cache_file($file_cache_r);
 			$thumbnail_file = file_cache_get_cache_file_thumbnail($file_cache_r);
 		}
-		else if(!is_url_absolute($url)) // only pre 1.0 cached files should be matched
+		else if(!is_url_absolute($url)) // uploaded files only should match!
 		{
 			$file = $url;
 			$thumbnail_file = $url;
@@ -188,7 +211,8 @@ function file_cache_get_image_r($url, $type)
 		}
 		
 		// assume these values are purely for generating correct popup
-		if(!is_numeric($file_r['fullsize']['width']) && !is_numeric($file_r['fullsize']['height'])) {
+		if(!is_numeric($file_r['fullsize']['width']) && !is_numeric($file_r['fullsize']['height'])) 
+		{
 			$file_r['fullsize']['width'] = '400';
 			$file_r['fullsize']['height'] = '300';
 		}
@@ -229,8 +253,6 @@ function file_cache_get_image_r($url, $type)
 		$file_r['thumbnail'] = file_cache_get_noimage_r($type);
 	}
 	
-	
-	
 	return $file_r;
 }
 
@@ -262,80 +284,68 @@ function file_cache_get_noimage_r($type)
 	}
 }
 
-/**
-TODO: If saved image has smaller dimensions than requested thumbnail, there is no need to
-save the thumb, both dimensions must be smaller, otherwise the dimension that is bigger, should
-be resized to match.
-*/
 function file_cache_save_thumbnail_file($file_cache_r, &$errors)
 {
 	$file_type_r = fetch_file_type_r($file_cache_r['content_type']);
 	if($file_type_r['thumbnail_support_ind'] == 'Y')
 	{
-		$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
-		if($directory!==FALSE)
+		$sourceFile = file_cache_get_cache_file($file_cache_r);
+		if($sourceFile!==FALSE)
 		{
-			if(is_file($directory.$file_cache_r['cache_file']))
+			$phpThumb = new phpThumb();
+			
+			// prevent issues with safe mode and /tmp directory
+			//$phpThumb->config_temp_directory = './itemcache';
+			
+			$phpThumb->setParameter('config_error_die_on_error', FALSE);
+			//$phpThumb->setParameter('config_prefer_imagemagick', FALSE);
+			$phpThumb->setParameter('config_allow_src_above_docroot', TRUE);
+
+			// configure the size of the thumbnail.
+			if(is_array(get_opendb_config_var('item_display', 'item_image_size')))
 			{
-				$phpThumb = new phpThumb();
-				
-				// prevent issues with safe mode and /tmp directory
-				//$phpThumb->config_temp_directory = './itemcache';
-				
-				$phpThumb->setParameter('config_error_die_on_error', FALSE);
-				//$phpThumb->setParameter('config_prefer_imagemagick', FALSE);
-				$phpThumb->setParameter('config_allow_src_above_docroot', TRUE);
-
-				// configure the size of the thumbnail.
-				if(is_array(get_opendb_config_var('item_display', 'item_image_size')))
+				if(is_numeric(get_opendb_config_var('item_display', 'item_image_size', 'width')))
 				{
-					if(is_numeric(get_opendb_config_var('item_display', 'item_image_size', 'width')))
-					{
-						$phpThumb->setParameter('w', get_opendb_config_var('item_display', 'item_image_size', 'width'));
-					}
-					else if(is_numeric(get_opendb_config_var('item_display', 'item_image_size', 'height')))
-					{
-						$phpThumb->setParameter('h', get_opendb_config_var('item_display', 'item_image_size', 'height'));
-					}
+					$phpThumb->setParameter('w', get_opendb_config_var('item_display', 'item_image_size', 'width'));
 				}
-				else
+				else if(is_numeric(get_opendb_config_var('item_display', 'item_image_size', 'height')))
 				{
-					$phpThumb->setParameter('h', 100);
+					$phpThumb->setParameter('h', get_opendb_config_var('item_display', 'item_image_size', 'height'));
 				}
-
-				// input and output format should match
-				$phpThumb->setParameter('f', $file_type_r['extension']);
-				$phpThumb->setParameter('config_output_format', $file_type_r['extension']);
-
-				$phpThumb->setSourceFilename($directory.$file_cache_r['cache_file']);
-
-				// generate & output thumbnail
-				if ($phpThumb->GenerateThumbnail() && $phpThumb->RenderToFile($directory.$file_cache_r['cache_file_thumb']))
-				{
-					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Thumbnail image saved', array($sequence_number, $cache_type, $file_type_r, $directory.$file_cache_r['cache_file_thumb']));
-					return TRUE;
-				}
-				else
-				{
-					// do something with debug/error messages
-					if(is_not_empty_array($phpThumb->debugmessages))
-					$errors = $phpThumb->debugmessages;
-					else if(strlen($phpThumb->debugmessages)>0) // single array element
-					$errors[] = $phpThumb->debugmessages;
-
-					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, implode(";",$errors), array($file_cache_r, $file_type_r, $directory.$file_cache_r['cache_file_thumb']));
-					return FALSE;
-				}
-			}//if(is_file
+			}
 			else
 			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Source image not found', array($file_cache_r, $file_type_r, $directory.$file_cache_r['cache_file']));
+				$phpThumb->setParameter('h', 100);
+			}
+
+			// input and output format should match
+			$phpThumb->setParameter('f', $file_type_r['extension']);
+			$phpThumb->setParameter('config_output_format', $file_type_r['extension']);
+
+			$phpThumb->setSourceFilename($sourceFile);
+
+			$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
+			$thumbnailFile = $directory.'/'.$file_cache_r['cache_file_thumb'];
+			if ($phpThumb->GenerateThumbnail() && $phpThumb->RenderToFile($thumbnailFile))
+			{
+				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Thumbnail image saved', array($sequence_number, $cache_type, $file_type_r, $thumbnailFile));
+				return TRUE;
+			}
+			else
+			{
+				// do something with debug/error messages
+				if(is_not_empty_array($phpThumb->debugmessages))
+				$errors = $phpThumb->debugmessages;
+				else if(strlen($phpThumb->debugmessages)>0) // single array element
+				$errors[] = $phpThumb->debugmessages;
+
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, implode(";",$errors), array($file_cache_r, $file_type_r, $file_cache_r['cache_file_thumb']));
 				return FALSE;
 			}
-		}
+		}//if(is_file
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache directory not found', array($file_cache_r, $file_type_r, $directory));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Source image not found', array($file_cache_r, $file_type_r, $sourceFile));
 			return FALSE;
 		}
 	}
@@ -363,21 +373,21 @@ function file_cache_get_cache_type_directory($cache_type='HTTP')
 		}
 	}
 
+	opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache directory not accessible or configured', array($cache_type));
 	return FALSE;
 }
 
-/**
- * This function should only be used where the $file_cache_r record for the
- * sequence number is not already available.
- */
 function file_cache_get_cache_file($file_cache_r)
 {
-	$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
+	if($file_cache_r['upload_file_ind'] == 'Y')
+		$directory = get_item_input_file_upload_directory();
+	else
+		$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
 
 	if(strlen($file_cache_r['cache_file'])>0 && 
-				file_exists($directory.$file_cache_r['cache_file']))
+				is_file($directory.'/'.$file_cache_r['cache_file']))
 	{
-		return $directory.$file_cache_r['cache_file'];
+		return $directory.'/'.$file_cache_r['cache_file'];
 	}
 
 	//	else
@@ -389,9 +399,9 @@ function file_cache_get_cache_file_thumbnail($file_cache_r)
 	$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
 	
 	if(strlen($file_cache_r['cache_file_thumb'])>0 && 
-				file_exists($directory.$file_cache_r['cache_file_thumb']))
+				is_file($directory.'/'.$file_cache_r['cache_file_thumb']))
 	{
-		return $directory.$file_cache_r['cache_file_thumb'];
+		return $directory.'/'.$file_cache_r['cache_file_thumb'];
 	}
 
 	//	else
@@ -427,7 +437,7 @@ function fetch_url_file_cache_r($url, $cache_type='HTTP', $mode = EXCLUDE_EXPIRE
 	// ensure only first 2083 chars are considered.
 	$url = addslashes(trim(substr($url, 0, 2083)));
 
-	$query = "SELECT sequence_number, cache_type, url, location, cache_file, cache_file_thumb, content_type, content_length, UNIX_TIMESTAMP(cache_date) as cache_date, IF(expire_date IS NOT NULL, UNIX_TIMESTAMP(expire_date), NULL) AS expire_date ".
+	$query = "SELECT sequence_number, upload_file_ind, cache_type, url, location, cache_file, cache_file_thumb, content_type, content_length, UNIX_TIMESTAMP(cache_date) as cache_date, IF(expire_date IS NOT NULL, UNIX_TIMESTAMP(expire_date), NULL) AS expire_date ".
 	"FROM file_cache ".
 	"WHERE cache_type = '$cache_type' AND (url = '".$url."' OR (location IS NOT NULL AND location = '".$url."'))";
 
@@ -548,8 +558,7 @@ function fetch_file_upload_item_attribute_orphans_cnt()
 {
 	$query = "SELECT count('x') AS count
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON 
-			( fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ) )
+	LEFT JOIN item_attribute ia ON ( fc.url = ia.attribute_val )
 	WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 	
 	$result = db_query($query);
@@ -569,9 +578,8 @@ function fetch_file_cache_item_attribute_orphans_cnt()
 {
 	$query = "SELECT COUNT(*) AS count
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR 
-		fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ))
-	WHERE fc.upload_file_ind <> 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
+	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR fc.url = ia.attribute_val )
+	WHERE AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -587,7 +595,7 @@ function fetch_file_cache_item_attribute_orphans_cnt()
 }
 
 /**
- * Only deleting orphans for item cache - and location should never be popula 
+ * Only deleting orphans for item cache - and location should never be populated 
  *
  * @return unknown
  */
@@ -595,8 +603,7 @@ function fetch_file_cache_item_attribute_orphans_rs()
 {
 	$query = "SELECT fc.sequence_number
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR 
-		fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val ))
+	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR fc.url = ia.attribute_val )
 	WHERE fc.upload_file_ind <> 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 
 	$result = db_query($query);
@@ -633,9 +640,8 @@ function fetch_file_cache_missing_thumbs_cnt($cache_type='HTTP')
 	{
 		while($file_cache_r = db_fetch_assoc($results))
 		{
-			// its not a case of only a thumbnail, if not even the source exists
 			if(file_cache_get_cache_file($file_cache_r) !== FALSE &&
-			file_cache_get_cache_file_thumbnail($file_cache_r)===FALSE)
+						file_cache_get_cache_file_thumbnail($file_cache_r)===FALSE)
 			{
 				$count++;
 			}
@@ -697,7 +703,7 @@ function fetch_file_cache_r($sequence_number)
 {
 	if(is_numeric($sequence_number))
 	{
-		$query = "SELECT sequence_number, url, location, content_type, cache_type, content_length, UNIX_TIMESTAMP(cache_date) as cache_date, IF(expire_date IS NOT NULL, UNIX_TIMESTAMP(expire_date), NULL) AS expire_date, cache_file, cache_file_thumb ".
+		$query = "SELECT sequence_number, url, upload_file_ind, location, content_type, cache_type, content_length, UNIX_TIMESTAMP(cache_date) as cache_date, IF(expire_date IS NOT NULL, UNIX_TIMESTAMP(expire_date), NULL) AS expire_date, cache_file, cache_file_thumb ".
 		"FROM file_cache ".
 		"WHERE sequence_number = '$sequence_number' AND LENGTH(cache_file) > 0 "; // ignore records where cache_file reference is empty.
 
@@ -728,10 +734,13 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 	$cache_config_r = file_cache_get_config($cache_type);
 	if(is_array($cache_config_r) && $cache_config_r['enable']!==FALSE)
 	{
+		$directory = file_cache_get_cache_type_directory($cache_type);
+		if($directory===FALSE)
+		{
+			return FALSE;
+		}
 		// we need to know whether we are overwriting existing URL or not
 		$file_cache_r = fetch_url_file_cache_r($url, $cache_type, INCLUDE_EXPIRED);
-
-		// where a record exists, but no cache file, need to resolve a new temporary file name.
 		if(is_array($file_cache_r))
 		{
 			if(!file_cache_get_cache_file($file_cache_r))
@@ -759,7 +768,7 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 			$file_cache_r['cache_type'] = $cache_type;
 		}
 
-		if($cache_type == 'ITEM' && $content == NULL)
+		if($content == NULL && is_url_absolute($url))
 		{
 			$httpClient =& new OpenDbSnoopy();
 			$content = $httpClient->fetchURI($url, FALSE);
@@ -779,10 +788,21 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 			}
 		}
 
-		// where an extension is defined, override specified content type, but only if it maps to a valid one
-		if(strlen($file_cache_r['content_type'])==0)
+		$file_cache_r['url'] = ifempty($url, $file_cache_r['url']);
+		$file_cache_r['location'] = ifempty($location, $file_cache_r['location']);
+		$file_cache_r['content_type'] = ifempty($content_type, $file_cache_r['content_type']);
+		
+		$thumbnail_support = FALSE;
+		if(strlen($file_cache_r['content_type'])>0)
 		{
-			$extension = get_file_ext($url);
+			$file_type_r = fetch_file_type_r($file_cache_r['content_type']);
+			$file_cache_r['extension'] = $file_type_r['extension'];
+			$thumbnail_support = ($file_type_r['thumbnail_support_ind'] == 'Y');
+		}
+		else
+		{
+			$extension = get_file_ext($file_cache_r['url']);
+			
 			if(strlen($extension)>0 && ($ext_content_type = fetch_file_type_for_extension($extension))!==FALSE)
 				$content_type = $ext_content_type;
 			else
@@ -796,93 +816,63 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 			}
 
 			$file_cache_r['content_type'] = $content_type;
+			$file_cache_r['extension'] = $file_type_r['extension'];
+			$thumbnail_support = ($file_type_r['thumbnail_support_ind'] == 'Y');
 		}
-
-		$directory = file_cache_get_cache_type_directory($cache_type);
-		if(!is_array($file_cache_r) || $file_cache_r['cache_file'] == NULL)
-		{
-			$file_cache_r['cache_file'] = dir_tempnam($directory, strtolower($cache_type));
-			if($file_cache_r['cache_file'] === FALSE)
-			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache directory not accessible', array($url, $location, $content_type, $cache_type, $overwrite));
-				return FALSE;
-			}
-		}
-
-		$tmp_location = $directory.$file_cache_r['cache_file'];
 		
-		$is_upload_file = FALSE;
-
-		$file_location = NULL;
-		if(!is_array($content)) // normal content
+		if(($uploadFile = get_item_input_file_upload_url($url))!==FALSE)
 		{
-			$content_length = strlen($content);
-			if($content_length > 0)
-			{
-				$file_cache_r['content_length'] = $content_length;
-				if(file_put_contents($tmp_location, $content)!==FALSE)
-				{
-					$file_location = $tmp_location;
-				}
-			}
-		}
-		else if(is_array($content) && isset($content['tmp_name']) && is_uploaded_file($content['tmp_name'])) // upload file
-		{
-			$content_length = @filesize($content['tmp_name']);
-			if($content_length > 0)
-			{
-				$file_cache_r['content_length'] = $content_length;
-
-				if(copy($content['tmp_name'], $tmp_location)!==FALSE)
-				{
-					$file_location = $tmp_location;
-				}
-			}
-
-			$is_upload_file = TRUE;
-		}
-
-		if($file_location!=NULL && file_exists($file_location))
-		{
-			if($file_type_r['thumbnail_support_ind'] == 'Y')
-			{
-				if(strlen($file_cache_r['cache_file_thumb']) == 0)
-				{
-					// todo - is it sufficient to do it this way.
-					$file_cache_r['cache_file_thumb'] = $file_cache_r['cache_file'].'_T';
-				}
-
-				file_cache_save_thumbnail_file($file_cache_r, $errors);
-			}
-
-			if(!is_numeric($file_cache_r['sequence_number']))
-			{
-				$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
-				
-				$sequence_number = insert_file_cache($cache_type, $url, $location, $is_upload_file, $file_cache_r['content_type'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']);
-				if($sequence_number===FALSE)
-				{
-					// file record was not saved, so delete file itself.
-					delete_file($file_location);
-
-					return FALSE;
-				}
-			}
-			else
-			{
-				if(update_file_cache($file_cache_r['sequence_number'], $file_cache_r['url'], $file_cache_r['location'], $file_cache_r['content_type'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb'])===FALSE)
-				{
-					// note do not delete old file here
-					return FALSE;
-				}
-			}
-			return TRUE;
+			$file_cache_r['content_length'] = @filesize($uploadFile);
+			$file_cache_r['cache_file'] = basename($uploadFile);
+			$file_cache_r['upload_file_ind'] = 'Y';
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'File not saved', array($url, $location, $content_type, $cache_type, $overwrite));
+			$file_cache_r['content_length'] = $content_length;
+			$file_cache_r['upload_file_ind'] = 'N';
+		}
+		
+		if(!is_numeric($file_cache_r['sequence_number']))
+		{
+			$file_cache_r['sequence_number'] = insert_file_cache($cache_type, $file_cache_r['upload_file_ind']);
+			if($file_cache_r['sequence_number'] === FALSE)
+				return FALSE;
+		}
+
+		if($file_cache_r['cache_file'] == NULL)
+		{
+			$file_cache_r['cache_file'] = filecache_get_cache_file($file_cache_r);
+		}
+		
+		if($thumbnail_support)
+		{
+			if(strlen($file_cache_r['cache_file_thumb']) == 0)
+			{
+				$file_cache_r['cache_file_thumb'] = filecache_get_cache_file($file_cache_r, TRUE);
+			}
+		}
+		
+		if($content != NULL)
+		{
+			if(!file_put_contents($file_cache_r['cache_file'], $content)!==FALSE)
+			{
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache file not written', array($url, $location, $content_type, $cache_type, $overwrite));
+				return FALSE;
+			}
+		}
+		
+		if($thumbnail_support)
+		{
+			file_cache_save_thumbnail_file($file_cache_r, $errors);
+		}
+
+		$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
+		if(!update_file_cache($file_cache_r['sequence_number'], $file_cache_r['url'], $file_cache_r['location'], $file_cache_r['content_type'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']))
+		{
 			return FALSE;
 		}
+
+		return TRUE;
 	}
 	else if(!is_array($cache_config_r))
 	{
@@ -896,36 +886,31 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 	}
 }
 
-function insert_file_cache($cache_type, $url, $location, $is_upload_file, $content_type, $content_length, $expire_date, $cache_file, $cache_file_thumb)
+/**
+ * this function is only here to get a new sequence number record for allocation of unique filename, otherwise
+ * it does little useful.
+ *
+ * @param unknown_type $cache_type
+ * @param unknown_type $file_upload_ind
+ * @return unknown
+ */
+function insert_file_cache($cache_type, $file_upload_ind)
 {
-	// do not want location to have a copy of url
-	if(strcasecmp($url, $location) === 0)
-		$location = NULL;
-
-	$url = addslashes(trim(substr($url, 0, 2083)));
-
-	if($location!=NULL)
-		$location = addslashes(trim(substr($location, 0, 2083)));
-
-	// upload files cannot expire
-	if($is_upload_file===TRUE)
-	{
-		$expire_date = NULL;
-	}
-		
-	$query = "INSERT INTO file_cache (cache_type, url, location, upload_file_ind, content_type, content_length, cache_date, expire_date, cache_file, cache_file_thumb)".
-	" VALUES ('$cache_type', '$url', ".(strlen($location)>0?"'$location'":"NULL").", '".($is_upload_file?'Y':'N')."', '$content_type', $content_length, NOW(), ".($expire_date!=NULL?$expire_date:"NULL").", '$cache_file', ".($cache_file_thumb!=NULL?"'$cache_file_thumb'":"NULL").")";
+	$file_upload_ind = validate_ind_column($file_upload_ind);
+	
+	$query = "INSERT INTO file_cache (cache_type, upload_file_ind, cache_date)".
+	" VALUES ('$cache_type', '$file_upload_ind', NOW())";
 
 	$insert = db_query($query);
 	if ($insert && db_affected_rows() > 0)
 	{
 		$sequence_number = db_insert_id();
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($url, $location, $content_type, $content_length, $expire_date, $cache_type, $cache_file, $cache_file_thumb));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cache_type, $file_upload_ind));
 		return $sequence_number;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($url, $location, $content_type, $content_length, $expire_date, $cache_type, $cache_file, $cache_file_thumb));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($cache_type, $file_upload_ind));
 		return FALSE;
 	}
 }

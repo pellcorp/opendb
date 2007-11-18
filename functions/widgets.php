@@ -994,10 +994,6 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 	
 	if($item_attribute_type_r['file_attribute_ind'] == 'Y')
 	{
-		// TODO: its a bit of a hack to pass in a empty URL to get the correct file URL prefix, however this will break if the format of
-		// the url ever changes so that the URL is not last. 
-		//$fileUploadPrefix = get_upload_file_url($item_r['item_id'], $attribute_type_r['instance_attribute_ind']=='Y'? $item_r['instance_no']:"0", $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], 1, '');
-
 		$field .= "<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
 		if(is_file_upload_enabled())
@@ -1850,22 +1846,19 @@ function get_item_display_field(
 			$format_mask = str_replace('%value%', $value, $format_mask);
 		}
 
-		$value = get_file_attribute_url($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r, $value);
-		
-		// any upload file will have a properly encoded file://opendb/upload/ url if the file exists
-		if(is_url_absolute($value))
-		{
+//		if(is_url_absolute($value))
+//		{
 			$field = "<a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$format_mask</a>";
 			
 			if($dowrap)
 				return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
 			else
 				return $field;
-		}
-		else
-		{
-			return $value;
-		}
+//		}
+//		else
+//		{
+//			return $value;
+//		}
 	}
 	else if($item_attribute_type_r['display_type'] == 'list')	//list(list_type [,delimiter])
 	{

@@ -834,7 +834,7 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 		
 		if(!is_numeric($file_cache_r['sequence_number']))
 		{
-			$file_cache_r['sequence_number'] = insert_file_cache($cache_type, $file_cache_r['upload_file_ind']);
+			$file_cache_r['sequence_number'] = insert_file_cache($cache_type, $file_cache_r['upload_file_ind'], $file_cache_r['url'], $file_cache_r['location'], $file_cache_r['content_type']);
 			if($file_cache_r['sequence_number'] === FALSE)
 				return FALSE;
 		}
@@ -867,7 +867,7 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 		}
 
 		$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
-		if(!update_file_cache($file_cache_r['sequence_number'], $file_cache_r['url'], $file_cache_r['location'], $file_cache_r['content_type'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']))
+		if(!update_file_cache($file_cache_r['sequence_number'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']))
 		{
 			return FALSE;
 		}
@@ -894,45 +894,42 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
  * @param unknown_type $file_upload_ind
  * @return unknown
  */
-function insert_file_cache($cache_type, $file_upload_ind)
+function insert_file_cache($cache_type, $file_upload_ind, $url, $location, $content_type)
 {
 	$file_upload_ind = validate_ind_column($file_upload_ind);
 	
-	$query = "INSERT INTO file_cache (cache_type, upload_file_ind, cache_date)".
-	" VALUES ('$cache_type', '$file_upload_ind', NOW())";
+	// do not want location to have a copy of url
+	if(strcasecmp($url, $location) === 0)
+		$location = NULL;
+
+	$url = addslashes(trim(substr($url, 0, 2083)));
+
+	if($location!=NULL)
+		$location = addslashes(trim(substr($location, 0, 2083)));
+			
+	$query = "INSERT INTO file_cache (cache_type, upload_file_ind, url, location, content_type, cache_date)".
+	" VALUES ('$cache_type', '$file_upload_ind', '$url', ".(strlen($location)>0?"'$location'":"NULL").", '$content_type', NOW())";
 
 	$insert = db_query($query);
 	if ($insert && db_affected_rows() > 0)
 	{
 		$sequence_number = db_insert_id();
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cache_type, $file_upload_ind));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cache_type, $file_upload_ind, $url, $location, $content_type));
 		return $sequence_number;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($cache_type, $file_upload_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($cache_type, $file_upload_ind, $url, $location, $content_type));
 		return FALSE;
 	}
 }
 
-function update_file_cache($sequence_number, $url, $location, $content_type, $content_length, $expire_date, $cache_file, $cache_file_thumb)
+function update_file_cache($sequence_number, $content_length, $expire_date, $cache_file, $cache_file_thumb)
 {
 	if(is_numeric($sequence_number))
 	{
-		// do not want location to have a copy of url
-		if(strcasecmp($url, $location) === 0)
-			$location = NULL;
-
-		$url = addslashes(trim(substr($url, 0, 2083)));
-
-		if($location!=NULL)
-			$location = addslashes(trim(substr($location, 0, 2083)));
-
 		$query = "UPDATE file_cache ".
-		"SET url = '$url', ".
-		"location = ".(strlen($location)>0?"'$location'":"NULL").", ".
-		"content_type = '$content_type', ".
-		"content_length = $content_length, ".
+		"SET content_length = $content_length, ".
 		"cache_date = NOW(), ".
 		"expire_date = ".($expire_date!=NULL?$expire_date:"NULL").", ".
 		"cache_file = '$cache_file', ".
@@ -944,12 +941,12 @@ function update_file_cache($sequence_number, $url, $location, $content_type, $co
 		if ($update && $rows_affected !== -1)// We should not treat updates that were not actually updated because value did not change as failures.
 		{
 			if($rows_affected>0)
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $url, $location, $content_type, $content_length, $expire_date, $cache_file, $cache_file_thumb));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $content_length, $expire_date, $cache_file, $cache_file_thumb));
 			return TRUE;
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $url, $location, $content_type, $content_length, $expire_date, $cache_file, $cache_file_thumb));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $content_length, $expire_date, $cache_file, $cache_file_thumb));
 			return FALSE;
 		}
 	}

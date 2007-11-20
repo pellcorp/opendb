@@ -1251,17 +1251,15 @@ function single_select($name, $lookup_results, $mask, $length, $value, $onchange
 	else
 		$onchange = "onchange=\"$onchange_event\"";
 
-	// sanity check
-	if(is_array($value))// convert single element array, to string
-		$value = $value[0];
-
+	$lookup_val_rs = process_lookup_results($lookup_results, $value);
+	
 	$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
 			
-	$value_found=FALSE;
-	while($lookup_r = db_fetch_assoc($lookup_results))
+	reset($lookup_val_rs);
+	while(list(,$lookup_val_r) = each($lookup_val_rs))	
 	{
         // Now get the display value.
-		$display = format_display_value($mask, NULL, $lookup_r['value'], $lookup_r['display']);
+		$display = format_display_value($mask, NULL, $lookup_val_r['value'], $lookup_val_r['display']);
         
 		// Ensure any length restriction is enforced.
 		if($length>0 && strlen($display)>$length)
@@ -1269,30 +1267,7 @@ function single_select($name, $lookup_results, $mask, $length, $value, $onchange
 			$display = substr($display, 0, $length);
 		}
 
-		if($value===NULL && $lookup_r['checked_ind']=='Y')
-		{
-			$var .= "\n<option value=\"".$lookup_r['value']."\" SELECTED>$display";
-		}
-		else
-		{
-			// Case insensitive!
-			if($value!==NULL && strcasecmp($value,$lookup_r['value'])===0 )
-			{
-				$value_found=TRUE;
-				$var .= "\n<option value=\"".$lookup_r['value']."\" SELECTED>$display";
-			}
-			else
-			{
-				$var .= "\n<option value=\"".$lookup_r['value']."\">$display";
-			}
-		}
-	}
-	db_free_result($lookup_results);
-	
-	// Add the value to the list of options and select it.
-	if(!$value_found && $value !== NULL)
-	{
-		$var .= "\n<option value=\"".$value."\" SELECTED>".$value;
+		$var .= "\n<option value=\"".$lookup_val_r['value']."\"".($lookup_val_r['checked_ind']=='Y'?' SELECTED':'').">$display";
 	}
 	
 	$var.="\n</select>";
@@ -1315,18 +1290,13 @@ function multi_select($name, $lookup_results, $mask, $length, $size, $value, $on
 	else
 		$var = "\n<select name=\"$name\" $onchange".($disabled?' DISABLED':'').">";
 
-	// sanity check
-	if(is_array($value) && count($value)>0)
-		$values_r = $value;
-	else if(!is_array($value) && $value !== NULL)// if a single string value, convert to single element array.
-		$values_r[] = $value;
-	else // is_empty_array!
-		$values_r = NULL;
-		
-	while($lookup_r = db_fetch_assoc($lookup_results))
+	$lookup_val_rs = process_lookup_results($lookup_results, $value);
+	
+	reset($lookup_val_rs);
+	while(list(,$lookup_val_r) = each($lookup_val_rs))	
 	{
         // Now get the display value.
-		$display = format_display_value($mask, NULL, $lookup_r['value'], $lookup_r['display']);
+		$display = format_display_value($mask, NULL, $lookup_val_r['value'], $lookup_val_r['display']);
 		
 		// Ensure any length restriction is enforced.
 		if($length>0 && strlen($display)>$length)
@@ -1334,41 +1304,9 @@ function multi_select($name, $lookup_results, $mask, $length, $size, $value, $on
 			$display = substr($display, 0, $length);
 		}
 		
-		if(is_empty_or_not_array($values_r) && $lookup_r['checked_ind']=='Y')
-		{
-			$var .= "\n<option value=\"".$lookup_r['value']."\" SELECTED>$display";
-		}
-		else
-		{
-			// Case insensitive!
-			if(is_not_empty_array($values_r) && ($lookup_key = array_search2($lookup_r['value'], $values_r, TRUE)) !== FALSE)
-			{
-				// Remove the matched element
-				array_splice($values_r, $lookup_key, 1);
+		$var .= "\n<option value=\"".$lookup_val_r['value']."\"".($lookup_val_r['checked_ind']=='Y'?' SELECTED':'').">$display";
+	}
 
-				$var .= "\n<option value=\"".$lookup_r['value']."\" SELECTED>$display";
-			}
-			else
-			{
-				$var .= "\n<option value=\"".$lookup_r['value']."\">$display";
-			}
-		}
-	}
-	db_free_result($lookup_results);
-	
-	if(is_not_empty_array($values_r))
-	{
-		// Add the value to the list of options and select it.
-		reset($values_r);
-		while(list(,$value) = each($values_r))
-		{
-			if(strlen($value)>0)
-			{
-				$var .= "\n<option value=\"$value\" SELECTED>$value";
-			}
-		}
-	}
-	
 	$var.="\n</select>";
 	return $var;
 }

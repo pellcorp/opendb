@@ -78,7 +78,7 @@ class amazon extends SitePlugin
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
 				if(preg_match("/<td class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\/td>/i", $pageBuffer, $regs) || 
-						preg_match("/<td class=\"resultCount\">Showing ([0-9]+) Result<\/td>/i", $pageBuffer, $regs))
+						preg_match("/<td class=\"resultCount\">Showing ([0-9]+) Result[s]*<\/td>/i", $pageBuffer, $regs))
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);

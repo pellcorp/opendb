@@ -803,9 +803,9 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 							// if its an update, and the filenames match, its a refresh, otherwise its considered a new file...
 							// we know what the current value is - $item_attribute_type_rs[$i]['attribute_val']!! 
 							
+							// do not look in upload directory.
 							//$attribute_val_r[$i] = get_unique_filename($attribute_val_r[$i]); 
 							
-							//$fileLocation = get_upload_item_attribute_file_location($attribute_val_r[$i]);
 							if(!save_uploaded_file($file_r['tmp_name'], $attribute_val_r[$i]))
 							{
 								$attribute_val_r[$i] = NULL;

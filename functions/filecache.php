@@ -770,7 +770,7 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 
 		$file_cache_r['url'] = ifempty($url, $file_cache_r['url']);
 		$file_cache_r['location'] = ifempty($location, $file_cache_r['location']);
-		$file_cache_r['content_type'] = ifempty($content_type, $file_cache_r['content_type']);
+		$file_cache_r['content_type'] = validate_content_type(ifempty($content_type, $file_cache_r['content_type']));
 		
 		$thumbnail_support = FALSE;
 		if(strlen($file_cache_r['content_type'])>0)

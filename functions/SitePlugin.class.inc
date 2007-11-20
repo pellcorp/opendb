@@ -771,14 +771,5 @@ class SitePlugin
 	{
 	    return $this->_httpClient->getLocation();
 	}
-
-	/*
-	stub for old functionality, plugins should use getFetchedURILocation()
-	to make it clear what the intention of the function is.
-	*/
-	function getLocation()
-	{
-		return $this->_httpClient->getLocation();
-	}
 }
 ?>

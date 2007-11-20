@@ -439,7 +439,7 @@ function fetch_url_file_cache_r($url, $cache_type='HTTP', $mode = EXCLUDE_EXPIRE
 
 	$query = "SELECT sequence_number, upload_file_ind, cache_type, url, location, cache_file, cache_file_thumb, content_type, content_length, UNIX_TIMESTAMP(cache_date) as cache_date, IF(expire_date IS NOT NULL, UNIX_TIMESTAMP(expire_date), NULL) AS expire_date ".
 	"FROM file_cache ".
-	"WHERE cache_type = '$cache_type' AND (url = '".$url."' OR (location IS NOT NULL AND location = '".$url."'))";
+	"WHERE cache_type = '$cache_type' AND url = '$url'";
 
 	if($mode == EXCLUDE_EXPIRED)
 	{
@@ -554,32 +554,12 @@ function fetch_file_cache_refresh_cnt($cache_type = 'HTTP')
 	return FALSE;
 }
 
-function fetch_file_upload_item_attribute_orphans_cnt()
-{
-	$query = "SELECT count('x') AS count
-	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON ( fc.url = ia.attribute_val )
-	WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
-	
-	$result = db_query($query);
-	if($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		if ($found!==FALSE)
-			return $found['count'];
-	}
-	
-	//else
-	return FALSE;
-}
-
 function fetch_file_cache_item_attribute_orphans_cnt()
 {
 	$query = "SELECT COUNT(*) AS count
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR fc.url = ia.attribute_val )
-	WHERE AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
+	LEFT JOIN item_attribute ia ON ia.attribute_val = fc.url
+	WHERE fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -595,7 +575,7 @@ function fetch_file_cache_item_attribute_orphans_cnt()
 }
 
 /**
- * Only deleting orphans for item cache - and location should never be populated 
+ * Only deleting orphans for item cache 
  *
  * @return unknown
  */
@@ -603,8 +583,8 @@ function fetch_file_cache_item_attribute_orphans_rs()
 {
 	$query = "SELECT fc.sequence_number
 	FROM file_cache fc
-	LEFT JOIN item_attribute ia ON ( ia.attribute_val = fc.url OR fc.url = ia.attribute_val )
-	WHERE fc.upload_file_ind <> 'Y' AND fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
+	LEFT JOIN item_attribute ia ON ia.attribute_val = fc.url
+	WHERE fc.cache_type = 'ITEM' AND ia.s_attribute_type IS NULL";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -659,9 +639,9 @@ function fetch_file_cache_new_item_attribute_rs($limit = NULL)
 {
 	$query = "SELECT ia.item_id, ia.instance_no, ia.s_attribute_type, ia.order_no, ia.attribute_no, ia.attribute_val
 	FROM (s_attribute_type sat, item_attribute ia)
-	LEFT JOIN file_cache fc ON (fc.url = ia.attribute_val OR fc.location = ia.attribute_val) AND fc.cache_type = 'ITEM'
+	LEFT JOIN file_cache fc ON fc.url = ia.attribute_val AND fc.cache_type = 'ITEM'
 	WHERE sat.s_attribute_type = ia.s_attribute_type AND
-	sat.file_attribute_ind = 'Y' AND fc.sequence_number IS NULL AND ia.attribute_val LIKE '%tp://%'";
+	sat.file_attribute_ind = 'Y' AND fc.sequence_number IS NULL";
 
 	if(is_numeric($limit))
 	{
@@ -679,9 +659,9 @@ function fetch_file_cache_new_item_attribute_cnt()
 {
 	$query = "SELECT count('x') AS count
 		FROM (s_attribute_type sat, item_attribute ia)
-		LEFT JOIN file_cache fc ON (fc.url = ia.attribute_val OR fc.location = ia.attribute_val) AND fc.cache_type = 'ITEM'
+		LEFT JOIN file_cache fc ON fc.url = ia.attribute_val AND fc.cache_type = 'ITEM'
 		WHERE sat.s_attribute_type = ia.s_attribute_type AND
-		sat.file_attribute_ind = 'Y' AND fc.sequence_number IS NULL AND ia.attribute_val LIKE '%tp://%'";
+		sat.file_attribute_ind = 'Y' AND fc.sequence_number IS NULL";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

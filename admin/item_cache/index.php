@@ -89,8 +89,8 @@ if (is_opendb_valid_session())
 			}
 			
 			// the item attribute orphan count is really slow, so do not use it.
-			if(fetch_file_cache_missing_file_cnt('ITEM') > 0 ) //|| 
-//							fetch_file_cache_item_attribute_orphans_cnt() > 0)
+			if(fetch_file_cache_missing_file_cnt('ITEM') > 0 ||  
+							fetch_file_cache_item_attribute_orphans_cnt() > 0)
 			{
 				echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a> ] ");
 			}

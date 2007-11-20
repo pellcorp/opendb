@@ -808,7 +808,7 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 		}
 		else
 		{
-			$file_cache_r['content_length'] = $content_length;
+			$file_cache_r['content_length'] = strlen($content);
 			$file_cache_r['upload_file_ind'] = 'N';
 		}
 		
@@ -834,9 +834,12 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 		
 		if($content != NULL)
 		{
-			if(!file_put_contents($file_cache_r['cache_file'], $content)!==FALSE)
+			$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
+			$cacheFile = $directory.'/'.$file_cache_r['cache_file'];
+			
+			if(!file_put_contents($cacheFile, $content)!==FALSE)
 			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache file not written', array($url, $location, $content_type, $cache_type, $overwrite));
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache file not written', array($cacheFile));
 				return FALSE;
 			}
 		}
@@ -915,7 +918,7 @@ function update_file_cache($sequence_number, $content_length, $expire_date, $cac
 		"cache_file = '$cache_file', ".
 		"cache_file_thumb = ".($cache_file_thumb!=NULL?"'$cache_file_thumb'":"NULL")." ".
 		"WHERE sequence_number = $sequence_number ";
-
+		
 		$update = db_query($query);
 		$rows_affected = db_affected_rows();
 		if ($update && $rows_affected !== -1)// We should not treat updates that were not actually updated because value did not change as failures.

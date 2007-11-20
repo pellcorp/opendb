@@ -1120,6 +1120,68 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 	return $field;
 }
 
+function process_lookup_results($lookup_results, $value)
+{
+	if(is_array($value) && count($value)>0)
+		$values_r = $value;
+	else if(!is_array($value) && $value !== NULL)// if a single string value, convert to single element array.
+		$values_r[] = $value;
+	else // is_empty_array!
+		$values_r = NULL;
+
+	$lookup_rs = array();
+	while($lookup_r = db_fetch_assoc($lookup_results))
+	{
+		$lookup_rs[] = $lookup_r;
+	}
+	db_free_result($lookup_results);
+	
+	$value_found = FALSE;
+	while(list(,$lookup_r) = each($lookup_rs))
+	{
+		if(is_array($values_r) && ($lookup_key = array_search2($lookup_r['value'], $values_r, TRUE)) !== FALSE)
+		{
+			$value_found = TRUE;
+			break;
+		}
+	}
+	
+	$lookup_val_rs = array();
+	
+	reset($lookup_rs);
+	while(list(,$lookup_r) = each($lookup_rs))
+	{
+		if($value_found) {
+			$lookup_r['checked_ind'] = 'N';
+		}
+		
+		if(is_array($values_r) && ($lookup_key = array_search2($lookup_r['value'], $values_r, TRUE)) !== FALSE)
+		{
+			$lookup_r['checked_ind'] = 'Y';
+			
+			// Remove the matched element
+			array_splice($values_r, $lookup_key, 1);
+		}
+		
+		$lookup_val_rs[] = $lookup_r;
+	}
+
+	if(is_array($values_r))
+	{
+		// Add the value to the list of options and select it.
+		reset($values_r);
+		while(list(,$value) = each($values_r))
+		{
+			if(strlen($value)>0)
+			{
+				$lookup_val_rs[] = array(value=>$value, checked_ind=>'Y');
+			}
+		}
+	}
+	
+	return $lookup_val_rs;
+}
+
 /*
 	Will format a ul list with the number of specified columns.
  
@@ -1130,29 +1192,8 @@ function review_options($name, $lookup_results, $mask, $orientation, $value, $di
 */
 function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabled = FALSE)
 {
-	if(is_array($value))// convert single element array, to string
-		$value = $value[0];
-
-	$value_found=FALSE;
+	$lookup_val_rs = process_lookup_results($lookup_results, $value);
 	
-	$lookup_val_r = NULL;
-	while($lookup_r = db_fetch_assoc($lookup_results))
-	{
-		if( $value !== NULL && strcasecmp($value, $lookup_r['value'])===0)
-		{
-			$lookup_r['checked_ind'] = 'Y';
-			$value_found=TRUE;
-		}
-		
-		$lookup_val_r[] = $lookup_r;
-	}
-	db_free_result($lookup_results);
-
-	if(!$value_found && $value !== NULL)
-	{
-		$lookup_val_r[] = array(value=>$value, checked_ind=>'Y');
-	}
-
 	if(strcasecmp($orientation, 'VERTICAL')==0)
 		$class = 'radioGridOptionsVertical';
 	else
@@ -1160,10 +1201,11 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 		
 	$buffer = "<ul class=\"$class\">";
 	
-	while(list(,$lookup_r) = each($lookup_val_r))
+	reset($lookup_val_rs);
+	while(list(,$lookup_val_r) = each($lookup_val_rs))
 	{
-		$buffer .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
-				format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."</li>";
+		$buffer .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"".$lookup_val_r['value']."\"".($lookup_val_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
+				format_display_value($mask, $lookup_val_r['img'], $lookup_val_r['value'], $lookup_val_r['display'])."</li>";
 	}
 	
 	$buffer .= "</ul>";
@@ -1171,44 +1213,13 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 	return $buffer;
 }
 
+
 /*
 	@param $value - array of values.
 */
 function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $disabled = FALSE)
 {
-	// sanity check
-	if(is_array($value) && count($value)>0)
-		$values_r = $value;
-	else if(!is_array($value) && $value !== NULL)// if a single string value, convert to single element array.
-		$values_r[] = $value;
-	else // is_empty_array!
-		$values_r = NULL;
-
-	$lookup_val_r = NULL;
-	while($lookup_r = db_fetch_assoc($lookup_results))
-	{
-		if(is_array($values_r) && ($lookup_key = array_search2($lookup_r['value'], $values_r, TRUE)) !== FALSE)
-		{
-			$lookup_r['checked_ind'] = 'Y';
-			
-			// Remove the matched element
-			array_splice($values_r, $lookup_key, 1);
-		}
-		
-		$lookup_val_r[] = $lookup_r;
-	}
-	db_free_result($lookup_results);
-
-	if(is_array($values_r))
-	{
-		// Add the value to the list of options and select it.
-		reset($values_r);
-		while(list(,$value) = each($values_r))
-		{
-			if(strlen($value)>0)
-				$lookup_val_r[] = array(value=>$value, checked_ind=>'Y');
-		}
-	}
+	$lookup_val_rs = process_lookup_results($lookup_results, $value);
 	
 	if(strcasecmp($orientation, 'VERTICAL')==0)
 		$class = 'checkboxGridOptionsVertical';
@@ -1217,10 +1228,11 @@ function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $dis
 
 	$buffer = "<ul class=\"$class\">";
 	
-	while(list(,$lookup_r) = each($lookup_val_r))	
+	reset($lookup_val_rs);
+	while(list(,$lookup_val_r) = each($lookup_val_rs))	
 	{
-		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_r['value']."\"".($lookup_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
-				format_display_value($mask, $lookup_r['img'], $lookup_r['value'], $lookup_r['display'])."</li>";
+		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"".$name."[]\" value=\"".$lookup_val_r['value']."\"".($lookup_val_r['checked_ind'] == 'Y'?' CHECKED':'').($disabled?' DISABLED':'').">".
+				format_display_value($mask, $lookup_val_r['img'], $lookup_val_r['value'], $lookup_val_r['display'])."</li>";
 	}
 
 	$buffer .= "</ul>";

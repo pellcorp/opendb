@@ -38,11 +38,6 @@ if(!defined('__CLASS__'))
 if(!defined('__METHOD__'))
 	define('__METHOD__', 'unknown');
 
-// --------------------------------------------------------------------------
-// This script contains any code that needs to be executed at the start of
-// each and every runnable script.
-// --------------------------------------------------------------------------
-
 if(extension_loaded('mysqli'))
 {
 	include_once('./functions/database/mysqli.inc.php');

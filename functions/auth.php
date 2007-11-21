@@ -23,8 +23,6 @@ include_once("./functions/utils.php");
 include_once("./functions/http.php");
 include_once("./functions/config.php");
 
-define('__OPENDB_PUBLIC_ACCESS__', 'public_access');
-
 /**
  * Initiate public access session if applicable
  */

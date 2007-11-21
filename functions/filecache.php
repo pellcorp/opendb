@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-	*/
+*/
 
 define('EXPIRED_ONLY', '3131');
 define('EXCLUDE_EXPIRED', '3123');
@@ -31,21 +31,9 @@ include_once("./functions/OpenDbSnoopy.class.inc");
 include_once('./functions/phpthumb/phpthumb.class.php');
 include_once("./functions/item_attribute.php");
 
-function filecache_get_cache_file($file_cache_r, $thumbnail = FALSE)
-{
-	$prefix = strtolower($file_cache_r['cache_type']);
-	if($thumbnail)
-		$prefix .= 'Thumb';
-		
-	$randomNum = $file_cache_r['sequence_number'].'_'.generate_random_num();
-	$extension = $file_cache_r['extension'];
-	
-	return $prefix.$sequence_number.'_'.$randomNum.'.'.$extension;
-}
-
 function get_item_input_file_upload_directory()
 {
-	$uploadDir = get_opendb_config_var('item_input.upload', 'file_location');
+	$uploadDir = OPENDB_ITEM_UPLOAD_DIRECTORY;
 	if(is_dir($uploadDir))
 	{
 		if(ends_with($uploadDir, '/'))
@@ -128,15 +116,52 @@ function save_uploaded_file($tmpFile, $name)
 	}
 }
 
+function filecache_get_cache_file($file_cache_r, $thumbnail = FALSE)
+{
+	$prefix = strtolower($file_cache_r['cache_type']);
+	if($thumbnail)
+		$prefix .= 'Thumb';
+		
+	$randomNum = $file_cache_r['sequence_number'].'_'.generate_random_num();
+	$extension = $file_cache_r['extension'];
+	
+	return $prefix.$sequence_number.'_'.$randomNum.'.'.$extension;
+}
+
+function filecache_get_cache_directory($cache_type='HTTP')
+{
+	if($cache_type == 'HTTP')
+		$cacheDir = OPENDB_HTTP_CACHE_DIRECTORY;
+	else //if($cache_type == 'ITEM')
+		$cacheDir = OPENDB_ITEM_CACHE_DIRECTORY;
+	
+	if(is_dir($cacheDir))
+	{
+		if(ends_with($cacheDir, '/'))
+			$cacheDir = substr($cacheDir, 0, -1);
+			
+		return $cacheDir;	
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Cache directory', array($cache_type, $cacheDir));
+		return FALSE;
+	}
+}
+
 function file_cache_get_config($cache_type='HTTP')
 {
 	if($cache_type == 'HTTP')
 	{
-		return get_opendb_config_var('http.cache');
+		$config = get_opendb_config_var('http.cache');
+		$config['directory'] = filecache_get_cache_directory($cache_type);
+		return $config;
 	}
 	else if($cache_type == 'ITEM')
 	{
-		return get_opendb_config_var('http.item.cache');
+		$config = get_opendb_config_var('http.item.cache');
+		$config['directory'] = filecache_get_cache_directory($cache_type);
+		return $config;
 	}
 	else
 	{

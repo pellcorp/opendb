@@ -20,6 +20,13 @@
 // Set error reporting to something OpenDb is capable of handling
 $_OPENDB_ERROR_REPORTING = error_reporting(E_ALL & ~E_NOTICE);
 
+// these are defined here - so they can be overriden by downstream packagers
+// as required.  they will no longer be exposed via configuration.
+define('OPENDB_IMPORT_CACHE_DIRECTORY', './importcache');
+define('OPENDB_ITEM_CACHE_DIRECTORY', './itemcache');
+define('OPENDB_ITEM_UPLOAD_DIRECTORY', './httpcache');
+define('OPENDB_HTTP_CACHE_DIRECTORY', './upload');
+
 // In case session handler error
 //ini_set('session.save_handler', 'files'); 
 

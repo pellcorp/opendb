@@ -33,7 +33,7 @@ include_once("./functions/install.php");
 include_once("./functions/widgets.php");
 
 $_opendb_install_required_writedirs = array(
-		'log', 'include', 'itemcache', 'httpcache', 'importcache', 'upload');
+		'./log', './include', OPENDB_IMPORT_CACHE_DIRECTORY, OPENDB_ITEM_CACHE_DIRECTORY, OPENDB_ITEM_UPLOAD_DIRECTORY, OPENDB_HTTP_CACHE_DIRECTORY);
 
 $TICK_IMAGE = _theme_image('tick.gif');
 $CROSS_IMAGE = _theme_image('cross.gif');
@@ -96,11 +96,11 @@ function install_check_directories(&$doContinue)
 	{
 		$buffer .= "<tr><th class=\"prompt\">".$directory."</td>";
 		
-		if (is_dir('./'.$directory))
+		if (is_dir($directory))
 		{
 			$buffer .= "<td class=\"data\">$TICK_IMAGE</td>";
 			
-			if (is_writable('./'.$directory))
+			if (is_writable($directory))
 			{
 				$buffer .= "<td class=\"data\">$TICK_IMAGE</td>";
 			}

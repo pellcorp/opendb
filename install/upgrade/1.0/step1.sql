@@ -149,7 +149,7 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'item_display' AND id = 'ta
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 
-DELETE FROM s_config_group_item WHERE group_id = 'site.public_access' AND id IN ('user_id', 'enabled_pages');
+DELETE FROM s_config_group_item WHERE group_id = 'site.public_access' AND id IN ('user_id');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'rss', 2, 'RSS Feeds', 'Enable rss feeds access', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'listings', 3, 'Item Listings', 'Enable item listings access', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'item_display', 4, 'Item Display', 'Enable item display access', 'boolean');
@@ -334,10 +334,6 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'field', 'Field');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_export_fields', 'Choose Export Fields');
 
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.upload', 1, 'File Uploads', 'Item Input File Uploads configuration' );
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.upload', 'file_location', 1, 'File Upload Location', '', 'readonly');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input.upload', 'file_location', './upload/');
-
 # need to be able to use the auto-increment sequence number for cache_file name, so will save
 # cache record and then update it with the cache_file reference.
 ALTER TABLE file_cache CHANGE cache_file cache_file VARCHAR(255);
@@ -346,3 +342,17 @@ ALTER TABLE file_cache CHANGE url url TEXT NOT NULL;
 
 UPDATE item_attribute SET attribute_val = REPLACE(attribute_val, 'upload/', '') WHERE
 attribute_val LIKE 'upload/%';
+
+# logfile config var should not be readonly.
+UPDATE s_config_group_item SET type = 'text' WHERE group_id = 'logging' AND id = 'file';
+
+# these will be internally hardcoded - they can be changed by downstream packagers, etc, but
+# its not intended to expose via the configuration.
+DELETE FROM s_config_group_item WHERE group_id = 'http.cache' AND id = 'directory';
+DELETE FROM s_config_group_item WHERE group_id = 'http.item.cache' AND id = 'directory';
+DELETE FROM s_config_group_item WHERE group_id = 'import.cache' AND id = 'file_location';
+DELETE FROM s_config_group_item WHERE group_id = 'item_input.upload' AND id = 'file_location';
+DELETE FROM s_config_group_item_var WHERE group_id = 'http.cache' AND id = 'directory';
+DELETE FROM s_config_group_item_var WHERE group_id = 'http.item.cache' AND id = 'directory';
+DELETE FROM s_config_group_item_var WHERE group_id = 'import.cache' AND id = 'file_location';
+DELETE FROM s_config_group_item_var WHERE group_id = 'item_input.upload' AND id = 'file_location';

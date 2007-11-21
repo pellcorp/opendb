@@ -35,18 +35,17 @@ function import_get_cache_file($new_sequence_number)
 
 function import_cache_get_cache_directory()
 {
-	$dir = get_opendb_config_var('import.cache', 'file_location');
-		
-	$dir = trim($dir);
-	if($dir!='.' && $dir!='..' && is_dir($dir))
+	$cacheDir = OPENDB_ITEM_UPLOAD_DIRECTORY;
+	if(is_dir($cacheDir))
 	{
-		if(ends_with($dir, '/'))
-			$dir = substr($dir, 0, -1);
+		if(ends_with($cacheDir, '/'))
+			$cacheDir = substr($cacheDir, 0, -1);
 			
-		return $dir;
+		return $cacheDir;	
 	}
 	else
 	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Import Cache directory does not exist', array($cacheDir));
 		return FALSE;
 	}	
 }

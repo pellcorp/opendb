@@ -368,7 +368,6 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listing
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings.multi_borrow', 3, 'Item Listing Multi Borrow', 'Item Listing Multi Borrow configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_display', 10, 'Item Display', 'Item Display configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input', 11, 'Item Input', 'Item Input configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.upload', 1, 'File Uploads', 'Item Input File Uploads configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_input.site', 1, 'Site Plugins', 'Item Input Site Plugins configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'item_review', 12, 'Item Review', 'Item Review configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow', 13, 'Item Borrow', 'Borrow Functionality configuration' );
@@ -418,7 +417,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('widgets', 'legal_html_tags', 3, 'Legal HTML Tags', '', 'array', 'text');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'file', 2, 'Log File', '', 'readonly');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'file', 2, 'Log File', '', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'backup_ext_date_format', 3, 'Date Format', 'Logfile Backup Extension Date Format', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.stream_external_images', 'enable', 1, 'Enable', '', 'boolean');
@@ -426,11 +425,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http', 'datetime_mask', 3, 'Cache Datetime Mask', 'Http / Item Cache Admin Tool Datetime Mask', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.cache', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.cache', 'directory', 2, 'Directory', '', 'readonly');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.cache', 'lifetime', 3, 'Refresh Timeout', 'In seconds', 'number');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.item.cache', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.item.cache', 'directory', 2, 'Directory', '', 'readonly');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.item.cache', 'lifetime', 3, 'Refresh Timeout', 'In seconds', 'number');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('http.proxy_server', 'enable', 1, 'Enable', '', 'boolean');
@@ -473,7 +470,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'datetime_mask', 3, 'Datetime Mask', '', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('import', 'row_import_default_initcap_checked', 1, 'Row Import Initcap Enabled', 'Initcap checked by default', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('import.cache', 'file_location', 2, 'Import Cache location', 'Location of import cache files', 'readonly');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_themes_support', 1, 'User Themes Support', 'Users can change theme', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_language_support', 2, 'User Language Support', 'Users can change language', 'boolean');
@@ -509,8 +505,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_item_delete', 12, 'Confirm Item Delete', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 13, 'Allow Item Delete with inactive borrow records', ' exist', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('item_input', 'title_articles', 14, 'Title Articles', 'Format title, so that articles appear at the end of the title.', 'array', 'text');
-
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.upload', 'file_location', 1, 'File Upload Location', '', 'readonly');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.site', 'debug', 1, 'Debug Site Plugins', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
@@ -643,10 +637,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '2', 'ia.media-imdb.com');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.cache', 'enable', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.cache', 'directory', './httpcache');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.cache', 'lifetime', '604800');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.item.cache', 'enable', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.item.cache', 'directory', './itemcache');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.item.cache', 'lifetime', '604800');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('http.proxy_server', 'enable', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email', 'mailer', 'mail');
@@ -675,7 +667,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.annou
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('menu', 'other_items_listing', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('menu', 'all_items_listing', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('import', 'row_import_default_initcap_checked', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('import.cache', 'file_location', './importcache/');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'datetime_mask', 'DDth Month YYYY HH24:MI');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_themes_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_passwd_change_allowed', 'TRUE');
@@ -709,7 +700,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '0', 'The');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '1', 'A');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '2', 'An');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input.upload', 'file_location', './upload/');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input.site', 'item_image_size', 'height', '50');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'update_support', 'TRUE');

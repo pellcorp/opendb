@@ -19,6 +19,13 @@
 */
 include_once("./functions/database.php");
 
+// these are defined here - so they can be overriden by downstream packagers
+// as required.  they will no longer be exposed via configuration.
+define('OPENDB_IMPORT_CACHE_DIRECTORY', './importcache');
+define('OPENDB_ITEM_CACHE_DIRECTORY', './itemcache');
+define('OPENDB_ITEM_UPLOAD_DIRECTORY', './upload');
+define('OPENDB_HTTP_CACHE_DIRECTORY', './httpcache');
+
 $_OPENDB_CONFIG_EXISTS = NULL;
 
 function is_gzip_compression_enabled($php_self)

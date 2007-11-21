@@ -103,9 +103,6 @@ else if(!empty($_POST))
 	$HTTP_VARS = $_POST;
 }
 
-//define a global browser sniffer object for use by theme and elsewhere
-$_OpendbBrowserSniffer = new OpenDbBrowserSniffer();
-
 // Strip all slashes from this array.
 if(get_magic_quotes_gpc())
 {
@@ -128,6 +125,9 @@ if(get_magic_quotes_gpc())
 	}
 	$HTTP_VARS = stripslashes_array($HTTP_VARS);
 }
+
+//define a global browser sniffer object for use by theme and elsewhere
+$_OpendbBrowserSniffer = new OpenDbBrowserSniffer();
 
 // if the mysql[i] extension has been loaded, the db_connect function should exist
 if(function_exists('db_connect'))

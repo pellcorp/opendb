@@ -201,7 +201,7 @@ if(is_site_enabled())
 			
 			echo(_theme_footer());
 		}//not an administrator or own user.
-		else if(is_site_public_access_enabled())
+		else if(is_site_public_access())
 		{
 			// provide login at this point
 			redirect_login($PHP_SELF, $HTTP_VARS);

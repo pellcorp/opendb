@@ -45,7 +45,7 @@ function is_gzip_compression_enabled($php_self)
  */
 function is_show_login_menu_enabled()
 {
-	if(is_site_public_access_enabled())
+	if(is_site_public_access())
 		return TRUE;
 	else
 		return get_opendb_config_var('login', 'show_menu')!==FALSE;

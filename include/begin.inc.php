@@ -168,8 +168,6 @@ if(function_exists('db_connect'))
 				}
 			}
 
-			// do not attempt to start a session if site is disabled.
-	
 			// We want to start the session here, so we can get access to the $_SESSION properly.
 			session_start();
 

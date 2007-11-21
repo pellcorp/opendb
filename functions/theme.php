@@ -51,7 +51,7 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 		$user_id = get_opendb_session_var('user_id');
 		$user_type = get_opendb_session_var('user_type');
 		
-		if(is_site_public_access_enabled())
+		if(is_site_public_access())
 		{
 			$user_id = NULL;
 			$user_type = NULL;
@@ -89,7 +89,7 @@ function _theme_footer()
 	$user_id = get_opendb_session_var('user_id');
 	$user_type = get_opendb_session_var('user_type');
 	
-	if(is_site_public_access_enabled())
+	if(is_site_public_access())
 	{
 		$user_id = NULL;
 		$user_type = NULL;

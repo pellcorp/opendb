@@ -149,7 +149,17 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'item_display' AND id = 'ta
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, standard guest user restrictions will apply.  Otherwise only pages listed will be accessible while public access is in effect.', 'array', 'text');
+DELETE FROM s_config_group_item WHERE group_id = 'site.public_access' AND id IN ('user_id', 'enabled_pages');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'rss', 2, 'RSS Feeds', 'Enable rss feeds access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'listings', 3, 'Item Listings', 'Enable item listings access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'item_display', 4, 'Item Display', 'Enable item display access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'stats', 5, 'Statistics', 'Enable statistics access', 'boolean');
+
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'rss', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'listings', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_display', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_review', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'stats', 'TRUE');
 
 # move announcements datetime mask into login.announcements section which is only place its really used.
 UPDATE s_config_group_item SET group_id = 'login.announcements', order_no = 3 WHERE group_id = 'announcements' AND id = 'datetime_mask';

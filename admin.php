@@ -34,7 +34,7 @@ include_once("./functions/admin.php");
 
 if(is_site_enabled())
 {
-	if(is_opendb_valid_session() && !is_site_public_access_enabled())
+	if(is_opendb_valid_session() && !is_site_public_access())
 	{
 		if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 		{

@@ -406,8 +406,10 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.url', 'protocol', 4, 'Protocol', '', 'value_select', ',http,https');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'enable', 1, 'Enable', 'Enable guest public access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'user_id', 2, 'Guest User', 'You must choose a valid \'guest\' User', 'guest_userid');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.public_access', 'enabled_pages', 3, 'Enabled Pages', 'If the list is empty, standard guest user restrictions will apply.  Otherwise only pages listed will be accessible while public access is in effect.', 'array', 'text');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'rss', 2, 'RSS Feeds', 'Enable rss feeds access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'listings', 3, 'Item Listings', 'Enable item listings access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'item_display', 4, 'Item Display', 'Enable item display access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'stats', 5, 'Statistics', 'Enable statistics access', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('themes', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
 
@@ -603,6 +605,11 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'res
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'upgrade_check', 'TRUE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'enable', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'rss', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'listings', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_display', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_review', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'stats', 'TRUE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.gzip_compression', 'enable', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('site.gzip_compression', 'disabled', '0', 'admin');

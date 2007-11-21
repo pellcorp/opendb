@@ -23,6 +23,8 @@ include_once("./functions/utils.php");
 include_once("./functions/http.php");
 include_once("./functions/config.php");
 
+define('__OPENDB_PUBLIC_ACCESS__', 'public_access');
+
 /**
  * Initiate public access session if applicable
  */
@@ -33,21 +35,15 @@ function init_public_access_session()
 	    $site_public_access_r = get_opendb_config_var('site.public_access');
 		if($site_public_access_r['enable']!==FALSE)
 		{
-			if(strlen(get_opendb_session_var('user_id'))==0 ||
-						get_opendb_session_var('user_id') === $site_public_access_r['user_id'])
+			if(strlen(get_opendb_session_var('user_id'))==0)
 			{
-				$user_r = fetch_user_r($site_public_access_r['user_id']);
-				if(is_not_empty_array($user_r))
-				{
-	    			register_opendb_session_var('user_id', $user_r['user_id']);
-	            	register_opendb_session_var('user_type', $user_r['type']);
-				}
-				else
-				{
-					unregister_opendb_session_var('user_id');
-	      			unregister_opendb_session_var('user_type');
-				}
-				unset($user_r);
+				register_opendb_session_var('publicaccess', 'true');
+	            register_opendb_session_var('user_type', 'G');
+			}
+			else
+			{
+				unregister_opendb_session_var('publicaccess');
+	            unregister_opendb_session_var('user_type');
 			}
 		}
 	}
@@ -56,31 +52,23 @@ function init_public_access_session()
 /**
 Test that public access enabled, and currently 'logged' in user is the
 configured public access user.
+
+Its important to remember that the caller is expecting this method to return TRUE, if
+public access is enabled in configuration, and page currently being access is available
+via public access configuration.  This method will only ever be used where there is not
+currently a login session.
 */
-function is_site_public_access_enabled()
+function is_site_public_access()
 {
 	global $PHP_SELF;
 	
 	if(is_opendb_configured())
 	{
 		$site_plugin_access_r = get_opendb_config_var('site.public_access');
-		
-		if($site_plugin_access_r['enable'] === TRUE &&
-					strlen($site_plugin_access_r['user_id'])>0 &&
-					get_opendb_session_var('user_id') === $site_plugin_access_r['user_id'])
+		if($site_plugin_access_r['enable'] === TRUE && get_opendb_session_var('publicaccess') == 'true')
 		{
-			// if array is empty, then no restrictions apply.
-			if(is_not_empty_array($site_plugin_access_r['enabled_pages'])) {
-				
-				$page = basename($PHP_SELF, '.php');
-				
-				if(!in_array($page, $site_plugin_access_r['enabled_pages'])) {
-					return FALSE;
-				}
-			}
-			
-			//else
-			return TRUE;
+			$page = basename($PHP_SELF, '.php');
+			return is_site_public_access_page($page);
 		}
 		else
 		{
@@ -93,6 +81,20 @@ function is_site_public_access_enabled()
 	}
 }
 
+function is_site_public_access_page($page)
+{
+	$site_plugin_access_r = get_opendb_config_var('site.public_access');
+	
+	$public_access_allowed_pages_r = array('rss', 'listings', 'item_display', 'item_review', 'stats');
+	if(in_array($page, $public_access_allowed_pages_r))
+	{
+		return ($site_plugin_access_r[$page]!==FALSE);
+	}
+	else
+	{
+		return FALSE;
+	}
+}
 /**
 	If currently logged in user is an Administrator, then even if site is explicitly
 	disabled, the admin will still be able to use the site.  All users will be able
@@ -128,19 +130,9 @@ function is_opendb_valid_session()
     {
 		$site_r = get_opendb_config_var('site');
 
-		// Public access to OpenDb for configured user.
-		if(is_site_public_access_enabled())
+		if(is_site_public_access())
 		{
-			// include/begin.inc.php already exported the get_opendb_session_var('user_id')
-			if(strlen(get_opendb_session_var('user_id'))>0 && is_user_active(get_opendb_session_var('user_id')))
-			{
-				return TRUE;
-			}
-			else
-			{
-				opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'Invalid/Inactive public access user encountered', get_opendb_config_var('site.public_access'));
-				return FALSE;
-			}
+			return TRUE;
 		}
 		else if(get_opendb_session_var('login_time')!=NULL &&
 				get_opendb_session_var('last_access_time')!=NULL &&

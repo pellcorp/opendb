@@ -175,14 +175,17 @@ function get_menu_options($user_id, $user_type)
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('system_admin_tools'), url=>"admin.php", target=>"_new");
 		}
 	}
-	else if(is_site_public_access_enabled())
+	else if(is_site_public_access())
 	{
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
-		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
-		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
+		if(is_site_public_access_page('listings'))
+			$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
+		if(is_site_public_access_page('stats'))
+			$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
+		if(is_site_public_access_page('rss'))
+			$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
 	}
 	
-	//if(!is_site_public_access_enabled())
+	//if(!is_site_public_access())
 	//{
 	//	$menu_options['login'][] = array(link=>get_opendb_lang_var('logout'), url=>"logout.php");
 	//}

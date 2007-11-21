@@ -640,7 +640,6 @@ function install_opendb_new_install($HTTP_VARS, &$errors)
 				exec_install_sql_file("./admin/s_status_type/sql/W-Wishlist.sql", $errors);
 				exec_install_sql_file("./admin/s_status_type/sql/R-Related.sql", $errors);
 				
-				exec_install_sql_file("./install/new/guestuser.sql", $errors);
 				exec_install_sql_file("./install/new/adminuser.sql", $errors);
 
 				// no steps to complete, its all in one, so we can insert release record with 

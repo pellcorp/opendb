@@ -24,8 +24,8 @@ $_OPENDB_ERROR_REPORTING = error_reporting(E_ALL & ~E_NOTICE);
 // as required.  they will no longer be exposed via configuration.
 define('OPENDB_IMPORT_CACHE_DIRECTORY', './importcache');
 define('OPENDB_ITEM_CACHE_DIRECTORY', './itemcache');
-define('OPENDB_ITEM_UPLOAD_DIRECTORY', './httpcache');
-define('OPENDB_HTTP_CACHE_DIRECTORY', './upload');
+define('OPENDB_ITEM_UPLOAD_DIRECTORY', './upload');
+define('OPENDB_HTTP_CACHE_DIRECTORY', './httpcache');
 
 // In case session handler error
 //ini_set('session.save_handler', 'files'); 

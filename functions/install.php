@@ -84,7 +84,7 @@ function fetch_missing_081_upload_item_attributes(&$errors)
 		{
 			if(!file_exists($item_attribute_r['attribute_val']))
 			{
-				$missing_files_r[] = $item_attribute_r['attribute_val'];
+				$missing_files_r[] = basename($item_attribute_r['attribute_val']);
 			}
 		}
 		db_free_result($results);

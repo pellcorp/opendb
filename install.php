@@ -45,10 +45,11 @@ function install_check_missing_081_upload_item_attributes()
 	$missing_files_r = fetch_missing_081_upload_item_attributes($errors);
 	if(is_not_empty_array($missing_files_r))
 	{
-		$buffer .= "<h3>0.8X Cached (./upload directory) Images missing</h3>\n";
+		$buffer .= "<h3>0.8X Cached (".OPENDB_ITEM_UPLOAD_DIRECTORY." directory) Images missing</h3>\n";
 		
-		$buffer .= "<p class=\"installwarning\">The following File item attributes refer to upload images which do not
-			physically exist, this may be due to the absence of the ./upload directory (in which case you should copy it over)</p>";
+		$buffer .= "<p class=\"installwarning\">The following is a list of uploaded files referenced by your OpenDb database which cannot
+			be found in the ".OPENDB_ITEM_UPLOAD_DIRECTORY." directory.  This may be because you have not copied the uploaded files from 
+			the OpenDb 0.8X ".OPENDB_ITEM_UPLOAD_DIRECTORY." directory.</p>";
 		
 		if(is_array($errors))
 			$buffer .= format_error_block($errors);

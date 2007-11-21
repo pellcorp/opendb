@@ -46,8 +46,6 @@ function is_gzip_compression_enabled($php_self)
 }
 
 /**
- * TODO - add config for showing menu while public access is enabled.
- *
  * @return unknown
  */
 function is_show_login_menu_enabled()

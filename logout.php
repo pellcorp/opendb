@@ -61,21 +61,11 @@ else
 	unregister_opendb_session_var('last_access_time');
 	unregister_opendb_session_var('login_lastvisit');
 
-	//init_public_access_session();
+	// close session
+	session_destroy();
 
-	// if public access was successful, redirect to index to load public access welcome
-	//if(is_site_public_access())
-	//{
-	//	http_redirect('index.php');
-	//}
-	//else
-	//{
-		// close session
-		session_destroy();
-
-		// redirect to index after logout
-		http_redirect('index.php');
-	//}
+	// redirect to index after logout
+	http_redirect('index.php');
 }
 
 // Cleanup after begin.inc.php

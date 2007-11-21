@@ -36,15 +36,9 @@ function init_public_access_session()
 		if($site_public_access_r['enable']!==FALSE)
 		{
 			if(strlen(get_opendb_session_var('user_id'))==0)
-			{
-				register_opendb_session_var('publicaccess', 'true');
 	            register_opendb_session_var('user_type', 'G');
-			}
 			else
-			{
-				unregister_opendb_session_var('publicaccess');
 	            unregister_opendb_session_var('user_type');
-			}
 		}
 	}
 }
@@ -61,28 +55,30 @@ currently a login session.
 function is_site_public_access()
 {
 	global $PHP_SELF;
-	
+
 	if(is_opendb_configured())
 	{
-		$site_plugin_access_r = get_opendb_config_var('site.public_access');
-		if($site_plugin_access_r['enable'] === TRUE && get_opendb_session_var('publicaccess') == 'true')
+		if(strlen(get_opendb_session_var('user_id'))==0)
 		{
-			$page = basename($PHP_SELF, '.php');
-			return is_site_public_access_page($page);
-		}
-		else
-		{
-			return FALSE;
+			$site_plugin_access_r = get_opendb_config_var('site.public_access');
+			if($site_plugin_access_r['enable'] === TRUE)
+			{
+				$page = basename($PHP_SELF, '.php');
+				return is_site_public_access_page($page);
+			}
 		}
 	}
-	else
-	{
-	    return FALSE;
-	}
+	//else
+    return FALSE;
 }
 
 function is_site_public_access_page($page)
 {
+	if($page == 'index' || $page == 'login')
+	{
+		return TRUE;
+	}
+	
 	$site_plugin_access_r = get_opendb_config_var('site.public_access');
 	
 	$public_access_allowed_pages_r = array('rss', 'listings', 'item_display', 'item_review', 'stats');
@@ -90,10 +86,9 @@ function is_site_public_access_page($page)
 	{
 		return ($site_plugin_access_r[$page]!==FALSE);
 	}
-	else
-	{
-		return FALSE;
-	}
+	
+	//else
+	return FALSE;
 }
 /**
 	If currently logged in user is an Administrator, then even if site is explicitly

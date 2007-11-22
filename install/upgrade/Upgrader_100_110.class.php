@@ -19,6 +19,7 @@
 */
 
 include_once("./functions/OpenDbUpgrader.class.php");
+include_once("./functions/filecache.php");
 
 class Upgrader_100_110 extends OpenDbUpgrader
 {
@@ -33,6 +34,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 							array('description'=>'Transfer Linked Items'),
 							array('description'=>'Transfer Email Addresses'),
 							array('description'=>'Cleanup Email address system data'),
+							array('description'=>'Transfer uploaded files from File Cache'),
 							array('description'=>'Finalise upgrade')
 						)
 					);
@@ -116,41 +118,108 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		return TRUE;
 	}
 	
-	function executeStep6($stepPart)
-	{
-		db_query("ALTER TABLE item DROP parent_id");
-		return TRUE;
-	}
-	
 	/**
 	 * @param unknown_type $stepPart
 	 */
-	function executeStep7($stepPart)
+	function executeStep6($stepPart)
 	{
 		// need to copy all uploaded records from file_cache into upload directory creating using a 
 		// unique filename
+		$uploadDir = get_item_input_file_upload_directory();
+		if(!is_writable($uploadDir))
+		{
+			$this->addError('Upload directory is not writable');
+			return FALSE;
+		}
 		
-		$results = db_query("SELECT fc.cache_file, ia.item_id, ia.instance_no, ia.s_attribute_type, ia.order_no, ia.attribute_val
+		$query = "SELECT fc.sequence_number, fc.cache_file, fc.cache_file_thumb, ia.item_id, ia.instance_no, ia.s_attribute_type, ia.order_no, ia.attribute_val, ia.attribute_no
 						FROM file_cache fc,
-							item_attribute ia
+						item_attribute ia
 						WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND
-						fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val )
-						");
+						fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val )";
+
+		$items_per_page = 100;
+		$start_index = $stepPart > 0 ? ($stepPart * $items_per_page) : 0;
+		$query .= ' LIMIT ' .$start_index. ', ' .($items_per_page + 1);
+		$count = 0;
+		
+		$fc_attrib_rs = NULL;
+		$results = db_query($query);
 		if($results)
 		{
 			while($fc_attrib_r = db_fetch_assoc($results))
 			{
-				if(file_exists('./itemcache/'.$fc_attrib_r['cache_file']))
+				if($count < $items_per_page)
 				{
-					// todo - ensure attribute_val is unique filename, this can be done by locking the
-					// item_attribute table and ensuring that where s_attribute_type file_attribute_ind = 'Y'
-					// and attribute_val is not absolute that filename is unique, excluding current
-					// attribute_val. 
-					save_upload_file('./itemcache/'.$fc_attrib_r['cache_file'], $fc_attrib_r['attribute_val']);		
-				}
+					$fc_attrib_rs[] = $fc_attrib_r;
+					$count++;
+				}	
 			}
 			db_free_result($results);
 		}
+		
+		if(is_array($fc_attrib_rs))
+		{
+			$directory = filecache_get_cache_directory('ITEM');
+			while(list(,$fc_attrib_r) = each($fc_attrib_rs))
+			{
+				$cacheFile = $directory.'/'.$fc_attrib_r['cache_file'];
+				
+				if(file_exists($cacheFile))
+				{
+					// todo - how to get unique filename
+					$filename = $fc_attrib_r['attribute_val'];
+					
+					$uploadFile = $uploadDir.'/'.$filename;
+					
+					if($filename != $fc_attrib_r['attribute_val'])
+					{
+						if(!update_item_attribute($fc_attrib_r['item_id'],
+										$fc_attrib_r['instance_no'],
+										$fc_attrib_r['s_attribute_type'],
+										$fc_attrib_r['order_no'],
+										$fc_attrib_r['attribute_no'],
+										NULL,
+										$filename))
+						{
+							$this->addError('Failed to update attribute');
+						}
+					}				
+					
+					if(copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
+					{
+//						db_query("DELETE FROM file_cache WHERE sequence_number = ".$fc_attrib_r['sequence_number']);
+						
+						// delete uploaded cache file
+//						delete_file($cacheFile);
+						
+						// lets try to cleanup the thumbnail as well - we can let the item cache regenerate
+						// upload image thumbnails rather than trying to be clever.
+						if(strlen($fc_attrib_r['cache_file_thumb'])>0)
+						{
+							$thumbFile = $directory.'/'.$fc_attrib_r['cache_file_thumb'];
+//							delete_file($thumbFile);
+						}
+					}
+					else
+					{
+						$this->addError('Failed to copy upload file');
+					}
+				}
+				
+			}
+		}
+		
+		if($count == $items_per_page)// still at least one result left
+			return -1; // unfinished
+		else		
+			return TRUE;
+	}
+	
+	function executeStep7($stepPart)
+	{
+		db_query("ALTER TABLE item DROP parent_id");
+		return TRUE;
 	}
 }
 ?>

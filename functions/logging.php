@@ -21,6 +21,17 @@
 include_once("./functions/utils.php");
 include_once("./functions/http.php");
 
+// definitions for use in logging that may not be defined in older version of PHP, but
+// which we want to be able to assume exist.
+if(!defined('__FUNCTION__'))
+	define('__FUNCTION__', 'unknown');
+
+if(!defined('__CLASS__'))
+	define('__CLASS__', 'unknown');
+
+if(!defined('__METHOD__'))
+	define('__METHOD__', 'unknown');
+
 define('OPENDB_LOG_ERROR', 'E');
 define('OPENDB_LOG_WARN', 'W');
 define('OPENDB_LOG_INFO', 'I');

@@ -24,8 +24,6 @@ require_once("./include/begin.inc.php");
 include_once("./functions/install.php");
 include_once("./functions/database.php");
 
-/**
-*/
 if($_OpendbBrowserSniffer->isBrowserSupported())
 {
 	if(is_opendb_configured())

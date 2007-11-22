@@ -340,7 +340,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 				<th>Value</th>
 				<th>Display</th>
 				<th colspan=2>Image</th>
-				<th>No<br />Image</th>
+				<th>No Image</th>
     			<th>Checked</th>
 				</tr>");
 		}
@@ -388,24 +388,21 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 	
 	$block .= "<td class=\"data\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $lookup_r['order_no'], FALSE)."</td>";
 
-	// value
 	if(is_not_empty_array($lookup_r))
 	{
 		$block .= "<td class=\"data\">".get_input_field("value[$row]", NULL, "Value", "readonly", "Y", $lookup_r['value'], FALSE).
 			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">".
 			"</td>";
 	}
-	else // Limit value to 50 characters, because this is really as large as they should get!
+	else
 	{
 		$block .= "<td class=\"data\">".get_input_field("value[$row]", NULL, "Value", "text(10,50)", "Y", NULL, FALSE).
 			"<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"N\">".
 			"</td>";
 	}
 
-	//display
 	$block .= "<td class=\"data\">".get_input_field("display[$row]", NULL, NULL, "text(20,255)", "N", $lookup_r['display'], FALSE)."</td>";
 
-	// Get the theme specific source of the image.
 	if($lookup_r['img'] != 'none')
 		$src = _theme_image_src($lookup_r['img']);
 
@@ -712,10 +709,7 @@ if(is_opendb_valid_session())
 			
 			if(is_exists_attribute_type($HTTP_VARS['s_attribute_type']))
 			{
-				
-				// fetch the current s_field_type
 				$s_field_type = fetch_attribute_type_s_field_type($HTTP_VARS['s_attribute_type']);
-					
 				if($s_field_type == 'ITEM_ID')
 				{
 					if($HTTP_VARS['display_type'] == 'display')

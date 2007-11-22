@@ -27,17 +27,6 @@ $_OPENDB_ERROR_REPORTING = error_reporting(E_ALL & ~E_NOTICE);
 define('__OPENDB_RELEASE__', '1.1.0dev1');
 define('__OPENDB_TITLE__', 'OpenDb');
 
-// definitions for use in logging that may not be defined in older version of PHP, but
-// which we want to be able to assume exist.
-if(!defined('__FUNCTION__'))
-	define('__FUNCTION__', 'unknown');
-
-if(!defined('__CLASS__'))
-	define('__CLASS__', 'unknown');
-
-if(!defined('__METHOD__'))
-	define('__METHOD__', 'unknown');
-
 if(extension_loaded('mysqli'))
 {
 	include_once('./functions/database/mysqli.inc.php');
@@ -120,6 +109,10 @@ $_OpendbBrowserSniffer = new OpenDbBrowserSniffer();
 // if the mysql[i] extension has been loaded, the db_connect function should exist
 if(function_exists('db_connect'))
 {
+	// defaults where no database access		    
+	$_OPENDB_THEME = 'default';
+	$_OPENDB_LANGUAGE = 'ENGLISH';
+		
 	if(is_opendb_configured())
 	{	
 		if(is_db_connected())
@@ -144,10 +137,8 @@ if(function_exists('db_connect'))
 	
 			if(get_opendb_config_var('session_handler', 'enable') === TRUE)
 			{
-				// Include the session handling functions here.
 				require_once("./functions/dbsession.php");
 	
-	            // Attempt to change the ini value if required, but complain if not possible.
 				if(strtolower(ini_get('session.save_handler')) == 'user' || ini_set('session.save_handler', 'user'))
 				{
 					session_set_save_handler('db_session_open',
@@ -166,11 +157,14 @@ if(function_exists('db_connect'))
 			// We want to start the session here, so we can get access to the $_SESSION properly.
 			session_start();
 
-			// this will initiate public access session if applicable.
 			init_public_access_session();
 			
 			//allows specific pages to overide themes
-			if(!is_exists_theme($_OVRD_OPENDB_THEME))
+			if(is_exists_theme($_OVRD_OPENDB_THEME))
+			{
+				$_OPENDB_THEME = $_OVRD_OPENDB_THEME;
+			}
+			else
 			{
 				if(strlen(get_opendb_session_var('user_id'))>0)
 				{
@@ -194,12 +188,12 @@ if(function_exists('db_connect'))
 					}
 				}
 			}
-			else
-			{
-				$_OPENDB_THEME = $_OVRD_OPENDB_THEME;
-			}
 			
-			if(!is_exists_language($_OVRD_OPENDB_LANGUAGE))
+			if(is_exists_language($_OVRD_OPENDB_LANGUAGE))
+			{
+				$_OPENDB_LANGUAGE = $_OVRD_OPENDB_LANGUAGE;
+			}
+			else
 			{
 				if(strlen(get_opendb_session_var('user_id'))>0 && get_opendb_config_var('user_admin', 'user_language_support')!==FALSE)
 				{
@@ -214,26 +208,9 @@ if(function_exists('db_connect'))
 						$_OPENDB_LANGUAGE = fetch_default_language();
 				}
 			}
-			else
-			{
-				$_OPENDB_LANGUAGE = $_OVRD_OPENDB_LANGUAGE;
-			}
-		}//if(is_db_connected())
-		else
-		{
-			// defaults where no database access		    
-	    	$_OPENDB_THEME = 'default';
-		    $_OPENDB_LANGUAGE = 'ENGLISH';
 		}
-	}//if(file_exists("./include/local.config.php"))
-	else
-	{
-		// defaults where no database access		    
-	    $_OPENDB_THEME = 'default';
-		$_OPENDB_LANGUAGE = 'ENGLISH';
 	}
 	
-	// special handling
 	if($HTTP_VARS['mode'] == 'job')
 	{
 		$_OPENDB_THEME = '';

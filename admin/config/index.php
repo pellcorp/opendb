@@ -89,13 +89,6 @@ function get_group_block_input_field($config_group_item_r, $value)
         	return custom_select($fieldname, fetch_instance_attribute_type_rs(), '%s_attribute_type% - %description%', 1, $value, 's_attribute_type');
         	break;
         	
-        case 'guest_userid':
-			$results = fetch_user_rs(array('G'), NULL, 'fullname', 'ASC');
-			if($results)
-	        	return custom_select($fieldname, $results, '%fullname% (%user_id%)', 1, $value, 'user_id');
-			else
-                return "<div class=\"error\">No Guest User(s) Found</div>";
-
         case 'language':
 			return custom_select($fieldname, fetch_language_rs(), '%language%', 1, $value, 'language', NULL, 'default_ind');
 	        break;

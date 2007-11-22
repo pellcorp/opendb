@@ -124,11 +124,6 @@ $argument_types = array(
 							'</table>',
 							'input_type'=>'text(50,100)'),
 
-			'field_mask'=>array('prompt'=>'Mask',
-							'description'=>'Free text formatting encompassing the actual field.  The %field% specifies the '
-											.'location of the field in the mask.',
-							'input_type'=>'text(50,100)'),
-
 			'legalchars'=>array('prompt'=>'Legal Char List',
 							'description'=>'Specify a list of legal characters that can be used for this field. '
 											.'You can specify this as a comma delimited list, or as a range. '
@@ -222,35 +217,35 @@ $input_type_functions = array(
 						'args'=>array(),
 						'description'=>'A readonly field'),
 			'text'=>array(
-						'args'=>array('length[Y]','maxlength','field_mask'),
+						'args'=>array('length[Y]','maxlength'),
 						'description'=>'A text field'),
 			'textarea'=>array(
-						'args'=>array('cols[Y]','rows[Y]','field_mask'),
+						'args'=>array('cols[Y]','rows[Y]'),
 						'description'=>'A textarea field'),
 
 			'htmlarea'=>array(
-						'args'=>array('cols[Y]','rows[Y]','field_mask'),
+						'args'=>array('cols[Y]','rows[Y]'),
 						'description'=>'A HTML textarea field'),
 
 			'email'=>array(
-						'args'=>array('length[Y]','maxlength','field_mask'),
+						'args'=>array('length[Y]','maxlength'),
 						'description'=>'A text field with email format validation'),
 
 			'filtered'=>array(
-						'args'=>array('length[Y]','maxlength','legalchars[Y]','field_mask'),
+						'args'=>array('length[Y]','maxlength','legalchars[Y]'),
 						'description'=>'A text field with validation controlled by legalchars parameter.'),
 
 			'datetime'=>array(
-						'args'=>array('input_datetime_mask[Y]', 'auto_datetime', 'field_mask'),
+						'args'=>array('input_datetime_mask[Y]', 'auto_datetime'),
 						'description'=>'A datetime field, which much match the Datetime Mask exactly.'.
 						'Must be used with the matching \'datetime\' display type widget.'),
 
 			'number'=>array(
-						'args'=>array('length[Y]','field_mask'),
+						'args'=>array('length[Y]'),
 						'description'=>'A text field with numeric validation'),
 
 			'checkbox'=>array(
-						'args'=>array('checked-val[Y]','unchecked-val','field_mask'),
+						'args'=>array('checked-val[Y]','unchecked-val'),
 						'description'=>'A two state checkbox.  This differs from normal check boxes, '
 										.'because this one can send a value to OpenDb whether checked '
 									 	.'or not.'),

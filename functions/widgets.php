@@ -203,57 +203,47 @@ function get_item_input_field(
 	{
 		return hidden_field($fieldname, $value);
 	}
-	else if($item_attribute_type_r['input_type'] == 'readonly')// arg[0] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'readonly')
 	{
-		$field_mask = $widget['args']['0'];
 		$field = readonly_field($fieldname, $value);
 	}
-	else if($item_attribute_type_r['input_type'] == 'textarea' || $item_attribute_type_r['input_type'] == 'htmlarea') // arg[0] = rows, arg[1] = cols, arg[2] = length, arg[3] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'textarea' || $item_attribute_type_r['input_type'] == 'htmlarea') // arg[0] = rows, arg[1] = cols, arg[2] = length
 	{
-        $field_mask = $widget['args']['3'];
 		$field = textarea_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['widget']['2'], $compulsory_ind, $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'text') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'text') // arg[0] = length of field, arg[1] = maxlength of field
 	{
-        $field_mask = $widget['args']['2'];
         if($item_attribute_type_r['multi_attribute_ind'] == 'Y')
         	$field = multivalue_text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
         else
 			$field = text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'password') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'password') // arg[0] = length of field, arg[1] = maxlength of field
 	{
-        $field_mask = $widget['args']['2'];
 		$field = password_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'email') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'email') // arg[0] = length of field, arg[1] = maxlength of field
 	{
-        $field_mask = $widget['args']['2'];
 		$field = email_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'filtered') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = legalChars, arg[3] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'filtered') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = legalChars
 	{
-        $field_mask = $widget['args']['3'];
 		$field = filtered_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $compulsory_ind, $value, $onchange_event, $disabled);
     }
-	else if($item_attribute_type_r['input_type'] == 'datetime') // arg[0] = datetime mask, arg[1] = auto_datetime, arg[2] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'datetime') // arg[0] = datetime mask, arg[1] = auto_datetime
 	{
-        $field_mask = $widget['args']['2'];
 		$field = datetime_field($fieldname, $prompt, ifempty($widget['args']['0'],'DD/MM/YYYY'), $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
     }
-	else if($item_attribute_type_r['input_type'] == 'number') // arg[0] = length of field, arg[0] = maxlength of field, arg[1] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'number') // arg[0] = length of field, arg[0] = maxlength of field
 	{
-        $field_mask = $widget['args']['1'];
 		$field = number_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['0'], $compulsory_ind, $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'simple_checkbox') // arg[0] = checked, arg[1] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'simple_checkbox') // arg[0] = checked
 	{
-        $field_mask = $widget['args']['1'];
 		$field = checkbox_field($fieldname, $prompt, strcasecmp(trim($widget['args']['0']), 'CHECKED')===0, $value, $onchange_event, $disabled);
 	}
-	else if($item_attribute_type_r['input_type'] == 'checkbox') // arg[0] = checked, arg[1] = unchecked, arg[2] = field_mask
+	else if($item_attribute_type_r['input_type'] == 'checkbox') // arg[0] = checked, arg[1] = unchecked
 	{
-        $field_mask = $widget['args']['2'];
 		$field = enhanced_checkbox_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $value, $onchange_event, $disabled);
 	}
 	else if($item_attribute_type_r['input_type'] == 'checkbox_grid')
@@ -304,7 +294,7 @@ function get_item_input_field(
 	}
 	
 	if($dowrap)
-   		return format_item_data_field($item_attribute_type_r, $field, $prompt_mask, $field_mask);
+   		return format_item_data_field($item_attribute_type_r, $field, $prompt_mask);
    	else
    		return $field;
 }
@@ -1583,7 +1573,7 @@ function format_field($prompt, $field, $prompt_mask=NULL, $field_mask = NULL)
 	return "\n<tr>".format_prompt($prompt, $prompt_mask).format_data($field, $field_mask)."</tr>";
 }
 
-function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL, $field_mask=NULL)
+function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL)
 {
 	$prompt = $attribute_type_r['prompt'];
 	if(strlen($prompt_mask)>0 && strpos($prompt_mask, "%prompt%")!==FALSE)
@@ -1597,9 +1587,6 @@ function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL, $f
 			
 		$prompt .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'));
 	}
-	
-	if(strlen($field_mask)>0 && strpos($field_mask,"%field%")!==FALSE)
-		$field = str_replace("%field%", $field, $field_mask);
 	
 	$fieldid = strtolower(str_replace('_', '-', $attribute_type_r['s_attribute_type']).'-'.$attribute_type_r['order_no']);
 	$fieldclass = strtolower(str_replace('_', NULL, $attribute_type_r['s_attribute_type']));

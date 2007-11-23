@@ -391,8 +391,8 @@ function file_cache_get_cache_type_directory($cache_type='HTTP')
 		$dir = trim($dir);
 		if($dir!='.' && $dir!='..' && is_dir($dir))
 		{
-			if(!ends_with($dir, '/'))
-				$dir .= '/';
+			if(ends_with($dir, '/'))
+				$dir = substr($dir, 0, -1);
 				
 			return $dir;
 		}

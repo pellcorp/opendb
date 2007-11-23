@@ -210,7 +210,7 @@ if(is_site_enabled())
 				echo("</div>");
 				
 				echo("<div class=\"$otherTabsClass\" id=\"instance_info\">");
-				echo(get_instance_info_block($item_r));
+				echo(get_instance_info_block($item_r, $HTTP_VARS));
 				echo get_related_items_block($item_r, $HTTP_VARS);
 				echo("</div>");
 			

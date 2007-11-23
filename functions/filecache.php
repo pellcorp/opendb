@@ -34,7 +34,7 @@ include_once("./functions/item_attribute.php");
 function get_item_input_file_upload_directory()
 {
 	$uploadDir = OPENDB_ITEM_UPLOAD_DIRECTORY;
-	if(is_dir($uploadDir))
+	if($uploadDir!='.' && $uploadDir!='..' && is_dir($uploadDir))
 	{
 		if(ends_with($uploadDir, '/'))
 			$uploadDir = substr($uploadDir, 0, -1);
@@ -43,7 +43,49 @@ function get_item_input_file_upload_directory()
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Item Input Upload Directory does not exist', array($uploadDir));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Item Input File Upload Directory', array($uploadDir));
+		return FALSE;
+	}
+}
+
+function file_cache_get_cache_type_directory($cache_type='HTTP')
+{
+	if($cache_type == 'HTTP')
+		$cacheDir = OPENDB_HTTP_CACHE_DIRECTORY;
+	else //if($cache_type == 'ITEM')
+		$cacheDir = OPENDB_ITEM_CACHE_DIRECTORY;
+	
+	if($cacheDir!='.' && $cacheDir!='..' && is_dir($cacheDir))
+	{
+		if(ends_with($cacheDir, '/'))
+			$cacheDir = substr($cacheDir, 0, -1);
+			
+		return $cacheDir;	
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Cache directory', array($cache_type, $cacheDir));
+		return FALSE;
+	}
+}
+
+function file_cache_get_config($cache_type='HTTP')
+{
+	if($cache_type == 'HTTP')
+	{
+		$config = get_opendb_config_var('http.cache');
+		$config['directory'] = file_cache_get_cache_type_directory($cache_type);
+		return $config;
+	}
+	else if($cache_type == 'ITEM')
+	{
+		$config = get_opendb_config_var('http.item.cache');
+		$config['directory'] = file_cache_get_cache_type_directory($cache_type);
+		return $config;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid cache type specified', array($cache_type));
 		return FALSE;
 	}
 }
@@ -74,6 +116,18 @@ function get_item_input_file_upload_url($filename)
 	
 	//else
 	return FALSE;
+}
+
+function filecache_generate_cache_filename($file_cache_r, $thumbnail = FALSE)
+{
+	$prefix = strtolower($file_cache_r['cache_type']);
+	if($thumbnail)
+		$prefix .= 'Thumb';
+		
+	$randomNum = $file_cache_r['sequence_number'].'_'.generate_random_num();
+	$extension = $file_cache_r['extension'];
+	
+	return $prefix.$sequence_number.'_'.$randomNum.'.'.$extension;
 }
 
 function save_uploaded_file($tmpFile, $name)
@@ -112,60 +166,6 @@ function save_uploaded_file($tmpFile, $name)
 	}
 	else
 	{
-		return FALSE;
-	}
-}
-
-function filecache_get_cache_file($file_cache_r, $thumbnail = FALSE)
-{
-	$prefix = strtolower($file_cache_r['cache_type']);
-	if($thumbnail)
-		$prefix .= 'Thumb';
-		
-	$randomNum = $file_cache_r['sequence_number'].'_'.generate_random_num();
-	$extension = $file_cache_r['extension'];
-	
-	return $prefix.$sequence_number.'_'.$randomNum.'.'.$extension;
-}
-
-function filecache_get_cache_directory($cache_type='HTTP')
-{
-	if($cache_type == 'HTTP')
-		$cacheDir = OPENDB_HTTP_CACHE_DIRECTORY;
-	else //if($cache_type == 'ITEM')
-		$cacheDir = OPENDB_ITEM_CACHE_DIRECTORY;
-	
-	if(is_dir($cacheDir))
-	{
-		if(ends_with($cacheDir, '/'))
-			$cacheDir = substr($cacheDir, 0, -1);
-			
-		return $cacheDir;	
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Cache directory', array($cache_type, $cacheDir));
-		return FALSE;
-	}
-}
-
-function file_cache_get_config($cache_type='HTTP')
-{
-	if($cache_type == 'HTTP')
-	{
-		$config = get_opendb_config_var('http.cache');
-		$config['directory'] = filecache_get_cache_directory($cache_type);
-		return $config;
-	}
-	else if($cache_type == 'ITEM')
-	{
-		$config = get_opendb_config_var('http.item.cache');
-		$config['directory'] = filecache_get_cache_directory($cache_type);
-		return $config;
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid cache type specified', array($cache_type));
 		return FALSE;
 	}
 }
@@ -379,27 +379,6 @@ function file_cache_save_thumbnail_file($file_cache_r, &$errors)
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Thumbnails not supported by image file type', array($file_cache_r, $file_type_r));
 		return FALSE;
 	}
-}
-
-function file_cache_get_cache_type_directory($cache_type='HTTP')
-{
-	$cache_config_r = file_cache_get_config($cache_type);
-	if(is_array($cache_config_r))
-	{
-		$dir = $cache_config_r['directory'];
-
-		$dir = trim($dir);
-		if($dir!='.' && $dir!='..' && is_dir($dir))
-		{
-			if(ends_with($dir, '/'))
-				$dir = substr($dir, 0, -1);
-				
-			return $dir;
-		}
-	}
-
-	opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache directory not accessible or configured', array($cache_type));
-	return FALSE;
 }
 
 function file_cache_get_cache_file($file_cache_r)
@@ -739,11 +718,12 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 	$cache_config_r = file_cache_get_config($cache_type);
 	if(is_array($cache_config_r) && $cache_config_r['enable']!==FALSE)
 	{
-		$directory = file_cache_get_cache_type_directory($cache_type);
+		$directory = $cache_config_r['directory'];
 		if($directory===FALSE)
 		{
 			return FALSE;
 		}
+		
 		// we need to know whether we are overwriting existing URL or not
 		$file_cache_r = fetch_url_file_cache_r($url, $cache_type, INCLUDE_EXPIRED);
 		if(is_array($file_cache_r))
@@ -846,14 +826,14 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 
 		if($file_cache_r['cache_file'] == NULL)
 		{
-			$file_cache_r['cache_file'] = filecache_get_cache_file($file_cache_r);
+			$file_cache_r['cache_file'] = filecache_generate_cache_filename($file_cache_r);
 		}
 		
 		if($thumbnail_support)
 		{
 			if(strlen($file_cache_r['cache_file_thumb']) == 0)
 			{
-				$file_cache_r['cache_file_thumb'] = filecache_get_cache_file($file_cache_r, TRUE);
+				$file_cache_r['cache_file_thumb'] = filecache_generate_cache_filename($file_cache_r, TRUE);
 			}
 		}
 		

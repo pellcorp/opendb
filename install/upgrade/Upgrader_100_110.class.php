@@ -132,13 +132,29 @@ class Upgrader_100_110 extends OpenDbUpgrader
 			return FALSE;
 		}
 		
-		$query = "SELECT fc.sequence_number, fc.cache_file, fc.cache_file_thumb, ia.item_id, ia.instance_no, ia.s_attribute_type, ia.order_no, ia.attribute_val, ia.attribute_no
+		$query = "SELECT fc.sequence_number, 
+						fc.cache_type,
+						fc.cache_date,
+						fc.expire_date,
+						fc.url,
+						fc.location,
+						fc.upload_file_ind,
+						fc.content_type,
+						fc.content_length,
+						fc.cache_file, 
+						fc.cache_file_thumb, 
+						ia.item_id, 
+						ia.instance_no, 
+						ia.s_attribute_type, 
+						ia.order_no, 
+						ia.attribute_val, 
+						ia.attribute_no
 						FROM file_cache fc,
 						item_attribute ia
 						WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND
 						fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val )";
 
-		$items_per_page = 100;
+		$items_per_page = 50;
 		$start_index = $stepPart > 0 ? ($stepPart * $items_per_page) : 0;
 		$query .= ' LIMIT ' .$start_index. ', ' .($items_per_page + 1);
 		$count = 0;
@@ -170,8 +186,6 @@ class Upgrader_100_110 extends OpenDbUpgrader
 					// todo - how to get unique filename
 					$filename = $fc_attrib_r['attribute_val'];
 					
-					$uploadFile = $uploadDir.'/'.$filename;
-					
 					if($filename != $fc_attrib_r['attribute_val'])
 					{
 						if(!update_item_attribute($fc_attrib_r['item_id'],
@@ -186,27 +200,20 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						}
 					}				
 					
+					$uploadFile = $uploadDir.'/'.$filename;
 					if(copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
 					{
-//						db_query("DELETE FROM file_cache WHERE sequence_number = ".$fc_attrib_r['sequence_number']);
-						
-						// delete uploaded cache file
-//						delete_file($cacheFile);
-						
-						// lets try to cleanup the thumbnail as well - we can let the item cache regenerate
-						// upload image thumbnails rather than trying to be clever.
-						if(strlen($fc_attrib_r['cache_file_thumb'])>0)
-						{
-							$thumbFile = $directory.'/'.$fc_attrib_r['cache_file_thumb'];
-//							delete_file($thumbFile);
-						}
+						//delete_file_cache($fc_attrib_r);
 					}
 					else
 					{
 						$this->addError('Failed to copy upload file');
 					}
 				}
-				
+				else
+				{
+					//delete_file_cache($fc_attrib_r);
+				}
 			}
 		}
 		

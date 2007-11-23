@@ -829,14 +829,6 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 			$file_cache_r['cache_file'] = filecache_generate_cache_filename($file_cache_r);
 		}
 		
-		if($thumbnail_support)
-		{
-			if(strlen($file_cache_r['cache_file_thumb']) == 0)
-			{
-				$file_cache_r['cache_file_thumb'] = filecache_generate_cache_filename($file_cache_r, TRUE);
-			}
-		}
-		
 		if($content != NULL)
 		{
 			$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
@@ -851,13 +843,25 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 		
 		if($thumbnail_support)
 		{
-			file_cache_save_thumbnail_file($file_cache_r, $errors);
+			if(strlen($file_cache_r['cache_file_thumb']) == 0)
+			{
+				$file_cache_r['cache_file_thumb'] = filecache_generate_cache_filename($file_cache_r, TRUE);
+			}
 		}
-
-		$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
+		
+		if($file_cache_r['upload_file_ind'] != 'Y')
+			$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
+		else
+			$expire_date = NULL; // do not expire uploaded file records.
+			
 		if(!update_file_cache($file_cache_r['sequence_number'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']))
 		{
 			return FALSE;
+		}
+		
+		if($thumbnail_support)
+		{
+			file_cache_save_thumbnail_file($file_cache_r, $errors);
 		}
 
 		return TRUE;

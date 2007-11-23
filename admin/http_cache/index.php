@@ -100,10 +100,10 @@ if (is_opendb_valid_session())
 					$listingObject->startRow();
 					if(file_cache_get_cache_file($file_cache_r))
 					{
-						$hrefUrl = "url.php?url=".urlencode($file_cache_r['url'])."&cache_type=${HTTP_VARS['cache_type']}";
+						$popupUrl = "url.php?url=".urlencode($file_cache_r['url'])."&cache_type=${HTTP_VARS['cache_type']}";
 						
 						$listingObject->addColumn(
-							"<a href=\"".$file_cache_r['url']."\" onclick=\"popup('$hrefUrl'); return false;\" target=\"_new\">".
+							"<a href=\"".$file_cache_r['url']."\" onclick=\"popup('$popupUrl'); return false;\" target=\"_new\">".
 							get_overflow_tooltip_column($file_cache_r['url'], 100).
 							"</a>");
 					}

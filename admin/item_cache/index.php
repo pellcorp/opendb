@@ -130,10 +130,18 @@ if (is_opendb_valid_session())
 					
 					if(file_cache_get_cache_file($file_cache_r))
 					{
-						$hrefUrl = "url.php?url=".urlencode($file_cache_r['url']);
+						$popupUrl = "url.php?url=".urlencode($file_cache_r['url']);
+						$hrefUrl = $file_cache_r['url'];
+						
+						if(!is_url_absolute($file_cache_r['url']))
+						{
+							$url = get_item_input_file_upload_url($file_cache_r['url']);
+							if($url!==FALSE)
+								$hrefUrl = $url;
+						}
 						
 						$listingObject->addColumn(
-							"<a href=\"".$file_cache_r['url']."\" onclick=\"popup('$hrefUrl'); return false;\" target=\"_new\">".
+							"<a href=\"".$hrefUrl."\" onclick=\"popup('$popupUrl'); return false;\" target=\"_new\">".
 							get_overflow_tooltip_column($file_cache_r['url'], 100).
 							"</a>");
 					}

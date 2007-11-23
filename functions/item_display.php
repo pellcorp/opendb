@@ -162,7 +162,7 @@ function get_item_review_block($item_r)
 	return $buffer;
 }
 
-function get_instance_info_block($item_r)
+function get_instance_info_block($item_r, $HTTP_VARS)
 {
 	$buffer = '<div id="instanceInfo">';
 	

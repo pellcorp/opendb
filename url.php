@@ -82,16 +82,15 @@ if(is_site_enabled())
 				{
 					if($HTTP_VARS['cache_type'] == 'ITEM')
 					{
-						if(ifempty($HTTP_VARS['op'], 'fullsize') == 'fullsize')
-						{
-							$file = file_cache_open_file($file_cache_r);
-						}
-						else
+						if(ifempty($HTTP_VARS['op'], 'fullsize') == 'thumbnail')
 						{
 							$file = file_cache_open_thumbnail_file($file_cache_r);
-							
-							// fallback on big image
-							if($file === FALSE)
+						}
+						
+						// fallback on big image
+						if(!$file)
+						{
+							if($file_cache_r['upload_file_ind'] != 'Y')
 							{
 								$file = file_cache_open_file($file_cache_r);
 							}

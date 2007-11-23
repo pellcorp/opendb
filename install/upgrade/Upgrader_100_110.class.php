@@ -128,7 +128,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		$uploadDir = get_item_input_file_upload_directory();
 		if(!is_writable($uploadDir))
 		{
-			$this->addError('Upload directory is not writable');
+			$this->addError('Upload directory is not writable', $uploadDir);
 			return FALSE;
 		}
 		
@@ -155,7 +155,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val )";
 
 		$items_per_page = 50;
-		$start_index = $stepPart > 0 ? ($stepPart * $items_per_page) : 0;
+		$start_index = 0; //$stepPart > 0 ? ($stepPart * $items_per_page) : 0;
 		$query .= ' LIMIT ' .$start_index. ', ' .($items_per_page + 1);
 		$count = 0;
 		
@@ -169,7 +169,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 				{
 					$fc_attrib_rs[] = $fc_attrib_r;
 					$count++;
-				}	
+				}
 			}
 			db_free_result($results);
 		}
@@ -179,6 +179,9 @@ class Upgrader_100_110 extends OpenDbUpgrader
 			$directory = filecache_get_cache_directory('ITEM');
 			while(list(,$fc_attrib_r) = each($fc_attrib_rs))
 			{
+				// fake it, so that the delete_file_cache function goes to the right spot.
+				$fc_attrib_r['upload_file_ind'] = 'N';
+				
 				$cacheFile = $directory.'/'.$fc_attrib_r['cache_file'];
 				
 				if(file_exists($cacheFile))
@@ -196,23 +199,30 @@ class Upgrader_100_110 extends OpenDbUpgrader
 										NULL,
 										$filename))
 						{
-							$this->addError('Failed to update attribute');
+							$this->addError('Failed to update attribute', 
+											'item_id='.$fc_attrib_r['item_id'].
+											'; s_attribute_type='.$fc_attrib_r['s_attribute_type'].
+											'; order_no='.$fc_attrib_r['order_no'].
+											'; $filename='.$fc_attrib_r['$filename']
+										);
 						}
 					}				
 					
 					$uploadFile = $uploadDir.'/'.$filename;
 					if(copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
 					{
-						//delete_file_cache($fc_attrib_r);
+						delete_file_cache($fc_attrib_r);
 					}
 					else
 					{
-						$this->addError('Failed to copy upload file');
+						$this->addError('Failed to copy upload file', 
+									'cacheFile='.$cacheFile.
+									'; uploadFile='.$uploadFile);
 					}
 				}
 				else
 				{
-					//delete_file_cache($fc_attrib_r);
+					delete_file_cache($fc_attrib_r);
 				}
 			}
 		}

@@ -72,7 +72,8 @@ function is_site_public_access()
 
 function is_site_public_access_page($page)
 {
-	if($page == 'index' || $page == 'login')
+	$default_allowed_pages = array('index', 'login', 'url');
+	if(in_array($page, $default_allowed_pages))
 	{
 		return TRUE;
 	}

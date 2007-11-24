@@ -262,8 +262,6 @@ function perform_newpassword($HTTP_VARS, &$errors)
 	}
 }
 
-// For a valid session, only refresh of page or change-user is allowed
-// A login operation is allowed, where public access is enabled
 if(is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] != 'newpassword')
 {
 	if(strlen($HTTP_VARS['redirect'])>0)// Redirect to requested page, as already logged in.

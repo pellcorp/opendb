@@ -150,16 +150,20 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 
 DELETE FROM s_config_group_item WHERE group_id = 'site.public_access' AND id IN ('user_id');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'rss', 2, 'RSS Feeds', 'Enable rss feeds access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'listings', 3, 'Item Listings', 'Enable item listings access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'item_display', 4, 'Item Display', 'Enable item display access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'stats', 5, 'Statistics', 'Enable statistics access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'welcome', 2, 'Welcome', 'Enable welcome and last items list access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'rss', 3, 'RSS Feeds', 'Enable rss feeds access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'listings', 4, 'Item Listings', 'Enable item listings access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'item_display', 5, 'Item Display', 'Enable item display access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'stats', 6, 'Statistics', 'Enable statistics access', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'url', 7, 'File Cache URLs', 'Enable url.php to stream cached images / thumbnails', 'boolean');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'rss', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'listings', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_display', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_review', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'stats', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'welcome', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'url', 'TRUE');
 
 # move announcements datetime mask into login.announcements section which is only place its really used.
 UPDATE s_config_group_item SET group_id = 'login.announcements', order_no = 3 WHERE group_id = 'announcements' AND id = 'datetime_mask';

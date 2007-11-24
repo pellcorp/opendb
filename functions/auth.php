@@ -72,18 +72,10 @@ function is_site_public_access()
 
 function is_site_public_access_page($page)
 {
-	$default_allowed_pages = array('index', 'login', 'url');
-	if(in_array($page, $default_allowed_pages))
+	$site_plugin_access_r = get_opendb_config_var('site.public_access');
+	if($page == 'index' || $site_plugin_access_r[$page]!==FALSE)
 	{
 		return TRUE;
-	}
-	
-	$site_plugin_access_r = get_opendb_config_var('site.public_access');
-	
-	$public_access_allowed_pages_r = array('rss', 'listings', 'item_display', 'item_review', 'stats');
-	if(in_array($page, $public_access_allowed_pages_r))
-	{
-		return ($site_plugin_access_r[$page]!==FALSE);
 	}
 	
 	//else

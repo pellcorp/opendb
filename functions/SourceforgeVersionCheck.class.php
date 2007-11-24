@@ -18,15 +18,10 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 include_once("./functions/database.php");
-include_once("./functions/logging.php");
 include_once("./functions/fileutils.php");
 include_once("./functions/utils.php");
 include_once("./functions/OpenDbSnoopy.class.inc");
 
-/**
- * 
- *
- */
 class SourceforgeVersionCheck
 {
 	var $versionString;
@@ -68,6 +63,10 @@ class SourceforgeVersionCheck
 	
 	function getVersion() {
 		return $this->versionString;
+	}
+	
+	function isUpdatedVersion($currentVersion) {
+		return opendb_version_compare($this->getVersion(), $currentVersion, '>');
 	}
 }
 ?>

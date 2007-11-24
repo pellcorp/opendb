@@ -18,6 +18,8 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+chdir('../../');
+
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 

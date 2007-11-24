@@ -36,6 +36,7 @@ include_once("./functions/status_type.php");
 include_once("./functions/borrowed_item.php");
 include_once("./functions/whatsnew.php");
 include_once("./functions/announcement.php");
+include_once("./functions/SourceforgeVersionCheck.class.php");
 
 function get_lastitems_list_blocks_r($update_on, $user_id)
 {
@@ -117,9 +118,20 @@ function get_admin_announcements_rs()
 			link=>"admin.php?type=s_site_plugin",
 			link_text=>$admin_type_r['link'].' Admin Tool');
 	}
-        
+    
+	/*$sfVersionCheck = new SourceforgeVersionCheck();
+	if($sfVersionCheck->isUpdatedVersion(get_opendb_version()))
+	{
+		$announcements_rs[] = array(
+			heading=>get_opendb_lang_var(''),
+			message=>get_opendb_lang_var(''),
+			link=>'http://opendb.iamvegan.net/wiki/index.php?title=Releases',
+			link_text=>get_opendb_lang_var(''));
+	}*/
+	
 	return $announcements_rs;
 }
+
 
 function get_announcements_block()
 {

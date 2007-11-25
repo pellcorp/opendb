@@ -483,11 +483,6 @@ if(is_site_enabled())
 				echo("<p class=\"error\">".get_opendb_lang_var('borrow_not_supported')."</p>");
 				echo _theme_footer();
 			}
-		}//no non-admins allowed allowed!
-		else if(is_site_public_access())
-		{
-			// provide login at this point
-			redirect_login($PHP_SELF, $HTTP_VARS);
 		}
 		else
 		{

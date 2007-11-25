@@ -44,7 +44,7 @@ include_once("./functions/site_plugin.php");
 
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if (is_opendb_valid_session() || is_site_public_access())
 	{
 		if(is_numeric($HTTP_VARS['instance_no']))
 			$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);

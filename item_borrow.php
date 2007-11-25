@@ -1514,12 +1514,6 @@ if(is_site_enabled())
 			
 				echo format_footer_links($footer_links_r);
 				echo _theme_footer();
-				
-			}//no guests allowed!
-			else if(is_site_public_access())
-			{
-				// provide login at this point
-				redirect_login($PHP_SELF, $HTTP_VARS);
 			}
 			else
 			{

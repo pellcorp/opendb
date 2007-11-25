@@ -49,7 +49,7 @@ include_once("./functions/scripts.php");
  */
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if (is_opendb_valid_session() || is_site_public_access())
 	{
 		$HTTP_VARS['op'] = ifempty($HTTP_VARS['op'], 'marquee');
 		

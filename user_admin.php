@@ -1748,11 +1748,6 @@ if(is_site_enabled())
 			echo format_footer_links($footer_links_r);
 			echo _theme_footer();
 		}
-		else if(is_site_public_access())
-		{
-			// provide login at this point
-			redirect_login($PHP_SELF, $HTTP_VARS);
-		}
 		else //not an administrator or own user.
 		{
 			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));

@@ -145,7 +145,7 @@ function encode_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategori
 //
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if (is_opendb_valid_session() || is_site_public_access())
 	{
 		$page_title = get_opendb_lang_var('advanced_search');
 		echo _theme_header($page_title);

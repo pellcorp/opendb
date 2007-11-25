@@ -56,6 +56,8 @@ function is_site_public_access()
 
 	if(is_opendb_configured())
 	{
+		// TODO - there is a minor bug where a login session has timed out, 
+		// it should be treated as invalid, and public access should kick in!
 		if(strlen(get_opendb_session_var('user_id'))==0)
 		{
 			$site_plugin_access_r = get_opendb_config_var('site.public_access');
@@ -81,6 +83,7 @@ function is_site_public_access_page($page)
 	//else
 	return FALSE;
 }
+
 /**
 	If currently logged in user is an Administrator, then even if site is explicitly
 	disabled, the admin will still be able to use the site.  All users will be able
@@ -114,17 +117,13 @@ function is_opendb_valid_session()
 {
     if(is_opendb_configured())
     {
-		$site_r = get_opendb_config_var('site');
-
-		if(is_site_public_access())
-		{
-			return TRUE;
-		}
-		else if(get_opendb_session_var('login_time')!=NULL &&
+		if(get_opendb_session_var('login_time')!=NULL &&
 				get_opendb_session_var('last_access_time')!=NULL &&
 				get_opendb_session_var('user_id')!=NULL &&
 				get_opendb_session_var('hash_check')!=NULL)
 		{
+			$site_r = get_opendb_config_var('site');
+			
 			// A valid session as far as the variables go at least.
 			if($site_r['security_hash'] == get_opendb_session_var('hash_check'))
 			{

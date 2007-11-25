@@ -66,7 +66,7 @@ function output_cache_file($cache_type, $url)
 
 if(is_site_enabled())
 {
-	if(is_opendb_valid_session())
+	if(is_opendb_valid_session() || is_site_public_access())
 	{
 		// The most basic required parameter for this script is the 'url' parameter
 		if(strlen($HTTP_VARS['url'])>0)

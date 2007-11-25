@@ -909,7 +909,7 @@ function get_search_query_matrix($HTTP_VARS)
 
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if (is_opendb_valid_session() || is_site_public_access())
 	{
 		// validate specified owner_id, if not an owner, unset, so we pretend it was not even specified.
 		if(strlen($HTTP_VARS['owner_id'])>0 && is_user_allowed_to_own($HTTP_VARS['owner_id']))

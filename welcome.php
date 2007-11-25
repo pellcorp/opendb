@@ -240,7 +240,7 @@ function display_last_login_block($userid, $usertype, $lastvisit)
 
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if (is_opendb_valid_session() || is_site_public_access())
 	{
 	   	echo _theme_header(get_opendb_lang_var('login'));
 	

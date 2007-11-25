@@ -32,7 +32,7 @@ if($_OpendbBrowserSniffer->isBrowserSupported())
 		{
 			if(get_opendb_config_var('site', 'upgrade_check')===FALSE || check_opendb_version())
 			{
-				if(is_opendb_valid_session())
+				if(is_opendb_valid_session() || is_site_public_access())
 				{
 					http_redirect('welcome.php');
 				}

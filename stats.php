@@ -247,7 +247,7 @@ function do_stats_graph($HTTP_VARS)
 
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if (is_opendb_valid_session() || is_site_public_access())
 	{
 		if($HTTP_VARS['op'] == 'graph')
 		{

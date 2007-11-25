@@ -705,11 +705,6 @@ if(is_site_enabled())
 				echo _theme_footer();
 			}
 		}
-		else if(is_site_public_access())
-		{
-			// provide login at this point
-			redirect_login($PHP_SELF, $HTTP_VARS);
-		}
 		else//no guests or borrowers allowed!
 		{
 			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));

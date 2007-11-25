@@ -54,20 +54,16 @@ function is_site_public_access()
 {
 	global $PHP_SELF;
 
-	if(is_opendb_configured())
+	if(is_opendb_configured() && !is_opendb_valid_session())
 	{
-		// TODO - there is a minor bug where a login session has timed out, 
-		// it should be treated as invalid, and public access should kick in!
-		if(strlen(get_opendb_session_var('user_id'))==0)
+		$site_plugin_access_r = get_opendb_config_var('site.public_access');
+		if($site_plugin_access_r['enable'] === TRUE)
 		{
-			$site_plugin_access_r = get_opendb_config_var('site.public_access');
-			if($site_plugin_access_r['enable'] === TRUE)
-			{
-				$page = basename($PHP_SELF, '.php');
-				return is_site_public_access_page($page);
-			}
+			$page = basename($PHP_SELF, '.php');
+			return is_site_public_access_page($page);
 		}
 	}
+	
 	//else
     return FALSE;
 }

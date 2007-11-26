@@ -32,6 +32,8 @@ include_once("./functions/parseutils.php");
 include_once("./functions/widgets.php");
 include_once("./functions/admin.php");
 
+define('OPENDB_ADMIN_TOOLS', 'true');
+
 if(is_site_enabled())
 {
 	if(is_opendb_valid_session())

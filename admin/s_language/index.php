@@ -18,6 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./functions/install.php");
 
 function generate_language_sql($language, $options = NULL)
@@ -386,150 +391,147 @@ function update_lang_vars($HTTP_VARS)
 	}
 }
 
-if(is_opendb_admin_tools())
+@set_time_limit(600);
+
+if ($HTTP_VARS['op'] == 'sql' && is_exists_language($HTTP_VARS['language']))
 {
-	@set_time_limit(600);
-
-	if ($HTTP_VARS['op'] == 'sql' && is_exists_language($HTTP_VARS['language']))
+	header("Cache-control: no-store");
+	header("Pragma: no-store");
+	header("Expires: 0");
+	header("Content-disposition: attachment; filename=".strtolower($HTTP_VARS['language']).".sql");
+	header("Content-type: text/plain");
+		
+	$sqlfile = generate_language_sql($HTTP_VARS['language'], $HTTP_VARS['include_default'] == 'Y'?OPENDB_LANG_INCLUDE_DEFAULT:NULL);
+	header("Content-Length: ".strlen($sqlfile));
+	echo($sqlfile);
+}
+else if($HTTP_VARS['op'] == 'installsql')
+{
+	execute_sql_install($ADMIN_TYPE, $HTTP_VARS['sqlfile'], $errors);
+	$HTTP_VARS['op'] = NULL;
+}
+else if($HTTP_VARS['op'] == 'update-langvars')
+{
+	if(is_exists_language($HTTP_VARS['language']))
 	{
-		header("Cache-control: no-store");
-		header("Pragma: no-store");
-		header("Expires: 0");
-		header("Content-disposition: attachment; filename=".strtolower($HTTP_VARS['language']).".sql");
-		header("Content-type: text/plain");
+		update_lang_vars($HTTP_VARS);
 			
-		$sqlfile = generate_language_sql($HTTP_VARS['language'], $HTTP_VARS['include_default'] == 'Y'?OPENDB_LANG_INCLUDE_DEFAULT:NULL);
-		header("Content-Length: ".strlen($sqlfile));
-		echo($sqlfile);
+		$HTTP_VARS['op'] = 'edit-langvars';
 	}
-	else if($HTTP_VARS['op'] == 'installsql')
+	else
 	{
-		execute_sql_install($ADMIN_TYPE, $HTTP_VARS['sqlfile'], $errors);
-		$HTTP_VARS['op'] = NULL;
+		echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
 	}
-	else if($HTTP_VARS['op'] == 'update-langvars')
+}
+else if($HTTP_VARS['op'] == 'update-tables')
+{
+	if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
 	{
-		if(is_exists_language($HTTP_VARS['language']))
+		update_system_table_lang_vars($HTTP_VARS);
+			
+		$HTTP_VARS['op'] = 'edit-tables';
+	}
+	else
+	{
+		echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
+	}
+}
+else if($HTTP_VARS['op'] == 'delete')
+{
+	if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
+	{
+		if($HTTP_VARS['confirmed'] == 'false')
 		{
-			update_lang_vars($HTTP_VARS);
+			$HTTP_VARS['op'] = '';
+		}
+		else if($HTTP_VARS['confirmed'] != 'true')
+		{
+			echo("\n<h3>Delete Language</h3>");
 				
-			$HTTP_VARS['op'] = 'edit-langvars';
+			echo(get_op_confirm_form($PHP_SELF,
+					"Are you sure you want to delete language '".$HTTP_VARS['language']."'?",
+			array('type'=>$ADMIN_TYPE, 'op'=>'delete', 'language'=>$HTTP_VARS['language'])));
 		}
-		else
+		else // $HTTP_VARS['confirmed'] == 'true'
 		{
-			echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
-		}
-	}
-	else if($HTTP_VARS['op'] == 'update-tables')
-	{
-		if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
-		{
-			update_system_table_lang_vars($HTTP_VARS);
+			delete_s_language_var($HTTP_VARS['language']);
+			delete_s_table_language_var($HTTP_VARS['language']);
+			delete_s_language($HTTP_VARS['language']);
 				
-			$HTTP_VARS['op'] = 'edit-tables';
-		}
-		else
-		{
-			echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
+			$HTTP_VARS['op'] = '';
 		}
 	}
-	else if($HTTP_VARS['op'] == 'delete')
+	else
 	{
-		if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
-		{
-			if($HTTP_VARS['confirmed'] == 'false')
-			{
-				$HTTP_VARS['op'] = '';
-			}
-			else if($HTTP_VARS['confirmed'] != 'true')
-			{
-				echo("\n<h3>Delete Language</h3>");
-					
-				echo(get_op_confirm_form($PHP_SELF,
-						"Are you sure you want to delete language '".$HTTP_VARS['language']."'?",
-				array('type'=>$ADMIN_TYPE, 'op'=>'delete', 'language'=>$HTTP_VARS['language'])));
-			}
-			else // $HTTP_VARS['confirmed'] == 'true'
-			{
-				delete_s_language_var($HTTP_VARS['language']);
-				delete_s_table_language_var($HTTP_VARS['language']);
-				delete_s_language($HTTP_VARS['language']);
-					
-				$HTTP_VARS['op'] = '';
-			}
-		}
-		else
-		{
-			echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
-		}
+		echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
 	}
+}
 
-	if($HTTP_VARS['op'] == 'edit-tables')
+if($HTTP_VARS['op'] == 'edit-tables')
+{
+	if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
 	{
-		if(is_exists_language($HTTP_VARS['language']) && !is_default_language($HTTP_VARS['language']))
-		{
-			echo build_table_page($HTTP_VARS['language']);
-		}
-		else
-		{
-			echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
-		}
+		echo build_table_page($HTTP_VARS['language']);
 	}
-	else if($HTTP_VARS['op'] == 'edit-langvars')
+	else
 	{
-		if(is_exists_language($HTTP_VARS['language']))
-		{
-			build_langvar_page($HTTP_VARS['language']);
-		}
-		else
-		{
-			echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
-		}
+		echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
 	}
-	else if($HTTP_VARS['op'] == '')
+}
+else if($HTTP_VARS['op'] == 'edit-langvars')
+{
+	if(is_exists_language($HTTP_VARS['language']))
 	{
-		if(is_not_empty_array($errors))
-			echo format_error_block($errors);
+		build_langvar_page($HTTP_VARS['language']);
+	}
+	else
+	{
+		echo("<div class=\"error\">".get_opendb_lang_var('operation_not_available')."</div>");
+	}
+}
+else if($HTTP_VARS['op'] == '')
+{
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
 
-		// list languages and options
-		$results = fetch_language_rs();
-		if($results)
+	// list languages and options
+	$results = fetch_language_rs();
+	if($results)
+	{
+		echo("<table><tr class=\"navbar\">
+			<th>Language</th>
+			<th>Description</th>
+			<th colspan=2></th>
+			</tr>");
+			
+		while($language_r = db_fetch_assoc($results))
 		{
-			echo("<table><tr class=\"navbar\">
-				<th>Language</th>
-				<th>Description</th>
-				<th colspan=2></th>
+			echo("<tr>
+				<td class=\"data\">".$language_r['language']."</td>
+				<td class=\"data\">".$language_r['description']."</td>
+				<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit-langvars&language=${language_r['language']}\">Language Vars</a>");
+				
+			// there should be no concept of system table lang vars for the default language, as it should
+			// always fall back to the system tables themselves.
+			if(!is_default_language($language_r['language']))
+			{
+				echo(" / <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit-tables&language=${language_r['language']}\">System Table Vars</a>".
+				" / <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=delete&language=${language_r['language']}\">Delete</a>");
+			}
+
+			echo(" ]</td>
+				<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&language=${language_r['language']}&mode=job\">SQL</a> ]</td>
 				</tr>");
-				
-			while($language_r = db_fetch_assoc($results))
-			{
-				echo("<tr>
-					<td class=\"data\">".$language_r['language']."</td>
-					<td class=\"data\">".$language_r['description']."</td>
-					<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit-langvars&language=${language_r['language']}\">Language Vars</a>");
-					
-				// there should be no concept of system table lang vars for the default language, as it should
-				// always fall back to the system tables themselves.
-				if(!is_default_language($language_r['language']))
-				{
-					echo(" / <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit-tables&language=${language_r['language']}\">System Table Vars</a>".
-					" / <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=delete&language=${language_r['language']}\">Delete</a>");
-				}
-
-				echo(" ]</td>
-					<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&language=${language_r['language']}&mode=job\">SQL</a> ]</td>
-					</tr>");
-			}
-			echo("</table>");
-			
-			db_free_result($results);
 		}
-	
-		function is_not_exists_language($language)
-		{
-			return !is_exists_language($language);
-		}
-		generate_sql_list($ADMIN_TYPE, 'Language', NULL, 'is_not_exists_language');
+		echo("</table>");
+		
+		db_free_result($results);
 	}
+
+	function is_not_exists_language($language)
+	{
+		return !is_exists_language($language);
+	}
+	generate_sql_list($ADMIN_TYPE, 'Language', NULL, 'is_not_exists_language');
 }
 ?>

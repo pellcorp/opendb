@@ -18,6 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./functions/site_plugin.php");
 include_once("./functions/parseutils.php");
 
@@ -643,306 +648,280 @@ function set_attribute_ind_type(&$HTTP_VARS)
 	}
 }
 
-if(is_opendb_admin_tools())
+if($HTTP_VARS['op'] == 'delete')
 {
-	if($HTTP_VARS['op'] == 'delete')
+	if(!is_exists_item_attribute_type(NULL, $HTTP_VARS['s_attribute_type']))
 	{
-		if(!is_exists_item_attribute_type(NULL, $HTTP_VARS['s_attribute_type']))
+		if(!is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type']))
 		{
-			if(!is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type']))
+			$s_field_type = fetch_attribute_type_s_field_type($HTTP_VARS['s_attribute_type']);
+			if($s_field_type == 'ADDRESS' && is_exists_addr_attribute_type_rltshp(NULL, $HTTP_VARS['s_attribute_type']))
 			{
-				$s_field_type = fetch_attribute_type_s_field_type($HTTP_VARS['s_attribute_type']);
-				if($s_field_type == 'ADDRESS' && is_exists_addr_attribute_type_rltshp(NULL, $HTTP_VARS['s_attribute_type']))
-				{
-					$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is linked to at least one system address type');
-					$HTTP_VARS['op'] = '';
-				}
-				else if($s_field_type == 'RATING')
-				{
-					$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is reserved for ratings');
-					$HTTP_VARS['op'] = '';
-				}
-				else if($s_field_type != 'ADDRESS' && $s_field_type != 'RATING' && is_exists_item_attribute_type(NULL, $HTTP_VARS['s_attribute_type']))
-				{
-					$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is linked to at least one system item type');
-					$HTTP_VARS['op'] = '';
-				}
-				else if($HTTP_VARS['confirmed'] == 'true')
-				{
-					if(delete_s_attribute_type($HTTP_VARS['s_attribute_type']))
-						$HTTP_VARS['op'] = NULL;
-					else
-					{
-						$errors[] = array('error'=>'Attribute type not deleted.','detail'=>db_error());
-						$HTTP_VARS['op'] = '';
-					}
-				}
-				else if($HTTP_VARS['confirmed'] != 'false')
-				{
-					echo "\n<h3>Delete Attribute type</h3>";
-					echo(get_op_confirm_form($PHP_SELF,
-							"Are you sure you want to delete attribute type '".$HTTP_VARS['s_attribute_type']."'?",
-					array('type'=>$ADMIN_TYPE, 'op'=>'delete', 's_attribute_type'=>$HTTP_VARS['s_attribute_type'])));
-				}
+				$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is linked to at least one system address type');
+				$HTTP_VARS['op'] = '';
+			}
+			else if($s_field_type == 'RATING')
+			{
+				$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is reserved for ratings');
+				$HTTP_VARS['op'] = '';
+			}
+			else if($s_field_type != 'ADDRESS' && $s_field_type != 'RATING' && is_exists_item_attribute_type(NULL, $HTTP_VARS['s_attribute_type']))
+			{
+				$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is linked to at least one system item type');
+				$HTTP_VARS['op'] = '';
+			}
+			else if($HTTP_VARS['confirmed'] == 'true')
+			{
+				if(delete_s_attribute_type($HTTP_VARS['s_attribute_type']))
+					$HTTP_VARS['op'] = NULL;
 				else
 				{
+					$errors[] = array('error'=>'Attribute type not deleted.','detail'=>db_error());
 					$HTTP_VARS['op'] = '';
 				}
 			}
+			else if($HTTP_VARS['confirmed'] != 'false')
+			{
+				echo "\n<h3>Delete Attribute type</h3>";
+				echo(get_op_confirm_form($PHP_SELF,
+						"Are you sure you want to delete attribute type '".$HTTP_VARS['s_attribute_type']."'?",
+				array('type'=>$ADMIN_TYPE, 'op'=>'delete', 's_attribute_type'=>$HTTP_VARS['s_attribute_type'])));
+			}
 			else
 			{
-				$errors[] = array('error'=>'Attributes with \'S_\' prefix are reserved for internal use.');
 				$HTTP_VARS['op'] = '';
 			}
 		}
 		else
 		{
-			$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is referenced by one or more Item Types');
+			$errors[] = array('error'=>'Attributes with \'S_\' prefix are reserved for internal use.');
 			$HTTP_VARS['op'] = '';
 		}
 	}
-	else if($HTTP_VARS['op'] == 'update')
+	else
 	{
-		set_attribute_ind_type($HTTP_VARS);
-			
-		if(is_exists_attribute_type($HTTP_VARS['s_attribute_type']))
+		$errors[] = array('error'=>'Attribute type not deleted.', 'detail'=>'Attribute is referenced by one or more Item Types');
+		$HTTP_VARS['op'] = '';
+	}
+}
+else if($HTTP_VARS['op'] == 'update')
+{
+	set_attribute_ind_type($HTTP_VARS);
+		
+	if(is_exists_attribute_type($HTTP_VARS['s_attribute_type']))
+	{
+		$s_field_type = fetch_attribute_type_s_field_type($HTTP_VARS['s_attribute_type']);
+		if($s_field_type == 'ITEM_ID')
 		{
-			$s_field_type = fetch_attribute_type_s_field_type($HTTP_VARS['s_attribute_type']);
-			if($s_field_type == 'ITEM_ID')
+			if($HTTP_VARS['display_type'] == 'display')
 			{
-				if($HTTP_VARS['display_type'] == 'display')
-				{
-					$HTTP_VARS['display_type_arg1'] = '%value%';
-				}
-				else if($HTTP_VARS['display_type'] != 'hidden')
-				{
-					$HTTP_VARS['display_type'] = FALSE;
-					$HTTP_VARS['display_type_arg1'] = FALSE;
-				}
-					
-				$update_result = update_s_attribute_type(
-						$HTTP_VARS['s_attribute_type'],
-						$HTTP_VARS['description'],
-						$HTTP_VARS['prompt'],
-						FALSE, //$HTTP_VARS['input_type'],
-						FALSE, //$HTTP_VARS['input_type_arg1'],
-						FALSE, //$HTTP_VARS['input_type_arg2'],
-						FALSE, //$HTTP_VARS['input_type_arg3'],
-						FALSE, //$HTTP_VARS['input_type_arg4'],
-						FALSE, //$HTTP_VARS['input_type_arg5'],
-						$HTTP_VARS['display_type'],
-						$HTTP_VARS['display_type_arg1'],
-						FALSE, //$HTTP_VARS['display_type_arg2'],
-						FALSE, //$HTTP_VARS['display_type_arg3'],
-						FALSE, //$HTTP_VARS['display_type_arg4'],
-						FALSE, //$HTTP_VARS['display_type_arg5'],
-						FALSE, //$HTTP_VARS['s_field_type'],
-						FALSE, //$HTTP_VARS['site_type'],
-						FALSE, //$HTTP_VARS['listing_link_ind'],
-						FALSE, //$HTTP_VARS['file_attribute_ind'],
-						FALSE, //$HTTP_VARS['lookup_attribute_ind'],
-						FALSE); //$HTTP_VARS['multi_attribute_ind']
+				$HTTP_VARS['display_type_arg1'] = '%value%';
 			}
-			else if($s_field_type == 'RATING' || is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type'])) // For reserved types, only allow update of prompt.
+			else if($HTTP_VARS['display_type'] != 'hidden')
 			{
-				$update_result = update_s_attribute_type(
-						$HTTP_VARS['s_attribute_type'],
-						$HTTP_VARS['description'],
-						$HTTP_VARS['prompt'],
-						FALSE, //$HTTP_VARS['input_type'],
-						FALSE, //$HTTP_VARS['input_type_arg1'],
-						FALSE, //$HTTP_VARS['input_type_arg2'],
-						FALSE, //$HTTP_VARS['input_type_arg3'],
-						FALSE, //$HTTP_VARS['input_type_arg4'],
-						FALSE, //$HTTP_VARS['input_type_arg5'],
-						FALSE, //$HTTP_VARS['display_type'],
-						FALSE, //$HTTP_VARS['display_type_arg1'],
-						FALSE, //$HTTP_VARS['display_type_arg2'],
-						FALSE, //$HTTP_VARS['display_type_arg3'],
-						FALSE, //$HTTP_VARS['display_type_arg4'],
-						FALSE, //$HTTP_VARS['display_type_arg5'],
-						FALSE, //$HTTP_VARS['s_field_type'],
-						FALSE, //$HTTP_VARS['site_type'],
-						FALSE, //$HTTP_VARS['listing_link_ind'],
-						FALSE, //$HTTP_VARS['file_attribute_ind'],
-						FALSE, //$HTTP_VARS['lookup_attribute_ind'],
-						FALSE); //$HTTP_VARS['multi_attribute_ind']
+				$HTTP_VARS['display_type'] = FALSE;
+				$HTTP_VARS['display_type_arg1'] = FALSE;
 			}
-			else if($s_field_type == 'ADDRESS') // for non S_ attributes, but those with an s_field_type of 'ADDRESS' the s_field_type should not be updateable, and the site_type should remain NULL
-			{
-				$update_result = update_s_attribute_type(
-						$HTTP_VARS['s_attribute_type'],
-						$HTTP_VARS['description'],
-						$HTTP_VARS['prompt'],
-						$HTTP_VARS['input_type'],
-						$HTTP_VARS['input_type_arg1'],
-						$HTTP_VARS['input_type_arg2'],
-						$HTTP_VARS['input_type_arg3'],
-						$HTTP_VARS['input_type_arg4'],
-						$HTTP_VARS['input_type_arg5'],
-						$HTTP_VARS['display_type'],
-						$HTTP_VARS['display_type_arg1'],
-						$HTTP_VARS['display_type_arg2'],
-						$HTTP_VARS['display_type_arg3'],
-						$HTTP_VARS['display_type_arg4'],
-						$HTTP_VARS['display_type_arg5'],
-						FALSE, //$HTTP_VARS['s_field_type'],
-						FALSE, //$HTTP_VARS['site_type'],
-						FALSE, //$HTTP_VARS['listing_link_ind'],
-						FALSE, //$HTTP_VARS['file_attribute_ind'],
-						FALSE, //$HTTP_VARS['lookup_attribute_ind'],
-						FALSE); //$HTTP_VARS['multi_attribute_ind']
-			}
-			else
-			{
-				if(strtoupper($HTTP_VARS['lookup_attribute_ind']) != 'Y' && fetch_s_attribute_type_lookup_cnt($HTTP_VARS['s_attribute_type'])>0)
-				{
-					$HTTP_VARS['lookup_attribute_ind'] = 'Y';
-
-					$errors[] = array('error'=>'System Attribute type lookups exist', 'detail'=>'Lookup Attribute Indicator reset to Y');
-				}
-
-				$update_result = update_s_attribute_type(
-						$HTTP_VARS['s_attribute_type'],
-						$HTTP_VARS['description'],
-						$HTTP_VARS['prompt'],
-						$HTTP_VARS['input_type'],
-						$HTTP_VARS['input_type_arg1'],
-						$HTTP_VARS['input_type_arg2'],
-						$HTTP_VARS['input_type_arg3'],
-						$HTTP_VARS['input_type_arg4'],
-						$HTTP_VARS['input_type_arg5'],
-						$HTTP_VARS['display_type'],
-						$HTTP_VARS['display_type_arg1'],
-						$HTTP_VARS['display_type_arg2'],
-						$HTTP_VARS['display_type_arg3'],
-						$HTTP_VARS['display_type_arg4'],
-						$HTTP_VARS['display_type_arg5'],
-						$HTTP_VARS['s_field_type'],
-						$HTTP_VARS['site_type'],
-						$HTTP_VARS['listing_link_ind'],
-						$HTTP_VARS['file_attribute_ind'],
-						$HTTP_VARS['lookup_attribute_ind'],
-						$HTTP_VARS['multi_attribute_ind']);
-			}
-
-			if(!$update_result)
-			{
-				$errors[] = array('error'=>'Attribute type not updated','detail'=>db_error());
-			}
-
-			$HTTP_VARS['op'] = 'edit';
+				
+			$update_result = update_s_attribute_type(
+					$HTTP_VARS['s_attribute_type'],
+					$HTTP_VARS['description'],
+					$HTTP_VARS['prompt'],
+					FALSE, //$HTTP_VARS['input_type'],
+					FALSE, //$HTTP_VARS['input_type_arg1'],
+					FALSE, //$HTTP_VARS['input_type_arg2'],
+					FALSE, //$HTTP_VARS['input_type_arg3'],
+					FALSE, //$HTTP_VARS['input_type_arg4'],
+					FALSE, //$HTTP_VARS['input_type_arg5'],
+					$HTTP_VARS['display_type'],
+					$HTTP_VARS['display_type_arg1'],
+					FALSE, //$HTTP_VARS['display_type_arg2'],
+					FALSE, //$HTTP_VARS['display_type_arg3'],
+					FALSE, //$HTTP_VARS['display_type_arg4'],
+					FALSE, //$HTTP_VARS['display_type_arg5'],
+					FALSE, //$HTTP_VARS['s_field_type'],
+					FALSE, //$HTTP_VARS['site_type'],
+					FALSE, //$HTTP_VARS['listing_link_ind'],
+					FALSE, //$HTTP_VARS['file_attribute_ind'],
+					FALSE, //$HTTP_VARS['lookup_attribute_ind'],
+					FALSE); //$HTTP_VARS['multi_attribute_ind']
+		}
+		else if($s_field_type == 'RATING' || is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type'])) // For reserved types, only allow update of prompt.
+		{
+			$update_result = update_s_attribute_type(
+					$HTTP_VARS['s_attribute_type'],
+					$HTTP_VARS['description'],
+					$HTTP_VARS['prompt'],
+					FALSE, //$HTTP_VARS['input_type'],
+					FALSE, //$HTTP_VARS['input_type_arg1'],
+					FALSE, //$HTTP_VARS['input_type_arg2'],
+					FALSE, //$HTTP_VARS['input_type_arg3'],
+					FALSE, //$HTTP_VARS['input_type_arg4'],
+					FALSE, //$HTTP_VARS['input_type_arg5'],
+					FALSE, //$HTTP_VARS['display_type'],
+					FALSE, //$HTTP_VARS['display_type_arg1'],
+					FALSE, //$HTTP_VARS['display_type_arg2'],
+					FALSE, //$HTTP_VARS['display_type_arg3'],
+					FALSE, //$HTTP_VARS['display_type_arg4'],
+					FALSE, //$HTTP_VARS['display_type_arg5'],
+					FALSE, //$HTTP_VARS['s_field_type'],
+					FALSE, //$HTTP_VARS['site_type'],
+					FALSE, //$HTTP_VARS['listing_link_ind'],
+					FALSE, //$HTTP_VARS['file_attribute_ind'],
+					FALSE, //$HTTP_VARS['lookup_attribute_ind'],
+					FALSE); //$HTTP_VARS['multi_attribute_ind']
+		}
+		else if($s_field_type == 'ADDRESS') // for non S_ attributes, but those with an s_field_type of 'ADDRESS' the s_field_type should not be updateable, and the site_type should remain NULL
+		{
+			$update_result = update_s_attribute_type(
+					$HTTP_VARS['s_attribute_type'],
+					$HTTP_VARS['description'],
+					$HTTP_VARS['prompt'],
+					$HTTP_VARS['input_type'],
+					$HTTP_VARS['input_type_arg1'],
+					$HTTP_VARS['input_type_arg2'],
+					$HTTP_VARS['input_type_arg3'],
+					$HTTP_VARS['input_type_arg4'],
+					$HTTP_VARS['input_type_arg5'],
+					$HTTP_VARS['display_type'],
+					$HTTP_VARS['display_type_arg1'],
+					$HTTP_VARS['display_type_arg2'],
+					$HTTP_VARS['display_type_arg3'],
+					$HTTP_VARS['display_type_arg4'],
+					$HTTP_VARS['display_type_arg5'],
+					FALSE, //$HTTP_VARS['s_field_type'],
+					FALSE, //$HTTP_VARS['site_type'],
+					FALSE, //$HTTP_VARS['listing_link_ind'],
+					FALSE, //$HTTP_VARS['file_attribute_ind'],
+					FALSE, //$HTTP_VARS['lookup_attribute_ind'],
+					FALSE); //$HTTP_VARS['multi_attribute_ind']
 		}
 		else
 		{
-			$HTTP_VARS['op'] = 'edit';
-		}
-	}
-	else if($HTTP_VARS['op'] == 'insert')
-	{
-		set_attribute_ind_type($HTTP_VARS);
-			
-		$HTTP_VARS['s_attribute_type'] = strtoupper(preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_attribute_type']))));
-		if(!is_exists_attribute_type($HTTP_VARS['s_attribute_type']))
-		{
-			if(!is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type']))
+			if(strtoupper($HTTP_VARS['lookup_attribute_ind']) != 'Y' && fetch_s_attribute_type_lookup_cnt($HTTP_VARS['s_attribute_type'])>0)
 			{
-				// site type not valid for these
-				if($HTTP_VARS['s_field_type'] == 'ADDRESS' || $HTTP_VARS['s_field_type'] == 'RATING')
-				{
-					$HTTP_VARS['site_type'] = NULL;
-				}
-					
-				if(!insert_s_attribute_type(
-						$HTTP_VARS['s_attribute_type'],
-						$HTTP_VARS['description'],
-						$HTTP_VARS['prompt'],
-						$HTTP_VARS['input_type'],
-						$HTTP_VARS['input_type_arg1'],
-						$HTTP_VARS['input_type_arg2'],
-						$HTTP_VARS['input_type_arg3'],
-						$HTTP_VARS['input_type_arg4'],
-						$HTTP_VARS['input_type_arg5'],
-						$HTTP_VARS['display_type'],
-						$HTTP_VARS['display_type_arg1'],
-						$HTTP_VARS['display_type_arg2'],
-						$HTTP_VARS['display_type_arg3'],
-						$HTTP_VARS['display_type_arg4'],
-						$HTTP_VARS['display_type_arg5'],
-						$HTTP_VARS['s_field_type'],
-						$HTTP_VARS['site_type'],
-						$HTTP_VARS['listing_link_ind'],
-						$HTTP_VARS['file_attribute_ind'],
-						$HTTP_VARS['lookup_attribute_ind'],
-						$HTTP_VARS['multi_attribute_ind']))
-				{
-					$errors[] = array('error'=>'Attribute type ('.$HTTP_VARS['s_attribute_type'].') not inserted','detail'=>db_error());
-					$HTTP_VARS['op'] = 'new';
-				}
-				else
-				{
-					$HTTP_VARS['op'] = 'edit';
-				}
+				$HTTP_VARS['lookup_attribute_ind'] = 'Y';
+
+				$errors[] = array('error'=>'System Attribute type lookups exist', 'detail'=>'Lookup Attribute Indicator reset to Y');
 			}
-			else
+
+			$update_result = update_s_attribute_type(
+					$HTTP_VARS['s_attribute_type'],
+					$HTTP_VARS['description'],
+					$HTTP_VARS['prompt'],
+					$HTTP_VARS['input_type'],
+					$HTTP_VARS['input_type_arg1'],
+					$HTTP_VARS['input_type_arg2'],
+					$HTTP_VARS['input_type_arg3'],
+					$HTTP_VARS['input_type_arg4'],
+					$HTTP_VARS['input_type_arg5'],
+					$HTTP_VARS['display_type'],
+					$HTTP_VARS['display_type_arg1'],
+					$HTTP_VARS['display_type_arg2'],
+					$HTTP_VARS['display_type_arg3'],
+					$HTTP_VARS['display_type_arg4'],
+					$HTTP_VARS['display_type_arg5'],
+					$HTTP_VARS['s_field_type'],
+					$HTTP_VARS['site_type'],
+					$HTTP_VARS['listing_link_ind'],
+					$HTTP_VARS['file_attribute_ind'],
+					$HTTP_VARS['lookup_attribute_ind'],
+					$HTTP_VARS['multi_attribute_ind']);
+		}
+
+		if(!$update_result)
+		{
+			$errors[] = array('error'=>'Attribute type not updated','detail'=>db_error());
+		}
+
+		$HTTP_VARS['op'] = 'edit';
+	}
+	else
+	{
+		$HTTP_VARS['op'] = 'edit';
+	}
+}
+else if($HTTP_VARS['op'] == 'insert')
+{
+	set_attribute_ind_type($HTTP_VARS);
+		
+	$HTTP_VARS['s_attribute_type'] = strtoupper(preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_attribute_type']))));
+	if(!is_exists_attribute_type($HTTP_VARS['s_attribute_type']))
+	{
+		if(!is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type']))
+		{
+			// site type not valid for these
+			if($HTTP_VARS['s_field_type'] == 'ADDRESS' || $HTTP_VARS['s_field_type'] == 'RATING')
 			{
-				$errors[] = array('error'=>'Attribute type\'s with a \'S_\' prefix are reserved for internal use.');
+				$HTTP_VARS['site_type'] = NULL;
+			}
+				
+			if(!insert_s_attribute_type(
+					$HTTP_VARS['s_attribute_type'],
+					$HTTP_VARS['description'],
+					$HTTP_VARS['prompt'],
+					$HTTP_VARS['input_type'],
+					$HTTP_VARS['input_type_arg1'],
+					$HTTP_VARS['input_type_arg2'],
+					$HTTP_VARS['input_type_arg3'],
+					$HTTP_VARS['input_type_arg4'],
+					$HTTP_VARS['input_type_arg5'],
+					$HTTP_VARS['display_type'],
+					$HTTP_VARS['display_type_arg1'],
+					$HTTP_VARS['display_type_arg2'],
+					$HTTP_VARS['display_type_arg3'],
+					$HTTP_VARS['display_type_arg4'],
+					$HTTP_VARS['display_type_arg5'],
+					$HTTP_VARS['s_field_type'],
+					$HTTP_VARS['site_type'],
+					$HTTP_VARS['listing_link_ind'],
+					$HTTP_VARS['file_attribute_ind'],
+					$HTTP_VARS['lookup_attribute_ind'],
+					$HTTP_VARS['multi_attribute_ind']))
+			{
+				$errors[] = array('error'=>'Attribute type ('.$HTTP_VARS['s_attribute_type'].') not inserted','detail'=>db_error());
 				$HTTP_VARS['op'] = 'new';
 			}
+			else
+			{
+				$HTTP_VARS['op'] = 'edit';
+			}
 		}
 		else
 		{
-			$errors[] = array('error'=>'Attribute type ('.$HTTP_VARS['s_attribute_type'].') already exists.');
+			$errors[] = array('error'=>'Attribute type\'s with a \'S_\' prefix are reserved for internal use.');
 			$HTTP_VARS['op'] = 'new';
 		}
 	}
-	else if($HTTP_VARS['op'] == 'update-lookups')
+	else
 	{
-		if(is_not_empty_array($HTTP_VARS['value']))
+		$errors[] = array('error'=>'Attribute type ('.$HTTP_VARS['s_attribute_type'].') already exists.');
+		$HTTP_VARS['op'] = 'new';
+	}
+}
+else if($HTTP_VARS['op'] == 'update-lookups')
+{
+	if(is_not_empty_array($HTTP_VARS['value']))
+	{
+		for($i=0; $i<count($HTTP_VARS['value']); $i++)
 		{
-			for($i=0; $i<count($HTTP_VARS['value']); $i++)
+			// If exists_ind and value is empty, this is fine.  Or as long as a display value is specified for an
+			// empty value, and there is not already an empty value, then this is legal as well.
+			if(strlen($HTTP_VARS['value'][$i])>0 || strlen($HTTP_VARS['display'][$i])>0 || $HTTP_VARS['exists_ind'][$i] == 'Y')
 			{
-				// If exists_ind and value is empty, this is fine.  Or as long as a display value is specified for an
-				// empty value, and there is not already an empty value, then this is legal as well.
-				if(strlen($HTTP_VARS['value'][$i])>0 || strlen($HTTP_VARS['display'][$i])>0 || $HTTP_VARS['exists_ind'][$i] == 'Y')
+				// an update or delete.
+				if($HTTP_VARS['exists_ind'][$i] == 'Y')
 				{
-					// an update or delete.
-					if($HTTP_VARS['exists_ind'][$i] == 'Y')
+					if(is_exists_s_atribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
 					{
-						if(is_exists_s_atribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
+						if($HTTP_VARS['delete_ind'][$i] === 'Y')
 						{
-							if($HTTP_VARS['delete_ind'][$i] === 'Y')
+							if(!delete_s_attribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
 							{
-								if(!delete_s_attribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
-								{
-									$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not deleted','detail'=>db_error());
-								}
-							}
-							else //update
-							{
-								if(_theme_image_src($HTTP_VARS['img'][$i])==FALSE)
-									$HTTP_VARS['img'][$i] = '';
-
-								if(strlen($HTTP_VARS['img'][$i])==0 && $HTTP_VARS['none_img'][$i] == 'Y')
-									$HTTP_VARS['img'][$i] = 'none';
-
-								if(!update_s_attribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i], $HTTP_VARS['display'][$i], $HTTP_VARS['img'][$i], $HTTP_VARS['checked_ind'][$i], $HTTP_VARS['order_no'][$i]))
-								{
-									$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not updated','detail'=>db_error());
-								}
+								$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not deleted','detail'=>db_error());
 							}
 						}
-						else
-						{
-							$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not found','detail'=>'');
-						}
-					}
-					else //insert!
-					{
-						// Get rid of all spaces, and illegal characters.
-						$HTTP_VARS['value'][$i] = preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['value'][$i])));
-
-						if(!is_exists_s_atribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
+						else //update
 						{
 							if(_theme_image_src($HTTP_VARS['img'][$i])==FALSE)
 								$HTTP_VARS['img'][$i] = '';
@@ -950,113 +929,136 @@ if(is_opendb_admin_tools())
 							if(strlen($HTTP_VARS['img'][$i])==0 && $HTTP_VARS['none_img'][$i] == 'Y')
 								$HTTP_VARS['img'][$i] = 'none';
 
-							// First of all we need to handle the image upload here.
-							if(!insert_s_attribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i], $HTTP_VARS['display'][$i], $HTTP_VARS['img'][$i], $HTTP_VARS['checked_ind'][$i], $HTTP_VARS['order_no'][$i]))
+							if(!update_s_attribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i], $HTTP_VARS['display'][$i], $HTTP_VARS['img'][$i], $HTTP_VARS['checked_ind'][$i], $HTTP_VARS['order_no'][$i]))
 							{
-								$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not inserted','detail'=>db_error());
+								$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not updated','detail'=>db_error());
 							}
 						}
-						else
+					}
+					else
+					{
+						$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not found','detail'=>'');
+					}
+				}
+				else //insert!
+				{
+					// Get rid of all spaces, and illegal characters.
+					$HTTP_VARS['value'][$i] = preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['value'][$i])));
+
+					if(!is_exists_s_atribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
+					{
+						if(_theme_image_src($HTTP_VARS['img'][$i])==FALSE)
+							$HTTP_VARS['img'][$i] = '';
+
+						if(strlen($HTTP_VARS['img'][$i])==0 && $HTTP_VARS['none_img'][$i] == 'Y')
+							$HTTP_VARS['img'][$i] = 'none';
+
+						// First of all we need to handle the image upload here.
+						if(!insert_s_attribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i], $HTTP_VARS['display'][$i], $HTTP_VARS['img'][$i], $HTTP_VARS['checked_ind'][$i], $HTTP_VARS['order_no'][$i]))
 						{
-							$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') already exists','detail'=>'');
+							$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') not inserted','detail'=>db_error());
 						}
+					}
+					else
+					{
+						$errors[] = array('error'=>'Lookup value ('.$HTTP_VARS['value'][$i].') already exists','detail'=>'');
 					}
 				}
 			}
 		}
-
-		$HTTP_VARS['op'] = 'edit-lookups';
 	}
 
-	if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
+	$HTTP_VARS['op'] = 'edit-lookups';
+}
+
+if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
+{
+	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
+	echo get_widget_tooltip_array();
+
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+		
+	if($HTTP_VARS['op'] == 'edit')
 	{
-		echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
-		echo get_widget_tooltip_array();
+		$attribute_type_r = fetch_s_attribute_type_r($HTTP_VARS['s_attribute_type']);
+		if($attribute_type_r===FALSE)
+			$errors[] = 'Attribute type ('.$HTTP_VARS['s_attribute_type'].') not found';
+			
+		echo("\n<h3>Edit Attribute type</h3>");
 
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
-			
-		if($HTTP_VARS['op'] == 'edit')
-		{
-			$attribute_type_r = fetch_s_attribute_type_r($HTTP_VARS['s_attribute_type']);
-			if($attribute_type_r===FALSE)
-				$errors[] = 'Attribute type ('.$HTTP_VARS['s_attribute_type'].') not found';
-				
-			echo("\n<h3>Edit Attribute type</h3>");
-
-			$save_op = 'update';
-			$save_button = 'Update';
-		}
-		else
-		{
-			echo("\n<h3>New Attribute type</h3>");
-			$save_op = 'insert';
-			$save_button = 'Insert';
-		}
-			
-		if(is_not_empty_array($errors))
-			echo format_error_block($errors);
-
-		echo("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
-		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-		echo("\n<input type=\"hidden\" name=\"op\" value=\"$save_op\">");
-			
-		echo("\n<table>");
-		display_edit_form($attribute_type_r, $HTTP_VARS);
-		echo("\n</table>");
-			
-		if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-		{
-			echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-		}
-			
-		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
-		else
-			echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"this.form.submit();\">");
-			
-		echo("\n</form>");
+		$save_op = 'update';
+		$save_button = 'Update';
 	}
-	else if($HTTP_VARS['op'] == 'edit-lookups')
+	else
 	{
-		// ################################################################
-		// Do for both 'update' and 'edit'
-		// ################################################################
+		echo("\n<h3>New Attribute type</h3>");
+		$save_op = 'insert';
+		$save_button = 'Insert';
+	}
+		
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
 
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+	echo("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
+	echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+	echo("\n<input type=\"hidden\" name=\"op\" value=\"$save_op\">");
+		
+	echo("\n<table>");
+	display_edit_form($attribute_type_r, $HTTP_VARS);
+	echo("\n</table>");
+		
+	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
+	{
+		echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
+	}
+		
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+		echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+	else
+		echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"this.form.submit();\">");
+		
+	echo("\n</form>");
+}
+else if($HTTP_VARS['op'] == 'edit-lookups')
+{
+	// ################################################################
+	// Do for both 'update' and 'edit'
+	// ################################################################
 
-		echo("<script language=\"JavaScript1.2\">
-			function toggleChecked(element, name)
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+
+	echo("<script language=\"JavaScript1.2\">
+		function toggleChecked(element, name)
+		{
+			var form = element.form;
+
+			// then we have to uncheck everything else.
+			for (var i=0; i < form.length; i++)
 			{
-				var form = element.form;
-
-				// then we have to uncheck everything else.
-				for (var i=0; i < form.length; i++)
+		        if (form.elements[i].type.toLowerCase() == 'checkbox' && form.elements[i].name.substring(0, name.length+1) == name+'[')
 				{
-			        if (form.elements[i].type.toLowerCase() == 'checkbox' && form.elements[i].name.substring(0, name.length+1) == name+'[')
-					{
-						if(element.checked && form.elements[i].name != element.name)
-			                form.elements[i].checked = false;
-					}
+					if(element.checked && form.elements[i].name != element.name)
+		                form.elements[i].checked = false;
 				}
-			}</script>");
-			
-		echo("\n<h3>Edit ".$HTTP_VARS['s_attribute_type']." Attribute Type Lookups</h3>");
+			}
+		}</script>");
+		
+	echo("\n<h3>Edit ".$HTTP_VARS['s_attribute_type']." Attribute Type Lookups</h3>");
 
-		if(is_not_empty_array($errors))
-			echo format_error_block($errors);
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
 
-		display_lookup_attribute_type_form($HTTP_VARS);
+	display_lookup_attribute_type_form($HTTP_VARS);
 
-		echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
-	}
-	else if($HTTP_VARS['op'] == '')
-	{
-		if(is_not_empty_array($errors))
-			echo format_error_block($errors);
+	echo(format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
+}
+else if($HTTP_VARS['op'] == '')
+{
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
 
-		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a> ]");
-			
-		display_attribute_type_form($HTTP_VARS);
-	}
+	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a> ]");
+		
+	display_attribute_type_form($HTTP_VARS);
 }
 ?>

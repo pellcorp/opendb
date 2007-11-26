@@ -34,24 +34,6 @@ function is_opendb_user_permitted($permission)
 }
 
 /**
- * Initiate public access session if applicable
- */
-function init_public_access_session()
-{
-	if(!is_opendb_valid_session())
-	{
-	    $site_public_access_r = get_opendb_config_var('site.public_access');
-		if($site_public_access_r['enable']!==FALSE)
-		{
-			if(strlen(get_opendb_session_var('user_id'))==0)
-	            register_opendb_session_var('user_type', 'G');
-			else
-	            unregister_opendb_session_var('user_type');
-		}
-	}
-}
-
-/**
 Test that public access enabled, and currently 'logged' in user is the
 configured public access user.
 

@@ -18,25 +18,27 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-if(is_opendb_admin_tools())
+if(!defined('OPENDB_ADMIN_TOOLS'))
 {
-	@set_time_limit(600);
+	die('Admin tools not accessible directly');
+}
 
-	if($HTTP_VARS['op'] == 'job')
-	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
-		
-		if($HTTP_VARS['job'] == 'recalculate')
-			echo("\n<h3>Recalculate Item Reviews</h3>");
+@set_time_limit(600);
 
-		$jobObj->printJobProgressBar();
-	}
+if($HTTP_VARS['op'] == 'job')
+{
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
 	
-	if($HTTP_VARS['op'] == '')
-	{
-		echo("<p>");
-		echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=recalculate\">Recalculate Item Reviews</a>]&nbsp;");
-		echo("</p>");
-	}
+	if($HTTP_VARS['job'] == 'recalculate')
+		echo("\n<h3>Recalculate Item Reviews</h3>");
+
+	$jobObj->printJobProgressBar();
+}
+
+if($HTTP_VARS['op'] == '')
+{
+	echo("<p>");
+	echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=recalculate\">Recalculate Item Reviews</a>]&nbsp;");
+	echo("</p>");
 }
 ?>

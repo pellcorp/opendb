@@ -18,6 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./admin/s_item_type/functions.php");
 include_once("./admin/s_attribute_type/functions.php");
 
@@ -189,383 +194,380 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	echo("</tr>");
 }
 
-if(is_opendb_admin_tools())
+if($HTTP_VARS['op'] == 'delete') // This is initiated from the main s_address_type form.
 {
-	if($HTTP_VARS['op'] == 'delete') // This is initiated from the main s_address_type form.
+	if(is_exists_address_type($HTTP_VARS['s_address_type']))
 	{
-		if(is_exists_address_type($HTTP_VARS['s_address_type']))
+		// In the case where we are deleting the whole type, there is no need 
+		// to check whether individual attributes exist, checking for items
+		// is sufficient - we don't care about orphaned attributes.
+		if(is_s_address_type_deletable($HTTP_VARS['s_address_type']))
 		{
-			// In the case where we are deleting the whole type, there is no need 
-			// to check whether individual attributes exist, checking for items
-			// is sufficient - we don't care about orphaned attributes.
-			if(is_s_address_type_deletable($HTTP_VARS['s_address_type']))
+			if($HTTP_VARS['confirmed'] == 'false')
 			{
-				if($HTTP_VARS['confirmed'] == 'false')
-				{
-				    // do nothing.
-				    $HTTP_VARS['op'] = '';
-				}
-				else if($HTTP_VARS['confirmed'] != 'true')
-				{
-					echo "<h3>Delete Address Type</h3>";
-					echo get_op_confirm_form(
-							$PHP_SELF, 
-							"Are you sure you want to delete Address Type \"".$HTTP_VARS['s_address_type']."\"?",
-							$HTTP_VARS);
-				}
-				else // $HTTP_VARS['confirmed'] == 'true'
-				{
-					// Check if there are any s_item_attribute_type records.				
-					if(!is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], NULL) || 
-								delete_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], NULL, NULL))
-					{
-						if(!delete_s_address_type($HTTP_VARS['s_address_type']))
-						{
-							$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not deleted','detail'=>db_error());
-						}
-					}
-					else
-					{
-						$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') attributes not deleted','detail'=>db_error());
-					}
-					
-					$HTTP_VARS['op'] = '';
-				}
+			    // do nothing.
+			    $HTTP_VARS['op'] = '';
 			}
-			else
+			else if($HTTP_VARS['confirmed'] != 'true')
 			{
-				$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not deleted','detail'=>'Address Type has dependant item(s)');
+				echo "<h3>Delete Address Type</h3>";
+				echo get_op_confirm_form(
+						$PHP_SELF, 
+						"Are you sure you want to delete Address Type \"".$HTTP_VARS['s_address_type']."\"?",
+						$HTTP_VARS);
+			}
+			else // $HTTP_VARS['confirmed'] == 'true'
+			{
+				// Check if there are any s_item_attribute_type records.				
+				if(!is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], NULL) || 
+							delete_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], NULL, NULL))
+				{
+					if(!delete_s_address_type($HTTP_VARS['s_address_type']))
+					{
+						$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not deleted','detail'=>db_error());
+					}
+				}
+				else
+				{
+					$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') attributes not deleted','detail'=>db_error());
+				}
 				
 				$HTTP_VARS['op'] = '';
 			}
 		}
 		else
 		{
+			$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not deleted','detail'=>'Address Type has dependant item(s)');
+			
 			$HTTP_VARS['op'] = '';
 		}
 	}
-	else if($HTTP_VARS['op'] == 'insert_type')// Insert whole new item type
+	else
 	{
-		// All types are uppercase.
-		$HTTP_VARS['s_address_type'] = strtoupper($HTTP_VARS['s_address_type']);
-					
-		// Get rid of all spaces, and illegal characters.
-		$HTTP_VARS['s_address_type'] = preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_address_type'])));
+		$HTTP_VARS['op'] = '';
+	}
+}
+else if($HTTP_VARS['op'] == 'insert_type')// Insert whole new item type
+{
+	// All types are uppercase.
+	$HTTP_VARS['s_address_type'] = strtoupper($HTTP_VARS['s_address_type']);
+				
+	// Get rid of all spaces, and illegal characters.
+	$HTTP_VARS['s_address_type'] = preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_address_type'])));
 
-		if(strlen($HTTP_VARS['s_address_type'])>0)
+	if(strlen($HTTP_VARS['s_address_type'])>0)
+	{
+		if(!is_exists_address_type($HTTP_VARS['s_address_type']))//insert
 		{
-			if(!is_exists_address_type($HTTP_VARS['s_address_type']))//insert
+			if(insert_s_address_type($HTTP_VARS['s_address_type'], $HTTP_VARS['display_order'], $HTTP_VARS['description'], $HTTP_VARS['min_create_user_type'], $HTTP_VARS['min_display_user_type'], $HTTP_VARS['compulsory_for_user_type']))
 			{
-				if(insert_s_address_type($HTTP_VARS['s_address_type'], $HTTP_VARS['display_order'], $HTTP_VARS['description'], $HTTP_VARS['min_create_user_type'], $HTTP_VARS['min_display_user_type'], $HTTP_VARS['compulsory_for_user_type']))
-				{
-					// Load the edit_types form now.
-					$HTTP_VARS['op'] = 'edit_types';
-				}
-				else
-				{
-					$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not inserted.','detail'=>db_error());
-				}
+				// Load the edit_types form now.
+				$HTTP_VARS['op'] = 'edit_types';
 			}
 			else
 			{
-				$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') already exists.','detail'=>'');
+				$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not inserted.','detail'=>db_error());
 			}
 		}
 		else
 		{
-			$errors[] = array('error'=>'Address Type not specified.','detail'=>'');
+			$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') already exists.','detail'=>'');
 		}
-		
+	}
+	else
+	{
+		$errors[] = array('error'=>'Address Type not specified.','detail'=>'');
+	}
+	
+	echo format_error_block($errors);
+}
+else if($HTTP_VARS['op'] == 'update_types') // This is initiated from the main s_address_type form.
+{
+	if(is_not_empty_array($HTTP_VARS['s_address_type']))
+	{
+		for($i=0; $i<count($HTTP_VARS['s_address_type']); $i++)
+		{
+			if(is_exists_address_type($HTTP_VARS['s_address_type'][$i]))
+			{
+				if(!update_s_address_type($HTTP_VARS['s_address_type'][$i], $HTTP_VARS['display_order'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+				{
+					$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'][$i].') not updated','detail'=>db_error());
+				}
+			}
+			else
+			{
+				$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'][$i].') not found.', 'detail'=>'');
+			}							
+		}
 		echo format_error_block($errors);
 	}
-	else if($HTTP_VARS['op'] == 'update_types') // This is initiated from the main s_address_type form.
+}
+else if($HTTP_VARS['op'] == 'update') // This is initiated from the lower s_item_attribute_type form.
+{
+	if(is_exists_address_type($HTTP_VARS['s_address_type']))
 	{
-		if(is_not_empty_array($HTTP_VARS['s_address_type']))
+		if(is_not_empty_array($HTTP_VARS['s_attribute_type']))
 		{
-			for($i=0; $i<count($HTTP_VARS['s_address_type']); $i++)
+			for($i=0; $i<count($HTTP_VARS['s_attribute_type']); $i++)
 			{
-				if(is_exists_address_type($HTTP_VARS['s_address_type'][$i]))
+				//update or delete
+				if($HTTP_VARS['exists_ind'][$i] == 'Y')
 				{
-					if(!update_s_address_type($HTTP_VARS['s_address_type'][$i], $HTTP_VARS['display_order'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+					// The 'old_order_no' will often be the same as 'order_no' but for instances where
+					// they are different this test will match both!
+					if(is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['old_order_no'][$i]))
 					{
-						$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'][$i].') not updated','detail'=>db_error());
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'][$i].') not found.', 'detail'=>'');
-				}							
-			}
-			echo format_error_block($errors);
-		}
-	}
-	else if($HTTP_VARS['op'] == 'update') // This is initiated from the lower s_item_attribute_type form.
-	{
-		if(is_exists_address_type($HTTP_VARS['s_address_type']))
-		{
-			if(is_not_empty_array($HTTP_VARS['s_attribute_type']))
-			{
-				for($i=0; $i<count($HTTP_VARS['s_attribute_type']); $i++)
-				{
-					//update or delete
-					if($HTTP_VARS['exists_ind'][$i] == 'Y')
-					{
-						// The 'old_order_no' will often be the same as 'order_no' but for instances where
-						// they are different this test will match both!
-						if(is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['old_order_no'][$i]))
+						// Delete record if delete_ind = Y or the order_no has been changed.
+						// In the case of the changed order_no, we will be inserting it in the next
+						// for loop, which is why the exists_ind is reset!
+						if($HTTP_VARS['delete_ind'][$i] == 'Y' || $HTTP_VARS['order_no'][$i] != $HTTP_VARS['old_order_no'][$i])
 						{
-							// Delete record if delete_ind = Y or the order_no has been changed.
-							// In the case of the changed order_no, we will be inserting it in the next
-							// for loop, which is why the exists_ind is reset!
-							if($HTTP_VARS['delete_ind'][$i] == 'Y' || $HTTP_VARS['order_no'][$i] != $HTTP_VARS['old_order_no'][$i])
+							// TODO: Provide functionality to convert existing item_attribute records to the new format.
+							if(is_s_addr_attribute_type_rltshp_deletable($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['old_order_no'][$i]))
 							{
-								// TODO: Provide functionality to convert existing item_attribute records to the new format.
-								if(is_s_addr_attribute_type_rltshp_deletable($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['old_order_no'][$i]))
+								if($HTTP_VARS['order_no'][$i] != $HTTP_VARS['old_order_no'][$i])
+									$HTTP_VARS['exists_ind'][$i] = 'N';
+								
+								// Delete old_order_no in both cases!
+								if(!delete_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['old_order_no'][$i]))
 								{
-									if($HTTP_VARS['order_no'][$i] != $HTTP_VARS['old_order_no'][$i])
-										$HTTP_VARS['exists_ind'][$i] = 'N';
-									
-									// Delete old_order_no in both cases!
-									if(!delete_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['old_order_no'][$i]))
-									{
-										$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not deleted','detail'=>db_error());
-									}
-								}
-								else
-								{
-									$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not deleted','detail'=>'Dependant user address attribute(s) with the same order_no exist.');
-								}
-							}
-							else // 'old_order_no' IS THE SAME as 'order_no' here!
-							{
-								// At the moment we are not checking the order_no's for items with the same type.
-								if(!update_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
-								{
-									$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not updated','detail'=>db_error());
-								}
-							}
-						}
-						else
-						{
-							$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not found','detail'=>db_error());
-						}
-					}
-				}
-
-				// Now do the inserts.
-				for($i=0; $i<count($HTTP_VARS['s_attribute_type']); $i++)
-				{
-					// Ignore elements that have no order_no or old_order_no specified.
-					if($HTTP_VARS['exists_ind'][$i] != 'Y')
-					{
-						if(strlen($HTTP_VARS['s_attribute_type'][$i])>0)
-						{
-							if(is_numeric($HTTP_VARS['old_order_no'][$i]) || is_numeric($HTTP_VARS['order_no'][$i]))
-							{
-								if(!is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i]))
-								{
-									if(!insert_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
-									{
-										$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not inserted','detail'=>db_error());
-									}
-								}
-								else
-								{
-									// Cache any records that could not be inserted.
-									$saatr_already_exists[] = array('s_attribute_type'=>$HTTP_VARS['s_attribute_type'][$i],'order_no'=>$HTTP_VARS['order_no'][$i],'prompt'=>$HTTP_VARS['prompt'][$i], 'compulsory_ind'=>$HTTP_VARS['compulsory_ind'][$i]);
+									$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not deleted','detail'=>db_error());
 								}
 							}
 							else
 							{
-								$errors[] = array('error'=>'Item Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].') not inserted','detail'=>'No order_no specified.');
+								$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not deleted','detail'=>'Dependant user address attribute(s) with the same order_no exist.');
 							}
-						}//if(strlen($HTTP_VARS['s_attribute_type'][$i])>0)
+						}
+						else // 'old_order_no' IS THE SAME as 'order_no' here!
+						{
+							// At the moment we are not checking the order_no's for items with the same type.
+							if(!update_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+							{
+								$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not updated','detail'=>db_error());
+							}
+						}
+					}
+					else
+					{
+						$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not found','detail'=>db_error());
 					}
 				}
 			}
-		}
-		else
-		{
-			$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not found', 'detail'=>'');
-		}
-	}
 
-	// Reload edit page after an update.
-	if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
-	{
-		echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
-		
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
-		
-		$address_type_r = fetch_s_address_type_r($HTTP_VARS['s_address_type']);
-		if($address_type_r!==FALSE)
-		{
-			echo("\n<h3>".$item_type_r['s_address_type']." System Address Attributes</h3>");
-			
-			if(is_not_empty_array($errors))
+			// Now do the inserts.
+			for($i=0; $i<count($HTTP_VARS['s_attribute_type']); $i++)
 			{
-				echo format_error_block($errors);
-			}
-			
-			$column_count = 6;
-			echo("\n<form name=\"s_addr_attribute_type_rltshp\" action=\"$PHP_SELF\" method=\"POST\">");
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"update\">".
-				"\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">".
-				"\n<input type=\"hidden\" name=\"s_address_type\" value=\"".$HTTP_VARS['s_address_type']."\">");
-
-			echo("<table>");
-			echo("<tr class=\"navbar\">"
-				."<th>Delete</th>"
-				."<th>Order</th>"
-				."<th colspan=2>Attribute Type</th>"
-				."<th>Prompt</th>"
-				."<th>Min Create<br />User Type</th>"
-				."<th>Min Display<br />User Type</th>"
-				."<th>Min Compulsory<br />User Type</th>"
-				."<th>Closed</th>"
-				."</tr>");	
-			
-			$sat_results = fetch_sfieldtype_attribute_type_rs('ADDRESS');
-			while($attribute_type_r = db_fetch_assoc($sat_results))
-			{
-				$s_attribute_type_list_rs[] = $attribute_type_r;
-			}
-			db_free_result($sat_results);
-	
-	        echo get_s_attribute_type_tooltip_array($s_attribute_type_list_rs);
-	        
-			$results = fetch_s_addr_attribute_type_rltshp_rs($HTTP_VARS['s_address_type']);
-			if($results)
-			{
-				// value, display, img, checked_ind, order_no
-				$row = 0;
-				while($s_addr_attribute_type_rltshp_r = db_fetch_assoc($results))
+				// Ignore elements that have no order_no or old_order_no specified.
+				if($HTTP_VARS['exists_ind'][$i] != 'Y')
 				{
-					display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], $s_addr_attribute_type_rltshp_r, $row, FALSE, $s_attribute_type_list_rs);
-					$row++;
-				}
-				db_free_result($results);
-			}
-
-			// Now display records that could not be inserted.
-			if(is_not_empty_array($saatr_already_exists))
-			{
-				while(list(,$saatr_r) = each($saatr_already_exists))
-				{
-					display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], $saatr_r, $row, TRUE, $s_attribute_type_list_rs);
-					$row++;
+					if(strlen($HTTP_VARS['s_attribute_type'][$i])>0)
+					{
+						if(is_numeric($HTTP_VARS['old_order_no'][$i]) || is_numeric($HTTP_VARS['order_no'][$i]))
+						{
+							if(!is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i]))
+							{
+								if(!insert_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+								{
+									$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not inserted','detail'=>db_error());
+								}
+							}
+							else
+							{
+								// Cache any records that could not be inserted.
+								$saatr_already_exists[] = array('s_attribute_type'=>$HTTP_VARS['s_attribute_type'][$i],'order_no'=>$HTTP_VARS['order_no'][$i],'prompt'=>$HTTP_VARS['prompt'][$i], 'compulsory_ind'=>$HTTP_VARS['compulsory_ind'][$i]);
+							}
+						}
+						else
+						{
+							$errors[] = array('error'=>'Item Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].') not inserted','detail'=>'No order_no specified.');
+						}
+					}//if(strlen($HTTP_VARS['s_attribute_type'][$i])>0)
 				}
 			}
-
-			if(is_numeric($HTTP_VARS['blank_rows']))
-				$blank_rows = (int)$HTTP_VARS['blank_rows'];
-			else
-				$blank_rows = 5;
-
-			for($i=$row; $i<$row+$blank_rows; $i++)
-			{
-				display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], array(), $i, FALSE, $s_attribute_type_list_rs);
-			}
-			echo("</table>");
-			
-			$help_entries_rs = NULL;
-			if(is_not_empty_array($saatr_already_exists))
-			{
-				$help_entries_rs[] = array('img'=>'rs.gif', 'text'=>'Duplicate Attribute Type & Order No');
-			}
-			
-			$help_entries_rs[] = array('text'=>'Entries without a <b>attribute type</b> AND <b>order no</b> specified will be ignored.');
-			echo(format_help_block($help_entries_rs));
-			
-			echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();"));
-
-			echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">
-			<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
-			
-			echo("</form>");
 		}
-		else
-		{
-			echo format_error_block('Item Type ('.$HTTP_VARS['s_address_type'].') not found');
-		}				
 	}
-	else if($HTTP_VARS['op'] == 'new_type' || $HTTP_VARS['op'] == 'insert_type')// Insert type form!
+	else
 	{
-		echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
-		
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
-			
-		echo("\n<h3>New Address Type</h3>");
-		
-		echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-		echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_type\">");
-		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-		
-		echo("\n<table>");
-		display_s_address_type_insert_form($HTTP_VARS['op']=='insert_type'?$HTTP_VARS:NULL);
-		echo("</table>");
-		
-		if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-		{
-			echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-		}
-
-		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-			echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
-		else
-			echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
-
-		echo("\n</form>");
+		$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'].') not found', 'detail'=>'');
 	}
+}
+
+// Reload edit page after an update.
+if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
+{
+	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 	
-	// There are specific operations where this form should be displayed.
-	if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types')
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
+	
+	$address_type_r = fetch_s_address_type_r($HTTP_VARS['s_address_type']);
+	if($address_type_r!==FALSE)
 	{
-		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
+		echo("\n<h3>".$item_type_r['s_address_type']." System Address Attributes</h3>");
 		
 		if(is_not_empty_array($errors))
+		{
 			echo format_error_block($errors);
-			
-		$results = fetch_s_address_type_rs();
+		}
+		
+		$column_count = 6;
+		echo("\n<form name=\"s_addr_attribute_type_rltshp\" action=\"$PHP_SELF\" method=\"POST\">");
+		echo("\n<input type=\"hidden\" name=\"op\" value=\"update\">".
+			"\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">".
+			"\n<input type=\"hidden\" name=\"s_address_type\" value=\"".$HTTP_VARS['s_address_type']."\">");
+
+		echo("<table>");
+		echo("<tr class=\"navbar\">"
+			."<th>Delete</th>"
+			."<th>Order</th>"
+			."<th colspan=2>Attribute Type</th>"
+			."<th>Prompt</th>"
+			."<th>Min Create<br />User Type</th>"
+			."<th>Min Display<br />User Type</th>"
+			."<th>Min Compulsory<br />User Type</th>"
+			."<th>Closed</th>"
+			."</tr>");	
+		
+		$sat_results = fetch_sfieldtype_attribute_type_rs('ADDRESS');
+		while($attribute_type_r = db_fetch_assoc($sat_results))
+		{
+			$s_attribute_type_list_rs[] = $attribute_type_r;
+		}
+		db_free_result($sat_results);
+
+        echo get_s_attribute_type_tooltip_array($s_attribute_type_list_rs);
+        
+		$results = fetch_s_addr_attribute_type_rltshp_rs($HTTP_VARS['s_address_type']);
 		if($results)
 		{
-			echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-
-			echo("<table>");
-			echo("<tr class=\"navbar\">"
-				."<th>Order</th>"
-				."<th>Type</th>"
-				."<th>Description</th>"
-				."<th>Min Create<br />User Type</th>"
-				."<th>Min Display<br />User Type</th>"
-				."<th>Min Compulsory<br />User Type</th>"
-				."<th>Closed</th>"
-				."<th></th>"
-				."</tr>");	
-			
 			// value, display, img, checked_ind, order_no
 			$row = 0;
-			while($address_type_r = db_fetch_assoc($results))
+			while($s_addr_attribute_type_rltshp_r = db_fetch_assoc($results))
 			{
-				display_s_address_type_row($address_type_r, $row);
+				display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], $s_addr_attribute_type_rltshp_r, $row, FALSE, $s_attribute_type_list_rs);
 				$row++;
 			}
 			db_free_result($results);
-			
-			echo("</table>");
-		
-			echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
-				"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
+		}
 
-			echo("</form>");
-		}
-		else
+		// Now display records that could not be inserted.
+		if(is_not_empty_array($saatr_already_exists))
 		{
-			echo("<p class=\"error\">No Address Types Installed</p>");
+			while(list(,$saatr_r) = each($saatr_already_exists))
+			{
+				display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], $saatr_r, $row, TRUE, $s_attribute_type_list_rs);
+				$row++;
+			}
 		}
-	}			
+
+		if(is_numeric($HTTP_VARS['blank_rows']))
+			$blank_rows = (int)$HTTP_VARS['blank_rows'];
+		else
+			$blank_rows = 5;
+
+		for($i=$row; $i<$row+$blank_rows; $i++)
+		{
+			display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], array(), $i, FALSE, $s_attribute_type_list_rs);
+		}
+		echo("</table>");
+		
+		$help_entries_rs = NULL;
+		if(is_not_empty_array($saatr_already_exists))
+		{
+			$help_entries_rs[] = array('img'=>'rs.gif', 'text'=>'Duplicate Attribute Type & Order No');
+		}
+		
+		$help_entries_rs[] = array('text'=>'Entries without a <b>attribute type</b> AND <b>order no</b> specified will be ignored.');
+		echo(format_help_block($help_entries_rs));
+		
+		echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'],"5"), FALSE, NULL, "this.form.submit();"));
+
+		echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">
+		<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
+		
+		echo("</form>");
+	}
+	else
+	{
+		echo format_error_block('Item Type ('.$HTTP_VARS['s_address_type'].') not found');
+	}				
+}
+else if($HTTP_VARS['op'] == 'new_type' || $HTTP_VARS['op'] == 'insert_type')// Insert type form!
+{
+	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
+	
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
+		
+	echo("\n<h3>New Address Type</h3>");
+	
+	echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
+
+	echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_type\">");
+	echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+	
+	echo("\n<table>");
+	display_s_address_type_insert_form($HTTP_VARS['op']=='insert_type'?$HTTP_VARS:NULL);
+	echo("</table>");
+	
+	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
+	{
+		echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
+	}
+
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+		echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+	else
+		echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
+
+	echo("\n</form>");
+}
+
+// There are specific operations where this form should be displayed.
+if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types')
+{
+	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
+	
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
+		
+	$results = fetch_s_address_type_rs();
+	if($results)
+	{
+		echo("\n<form name=\"s_address_type\" action=\"$PHP_SELF\" method=\"POST\">");
+		echo("\n<input type=\"hidden\" name=\"op\" value=\"update_types\">");
+		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+
+		echo("<table>");
+		echo("<tr class=\"navbar\">"
+			."<th>Order</th>"
+			."<th>Type</th>"
+			."<th>Description</th>"
+			."<th>Min Create<br />User Type</th>"
+			."<th>Min Display<br />User Type</th>"
+			."<th>Min Compulsory<br />User Type</th>"
+			."<th>Closed</th>"
+			."<th></th>"
+			."</tr>");	
+		
+		// value, display, img, checked_ind, order_no
+		$row = 0;
+		while($address_type_r = db_fetch_assoc($results))
+		{
+			display_s_address_type_row($address_type_r, $row);
+			$row++;
+		}
+		db_free_result($results);
+		
+		echo("</table>");
+	
+		echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit_types'; this.form.submit();\">".
+			"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_types'; this.form.submit();\">");
+
+		echo("</form>");
+	}
+	else
+	{
+		echo("<p class=\"error\">No Address Types Installed</p>");
+	}
 }
 ?>

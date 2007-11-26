@@ -18,6 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./functions/config.php");
 include_once("./functions/export.php");
 include_once("./functions/user.php");
@@ -372,74 +377,71 @@ function save_config_item($config_group_item_r, $HTTP_VARS, &$errors)
 	}
 }
 
-if(is_opendb_admin_tools())
+@set_time_limit(0);
+ 
+if(strlen($HTTP_VARS['group_id']) == 0)
 {
-	@set_time_limit(0);
+	$HTTP_VARS['group_id'] = 'site';
+}
+
+// process any updates
+if($HTTP_VARS['op'] == 'save')
+{
+	//print_r($HTTP_VARS);
+	save_config($HTTP_VARS, $errors);
+}
+
+if(is_not_empty_array($errors))
+echo format_error_block($errors);
+
+echo('<script src="./admin/config/select.js" language="JavaScript" type="text/javascript"></script>');
+
+echo("<div class=\"tabContainer\">");
+
+$config_group_rs = NULL;
+$results = fetch_s_config_group_rs();
+if($results)
+{
+	while($config_group_r = db_fetch_assoc($results))
+	{
+		$config_group_rs[] = $config_group_r;
+	}
+	db_free_result($results);
+}
+
+if(is_array($config_group_rs))
+{
+	echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
 	 
-	if(strlen($HTTP_VARS['group_id']) == 0)
+	reset($config_group_rs);
+	while(list(,$config_group_r) = each($config_group_rs))
 	{
-		$HTTP_VARS['group_id'] = 'site';
-	}
-
-	// process any updates
-	if($HTTP_VARS['op'] == 'save')
-	{
-		//print_r($HTTP_VARS);
-		save_config($HTTP_VARS, $errors);
-	}
-
-	if(is_not_empty_array($errors))
-	echo format_error_block($errors);
-
-	echo('<script src="./admin/config/select.js" language="JavaScript" type="text/javascript"></script>');
-
-	echo("<div class=\"tabContainer\">");
-
-	$config_group_rs = NULL;
-	$results = fetch_s_config_group_rs();
-	if($results)
-	{
-		while($config_group_r = db_fetch_assoc($results))
+		if($config_group_r['id'] == $HTTP_VARS['group_id'])
 		{
-			$config_group_rs[] = $config_group_r;
+			echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
 		}
-		db_free_result($results);
+		else
+		{
+			echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";
+		}
 	}
+	db_free_result($results);
+		
+	echo("\n</ul>");
 
-	if(is_array($config_group_rs))
+	echo("<div id=\"tab-content\">");
+		
+	reset($config_group_rs);
+	while(list(,$config_group_r) = each($config_group_rs))
 	{
-		echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
-		 
-		reset($config_group_rs);
-		while(list(,$config_group_r) = each($config_group_rs))
+		if($config_group_r['id'] == $HTTP_VARS['group_id'])
 		{
-			if($config_group_r['id'] == $HTTP_VARS['group_id'])
-			{
-				echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
-			}
-			else
-			{
-				echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";
-			}
+			echo get_group_block($config_group_r);
+			break;
 		}
-		db_free_result($results);
-			
-		echo("\n</ul>");
-
-		echo("<div id=\"tab-content\">");
-			
-		reset($config_group_rs);
-		while(list(,$config_group_r) = each($config_group_rs))
-		{
-			if($config_group_r['id'] == $HTTP_VARS['group_id'])
-			{
-				echo get_group_block($config_group_r);
-				break;
-			}
-		}
-		echo("</div>");
 	}
-
 	echo("</div>");
 }
+
+echo("</div>");
 ?>

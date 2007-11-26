@@ -21,6 +21,11 @@
 		This backup code is based on the "dump" feature from the phpMyAdmin project.
 */
 
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./functions/user.php");
 include_once("./functions/widgets.php");
 include_once("./functions/http.php");

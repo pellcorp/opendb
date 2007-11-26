@@ -18,6 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./functions/item_type.php");
 include_once("./functions/item_type_group.php");
 
@@ -56,196 +61,193 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 	echo("</tr>");
 }
 
-if(is_opendb_admin_tools())
+if(strlen($HTTP_VARS['op'])==0)
+	$HTTP_VARS['op'] = 'edit_item_type_groups';
+
+if($HTTP_VARS['op'] == 'delete_item_type_group')
 {
-	if(strlen($HTTP_VARS['op'])==0)
-		$HTTP_VARS['op'] = 'edit_item_type_groups';
-
-	if($HTTP_VARS['op'] == 'delete_item_type_group')
+	$item_type_group_r = fetch_item_type_group_r($HTTP_VARS['s_item_type_group']);
+	if(is_not_empty_array($item_type_group_r))
 	{
-		$item_type_group_r = fetch_item_type_group_r($HTTP_VARS['s_item_type_group']);
-		if(is_not_empty_array($item_type_group_r))
+		if($HTTP_VARS['confirmed'] == 'false')
 		{
-			if($HTTP_VARS['confirmed'] == 'false')
-			{
-				// return to edit form
-				$HTTP_VARS['op'] = 'edit_item_type_groups';
-			}
-			else
-			{
-				if($HTTP_VARS['confirmed'] != 'true')
-				{
-					echo "<h3>Delete Item Type Group</h3>";
-
-					echo get_op_confirm_form(
-						$PHP_SELF,
-						'Are you sure you want to delete Item Type Group '.$HTTP_VARS['s_item_type_group'].'?',
-						$HTTP_VARS);
-				}
-				else// $HTTP_VARS['confirmed'] == 'true'
-				{
-					if(delete_s_item_type_group_rltshp($HTTP_VARS['s_item_type_group']))
-					{
-						if(!delete_s_item_type_group($HTTP_VARS['s_item_type_group']))
-							$errors[] = array('error'=>'Item Type Group not deleted','detail'=>db_error());
-					}
-					else
-					{
-						$errors[] = array('error'=>'Item Type Group not deleted','detail'=>db_error());
-					}
-
-					$HTTP_VARS['op'] = 'edit_item_type_groups';
-				}
-			}
+			// return to edit form
+			$HTTP_VARS['op'] = 'edit_item_type_groups';
 		}
 		else
 		{
-			$errors[] = array('error'=>'Item Type Group not found');
-			$HTTP_VARS['op'] = 'edit_item_type_groups';
-		}
-	}
-	else if($HTTP_VARS['op'] == 'update_item_type_groups')
-	{
-		if(is_not_empty_array($HTTP_VARS['exists_ind']))
-		{
-			for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
+			if($HTTP_VARS['confirmed'] != 'true')
 			{
-				if(strlen($HTTP_VARS['s_item_type_group'][$i])>0 && strlen($HTTP_VARS['description'][$i])>0)
-				{
-					if($HTTP_VARS['exists_ind'][$i] == 'N')
-					{
-						$HTTP_VARS['s_item_type_group'][$i] = strtoupper(preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_item_type_group'][$i]))));
-						if(!insert_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i], ifempty($HTTP_VARS['system_ind'][$i], 'N')))
-							$errors[] = array('error'=>'Item Type Group not inserted','detail'=>db_error());
-					}
-					else
-					{
-						if(!update_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i], ifempty($HTTP_VARS['system_ind'][$i], 'N')))
-							$errors[] = array('error'=>'Item Type Group not updated','detail'=>db_error());
-					}
-				}
-			}
-		}
-			
-		$HTTP_VARS['op'] = 'edit_item_type_groups';
-	}
-	else if($HTTP_VARS['op'] == 'update_item_type_group_rltshps')
-	{
-		$results = fetch_s_item_type_join_sitgr_rs($HTTP_VARS['s_item_type_group']);
-		if($results)
-		{
-			while($item_type_r = db_fetch_assoc($results))
-			{
-				$key = array_search2($item_type_r['s_item_type'],$HTTP_VARS['s_item_type']);
+				echo "<h3>Delete Item Type Group</h3>";
 
-				if($item_type_r['exists_ind'] == 'Y')
+				echo get_op_confirm_form(
+					$PHP_SELF,
+					'Are you sure you want to delete Item Type Group '.$HTTP_VARS['s_item_type_group'].'?',
+					$HTTP_VARS);
+			}
+			else// $HTTP_VARS['confirmed'] == 'true'
+			{
+				if(delete_s_item_type_group_rltshp($HTTP_VARS['s_item_type_group']))
 				{
-					if($key===FALSE) // only if no longer checked, should we delete
-					{
-						if(!delete_s_item_type_group_rltshp($HTTP_VARS['s_item_type_group'], $item_type_r['s_item_type']))
-							$errors[] = array('error'=>'Item Type Group Relationship not deleted','detail'=>db_error());
-					}
+					if(!delete_s_item_type_group($HTTP_VARS['s_item_type_group']))
+						$errors[] = array('error'=>'Item Type Group not deleted','detail'=>db_error());
 				}
 				else
 				{
-					if($key!==FALSE)
-					{
-						if(!insert_s_item_type_group_rltshp($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type'][$key]))
-							$errors[] = array('error'=>'Item Type Group Relationship not inserted','detail'=>db_error());
-					}
+					$errors[] = array('error'=>'Item Type Group not deleted','detail'=>db_error());
+				}
+
+				$HTTP_VARS['op'] = 'edit_item_type_groups';
+			}
+		}
+	}
+	else
+	{
+		$errors[] = array('error'=>'Item Type Group not found');
+		$HTTP_VARS['op'] = 'edit_item_type_groups';
+	}
+}
+else if($HTTP_VARS['op'] == 'update_item_type_groups')
+{
+	if(is_not_empty_array($HTTP_VARS['exists_ind']))
+	{
+		for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
+		{
+			if(strlen($HTTP_VARS['s_item_type_group'][$i])>0 && strlen($HTTP_VARS['description'][$i])>0)
+			{
+				if($HTTP_VARS['exists_ind'][$i] == 'N')
+				{
+					$HTTP_VARS['s_item_type_group'][$i] = strtoupper(preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_item_type_group'][$i]))));
+					if(!insert_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i], ifempty($HTTP_VARS['system_ind'][$i], 'N')))
+						$errors[] = array('error'=>'Item Type Group not inserted','detail'=>db_error());
+				}
+				else
+				{
+					if(!update_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i], ifempty($HTTP_VARS['system_ind'][$i], 'N')))
+						$errors[] = array('error'=>'Item Type Group not updated','detail'=>db_error());
 				}
 			}
 		}
-		$HTTP_VARS['op'] = 'edit_item_type_group_rltshps';
+	}
+		
+	$HTTP_VARS['op'] = 'edit_item_type_groups';
+}
+else if($HTTP_VARS['op'] == 'update_item_type_group_rltshps')
+{
+	$results = fetch_s_item_type_join_sitgr_rs($HTTP_VARS['s_item_type_group']);
+	if($results)
+	{
+		while($item_type_r = db_fetch_assoc($results))
+		{
+			$key = array_search2($item_type_r['s_item_type'],$HTTP_VARS['s_item_type']);
+
+			if($item_type_r['exists_ind'] == 'Y')
+			{
+				if($key===FALSE) // only if no longer checked, should we delete
+				{
+					if(!delete_s_item_type_group_rltshp($HTTP_VARS['s_item_type_group'], $item_type_r['s_item_type']))
+						$errors[] = array('error'=>'Item Type Group Relationship not deleted','detail'=>db_error());
+				}
+			}
+			else
+			{
+				if($key!==FALSE)
+				{
+					if(!insert_s_item_type_group_rltshp($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type'][$key]))
+						$errors[] = array('error'=>'Item Type Group Relationship not inserted','detail'=>db_error());
+				}
+			}
+		}
+	}
+	$HTTP_VARS['op'] = 'edit_item_type_group_rltshps';
+}
+
+if($HTTP_VARS['op'] == 'edit_item_type_groups')
+{
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
+
+	echo("\n<form name=\"s_item_type_group\" action=\"$PHP_SELF\" method=\"POST\">");
+	echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
+	echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+
+	echo("<table>");
+	echo("\n<tr class=\"navbar\">"
+	."\n<th>Group</th>"
+	."\n<th>Description</th>"
+	."\n<th>System<br />Indicator</th>"
+	."\n<th></th>"
+	."\n</tr>");
+	$column_count = 4;
+
+	$results = fetch_s_item_type_group_rs();
+	if($results)
+	{
+		$row = 0;
+		while($item_type_group_r = db_fetch_assoc($results))
+		{
+			display_s_item_type_group_row($item_type_group_r, $row);
+
+			$row++;
+		}
+		db_free_result($results);
 	}
 
-	if($HTTP_VARS['op'] == 'edit_item_type_groups')
+	if(is_numeric($HTTP_VARS['blank_rows']))
+		$blank_rows = (int)$HTTP_VARS['blank_rows'];
+	else
+		$blank_rows = 5;
+
+	for($i=$row; $i<$row+$blank_rows; $i++)
 	{
+		display_s_item_type_group_row(array(), $i);
+	}
+	echo("</table>");
+
+	echo(format_help_block(
+	array('If System Indicator is checked item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
+		'If System Indicator is not checked item types can be treated as groups for item listings filters only.')));
+
+	echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();"));
+
+	echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
+	echo("<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_item_type_groups'; this.form.submit();\">");
+
+	echo("</form>");
+}
+else if($HTTP_VARS['op'] == 'edit_item_type_group_rltshps')
+{
+	$item_type_group_r = fetch_item_type_group_r($HTTP_VARS['s_item_type_group']);
+	if(is_not_empty_array($item_type_group_r))
+	{
+		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Main</a>]</div>");
+
+		echo("\n<h3>Edit ".$HTTP_VARS['s_item_type_group']." Item Type Group Relationships</h3>");
+
 		if(is_not_empty_array($errors))
 			echo format_error_block($errors);
 
-		echo("\n<form name=\"s_item_type_group\" action=\"$PHP_SELF\" method=\"POST\">");
-		echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
-		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-
-		echo("<table>");
-		echo("\n<tr class=\"navbar\">"
-		."\n<th>Group</th>"
-		."\n<th>Description</th>"
-		."\n<th>System<br />Indicator</th>"
-		."\n<th></th>"
-		."\n</tr>");
-		$column_count = 4;
-
-		$results = fetch_s_item_type_group_rs();
+		$results = fetch_s_item_type_join_sitgr_rs($HTTP_VARS['s_item_type_group']);
 		if($results)
 		{
-			$row = 0;
-			while($item_type_group_r = db_fetch_assoc($results))
-			{
-				display_s_item_type_group_row($item_type_group_r, $row);
+			echo("\n<form name=\"editform\" action=\"$PHP_SELF\" method=\"POST\">");
+			echo("\n<input type=\"hidden\" name=\"op\" value=\"update_item_type_group_rltshps\">");
+			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+			echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
 
-				$row++;
+			echo("<ul class=\"itemTypes\">");
+			while($item_type_r = db_fetch_assoc($results))
+			{
+				echo("<li>".
+					"<input type=\"checkbox\" class=\"checkbox\" name=\"s_item_type[]\" value=\"".$item_type_r['s_item_type']."\"".($item_type_r['exists_ind']=='Y'?'CHECKED':'').">".
+					$item_type_r['s_item_type'].
+					"</li>");
 			}
 			db_free_result($results);
-		}
-
-		if(is_numeric($HTTP_VARS['blank_rows']))
-			$blank_rows = (int)$HTTP_VARS['blank_rows'];
-		else
-			$blank_rows = 5;
-
-		for($i=$row; $i<$row+$blank_rows; $i++)
-		{
-			display_s_item_type_group_row(array(), $i);
-		}
-		echo("</table>");
-
-		echo(format_help_block(
-		array('If System Indicator is checked item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
-			'If System Indicator is not checked item types can be treated as groups for item listings filters only.')));
-
-		echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();"));
-
-		echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
-		echo("<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_item_type_groups'; this.form.submit();\">");
-
-		echo("</form>");
-	}
-	else if($HTTP_VARS['op'] == 'edit_item_type_group_rltshps')
-	{
-		$item_type_group_r = fetch_item_type_group_r($HTTP_VARS['s_item_type_group']);
-		if(is_not_empty_array($item_type_group_r))
-		{
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Main</a>]</div>");
-
-			echo("\n<h3>Edit ".$HTTP_VARS['s_item_type_group']." Item Type Group Relationships</h3>");
-
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
-
-			$results = fetch_s_item_type_join_sitgr_rs($HTTP_VARS['s_item_type_group']);
-			if($results)
-			{
-				echo("\n<form name=\"editform\" action=\"$PHP_SELF\" method=\"POST\">");
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"update_item_type_group_rltshps\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-				echo("\n<input type=\"hidden\" name=\"s_item_type_group\" value=\"".$HTTP_VARS['s_item_type_group']."\">");
-
-				echo("<ul class=\"itemTypes\">");
-				while($item_type_r = db_fetch_assoc($results))
-				{
-					echo("<li>".
-						"<input type=\"checkbox\" class=\"checkbox\" name=\"s_item_type[]\" value=\"".$item_type_r['s_item_type']."\"".($item_type_r['exists_ind']=='Y'?'CHECKED':'').">".
-						$item_type_r['s_item_type'].
-						"</li>");
-				}
-				db_free_result($results);
-				echo("</ul>");
-					
-				echo("<input type=\"submit\" class=\"submit\" value=\"Update\">");
-				echo("</form>");
-			}
+			echo("</ul>");
+				
+			echo("<input type=\"submit\" class=\"submit\" value=\"Update\">");
+			echo("</form>");
 		}
 	}
 }

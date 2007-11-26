@@ -17,6 +17,12 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+
+if(!defined('OPENDB_ADMIN_TOOLS'))
+{
+	die('Admin tools not accessible directly');
+}
+
 include_once("./functions/install.php");
 
 /**
@@ -102,50 +108,47 @@ function validate_sql_script($patchdir, $sqlfile)
 		return FALSE;
 }
 
-if(is_opendb_admin_tools())
+@set_time_limit(600);
+	
+if($HTTP_VARS['op'] == 'previewsql')
 {
-	@set_time_limit(600);
-		
-	if($HTTP_VARS['op'] == 'previewsql')
+	echo("<html>");
+	echo("\n<head>");
+	echo("\n<title>".get_opendb_config_var('site', 'title')." ".get_opendb_version()." - ".$HTTP_VARS['title']."</title>");
+
+	if(file_exists('./theme/default/style.css'))
+	echo("\n<link rel=stylesheet type=\"text/css\" href=\"./theme/default/style.css\">");
+	echo("\n<style type=\"text/css\">");
+	echo (
+			"\n.code 			{ color: black; font-family: courier; font-size:small }");
+	echo("\n</style>");
+	echo("\n</head><body>");
+
+	if(($file = validate_sql_script($HTTP_VARS['patchdir'], $HTTP_VARS['sqlfile']))!==FALSE)
 	{
-		echo("<html>");
-		echo("\n<head>");
-		echo("\n<title>".get_opendb_config_var('site', 'title')." ".get_opendb_version()." - ".$HTTP_VARS['title']."</title>");
+		echo_install_sql_file($file);
+	}
 
-		if(file_exists('./theme/default/style.css'))
-		echo("\n<link rel=stylesheet type=\"text/css\" href=\"./theme/default/style.css\">");
-		echo("\n<style type=\"text/css\">");
-		echo (
-				"\n.code 			{ color: black; font-family: courier; font-size:small }");
-		echo("\n</style>");
-		echo("\n</head><body>");
-
+	echo("\n</body></html>");
+}
+else
+{
+	if($HTTP_VARS['op'] == 'installsql')
+	{
 		if(($file = validate_sql_script($HTTP_VARS['patchdir'], $HTTP_VARS['sqlfile']))!==FALSE)
 		{
-			echo_install_sql_file($file);
-		}
-
-		echo("\n</body></html>");
-	}
-	else
-	{
-		if($HTTP_VARS['op'] == 'installsql')
-		{
-			if(($file = validate_sql_script($HTTP_VARS['patchdir'], $HTTP_VARS['sqlfile']))!==FALSE)
+			if(exec_install_sql_file($file, $error))
 			{
-				if(exec_install_sql_file($file, $error))
-				{
-					echo("<div class=\"smsuccess\">SQL script executed successfully.</div>");
-				}
-				else
-				{
-					echo format_error_block($error);
-				}
+				echo("<div class=\"smsuccess\">SQL script executed successfully.</div>");
+			}
+			else
+			{
+				echo format_error_block($error);
 			}
 		}
+	}
 
-		display_patch_list('Customise for Country', 'country');
-		display_patch_list('Miscelleous Updates', 'extras');
-	}//if($HTTP_VARS['op'] == 'patch')
-}
+	display_patch_list('Customise for Country', 'country');
+	display_patch_list('Miscelleous Updates', 'extras');
+}//if($HTTP_VARS['op'] == 'patch')
 ?>

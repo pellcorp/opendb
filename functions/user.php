@@ -278,8 +278,6 @@ function user_type_cmp($old_user_type, $new_user_type)
 		return FALSE;
 }
 
-/*
-*/
 function is_user_active($uid)
 {
 	$query = "SELECT active_ind FROM user WHERE user_id = '$uid'";
@@ -337,52 +335,44 @@ function is_exist_users_not_activated()
 	return FALSE;
 }
 
-//
-// Will return true if $uid is an admin user.
-//
-function is_user_admin($uid, $type = NULL)
+function is_user_admin($uid = NULL, $type = NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
+		$type = get_opendb_session_var('user_type');
+			
 	if ($type == 'A')
 		return TRUE;
 	else
 		return FALSE;
 }
 
-//
-// Will return true if $uid is an admin user.
-//
-function is_user_borrower($uid, $type = NULL)
+function is_user_borrower($uid = NULL, $type = NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
+		$type = get_opendb_session_var('user_type');
+			
 	if ($type == 'B')
 		return TRUE;
 	else
 		return FALSE;
 }
 
-//
-// Will return true if $uid is a guest user.
-//
-function is_user_guest($uid, $type = NULL)
+function is_user_guest($uid = NULL, $type = NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
+		$type = get_opendb_session_var('user_type');
+
 	if ($type == 'G')
 		return TRUE;
 	else
 		return FALSE;
 }
 
-//
-// Will return true if $uid is normal user.
-//
-function is_user_normal($uid, $type = NULL)
+function is_user_normal($uid = NULL, $type = NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
+		$type = get_opendb_session_var('user_type');
+		
 	if ($type == 'N')
 		return TRUE;
 	else

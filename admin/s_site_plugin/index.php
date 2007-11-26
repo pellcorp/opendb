@@ -569,95 +569,399 @@ function generate_site_plugin_sql($site_type_r)
 	return $buffer;
 }
 
-session_start();
-if (is_opendb_valid_session())
-{ 
-	if (is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-	{
-		// default.
-		if(strlen($HTTP_VARS['op'])==0)
-			$HTTP_VARS['op'] = 'list_site_plugins';
+if(is_opendb_admin_tools())
+{
+	if(strlen($HTTP_VARS['op'])==0)
+		$HTTP_VARS['op'] = 'list_site_plugins';
 		
-		if($HTTP_VARS['op'] == 'insert_site_plugin')
+	if($HTTP_VARS['op'] == 'insert_site_plugin')
+	{
+		if(!is_exists_site_plugin($HTTP_VARS['site_type'], FALSE))
 		{
-			if(!is_exists_site_plugin($HTTP_VARS['site_type'], FALSE))
+			// first of all we need to derive the order_no
+			$max_order_no = fetch_max_site_plugin_order_no();
+			if($max_order_no!==FALSE && is_numeric($max_order_no))
+				$order_no = $max_order_no + 1;
+			else
+				$order_no = 1; // first plugin
+				
+			if(insert_s_site_plugin($HTTP_VARS['site_type'], $HTTP_VARS['classname'], $order_no, $HTTP_VARS['title'], $HTTP_VARS['image'], $HTTP_VARS['description'], $HTTP_VARS['external_url'], $HTTP_VARS['items_per_page'], $HTTP_VARS['more_info_url']))
 			{
-				// first of all we need to derive the order_no
-				$max_order_no = fetch_max_site_plugin_order_no();
-				if($max_order_no!==FALSE && is_numeric($max_order_no))
-					$order_no = $max_order_no + 1;
-				else
-					$order_no = 1; // first plugin
-					
-				if(insert_s_site_plugin($HTTP_VARS['site_type'], $HTTP_VARS['classname'], $order_no, $HTTP_VARS['title'], $HTTP_VARS['image'], $HTTP_VARS['description'], $HTTP_VARS['external_url'], $HTTP_VARS['items_per_page'], $HTTP_VARS['more_info_url']))
-				{
-					// return to edit form, so rest of site plugin information can be populated.
-					$HTTP_VARS['op'] = 'list_site_plugins';
-				}
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin not inserted','detail'=>db_error());
-					$HTTP_VARS['op'] = 'new_site_plugin';
-				}
+				// return to edit form, so rest of site plugin information can be populated.
+				$HTTP_VARS['op'] = 'list_site_plugins';
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin exists','detail'=>db_error());
+				$errors[] = array('error'=>'Site Plugin not inserted','detail'=>db_error());
 				$HTTP_VARS['op'] = 'new_site_plugin';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'update_site_plugin')
+		else
 		{
-			if(is_exists_site_plugin($HTTP_VARS['site_type'], FALSE))
+			$errors[] = array('error'=>'Site Plugin exists','detail'=>db_error());
+			$HTTP_VARS['op'] = 'new_site_plugin';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin')
+	{
+		if(is_exists_site_plugin($HTTP_VARS['site_type'], FALSE))
+		{
+			if(!update_s_site_plugin($HTTP_VARS['site_type'], $HTTP_VARS['classname'], FALSE, $HTTP_VARS['title'], $HTTP_VARS['image'], $HTTP_VARS['description'], $HTTP_VARS['external_url'], $HTTP_VARS['items_per_page'], $HTTP_VARS['more_info_url']))
 			{
-				if(!update_s_site_plugin($HTTP_VARS['site_type'], $HTTP_VARS['classname'], FALSE, $HTTP_VARS['title'], $HTTP_VARS['image'], $HTTP_VARS['description'], $HTTP_VARS['external_url'], $HTTP_VARS['items_per_page'], $HTTP_VARS['more_info_url']))
+				$errors[] = array('error'=>'Site Plugin not updated','detail'=>db_error());
+			}
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found.', 'detail'=>'');
+		}							
+		
+		// at the end return to list site plugins
+		$HTTP_VARS['op'] = 'list_site_plugins';
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugins')
+	{
+		if(is_not_empty_array($HTTP_VARS['order_no']))
+		{
+			for($i=0; $i<count($HTTP_VARS['order_no']); $i++)
+			{
+				if(strlen($HTTP_VARS['order_no'][$i])>0)
 				{
-					$errors[] = array('error'=>'Site Plugin not updated','detail'=>db_error());
-				}
+					if(!update_s_site_plugin($HTTP_VARS['site_type'][$i], FALSE, $HTTP_VARS['order_no'][$i], FALSE, FALSE, FALSE, FALSE, FALSE, FALSE))
+						$errors[] = array('error'=>'Site Plugin Link not updated','detail'=>db_error());
+				}//else ignore
+			}
+		}
+			
+		// return to edit mode
+		$HTTP_VARS['op'] = 'list_site_plugins';
+	}
+	else if($HTTP_VARS['op'] == 'delete')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			if($HTTP_VARS['confirmed'] == 'false')
+			{
+				// return to edit form
+				$HTTP_VARS['op'] = 'list_site_plugins';
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found.', 'detail'=>'');
-			}							
-			
-			// at the end return to list site plugins
+				if($HTTP_VARS['confirmed'] != 'true')
+				{
+					// Get the theme specific source of the image.
+					echo "<h3>Delete Site Plugin</h3>";
+				
+					$op_confirm_prompt .= "Are you sure you want to delete Site Plugin \"".$site_plugin_r['site_type']." - ".$site_plugin_r['title']."\"?";
+					echo get_op_confirm_form(
+							$PHP_SELF, 
+							$op_confirm_prompt,
+							$HTTP_VARS);
+				}
+				else // $HTTP_VARS['confirmed'] == 'true'
+				{
+					// perform the delete process.
+					delete_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type']);
+					delete_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type']);
+					delete_s_site_plugin_input_field($HTTP_VARS['site_type']);
+					delete_s_site_plugin_link($HTTP_VARS['site_type']);
+					delete_s_site_plugin_conf($HTTP_VARS['site_type']);
+					delete_s_site_plugin($HTTP_VARS['site_type']);
+					
+					// return to edit form
+					$HTTP_VARS['op'] = 'list_site_plugins';
+				}
+			}
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
 			$HTTP_VARS['op'] = 'list_site_plugins';
 		}
-		else if($HTTP_VARS['op'] == 'update_site_plugins')
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin_item_types')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
 		{
-			if(is_not_empty_array($HTTP_VARS['order_no']))
+			$results = fetch_site_attribute_type_rs($HTTP_VARS['site_type']);
+			if($results)
 			{
-				for($i=0; $i<count($HTTP_VARS['order_no']); $i++)
+				$site_attribute_type_r = array();
+				while($site_plugin_attribute_type_r = db_fetch_assoc($results))
 				{
-					if(strlen($HTTP_VARS['order_no'][$i])>0)
+					$site_attribute_type_r[] = $site_plugin_attribute_type_r['s_attribute_type'];
+				}
+				db_free_result($results);
+			}
+			
+			if(is_not_empty_array($site_attribute_type_r))
+			{
+				if(is_not_empty_array($HTTP_VARS['s_item_type']))
+				{
+					reset($HTTP_VARS['s_item_type']);
+					while(list($v_s_item_type, $value) = each($HTTP_VARS['s_item_type']))
 					{
-						if(!update_s_site_plugin($HTTP_VARS['site_type'][$i], FALSE, $HTTP_VARS['order_no'][$i], FALSE, FALSE, FALSE, FALSE, FALSE, FALSE))
-							$errors[] = array('error'=>'Site Plugin Link not updated','detail'=>db_error());
+						if(is_exists_item_type($v_s_item_type))
+						{
+							// now we need to transfer in 
+							if($value == 'exclude')
+							{
+								$site_item_attribute_type_rs = array();
+								// so this is the list of attributes currently attached to the s_item_type
+								$results2 = fetch_site_item_attribute_type_rs($HTTP_VARS['site_type'], $v_s_item_type);
+								if($results2)
+								{
+									while($attribute_type_r = db_fetch_assoc($results2))
+									{
+										$site_item_attribute_type_rs[] = $attribute_type_r;
+									}
+									db_free_result($results2);
+								}
+								
+								$delete = TRUE;
+								reset($site_item_attribute_type_rs);
+								while(list(,$site_item_attribute_type_r) = each($site_item_attribute_type_rs))
+								{
+									if(!is_s_item_attribute_type_deletable($v_s_item_type, $site_item_attribute_type_r['s_attribute_type'], $site_item_attribute_type_r['order_no']))
+									{
+										$errors[] = array('error'=>'Dependent Item Attribute records exist','detail'=>'s_item_type='.$v_s_item_type.', s_attribute_type='.$site_item_attribute_type_r['s_attribute_type'].', order_no='.$site_item_attribute_type_r['order_no']);
+										$delete = FALSE;
+									}
+								}
+								
+								if($delete)
+								{
+									reset($site_item_attribute_type_rs);
+									while(list(,$site_item_attribute_type_r) = each($site_item_attribute_type_rs))
+									{
+										if(!delete_s_item_attribute_type($v_s_item_type, $site_item_attribute_type_r['s_attribute_type'], $site_item_attribute_type_r['order_no']))
+											$errors[] = array('error'=>'System Item Attribute Type (s_item_type='.$v_s_item_type.', s_attribute_type='.$site_item_attribute_type_r['s_attribute_type'].', order_no='.$site_item_attribute_type_r['order_no'].') not deleted','detail'=>db_error());
+									}
+								}
+							}
+							else if($value == 'include')
+							{
+								for($i=0; $i<count($site_attribute_type_r); $i++)
+								{
+									if(!is_exists_item_attribute_type($v_s_item_type, $site_attribute_type_r[$i], 0))
+									{
+										if(!insert_s_item_attribute_type($v_s_item_type, $site_attribute_type_r[$i], 0, NULL, 'N', 'N', 'N', 'N'))
+											$errors[] = array('error'=>'System Item Attribute Type (s_item_type='.$v_s_item_type.', s_attribute_type='.$site_item_attribute_type_r['s_attribute_type'].', order_no='.$site_attribute_type_r['order_no'].') not inserted','detail'=>db_error());
+									}
+								}
+							}
+						}
+					}
+				}//if(is_not_empty_array($HTTP_VARS['s_item_type']))
+				
+				// return to edit mode
+				$HTTP_VARS['op'] = 'edit_site_plugin_item_types';
+			
+			}//if(is_not_empty_array($site_attribute_type_r))
+			else
+			{
+				$errors[] = array('error'=>'Site Plugin attribute type\'s not found');
+				$HTTP_VARS['op'] = 'list_site_plugins';
+			}
+		}//if(is_not_empty_array($site_plugin_r))
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin_links')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			if(is_not_empty_array($HTTP_VARS['exists_ind']))
+			{
+				for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
+				{
+					if(strlen($HTTP_VARS['s_item_type_group'][$i])>0 && strlen($HTTP_VARS['s_item_type'][$i])>0 && is_numeric($HTTP_VARS['order_no'][$i]) && strlen($HTTP_VARS['description'][$i])>0 && (strlen($HTTP_VARS['url'][$i])>0 || strlen($HTTP_VARS['title_url'][$i])>0))
+					{
+						if($HTTP_VARS['exists_ind'][$i] == 'N')
+						{
+							if(!insert_s_site_plugin_link($HTTP_VARS['site_type'], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['url'][$i], $HTTP_VARS['title_url'][$i]))
+								$errors[] = array('error'=>'Site Plugin Link not inserted','detail'=>db_error());
+						}
+						else if(is_numeric($HTTP_VARS['sequence_number'][$i]))
+						{
+							if(!update_s_site_plugin_link($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number'][$i], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['url'][$i], $HTTP_VARS['title_url'][$i]))
+								$errors[] = array('error'=>'Site Plugin Link not updated','detail'=>db_error());
+						}
+					}//else ignore
+				}
+			}
+			
+			// return to edit mode
+			$HTTP_VARS['op'] = 'edit_site_plugin_links';
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin_confs')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			if(is_not_empty_array($HTTP_VARS['exists_ind']))
+			{
+				for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
+				{
+					if(strlen($HTTP_VARS['name'][$i])>0 && strlen($HTTP_VARS['keyid'][$i])>0)
+					{
+						if($HTTP_VARS['exists_ind'][$i] == 'N')
+						{
+							if(!insert_s_site_plugin_conf($HTTP_VARS['site_type'], $HTTP_VARS['name'][$i], $HTTP_VARS['keyid'][$i], $HTTP_VARS['value'][$i], $HTTP_VARS['description'][$i]))
+								$errors[] = array('error'=>'Site Plugin Configuration not inserted','detail'=>db_error());
+						}
+						else
+						{
+							if(!update_s_site_plugin_conf($HTTP_VARS['site_type'], $HTTP_VARS['name'][$i], $HTTP_VARS['keyid'][$i], $HTTP_VARS['value'][$i], $HTTP_VARS['description'][$i]))
+								$errors[] = array('error'=>'Site Plugin Configuration not updated','detail'=>db_error());
+						}
 					}//else ignore
 				}
 			}
 				
 			// return to edit mode
+			$HTTP_VARS['op'] = 'edit_site_plugin_confs';
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
 			$HTTP_VARS['op'] = 'list_site_plugins';
 		}
-		else if($HTTP_VARS['op'] == 'delete')
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin_input_fields')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
+			if(is_not_empty_array($HTTP_VARS['exists_ind']))
+			{
+				for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
+				{
+					if(strlen($HTTP_VARS['field'][$i])>0 && strlen($HTTP_VARS['order_no'][$i])>0)
+					{
+						if($HTTP_VARS['exists_ind'][$i] == 'N')
+						{
+							if(!insert_s_site_plugin_input_field($HTTP_VARS['site_type'], $HTTP_VARS['field'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['field_type'][$i], $HTTP_VARS['default_value'][$i], $HTTP_VARS['refresh_mask'][$i]))
+								$errors[] = array('error'=>'Site Plugin Input Field not inserted','detail'=>db_error());
+						}
+						else
+						{
+							if(!update_s_site_plugin_input_field($HTTP_VARS['site_type'], $HTTP_VARS['field'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['field_type'][$i], $HTTP_VARS['default_value'][$i], $HTTP_VARS['refresh_mask'][$i]))
+								$errors[] = array('error'=>'Site Plugin Input Field not updated','detail'=>db_error());
+						}
+					}//else ignore
+				}
+			}
+				
+			// return to edit mode
+			$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin_s_attribute_type_maps')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			if(is_not_empty_array($HTTP_VARS['exists_ind']))
+			{
+				for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
+				{
+					if(strlen($HTTP_VARS['variable'][$i])>0 && strlen($HTTP_VARS['s_item_type_group'][$i])>0 && strlen($HTTP_VARS['s_item_type'][$i])>0 && strlen($HTTP_VARS['s_attribute_type'][$i])>0)
+					{
+						if($HTTP_VARS['exists_ind'][$i] == 'N')
+						{
+							if(!insert_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type'], $HTTP_VARS['variable'][$i], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['lookup_attribute_val_restrict_ind'][$i]))
+								$errors[] = array('error'=>'Site Plugin Attribute Type Map not inserted','detail'=>db_error());
+						}
+						else if(is_numeric($HTTP_VARS['sequence_number'][$i]))
+						{
+							if(!update_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number'][$i], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['lookup_attribute_val_restrict_ind'][$i]))
+								$errors[] = array('error'=>'Site Plugin Attribute Type Map not updated','detail'=>db_error());
+						}
+					}//else ignore
+				}
+			}
+				
+			// return to edit mode
+			$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update_site_plugin_s_attribute_type_lookup_maps')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			if(is_not_empty_array($HTTP_VARS['s_attribute_type']))
+			{
+				for($i=0; $i<count($HTTP_VARS['s_attribute_type']); $i++)
+				{
+					if(strlen($HTTP_VARS['s_attribute_type'][$i])>0 && strlen($HTTP_VARS['value'][$i])>0 && strlen($HTTP_VARS['lookup_attribute_val'][$i])>0)
+					{
+						if($HTTP_VARS['exists_ind'][$i] == 'N')
+						{
+							if(!insert_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['value'][$i], $HTTP_VARS['lookup_attribute_val'][$i]))
+								$errors[] = array('error'=>'Site Plugin Lookup Attribute Type Map not inserted','detail'=>db_error());
+						}
+						else if(is_numeric($HTTP_VARS['sequence_number'][$i]))
+						{
+							if(!update_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number'][$i], $HTTP_VARS['lookup_attribute_val'][$i]))
+								$errors[] = array('error'=>'Site Plugin Lookup Attribute Type Map not updated','detail'=>db_error());
+						}
+					}//else ignore
+				}
+			}
+			
+			// return to edit mode
+			$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
+		}
+		else
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'delete_site_plugin_link')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			$site_plugin_link_r = fetch_site_plugin_link_r($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
+			if(is_not_empty_array($site_plugin_link_r))
 			{
 				if($HTTP_VARS['confirmed'] == 'false')
 				{
-					// return to edit form
-					$HTTP_VARS['op'] = 'list_site_plugins';
+					// return to edit mode
+					$HTTP_VARS['op'] = 'edit_site_plugin_links';
 				}
 				else
 				{
 					if($HTTP_VARS['confirmed'] != 'true')
 					{
-						// Get the theme specific source of the image.
-						echo "<h3>Delete Site Plugin</h3>";
-					
-						$op_confirm_prompt .= "Are you sure you want to delete Site Plugin \"".$site_plugin_r['site_type']." - ".$site_plugin_r['title']."\"?";
+						echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Link</h3>");
+						
+						$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Link (".$site_plugin_link_r['description'].")?";
 						echo get_op_confirm_form(
 								$PHP_SELF, 
 								$op_confirm_prompt,
@@ -665,1139 +969,829 @@ if (is_opendb_valid_session())
 					}
 					else // $HTTP_VARS['confirmed'] == 'true'
 					{
-						// perform the delete process.
-						delete_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type']);
-						delete_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type']);
-						delete_s_site_plugin_input_field($HTTP_VARS['site_type']);
-						delete_s_site_plugin_link($HTTP_VARS['site_type']);
-						delete_s_site_plugin_conf($HTTP_VARS['site_type']);
-						delete_s_site_plugin($HTTP_VARS['site_type']);
+						delete_s_site_plugin_link($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
 						
-						// return to edit form
-						$HTTP_VARS['op'] = 'list_site_plugins';
-					}
-				}
-			}
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		
-		else if($HTTP_VARS['op'] == 'update_site_plugin_item_types')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				$results = fetch_site_attribute_type_rs($HTTP_VARS['site_type']);
-				if($results)
-				{
-					$site_attribute_type_r = array();
-					while($site_plugin_attribute_type_r = db_fetch_assoc($results))
-					{
-						$site_attribute_type_r[] = $site_plugin_attribute_type_r['s_attribute_type'];
-					}
-					db_free_result($results);
-				}
-				
-				if(is_not_empty_array($site_attribute_type_r))
-				{
-					if(is_not_empty_array($HTTP_VARS['s_item_type']))
-					{
-						reset($HTTP_VARS['s_item_type']);
-						while(list($v_s_item_type, $value) = each($HTTP_VARS['s_item_type']))
-						{
-							if(is_exists_item_type($v_s_item_type))
-							{
-								// now we need to transfer in 
-								if($value == 'exclude')
-								{
-									$site_item_attribute_type_rs = array();
-									// so this is the list of attributes currently attached to the s_item_type
-									$results2 = fetch_site_item_attribute_type_rs($HTTP_VARS['site_type'], $v_s_item_type);
-									if($results2)
-									{
-										while($attribute_type_r = db_fetch_assoc($results2))
-										{
-											$site_item_attribute_type_rs[] = $attribute_type_r;
-										}
-										db_free_result($results2);
-									}
-									
-									$delete = TRUE;
-									reset($site_item_attribute_type_rs);
-									while(list(,$site_item_attribute_type_r) = each($site_item_attribute_type_rs))
-									{
-										if(!is_s_item_attribute_type_deletable($v_s_item_type, $site_item_attribute_type_r['s_attribute_type'], $site_item_attribute_type_r['order_no']))
-										{
-											$errors[] = array('error'=>'Dependent Item Attribute records exist','detail'=>'s_item_type='.$v_s_item_type.', s_attribute_type='.$site_item_attribute_type_r['s_attribute_type'].', order_no='.$site_item_attribute_type_r['order_no']);
-											$delete = FALSE;
-										}
-									}
-									
-									if($delete)
-									{
-										reset($site_item_attribute_type_rs);
-										while(list(,$site_item_attribute_type_r) = each($site_item_attribute_type_rs))
-										{
-											if(!delete_s_item_attribute_type($v_s_item_type, $site_item_attribute_type_r['s_attribute_type'], $site_item_attribute_type_r['order_no']))
-												$errors[] = array('error'=>'System Item Attribute Type (s_item_type='.$v_s_item_type.', s_attribute_type='.$site_item_attribute_type_r['s_attribute_type'].', order_no='.$site_item_attribute_type_r['order_no'].') not deleted','detail'=>db_error());
-										}
-									}
-								}
-								else if($value == 'include')
-								{
-									for($i=0; $i<count($site_attribute_type_r); $i++)
-									{
-										if(!is_exists_item_attribute_type($v_s_item_type, $site_attribute_type_r[$i], 0))
-										{
-											if(!insert_s_item_attribute_type($v_s_item_type, $site_attribute_type_r[$i], 0, NULL, 'N', 'N', 'N', 'N'))
-												$errors[] = array('error'=>'System Item Attribute Type (s_item_type='.$v_s_item_type.', s_attribute_type='.$site_item_attribute_type_r['s_attribute_type'].', order_no='.$site_attribute_type_r['order_no'].') not inserted','detail'=>db_error());
-										}
-									}
-								}
-							}
-						}
-					}//if(is_not_empty_array($HTTP_VARS['s_item_type']))
-					
-					// return to edit mode
-					$HTTP_VARS['op'] = 'edit_site_plugin_item_types';
-				
-				}//if(is_not_empty_array($site_attribute_type_r))
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin attribute type\'s not found');
-					$HTTP_VARS['op'] = 'list_site_plugins';
-				}
-			}//if(is_not_empty_array($site_plugin_r))
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'update_site_plugin_links')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				if(is_not_empty_array($HTTP_VARS['exists_ind']))
-				{
-					for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
-					{
-						if(strlen($HTTP_VARS['s_item_type_group'][$i])>0 && strlen($HTTP_VARS['s_item_type'][$i])>0 && is_numeric($HTTP_VARS['order_no'][$i]) && strlen($HTTP_VARS['description'][$i])>0 && (strlen($HTTP_VARS['url'][$i])>0 || strlen($HTTP_VARS['title_url'][$i])>0))
-						{
-							if($HTTP_VARS['exists_ind'][$i] == 'N')
-							{
-								if(!insert_s_site_plugin_link($HTTP_VARS['site_type'], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['url'][$i], $HTTP_VARS['title_url'][$i]))
-									$errors[] = array('error'=>'Site Plugin Link not inserted','detail'=>db_error());
-							}
-							else if(is_numeric($HTTP_VARS['sequence_number'][$i]))
-							{
-								if(!update_s_site_plugin_link($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number'][$i], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['url'][$i], $HTTP_VARS['title_url'][$i]))
-									$errors[] = array('error'=>'Site Plugin Link not updated','detail'=>db_error());
-							}
-						}//else ignore
-					}
-				}
-				
-				// return to edit mode
-				$HTTP_VARS['op'] = 'edit_site_plugin_links';
-			}
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'update_site_plugin_confs')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				if(is_not_empty_array($HTTP_VARS['exists_ind']))
-				{
-					for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
-					{
-						if(strlen($HTTP_VARS['name'][$i])>0 && strlen($HTTP_VARS['keyid'][$i])>0)
-						{
-							if($HTTP_VARS['exists_ind'][$i] == 'N')
-							{
-								if(!insert_s_site_plugin_conf($HTTP_VARS['site_type'], $HTTP_VARS['name'][$i], $HTTP_VARS['keyid'][$i], $HTTP_VARS['value'][$i], $HTTP_VARS['description'][$i]))
-									$errors[] = array('error'=>'Site Plugin Configuration not inserted','detail'=>db_error());
-							}
-							else
-							{
-								if(!update_s_site_plugin_conf($HTTP_VARS['site_type'], $HTTP_VARS['name'][$i], $HTTP_VARS['keyid'][$i], $HTTP_VARS['value'][$i], $HTTP_VARS['description'][$i]))
-									$errors[] = array('error'=>'Site Plugin Configuration not updated','detail'=>db_error());
-							}
-						}//else ignore
-					}
-				}
-					
-				// return to edit mode
-				$HTTP_VARS['op'] = 'edit_site_plugin_confs';
-			}
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'update_site_plugin_input_fields')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				if(is_not_empty_array($HTTP_VARS['exists_ind']))
-				{
-					for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
-					{
-						if(strlen($HTTP_VARS['field'][$i])>0 && strlen($HTTP_VARS['order_no'][$i])>0)
-						{
-							if($HTTP_VARS['exists_ind'][$i] == 'N')
-							{
-								if(!insert_s_site_plugin_input_field($HTTP_VARS['site_type'], $HTTP_VARS['field'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['field_type'][$i], $HTTP_VARS['default_value'][$i], $HTTP_VARS['refresh_mask'][$i]))
-									$errors[] = array('error'=>'Site Plugin Input Field not inserted','detail'=>db_error());
-							}
-							else
-							{
-								if(!update_s_site_plugin_input_field($HTTP_VARS['site_type'], $HTTP_VARS['field'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['field_type'][$i], $HTTP_VARS['default_value'][$i], $HTTP_VARS['refresh_mask'][$i]))
-									$errors[] = array('error'=>'Site Plugin Input Field not updated','detail'=>db_error());
-							}
-						}//else ignore
-					}
-				}
-					
-				// return to edit mode
-				$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
-			}
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'update_site_plugin_s_attribute_type_maps')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				if(is_not_empty_array($HTTP_VARS['exists_ind']))
-				{
-					for($i=0; $i<count($HTTP_VARS['exists_ind']); $i++)
-					{
-						if(strlen($HTTP_VARS['variable'][$i])>0 && strlen($HTTP_VARS['s_item_type_group'][$i])>0 && strlen($HTTP_VARS['s_item_type'][$i])>0 && strlen($HTTP_VARS['s_attribute_type'][$i])>0)
-						{
-							if($HTTP_VARS['exists_ind'][$i] == 'N')
-							{
-								if(!insert_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type'], $HTTP_VARS['variable'][$i], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['lookup_attribute_val_restrict_ind'][$i]))
-									$errors[] = array('error'=>'Site Plugin Attribute Type Map not inserted','detail'=>db_error());
-							}
-							else if(is_numeric($HTTP_VARS['sequence_number'][$i]))
-							{
-								if(!update_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number'][$i], $HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['s_item_type'][$i], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['lookup_attribute_val_restrict_ind'][$i]))
-									$errors[] = array('error'=>'Site Plugin Attribute Type Map not updated','detail'=>db_error());
-							}
-						}//else ignore
-					}
-				}
-					
-				// return to edit mode
-				$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
-			}
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'update_site_plugin_s_attribute_type_lookup_maps')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				if(is_not_empty_array($HTTP_VARS['s_attribute_type']))
-				{
-					for($i=0; $i<count($HTTP_VARS['s_attribute_type']); $i++)
-					{
-						if(strlen($HTTP_VARS['s_attribute_type'][$i])>0 && strlen($HTTP_VARS['value'][$i])>0 && strlen($HTTP_VARS['lookup_attribute_val'][$i])>0)
-						{
-							if($HTTP_VARS['exists_ind'][$i] == 'N')
-							{
-								if(!insert_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['value'][$i], $HTTP_VARS['lookup_attribute_val'][$i]))
-									$errors[] = array('error'=>'Site Plugin Lookup Attribute Type Map not inserted','detail'=>db_error());
-							}
-							else if(is_numeric($HTTP_VARS['sequence_number'][$i]))
-							{
-								if(!update_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number'][$i], $HTTP_VARS['lookup_attribute_val'][$i]))
-									$errors[] = array('error'=>'Site Plugin Lookup Attribute Type Map not updated','detail'=>db_error());
-							}
-						}//else ignore
-					}
-				}
-				
-				// return to edit mode
-				$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
-			}
-			else
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'delete_site_plugin_link')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				$site_plugin_link_r = fetch_site_plugin_link_r($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
-				if(is_not_empty_array($site_plugin_link_r))
-				{
-					if($HTTP_VARS['confirmed'] == 'false')
-					{
 						// return to edit mode
 						$HTTP_VARS['op'] = 'edit_site_plugin_links';
 					}
-					else
-					{
-						if($HTTP_VARS['confirmed'] != 'true')
-						{
-							echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Link</h3>");
-							
-							$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Link (".$site_plugin_link_r['description'].")?";
-							echo get_op_confirm_form(
-									$PHP_SELF, 
-									$op_confirm_prompt,
-									$HTTP_VARS);
-						}
-						else // $HTTP_VARS['confirmed'] == 'true'
-						{
-							delete_s_site_plugin_link($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
-							
-							// return to edit mode
-							$HTTP_VARS['op'] = 'edit_site_plugin_links';
-						}
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin Link not found');
-					$HTTP_VARS['op'] = 'edit_site_plugin_links';
 				}
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
+				$errors[] = array('error'=>'Site Plugin Link not found');
+				$HTTP_VARS['op'] = 'edit_site_plugin_links';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'delete_site_plugin_conf')
+		else
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'delete_site_plugin_conf')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			$site_plugin_conf_r = fetch_site_plugin_conf_r($HTTP_VARS['site_type'], $HTTP_VARS['name'], $HTTP_VARS['keyid']);
+			if(is_not_empty_array($site_plugin_conf_r))
 			{
-				$site_plugin_conf_r = fetch_site_plugin_conf_r($HTTP_VARS['site_type'], $HTTP_VARS['name'], $HTTP_VARS['keyid']);
-				if(is_not_empty_array($site_plugin_conf_r))
+				if($HTTP_VARS['confirmed'] == 'false')
 				{
-					if($HTTP_VARS['confirmed'] == 'false')
+					// return to edit mode
+					$HTTP_VARS['op'] = 'edit_site_plugin_confs';
+				}
+				else
+				{
+					if($HTTP_VARS['confirmed'] != 'true')
 					{
+						echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Configuration</h3>");
+						
+						$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Configuration (name=".$site_plugin_conf_r['name'].", keyid=".$site_plugin_conf_r['keyid'].", value=".$site_plugin_conf_r['value'].")?";
+						echo get_op_confirm_form(
+								$PHP_SELF, 
+								$op_confirm_prompt,
+								$HTTP_VARS);
+					}
+					else // $HTTP_VARS['confirmed'] == 'true'
+					{
+						delete_s_site_plugin_conf($HTTP_VARS['site_type'], $HTTP_VARS['name'], $HTTP_VARS['keyid']);
+						
 						// return to edit mode
 						$HTTP_VARS['op'] = 'edit_site_plugin_confs';
 					}
-					else
-					{
-						if($HTTP_VARS['confirmed'] != 'true')
-						{
-							echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Configuration</h3>");
-							
-							$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Configuration (name=".$site_plugin_conf_r['name'].", keyid=".$site_plugin_conf_r['keyid'].", value=".$site_plugin_conf_r['value'].")?";
-							echo get_op_confirm_form(
-									$PHP_SELF, 
-									$op_confirm_prompt,
-									$HTTP_VARS);
-						}
-						else // $HTTP_VARS['confirmed'] == 'true'
-						{
-							delete_s_site_plugin_conf($HTTP_VARS['site_type'], $HTTP_VARS['name'], $HTTP_VARS['keyid']);
-							
-							// return to edit mode
-							$HTTP_VARS['op'] = 'edit_site_plugin_confs';
-						}
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin Configuration not found');
-					$HTTP_VARS['op'] = 'edit_site_plugin_confs';
 				}
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
+				$errors[] = array('error'=>'Site Plugin Configuration not found');
+				$HTTP_VARS['op'] = 'edit_site_plugin_confs';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'delete_site_plugin_input_field')
+		else
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'delete_site_plugin_input_field')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			$site_plugin_input_field_r = fetch_site_plugin_input_field_r($HTTP_VARS['site_type'], $HTTP_VARS['field']);
+			if(is_not_empty_array($site_plugin_input_field_r))
 			{
-				$site_plugin_input_field_r = fetch_site_plugin_input_field_r($HTTP_VARS['site_type'], $HTTP_VARS['field']);
-				if(is_not_empty_array($site_plugin_input_field_r))
+				if($HTTP_VARS['confirmed'] == 'false')
 				{
-					if($HTTP_VARS['confirmed'] == 'false')
+					// return to edit mode
+					$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
+				}
+				else
+				{
+					if($HTTP_VARS['confirmed'] != 'true')
 					{
+						echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Input Field</h3>");
+						
+						$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Input Field (field=".$site_plugin_input_field_r['field'].", prompt=".$site_plugin_input_field_r['prompt'].", description=".$site_plugin_input_field_r['description'].")?";
+						echo get_op_confirm_form(
+								$PHP_SELF, 
+								$op_confirm_prompt,
+								$HTTP_VARS);
+					}
+					else // $HTTP_VARS['confirmed'] == 'true'
+					{
+						delete_s_site_plugin_input_field($HTTP_VARS['site_type'], $HTTP_VARS['field']);
+						
 						// return to edit mode
 						$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
 					}
-					else
-					{
-						if($HTTP_VARS['confirmed'] != 'true')
-						{
-							echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Input Field</h3>");
-							
-							$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Input Field (field=".$site_plugin_input_field_r['field'].", prompt=".$site_plugin_input_field_r['prompt'].", description=".$site_plugin_input_field_r['description'].")?";
-							echo get_op_confirm_form(
-									$PHP_SELF, 
-									$op_confirm_prompt,
-									$HTTP_VARS);
-						}
-						else // $HTTP_VARS['confirmed'] == 'true'
-						{
-							delete_s_site_plugin_input_field($HTTP_VARS['site_type'], $HTTP_VARS['field']);
-							
-							// return to edit mode
-							$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
-						}
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin Input Field not found');
-					$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
 				}
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
+				$errors[] = array('error'=>'Site Plugin Input Field not found');
+				$HTTP_VARS['op'] = 'edit_site_plugin_input_fields';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'delete_site_plugin_s_attribute_type_map')
+		else
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'delete_site_plugin_s_attribute_type_map')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			$site_plugin_s_attribute_type_map_r = fetch_site_plugin_s_attribute_type_map_r($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
+			if(is_not_empty_array($site_plugin_s_attribute_type_map_r))
 			{
-				$site_plugin_s_attribute_type_map_r = fetch_site_plugin_s_attribute_type_map_r($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
-				if(is_not_empty_array($site_plugin_s_attribute_type_map_r))
+				if($HTTP_VARS['confirmed'] == 'false')
 				{
-					if($HTTP_VARS['confirmed'] == 'false')
+					// return to edit mode
+					$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
+				}
+				else
+				{
+					if($HTTP_VARS['confirmed'] != 'true')
 					{
+						echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Attribute Type Map</h3>");
+						
+						$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Attribute Type Map (variable=".$site_plugin_s_attribute_type_map_r['variable'].", s_item_type_group=".$site_plugin_s_attribute_type_map_r['s_item_type_group'].", s_item_type=".$site_plugin_s_attribute_type_map_r['s_item_type'].", s_attribute_type=".$site_plugin_s_attribute_type_map_r['s_attribute_type'].")?";
+						echo get_op_confirm_form(
+								$PHP_SELF, 
+								$op_confirm_prompt,
+								$HTTP_VARS);
+					}
+					else // $HTTP_VARS['confirmed'] == 'true'
+					{
+						delete_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
+						
 						// return to edit mode
 						$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
 					}
-					else
-					{
-						if($HTTP_VARS['confirmed'] != 'true')
-						{
-							echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Attribute Type Map</h3>");
-							
-							$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Attribute Type Map (variable=".$site_plugin_s_attribute_type_map_r['variable'].", s_item_type_group=".$site_plugin_s_attribute_type_map_r['s_item_type_group'].", s_item_type=".$site_plugin_s_attribute_type_map_r['s_item_type'].", s_attribute_type=".$site_plugin_s_attribute_type_map_r['s_attribute_type'].")?";
-							echo get_op_confirm_form(
-									$PHP_SELF, 
-									$op_confirm_prompt,
-									$HTTP_VARS);
-						}
-						else // $HTTP_VARS['confirmed'] == 'true'
-						{
-							delete_s_site_plugin_s_attribute_type_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
-							
-							// return to edit mode
-							$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
-						}
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin Attribute Type Map not found');
-					$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
 				}
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
+				$errors[] = array('error'=>'Site Plugin Attribute Type Map not found');
+				$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_maps';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'delete_site_plugin_s_attribute_type_lookup_map')
+		else
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'delete_site_plugin_s_attribute_type_lookup_map')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			$site_plugin_s_attribute_type_lookup_map_r = fetch_site_plugin_s_attribute_type_lookup_map_r($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
+			if(is_not_empty_array($site_plugin_s_attribute_type_lookup_map_r))
 			{
-				$site_plugin_s_attribute_type_lookup_map_r = fetch_site_plugin_s_attribute_type_lookup_map_r($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
-				if(is_not_empty_array($site_plugin_s_attribute_type_lookup_map_r))
+				if($HTTP_VARS['confirmed'] == 'false')
 				{
-					if($HTTP_VARS['confirmed'] == 'false')
+					// return to edit mode
+					$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
+				}
+				else
+				{
+					if($HTTP_VARS['confirmed'] != 'true')
 					{
+						echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Lookup Attribute Type Map</h3>");
+						
+						$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Lookup Attribute Type Map (s_attribute_type=".$site_plugin_s_attribute_type_lookup_map_r['s_attribute_type'].", value=".$site_plugin_s_attribute_type_lookup_map_r['value'].", lookup_attribute_val=".$site_plugin_s_attribute_type_lookup_map_r['lookup_attribute_val'].")?";
+						echo get_op_confirm_form(
+								$PHP_SELF, 
+								$op_confirm_prompt,
+								$HTTP_VARS);
+					}
+					else // $HTTP_VARS['confirmed'] == 'true'
+					{
+						delete_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
+						
 						// return to edit mode
 						$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
 					}
-					else
-					{
-						if($HTTP_VARS['confirmed'] != 'true')
-						{
-							echo("\n<h3>Delete ".$site_plugin_r['title']." Site Plugin Lookup Attribute Type Map</h3>");
-							
-							$op_confirm_prompt .= "Are you sure you want to delete Site Plugin Lookup Attribute Type Map (s_attribute_type=".$site_plugin_s_attribute_type_lookup_map_r['s_attribute_type'].", value=".$site_plugin_s_attribute_type_lookup_map_r['value'].", lookup_attribute_val=".$site_plugin_s_attribute_type_lookup_map_r['lookup_attribute_val'].")?";
-							echo get_op_confirm_form(
-									$PHP_SELF, 
-									$op_confirm_prompt,
-									$HTTP_VARS);
-						}
-						else // $HTTP_VARS['confirmed'] == 'true'
-						{
-							delete_s_site_plugin_s_attribute_type_lookup_map($HTTP_VARS['site_type'], $HTTP_VARS['sequence_number']);
-							
-							// return to edit mode
-							$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
-						}
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin Lookup Attribute Type Map not found');
-					$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
 				}
 			}
 			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
+				$errors[] = array('error'=>'Site Plugin Lookup Attribute Type Map not found');
+				$HTTP_VARS['op'] = 'edit_site_plugin_s_attribute_type_lookup_maps';
 			}
 		}
-
-		if($HTTP_VARS['op'] == 'edit_site_plugin_item_types')
+		else
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+
+	if($HTTP_VARS['op'] == 'edit_site_plugin_item_types')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			$results = fetch_site_attribute_type_rs($HTTP_VARS['site_type']);
+			if($results)
 			{
-				$results = fetch_site_attribute_type_rs($HTTP_VARS['site_type']);
+				$site_attribute_type_r = array();
+				while($site_plugin_attribute_type_r = db_fetch_assoc($results))
+				{
+					$site_attribute_type_r[] = $site_plugin_attribute_type_r['s_attribute_type'];
+				}
+				db_free_result($results);
+			}
+				
+			if(is_not_empty_array($site_attribute_type_r))
+			{
+				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin System Item Types</h3>");
+				
+				if(is_not_empty_array($errors))
+					echo format_error_block($errors);
+				
+				echo('<script src="./admin/s_site_plugin/select.js" language="JavaScript" type="text/javascript"></script>');
+				
+				echo("\n<form name=\"edit_site_plugin_item_types\" action=\"$PHP_SELF\" method=\"POST\">");
+				echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
+				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+				echo("\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">");
+				
+				echo("<table>");
+				$exists_item_type_rs = array();
+				$not_exists_item_type_rs = array();
+				
+				$results = fetch_item_type_rs();
 				if($results)
 				{
-					$site_attribute_type_r = array();
-					while($site_plugin_attribute_type_r = db_fetch_assoc($results))
+					while($item_type_r = db_fetch_assoc($results))
 					{
-						$site_attribute_type_r[] = $site_plugin_attribute_type_r['s_attribute_type'];
+						$exists = FALSE;
+						for($i=0; $i<count($site_attribute_type_r); $i++)
+						{
+							if(is_exists_item_attribute_type($item_type_r['s_item_type'], $site_attribute_type_r[$i]))
+							{
+								$exists = TRUE;
+							}
+						}
+						
+						if($exists)
+							$exists_item_type_rs[] = $item_type_r;
+						else
+							$not_exists_item_type_rs[] = $item_type_r;
 					}
 					db_free_result($results);
 				}
-				
-				if(is_not_empty_array($site_attribute_type_r))
+					
+				echo("<tr class=\"navbar\">
+				<th>Exclude</th>
+				<th></th>
+				<th>Include</th>
+				</tr>");
+				echo("<tr><td><select name=\"from_item_types\" size=\"15\" MULTIPLE>");
+				echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
+				for($i=0; $i<count($not_exists_item_type_rs); $i++)
 				{
-					echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-					echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin System Item Types</h3>");
-					
-					if(is_not_empty_array($errors))
-						echo format_error_block($errors);
-					
-					echo('<script src="./admin/s_site_plugin/select.js" language="JavaScript" type="text/javascript"></script>');
-					
-					echo("\n<form name=\"edit_site_plugin_item_types\" action=\"$PHP_SELF\" method=\"POST\">");
-					echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
-					echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-					echo("\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">");
-					
-					echo("<table>");
-					$exists_item_type_rs = array();
-					$not_exists_item_type_rs = array();
-					
-					$results = fetch_item_type_rs();
-					if($results)
-					{
-						while($item_type_r = db_fetch_assoc($results))
-						{
-							$exists = FALSE;
-							for($i=0; $i<count($site_attribute_type_r); $i++)
-							{
-								if(is_exists_item_attribute_type($item_type_r['s_item_type'], $site_attribute_type_r[$i]))
-								{
-									$exists = TRUE;
-								}
-							}
-							
-							if($exists)
-								$exists_item_type_rs[] = $item_type_r;
-							else
-								$not_exists_item_type_rs[] = $item_type_r;
-						}
-						db_free_result($results);
-					}
-					
-					echo("<tr class=\"navbar\">
-					<th>Exclude</th>
-					<th></th>
-					<th>Include</th>
-					</tr>");
-					echo("<tr><td><select name=\"from_item_types\" size=\"15\" MULTIPLE>");
-					echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
-					for($i=0; $i<count($not_exists_item_type_rs); $i++)
-					{
-						echo("<option value=\"".$not_exists_item_type_rs[$i]['s_item_type']."\">".$not_exists_item_type_rs[$i]['s_item_type']." - ".$not_exists_item_type_rs[$i]['description']."\n");
-					}
-					echo("</select></td>");
-					
-					echo("<td>");
-					echo("<input type=\"button\" class=\"button\" value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">".
-						"<input type=\"button\" class=\"button\" value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">");
-						
-					echo("<input type=\"button\" class=\"button\" value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">".
-						"<input type=\"button\" class=\"button\" value=\"<<\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">");
-						
-					echo("</td>");
-					
-					echo("<td><select name=\"to_item_types\" size=\"15\" MULTIPLE>");
-                    echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
-					for($i=0; $i<count($exists_item_type_rs); $i++)
-					{
-						echo("<option value=\"".$exists_item_type_rs[$i]['s_item_type']."\">".$exists_item_type_rs[$i]['s_item_type']." - ".$exists_item_type_rs[$i]['description']."\n");
-					}
-					echo("</select></td>");
-					echo("</table>");
-					
-					for($i=0; $i<count($not_exists_item_type_rs); $i++)
-					{
-						echo("\n<input type=\"hidden\" name=\"s_item_type[".$not_exists_item_type_rs[$i]['s_item_type']."]\" value=\"exclude\">");
-					}
-					
-					for($i=0; $i<count($exists_item_type_rs); $i++)
-					{
-						echo("\n<input type=\"hidden\" name=\"s_item_type[".$exists_item_type_rs[$i]['s_item_type']."]\" value=\"include\">");
-					}
-					
-					echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
-					echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_site_plugin_item_types'; this.form.submit();\">");
-	
-					echo("</form>");
-					
-				}//if(is_not_empty_array($attribute_type_r))
-				else
-				{
-					$errors[] = array('error'=>'Site Plugin attribute type\'s not found');
-					$HTTP_VARS['op'] = 'list_site_plugins';
+					echo("<option value=\"".$not_exists_item_type_rs[$i]['s_item_type']."\">".$not_exists_item_type_rs[$i]['s_item_type']." - ".$not_exists_item_type_rs[$i]['description']."\n");
 				}
-			}
-			else//if(is_not_empty_array($site_plugin_r))
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'edit_site_plugin_links')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Links</h3>");
+				echo("</select></td>");
 				
-				if(is_not_empty_array($errors))
-					echo format_error_block($errors);
+				echo("<td>");
+				echo("<input type=\"button\" class=\"button\" value=\">\" onClick=\"moveOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">".
+					"<input type=\"button\" class=\"button\" value=\">>\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['from_item_types'], this.form['to_item_types']);\">");
+					
+				echo("<input type=\"button\" class=\"button\" value=\"<\" onClick=\"moveOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">".
+					"<input type=\"button\" class=\"button\" value=\"<<\" onClick=\"moveAllOptions(this.form, 's_item_type', this.form['to_item_types'], this.form['from_item_types']);\">");
+					
+				echo("</td>");
+					
+				echo("<td><select name=\"to_item_types\" size=\"15\" MULTIPLE>");
+				echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
+				for($i=0; $i<count($exists_item_type_rs); $i++)
+				{
+					echo("<option value=\"".$exists_item_type_rs[$i]['s_item_type']."\">".$exists_item_type_rs[$i]['s_item_type']." - ".$exists_item_type_rs[$i]['description']."\n");
+				}
+				echo("</select></td>");
+				echo("</table>");
+					
+				for($i=0; $i<count($not_exists_item_type_rs); $i++)
+				{
+					echo("\n<input type=\"hidden\" name=\"s_item_type[".$not_exists_item_type_rs[$i]['s_item_type']."]\" value=\"exclude\">");
+				}
 				
-				display_edit_table(
-						$HTTP_VARS['op'], 
-						'update_site_plugin_links', 
-						array('Order', 'Item Type<br />Group', 'Item Type', 'Description', 'URL', 'Title URL', ''), 
-						'display_site_plugin_link_row', 
-						array('site_type'=>$HTTP_VARS['site_type']),
-						fetch_site_plugin_link_rs($HTTP_VARS['site_type']));
-			}
-			else//if(is_not_empty_array($site_plugin_r))
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'edit_site_plugin_confs')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Configuration</h3>");
+				for($i=0; $i<count($exists_item_type_rs); $i++)
+				{
+					echo("\n<input type=\"hidden\" name=\"s_item_type[".$exists_item_type_rs[$i]['s_item_type']."]\" value=\"include\">");
+				}
 				
-				if(is_not_empty_array($errors))
-					echo format_error_block($errors);
-				
-				display_edit_table(
-						$HTTP_VARS['op'], 
-						'update_site_plugin_confs', 
-						array('Name', 'Key ID', 'Description', 'Value', ''), 
-						'display_site_plugin_conf_row', 
-						array('site_type'=>$HTTP_VARS['site_type']), 
-						fetch_site_plugin_conf_rs($HTTP_VARS['site_type']));
-			}
-			else//if(is_not_empty_array($site_plugin_r))
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'edit_site_plugin_input_fields')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Input Fields</h3>");
-				
-				if(is_not_empty_array($errors))
-					echo format_error_block($errors);
-				
-				display_edit_table(
-						$HTTP_VARS['op'], 
-						'update_site_plugin_input_fields', 
-						array('Order No', 'Field Name', 'Description', 'Prompt', 'Field Type', 'Refresh Mask', 'Default Value', ''), 
-						'display_site_plugin_input_field_row', 
-						array('site_type'=>$HTTP_VARS['site_type']),
-						fetch_site_plugin_input_field_rs($HTTP_VARS['site_type']));
-			}
-			else//if(is_not_empty_array($site_plugin_r))
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'edit_site_plugin_s_attribute_type_maps')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Attribute Type Map</h3>");
-				
-				if(is_not_empty_array($errors))
-					echo format_error_block($errors);
-				
-				display_edit_table(
-						$HTTP_VARS['op'], 
-						'update_site_plugin_s_attribute_type_maps', 
-						array('Variable', 'Item Type<br />Group', 'Item Type', 'Attribute Type', 'Restrict to <br />Lookup Values', ''),
-						'display_site_plugin_s_attribute_type_map_row', 
-						array('site_type'=>$HTTP_VARS['site_type']),
-						fetch_site_plugin_s_attribute_type_map_rs($HTTP_VARS['site_type']));
-			}
-			else//if(is_not_empty_array($site_plugin_r))
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
-		}
-		else if($HTTP_VARS['op'] == 'edit_site_plugin_s_attribute_type_lookup_maps')
-		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-				echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Lookup Attribute Type Map</h3>");
-				
-				if(is_not_empty_array($errors))
-					echo format_error_block($errors);
-				
-				echo get_lookup_attribute_type_array();
-				
-				display_edit_table(
-						$HTTP_VARS['op'], 
-						'update_site_plugin_s_attribute_type_lookup_maps', 
-						array('Attribute Type', 'Site Value', 'Lookup Attribute Value', ''), 
-						'display_site_plugin_s_attribute_type_lookup_map_row', 
-						array('site_type'=>$HTTP_VARS['site_type']),
-						fetch_site_plugin_s_attribute_type_lookup_map_rs($HTTP_VARS['site_type']));
+				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='".$HTTP_VARS['op']."'; this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update_site_plugin_item_types'; this.form.submit();\">");
 
-			}
-			else//if(is_not_empty_array($site_plugin_r))
+				echo("</form>");
+				
+			}//if(is_not_empty_array($attribute_type_r))
+			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
+				$errors[] = array('error'=>'Site Plugin attribute type\'s not found');
 				$HTTP_VARS['op'] = 'list_site_plugins';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'edit')
+		else//if(is_not_empty_array($site_plugin_r))
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-			
-				echo("\n<h3>Edit Site Plugin</h3>");
-			
-				if(is_not_empty_array($errors))
-					echo format_error_block($errors);
-				
-				echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-				
-				echo("\n<table>");
-				display_edit_site_plugin($site_plugin_r, $HTTP_VARS);
-				echo("\n</table>");
-				
-				if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-				{
-					echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-				}
-					
-				if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-					echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.op.value='update_site_plugin'; this.form.submit();}\">");
-				else
-					echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form.op.value='update_site_plugin'; this.form.submit();\">");
-	
-				echo("\n</form>");
-				
-			}
-			else//if(is_not_empty_array($site_plugin_r))
-			{
-				$errors[] = array('error'=>'Site Plugin not found');
-				$HTTP_VARS['op'] = 'list_site_plugins';
-			}
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
 		}
-		else if($HTTP_VARS['op'] == 'new_site_plugin')
+	}
+	else if($HTTP_VARS['op'] == 'edit_site_plugin_links')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
 		{
 			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-			
-			echo("\n<h3>New Site Plugin</h3>");
+			echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Links</h3>");
 			
 			if(is_not_empty_array($errors))
 				echo format_error_block($errors);
-				
+			
+			display_edit_table(
+					$HTTP_VARS['op'], 
+					'update_site_plugin_links', 
+					array('Order', 'Item Type<br />Group', 'Item Type', 'Description', 'URL', 'Title URL', ''), 
+					'display_site_plugin_link_row', 
+					array('site_type'=>$HTTP_VARS['site_type']),
+					fetch_site_plugin_link_rs($HTTP_VARS['site_type']));
+		}
+		else//if(is_not_empty_array($site_plugin_r))
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'edit_site_plugin_confs')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Configuration</h3>");
+			
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+			
+			display_edit_table(
+					$HTTP_VARS['op'], 
+					'update_site_plugin_confs', 
+					array('Name', 'Key ID', 'Description', 'Value', ''), 
+					'display_site_plugin_conf_row', 
+					array('site_type'=>$HTTP_VARS['site_type']), 
+					fetch_site_plugin_conf_rs($HTTP_VARS['site_type']));
+		}
+		else//if(is_not_empty_array($site_plugin_r))
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'edit_site_plugin_input_fields')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Input Fields</h3>");
+			
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+			
+			display_edit_table(
+					$HTTP_VARS['op'], 
+					'update_site_plugin_input_fields', 
+					array('Order No', 'Field Name', 'Description', 'Prompt', 'Field Type', 'Refresh Mask', 'Default Value', ''), 
+					'display_site_plugin_input_field_row', 
+					array('site_type'=>$HTTP_VARS['site_type']),
+					fetch_site_plugin_input_field_rs($HTTP_VARS['site_type']));
+		}
+		else//if(is_not_empty_array($site_plugin_r))
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'edit_site_plugin_s_attribute_type_maps')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Attribute Type Map</h3>");
+			
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+			
+			display_edit_table(
+					$HTTP_VARS['op'], 
+					'update_site_plugin_s_attribute_type_maps', 
+					array('Variable', 'Item Type<br />Group', 'Item Type', 'Attribute Type', 'Restrict to <br />Lookup Values', ''),
+					'display_site_plugin_s_attribute_type_map_row', 
+					array('site_type'=>$HTTP_VARS['site_type']),
+					fetch_site_plugin_s_attribute_type_map_rs($HTTP_VARS['site_type']));
+		}
+		else//if(is_not_empty_array($site_plugin_r))
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'edit_site_plugin_s_attribute_type_lookup_maps')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Lookup Attribute Type Map</h3>");
+			
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+			
+			echo get_lookup_attribute_type_array();
+			
+			display_edit_table(
+					$HTTP_VARS['op'], 
+					'update_site_plugin_s_attribute_type_lookup_maps', 
+					array('Attribute Type', 'Site Value', 'Lookup Attribute Value', ''), 
+					'display_site_plugin_s_attribute_type_lookup_map_row', 
+					array('site_type'=>$HTTP_VARS['site_type']),
+					fetch_site_plugin_s_attribute_type_lookup_map_rs($HTTP_VARS['site_type']));
+
+		}
+		else//if(is_not_empty_array($site_plugin_r))
+		{
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
+		}
+	}
+	else if($HTTP_VARS['op'] == 'edit')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		
+			echo("\n<h3>Edit Site Plugin</h3>");
+		
+			if(is_not_empty_array($errors))
+				echo format_error_block($errors);
+			
 			echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_site_plugin\">");
+			echo("\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">");
 			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 			
 			echo("\n<table>");
-			display_edit_site_plugin(NULL, $HTTP_VARS);
+			display_edit_site_plugin($site_plugin_r, $HTTP_VARS);
 			echo("\n</table>");
 			
 			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 			{
 				echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
 			}
-					
+				
 			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.op.value='update_site_plugin'; this.form.submit();}\">");
 			else
-				echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
+				echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form.op.value='update_site_plugin'; this.form.submit();\">");
 
 			echo("\n</form>");
+			
 		}
-		else if($HTTP_VARS['op'] == 'sql')
+		else//if(is_not_empty_array($site_plugin_r))
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				header("Cache-control: no-store");
-				header("Pragma: no-store");
-				header("Expires: 0");
-				header("Content-disposition: attachment; filename=".$HTTP_VARS['site_type'].".sql");
-				header("Content-type: application/octet-stream");
-					
-				echo generate_site_plugin_sql($site_plugin_r);
-			}
-			else
-			{
-				echo format_error_block(array('error'=>'Site Plugin not found'));
-			}
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
 		}
-		else if($HTTP_VARS['op'] == 'maintain_site_plugin_install') // special function to allow upload of file into database,etc
+	}
+	else if($HTTP_VARS['op'] == 'new_site_plugin')
+	{
+		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		
+		echo("\n<h3>New Site Plugin</h3>");
+		
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
+			
+		echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"POST\">");
+		echo("\n<input type=\"hidden\" name=\"op\" value=\"insert_site_plugin\">");
+		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+		
+		echo("\n<table>");
+		display_edit_site_plugin(NULL, $HTTP_VARS);
+		echo("\n</table>");
+		
+		if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
 		{
-			$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
-			if(is_not_empty_array($site_plugin_r))
-			{
-				if(file_exists("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php"))
-				{
-					$classname = "Install_".$HTTP_VARS['site_type'];
-					
-					include_once("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php");
-					$installPlugin =& new $classname();
-					
-					// this is currently the only type we support.
-					if($installPlugin->getInstallType() == 'Install_Table')
-					{
-						if(check_opendb_table($installPlugin->getInstallTable()))
-						{
-							// get rid of any directory information.
-							if(strlen($HTTP_VARS['import_file'])>0)
-							{
-								$HTTP_VARS['import_file'] = basename($HTTP_VARS['import_file']);
-								
-								if(file_exists('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file']))
-								{
-									$extension = get_file_ext($HTTP_VARS['import_file']);
-									$importPlugin =& get_extension_import_plugin($extension);
-									if($importPlugin !== NULL)
-									{
-										$fh = @fopen('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file'], 'rb');
-										if($fh!==FALSE)
-										{
-											@set_time_limit(600);
-											
-											echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-											
-											echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Updating ".strtoupper($installPlugin->getInstallTable())." table</h3>");
+			echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
+		}
+				
+		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+			echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+		else
+			echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"this.form.submit();\">");
 
-											echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&site_type=".$HTTP_VARS['site_type']."&op=maintain_site_plugin_install\">Back to CSV File List</a>]</div>");
-											echo("<p>Importing ".$HTTP_VARS['import_file']."...</p>");
+		echo("\n</form>");
+	}
+	else if($HTTP_VARS['op'] == 'sql')
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			header("Cache-control: no-store");
+			header("Pragma: no-store");
+			header("Expires: 0");
+			header("Content-disposition: attachment; filename=".$HTTP_VARS['site_type'].".sql");
+			header("Content-type: application/octet-stream");
+				
+			echo generate_site_plugin_sql($site_plugin_r);
+		}
+		else
+		{
+			echo format_error_block(array('error'=>'Site Plugin not found'));
+		}
+	}
+	else if($HTTP_VARS['op'] == 'maintain_site_plugin_install') // special function to allow upload of file into database,etc
+	{
+		$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
+		if(is_not_empty_array($site_plugin_r))
+		{
+			if(file_exists("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php"))
+			{
+				$classname = "Install_".$HTTP_VARS['site_type'];
+				
+				include_once("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php");
+				$installPlugin =& new $classname();
+				
+				// this is currently the only type we support.
+				if($installPlugin->getInstallType() == 'Install_Table')
+				{
+					if(check_opendb_table($installPlugin->getInstallTable()))
+					{
+						// get rid of any directory information.
+						if(strlen($HTTP_VARS['import_file'])>0)
+						{
+							$HTTP_VARS['import_file'] = basename($HTTP_VARS['import_file']);
+							
+							if(file_exists('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file']))
+							{
+								$extension = get_file_ext($HTTP_VARS['import_file']);
+								$importPlugin =& get_extension_import_plugin($extension);
+								if($importPlugin !== NULL)
+								{
+									$fh = @fopen('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file'], 'rb');
+									if($fh!==FALSE)
+									{
+										@set_time_limit(600);
+										
+										echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+										
+										echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Updating ".strtoupper($installPlugin->getInstallTable())." table</h3>");
+
+										echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&site_type=".$HTTP_VARS['site_type']."&op=maintain_site_plugin_install\">Back to CSV File List</a>]</div>");
+										echo("<p>Importing ".$HTTP_VARS['import_file']."...</p>");
+										
+										if(preg_match("/([0-9]*)[\s]*-[\s]*([0-9]*)/", $HTTP_VARS['range'], $matches))
+										{
+											$installPlugin->setRowRange($matches[1], $matches[2]);
+										}
+										
+										$fileHandler =& new WrapperFileHandler($fh);
+
+										$header_row = $importPlugin->read_header($fileHandler, $error);
+										
+										// pass first row in										
+										$installPlugin->_handleRow($header_row);
+										
+										while( !$installPlugin->isEndRowFound() && !$fileHandler->isEof() && ($read_row_r = $importPlugin->read_row($fileHandler, $error)) !== FALSE )
+										{
+											//to keep proxy server happy.
+											if(($installPlugin->getRowCount() % 100)===0)
+												echo("\n");
+											else
+												echo(" ");
 											
-											if(preg_match("/([0-9]*)[\s]*-[\s]*([0-9]*)/", $HTTP_VARS['range'], $matches))
-											{
-												$installPlugin->setRowRange($matches[1], $matches[2]);
-											}
+											flush();
 											
-											$fileHandler =& new WrapperFileHandler($fh);
-	
-											$header_row = $importPlugin->read_header($fileHandler, $error);
-											
-											// pass first row in										
-											$installPlugin->_handleRow($header_row);
-											
-											while( !$installPlugin->isEndRowFound() && !$fileHandler->isEof() && ($read_row_r = $importPlugin->read_row($fileHandler, $error)) !== FALSE )
-											{
-												//to keep proxy server happy.
-												if(($installPlugin->getRowCount() % 100)===0)
-													echo("\n");
-												else
-													echo(" ");
-												
-												flush();
-												
-												$installPlugin->_handleRow($read_row_r);
-											}
-											fclose($fh);
-											
+											$installPlugin->_handleRow($read_row_r);
+										}
+										fclose($fh);
+										
+										echo("<table>");
+										echo("<tr><td class=\"prompt\">Rows Processed:</td><td class=\"data\">".$installPlugin->getProcessedCount()."</td></tr>");
+										echo("<tr><td class=\"prompt\">Rows Inserted:</td><td class=\"data\">".$installPlugin->getInsertCount()."</td></tr>");
+										echo("<tr><td class=\"prompt\">Rows Updated:</td><td class=\"data\">".$installPlugin->getUpdateCount()."</td></tr>");
+										echo("<tr><td class=\"prompt\">Rows Deleted:</td><td class=\"data\">".$installPlugin->getDeleteCount()."</td></tr>");
+										echo("</table>");
+										
+										$errors_r = $installPlugin->getErrors();
+										if(is_not_empty_array($errors_r))
+										{
+											echo("\n<div class=\"error\">Error Details</div>");
 											echo("<table>");
-											echo("<tr><td class=\"prompt\">Rows Processed:</td><td class=\"data\">".$installPlugin->getProcessedCount()."</td></tr>");
-											echo("<tr><td class=\"prompt\">Rows Inserted:</td><td class=\"data\">".$installPlugin->getInsertCount()."</td></tr>");
-											echo("<tr><td class=\"prompt\">Rows Updated:</td><td class=\"data\">".$installPlugin->getUpdateCount()."</td></tr>");
-											echo("<tr><td class=\"prompt\">Rows Deleted:</td><td class=\"data\">".$installPlugin->getDeleteCount()."</td></tr>");
+											reset($errors_r);
+											echo("<tr class=\"navbar\">
+												<th>Row No.</th>
+												<th>Error</th>
+												<th>Details</th>
+												</tr>");
+											$toggle=TRUE;
+											while(list(,$error_r) = each($errors_r))
+											{
+												$color = ($toggle?"oddRow":"evenRow");
+												$toggle = !$toggle;
+									
+												echo("<tr><td class=\"$color\">".$error_r['rowcount']."</td><td class=\"$color\">".$error_r['error']."</td><td class=\"$color\">".$error_r['details']."</td></tr>");
+											}
 											echo("</table>");
 											
-											$errors_r = $installPlugin->getErrors();
-											if(is_not_empty_array($errors_r))
-											{
-												echo("\n<div class=\"error\">Error Details</div>");
-												echo("<table>");
-												reset($errors_r);
-												echo("<tr class=\"navbar\">
-													<th>Row No.</th>
-													<th>Error</th>
-													<th>Details</th>
-													</tr>");
-												$toggle=TRUE;
-												while(list(,$error_r) = each($errors_r))
-												{
-													$color = ($toggle?"oddRow":"evenRow");
-													$toggle = !$toggle;
-										
-													echo("<tr><td class=\"$color\">".$error_r['rowcount']."</td><td class=\"$color\">".$error_r['error']."</td><td class=\"$color\">".$error_r['details']."</td></tr>");
-												}
-												echo("</table>");
-												
-												flush();
-											}
-										}
-										else
-										{
-											$errors[] = array('error'=>'Could not access upload file', 'detail'=>$error);
-											$HTTP_VARS['op'] = 'list_site_plugins';
+											flush();
 										}
 									}
 									else
 									{
-										$errors[] = array('error'=>'Upload file extension not supported.');
+										$errors[] = array('error'=>'Could not access upload file', 'detail'=>$error);
 										$HTTP_VARS['op'] = 'list_site_plugins';
 									}
 								}
 								else
 								{
-									$errors[] = array('error'=>'Upload file not found.');
+									$errors[] = array('error'=>'Upload file extension not supported.');
 									$HTTP_VARS['op'] = 'list_site_plugins';
 								}
-							}//if(strlen($HTTP_VARS['import_file'])>0)
+							}
 							else
 							{
-								echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-								echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Update ".strtoupper($installPlugin->getInstallTable())." table</h3>");
-								
-								$recordCount = $installPlugin->getRecordCount();
-								if(is_numeric($recordCount))
-								{
-									echo("\n<p>Table Record Count: ".$recordCount."</p>");
-								}
-																	
-								$lastUpdated = $installPlugin->getLastUpdated();
-								if($lastUpdated!==FALSE)
-								{
-									$lastUpdatedString = get_localised_timestamp(
-										$cfg_date_mask,
-										$lastUpdated);
-								}
-								if(strlen($lastUpdated)>0)
-								{
-									echo("\n<p>Table last updated: ".$lastUpdatedString."</p>");
-								}
-								
-								echo("\n<h4>Listing <code>./admin/s_site_plugin/upload/</code> directory</h4>");
-								echo("\n<table>");
-								echo("\n<tr class=\"navbar\">"
-									."<th>CSV File</th>"
-									."<th>Row Range</th>"
-									."<th>Action</th>"
-									."\n</tr>");
-									
-								$file_list_r = get_file_list('./admin/s_site_plugin/upload/', 'csv');
-								if(is_not_empty_array($file_list_r))
-								{
-									$toggle = TRUE;
-									reset($file_list_r);
-									while(list(,$file) = each($file_list_r))
-									{
-										$color = ($toggle?"oddRow":"evenRow");
-										$toggle = !$toggle;
-										
-										echo("\n<form name=\"import_file\" action=\"$PHP_SELF\" method=\"GET\">".
-											"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-											"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-											"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-											"\n<input type=\"hidden\" name=\"import_file\" value=\"".$file."\">");
-										
-										echo("\n<tr>");	
-										echo("\n<td class=\"$color\">".$file."</td>");
-										echo("\n<td class=\"$color\"><input text=\"text\" class=\"text\" name=\"range\" value=\"0-\" onChange=\"this.value=legalCharFilter(this.value, '0123456789-');\"></td>");
-										echo("<td class=\"$color\"><input type=\"submit\" class=\"submit\" value=\"Import\"></td></tr>");
-										
-										echo("\n</form>");
-										
-										echo("</table>");
-									}
-								}
-								else
-								{
-									echo("</table>");
-									echo("<div class=\"error\">No files found</div>");
-								}
-								
-								echo(format_help_block(array('text'=>'Upload CSV files directly (using FTP or equivalent) to the <code>./admin/s_site_plugin/upload/</code> directory.')));
+								$errors[] = array('error'=>'Upload file not found.');
+								$HTTP_VARS['op'] = 'list_site_plugins';
 							}
-						}
+						}//if(strlen($HTTP_VARS['import_file'])>0)
 						else
 						{
-							$errors[] = array('error'=>'Plugin table '.strtoupper($installPlugin->getInstallTable()).' does not exist.');
-							$HTTP_VARS['op'] = 'list_site_plugins';
+							echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+							echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Update ".strtoupper($installPlugin->getInstallTable())." table</h3>");
+							
+							$recordCount = $installPlugin->getRecordCount();
+							if(is_numeric($recordCount))
+							{
+								echo("\n<p>Table Record Count: ".$recordCount."</p>");
+							}
+																
+							$lastUpdated = $installPlugin->getLastUpdated();
+							if($lastUpdated!==FALSE)
+							{
+								$lastUpdatedString = get_localised_timestamp(
+									$cfg_date_mask,
+									$lastUpdated);
+							}
+							if(strlen($lastUpdated)>0)
+							{
+								echo("\n<p>Table last updated: ".$lastUpdatedString."</p>");
+							}
+							
+							echo("\n<h4>Listing <code>./admin/s_site_plugin/upload/</code> directory</h4>");
+							echo("\n<table>");
+							echo("\n<tr class=\"navbar\">"
+								."<th>CSV File</th>"
+								."<th>Row Range</th>"
+								."<th>Action</th>"
+								."\n</tr>");
+								
+							$file_list_r = get_file_list('./admin/s_site_plugin/upload/', 'csv');
+							if(is_not_empty_array($file_list_r))
+							{
+								$toggle = TRUE;
+								reset($file_list_r);
+								while(list(,$file) = each($file_list_r))
+								{
+									$color = ($toggle?"oddRow":"evenRow");
+									$toggle = !$toggle;
+									
+									echo("\n<form name=\"import_file\" action=\"$PHP_SELF\" method=\"GET\">".
+										"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
+										"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
+										"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
+										"\n<input type=\"hidden\" name=\"import_file\" value=\"".$file."\">");
+									
+									echo("\n<tr>");	
+									echo("\n<td class=\"$color\">".$file."</td>");
+									echo("\n<td class=\"$color\"><input text=\"text\" class=\"text\" name=\"range\" value=\"0-\" onChange=\"this.value=legalCharFilter(this.value, '0123456789-');\"></td>");
+									echo("<td class=\"$color\"><input type=\"submit\" class=\"submit\" value=\"Import\"></td></tr>");
+									
+									echo("\n</form>");
+									
+									echo("</table>");
+								}
+							}
+							else
+							{
+								echo("</table>");
+								echo("<div class=\"error\">No files found</div>");
+							}
+							
+							echo(format_help_block(array('text'=>'Upload CSV files directly (using FTP or equivalent) to the <code>./admin/s_site_plugin/upload/</code> directory.')));
 						}
 					}
 					else
 					{
-						$errors[] = array('error'=>'Operation not supported');
+						$errors[] = array('error'=>'Plugin table '.strtoupper($installPlugin->getInstallTable()).' does not exist.');
 						$HTTP_VARS['op'] = 'list_site_plugins';
 					}
 				}
 				else
 				{
-					$errors[] = array('error'=>'Site Plugin installation maintenance class not found');
+					$errors[] = array('error'=>'Operation not supported');
 					$HTTP_VARS['op'] = 'list_site_plugins';
 				}
 			}
-			else//if(is_not_empty_array($site_plugin_r))
+			else
 			{
-				$errors[] = array('error'=>'Site Plugin not found');
+				$errors[] = array('error'=>'Site Plugin installation maintenance class not found');
 				$HTTP_VARS['op'] = 'list_site_plugins';
 			}
 		}
-		else if($HTTP_VARS['op'] == 'installsql')
+		else//if(is_not_empty_array($site_plugin_r))
 		{
-			execute_sql_install($ADMIN_TYPE, $HTTP_VARS['sqlfile'], $errors);
-            $HTTP_VARS['op'] = 'list_site_plugins';
-		}
-
-		if($HTTP_VARS['op'] == 'list_site_plugins')
-		{
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a> ]");
-			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
-			
-			$results = fetch_site_plugin_rs();
-			if($results)
-			{
-				echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"GET\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"new_site_plugin\">");
-				echo("\n<input type=\"hidden\" name=\"site_type\" value=\"\">");
-
-				echo("<table>");
-				echo("<tr class=\"navbar\">"
-					."<th>Order</th>"
-					."<th>Site</th>"
-					."<th>Title</th>"
-					."<th colspan=3></th>"
-					."</tr>");
-					
-				$row = 0;
-				while($site_plugin_r = db_fetch_assoc($results))
-				{
-					$href = "<a href=\"admin.php?type=$ADMIN_TYPE&op=edit&site_type=".$site_plugin_r['site_type']."\">";
-					
-					echo("<tr>");
-					echo("\n<td class=\"data\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $site_plugin_r['order_no'], FALSE)."</td>");
-					echo("<td class=\"data\">".$site_plugin_r['site_type']."<input type=\"hidden\" name=\"site_type[$row]\" value=\"".$site_plugin_r['site_type']."\"></td>");
-					echo("<td class=\"data\">".$site_plugin_r['title']."</td>");
-					
-					echo("<td class=\"data\">");
-					echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&site_type=".$site_plugin_r['site_type']."\">Edit</a>");
-					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&site_type=".$site_plugin_r['site_type']."\">Delete</a>");
-					echo(" ]</td>");
-					
-					echo("<td class=\"data\">[ ");
-					echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_item_types&site_type=".$site_plugin_r['site_type']."\">Item&nbsp;Types</a>");
-					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_links&site_type=".$site_plugin_r['site_type']."\">Links</a>");
-					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_confs&site_type=".$site_plugin_r['site_type']."\">Configuration</a>");
-					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_input_fields&site_type=".$site_plugin_r['site_type']."\">Input&nbsp;Fields</a>");
-					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_maps&site_type=".$site_plugin_r['site_type']."\">Attribute&nbsp;Map</a>");
-					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_lookup_maps&site_type=".$site_plugin_r['site_type']."\">Lookup&nbsp;Attribute&nbsp;Map</a>");
-					if(file_exists('./admin/s_site_plugin/sql/'.$site_plugin_r['site_type'].'.install.class.php'))
-					{
-						echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=maintain_site_plugin_install&site_type=".$site_plugin_r['site_type']."\">Install&nbsp;Maintenance</a>");
-					}
-					echo(" ]</td>");
-					
-					echo("<td class=\"data\">");
-					echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=sql&site_type=".$site_plugin_r['site_type']."&mode=job\">SQL</a> ]");
-					echo("</td>");
-					echo("</tr>");
-					
-					$row++;
-				}
-				db_free_result($results);
-				
-				echo("</table>");
-				
-				echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
-				"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">");
-				
-				echo("</form>");
-				
-			}//if($results)
-			else
-			{
-				echo("<p class=\"error\">No Site Plugins Installed</p>");
-			}
-			
-			function is_not_exists_site_plugin($type)
-			{
-				return !is_exists_site_plugin($type, FALSE);
-			}
-			generate_sql_list($ADMIN_TYPE, 'Site Plugin', NULL, 'is_not_exists_site_plugin');
+			$errors[] = array('error'=>'Site Plugin not found');
+			$HTTP_VARS['op'] = 'list_site_plugins';
 		}
 	}
-}//(is_opendb_valid_session())
+	else if($HTTP_VARS['op'] == 'installsql')
+	{
+		execute_sql_install($ADMIN_TYPE, $HTTP_VARS['sqlfile'], $errors);
+		$HTTP_VARS['op'] = 'list_site_plugins';
+	}
+
+	if($HTTP_VARS['op'] == 'list_site_plugins')
+	{
+		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a> ]");
+		
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
+		
+		$results = fetch_site_plugin_rs();
+		if($results)
+		{
+			echo("\n<form name=\"s_site_plugin\" action=\"$PHP_SELF\" method=\"GET\">");
+			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+			echo("\n<input type=\"hidden\" name=\"op\" value=\"new_site_plugin\">");
+			echo("\n<input type=\"hidden\" name=\"site_type\" value=\"\">");
+
+			echo("<table>");
+			echo("<tr class=\"navbar\">"
+				."<th>Order</th>"
+				."<th>Site</th>"
+				."<th>Title</th>"
+				."<th colspan=3></th>"
+				."</tr>");
+					
+			$row = 0;
+			while($site_plugin_r = db_fetch_assoc($results))
+			{
+				$href = "<a href=\"admin.php?type=$ADMIN_TYPE&op=edit&site_type=".$site_plugin_r['site_type']."\">";
+				
+				echo("<tr>");
+				echo("\n<td class=\"data\">".get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $site_plugin_r['order_no'], FALSE)."</td>");
+				echo("<td class=\"data\">".$site_plugin_r['site_type']."<input type=\"hidden\" name=\"site_type[$row]\" value=\"".$site_plugin_r['site_type']."\"></td>");
+				echo("<td class=\"data\">".$site_plugin_r['title']."</td>");
+				
+				echo("<td class=\"data\">");
+				echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&site_type=".$site_plugin_r['site_type']."\">Edit</a>");
+				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&site_type=".$site_plugin_r['site_type']."\">Delete</a>");
+				echo(" ]</td>");
+				
+				echo("<td class=\"data\">[ ");
+				echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_item_types&site_type=".$site_plugin_r['site_type']."\">Item&nbsp;Types</a>");
+				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_links&site_type=".$site_plugin_r['site_type']."\">Links</a>");
+				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_confs&site_type=".$site_plugin_r['site_type']."\">Configuration</a>");
+				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_input_fields&site_type=".$site_plugin_r['site_type']."\">Input&nbsp;Fields</a>");
+				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_maps&site_type=".$site_plugin_r['site_type']."\">Attribute&nbsp;Map</a>");
+				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_lookup_maps&site_type=".$site_plugin_r['site_type']."\">Lookup&nbsp;Attribute&nbsp;Map</a>");
+				if(file_exists('./admin/s_site_plugin/sql/'.$site_plugin_r['site_type'].'.install.class.php'))
+				{
+					echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=maintain_site_plugin_install&site_type=".$site_plugin_r['site_type']."\">Install&nbsp;Maintenance</a>");
+				}
+				echo(" ]</td>");
+				
+				echo("<td class=\"data\">");
+				echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=sql&site_type=".$site_plugin_r['site_type']."&mode=job\">SQL</a> ]");
+				echo("</td>");
+				echo("</tr>");
+				
+				$row++;
+			}
+			db_free_result($results);
+			
+			echo("</table>");
+			
+			echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"document.forms['navigate'].op.value='".$HTTP_VARS['op']."'; document.forms['navigate'].submit();\">".
+			"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form.op.value='update_site_plugins'; this.form.submit();\">");
+			
+			echo("</form>");
+				
+		}//if($results)
+		else
+		{
+			echo("<p class=\"error\">No Site Plugins Installed</p>");
+		}
+		
+		function is_not_exists_site_plugin($type)
+		{
+			return !is_exists_site_plugin($type, FALSE);
+		}
+		generate_sql_list($ADMIN_TYPE, 'Site Plugin', NULL, 'is_not_exists_site_plugin');
+	}
+}
 ?>

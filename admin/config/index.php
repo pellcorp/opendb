@@ -372,77 +372,74 @@ function save_config_item($config_group_item_r, $HTTP_VARS, &$errors)
 	}
 }
 
-if(is_opendb_valid_session())
+if(is_opendb_admin_tools())
 {
-    if (is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	@set_time_limit(0);
+	 
+	if(strlen($HTTP_VARS['group_id']) == 0)
 	{
-	    @set_time_limit(0);
-	    
-		if(strlen($HTTP_VARS['group_id']) == 0)
-		{
-			$HTTP_VARS['group_id'] = 'site';
-		}
-		
-	    // process any updates
-		if($HTTP_VARS['op'] == 'save')
-		{
-		    //print_r($HTTP_VARS);
-      		save_config($HTTP_VARS, $errors);
-		}
-		
-		if(is_not_empty_array($errors))
-			echo format_error_block($errors);
-		
-		echo('<script src="./admin/config/select.js" language="JavaScript" type="text/javascript"></script>');
-		
-		echo("<div class=\"tabContainer\">");
-		
-		$config_group_rs = NULL;
-		$results = fetch_s_config_group_rs();
-		if($results)
-		{
-			while($config_group_r = db_fetch_assoc($results))
-			{
-				$config_group_rs[] = $config_group_r;
-			}
-			db_free_result($results);
-		}
-		
-		if(is_array($config_group_rs))
-		{
-			echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
-        	
-        	reset($config_group_rs);
-			while(list(,$config_group_r) = each($config_group_rs))
-			{
-				if($config_group_r['id'] == $HTTP_VARS['group_id'])
-				{
-					echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
-				}
-				else
-				{
-					echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";					
-				}
-			}
-			db_free_result($results);
-			
-			echo("\n</ul>");
-
-  			echo("<div id=\"tab-content\">");
-  			
-  			reset($config_group_rs);
-			while(list(,$config_group_r) = each($config_group_rs))
-  			{
-  				if($config_group_r['id'] == $HTTP_VARS['group_id'])
-  				{
-  					echo get_group_block($config_group_r);
-  					break;
-  				}
-			}
-  			echo("</div>");
-  		}
-  		
-  		echo("</div>");
+		$HTTP_VARS['group_id'] = 'site';
 	}
-}//if(is_opendb_valid_session())
+
+	// process any updates
+	if($HTTP_VARS['op'] == 'save')
+	{
+		//print_r($HTTP_VARS);
+		save_config($HTTP_VARS, $errors);
+	}
+
+	if(is_not_empty_array($errors))
+	echo format_error_block($errors);
+
+	echo('<script src="./admin/config/select.js" language="JavaScript" type="text/javascript"></script>');
+
+	echo("<div class=\"tabContainer\">");
+
+	$config_group_rs = NULL;
+	$results = fetch_s_config_group_rs();
+	if($results)
+	{
+		while($config_group_r = db_fetch_assoc($results))
+		{
+			$config_group_rs[] = $config_group_r;
+		}
+		db_free_result($results);
+	}
+
+	if(is_array($config_group_rs))
+	{
+		echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
+		 
+		reset($config_group_rs);
+		while(list(,$config_group_r) = each($config_group_rs))
+		{
+			if($config_group_r['id'] == $HTTP_VARS['group_id'])
+			{
+				echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
+			}
+			else
+			{
+				echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";
+			}
+		}
+		db_free_result($results);
+			
+		echo("\n</ul>");
+
+		echo("<div id=\"tab-content\">");
+			
+		reset($config_group_rs);
+		while(list(,$config_group_r) = each($config_group_rs))
+		{
+			if($config_group_r['id'] == $HTTP_VARS['group_id'])
+			{
+				echo get_group_block($config_group_r);
+				break;
+			}
+		}
+		echo("</div>");
+	}
+
+	echo("</div>");
+}
 ?>

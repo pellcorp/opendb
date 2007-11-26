@@ -119,135 +119,129 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 	return $buffer;
 }
 
-session_start();
-if (is_opendb_valid_session())
+if(is_opendb_admin_tools())
 {
-	if (is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if(strlen($HTTP_VARS['op'])==0)
+		$HTTP_VARS['op'] = 'list';
+
+	if($HTTP_VARS['op'] == 'update') //update an existing announcement
 	{
-		// default.
-		if(strlen($HTTP_VARS['op'])==0)
+	    if(strlen($HTTP_VARS['title'])>0 && strlen($HTTP_VARS['content'])>0 && is_numeric($HTTP_VARS['display_days']))
+	    {
+			//$HTTP_VARS['content'] = filter_input_field('htmlarea', $HTTP_VARS['content']);
+			if(!update_announcement($HTTP_VARS['announcement_id'], $HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['min_user_type'], $HTTP_VARS['display_days'], $HTTP_VARS['closed_ind']))
+			{
+				$errors[] = array('error'=>'Announcement not updated','detail'=>db_error());
+			}
 			$HTTP_VARS['op'] = 'list';
-
-		if($HTTP_VARS['op'] == 'update') //update an existing announcement
-		{
-		    if(strlen($HTTP_VARS['title'])>0 && strlen($HTTP_VARS['content'])>0 && is_numeric($HTTP_VARS['display_days']))
-		    {
-				//$HTTP_VARS['content'] = filter_input_field('htmlarea', $HTTP_VARS['content']);
-				if(!update_announcement($HTTP_VARS['announcement_id'], $HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['min_user_type'], $HTTP_VARS['display_days'], $HTTP_VARS['closed_ind']))
-				{
-					$errors[] = array('error'=>'Announcement not updated','detail'=>db_error());
-				}
-				$HTTP_VARS['op'] = 'list';
-			}
-            else
-			{
-			    $errors[] = array('error'=>'Title, Content and Display Days are required');
-			    $HTTP_VARS['op'] = 'edit';
-			}
 		}
-		else if($HTTP_VARS['op'] == 'insert') //insert new announcement
+		else
 		{
-		    if(strlen($HTTP_VARS['title'])>0 && strlen($HTTP_VARS['content'])>0 && is_numeric($HTTP_VARS['display_days']))
-		    {
-		    	//$HTTP_VARS['content'] = filter_input_field('htmlarea', $HTTP_VARS['content']);
-				if(!insert_announcement($HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['min_user_type'], $HTTP_VARS['display_days']))
-				{
-					$errors[] = array('error'=>'Announcement not added','detail'=>db_error());
-				}
-				$HTTP_VARS['op'] = 'list';
-			}
-			else
-			{
-			    $errors[] = array('error'=>'Title, Content and Display Days are required');
-			    $HTTP_VARS['op'] = 'new';
-			}
+		    $errors[] = array('error'=>'Title, Content and Display Days are required');
+		    $HTTP_VARS['op'] = 'edit';
 		}
-		else if($HTTP_VARS['op'] == 'delete') //delete an existing announcement
+	}
+	else if($HTTP_VARS['op'] == 'insert') //insert new announcement
+	{
+	    if(strlen($HTTP_VARS['title'])>0 && strlen($HTTP_VARS['content'])>0 && is_numeric($HTTP_VARS['display_days']))
+	    {
+	    	//$HTTP_VARS['content'] = filter_input_field('htmlarea', $HTTP_VARS['content']);
+			if(!insert_announcement($HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['min_user_type'], $HTTP_VARS['display_days']))
+			{
+				$errors[] = array('error'=>'Announcement not added','detail'=>db_error());
+			}
+			$HTTP_VARS['op'] = 'list';
+		}
+		else
 		{
-			if($HTTP_VARS['confirmed'] == 'false')
-			{
-				$HTTP_VARS['op'] = 'list';
-			}
-			else if($HTTP_VARS['confirmed'] == 'true')
-			{
-				if(!delete_announcement($HTTP_VARS['announcement_id']))
-				{
-					$errors[] = array('error'=>'Announcement not deleted','detail'=>db_error());
-				}
-				$HTTP_VARS['op'] = 'list';
-			}
-			else
-			{
-                echo("<h3>Delete Announcement</h3>");
-				echo get_op_confirm_form($PHP_SELF, 'Are you sure you want to permanently delete announcement "'.fetch_announcement_title($HTTP_VARS['announcement_id']).'"?', $HTTP_VARS);
-			}
+		    $errors[] = array('error'=>'Title, Content and Display Days are required');
+		    $HTTP_VARS['op'] = 'new';
 		}
+	}
+	else if($HTTP_VARS['op'] == 'delete') //delete an existing announcement
+	{
+		if($HTTP_VARS['confirmed'] == 'false')
+		{
+			$HTTP_VARS['op'] = 'list';
+		}
+		else if($HTTP_VARS['confirmed'] == 'true')
+		{
+			if(!delete_announcement($HTTP_VARS['announcement_id']))
+			{
+				$errors[] = array('error'=>'Announcement not deleted','detail'=>db_error());
+			}
+			$HTTP_VARS['op'] = 'list';
+		}
+		else
+		{
+			echo("<h3>Delete Announcement</h3>");
+			echo get_op_confirm_form($PHP_SELF, 'Are you sure you want to permanently delete announcement "'.fetch_announcement_title($HTTP_VARS['announcement_id']).'"?', $HTTP_VARS);
+		}
+	}
 		
-		if($HTTP_VARS['op'] == 'list')
-		{
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Announcement</a> ]");
+	if($HTTP_VARS['op'] == 'list')
+	{
+		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Announcement</a> ]");
 			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
 				
-			$result = fetch_announcement_rs('A', NULL, NULL); 
-			if($result)
-			{	
-			    $submitted_datetime_mask = get_opendb_config_var('announcements', 'datetime_mask');
-			    echo("<ul class=\"announcement\">");
-				while ($announcement_r = db_fetch_assoc($result))
-				{
-					echo("<li>");
-	
-					echo("\n<h4>".$announcement_r['title']."</h4>");
-					echo("\n<p>".nl2br($announcement_r['content'])."</p>");
-					
-					echo("\n<ul class=\"metadata\">".
-						"<li>Submitted: ".get_localised_timestamp($submitted_datetime_mask, $announcement_r['submit_on']).'</li>'.
-						"<li>Min User Type: ".get_usertype_prompt($announcement_r['min_user_type']).'</li>'.
-						"<li>Display Days: ".$announcement_r['display_days'].'</li>'.
-						"<li>Closed: ".$announcement_r['closed_ind'].'</li>'.
-						"</ul>");
-
-					$announcement_edit_links = NULL;
-					$announcement_edit_links[] = array(url=>"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&announcement_id=".$announcement_r['sequence_number'],text=>"Edit");
-					$announcement_edit_links[] = array(url=>"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&announcement_id=".$announcement_r['sequence_number'],text=>"Delete");
-					echo(format_footer_links($announcement_edit_links));
-					
-					echo("</li>");
-				}
-				db_free_result($result);
-				echo("</ul>");
-			} //if($result)
-			else
+		$result = fetch_announcement_rs('A', NULL, NULL); 
+		if($result)
+		{	
+		    $submitted_datetime_mask = get_opendb_config_var('announcements', 'datetime_mask');
+		    echo("<ul class=\"announcement\">");
+			while ($announcement_r = db_fetch_assoc($result))
 			{
-                echo("\n<p class=\"error\">No Announcements Found</p>");
+				echo("<li>");
+	
+				echo("\n<h4>".$announcement_r['title']."</h4>");
+				echo("\n<p>".nl2br($announcement_r['content'])."</p>");
+					
+				echo("\n<ul class=\"metadata\">".
+					"<li>Submitted: ".get_localised_timestamp($submitted_datetime_mask, $announcement_r['submit_on']).'</li>'.
+					"<li>Min User Type: ".get_usertype_prompt($announcement_r['min_user_type']).'</li>'.
+					"<li>Display Days: ".$announcement_r['display_days'].'</li>'.
+					"<li>Closed: ".$announcement_r['closed_ind'].'</li>'.
+					"</ul>");
+
+				$announcement_edit_links = NULL;
+				$announcement_edit_links[] = array(url=>"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&announcement_id=".$announcement_r['sequence_number'],text=>"Edit");
+				$announcement_edit_links[] = array(url=>"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&announcement_id=".$announcement_r['sequence_number'],text=>"Delete");
+				echo(format_footer_links($announcement_edit_links));
+					
+				echo("</li>");
 			}
-		}
-		else if($HTTP_VARS['op'] == 'new') //display new announcement form.
+			db_free_result($result);
+			echo("</ul>");
+		} //if($result)
+		else
 		{
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
-            
-			echo("<h3>New Announcement</h3>");
-			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
-				
-			echo(get_edit_announcement_input_form(NULL, $HTTP_VARS));
+			echo("\n<p class=\"error\">No Announcements Found</p>");
 		}
-		else if($HTTP_VARS['op'] == 'edit') //Display edit announcement form.
-		{
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
+	}
+	else if($HTTP_VARS['op'] == 'new') //display new announcement form.
+	{
+		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
             
-			echo("<h3>Edit Announcement</h3>");
+		echo("<h3>New Announcement</h3>");
 			
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
 				
-			$announcement_r = fetch_announcement_r($HTTP_VARS['announcement_id']);
-			echo(get_edit_announcement_input_form($announcement_r, $HTTP_VARS));
+		echo(get_edit_announcement_input_form(NULL, $HTTP_VARS));
+	}
+	else if($HTTP_VARS['op'] == 'edit') //Display edit announcement form.
+	{
+		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
+           
+		echo("<h3>Edit Announcement</h3>");
 			
-		}
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
+				
+		$announcement_r = fetch_announcement_r($HTTP_VARS['announcement_id']);
+		echo(get_edit_announcement_input_form($announcement_r, $HTTP_VARS));
 	}
 }
 ?>

@@ -102,54 +102,50 @@ function validate_sql_script($patchdir, $sqlfile)
 		return FALSE;
 }
 
-session_start();
-if (is_opendb_valid_session())
-{ 
-	if (is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-	{
-		@set_time_limit(600);
+if(is_opendb_admin_tools())
+{
+	@set_time_limit(600);
 		
-        if($HTTP_VARS['op'] == 'previewsql')
-		{
-			echo("<html>");
-			echo("\n<head>");
-			echo("\n<title>".get_opendb_config_var('site', 'title')." ".get_opendb_version()." - ".$HTTP_VARS['title']."</title>");
+	if($HTTP_VARS['op'] == 'previewsql')
+	{
+		echo("<html>");
+		echo("\n<head>");
+		echo("\n<title>".get_opendb_config_var('site', 'title')." ".get_opendb_version()." - ".$HTTP_VARS['title']."</title>");
 
-			if(file_exists('./theme/default/style.css'))
-				echo("\n<link rel=stylesheet type=\"text/css\" href=\"./theme/default/style.css\">");
-			echo("\n<style type=\"text/css\">");
-			echo (
+		if(file_exists('./theme/default/style.css'))
+		echo("\n<link rel=stylesheet type=\"text/css\" href=\"./theme/default/style.css\">");
+		echo("\n<style type=\"text/css\">");
+		echo (
 				"\n.code 			{ color: black; font-family: courier; font-size:small }");
-			echo("\n</style>");
-			echo("\n</head><body>");
+		echo("\n</style>");
+		echo("\n</head><body>");
 
+		if(($file = validate_sql_script($HTTP_VARS['patchdir'], $HTTP_VARS['sqlfile']))!==FALSE)
+		{
+			echo_install_sql_file($file);
+		}
+
+		echo("\n</body></html>");
+	}
+	else
+	{
+		if($HTTP_VARS['op'] == 'installsql')
+		{
 			if(($file = validate_sql_script($HTTP_VARS['patchdir'], $HTTP_VARS['sqlfile']))!==FALSE)
 			{
-            	echo_install_sql_file($file);
-            }
-
-			echo("\n</body></html>");
-		}
-		else
-		{
-            if($HTTP_VARS['op'] == 'installsql')
-			{
-				if(($file = validate_sql_script($HTTP_VARS['patchdir'], $HTTP_VARS['sqlfile']))!==FALSE)
+				if(exec_install_sql_file($file, $error))
 				{
-					if(exec_install_sql_file($file, $error))
-					{
-						echo("<div class=\"smsuccess\">SQL script executed successfully.</div>");
-					}
-					else
-					{
-						echo format_error_block($error);
-					}
+					echo("<div class=\"smsuccess\">SQL script executed successfully.</div>");
+				}
+				else
+				{
+					echo format_error_block($error);
 				}
 			}
+		}
 
-            display_patch_list('Customise for Country', 'country');
-            display_patch_list('Miscelleous Updates', 'extras');
-		}//if($HTTP_VARS['op'] == 'patch')
-	}
-}//(is_opendb_valid_session())
+		display_patch_list('Customise for Country', 'country');
+		display_patch_list('Miscelleous Updates', 'extras');
+	}//if($HTTP_VARS['op'] == 'patch')
+}
 ?>

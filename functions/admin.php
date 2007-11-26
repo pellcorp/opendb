@@ -21,6 +21,17 @@ include_once('./functions/utils.php');
 include_once('./functions/http.php');
 
 /**
+ * Enter description here...
+ *
+ * @param unknown_type $PHP_SELF
+ */
+function is_opendb_admin_tools()
+{
+	global $PHP_SELF;
+	return (basename($PHP_SELF, ".php") == 'admin');
+}
+
+/**
 	Taken from phpMyAdmin libraries/defines.lib.php
 
 	Determines platform (OS)

@@ -36,7 +36,7 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		if(is_opendb_user_permitted(PERM_OPENDB_ADMIN_TOOLS))
 		{
 			$ADMIN_TYPE = ifempty($HTTP_VARS['type'], 'config');
 			$ADMIN_DIR = './admin/'.$ADMIN_TYPE;

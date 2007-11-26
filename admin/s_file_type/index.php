@@ -94,135 +94,130 @@ function display_s_file_type_row($file_type_r, $row)
 
  	echo("</tr>");
 }
-// #################################################################################
-// Main Process
-// #################################################################################
-if(is_opendb_valid_session())
-{
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-	{
-		if($HTTP_VARS['op'] == 'delete')
-		{
-			if($HTTP_VARS['confirmed'] == 'true')
-			{
-				if(!delete_s_file_type($HTTP_VARS['content_type']))
-					$errors[] = array('error'=>'File Type not deleted','detail'=>db_error());
 
-                $HTTP_VARS['op'] = NULL;
-			}
-			else if($HTTP_VARS['confirmed'] != 'false')
-			{
-				echo("\n<h3>Delete File type</h3>");
-				echo(get_op_confirm_form($PHP_SELF, 
-						"Are you sure you want to delete file type '".$HTTP_VARS['content_type']."'?", 
-						array('type'=>$HTTP_VARS['type'], 'op'=>'delete', 'content_type'=>$HTTP_VARS['content_type'])));
-			}
-			else // confirmation required.
-			{
-				$HTTP_VARS['op'] = NULL;
-			}
-		}
-		else if($HTTP_VARS['op'] == 'update')
+if(is_opendb_admin_tools())
+{
+	if($HTTP_VARS['op'] == 'delete')
+	{
+		if($HTTP_VARS['confirmed'] == 'true')
 		{
-			if(is_not_empty_array($HTTP_VARS['content_type']))
+			if(!delete_s_file_type($HTTP_VARS['content_type']))
+				$errors[] = array('error'=>'File Type not deleted','detail'=>db_error());
+
+			$HTTP_VARS['op'] = NULL;
+		}
+		else if($HTTP_VARS['confirmed'] != 'false')
+		{
+			echo("\n<h3>Delete File type</h3>");
+			echo(get_op_confirm_form($PHP_SELF,
+						"Are you sure you want to delete file type '".$HTTP_VARS['content_type']."'?", 
+			array('type'=>$HTTP_VARS['type'], 'op'=>'delete', 'content_type'=>$HTTP_VARS['content_type'])));
+		}
+		else // confirmation required.
+		{
+			$HTTP_VARS['op'] = NULL;
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update')
+	{
+		if(is_not_empty_array($HTTP_VARS['content_type']))
+		{
+			for($i=0; $i<count($HTTP_VARS['content_type']); $i++)
 			{
-				for($i=0; $i<count($HTTP_VARS['content_type']); $i++)
+				if($HTTP_VARS['exists_ind'][$i] == 'Y')
 				{
-					if($HTTP_VARS['exists_ind'][$i] == 'Y')
+					if(is_exists_file_type($HTTP_VARS['content_type'][$i]))
 					{
-						if(is_exists_file_type($HTTP_VARS['content_type'][$i]))
-						{
-							if(!update_s_file_type(
+						if(!update_s_file_type(
 								$HTTP_VARS['content_type'][$i],
 								$HTTP_VARS['content_group'][$i],
-								$HTTP_VARS['extension'][$i], 
+								$HTTP_VARS['extension'][$i],
 								trim_explode(',', $HTTP_VARS['alt_extensions'][$i]),
-								$HTTP_VARS['description'][$i],  
+								$HTTP_VARS['description'][$i],
 								$HTTP_VARS['image'][$i],
 								$HTTP_VARS['thumbnail_support_ind'][$i]))
-							{
-								$errors[] = array('error'=>'File Type "'.$HTTP_VARS['content_type'][$i].'" not updated.','detail'=>db_error());
-							}
+						{
+							$errors[] = array('error'=>'File Type "'.$HTTP_VARS['content_type'][$i].'" not updated.','detail'=>db_error());
 						}
 					}
-					else if(strlen($HTTP_VARS['content_type'][$i])>0)
+				}
+				else if(strlen($HTTP_VARS['content_type'][$i])>0)
+				{
+					if(!is_exists_file_type($HTTP_VARS['content_type'][$i]))
 					{
-						if(!is_exists_file_type($HTTP_VARS['content_type'][$i]))
-						{
-							if(!insert_s_file_type(
+						if(!insert_s_file_type(
 								$HTTP_VARS['content_type'][$i],
 								$HTTP_VARS['content_group'][$i],
-								$HTTP_VARS['extension'][$i], 
-								trim_explode(',', $HTTP_VARS['alt_extensions'][$i]), 
-								$HTTP_VARS['description'][$i], 
+								$HTTP_VARS['extension'][$i],
+								trim_explode(',', $HTTP_VARS['alt_extensions'][$i]),
+								$HTTP_VARS['description'][$i],
 								$HTTP_VARS['image'][$i],
 								$HTTP_VARS['thumbnail_support_ind'][$i]))
-							{
-								$errors[] = array('error'=>'File Type "'.$HTTP_VARS['content_type'][$i].'" not inserted.','detail'=>db_error());
-							}
-						}	
+						{
+							$errors[] = array('error'=>'File Type "'.$HTTP_VARS['content_type'][$i].'" not inserted.','detail'=>db_error());
+						}
 					}
 				}
 			}
-			
-			$HTTP_VARS['op'] = '';
 		}
-		
-		if(strlen($HTTP_VARS['op'])==0)
-		{
-            if(is_not_empty_array($errors))
-				echo format_error_block($errors);
-
-			echo("\n<form name=\"s_file_type\" action=\"$PHP_SELF\" method=\"POST\">");
-
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-
-			echo("\n<table>");
-			echo("<tr class=\"navbar\">"
-				."<th>Content Type</th>"
-				."<th>Content Group</th>"
-				."<th>Description</th>"
-				."<th>Extension</th>"
-				."<th>Alternate Extensions</th>"
-                ."<th colspan=2>Image</th>"
-                ."<th>Thumbnail<br />Support</th>"
-				."<th></th>"
-				."</tr>");
-			$column_count = 9;
-
-			$results = fetch_s_file_type_rs();
-			if($results)
-			{
-				$row = 0;
-				while($file_type_r = db_fetch_assoc($results))
-				{
-					display_s_file_type_row($file_type_r, $row);
-					$row++;
-				}
-				db_free_result($results);
-			}
-
-			if(is_numeric($HTTP_VARS['blank_rows']))
-				$blank_rows = (int)$HTTP_VARS['blank_rows'];
-			else
-				$blank_rows = 5;
-
-			for($i=$row; $i<$row+$blank_rows; $i++)
-			{
-				echo display_s_file_type_row(array(), $i);
-			}
-
-			echo("</tr></table>");
 			
-			echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)",  
+		$HTTP_VARS['op'] = '';
+	}
+
+	if(strlen($HTTP_VARS['op'])==0)
+	{
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
+
+		echo("\n<form name=\"s_file_type\" action=\"$PHP_SELF\" method=\"POST\">");
+
+		echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
+		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+
+		echo("\n<table>");
+		echo("<tr class=\"navbar\">"
+		."<th>Content Type</th>"
+		."<th>Content Group</th>"
+		."<th>Description</th>"
+		."<th>Extension</th>"
+		."<th>Alternate Extensions</th>"
+		."<th colspan=2>Image</th>"
+		."<th>Thumbnail<br />Support</th>"
+		."<th></th>"
+		."</tr>");
+		$column_count = 9;
+
+		$results = fetch_s_file_type_rs();
+		if($results)
+		{
+			$row = 0;
+			while($file_type_r = db_fetch_assoc($results))
+			{
+				display_s_file_type_row($file_type_r, $row);
+				$row++;
+			}
+			db_free_result($results);
+		}
+
+		if(is_numeric($HTTP_VARS['blank_rows']))
+			$blank_rows = (int)$HTTP_VARS['blank_rows'];
+		else
+			$blank_rows = 5;
+
+		for($i=$row; $i<$row+$blank_rows; $i++)
+		{
+			echo display_s_file_type_row(array(), $i);
+		}
+
+		echo("</tr></table>");
+			
+		echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)",
 								"N", $blank_rows, FALSE, NULL, "this.form.submit();"));
 			
-			echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">".
+		echo("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value=''; this.form.submit();\">".
 				"<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 
-			echo("</form>");
-		}
+		echo("</form>");
 	}
 }
 ?>

@@ -21,12 +21,6 @@
 		This backup code is based on the "dump" feature from the phpMyAdmin project.
 */
 
-// This must be first - includes config.php
-require_once("./include/begin.inc.php");
-
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
 include_once("./functions/user.php");
 include_once("./functions/widgets.php");
 include_once("./functions/http.php");
@@ -92,100 +86,91 @@ function get_table_content($table, $crlf)
 	return TRUE;
 }
 
-if (is_opendb_valid_session())
+if(is_opendb_admin_tools())
 {
-	// Only admin user is allowed to access this.
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if($HTTP_VARS['op'] == 'export')
 	{
-		if($HTTP_VARS['op'] == 'export')
+		@set_time_limit(600);
+		header("Cache-control: no-store");
+		header("Pragma: no-store");
+		header("Expires: 0");
+		header("Content-disposition: attachment; filename=backup.sql");
+		header("Content-type: application/octet-stream");
+			
+		$CRLF = get_user_browser_crlf();
+
+		echo("# -------------------------------------------------------------".$CRLF);
+	    echo("# ".get_opendb_title_and_version().$CRLF);
+		echo("# http://sourceforge.net/projects/opendb/".$CRLF);
+	    echo("#".$CRLF);
+		echo("# ".get_opendb_lang_var('connected_to', get_opendb_config_var('db_server')).$CRLF);
+		echo("# ".get_opendb_lang_var('db_backup_generated', 'date', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))).$CRLF);
+	    echo("# -------------------------------------------------------------".$CRLF);
+
+		// special all tables option reset $HTTP_VARS['tables'] array as a result
+		if(strcasecmp($HTTP_VARS['all_tables'],'y')===0)
 		{
-			@set_time_limit(600);
-			header("Cache-control: no-store");
-			header("Pragma: no-store");
-			header("Expires: 0");
-			header("Content-disposition: attachment; filename=backup.sql");
-			header("Content-type: application/octet-stream");
+			unset($HTTP_VARS['tables']);
 			
-			$CRLF = get_user_browser_crlf();
-
-			echo("# -------------------------------------------------------------".$CRLF);
-		    echo("# ".get_opendb_title_and_version().$CRLF);
-   			echo("# http://sourceforge.net/projects/opendb/".$CRLF);
-		    echo("#".$CRLF);
-   			echo("# ".get_opendb_lang_var('connected_to', get_opendb_config_var('db_server')).$CRLF);
-			echo("# ".get_opendb_lang_var('db_backup_generated', 'date', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))).$CRLF);
-		    echo("# -------------------------------------------------------------".$CRLF);
-
-			// special all tables option reset $HTTP_VARS['tables'] array as a result
-			if(strcasecmp($HTTP_VARS['all_tables'],'y')===0)
+			$opendb_tables_r = fetch_opendb_table_list_r();
+			while(list(,$value) = each($opendb_tables_r))
 			{
-				unset($HTTP_VARS['tables']);
-				
-                   $opendb_tables_r = fetch_opendb_table_list_r();
-				while(list(,$value) = each($opendb_tables_r))
-				{
-					$HTTP_VARS['tables'][] = $value;
-				}
+				$HTTP_VARS['tables'][] = $value;
 			}
-			
-			@reset($HTTP_VARS['tables']);
-			while (list(,$table) = @each($HTTP_VARS['tables']))
-			{
-				echo $CRLF."#".$CRLF;
-				echo "# ".get_opendb_lang_var('dumping_data_for_table', 'table', $table).$CRLF;
-				echo "#".$CRLF.$CRLF;
-
+		}
+		
+		@reset($HTTP_VARS['tables']);
+		while (list(,$table) = @each($HTTP_VARS['tables']))
+		{
+			echo $CRLF."#".$CRLF;
+			echo "# ".get_opendb_lang_var('dumping_data_for_table', 'table', $table).$CRLF;
+			echo "#".$CRLF.$CRLF;
 				get_table_content($table, $CRLF);
-			}			
-		}
-		else //if($HTTP_VARS['op'] == 'export')
-		{
-			echo("<h3>Which tables should be backed up?</h3>");
-			
-			echo("<form method=\"POST\" action=\"$PHP_SELF\">"
-				."<input type=\"hidden\" name=\"type\" value=\"$ADMIN_TYPE\">"
-				."<input type=\"hidden\" name=\"op\" value=\"export\">"
-				."<input type=\"hidden\" name=\"mode\" value=\"job\">");
-			
-			echo("<ul class=\"checkboxGridOptionsVertical\">");
-
+		}			
+	}
+	else //if($HTTP_VARS['op'] == 'export')
+	{
+		echo("<h3>Which tables should be backed up?</h3>");
+		
+		echo("<form method=\"POST\" action=\"$PHP_SELF\">"
+			."<input type=\"hidden\" name=\"type\" value=\"$ADMIN_TYPE\">"
+			."<input type=\"hidden\" name=\"op\" value=\"export\">"
+			."<input type=\"hidden\" name=\"mode\" value=\"job\">");
+		
+		echo("<ul class=\"checkboxGridOptionsVertical\">");
             $opendb_tables_r = fetch_opendb_table_list_r();
-			while(list(,$table) = each( $opendb_tables_r ))
+		while(list(,$table) = each( $opendb_tables_r ))
+		{
+			// the cache tables cannot be backed up as they might contain
+			// binary data, which we don't yet support.
+			if(!ends_with($table, '_cache'))
 			{
-				// the cache tables cannot be backed up as they might contain
-				// binary data, which we don't yet support.
-				if(!ends_with($table, '_cache'))
+				$checked = FALSE;
+				if(strcasecmp(substr($table,0,2),'s_')!==0 &&
+							$table != 'import_cache' &&
+							$table != 'file_cache' &&
+							$table != 'php_session')
 				{
-                    $checked = FALSE;
-					if(strcasecmp(substr($table,0,2),'s_')!==0 &&
-								$table != 'import_cache' &&
-								$table != 'file_cache' &&
-                                $table != 'php_session')
-					{
-						$checked = TRUE;
-					}
-
-					echo("<li><input type=\"checkbox\" class=\"checkbox\" name=\"tables[]\" value=\"$table\" ".($checked?"CHECKED":"").">$table</li>");
-					
-					$count++;
+					$checked = TRUE;
 				}
-			}
-			
-			echo("</ul>");
-			
-			echo("<ul class=\"actionButtons\">".
-				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\"></li>".
-				"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\"></li>".
-				"<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
-				"<li class=\"submitButton\"><input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\"></li>".
-				"</ul>");
 
-			echo("
-				</form>");
+				echo("<li><input type=\"checkbox\" class=\"checkbox\" name=\"tables[]\" value=\"$table\" ".($checked?"CHECKED":"").">$table</li>");
+				
+				$count++;
+			}
 		}
+			
+		echo("</ul>");
+			
+		echo("<ul class=\"actionButtons\">".
+			"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('check_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', true);\"></li>".
+			"<li><input type=\"button\" class=\"button\" value=\"".get_opendb_lang_var('uncheck_all')."\" onClick=\"setCheckboxes(this.form, 'tables[]', false);\"></li>".
+			"<li><input type=\"reset\" class=\"reset\" value=\"".get_opendb_lang_var('reset')."\"></li>".
+			"<li class=\"submitButton\"><input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\"></li>".
+			"</ul>");
+
+		echo("
+			</form>");
 	}
 }
-
-// Cleanup after begin.inc.php
-require_once("./include/end.inc.php");
 ?>

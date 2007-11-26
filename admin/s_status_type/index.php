@@ -190,223 +190,219 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	}
 }
 
-if(is_opendb_valid_session())
+if(is_opendb_admin_tools())
 {
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if($HTTP_VARS['op'] == 'delete')
 	{
-		if($HTTP_VARS['op'] == 'delete')
+		if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
 		{
-			if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
+			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+			
+			if( $status_type_r['closed_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y' && fetch_default_status_type_cnt() <= 1)
 			{
-				$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
-				
-				if( $status_type_r['closed_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y' && fetch_default_status_type_cnt() <= 1)
+				$errors[] = array('error'=>'Status Type not deleted','detail'=>'Status Type is default and cannot be deleted');
+				$HTTP_VARS['op'] = NULL;
+			}
+			else if(is_exists_items_with_status_type($HTTP_VARS['s_status_type']))// Validate that no items are attached for this status type.
+			{
+				$errors[] = array('error'=>'Status Type not deleted','detail'=>'Status Type cannot be deleted while '.$status_type_r['description'].' item instance(s) exist.');
+				$HTTP_VARS['op'] = NULL;
+			}
+			else
+			{
+				if($HTTP_VARS['confirmed'] == 'true')
 				{
-					$errors[] = array('error'=>'Status Type not deleted','detail'=>'Status Type is default and cannot be deleted');
-                    $HTTP_VARS['op'] = NULL;
-				}
-				else if(is_exists_items_with_status_type($HTTP_VARS['s_status_type']))// Validate that no items are attached for this status type.
-				{
-					$errors[] = array('error'=>'Status Type not deleted','detail'=>'Status Type cannot be deleted while '.$status_type_r['description'].' item instance(s) exist.');
-                    $HTTP_VARS['op'] = NULL;
-				}
-				else
-				{
-					if($HTTP_VARS['confirmed'] == 'true')
-					{
-						if(!delete_s_status_type($HTTP_VARS['s_status_type']))
-							$errors[] = array('error'=>'Status Type not deleted','detail'=>db_error());
+					if(!delete_s_status_type($HTTP_VARS['s_status_type']))
+						$errors[] = array('error'=>'Status Type not deleted','detail'=>db_error());
 
-                        $HTTP_VARS['op'] = NULL;
-					}
-					else if($HTTP_VARS['confirmed'] != 'false')
-					{
-						echo("\n<h3>Delete Status Type</h3>");
-						echo(get_op_confirm_form($PHP_SELF, 
-								"Are you sure you want to delete Status Type '".$HTTP_VARS['s_status_type']." - ".$status_type_r['description']."'?", 
-								array('type'=>$HTTP_VARS['type'], 'op'=>'delete', 's_status_type'=>$HTTP_VARS['s_status_type'])));
-					}
-					else // confirmation required.
-					{
-						$HTTP_VARS['op'] = NULL;
-					}
+					$HTTP_VARS['op'] = NULL;
 				}
+				else if($HTTP_VARS['confirmed'] != 'false')
+				{
+					echo("\n<h3>Delete Status Type</h3>");
+					echo(get_op_confirm_form($PHP_SELF, 
+							"Are you sure you want to delete Status Type '".$HTTP_VARS['s_status_type']." - ".$status_type_r['description']."'?", 
+							array('type'=>$HTTP_VARS['type'], 'op'=>'delete', 's_status_type'=>$HTTP_VARS['s_status_type'])));
+				}
+				else // confirmation required.
+				{
+					$HTTP_VARS['op'] = NULL;
+				}
+			}
+		}
+		else
+		{
+			$errors[] = array('error'=>'Invalid Status Type specified');
+			$HTTP_VARS['op'] = NULL;
+		}
+	}
+	else if($HTTP_VARS['op'] == 'update')
+	{
+		if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
+		{
+			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+			
+			// If default_ind is currently 'Y', and being set to 'N', or closed_ind being set 'Y' from 'N'
+			if( (($HTTP_VARS['default_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y') ||
+				($HTTP_VARS['closed_ind'] == 'Y' && $status_type_r['closed_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y')) &&
+					fetch_default_status_type_cnt() <= 1)
+			{
+				$errors[] = array('error'=>'Status Type not updated',
+									'detail'=>'Status Type is default and cannot be closed');
+			}
+			else if(user_type_cmp($status_type_r['min_create_user_type'], $HTTP_VARS['min_create_user_type']) > 0 && 
+					is_exists_items_for_user_type_and_status_type($status_type_r['s_status_type'], $status_type_r['min_create_user_type']))
+			{
+				$errors[] =	array('error'=>'Status Type not updated',
+								'detail'=>'Item instance(s) exist for user(s) whose type, is not compatible with the new \''.$_COLUMN_DESC['min_create_user_type'].'\' (min_create_user_type) value.');
+			}
+			else
+			{
+				if(!update_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
+							$HTTP_VARS['delete_ind'], 
+							$HTTP_VARS['change_owner_ind'], 
+							$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
+							$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind'],
+							$HTTP_VARS['closed_ind']))
+				{
+					$errors[] = array('error'=>'Status Type not updated','detail'=>db_error());
+				}
+			}
+
+			$HTTP_VARS['op'] = 'edit';
+		}
+		else
+		{
+			$errors[] = array('error'=>'Invalid Status Type specified');
+			$HTTP_VARS['op'] = NULL;
+		}
+	}
+	else if($HTTP_VARS['op'] == 'insert')
+	{
+		$HTTP_VARS['s_status_type'] = strtoupper(substr(trim($HTTP_VARS['s_status_type']),0,1));
+		
+		if(strlen($HTTP_VARS['s_status_type'])>0 && !is_valid_s_status_type($HTTP_VARS['s_status_type']))
+		{
+			if(!insert_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
+							$HTTP_VARS['delete_ind'], 
+							$HTTP_VARS['change_owner_ind'], 
+							$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
+							$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind']))
+			{
+				$errors[] = array('error'=>'Status Type ('.$HTTP_VARS['s_status_type'].') not inserted','detail'=>db_error());
+			}
+
+			$HTTP_VARS['op'] = 'edit';
+		}
+		else
+		{
+			if(strlen($HTTP_VARS['s_status_type'])>0)
+			{
+				$errors[] = array('error'=>'Status Type exists');
 			}
 			else
 			{
 				$errors[] = array('error'=>'Invalid Status Type specified');
-                $HTTP_VARS['op'] = NULL;
 			}
+			$HTTP_VARS['op'] = 'new';
 		}
-		else if($HTTP_VARS['op'] == 'update')
-		{
-			if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
-			{
-				$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
-				
-				// If default_ind is currently 'Y', and being set to 'N', or closed_ind being set 'Y' from 'N'
-				if( (($HTTP_VARS['default_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y') ||
-					($HTTP_VARS['closed_ind'] == 'Y' && $status_type_r['closed_ind'] != 'Y' && $status_type_r['default_ind'] == 'Y')) &&
-						fetch_default_status_type_cnt() <= 1)
-				{
-					$errors[] = array('error'=>'Status Type not updated',
-										'detail'=>'Status Type is default and cannot be closed');
-				}
-				else if(user_type_cmp($status_type_r['min_create_user_type'], $HTTP_VARS['min_create_user_type']) > 0 && 
-						is_exists_items_for_user_type_and_status_type($status_type_r['s_status_type'], $status_type_r['min_create_user_type']))
-				{
-					$errors[] =	array('error'=>'Status Type not updated',
-									'detail'=>'Item instance(s) exist for user(s) whose type, is not compatible with the new \''.$_COLUMN_DESC['min_create_user_type'].'\' (min_create_user_type) value.');
-				}
-				else
-				{
-					if(!update_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
-								$HTTP_VARS['delete_ind'], 
-								$HTTP_VARS['change_owner_ind'], 
-								$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
-								$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind'],
-								$HTTP_VARS['closed_ind']))
-					{
-						$errors[] = array('error'=>'Status Type not updated','detail'=>db_error());
-					}
-				}
+	}
+	else if($HTTP_VARS['op'] == 'installsql')
+	{
+		execute_sql_install($ADMIN_TYPE, $HTTP_VARS['sqlfile'], $errors);
+		$HTTP_VARS['op'] = NULL;
+	}
 
-                $HTTP_VARS['op'] = 'edit';
-			}
-			else
-			{
-                $errors[] = array('error'=>'Invalid Status Type specified');
-                $HTTP_VARS['op'] = NULL;
-			}
-		}
-		else if($HTTP_VARS['op'] == 'insert')
+	if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
+	{
+		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+
+		if($HTTP_VARS['op'] == 'edit')
 		{
-			$HTTP_VARS['s_status_type'] = strtoupper(substr(trim($HTTP_VARS['s_status_type']),0,1));
+			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+			if($status_type_r===FALSE)
+				$errors[] = 'Status Type ('.$HTTP_VARS['s_status_type'].') not found';
 			
-			if(strlen($HTTP_VARS['s_status_type'])>0 && !is_valid_s_status_type($HTTP_VARS['s_status_type']))
-			{
-				if(!insert_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
-								$HTTP_VARS['delete_ind'], 
-								$HTTP_VARS['change_owner_ind'], 
-								$HTTP_VARS['min_display_user_type'], $HTTP_VARS['min_create_user_type'],
-								$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind']))
-				{
-					$errors[] = array('error'=>'Status Type ('.$HTTP_VARS['s_status_type'].') not inserted','detail'=>db_error());
-				}
-
-                $HTTP_VARS['op'] = 'edit';
-			}
-			else
-			{
-				if(strlen($HTTP_VARS['s_status_type'])>0)
-				{
-					$errors[] = array('error'=>'Status Type exists');
-				}
-				else
-				{
-					$errors[] = array('error'=>'Invalid Status Type specified');
-				}
-                $HTTP_VARS['op'] = 'new';
-			}
+			echo("\n<h3>Edit Status Type</h3>");
+			$save_op = 'update';
+			$save_button = 'Update';
 		}
-		else if($HTTP_VARS['op'] == 'installsql')
+		else
 		{
-			execute_sql_install($ADMIN_TYPE, $HTTP_VARS['sqlfile'], $errors);
-            $HTTP_VARS['op'] = NULL;
+			echo("\n<h3>New Status Type</h3>");
+			$save_op = 'insert';
+			$save_button = 'Insert';
 		}
-
-		if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
-		{
-            echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
-
-            if($HTTP_VARS['op'] == 'edit')
-			{
-				$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
-				if($status_type_r===FALSE)
-					$errors[] = 'Status Type ('.$HTTP_VARS['s_status_type'].') not found';
 				
-				echo("\n<h3>Edit Status Type</h3>");
-				$save_op = 'update';
-				$save_button = 'Update';
-			}
-			else
-			{
-				echo("\n<h3>New Status Type</h3>");
-				$save_op = 'insert';
-				$save_button = 'Insert';
-			}
-				
-			if(is_not_empty_array($errors))
-				echo format_error_block($errors);
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
+		
+		echo("\n<form name=\"s_status_type\" action=\"$PHP_SELF\" method=\"POST\">");
+
+		echo("\n<input type=\"hidden\" name=\"op\" value=\"$save_op\">");
+		echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
+		
+		echo("\n<table>");
+		display_edit_form($status_type_r, $HTTP_VARS);
+		echo("\n</table>");
 			
+		if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
+		{
+			echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
+		}
+			
+		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
+			echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
+		else
+			echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"this.form.submit();\">");
+
+		echo("\n</form>");
+	}
+	else if(strlen($HTTP_VARS['op'])==0)
+	{
+		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
+		
+		if(is_not_empty_array($errors))
+			echo format_error_block($errors);
+
+		$results = fetch_status_type_rs();
+		if($results)
+		{
 			echo("\n<form name=\"s_status_type\" action=\"$PHP_SELF\" method=\"POST\">");
-	
-			echo("\n<input type=\"hidden\" name=\"op\" value=\"$save_op\">");
-			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
-			
+			echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
+			echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
+
 			echo("\n<table>");
-			display_edit_form($status_type_r, $HTTP_VARS);
-			echo("\n</table>");
-			
-			if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-			{
-				echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-			}
+			echo("<tr class=\"navbar\">"
+				."<th>Type</th>"
+				."<th>Description</th>"
+				."<th>Image</th>"
+				."<th>Default</th>"
+				."<th>Closed</th>"
+				."<th></th>"
+				."</tr>");
 				
-			if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-				echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
-			else
-				echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"this.form.submit();\">");
-
-			echo("\n</form>");
-			
+			$row = 0;
+			while($status_type_r = db_fetch_assoc($results))
+			{
+				display_s_status_type_row($status_type_r, $row++);
+			}
+			db_free_result($results);
+				
+			echo("</form>");
+			echo("</table>");
 		}
-		else if(strlen($HTTP_VARS['op'])==0)
+		else
 		{
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
-			
-            if(is_not_empty_array($errors))
-				echo format_error_block($errors);
+			echo("<p class=\"error\">No Status Types Installed</p>");
+		}
 
-			$results = fetch_status_type_rs();
-			if($results)
-			{
-				echo("\n<form name=\"s_status_type\" action=\"$PHP_SELF\" method=\"POST\">");
-				echo("\n<input type=\"hidden\" name=\"op\" value=\"\">");
-				echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
-
-				echo("\n<table>");
-				echo("<tr class=\"navbar\">"
-					."<th>Type</th>"
-					."<th>Description</th>"
-					."<th>Image</th>"
-            	    ."<th>Default</th>"
-            	    ."<th>Closed</th>"
-					."<th></th>"
-					."</tr>");
-				
-				$row = 0;
-				while($status_type_r = db_fetch_assoc($results))
-				{
-					display_s_status_type_row($status_type_r, $row++);
-				}
-				db_free_result($results);
-				
-				echo("</form>");
-				echo("</table>");
-			}
-			else
-			{
-				echo("<p class=\"error\">No Status Types Installed</p>");
-			}
-
-			function is_not_valid_s_status_type($type)
-			{
-				return !is_valid_s_status_type($type, FALSE);
-			}
-			generate_sql_list($ADMIN_TYPE, 'Status Type', "/([a-zA-Z]{1})-([^$]+)$/", 'is_not_valid_s_status_type');
-			
-		}//else if(strlen($HTTP_VARS['op'])==0)
-	}//if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-}//if(is_opendb_valid_session())
+		function is_not_valid_s_status_type($type)
+		{
+			return !is_valid_s_status_type($type, FALSE);
+		}
+		generate_sql_list($ADMIN_TYPE, 'Status Type', "/([a-zA-Z]{1})-([^$]+)$/", 'is_not_valid_s_status_type');
+		
+	}
+}
 ?>

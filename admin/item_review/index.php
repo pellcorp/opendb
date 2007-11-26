@@ -18,29 +18,25 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-session_start();
-if (is_opendb_valid_session())
-{ 
+if(is_opendb_admin_tools())
+{
 	@set_time_limit(600);
-	
-	if (is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
-	{
-		if($HTTP_VARS['op'] == 'job')
-		{
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
-			
-			if($HTTP_VARS['job'] == 'recalculate')
-				echo("\n<h3>Recalculate Item Reviews</h3>");
 
-			$jobObj->printJobProgressBar();
-		}
+	if($HTTP_VARS['op'] == 'job')
+	{
+		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
 		
-		if($HTTP_VARS['op'] == '')
-		{
-			echo("<p>");
-			echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=recalculate\">Recalculate Item Reviews</a>]&nbsp;");
-			echo("</p>");
-		}
+		if($HTTP_VARS['job'] == 'recalculate')
+			echo("\n<h3>Recalculate Item Reviews</h3>");
+
+		$jobObj->printJobProgressBar();
 	}
-}//(is_opendb_valid_session())
+	
+	if($HTTP_VARS['op'] == '')
+	{
+		echo("<p>");
+		echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=recalculate\">Recalculate Item Reviews</a>]&nbsp;");
+		echo("</p>");
+	}
+}
 ?>

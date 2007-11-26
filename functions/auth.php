@@ -23,6 +23,16 @@ include_once("./functions/utils.php");
 include_once("./functions/http.php");
 include_once("./functions/config.php");
 
+define('PERM_OPENDB_ADMIN_TOOLS', 'PERM_OPENDB_ADMIN_TOOLS');
+
+function is_opendb_user_permitted($permission)
+{
+	if($permission == PERM_OPENDB_ADMIN_TOOLS)
+		return is_user_admin();
+	else
+		return FALSE;
+}
+
 /**
  * Initiate public access session if applicable
  */

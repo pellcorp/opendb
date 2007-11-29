@@ -19,34 +19,29 @@
 */
 include_once("./functions/user.php");
 
-function insert_announcement($title, $content, $min_user_type, $display_days)
+function insert_announcement($title, $content, $display_days)
 {
 	$title = addslashes(replace_newlines(trim($title)));
 	$content = addslashes(replace_newlines(trim($content)));
 
 	if(strlen($title)>0 && strlen($content)>0 && is_numeric($display_days))
 	{
-	    $min_user_type = trim($min_user_type);
-		if(!is_usertype_valid($min_user_type))
-    		$min_user_type = NULL;
-    	
-	    $query = "INSERT INTO announcement (user_id, title, content, ".($min_user_type!=NULL?"min_user_type, ":"")."display_days, closed_ind)".
+	    $query = "INSERT INTO announcement (user_id, title, content, display_days, closed_ind)".
 	                " VALUES('".get_opendb_session_var('user_id')."',".
 	                        "'".$title."',".
 	                        "'".$content."',".
-	                        ($min_user_type!=NULL?"'".$min_user_type."',":"").
 							$display_days.", ".
 							"'N')";
 
 	    $insert = db_query($query);
 	    if(db_affected_rows()>0)
 	    {
-	    	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($title, $content, $min_user_type, $display_days));
+	    	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($title, $content, $display_days));
 	        return TRUE;
 	    }
 	    else
 	    {
-	    	opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($title, $content, $min_user_type, $display_days));
+	    	opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($title, $content, $display_days));
 	        return FALSE;
 	    }
 	}
@@ -57,17 +52,13 @@ function insert_announcement($title, $content, $min_user_type, $display_days)
 }
 
 
-function update_announcement($announcement_id, $title, $content, $min_user_type, $display_days, $closed_ind)
+function update_announcement($announcement_id, $title, $content, $display_days, $closed_ind)
 {
 	$title = addslashes(replace_newlines(trim($title)));
 	$content = addslashes(replace_newlines(trim($content)));
 
     if(strlen($title)>0 && strlen($content)>0 && is_numeric($display_days))
 	{
-		$min_user_type = trim($min_user_type);
-		if(!is_usertype_valid($min_user_type))
-	    	$min_user_type = NULL;
-
 	    if($closed_ind!=NULL && $closed_ind == 'Y' || $closed_ind == 'y')
 	        $closed_ind = 'Y';
 		else
@@ -77,7 +68,6 @@ function update_announcement($announcement_id, $title, $content, $min_user_type,
 						"title='".$title."', ".
 						"content='".$content."', ".
 						"submit_on=submit_on, ".
-						($min_user_type!=NULL?"min_user_type='".$min_user_type."', ":"").
 						"display_days=".$display_days.", ".
 						"closed_ind='".$closed_ind."' ".
 					" WHERE sequence_number = ".$announcement_id;
@@ -87,12 +77,12 @@ function update_announcement($announcement_id, $title, $content, $min_user_type,
 		if($update && $rows_affected !== -1)
 		{
 			if($rows_affected>0)
-				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($announcement_id, $title, $content, $min_user_type, $display_days, $closed_ind));
+				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($announcement_id, $title, $content, $display_days, $closed_ind));
 	        return TRUE;
 	    }
 	    else
 	    {
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($announcement_id, $title, $content, $min_user_type, $display_days, $closed_ind));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($announcement_id, $title, $content, $display_days, $closed_ind));
 	        return FALSE;
 	    }
 	}

@@ -136,10 +136,10 @@ function is_user_changeuser($uid, $type=NULL)
 
 /**
 */
-function is_user_allowed_to_own($uid, $type=NULL)
+function is_user_allowed_to_own($uid = NULL, $type=NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
+		$type = get_opendb_session_var('user_type');
 	
 	if(in_array($type, get_owner_user_types_r()))
 		return TRUE;
@@ -149,10 +149,10 @@ function is_user_allowed_to_own($uid, $type=NULL)
 
 /**
 */
-function is_user_allowed_to_borrow($uid, $type=NULL)
+function is_user_allowed_to_borrow($uid = NULL, $type=NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
+		$type = get_opendb_session_var('user_type');
 	
 	if(in_array($type, get_borrower_user_types_r()))
 		return TRUE;
@@ -160,11 +160,11 @@ function is_user_allowed_to_borrow($uid, $type=NULL)
 		return FALSE;
 }
 
-function is_user_allowed_to_review($uid, $type=NULL)
+function is_user_allowed_to_review($uid = NULL, $type=NULL)
 {
 	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
-	
+		$type = get_opendb_session_var('user_type');
+		
 	if(in_array($type, get_review_user_types_r()))
 		return TRUE;
 	else

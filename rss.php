@@ -125,7 +125,6 @@ function build_announcements_feed($URL, $datemask)
 
 	// TODO - make the options here configurable
 	$result = fetch_announcement_rs(
-			get_opendb_session_var('user_type'), //$min_user_type
 			NULL, //$order_by
 			"DESC", //$sortorder
 			0, //$start_index

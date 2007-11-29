@@ -71,17 +71,6 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 				ifempty($announcement_r['content'], $HTTP_VARS['content']),
 				TRUE);
 
-	$user_type_rs = get_user_types_rs(get_user_types_r(), ifempty($announcement_r['min_user_type'], ifempty($HTTP_VARS['min_user_type'],'N')));
-	
-	$field = "<select name=\"min_user_type\">";
-	while(list(,$user_type_r) = each($user_type_rs))
-	{
-		$field .= "\n<option value=\"".$user_type_r['value']."\"".($user_type_r['checked_ind']=='Y'?' SELECTED':'').">".$user_type_r['display']."</option>";
-	}
-	$field .= "</select>";
-				
-	$buffer .= format_field('Min User Type', $field);//value
-
 	$buffer .= get_input_field("display_days",
 				NULL, //s_attribute_type
 				'Display Days',
@@ -131,8 +120,7 @@ if($HTTP_VARS['op'] == 'update') //update an existing announcement
 {
     if(strlen($HTTP_VARS['title'])>0 && strlen($HTTP_VARS['content'])>0 && is_numeric($HTTP_VARS['display_days']))
     {
-		//$HTTP_VARS['content'] = filter_input_field('htmlarea', $HTTP_VARS['content']);
-		if(!update_announcement($HTTP_VARS['announcement_id'], $HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['min_user_type'], $HTTP_VARS['display_days'], $HTTP_VARS['closed_ind']))
+		if(!update_announcement($HTTP_VARS['announcement_id'], $HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['display_days'], $HTTP_VARS['closed_ind']))
 		{
 			$errors[] = array('error'=>'Announcement not updated','detail'=>db_error());
 		}
@@ -148,8 +136,7 @@ else if($HTTP_VARS['op'] == 'insert') //insert new announcement
 {
     if(strlen($HTTP_VARS['title'])>0 && strlen($HTTP_VARS['content'])>0 && is_numeric($HTTP_VARS['display_days']))
     {
-    	//$HTTP_VARS['content'] = filter_input_field('htmlarea', $HTTP_VARS['content']);
-		if(!insert_announcement($HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['min_user_type'], $HTTP_VARS['display_days']))
+		if(!insert_announcement($HTTP_VARS['title'], $HTTP_VARS['content'], $HTTP_VARS['display_days']))
 		{
 			$errors[] = array('error'=>'Announcement not added','detail'=>db_error());
 		}
@@ -189,7 +176,7 @@ if($HTTP_VARS['op'] == 'list')
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);
 			
-	$result = fetch_announcement_rs('A', NULL, NULL); 
+	$result = fetch_announcement_rs(); 
 	if($result)
 	{	
 	    $submitted_datetime_mask = get_opendb_config_var('announcements', 'datetime_mask');
@@ -203,7 +190,6 @@ if($HTTP_VARS['op'] == 'list')
 				
 			echo("\n<ul class=\"metadata\">".
 				"<li>Submitted: ".get_localised_timestamp($submitted_datetime_mask, $announcement_r['submit_on']).'</li>'.
-				"<li>Min User Type: ".get_usertype_prompt($announcement_r['min_user_type']).'</li>'.
 				"<li>Display Days: ".$announcement_r['display_days'].'</li>'.
 				"<li>Closed: ".$announcement_r['closed_ind'].'</li>'.
 				"</ul>");

@@ -28,24 +28,45 @@ include_once("./functions/logging.php");
 include_once("./functions/user.php");
 include_once("./functions/utils.php");
 
+function get_announcements_whereclause()
+{
+	$where = NULL;
+	if($limit_days=='Y')
+	    $where[] = " ((TO_DAYS(NOW()) - TO_DAYS(submit_on)) <= display_days OR display_days = 0) ";
+
+	if($limit_closed=='Y')
+	    $where[] = " closed_ind = 'N' ";
+	
+	if(is_array($where)) {
+		$query = 'WHERE ';
+		
+		$whereclause = '';
+		while(list(,$q) = each($where))
+		{
+			if(strlen($whereclause)>0)
+				$whereclause .= ' AND';
+				
+			$whereclause .= $q;
+		}
+		
+		$query .= $whereclause;
+	}
+	
+	return $query;
+}
 /*
 	This will return all announcements available to the given user type
 */
-function fetch_announcement_rs($min_user_type=NULL, $order_by=NULL, $sortorder='DESC', $start_index=NULL, $items_per_page=NULL, $limit_days='N', $limit_closed='N')
+function fetch_announcement_rs($order_by='submit_on', $sortorder='DESC', $start_index=NULL, $items_per_page=NULL, $limit_days='N', $limit_closed='N')
 {
 	// Uses the special 'zero' value lastvisit = 0 to test for default date value.
 	$query = "SELECT sequence_number, user_id, title, content, ".
-				" min_user_type, UNIX_TIMESTAMP(submit_on) as submit_on, ".
+				" UNIX_TIMESTAMP(submit_on) as submit_on, ".
 				" display_days, closed_ind ".
-				" FROM announcement ".
-				" WHERE min_user_type IN('".implode("','",get_min_user_type_r($min_user_type))."')";
+				" FROM announcement ";
 
-	if($limit_days=='Y')
-	    $query .= " AND ((TO_DAYS(NOW()) - TO_DAYS(submit_on)) <= display_days OR display_days = 0) ";
-
-	if($limit_closed=='Y')
-	    $query .= " AND closed_ind = 'N' ";
-	    
+	$query .= get_announcements_whereclause($limit_days, $limit_closed);
+	
 	// For simplicity sake!
 	if(strlen($order_by)==0)
 		$order_by = "submit_on";
@@ -56,8 +77,6 @@ function fetch_announcement_rs($min_user_type=NULL, $order_by=NULL, $sortorder='
 		$query .= " ORDER BY submit_on ".$sortorder;
 	else if($order_by === "title")
 		$query .= " ORDER BY title ".$sortorder.", submit_on DESC";
-	else if($order_by === "min_user_type")
-		$query .= " ORDER BY min_user_type ".$sortorder.", submit_on DESC";
 	else if($order_by === "display_days")
 		$query .= " ORDER BY display_days ".$sortorder.", submit_on DESC";
 	else if($order_by === "closed_ind")
@@ -65,7 +84,7 @@ function fetch_announcement_rs($min_user_type=NULL, $order_by=NULL, $sortorder='
 
 	if(is_numeric($start_index) && is_numeric($items_per_page))
 		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
-
+		
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 		return $result;
@@ -76,13 +95,14 @@ function fetch_announcement_rs($min_user_type=NULL, $order_by=NULL, $sortorder='
 /**
 	Returns the number of announcements, or FALSE if no records.
 */
-function fetch_announcement_cnt($min_user_type=NULL, $limit_days='N', $limit_closed='N')
+function fetch_announcement_cnt($limit_days='N', $limit_closed='N')
 {
 	// Uses the special 'zero' value lastvisit = 0 to test for default date value.
 	$query = "SELECT COUNT('x') as count ".
-				" FROM announcement ".
-				" WHERE min_user_type IN('".implode("','",get_min_user_type_r($min_user_type))."')";
+				" FROM announcement ";
 
+	$query .= get_announcements_whereclause($limit_days, $limit_closed);
+	
 	if($limit_days=='Y')
 	    $query .= " AND ((TO_DAYS(NOW()) - TO_DAYS(submit_on)) <= display_days OR display_days = 0) ";
 
@@ -108,7 +128,7 @@ function fetch_announcement_cnt($min_user_type=NULL, $limit_days='N', $limit_clo
 function fetch_announcement_r($announcement_id)
 {
 	$query = "SELECT sequence_number as announcement_id, user_id, title, content, ".
-				" min_user_type, UNIX_TIMESTAMP(submit_on) as submit_on, ".
+				" UNIX_TIMESTAMP(submit_on) as submit_on, ".
 				" display_days, closed_ind ".
 				" FROM announcement ".
 				" WHERE sequence_number = ".$announcement_id;

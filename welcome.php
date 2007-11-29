@@ -75,10 +75,10 @@ function get_admin_announcements_rs()
 	if($user_cnt>0)
 	{
 		$announcements_rs[] = array(
-		heading=>get_opendb_lang_var('activate_users'),
-		message=>get_opendb_lang_var('there_are_no_of_users_awaiting_activation', array('no_of_users'=>$user_cnt)),
-		link=>"user_listing.php?restrict_active_ind=X",
-		link_text=>get_opendb_lang_var('activate_users'));
+			heading=>get_opendb_lang_var('activate_users'),
+			message=>get_opendb_lang_var('there_are_no_of_users_awaiting_activation', array('no_of_users'=>$user_cnt)),
+			link=>"user_listing.php?restrict_active_ind=X",
+			link_text=>get_opendb_lang_var('activate_users'));
 	}
 	
 	if(validate_user_passwd(get_opendb_session_var('user_id') , 'admin'))
@@ -155,9 +155,17 @@ function get_announcements_block()
 		}
 	}
 
-    if(get_opendb_config_var('login.announcements', 'enable')!==FALSE)
+    if(get_opendb_config_var('login.announcements', 'enable')!==FALSE && 
+							is_user_granted_permission(PERM_VIEW_ANNOUNCEMENTS))
 	{
-		$results = fetch_announcement_rs(get_opendb_session_var('user_type'), NULL, 'DESC', 0, get_opendb_config_var('login.announcements','display_count'), 'Y', 'Y');
+		$results = fetch_announcement_rs(
+					'submit_on',
+					'DESC', 
+					0, 
+					get_opendb_config_var('login.announcements','display_count'), 
+					'Y', 
+					'Y');
+					
 		if($results)
 		{
 			while($announcement_r = db_fetch_assoc($results))

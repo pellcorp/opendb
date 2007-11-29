@@ -100,8 +100,8 @@ function get_item_review_block($item_r)
 			
 			$buffer .= "<li>";
 			
-			if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-							is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
+			if(is_user_granted_permission(PERM_REVIEW_ADMIN) || 
+					is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
 			{
 				$action_links_rs = NULL;
 				if(get_opendb_config_var('item_review', 'update_support')!==FALSE)
@@ -150,7 +150,7 @@ function get_item_review_block($item_r)
 	}
 	
 	$action_links = NULL;
-	if(is_user_allowed_to_review(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if(is_user_granted_permission(PERM_REVIEW_AUTHOR))
 	{
 		$action_links[] = array(
 				url=>"item_review.php?op=add&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),
@@ -226,7 +226,7 @@ function get_instance_info_block($item_r, $HTTP_VARS)
 	}
 	
 	$instance_info_links = NULL;
-	if(is_user_allowed_to_own(get_opendb_session_var('user_id')))
+	if(is_user_granted_permission(PERM_ITEM_OWNER))
 	{
 		if(get_opendb_config_var('item_input', 'item_instance_support') !== FALSE)
 		{
@@ -287,8 +287,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	// ---------------------- Borrow,Reserve,Cancel,Edit,Delete,etc operations here.
 	$action_links_rs = NULL;
 	
-	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-				is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_granted_permission(PERM_ITEM_ADMIN))
 	{
 		$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'edit.gif',text=>get_opendb_lang_var('edit'));
 								
@@ -317,7 +316,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	}
 
 	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && 
-				is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
+				is_user_granted_permission(PERM_BORROWER_USER) && 
 				(strlen($status_type_r['min_display_user_type'])==0 || 
 					in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
 			)

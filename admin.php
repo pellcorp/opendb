@@ -34,11 +34,13 @@ include_once("./functions/admin.php");
 
 define('OPENDB_ADMIN_TOOLS', 'true');
 
+
+
 if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		if(is_opendb_user_permitted(PERM_OPENDB_ADMIN_TOOLS))
+		if(is_user_granted_permission(PERM_OPENDB_ADMIN_TOOLS))
 		{
 			$ADMIN_TYPE = ifempty($HTTP_VARS['type'], 'config');
 			$ADMIN_DIR = './admin/'.$ADMIN_TYPE;

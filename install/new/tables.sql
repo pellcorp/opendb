@@ -247,8 +247,6 @@ CREATE table s_status_type (
   img						VARCHAR(255),
   delete_ind				VARCHAR(1) NOT NULL DEFAULT 'Y',
   change_owner_ind			VARCHAR(1) NOT NULL DEFAULT 'N',
-  min_display_user_type		VARCHAR(1),
-  min_create_user_type		VARCHAR(1),
   borrow_ind				VARCHAR(1) NOT NULL DEFAULT 'Y',
   status_comment_ind		VARCHAR(1) NOT NULL DEFAULT 'N',
   default_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
@@ -264,9 +262,6 @@ CREATE TABLE s_address_type (
   s_address_type			VARCHAR(10) NOT NULL,
   description				VARCHAR(30) NOT NULL,
   display_order				TINYINT(2),
-  min_create_user_type		VARCHAR(1) NOT NULL DEFAULT 'B', # borrower
-  min_display_user_type		VARCHAR(1) NOT NULL DEFAULT 'N', # normal
-  compulsory_for_user_type	VARCHAR(1) NOT NULL DEFAULT 'B', # normal
   closed_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( s_address_type )
 ) TYPE=MyISAM COMMENT='System address type';
@@ -281,9 +276,6 @@ CREATE TABLE s_addr_attribute_type_rltshp (
   order_no				TINYINT(3) unsigned NOT NULL,
   # override for s_attribute_type prompt field
   prompt				VARCHAR(30),
-  min_create_user_type	VARCHAR(1),
-  min_display_user_type	VARCHAR(1),
-  compulsory_for_user_type VARCHAR(1),
   closed_ind			VARCHAR(1) NOT NULL default 'N',
   PRIMARY KEY ( s_address_type, s_attribute_type, order_no )
 ) TYPE=MyISAM COMMENT='System address attribute type relationship';
@@ -309,7 +301,7 @@ CREATE TABLE user (
 # User address
 #
 # public_address_ind = Y, means address details will be displayed on user profile page
-# for all but guest users.  Where public_ind=Y, but borrow_access_ind = N, address
+# for all but public access users.  Where public_ind=Y, but borrow_access_ind = N, address
 # details will be available but will not be included in notification emails.
 #
 # borrow_address_ind = Y, means address details will be included in borrow workflow
@@ -592,7 +584,6 @@ CREATE TABLE announcement (
   user_id           VARCHAR(20) NOT NULL,
   title             VARCHAR(255) NOT NULL,
   content	        TEXT,
-  min_user_type     VARCHAR(1) NOT NULL DEFAULT 'B',
   submit_on         TIMESTAMP(14) NOT NULL,
   display_days      INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
   closed_ind        VARCHAR(1) NOT NULL DEFAULT 'N',

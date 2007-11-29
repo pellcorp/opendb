@@ -201,6 +201,23 @@ UPDATE s_status_type SET status_comment_ind = 'N' WHERE status_comment_ind  = 'H
 ALTER TABLE s_status_type DROP update_ind;
 ALTER TABLE s_status_type DROP insert_ind;
 
+# desupport user type directly being used for restricting access
+# reduced overly complicated status type and address functionality that
+# is of limited usefulness.
+ALTER TABLE s_status_type DROP min_display_user_type;
+ALTER TABLE s_status_type DROP min_create_user_type;
+
+ALTER TABLE s_address_type DROP min_create_user_type;
+ALTER TABLE s_address_type DROP min_display_user_type;
+ALTER TABLE s_address_type DROP compulsory_for_user_type;
+
+ALTER TABLE s_addr_attribute_type_rltshp DROP min_create_user_type;
+ALTER TABLE s_addr_attribute_type_rltshp DROP min_display_user_type;
+ALTER TABLE s_addr_attribute_type_rltshp DROP compulsory_for_user_type;
+
+# announcements will be available for all but guest access users from now one.
+ALTER TABLE announcement DROP min_user_type;
+
 # moving email address back to user table, as it is always compulsory.  will also
 # make it easier to work with bridges to other software too.
 ALTER TABLE user ADD email_addr	VARCHAR(255);

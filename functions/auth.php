@@ -24,11 +24,32 @@ include_once("./functions/http.php");
 include_once("./functions/config.php");
 
 define('PERM_OPENDB_ADMIN_TOOLS', 'PERM_OPENDB_ADMIN_TOOLS');
+define('PERM_BORROWER_USER', 'PERM_BORROWER_USER');
 
-function is_opendb_user_permitted($permission)
+define('PERM_REVIEW_ADMIN', 'PERM_REVIEW_ADMIN');
+define('PERM_REVIEW_AUTHOR', 'PERM_REVIEW_AUTHOR');
+
+define('PERM_ITEM_OWNER', 'PERM_ITEM_OWNER');
+define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
+
+define('PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS');
+
+function is_user_granted_permission($permission)
 {
 	if($permission == PERM_OPENDB_ADMIN_TOOLS)
 		return is_user_admin();
+	else if($permission == PERM_BORROWER_USER)
+		return is_user_allowed_to_borrow();
+	else if($permission == PERM_REVIEW_ADMIN)
+		return is_user_admin();
+	else if($permission == PERM_REVIEW_AUTHOR)
+		return is_user_allowed_to_review();
+	else if($permission == PERM_ITEM_OWNER)
+		return is_user_allowed_to_own();
+	else if($permission == PERM_ITEM_ADMIN)
+		return is_user_admin();
+	else if($permission == PERM_VIEW_ANNOUNCEMENTS)
+		return TRUE; // work out what to do for this later, for now leave unrestricted
 	else
 		return FALSE;
 }

@@ -22,6 +22,25 @@ include_once("./functions/borrowed_item.php");
 include_once("./functions/user.php");
 include_once("./functions/language.php");
 
+function is_status_type_displayed_for_user_type($status_type_r, $usertype = NULL)
+{
+	if(strlen($usertype)==0)
+		$usertype = get_opendb_session_var('user_type');
+	
+	if(strlen($status_type_r['min_display_user_type'])>0)
+	{
+		$min_user_type_r = get_min_user_type_r($usertype);
+		if(in_array($status_type_r['min_display_user_type'], $min_user_type_r))
+			return TRUE;
+		else
+			return FALSE;
+	}
+	else
+	{
+		return TRUE;
+	}
+}
+
 /**
  * @param unknown_type $item_r
  * @param unknown_type $error
@@ -30,9 +49,7 @@ include_once("./functions/language.php");
 function is_item_instance_viewable($status_type, &$error)
 {
 	$status_type_r = fetch_status_type_r($status_type);
-	
-	if(strlen($status_type_r['min_display_user_type'])==0 || 
-			in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
+	if(is_status_type_displayed_for_user_type($status_type_r))
 	{
 		return TRUE;
 	}

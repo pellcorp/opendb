@@ -42,7 +42,7 @@ if(is_site_enabled())
 	{
 		if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 		{
-			if (is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) ) // Only borrow users allowed
+			if(is_user_granted_permission(PERM_BORROWER_USER))
 			{
 				$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 				$listingObject->setNoRowsMessage(get_opendb_lang_var('no_records_found'));

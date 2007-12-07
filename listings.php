@@ -79,7 +79,7 @@ function getListingFiltersBlock()
 		{
 			if(!is_array($HTTP_VARS['s_status_type']) || ($HTTP_VARS['search_list'] != 'y' && $HTTP_VARS['attribute_list'] != 'y'))
 			{
-				$results = fetch_status_type_rs(TRUE);
+				$results = fetch_status_type_rs();
 				if($results && db_num_rows($results)>1)
 				{		
 					$excluded_vars_list[] = 's_status_type';					
@@ -869,7 +869,7 @@ function get_search_query_matrix($HTTP_VARS)
 				$search .= ' ';
 			}
 			
-			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type'][$i], FALSE);
+			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type'][$i]);
 			if(is_not_empty_array($status_type_r))
 			{
 				$search .= format_display_value('%img%', 
@@ -974,7 +974,7 @@ if(is_site_enabled())
 		}
 		else if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
 		{
-			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type'], FALSE);
+			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
 			
 			// Current user.
 			if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))

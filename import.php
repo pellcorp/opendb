@@ -141,7 +141,7 @@ function get_row_column_mappings_table($s_item_type, $owner_id, $header_row, $fi
 	
 				if($item_attribute_type_r['s_field_type'] == 'STATUSTYPE')
 				{
-					$lookup_results = fetch_newitem_status_type_rs($owner_id);
+					$lookup_results = fetch_newitem_status_type_rs();
 					$default_field = build_select("field_default[$fieldname]", $lookup_results, $field_default_r[$fieldname], FALSE); // do not include 'None' option
 					$initcap_field = NULL;// No initcap for these types of fields.
 				}
@@ -327,7 +327,7 @@ function get_uploaded_form(&$importPlugin, $header_row, $HTTP_VARS)
 		// ignoring any s_status_type which may be included in the data.
 		$buffer .= '<table>';
 		
-		$results = fetch_newitem_status_type_rs($HTTP_VARS['owner_id']);
+		$results = fetch_newitem_status_type_rs();
 		if($results && db_num_rows($results)>1)
 		{
 			$buffer .= format_field(
@@ -617,7 +617,7 @@ if(is_site_enabled())
                                 if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
 									$cfg_default_status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
 								else
-									$cfg_default_status_type_r = fetch_status_type_r(fetch_default_status_type_for_owner($HTTP_VARS['owner_id']));
+									$cfg_default_status_type_r = fetch_status_type_r(fetch_default_status_type());
 
 								$itemImportHandler =& new ItemImportHandler(
 														$HTTP_VARS['owner_id'],

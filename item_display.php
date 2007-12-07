@@ -51,8 +51,8 @@ if(is_site_enabled())
 	
 		if(is_not_empty_array($item_r))
 		{
-			if($item_r['owner_id'] == get_opendb_session_var('user_id') || 
-								is_item_instance_viewable($item_r['s_status_type'], $error))
+			if($item_r['owner_id'] == get_opendb_session_var('user_id') ||
+					is_user_granted_permission(PERM_ITEM_DISPLAY))
 			{
 			    $titleMaskCfg = new TitleMask('item_display');
 

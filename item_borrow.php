@@ -50,12 +50,6 @@ function handle_reserve($item_id, $instance_no, $borrower_id, &$errors)
 		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
 		return FALSE;
 	}
-	else if(strlen($status_type_r['min_display_user_type'])>0 && 
-			!in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
-	{
-		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
-		return FALSE;
-	}
 	else if(is_user_owner_of_item($item_id, $instance_no, $borrower_id))
 	{
 		$errors = get_opendb_lang_var('cannot_reserve_items_you_own');

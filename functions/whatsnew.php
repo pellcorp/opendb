@@ -248,7 +248,7 @@ function get_whats_new_details($update_on, $user_id=NULL)
 	$whats_new_rs = NULL;
 	
 	// Get the list of valid status_types, which we can display in this whatsnew page.
-	$results = fetch_whatsnew_status_type_rs();
+	$results = fetch_status_type_rs();
     if($results)
 	{
 		$search_vars_r['update_on'] = $update_on;

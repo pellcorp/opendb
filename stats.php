@@ -95,7 +95,7 @@ function build_item_types_chart_info()
 
 function build_item_ownership_chart_info()
 {
-	$results = fetch_status_type_rs(TRUE);
+	$results = fetch_status_type_rs();
 	if($results)
 	{
 		while ($status_type_r = db_fetch_assoc($results))
@@ -290,7 +290,7 @@ if(is_site_enabled())
 			
 			// Get the list of valid status_types, which we can display
 		    // in this statistics page.
-		    $results = fetch_status_type_rs(TRUE);
+		    $results = fetch_status_type_rs();
 		    if ($results)
 			{
 		        while ($status_type_r = db_fetch_assoc($results))

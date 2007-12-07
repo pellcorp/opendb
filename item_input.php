@@ -919,12 +919,12 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 				
 				if($op == 'new' || $op == 'site' || $op == 'newinstance' || $op == 'clone_item')
 				{
-					$lookup_results = fetch_newitem_status_type_rs($item_r['owner_id']);
+					$lookup_results = fetch_newitem_status_type_rs();
 				}
 				else
 				{
 					// If item has borrowed records, then no s_status_type with borrow_ind == 'X' should be included.
-					$lookup_results = fetch_update_status_type_rs($item_r['item_id'], $item_r['instance_no'], $item_r['owner_id']);
+					$lookup_results = fetch_update_status_type_rs($status_type);
 				}
 	
 				if($lookup_results && db_num_rows($lookup_results)>0)

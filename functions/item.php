@@ -106,15 +106,6 @@ function fetch_item_instance_cnt($s_item_type = NULL)
 		$where .= " AND i.s_item_type = '".$s_item_type."' ";
 	}
 	
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
-	
 	$query .= "$from $where";
 	
 	$result = db_query($query);

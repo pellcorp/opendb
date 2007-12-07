@@ -31,6 +31,7 @@ define('PERM_REVIEW_AUTHOR', 'PERM_REVIEW_AUTHOR');
 
 define('PERM_ITEM_OWNER', 'PERM_ITEM_OWNER');
 define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
+define('PERM_ITEM_DISPLAY', 'PERM_ITEM_DISPLAY');
 
 define('PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS');
 
@@ -50,6 +51,8 @@ function is_user_granted_permission($permission)
 		return is_user_admin();
 	else if($permission == PERM_VIEW_ANNOUNCEMENTS)
 		return TRUE; // work out what to do for this later, for now leave unrestricted
+	else if($permission == PERM_ITEM_DISPLAY)
+		return TRUE; // for the moment all have permission
 	else
 		return FALSE;
 }

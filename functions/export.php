@@ -28,8 +28,8 @@ include_once("./functions/status_type.php");
 function fetch_export_item_rs($s_item_type, $owner_id)
 {
 	$query = "SELECT DISTINCT i.id as item_id, i.title, i.s_item_type ".
-			"FROM user u, item i, item_instance ii, s_status_type sst ".
-			"WHERE u.user_id = ii.owner_id AND sst.s_status_type = ii.s_status_type AND i.id = ii.item_id ";
+			"FROM user u, item i, item_instance ii ".
+			"WHERE u.user_id = ii.owner_id AND i.id = ii.item_id ";
 
 	if(strlen($owner_id)>0)
 		$query .= "AND ii.owner_id = '$owner_id' ";
@@ -37,15 +37,6 @@ function fetch_export_item_rs($s_item_type, $owner_id)
 	// can only export items for active users.
 	$query .= "AND u.active_ind = 'Y' ";
 	
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$query .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
-		
 	if(strlen($s_item_type)>0)
 		$query .= "AND i.s_item_type = '$s_item_type'";
 	
@@ -63,23 +54,14 @@ function fetch_export_item_rs($s_item_type, $owner_id)
 function fetch_export_item_instance_rs($s_item_type, $owner_id)
 {
 	$query = "SELECT i.id as item_id, ii.instance_no, i.title, i.s_item_type, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
-			"FROM user u, item i, item_instance ii, s_status_type sst ".
-			"WHERE u.user_id = ii.owner_id AND sst.s_status_type = ii.s_status_type AND i.id = ii.item_id ";
+			"FROM user u, item i, item_instance ii ".
+			"WHERE u.user_id = ii.owner_id AND i.id = ii.item_id ";
 
 	if(strlen($s_item_type)>0)
 		$query .= "AND i.s_item_type = '$s_item_type'";
 	
 	// can only export items for active users.
 	$query .= "AND u.active_ind = 'Y' ";
-	
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$query .= " AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
 	
 	if(strlen($owner_id)>0)
 		$query .= " AND ii.owner_id = '$owner_id' ";

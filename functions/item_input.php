@@ -587,7 +587,6 @@ function handle_item_instance_update($item_r, $status_type_r, $HTTP_VARS, &$erro
 			}
 			else
 			{
-				print_r($errors);
 				return FALSE;
 			}
 		}

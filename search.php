@@ -290,7 +290,7 @@ if(is_site_enabled())
         // ------------------------
         // Item Status
         // ------------------------
-		$lookup_results = fetch_status_type_rs(TRUE,TRUE,TRUE);
+		$lookup_results = fetch_status_type_rs(TRUE);
 		
 		// Only include Status type restriction, if more than once status type.
 		if($lookup_results && db_num_rows($lookup_results)>1)

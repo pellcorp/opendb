@@ -43,7 +43,7 @@ function export_type_items(&$exportPlugin, $page_title, $s_item_type, $item_id, 
 		send_header($exportPlugin, $page_title);
 		
 		$item_r = fetch_item_instance_r($item_id, $instance_no);
-		if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_item_instance_viewable($item_r['s_status_type'], $error))
+		if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_DISPLAY))
 		{
 			send_data(get_export_type_item($exportPlugin, $item_id, $instance_no, $item_r['s_item_type'], $item_r['title'], $owner_id));
 		}

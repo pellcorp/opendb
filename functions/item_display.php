@@ -315,11 +315,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		}
 	}
 
-	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && 
-				is_user_granted_permission(PERM_BORROWER_USER) && 
-				(strlen($status_type_r['min_display_user_type'])==0 || 
-					in_array($status_type_r['min_display_user_type'], get_min_user_type_r(get_opendb_session_var('user_type'))))
-			)
+	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && is_user_granted_permission(PERM_BORROWER_USER))
 	{
 		if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 		{

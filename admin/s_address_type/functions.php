@@ -62,7 +62,7 @@ function is_s_addr_attribute_type_rltshp_deletable($s_address_type, $s_attribute
 
 function fetch_s_addr_attribute_type_rltshp_rs($s_address_type)
 {
-	$query = "SELECT s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind FROM s_addr_attribute_type_rltshp WHERE s_address_type = '$s_address_type' ORDER BY order_no ASC";
+	$query = "SELECT s_attribute_type, order_no, prompt, closed_ind FROM s_addr_attribute_type_rltshp WHERE s_address_type = '$s_address_type' ORDER BY order_no ASC";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -73,7 +73,7 @@ function fetch_s_addr_attribute_type_rltshp_rs($s_address_type)
 
 function fetch_s_address_type_rs($orderby = "display_order", $order = "asc")
 {
-	$query = "SELECT s_address_type, display_order, description, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind FROM s_address_type ORDER BY $orderby $order";
+	$query = "SELECT s_address_type, display_order, description, closed_ind FROM s_address_type ORDER BY $orderby $order";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -84,7 +84,7 @@ function fetch_s_address_type_rs($orderby = "display_order", $order = "asc")
 
 function fetch_s_address_type_r($s_address_type)
 {
-	$query = "SELECT s_address_type, display_order, description, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind FROM s_address_type WHERE s_address_type = '$s_address_type'";
+	$query = "SELECT s_address_type, display_order, description, closed_ind FROM s_address_type WHERE s_address_type = '$s_address_type'";
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{
@@ -101,59 +101,30 @@ function fetch_s_address_type_r($s_address_type)
 * This function will insert the initial s_item_type only, no reference to the
 * s_item_attribute_type's which will come later.
 */ 
-function insert_s_address_type($s_address_type, $display_order, $description, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type)
+function insert_s_address_type($s_address_type, $display_order, $description)
 {
 	$description = addslashes(trim(strip_tags($description)));
 	
-	if($min_display_user_type!='*' && !is_usertype_valid($min_create_user_type))
-	{
-		$min_create_user_type = 'B';
-	}
-	
-	if($min_display_user_type!='*' && !is_usertype_valid($min_display_user_type))
-	{
-		$min_display_user_type = 'N';
-	}
-	
-	if($compulsory_for_user_type!='*' && !is_usertype_valid($compulsory_for_user_type))
-	{
-		$compulsory_for_user_type = 'B';
-	}
-
-	$query = "INSERT INTO s_address_type (s_address_type, display_order, description, min_create_user_type, min_display_user_type, compulsory_for_user_type) "
-			."VALUES ('$s_address_type', ".(is_numeric($display_order)?"'$display_order'":"NULL").", '$description', '$min_create_user_type', '$min_display_user_type', '$compulsory_for_user_type')";
+	$query = "INSERT INTO s_address_type (s_address_type, display_order, description) "
+			."VALUES ('$s_address_type', ".(is_numeric($display_order)?"'$display_order'":"NULL").", '$description')";
 
 	$insert = db_query($query);
 	if($insert && db_affected_rows() > 0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $display_order, $description, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $display_order, $description));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $display_order, $description, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $display_order, $description));
 		return FALSE;
 	}
 }
 
-function update_s_address_type($s_address_type, $display_order, $description, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind)
+function update_s_address_type($s_address_type, $display_order, $description, $closed_ind)
 {
 	$description = addslashes(trim(strip_tags($description)));
-	if($min_create_user_type!='*' && !is_usertype_valid($min_create_user_type))
-	{
-		$min_create_user_type = 'B';
-	}
-	
-	if($min_display_user_type!='*' && !is_usertype_valid($min_display_user_type))
-	{
-		$min_display_user_type = 'N';
-	}
-	
-	if($compulsory_for_user_type!='*' && !is_usertype_valid($compulsory_for_user_type))
-	{
-		$compulsory_for_user_type = 'B';
-	}
-	
+
 	$closed_ind = strtoupper(trim($closed_ind));
 	if($closed_ind != 'Y')
 		$closed_ind = 'N';
@@ -163,9 +134,6 @@ function update_s_address_type($s_address_type, $display_order, $description, $m
 			.($display_order!==FALSE?" display_order = ".(is_numeric($display_order)?"'$display_order', ":"NULL, "):"")
 			."description = '$description' "
 			.", closed_ind = '$closed_ind' "
-			.", min_create_user_type = '$min_create_user_type'"
-			.", min_display_user_type = '$min_display_user_type'"
-			.", compulsory_for_user_type = '$compulsory_for_user_type'"
 			." WHERE s_address_type = '$s_address_type'";
 
 	$update = db_query($query);
@@ -175,12 +143,12 @@ function update_s_address_type($s_address_type, $display_order, $description, $m
 	if($update && $rows_affected !== -1)
 	{
 		if($rows_affected>0)
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $display_order, $description, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $display_order, $description, $closed_ind));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $display_order, $description, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $display_order, $description, $closed_ind));
 		return FALSE;
 	}
 }
@@ -209,58 +177,28 @@ function delete_s_address_type($s_address_type)
 
 /**
 */
-function insert_s_addr_attribute_type_rltshp($s_address_type, $s_attribute_type, $order_no, $prompt, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind)
+function insert_s_addr_attribute_type_rltshp($s_address_type, $s_attribute_type, $order_no, $prompt, $closed_ind)
 {
 	$prompt = addslashes(trim(strip_tags($prompt)));
 	
-	if($min_create_user_type!='*' && !is_usertype_valid($min_create_user_type))
-	{
-		$min_create_user_type = NULL;
-	}
-	
-	if($min_display_user_type!='*' && !is_usertype_valid($min_display_user_type))
-	{
-		$min_display_user_type = NULL;
-	}
-	
-	if($compulsory_for_user_type!='*' && !is_usertype_valid($compulsory_for_user_type))
-	{
-		$compulsory_for_user_type = NULL;
-	}
-
-	$query = "INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type) "
-			."VALUES ('$s_address_type', '$s_attribute_type', ".(is_numeric($order_no)?"'$order_no'":"0").", '$prompt', ".($min_create_user_type!=NULL?"'$min_create_user_type'":"NULL").", ".($min_display_user_type!=NULL?"'$min_display_user_type'":"NULL").", ".($compulsory_for_user_type!=NULL?"'$compulsory_for_user_type'":"NULL").")";
+	$query = "INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt) "
+			."VALUES ('$s_address_type', '$s_attribute_type', ".(is_numeric($order_no)?"'$order_no'":"0").", '$prompt')";
 	$insert = db_query($query);
 	if($insert && db_affected_rows() > 0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $s_attribute_type, $order_no, $prompt, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $s_attribute_type, $order_no, $prompt, $closed_ind));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $s_attribute_type, $order_no, $prompt, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $s_attribute_type, $order_no, $prompt, $closed_ind));
 		return FALSE;
 	}
 }
 
-function update_s_addr_attribute_type_rltshp($s_address_type, $s_attribute_type, $order_no, $prompt, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind)
+function update_s_addr_attribute_type_rltshp($s_address_type, $s_attribute_type, $order_no, $prompt, $closed_ind)
 {
 	$prompt = addslashes(trim(strip_tags($prompt)));
-	
-	if($min_create_user_type!='*' && !is_usertype_valid($min_create_user_type))
-	{
-		$min_create_user_type = NULL;
-	}
-	
-	if($min_display_user_type!='*' && !is_usertype_valid($min_display_user_type))
-	{
-		$min_display_user_type = NULL;
-	}
-	
-	if($compulsory_for_user_type!='*' && !is_usertype_valid($compulsory_for_user_type))
-	{
-		$compulsory_for_user_type = NULL;
-	}
 	
 	$closed_ind = strtoupper(trim($closed_ind));
 	if($closed_ind != 'Y')
@@ -269,9 +207,6 @@ function update_s_addr_attribute_type_rltshp($s_address_type, $s_attribute_type,
 	$query = "UPDATE s_addr_attribute_type_rltshp "
 			."SET prompt = '$prompt' "
 			.", closed_ind = '$closed_ind' "
-			.", min_create_user_type = ".($min_create_user_type!=NULL?"'$min_create_user_type'":"NULL")
-			.", min_display_user_type = ".($min_display_user_type!=NULL?"'$min_display_user_type'":"NULL")
-			.", compulsory_for_user_type = ".($compulsory_for_user_type!=NULL?"'$compulsory_for_user_type'":"NULL")
 			." WHERE s_address_type = '$s_address_type' AND s_attribute_type = '$s_attribute_type' AND order_no = '$order_no'";
 
 	$update = db_query($query);
@@ -281,12 +216,12 @@ function update_s_addr_attribute_type_rltshp($s_address_type, $s_attribute_type,
 	if($update && $rows_affected !== -1)
 	{
 		if($rows_affected>0)
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $s_attribute_type, $order_no, $prompt, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_address_type, $s_attribute_type, $order_no, $prompt, $closed_ind));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $s_attribute_type, $order_no, $prompt, $min_create_user_type, $min_display_user_type, $compulsory_for_user_type, $closed_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_address_type, $s_attribute_type, $order_no, $prompt, $closed_ind));
 		return FALSE;
 	}
 }

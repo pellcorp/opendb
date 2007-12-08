@@ -29,61 +29,23 @@ include_once("./admin/s_attribute_type/functions.php");
 include_once("./functions/site_plugin.php");
 include_once("./functions/address_type.php");
 
-$_COLUMN_HELP = array(
-	'min_display_user_type'=>array(
-		'Specifies the minimum user type',
-
-		'User Types in OpenDb are hierarchical:',
-		array(
-			'G - Guest (Lowest)',
-			'B - Borrower',
-			'N - Normal',
-			'A - Admin (Highest)')
-		),
-
-	'min_create_user_type'=>array(
-		'Specifies the minimum user that can create addresses of this type.'.
-
-		'User Types in OpenDb are hierarchical:',
-		array(
-			'G - Guest (Lowest)',
-			'B - Borrower',
-			'N - Normal',
-			'A - Admin (Highest)')),
-
-	'compulsory_for_user_type'=>array(
-		'')
-);
-
 /*
 * s_address_type			varchar(10) NOT NULL,
   description				varchar(30) NOT NULL,
   display_order				tinyint(2),
-  min_create_user_type		varchar(1) NOT NULL default 'B', # borrower
-  min_display_user_type		varchar(1) NOT NULL default 'N', # normal
-  compulsory_for_user_type	varchar(1) NOT NULL default 'B', # normal
   closed_ind				varchar(1) NOT NULL default 'N',
 */
 function display_s_address_type_insert_form($HTTP_VARS)
 {
 	echo get_input_field("s_address_type", NULL, "Address Type", "text(10,10)", "Y", $HTTP_VARS['s_address_type']);
 	echo get_input_field("description", NULL, "Description", "text(30,60)", "Y", $HTTP_VARS['description']);
-	
-	$user_types_rs = get_user_types_rs(get_user_types_r());
-	echo format_field('Minimum Display User', custom_select("min_display_user_type", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['min_display_user_type'],'B')));
-	echo format_field('Minimum Create User', custom_select("min_create_user_type", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['min_create_user_type'],'N')));
-	echo format_field('Compulsory For User', custom_select("compulsory_for_user_type", array_merge(array(array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, ifempty($HTTP_VARS['compulsory_for_user_type'],'B')));
 }
-
 
 /*
 * Item Types main display.
 * s_address_type			varchar(10) NOT NULL,
   description				varchar(30) NOT NULL,
   display_order				tinyint(2),
-  min_create_user_type		varchar(1) NOT NULL default 'B', # borrower
-  min_display_user_type		varchar(1) NOT NULL default 'N', # normal
-  compulsory_for_user_type	varchar(1) NOT NULL default 'B', # normal
   closed_ind				varchar(1) NOT NULL default 'N',
 */
 function display_s_address_type_row($address_type_r, $row)
@@ -104,11 +66,6 @@ function display_s_address_type_row($address_type_r, $row)
 	
 	//description
 	echo("\n<td class=\"data\">".get_input_field("description[$row]", NULL, NULL, "text(15,30)", "N", $address_type_r['description'], FALSE)."</td>");
-	
-	$user_types_rs = get_user_types_rs(get_user_types_r());
-	echo ("\n<td class=\"data\">".custom_select("min_display_user_type[$row]", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($address_type_r['min_display_user_type'],$HTTP_VARS['min_display_user_type']))."</td>");
-	echo ("\n<td class=\"data\">".custom_select("min_create_user_type[$row]", array_merge(array(array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, ifempty($address_type_r['min_create_user_type'],$HTTP_VARS['min_create_user_type']))."</td>");
-	echo ("\n<td class=\"data\">".custom_select("compulsory_for_user_type[$row]", array_merge(array(array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, ifempty($address_type_r['compulsory_for_user_type'],$HTTP_VARS['compulsory_for_user_type']))."</td>");
 	
 	if(is_array($address_type_r))
 		echo ("\n<td class=\"data\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($address_type_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
@@ -179,13 +136,6 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 		echo("<td class=\"$class\"><a href=\"#\" onmouseover=\"return show_sat_select_tooltip(document.forms['s_addr_attribute_type_rltshp']['s_attribute_type[$row]'], arrayOfSystemAttributeTypeTooptips);\" onmouseout=\"return hide_tooltip();\">(?)</a></td>");
 	}
 	echo("<td class=\"$class\">".get_input_field("prompt[$row]", NULL, NULL, "text(15,30)", "N", $s_addr_attribute_type_rltshp_r['prompt'], FALSE)."</td>");
-	
-	$user_types_rs = get_user_types_rs(get_user_types_r());
-	echo ("\n<td class=\"$class\">".custom_select("min_display_user_type[$row]", array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, $s_addr_attribute_type_rltshp_r['min_display_user_type'])."</td>");
-	$user_type_rs = array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'No Restriction')), get_user_types_rs(get_user_types_r()));
-	echo ("\n<td class=\"$class\">".custom_select("min_create_user_type[$row]", array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'No Minimum')), $user_types_rs), '%value% - %display%', 1, $s_addr_attribute_type_rltshp_r['min_create_user_type'])."</td>");
-	$user_type_rs = array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'No Restriction')), get_user_types_rs(get_user_types_r()));
-	echo ("\n<td class=\"$class\">".custom_select("compulsory_for_user_type[$row]", array_merge(array(array('value'=>'', 'display'=>''),array('value'=>'*', 'display'=>'Not Compulsory')), $user_types_rs), '%value% - %display%', 1, $s_addr_attribute_type_rltshp_r['compulsory_for_user_type'])."</td>");
 	
 	if(is_array($s_addr_attribute_type_rltshp_r))
 		echo ("\n<td class=\"$class\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($s_addr_attribute_type_rltshp_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
@@ -259,7 +209,7 @@ else if($HTTP_VARS['op'] == 'insert_type')// Insert whole new item type
 	{
 		if(!is_exists_address_type($HTTP_VARS['s_address_type']))//insert
 		{
-			if(insert_s_address_type($HTTP_VARS['s_address_type'], $HTTP_VARS['display_order'], $HTTP_VARS['description'], $HTTP_VARS['min_create_user_type'], $HTTP_VARS['min_display_user_type'], $HTTP_VARS['compulsory_for_user_type']))
+			if(insert_s_address_type($HTTP_VARS['s_address_type'], $HTTP_VARS['display_order'], $HTTP_VARS['description']))
 			{
 				// Load the edit_types form now.
 				$HTTP_VARS['op'] = 'edit_types';
@@ -289,7 +239,7 @@ else if($HTTP_VARS['op'] == 'update_types') // This is initiated from the main s
 		{
 			if(is_exists_address_type($HTTP_VARS['s_address_type'][$i]))
 			{
-				if(!update_s_address_type($HTTP_VARS['s_address_type'][$i], $HTTP_VARS['display_order'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+				if(!update_s_address_type($HTTP_VARS['s_address_type'][$i], $HTTP_VARS['display_order'][$i], $HTTP_VARS['description'][$i], $HTTP_VARS['closed_ind'][$i]))
 				{
 					$errors[] = array('error'=>'Address Type ('.$HTTP_VARS['s_address_type'][$i].') not updated','detail'=>db_error());
 				}
@@ -342,7 +292,7 @@ else if($HTTP_VARS['op'] == 'update') // This is initiated from the lower s_item
 						else // 'old_order_no' IS THE SAME as 'order_no' here!
 						{
 							// At the moment we are not checking the order_no's for items with the same type.
-							if(!update_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+							if(!update_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['closed_ind'][$i]))
 							{
 								$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not updated','detail'=>db_error());
 							}
@@ -367,7 +317,7 @@ else if($HTTP_VARS['op'] == 'update') // This is initiated from the lower s_item
 						{
 							if(!is_exists_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i]))
 							{
-								if(!insert_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['min_create_user_type'][$i], $HTTP_VARS['min_display_user_type'][$i], $HTTP_VARS['compulsory_for_user_type'][$i], $HTTP_VARS['closed_ind'][$i]))
+								if(!insert_s_addr_attribute_type_rltshp($HTTP_VARS['s_address_type'], $HTTP_VARS['s_attribute_type'][$i], $HTTP_VARS['order_no'][$i], $HTTP_VARS['prompt'][$i], $HTTP_VARS['closed_ind'][$i]))
 								{
 									$errors[] = array('error'=>'Address Attribute type ('.$HTTP_VARS['s_attribute_type'][$i].'['.$HTTP_VARS['old_order_no'][$i].']) not inserted','detail'=>db_error());
 								}
@@ -422,9 +372,6 @@ if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
 			."<th>Order</th>"
 			."<th colspan=2>Attribute Type</th>"
 			."<th>Prompt</th>"
-			."<th>Min Create<br />User Type</th>"
-			."<th>Min Display<br />User Type</th>"
-			."<th>Min Compulsory<br />User Type</th>"
 			."<th>Closed</th>"
 			."</tr>");	
 		
@@ -542,9 +489,6 @@ if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS
 			."<th>Order</th>"
 			."<th>Type</th>"
 			."<th>Description</th>"
-			."<th>Min Create<br />User Type</th>"
-			."<th>Min Display<br />User Type</th>"
-			."<th>Min Compulsory<br />User Type</th>"
 			."<th>Closed</th>"
 			."<th></th>"
 			."</tr>");	

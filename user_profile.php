@@ -90,7 +90,7 @@ if(is_site_enabled())
 				echo("\n</table>");
 	
 				$address_header_displayed = FALSE;
-				$addr_results = fetch_user_address_type_rs($HTTP_VARS['uid'], NULL, TRUE);
+				$addr_results = fetch_user_address_type_rs($HTTP_VARS['uid'], TRUE);
 				if($addr_results)
 				{
 					while($address_type_r = db_fetch_assoc($addr_results))

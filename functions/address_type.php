@@ -139,52 +139,23 @@ function fetch_user_address_type_r($user_id, $address_type)
 						return a list of all address types matching the min user type, including
 						any user_address details
 */
-function fetch_user_address_type_rs($user_id, $min_user_type = NULL, $order_by = FALSE)
+function fetch_user_address_type_rs($user_id, $order_by = FALSE)
 {
 	$query = "SELECT ua.sequence_number, ".
 				"ua.public_address_ind, ".
 				"ua.borrow_address_ind, ".
 				"sadt.s_address_type, ".
 				"IFNULL(stlv.value, sadt.description) AS description ".
-			"FROM (s_address_type sadt ";
-	
-	if(strlen($min_user_type)==0)
-	{
-		$query .= ", user_address ua) ";
-	}
-	else
-	{
-		$query .= ") ";
-	}
+			"FROM (s_address_type sadt, user_address ua) ";
 	
 	$query .= "LEFT JOIN s_table_language_var stlv
 			ON stlv.language = '".get_opendb_site_language()."' AND
 			stlv.tablename = 's_address_type' AND
 			stlv.columnname = 'description' AND
-			stlv.key1 = sadt.s_address_type ";
-			
-	if(strlen($min_user_type)>0)
-	{
-		$query .= "LEFT JOIN user_address ua ".
-			"ON ua.user_id = '".$user_id."' AND ".
-			"ua.s_address_type = sadt.s_address_type AND ".
-			"ua.start_dt <= now() AND (ua.end_dt IS NULL OR ua.end_dt < now()) ";
-		
-		if(strlen($min_user_type)>0)
-		{
-			$user_type_r = get_min_user_type_r($min_user_type);
-			if(is_not_empty_array($user_type_r))
-			{
-				$query .= "WHERE sadt.min_create_user_type IN (".format_sql_in_clause($user_type_r).") ";
-			}
-		}
-	}
-	else
-	{
-		$query .= "WHERE ua.user_id = '".$user_id."' AND ".
-			"ua.s_address_type = sadt.s_address_type AND ".
-			"ua.start_dt <= now() AND (ua.end_dt IS NULL OR ua.end_dt < now()) ";
-	}
+			stlv.key1 = sadt.s_address_type  
+			WHERE ua.user_id = '".$user_id."' AND 
+			ua.s_address_type = sadt.s_address_type AND 
+			ua.start_dt <= now() AND (ua.end_dt IS NULL OR ua.end_dt < now()) ";
 
 	if($order_by)
 	{
@@ -267,7 +238,7 @@ function fetch_user_address_lookup_attribute_val($ua_sequence_number, $s_attribu
 /**
 * Return a set of address types for a new user
 */
-function fetch_address_type_rs($min_user_type = NULL, $order_by = FALSE)
+function fetch_address_type_rs($order_by = FALSE)
 {
 	$query = "SELECT sadt.s_address_type, ".
 				"IFNULL(stlv.value, sadt.description) AS description ".
@@ -277,15 +248,6 @@ function fetch_address_type_rs($min_user_type = NULL, $order_by = FALSE)
 			stlv.tablename = 's_address_type' AND
 			stlv.columnname = 'description' AND
 			stlv.key1 = sadt.s_address_type ";
-	
-	if(strlen($min_user_type)>0)
-	{
-		$user_type_r = get_min_user_type_r($min_user_type);
-		if(is_not_empty_array($user_type_r))
-		{
-			$query .= "WHERE sadt.min_create_user_type IN ('*', ".format_sql_in_clause($user_type_r).") ";
-		}
-	}
 	
 	if($order_by)
 	{
@@ -301,14 +263,10 @@ function fetch_address_type_rs($min_user_type = NULL, $order_by = FALSE)
 
 /**
 * @param $mode - One of 'query' or 'edit'.  
-* 					In 'edit' mode, the $user_type parameter will control what records
-* 					are displayed based on the min_create_user_type column).  It will also
-* 					return the 'compulsory_ind' based on the compulsory_for_user_type
-* 					column.
 * 
 * 					In 'query' mode, will restrict what records 
 */
-function fetch_address_type_attribute_type_rs($s_address_type, $min_user_type = NULL, $mode = 'query', $order_by = FALSE)
+function fetch_address_type_attribute_type_rs($s_address_type, $mode = 'query', $order_by = FALSE)
 {
 	$query = 
 		"SELECT sadt.s_address_type, ".
@@ -329,21 +287,9 @@ function fetch_address_type_attribute_type_rs($s_address_type, $min_user_type = 
 				"sat.input_type_arg5,".
 				"sat.listing_link_ind ";
 	
-	if(strlen($min_user_type)>0)
-	{
-		$user_type_r = get_min_user_type_r($min_user_type);
-	}
-	
 	if($mode == 'update')
 	{
-		if(is_not_empty_array($user_type_r))
-		{
-			$query .= ", IF(IFNULL(saatr.compulsory_for_user_type, sadt.compulsory_for_user_type) IN(".format_sql_in_clause($user_type_r)."), 'Y', 'N') as compulsory_ind ";
-		}
-		else
-		{
-			$query .= ", 'N' as compulsory_ind ";
-		}
+		$query .= ", 'N' as compulsory_ind ";
 	}
 	
 	$query .= "FROM	(s_addr_attribute_type_rltshp saatr, ".
@@ -367,20 +313,8 @@ function fetch_address_type_attribute_type_rs($s_address_type, $min_user_type = 
 	
 	if($mode == 'update')
 	{
-		if(is_not_empty_array($user_type_r))
-		{
-			$query .= "AND IFNULL(saatr.min_create_user_type, sadt.min_create_user_type) IN ('*', ".format_sql_in_clause($user_type_r).") ";
-		}
-		
 		// do not close for display purposes, only update
 		$query .= "AND sadt.closed_ind <> 'Y' AND saatr.closed_ind <> 'Y'";
-	}
-	else //if($mode == 'query')
-	{
-		if(is_not_empty_array($user_type_r))
-		{
-			$query .= "AND IFNULL(saatr.min_display_user_type, sadt.min_display_user_type) IN ('*', ".format_sql_in_clause($user_type_r).") ";
-		}
 	}
 	
 	if($order_by)

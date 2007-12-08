@@ -46,30 +46,30 @@ INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type,
 #
 # System Address Type
 # 
-INSERT INTO s_address_type ( s_address_type, description, display_order, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind )
-VALUES ( 'SNAIL', 'Postal Address', '1', 'B', 'B', '*', 'N' );
+INSERT INTO s_address_type ( s_address_type, description, display_order, closed_ind )
+VALUES ( 'SNAIL', 'Postal Address', '1', 'N' );
 
 #
 # System Address Type relationship
 # 
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'ADDR_LINE', '1', 'Address Line 1', NULL, NULL, NULL, 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'ADDR_LINE', '2', 'Address Line 2', NULL, NULL, '*', 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'CITY', '3', NULL, NULL, NULL, NULL, 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'STATE', '4', NULL, NULL, NULL, NULL, 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'POSTCODE', '5', NULL, NULL, NULL, NULL, 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'COUNTRY', '6', NULL, NULL, NULL, NULL, 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'PHONE_NO', '10', 'Home Phone', NULL, NULL, NULL, 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'PHONE_NO', '11', 'Work Phone', NULL, NULL, '*', 'N' );
-INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, min_create_user_type, min_display_user_type, compulsory_for_user_type, closed_ind)
-VALUES ( 'SNAIL', 'PHONE_NO', '12', 'Mobile Phone', NULL, NULL, '*', 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'ADDR_LINE', '1', 'Address Line 1', 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'ADDR_LINE', '2', 'Address Line 2', 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'CITY', '3', NULL, 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'STATE', '4', NULL, 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'POSTCODE', '5', NULL, 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'COUNTRY', '6', NULL, 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'PHONE_NO', '10', 'Home Phone', 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'PHONE_NO', '11', 'Work Phone', 'N' );
+INSERT INTO s_addr_attribute_type_rltshp (s_address_type, s_attribute_type, order_no, prompt, closed_ind)
+VALUES ( 'SNAIL', 'PHONE_NO', '12', 'Mobile Phone', 'N' );
 
 #
 # This attribute is reserved for use in item_review.  Please do not use it for your own s_item_attribute_type structures.

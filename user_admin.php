@@ -158,11 +158,11 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	// Now do the addresses
 	if(is_not_empty_array($user_r))
 	{
-		$addr_results = fetch_user_address_type_rs($user_r['user_id'], $user_r['type'], TRUE);
+		$addr_results = fetch_user_address_type_rs($user_r['user_id'], TRUE);
 	}
 	else
 	{
-		$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
+		$addr_results = fetch_address_type_rs(TRUE);
 	}
 	
 	if($addr_results)
@@ -173,11 +173,11 @@ function get_user_input_form($user_r, $HTTP_VARS)
 			
 			if(is_not_empty_array($user_r))
 			{
-				$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_r['type'], 'update', TRUE);
+				$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], 'update', TRUE);
 			}
 			else
 			{
-				$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $HTTP_VARS['user_type'], 'update', TRUE);
+				$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], 'update', TRUE);
 			}	
 			
 			if($attr_results)
@@ -520,7 +520,7 @@ function validate_user_info($user_type, &$HTTP_VARS, &$address_provided_r, &$err
 		$HTTP_VARS['uid_language'] = NULL;
 	}
 	
-	$addr_results = fetch_address_type_rs($user_type, TRUE);
+	$addr_results = fetch_address_type_rs(TRUE);
 	if($addr_results)
 	{
 		while($address_type_r = db_fetch_assoc($addr_results))
@@ -529,7 +529,7 @@ function validate_user_info($user_type, &$HTTP_VARS, &$address_provided_r, &$err
 			
 			$address_provided_r[$v_address_type] = FALSE;
 			
-			$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_type, 'update', TRUE);
+			$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], 'update', TRUE);
 			if($attr_results)
 			{
 				while($addr_attribute_type_r = db_fetch_assoc($attr_results))
@@ -565,7 +565,7 @@ function update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, &$error
 	$address_creation_success = TRUE;
 	$address_type_sequence_number_r = NULL;
 	
-	$addr_results = fetch_user_address_type_rs($user_r['user_id'], $user_r['type'], TRUE);
+	$addr_results = fetch_user_address_type_rs($user_r['user_id'], TRUE);
 	if($addr_results)
 	{
 		while($address_type_r = db_fetch_assoc($addr_results))
@@ -599,7 +599,7 @@ function update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, &$error
 			{
 				if($address_provided_r[$v_address_type]!==FALSE)
 				{
-					$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $user_r['type'], 'update', TRUE);
+					$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], 'update', TRUE);
 					if($attr_results)
 					{
 						while($addr_attribute_type_r = db_fetch_assoc($attr_results))
@@ -1131,13 +1131,13 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 		"\n".get_opendb_lang_var('user_theme').": ".$HTTP_VARS['uid_theme'].
 	    "\n".get_opendb_lang_var('email').": ".$HTTP_VARS['email_addr'];
 
-	$addr_results = fetch_address_type_rs($HTTP_VARS['user_type'], TRUE);
+	$addr_results = fetch_address_type_rs(TRUE);
 	if($addr_results)
 	{
 		while($address_type_r = db_fetch_assoc($addr_results))
 		{
 			$address_type = strtolower($address_type_r['s_address_type']);
-			$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], $HTTP_VARS['user_type'], 'update', TRUE);
+			$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], 'update', TRUE);
 			if($attr_results)
 			{
 				while($addr_attribute_type_r = db_fetch_assoc($attr_results))

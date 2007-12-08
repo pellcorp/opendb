@@ -179,11 +179,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 			$directory = filecache_get_cache_directory('ITEM');
 			while(list(,$fc_attrib_r) = each($fc_attrib_rs))
 			{
-				// fake it, so that the delete_file_cache function goes to the right spot.
-				$fc_attrib_r['upload_file_ind'] = 'N';
-				
 				$cacheFile = $directory.'/'.$fc_attrib_r['cache_file'];
-				
 				if(file_exists($cacheFile))
 				{
 					// todo - how to get unique filename
@@ -211,6 +207,9 @@ class Upgrader_100_110 extends OpenDbUpgrader
 					$uploadFile = $uploadDir.'/'.$filename;
 					if(copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
 					{
+						// fake it, so that the delete_file_cache function goes to the right spot.
+						$fc_attrib_r['upload_file_ind'] = 'N';
+				
 						delete_file_cache($fc_attrib_r);
 					}
 					else

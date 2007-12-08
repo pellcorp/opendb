@@ -106,19 +106,6 @@ function get_user_types_r()
 	return array('A', 'N', 'B', 'G');
 }
 
-function get_user_signup_types_r()
-{
-	$signup_restrict_usertypes = get_opendb_config_var('login.signup', 'restrict_usertypes');
-
-	// if no array defined, enforce default choices
-	if(is_empty_array($signup_restrict_usertypes))
-	{
-		$signup_restrict_usertypes = array('B', 'N');
-	}
-	
-	return $signup_restrict_usertypes;
-}
-
 /**
 * Validates that the $uid is of a user, which an administrator
 * can change to.

@@ -453,8 +453,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login', 'show_menu', 3, 'Show Menu', 'Should menu be displayed when logging in / out', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.signup', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('login.signup', 'restrict_usertypes', 2, 'Signup Usertype Restrictions', 'Restrict what user types can be signed up', 'array', 'usertype');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('login.signup', 'requirements', 2, 'Requirements', 'Signup rules are: <ul><li>Activated - Signup must be activated by an administrator</li><li>None - Signup is immediate</li></ul>', 'value_select', 'Activated,None');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items from being listed', 'boolean');
@@ -630,8 +628,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widg
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widgets', 'legal_html_tags', '11', 'sub');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('widgets', 'show_prompt_compulsory_ind', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.signup', 'enable', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('login.signup', 'restrict_usertypes', '0', 'N');
-INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('login.signup', 'restrict_usertypes', '1', 'B');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'file', './log/usagelog.txt');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'backup_ext_date_format', 'DDMONYYYY');

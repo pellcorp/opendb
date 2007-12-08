@@ -38,36 +38,6 @@ include_once("./functions/address_type.php");
 include_once("./functions/secretimage.php");
 
 /**
-* 	Assumes that is_user_admin check has been made
-*/
-function get_new_user_usertype_input_form($HTTP_VARS, $user_type_r, $user_type)
-{
-	global $PHP_SELF;
-	
-	echo("<h3>".get_opendb_lang_var('choose_user_type')."</h3>");
-	
-	$buffer .= "<form action=\"$PHP_SELF\" method=\"GET\">".
-		get_url_fields($HTTP_VARS, NULL, array('user_type')); // Pass all http variables
-	
-	$user_type_rs = get_user_types_rs($user_type_r, ifempty($HTTP_VARS['user_type'],$user_type));
-	$buffer .= "<dl class=\"userType\">";
-	while(list(,$user_type_r) = each($user_type_rs))
-	{
-		$buffer .= "\n<dt>".
-				"<input type=\"radio\" class=\"radio\" name=\"user_type\" value=\"".$user_type_r['value']."\"".($user_type_r['checked_ind']=='Y'?' CHECKED':'').">${user_type_r['display']}".
-				"</dt>";
-		$buffer .= "<dd>".$user_type_r['description']."</dd>";
-	}
-	$buffer .= "</dl>";
-	
-	$buffer .= "\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">";
-
-	$buffer .= "\n</form>";
-			
-	return $buffer;
-}
-
-/**
 * @param $op is 'edit' or 'new'
 */
 function get_user_input_form($user_r, $HTTP_VARS)
@@ -1214,14 +1184,7 @@ if(is_site_enabled())
 				echo _theme_header(get_opendb_lang_var('add_new_user'));
 				echo("<h2>".get_opendb_lang_var('add_new_user')."</h2>");
 				
-				if(is_usertype_valid($HTTP_VARS['user_type']))
-				{
-					echo(get_user_input_form(NULL, $HTTP_VARS));
-				}
-				else
-				{
-					echo(get_new_user_usertype_input_form($HTTP_VARS, get_user_types_r(), 'N'));
-				}
+				echo(get_user_input_form(NULL, $HTTP_VARS));
 			}
 			else if ($HTTP_VARS['op'] == 'edit')
 			{
@@ -1274,62 +1237,39 @@ if(is_site_enabled())
 			{
 				if(get_opendb_config_var('login.signup', 'enable')!==FALSE)
 				{
-					$signup_restrict_usertypes = get_user_signup_types_r();
-
-					if(count($signup_restrict_usertypes) == 1)
+					if($HTTP_VARS['op2'] == 'send_info')
 					{
-						// if only one usertype, then assign it to user_type variable, so we
-						// can pretend it was user specified.
-						$HTTP_VARS['user_type'] = $signup_restrict_usertypes[0];
-					}
+						$page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
+						echo(_theme_header($page_title, is_show_login_menu_enabled()));
+						echo("<h2>".$page_title."</h2>");
 
-					// either valid usertype, or a single user type specified
-					if( in_array($HTTP_VARS['user_type'], $signup_restrict_usertypes) )
-					{
-						if($HTTP_VARS['op2'] == 'send_info')
+						// ensure the secret image codes check out
+						if(is_numeric($HTTP_VARS['gfx_code_check']) &&
+								is_numeric($HTTP_VARS['gfx_random_number']) &&
+								is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
 						{
-							$page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
-							echo(_theme_header($page_title, is_show_login_menu_enabled()));
-							echo("<h2>".$page_title."</h2>");
-
-							// ensure the secret image codes check out
-							if(is_numeric($HTTP_VARS['gfx_code_check']) &&
-									is_numeric($HTTP_VARS['gfx_random_number']) &&
-									is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
+					   		$return_val = handle_user_insert($HTTP_VARS, $errors);
+							if($return_val !== FALSE)
 							{
-						   		$return_val = handle_user_insert($HTTP_VARS, $errors);
-								if($return_val !== FALSE)
+								echo("\n<p class=\"success\">".get_opendb_lang_var('new_account_reply', 'site', get_opendb_config_var('site', 'title'))."</p>");
+								if(send_signup_info_to_admin($HTTP_VARS, $errors))
 								{
-									echo("\n<p class=\"success\">".get_opendb_lang_var('new_account_reply', 'site', get_opendb_config_var('site', 'title'))."</p>");
-									
-									//if( ifempty(get_opendb_config_var('login.signup', 'requirements'), 'Activate') === 'Activate' )
-									//{
-									if(send_signup_info_to_admin($HTTP_VARS, $errors))
-									{
-										echo("\n<p class=\"smsuccess\">".get_opendb_lang_var('new_account_admin_email_sent', 'site', get_opendb_config_var('site', 'title'))."</p>");
-									}
-									else
-									{
-										echo(format_error_block($errors));
-									}
+									echo("\n<p class=\"smsuccess\">".get_opendb_lang_var('new_account_admin_email_sent', 'site', get_opendb_config_var('site', 'title'))."</p>");
 								}
-								else // $return_val === FALSE
+								else
 								{
-         							echo(format_error_block($errors));
-									echo(get_user_input_form(NULL, $HTTP_VARS));
+									echo(format_error_block($errors));
 								}
-							}//is_secretimage_code_valid
-							else
+							}
+							else // $return_val === FALSE
 							{
-							    echo(format_error_block(get_opendb_lang_var('invalid_verify_code')));
+								echo(format_error_block($errors));
 								echo(get_user_input_form(NULL, $HTTP_VARS));
 							}
-						}//if($HTTP_VARS['op2'] == 'send_info')
+						}//is_secretimage_code_valid
 						else
 						{
-							$page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
-							echo(_theme_header($page_title, is_show_login_menu_enabled()));
-							echo("<h2>".$page_title."</h2>");
+						    echo(format_error_block(get_opendb_lang_var('invalid_verify_code')));
 							echo(get_user_input_form(NULL, $HTTP_VARS));
 						}
 					}
@@ -1338,7 +1278,7 @@ if(is_site_enabled())
 						$page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
 						echo(_theme_header($page_title, is_show_login_menu_enabled()));
 						echo("\n<h2>".$page_title."</h2>");
-						echo(get_new_user_usertype_input_form($HTTP_VARS, $signup_restrict_usertypes, NULL));
+						echo(get_user_input_form(NULL, $HTTP_VARS));
 					}
 				}
 				else
@@ -1381,15 +1321,8 @@ if(is_site_enabled())
 				else // $return_val === FALSE
 				{
 					echo format_error_block($errors);
-					if(is_usertype_valid($HTTP_VARS['user_type']))
-					{
-                        $HTTP_VARS['op'] = 'new_user';
-						echo(get_user_input_form(NULL, $HTTP_VARS));
-					}
-					else
-					{
-						echo(get_new_user_usertype_input_form($HTTP_VARS, get_user_types_r(), 'N'));
-					}
+					$HTTP_VARS['op'] = 'new_user';
+					echo(get_user_input_form(NULL, $HTTP_VARS));
 				}
 			}
 			else if($HTTP_VARS['op'] == 'update')

@@ -215,6 +215,12 @@ ALTER TABLE s_addr_attribute_type_rltshp DROP min_create_user_type;
 ALTER TABLE s_addr_attribute_type_rltshp DROP min_display_user_type;
 ALTER TABLE s_addr_attribute_type_rltshp DROP compulsory_for_user_type;
 
+# enable simple hidden element support - if hidden_ind = 'Y', only owners and
+# users with PERM_ADMIN_VIEW_ITEMS will be able to see such items.
+ALTER TABLE s_status_type ADD hidden_ind VARCHAR(1) NOT NULL DEFAULT 'N';
+
+UPDATE s_status_type SET hidden_ind = 'Y' WHERE s_status_type = 'H';
+
 # announcements will be available for all but guest access users from now one.
 ALTER TABLE announcement DROP min_user_type;
 

@@ -135,15 +135,6 @@ function fetch_item_instance_rs($item_id, $owner_id = NULL)
 					sst.s_status_type = ii.s_status_type AND 
 					ii.item_id='".$item_id."' ".(strlen($owner_id)>0?"AND ii.owner_id = '$owner_id'":"");
 	
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$query .= " AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
-	
 	$query .= " ORDER BY ii.instance_no	";
 	
 	$result = db_query($query);
@@ -172,15 +163,6 @@ function fetch_owner_item_cnt($owner_id, $s_item_type = NULL)
 	}
 	$where .= "AND ii.owner_id = '$owner_id' "; 
 	
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
-	
 	$query .= "$from $where";
 	
 	$result = db_query($query);
@@ -207,15 +189,6 @@ function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type)
 			"FROM item_instance ii, s_status_type sst, item i ".
 			"WHERE i.id = ii.item_id AND sst.s_status_type = ii.s_status_type AND ii.owner_id='".$owner_id."' AND ii.s_status_type = '$s_status_type' ";
 
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$query .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
-	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{
@@ -253,15 +226,6 @@ function fetch_category_item_cnt($category, $s_item_type = NULL)
 	if($s_item_type)
 	{
 		$query .= " AND i.s_item_type='".$s_item_type."'";
-	}
-	
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
 	}
 	
 	$result = db_query($query);
@@ -503,15 +467,6 @@ function is_exists_title($title, $s_item_type, $owner_id=NULL)
 			"sst.s_status_type = ii.s_status_type AND ".
 			"i.title = '".addslashes($title)."' AND ".
            	"i.s_item_type = '".$s_item_type."' ";
-			
-	// Restrict certain status types, to specified user types.
-	$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-	if(is_not_empty_array($user_type_r))
-	{
-		$where .= "AND ( ii.owner_id = '".get_opendb_session_var('user_id')."' OR ".
-				" LENGTH(IFNULL(sst.min_display_user_type,'')) = 0 OR ".
-				" sst.min_display_user_type IN(".format_sql_in_clause($user_type_r).") ) ";
-	}
 			
 	if(strlen($owner_id)>0)
 		$query .= "AND ii.owner_id = '".$owner_id."'";
@@ -854,22 +809,6 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		
 		// Join the s_status and user (to remove Deactivated user records) tables in, so we can do some restrictions if required.
 		$where_r[] = '(u.active_ind IS NULL OR u.active_ind = \'Y\')';
-		
-		// Restrict certain status types, to specified user types.
-		$user_type_r = get_min_user_type_r(get_opendb_session_var('user_type'));
-		if(is_not_empty_array($user_type_r))
-		{
-			// Check if s_status_type table already included, if not include it.
-			if( array_search2('s_status_type sst', $from_r) === FALSE )
-			{
-				$from_r[] = 's_status_type sst';
-				$where_r[] = 'sst.s_status_type = ii.s_status_type';
-			}
-			
-			$where_r[] = '( ii.owner_id = \''.get_opendb_session_var('user_id').'\' OR '.
-					' LENGTH(IFNULL(sst.min_display_user_type,\'\')) = 0 OR '.
-					' sst.min_display_user_type IN('.format_sql_in_clause($user_type_r).') )';
-		}
 	}
 	
 	//

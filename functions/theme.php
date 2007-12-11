@@ -26,6 +26,12 @@ include_once("./functions/cssparser/cssparser.php");
 include_once("./functions/rss.php");
 include_once("./functions/scripts.php");
 
+function get_opendb_site_theme() {
+	global $_OPENDB_THEME;
+	
+	return $_OPENDB_THEME;
+}
+
 function get_content_type_charset() {
 	$contentType = "text/html";
 	
@@ -176,23 +182,14 @@ function get_theme_css($pageid, $mode = NULL)
 
 function _theme_css_map($pageid)
 {
-	global $_OPENDB_THEME_CSS_MAP;
-	
 	if(function_exists('theme_css_map'))
 		return theme_css_map($pageid);
 	else
 		return NULL;
 }
 
-/**
- * Returns an array of css files to render for the current page.
- * 
- * 	array(file=>"./theme/$_OPENDB_THEME/$name.css")
- */
 function _theme_css_file_list($pageid, $mode = NULL)
 {
-	global $_OPENDB_THEME;
-	
 	$css_file_list = array();
 	
 	add_css_files('style', $mode, $css_file_list);
@@ -214,14 +211,15 @@ function _theme_css_file_list($pageid, $mode = NULL)
 
 function add_css_files($pageid, $mode, &$css_file_list)
 {
-	global $_OPENDB_THEME;
 	global $_OpendbBrowserSniffer;
+	
+	$theme = get_opendb_site_theme();
 	
 	if(strlen($mode)==0)
 	{
-		if(file_exists("./theme/$_OPENDB_THEME/${pageid}.css"))
+		if(strlen($theme)>0 && file_exists("./theme/$theme/${pageid}.css"))
 		{
-			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}.css");
+			$css_file_list[] = array(file=>"./theme/$theme/${pageid}.css");
 		}
 		
 		$browsers_r = $_OpendbBrowserSniffer->getSupportedBrowsers();
@@ -229,49 +227,49 @@ function add_css_files($pageid, $mode, &$css_file_list)
 		{
 			$suffix = str_replace(".", NULL, $browser);
 			
-			if(file_exists("./theme/$_OPENDB_THEME/${pageid}_${suffix}.css"))
+			if(strlen($theme)>0 && file_exists("./theme/$theme/${pageid}_${suffix}.css"))
 			{
-				$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_${suffix}.css", browser=>$browser);
+				$css_file_list[] = array(file=>"./theme/$theme/${pageid}_${suffix}.css", browser=>$browser);
 			}
 		}
 	}
 	else if($mode == 'printable')
 	{
-		if(file_exists("./theme/$_OPENDB_THEME/${pageid}_print.css"))
+		if(strlen($theme)>0 && file_exists("./theme/$theme/${pageid}_print.css"))
 		{
-			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_print.css");
+			$css_file_list[] = array(file=>"./theme/$theme/${pageid}_print.css");
 		}
 	}
 	else if($mode == 'no-menu')
 	{
-		if(file_exists("./theme/$_OPENDB_THEME/${pageid}_nomenu.css"))
+		if(strlen($theme)>0 && file_exists("./theme/$theme/${pageid}_nomenu.css"))
 		{
-			$css_file_list[] = array(file=>"./theme/$_OPENDB_THEME/${pageid}_nomenu.css");
+			$css_file_list[] = array(file=>"./theme/$theme/${pageid}_nomenu.css");
 		}
 	}
 }
 
 function get_theme_search_dir_list()
 {
-	global $_OPENDB_THEME;
-	global $_OPENDB_LANGUAGE;
+	$theme = get_opendb_site_theme();
+	$language = strtolower(get_opendb_site_language());
 	
 	$dirPath = array();
 			
-	if(isset($_OPENDB_THEME) && isset($_OPENDB_LANGUAGE))
+	if(strlen($theme)>0 && strlen($language)>0)
 	{
-		$dirPath[] = "theme/$_OPENDB_THEME/images/$_OPENDB_LANGUAGE/";
+		$dirPath[] = "theme/$theme/images/$language/";
 	}
 	
-	if(isset($_OPENDB_THEME))
+	if(strlen($theme)>0)
 	{
-		$dirPath[] = "theme/$_OPENDB_THEME/images/";
-		$dirPath[] = "theme/$_OPENDB_THEME/";
+		$dirPath[] = "theme/$theme/images/";
+		$dirPath[] = "theme/$theme/";
 	}			
 	
-	if(isset($_OPENDB_LANGUAGE))
+	if(strlen($language)>0)
 	{
-		$dirPath[] = "theme/default/images/$_OPENDB_LANGUAGE/";
+		$dirPath[] = "theme/default/images/$language/";
 	}
 	
 	$dirPath[] = "theme/default/images/";
@@ -283,13 +281,13 @@ function get_theme_search_dir_list()
 
 function get_theme_search_site_dir_list()
 {
-	global $_OPENDB_THEME;
+	$theme = get_opendb_site_theme();
 	
 	$dirPath = array();
 	
-	if(isset($_OPENDB_THEME))
+	if(strlen($theme)>0)
 	{
-		$dirPath[] = "theme/$_OPENDB_THEME/images/site/";
+		$dirPath[] = "theme/$theme/images/site/";
 	}
 	
 	$dirPath[] = "site/images/";
@@ -299,9 +297,6 @@ function get_theme_search_site_dir_list()
 
 function _theme_image_src($src)
 {
-	global $_OPENDB_THEME;
-	global $_OPENDB_LANGUAGE;
-
 	if(strlen($src)>0)
 	{
 		if(function_exists('theme_image_src'))
@@ -395,10 +390,10 @@ function _theme_image($src, $title=NULL, $type=NULL)
  */
 function _theme_graph_config()
 {
-	global $_OPENDB_THEME;
+	$theme = get_opendb_site_theme();
 
 	$cssParser =& new cssparser(FALSE);
-	if($cssParser->Parse("./theme/$_OPENDB_THEME/stats.css"))
+	if(strlen($theme)>0 && $cssParser->Parse("./theme/$theme/stats.css"))
 	{
 		$stats_graph_config_r = $cssParser->GetSection('.OpendbStatsGraphs');
 		return $stats_graph_config_r;

@@ -19,7 +19,6 @@
 */
 function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_type)
 {
-	global $_OPENDB_THEME;
 	global $PHP_SELF;
 	global $HTTP_VARS;
 	global $ADMIN_TYPE;
@@ -114,23 +113,25 @@ function theme_footer($pageid, $user_id, $user_type)
 	echo("</body></html>");
 }
 
-$_OPENDB_THEME_CSS_MAP = array(
-	'borrow'=>array('listings', 'item_display'),
-	'item_borrow'=>array('listings', 'item_display'),
-	'quick_checkout'=>array('listings', 'item_display'),
-	'import'=>array('listings', 'item_display', 'item_input'),
-	'item_display'=>array('listings'),
-	'item_input'=>array('listings'),
-	'user_listing'=>array('listings'),
-	'admin'=>array('listings', 'item_input'),
-	'export'=>array('item_input'),
-	'search'=>array('item_review', 'item_input'),
-	'item_review'=>array('item_input')
-);
-
 function theme_css_map($pageid)
 {
-	global $_OPENDB_THEME_CSS_MAP;
-	return $_OPENDB_THEME_CSS_MAP[$pageid];
+	$themeCssMap = array(
+		'borrow'=>array('listings', 'item_display'),
+		'item_borrow'=>array('listings', 'item_display'),
+		'quick_checkout'=>array('listings', 'item_display'),
+		'import'=>array('listings', 'item_display', 'item_input'),
+		'item_display'=>array('listings'),
+		'item_input'=>array('listings'),
+		'user_listing'=>array('listings'),
+		'admin'=>array('listings', 'item_input'),
+		'export'=>array('item_input'),
+		'search'=>array('item_review', 'item_input'),
+		'item_review'=>array('item_input')
+	);
+
+	if(isset($themeCssMap))
+		return $themeCssMap[$pageid];
+	else
+		return NULL;
 }
 ?>

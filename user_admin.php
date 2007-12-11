@@ -42,7 +42,6 @@ include_once("./functions/secretimage.php");
 */
 function get_user_input_form($user_r, $HTTP_VARS)
 {
-	global $_OPENDB_THEME;
 	global $PHP_SELF;
 	
 	$buffer .= "<form action=\"$PHP_SELF\" method=\"POST\">";

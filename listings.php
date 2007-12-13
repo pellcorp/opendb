@@ -649,9 +649,9 @@ function get_search_query_matrix($HTTP_VARS)
 		if($HTTP_VARS['title_match'] == 'word' || $HTTP_VARS['title_match'] == 'partial')
 		{
 			if(is_null($HTTP_VARS['title_case']))
-				$searches[] = array(prompt=>get_opendb_lang_var('title').' (<i>'.get_match_type($HTTP_VARS['title_match']).'</i>)',field=>$HTTP_VARS['title']);
+				$searches[] = array(prompt=>get_opendb_lang_var('title').' (<em>'.get_match_type($HTTP_VARS['title_match']).'</em>)',field=>$HTTP_VARS['title']);
 			else
-				$searches[] = array(prompt=>get_opendb_lang_var('title').' (<i>'.get_match_type($HTTP_VARS['title_match']).', '.get_opendb_lang_var('case_sensitive').'</i>)',field=>$HTTP_VARS['title']);
+				$searches[] = array(prompt=>get_opendb_lang_var('title').' (<em>'.get_match_type($HTTP_VARS['title_match']).', '.get_opendb_lang_var('case_sensitive').'</em>)',field=>$HTTP_VARS['title']);
 		}
 		else
 		{
@@ -781,7 +781,7 @@ function get_search_query_matrix($HTTP_VARS)
 				}
 				
 				if(!is_lookup_attribute_type($HTTP_VARS['attribute_type']) && $HTTP_VARS['attr_match'] != 'exact')
-					$searches[] = array(prompt=>$attribute_type_r['prompt'].' (<i>'.get_match_type($HTTP_VARS['attr_match']).'</i>)',field=>$search);
+					$searches[] = array(prompt=>$attribute_type_r['prompt'].' (<em>'.get_match_type($HTTP_VARS['attr_match']).'</em>)',field=>$search);
 				else
 					$searches[] = array(prompt=>$attribute_type_r['prompt'],field=>$search);
 			}
@@ -894,9 +894,9 @@ function get_search_query_matrix($HTTP_VARS)
 		if($HTTP_VARS['status_comment_match'] == 'word' || $HTTP_VARS['status_comment_match'] == 'partial' || $HTTP_VARS['status_comment_match'] == 'exact')
 		{
 			if(is_null($HTTP_VARS['status_comment_case']))
-				$searches[] = array(prompt=>get_opendb_lang_var('status_comment').' (<i>'.get_match_type($HTTP_VARS['status_comment_match']).'</i>)',field=>$HTTP_VARS['status_comment']);
+				$searches[] = array(prompt=>get_opendb_lang_var('status_comment').' (<em>'.get_match_type($HTTP_VARS['status_comment_match']).'</em>)',field=>$HTTP_VARS['status_comment']);
 			else
-				$searches[] = array(prompt=>get_opendb_lang_var('status_comment').' (<i>'.get_match_type($HTTP_VARS['status_comment_match']).', '.get_opendb_lang_var('case_sensitive').'</i>)',field=>$HTTP_VARS['status_comment']);
+				$searches[] = array(prompt=>get_opendb_lang_var('status_comment').' (<em>'.get_match_type($HTTP_VARS['status_comment_match']).', '.get_opendb_lang_var('case_sensitive').'</em>)',field=>$HTTP_VARS['status_comment']);
 		}
 		else
 		{

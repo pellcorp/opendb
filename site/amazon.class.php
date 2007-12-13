@@ -122,7 +122,8 @@ class amazon extends SitePlugin
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 
-		if(preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs))
+		if(preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
 

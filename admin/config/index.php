@@ -86,10 +86,6 @@ function get_group_block_input_field($config_group_item_r, $value)
             return text_field($fieldname, $config_group_item_r['prompt'], 50, 255, 'N', htmlspecialchars($value));
 	        break;
 	        
-        case 'usertype':
-			return custom_select($fieldname, get_user_types_rs(get_user_types_r()), '%value% - %display%', 1, $value);
-	        break;
-
         case 'instance_attribute_type':
         	return custom_select($fieldname, fetch_instance_attribute_type_rs(), '%s_attribute_type% - %description%', 1, $value, 's_attribute_type');
         	break;
@@ -116,10 +112,6 @@ function get_group_block_input_field($config_group_item_r, $value)
         
 			switch($config_group_item_r['subtype'])
 			{
-				case 'usertype':
-					$buffer .= custom_select($fieldname, get_user_types_rs(get_user_types_r()), '%value% - %display%', 4, $value);
-					break;
-					
 				case 'text':
 				case 'number':
 					$element_name = $config_group_item_r['group_id']."[".$config_group_item_r['id']."][]";

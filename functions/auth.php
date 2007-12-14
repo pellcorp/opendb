@@ -34,9 +34,25 @@ define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
 define('PERM_ITEM_DISPLAY', 'PERM_ITEM_DISPLAY');
 
 define('PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS');
+define('PERM_ADMIN_ANNOUNCEMENTS', 'PERM_ADMIN_ANNOUNCEMENTS');
+
+define('PERM_ADMIN_USER_PROFILE', 'PERM_ADMIN_USER_PROFILE');
+define('PERM_ADMIN_USER_LISTING', 'PERM_ADMIN_USER_LISTING');
+
+define('PERM_ADMIN_CHANGE_PASSWORD', 'PERM_ADMIN_CHANGE_PASSWORD');
+define('PERM_EDIT_USER_PROFILE', 'PERM_EDIT_USER_PROFILE');
+
+define('PERM_ADMIN_QUICK_CHECKOUT', 'PERM_ADMIN_QUICK_CHECKOUT');
+
+define('PERM_ADMIN_LOGIN', 'PERM_ADMIN_LOGIN');
+define('PERM_ADMIN_CHANGE_USER', 'PERM_ADMIN_CHANGE_USER');
 
 function is_user_granted_permission($permission)
 {
+//	if(strlen($user_id)==0) {
+//		$user_id = get_opendb_session_var('user_id');	
+//	}
+	
 	if($permission == PERM_OPENDB_ADMIN_TOOLS)
 		return is_user_admin();
 	else if($permission == PERM_BORROWER_USER)
@@ -53,6 +69,20 @@ function is_user_granted_permission($permission)
 		return TRUE; // work out what to do for this later, for now leave unrestricted
 	else if($permission == PERM_ITEM_DISPLAY)
 		return TRUE; // for the moment all have permission
+	else if($permission == PERM_ADMIN_ANNOUNCEMENTS) 
+		return is_user_admin();
+	else if($permission == PERM_ADMIN_USER_PROFILE || 
+				$permission == PERM_ADMIN_USER_LISTING || 
+				$permission == PERM_ADMIN_CHANGE_PASSWORD)
+		return is_user_admin();
+	else if($permission == PERM_EDIT_USER_PROFILE)	
+		return is_user_allowed_to_edit_info();
+	else if($permission == PERM_ADMIN_QUICK_CHECKOUT)
+		return is_user_admin();
+	else if($permission == PERM_ADMIN_LOGIN)
+		return is_user_admin();
+	else if($permission == PERM_ADMIN_CHANGE_USER)
+		return is_user_admin();
 	else
 		return FALSE;
 }

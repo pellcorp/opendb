@@ -668,7 +668,6 @@ if(is_site_enabled())
 					echo("<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">");
 				}
 				
-				// Item Type select block.
 				echo format_field(
 						get_opendb_lang_var('item_type'), 
 						"<select name=\"s_item_type\">".

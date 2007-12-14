@@ -42,7 +42,7 @@ function perform_login($HTTP_VARS)
 	$HTTP_VARS['uid'] = strtolower($HTTP_VARS['uid']);// make lowercase
 	if(is_user_active($HTTP_VARS['uid']) && validate_user_passwd($HTTP_VARS['uid'], $HTTP_VARS['passwd']))
 	{
-		if(get_opendb_config_var('site', 'enable')!==FALSE || is_user_admin($HTTP_VARS['uid']))
+		if(get_opendb_config_var('site', 'enable')!==FALSE || is_user_granted_permission(PERM_ADMIN_LOGIN))
 		{
 			$time = time();
             register_opendb_session_var('login_time', $time);
@@ -217,7 +217,7 @@ function perform_newpassword($HTTP_VARS, &$errors)
 		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User is a guest.', array($HTTP_VARS['uid']));
 		return FALSE;
 	}
-	else if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')===FALSE && !is_user_admin($HTTP_VARS['uid']))
+	else if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')===FALSE && !is_user_granted_permission(PERM_ADMIN_CHANGE_PASSWORD))
 	{
 		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: Password change is disabled', array($HTTP_VARS['uid']));
 		return FALSE;
@@ -271,13 +271,9 @@ if(is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] 
 	}
 	else if($HTTP_VARS['op'] == 'change-user')
 	{
-		// only allow changeuser if configuration allows
-        if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && 
-        			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+        if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && is_user_granted_permission(PERM_ADMIN_CHANGE_USER))
 		{
-            if(strlen($HTTP_VARS['uid'])>0 &&
-					is_user_active($HTTP_VARS['uid']) &&
-					is_user_changeuser($HTTP_VARS['uid']))
+            if(strlen($HTTP_VARS['uid'])>0 && is_user_active($HTTP_VARS['uid']))
 			{
                 perform_changeuser($HTTP_VARS);
 				http_redirect('welcome.php');

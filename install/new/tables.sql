@@ -35,7 +35,6 @@ CREATE TABLE s_config_group (
 #			individual value in the array to be validated individually:
 #				text
 #				number
-#				usertype
 #
 # 		boolean - TRUE or FALSE only
 # 		text - arbritrary text
@@ -43,8 +42,6 @@ CREATE TABLE s_config_group (
 # 		textarea - arbritrary text
 # 		number - enforce a numeric value
 # 		datemask - enforce a date mask.
-#		usertype - Restrict to a single user type only.
-#       guest_userid - Restrict to GUEST userid
 #       language - Restrict to a single legal language only
 #       theme - Restrict to a single legal language only
 #       value_select [option1,option2] - choose one option from the list, specified in the subtype

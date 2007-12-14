@@ -136,8 +136,7 @@ function get_announcements_block()
 {
 	$buffer = '';
 	
-    // display activate users block
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+    if(is_user_granted_permission(PERM_ADMIN_ANNOUNCEMENTS))
 	{
         // include a login warning if user password and email are still the defaults
 		if(get_opendb_session_var('user_id') == 'admin')

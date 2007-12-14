@@ -23,41 +23,6 @@ include_once("./functions/logging.php");
 include_once("./functions/utils.php");
 include_once("./functions/address_type.php");
 
-function get_user_types_rs($user_type_r, $checked_user_type=NULL)
-{
-	$checked = FALSE;
-	
-	for($i=0; $i<count($user_type_r); $i++)
-	{
-		$checked_ind = 'N';
-		if(!$checked && $checked_user_type!==NULL && $user_type_r[$i] == $checked_user_type)
-		{
-			$checked_ind = 'Y';
-			$checked = TRUE;
-		}
-		
-		$user_type_rs[] = 
-					array(
-						'value'=>$user_type_r[$i], 
-						'display'=>get_usertype_prompt($user_type_r[$i]),
-						'description'=>get_usertype_description($user_type_r[$i]),
-						'checked_ind'=>$checked_ind);
-	}
-	
-	if(is_array($user_type_rs))
-	{
-		if(!$checked)
-		{
-			$user_type_rs[0]['checked_ind'] = 'Y';	
-		}
-		return $user_type_rs;
-	}
-	else// make sure we at least have an empty array.
-	{
-		return array();
-	}
-}
-
 /**
 	Return an array of owner types to be used as argument
 	to fetch_user_rs(...) and fetch_user_cnt(...)
@@ -158,7 +123,7 @@ function is_user_allowed_to_review($uid = NULL, $type=NULL)
 		return FALSE;
 }
 
-function is_user_allowed_to_edit_info($uid, $type=NULL)
+function is_user_allowed_to_edit_info($uid = NULL, $type=NULL)
 {
 	if(strlen($type)==0)
 		$type = fetch_user_type($uid);
@@ -169,9 +134,6 @@ function is_user_allowed_to_edit_info($uid, $type=NULL)
 		return FALSE;
 }
 
-/*
-* 
-*/
 function is_usertype_valid($usertype)
 {
 	if($usertype == 'N' || $usertype == 'A' || $usertype == 'B' || $usertype == 'G')
@@ -206,63 +168,6 @@ function get_usertype_description($usertype)
 		return get_opendb_lang_var('guest_usertype_description');
 	else
 		return NULL;
-}
-
-/*
-* Specify a IN clause, of user_type's that the current
-* user_type is of at least that level.  For instance a
-* normal user qualifies, if the minimum user type is
-* G, B or N
-*/
-function get_min_user_type_r($user_type)
-{
-	switch($user_type)
-	{
-		case 'G':
-			return array('G');
-		case 'B':
-			return array('G','B');
-		case 'N':
-			return array('G','B','N');
-		case 'A':
-			return array('G','B','N','A');
-		default:
-			return array(''); // invalid usertype.
-	}
-}
-
-/*
-* Returns 	-1 if new_user_type is lesser than old_user_type
-* 			0 If no change
-* 			1 Iff new_user_type is better than old_user_type
-*/
-function user_type_cmp($old_user_type, $new_user_type)
-{
-	if($old_user_type == $new_user_type)
-		return 0;
-	else if($old_user_type == 'G')
-	{
-	 	if($new_user_type == 'B' || $new_user_type == 'N' || $new_user_type == 'A')
-			return 1;
-		else
-			return -1; // should never happen.
-	}
-	else if($old_user_type == 'B')
-	{
-		if($new_user_type == 'N' || $new_user_type == 'A')
-			return 1;
-		else
-			return -1;
-	}
-	else if($old_user_type == 'N')
-	{
-		if($new_user_type == 'A')
-			return 1;
-		else
-			return -1;
-	}
-	else
-		return FALSE;
 }
 
 function is_user_active($uid)

@@ -33,9 +33,9 @@ include_once("./functions/HTML_Listing.class.inc");
 
 if(is_site_enabled())
 {
-	if (is_opendb_valid_session())
+	if(is_opendb_valid_session())
 	{
-		if (is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		if(is_user_granted_permission(PERM_ADMIN_USER_LISTING))
 		{
 		    if(strlen($HTTP_VARS['override_page_title'])>0)
 		        $page_title = $HTTP_VARS['override_page_title'];

@@ -44,19 +44,6 @@ include_once("./functions/HTML_Listing.class.inc");
 * 		This operation is NOT available to a non-opendb Administrator user, and so 
 * 		the $from and $fromname variables will be ignored.
 * 
-* 	$op = 'send_to_usertype'
-* 
-* 		Applicable variables:
-* 			$usertype - User Type (N=Normal,A=Admin,B=Borrower,G=Guest)
-* 				The $from user must be at least the type of user they are sending
-* 				email to.  For instance a Normal user cannot send mail to Admin group.
-* 			$toname - A title identifying the user group.
-* 			$subject - The subject of the email
-* 			$message - The message, if bypassing the email form.
-* 
-* 		This operation is NOT available to a non-opendb user, and so the $from
-* 		and $fromname variables will be ignored.
-* 			
 * 	$op = 'send_to_uids'
 * 
 * 		Applicable Variables:
@@ -313,54 +300,13 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('no_users_found')."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'send_to_usertype' && 
-							is_usertype_valid($HTTP_VARS['usertype']) && 
-							in_array(ifempty($HTTP_VARS['usertype'],'N'), get_min_user_type_r(get_opendb_session_var('user_type'))))
-			{
-				// Default toname for bulk email.
-				if(strlen($HTTP_VARS['toname'])==0) {
-					$HTTP_VARS['toname'] = get_opendb_lang_var('users', 'user_desc', get_usertype_prompt($HTTP_VARS['usertype']));
-				}
-				
-				if($HTTP_VARS['op2'] == 'send' && 
-						send_email_to_userids(
-							get_user_id_rs(array($HTTP_VARS['usertype'])), 
-							$from_user_r['user_id'], 
-							$HTTP_VARS['subject'], 
-							$HTTP_VARS['message'],
-							$errors)) {
-					// do nothing
-				} else {
-					show_email_form(
-							get_user_ids_tovalue(get_user_id_rs(array($HTTP_VARS['usertype']), TRUE)),
-							$HTTP_VARS['toname'],
-							$from_user_r['user_id'],
-							$from_user_r['fullname'],
-							$HTTP_VARS['subject'], 
-							$HTTP_VARS['message'],
-							$HTTP_VARS,
-							$errors);
-				}
-			}
 			else if($HTTP_VARS['op'] == 'send_to_uids' && 
 						(is_not_empty_array($HTTP_VARS['user_id_rs']) || 
 						strlen(trim($HTTP_VARS['checked_user_id_rs_list']))>0))
 			{
-				// Remove $user_id's that are above the user type of the current user.
-				$filtered_user_id_rs = NULL;
-				
-				reset($HTTP_VARS['user_id_rs']);
-				while(list(,$uid) = each($HTTP_VARS['user_id_rs']))
-				{
-					if(in_array(fetch_user_type($uid), get_min_user_type_r(get_opendb_session_var('user_type'))))
-					{
-						$filtered_user_id_rs[] = $uid;
-					}
-				}
-				
 				if($HTTP_VARS['op2'] == 'send' && 
 						send_email_to_userids(
-							$filtered_user_id_rs, 
+							$HTTP_VARS['user_id_rs'], 
 							$from_user_r['user_id'], 
 							$HTTP_VARS['subject'], 
 							$HTTP_VARS['message'],
@@ -368,7 +314,7 @@ if(is_site_enabled())
 					// do nothing
 				} else {
 					show_email_form(
-							get_user_ids_tovalue($filtered_user_id_rs),
+							get_user_ids_tovalue($HTTP_VARS['user_id_rs']),
 							get_opendb_lang_var('users', 'user_desc', get_opendb_config_var('site', 'title')),
 							$from_user_r['user_id'],
 							$from_user_r['fullname'],

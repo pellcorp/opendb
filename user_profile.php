@@ -38,7 +38,7 @@ function is_user_address_visible($HTTP_VARS, $address_type_r)
 {
 	if($address_type_r['public_address_ind'] == 'Y')
 		return TRUE;
-	else if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	else if(is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 		return TRUE;
 	else if($address_type_r['borrow_address_ind'] == 'Y' && 
 		(is_owner_and_borrower(get_opendb_session_var('user_id'), $HTTP_VARS['uid'])) ||
@@ -79,8 +79,7 @@ if(is_site_enabled())
 						get_opendb_lang_var('fullname'),
 						$user_r['fullname']));
 	
-				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || 
-						is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 				{
 					echo(format_field(
 						get_opendb_lang_var('email'),

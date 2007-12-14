@@ -313,7 +313,7 @@ if(is_site_enabled())
 {
 	if (is_opendb_valid_session())
 	{
-		if(is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')))
+		if(is_user_granted_permission(PERM_ADMIN_QUICK_CHECKOUT))
 		{
 			if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 			{

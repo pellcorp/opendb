@@ -31,7 +31,7 @@ include_once("./functions/importcache.php");
 
 if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && 
 		strlen(get_opendb_session_var('admin_user_id'))>0 && 
-		is_user_admin(get_opendb_session_var('admin_user_id')))
+		is_user_active(get_opendb_session_var('admin_user_id')))
 {
 	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Administrator logging out change user');
 	

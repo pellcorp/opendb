@@ -202,8 +202,6 @@ ALTER TABLE s_status_type DROP update_ind;
 ALTER TABLE s_status_type DROP insert_ind;
 
 # desupport user type directly being used for restricting access
-# reduced overly complicated status type and address functionality that
-# is of limited usefulness.
 ALTER TABLE s_status_type DROP min_display_user_type;
 ALTER TABLE s_status_type DROP min_create_user_type;
 

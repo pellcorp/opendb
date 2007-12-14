@@ -34,8 +34,6 @@ include_once("./functions/admin.php");
 
 define('OPENDB_ADMIN_TOOLS', 'true');
 
-
-
 if(is_site_enabled())
 {
 	if(is_opendb_valid_session())

@@ -77,10 +77,14 @@ function is_user_granted_permission($permission, $user_id = NULL)
 	
 	if($permission == PERM_ADMIN_TOOLS)
 		return is_user_admin($user_id);
-	else if($permission == PERM_ADMIN_EXPORT || $permission == PERM_ADMIN_IMPORT)
+	else if($permission == PERM_ADMIN_EXPORT)
 		return is_user_admin($user_id);
-	else if($permission == PERM_USER_EXPORT || $permission == PERM_USER_IMPORT)
-		return is_user_normal($user_id);
+	else if($permission == PERM_ADMIN_IMPORT)
+		return is_user_admin($user_id);
+	else if($permission == PERM_USER_EXPORT)
+		return is_user_normal($user_id) || is_user_admin($user_id);
+	else if($permission == PERM_USER_IMPORT)
+		return is_user_normal($user_id) || is_user_admin($user_id);
 	else if($permission == PERM_USER_BORROWER)
 		return is_user_allowed_to_borrow($user_id);
 	else if($permission == PERM_ADMIN_BORROWER)

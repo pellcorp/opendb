@@ -368,19 +368,36 @@ function get_upload_form($HTTP_VARS)
 	$buffer .= "\n<input type=\"hidden\" name=\"op\" value=\"upload\">";
 	
 	$buffer .= "\n<table>";
-	// We have already checked that the current user is an administrator if owner_id not provided.	
-	if(strlen($HTTP_VARS['owner_id'])==0)
+	
+	if(is_user_granted_permission(PERM_ADMIN_IMPORT))
 	{
-		$results = fetch_user_rs(get_owner_user_types_r());
-		$buffer .= format_field(get_opendb_lang_var('owner'), custom_select('owner_id', $results, '%fullname% (%user_id%)', 1, get_opendb_session_var('user_id'), 'user_id'));
+		$buffer .= format_field(
+				get_opendb_lang_var('owner'), 
+				custom_select(
+					'owner_id', 
+					fetch_user_rs(get_owner_user_types_r()), 
+					'%fullname% (%user_id%)', 
+					1, 
+					ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')), 
+					'user_id'));
 	}
 	else
 	{
 		$buffer .= "\n<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">";
 	}
 							
-	$buffer .= format_field(get_opendb_lang_var('item_type'), single_select("s_item_type", fetch_item_type_rs(TRUE), "%value% - %display%", NULL, $HTTP_VARS['s_item_type']));
-	$buffer .= format_field(get_opendb_lang_var('file'), "<input type=\"file\" class=\"file\" size=\"25\" name=\"uploadfile\">");
+	$buffer .= format_field(
+		get_opendb_lang_var('item_type'), 
+		single_select(
+			's_item_type', 
+			fetch_item_type_rs(TRUE),
+			"%value% - %display%", 
+			NULL,
+			$HTTP_VARS['s_item_type']));
+			
+	$buffer .= format_field(
+		get_opendb_lang_var('file'), 
+		"<input type=\"file\" class=\"file\" size=\"25\" name=\"uploadfile\">");
 	
 	$buffer .= "\n</table>";
 	
@@ -394,9 +411,13 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		if(( $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') && is_user_granted_permission(PERM_USER_IMPORT)) ||  
-					is_user_granted_permission(PERM_ADMIN_IMPORT))
+		if(is_user_granted_permission(PERM_USER_IMPORT) || is_user_granted_permission(PERM_ADMIN_IMPORT))  
 		{
+			if(!is_user_granted_permission(PERM_ADMIN_IMPORT))
+			{
+				$HTTP_VARS['owner_id'] = get_opendb_session_var('user_id');
+			}
+		
 			if(is_file_upload_enabled())
 			{
 				@set_time_limit(600);

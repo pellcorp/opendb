@@ -233,7 +233,7 @@ if(is_site_enabled())
 			echo("<p class=\"error\">".get_opendb_lang_var('item_not_found')."</p>");
 		}//$item_r found
 		
-		if(is_export_plugin(get_opendb_config_var('item_display', 'export_link')))
+		if(is_export_plugin(get_opendb_config_var('item_display', 'export_link')) && is_user_granted_permission(PERM_USER_EXPORT))
 		{
 			$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'], text=>get_opendb_lang_var('export_item_record'));
 		}

@@ -516,10 +516,13 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		if( is_numeric($HTTP_VARS['item_id']) || 
-					( $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') && is_user_granted_permission(PERM_USER_EXPORT)) ||  
-					is_user_granted_permission(PERM_ADMIN_EXPORT))
+		if(is_user_granted_permission(PERM_ADMIN_EXPORT) || is_user_granted_permission(PERM_USER_EXPORT))  
 		{
+			if(!is_numeric($HTTP_VARS['item_id']) && !is_user_granted_permission(PERM_ADMIN_EXPORT))
+			{
+				$HTTP_VARS['owner_id'] = get_opendb_session_var('user_id');
+			}
+			
 			if($HTTP_VARS['op'] == 'export')
 			{
 				$exportPlugin =& get_export_plugin($HTTP_VARS['plugin']);
@@ -641,10 +644,8 @@ if(is_site_enabled())
 				
 				echo("<table>");
 				
-				// Do not show OwnerID field, if not an admin user.
-				if($HTTP_VARS['owner_id'] != get_opendb_session_var('user_id') && is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+				if(is_user_granted_permission(PERM_ADMIN_EXPORT))
 				{
-					// Item Type field.
 					echo format_field(
 							get_opendb_lang_var('owner'), 
 							"\n<select name=\"owner_id\">".
@@ -654,7 +655,7 @@ if(is_site_enabled())
 									fetch_user_rs(get_owner_user_types_r()), 
 									'%fullname% (%user_id%)',
 									'NA',
-									NULL,
+									ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')),
 									'user_id'
 								).
 								"\n</select>"
@@ -674,7 +675,7 @@ if(is_site_enabled())
 									fetch_item_type_rs(),
 									'%s_item_type% - %description%',
 									'NA',
-									NULL,
+									$HTTP_VARS['s_item_type'],
 									's_item_type').
 						"\n</select>"
 					);

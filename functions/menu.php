@@ -68,18 +68,26 @@ function get_menu_options($user_id, $user_type)
 		}
 		
 		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
-						
-		if(is_user_granted_permission(PERM_USER_IMPORT))
+
+		if(is_file_upload_enabled())
 		{
-			if(is_file_upload_enabled())
+			if(is_user_granted_permission(PERM_ADMIN_IMPORT))
 			{
-				$menu_options['item'][] = array(link=>get_opendb_lang_var('import_my_items'), url=>"import.php?owner_id=$user_id");
+				$menu_options['item'][] = array(link=>get_opendb_lang_var('import_items'), url=>"import.php");
+			}
+			else if(is_user_granted_permission(PERM_USER_IMPORT))
+			{
+				$menu_options['item'][] = array(link=>get_opendb_lang_var('import_my_items'), url=>"import.php");
 			}
 		}
 		
-		if(is_user_granted_permission(PERM_USER_EXPORT))
+		if(is_user_granted_permission(PERM_ADMIN_EXPORT))
 		{
-			$menu_options['item'][] = array(link=>get_opendb_lang_var('export_my_items'), url=>"export.php?owner_id=$user_id");
+			$menu_options['item'][] = array(link=>get_opendb_lang_var('export_items'), url=>"export.php");
+		}
+		else if(is_user_granted_permission(PERM_USER_EXPORT))
+		{
+			$menu_options['item'][] = array(link=>get_opendb_lang_var('export_my_items'), url=>"export.php");
 		}
 		
 		// Is borrow functionality enabled?
@@ -128,6 +136,20 @@ function get_menu_options($user_id, $user_type)
 					$menu_options['borrow'][] = array(link=>get_opendb_lang_var('check_in_item(s)'), url=>"borrow.php?op=owner_borrowed");
 				}
 			}
+			
+			if(is_user_granted_permission(PERM_ADMIN_BORROWER))
+			{
+				// Is borrow functionality enabled?
+				if(get_opendb_config_var('borrow', 'enable')!==FALSE)
+				{
+					if(is_exists_history())
+					{
+						$menu_options['borrow'][] = array(link=>get_opendb_lang_var('borrower_history'), url=>"borrow.php?op=admin_history");
+					}
+					$menu_options['borrow'][] = array(link=>get_opendb_lang_var('quick_check_out'), url=>"quick_checkout.php?op=checkout");
+					$menu_options['borrow'][] = array(link=>get_opendb_lang_var('quick_check_in'), url=>"quick_checkout.php?op=checkin");
+				}
+			}
 		}
 
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('advanced_search'), url=>"search.php");
@@ -173,32 +195,7 @@ function get_menu_options($user_id, $user_type)
 			}
 		}
 		
-		if(is_user_granted_permission(PERM_ADMIN_BORROWER))
-		{
-			// Is borrow functionality enabled?
-			if(get_opendb_config_var('borrow', 'enable')!==FALSE)
-			{
-				if(is_exists_history())
-				{
-					$menu_options['admin'][] = array(link=>get_opendb_lang_var('borrower_history'), url=>"borrow.php?op=admin_history");
-				}
-				$menu_options['admin'][] = array(link=>get_opendb_lang_var('quick_check_out'), url=>"quick_checkout.php?op=checkout");
-				$menu_options['admin'][] = array(link=>get_opendb_lang_var('quick_check_in'), url=>"quick_checkout.php?op=checkin");
-			}
-		}
 		
-		if(is_user_granted_permission(PERM_ADMIN_IMPORT))
-		{
-			if(is_file_upload_enabled())
-			{
-				$menu_options['admin'][] = array(link=>get_opendb_lang_var('import_items'), url=>"import.php");
-			}
-		}
-		
-		if(is_user_granted_permission(PERM_ADMIN_EXPORT))
-		{
-			$menu_options['admin'][] = array(link=>get_opendb_lang_var('export_items'), url=>"export.php");
-		}
 		
 		if(is_user_granted_permission(PERM_ADMIN_TOOLS))
 		{

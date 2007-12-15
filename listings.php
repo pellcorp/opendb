@@ -1387,6 +1387,14 @@ if(is_site_enabled())
 								}
 							}//if($item_r['owner_id'] != get_opendb_session_var('user_id'))
 	
+							/*if(is_user_allowed_to_review(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+							{
+								$action_links_rs[] = array(
+										url=>"item_review.php?op=add&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&parent_id=".$HTTP_VARS['parent_id']."&parent_instance_no=".$HTTP_VARS['parent_instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),
+										img=>'review_item.gif', // todo - add new image 'action_review_item.gif' to theme
+										text=>get_opendb_lang_var('review'));
+							}*/
+							
 							$listingObject->addActionColumn($action_links_rs);
 
 						}//if($show_action_column)

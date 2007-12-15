@@ -235,6 +235,11 @@ class mobygames extends SitePlugin
 				}
 			}
 			
+			if (preg_match_all("!src=\"(http://www.mobygames.com/images/covers/small/[^\"]+)\"!", $coverImages, $matches))
+			{
+				$this->addItemAttribute('imageurl', $matches[1]);
+			}
+			
 			$techInfoPage = $this->fetchURI("http://www.mobygames.com/game/".$search_attributes_r['mgpltfrmid']."/".$search_attributes_r['mobygameid']."/techinfo");
 			if($techInfoPage!==FALSE)
 			{

@@ -23,31 +23,16 @@ include_once("./functions/logging.php");
 include_once("./functions/utils.php");
 include_once("./functions/address_type.php");
 
-/**
-	Return an array of owner types to be used as argument
-	to fetch_user_rs(...) and fetch_user_cnt(...)
-*/
 function get_owner_user_types_r()
 {
 	return array('A','N');
 }
 
-/**
-	Fetch users which can borrow items.
-*/
 function get_borrower_user_types_r()
 {
 	return array('A','N','B');
 }
 
-function get_changeuser_user_types_r()
-{
-	return array('N','B');
-}
-
-/**
-	Fetch users which can borrow items.
-*/
 function get_review_user_types_r()
 {
 	return array('A','N','B');
@@ -63,34 +48,16 @@ function get_email_user_types_r()
 	return array('A', 'N', 'B');
 }
 
-/**
-* An array of all user type's - for use in User Type radio button grid widget
-*/
 function get_user_types_r()
 {
 	return array('A', 'N', 'B', 'G');
 }
 
-/**
-* Validates that the $uid is of a user, which an administrator
-* can change to.
-*/
-function is_user_changeuser($uid, $type=NULL)
-{
-	if(strlen($type)==0)
-		$type = fetch_user_type($uid);
-	
-	if(in_array($type, get_changeuser_user_types_r()))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-/**
-*/
 function is_user_allowed_to_own($uid = NULL, $type=NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
+		$type = fetch_user_type($uid);
+	else
 		$type = get_opendb_session_var('user_type');
 	
 	if(in_array($type, get_owner_user_types_r()))
@@ -99,11 +66,11 @@ function is_user_allowed_to_own($uid = NULL, $type=NULL)
 		return FALSE;
 }
 
-/**
-*/
 function is_user_allowed_to_borrow($uid = NULL, $type=NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
+		$type = fetch_user_type($uid);
+	else
 		$type = get_opendb_session_var('user_type');
 	
 	if(in_array($type, get_borrower_user_types_r()))
@@ -114,7 +81,9 @@ function is_user_allowed_to_borrow($uid = NULL, $type=NULL)
 
 function is_user_allowed_to_review($uid = NULL, $type=NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
+		$type = fetch_user_type($uid);
+	else
 		$type = get_opendb_session_var('user_type');
 		
 	if(in_array($type, get_review_user_types_r()))
@@ -125,18 +94,12 @@ function is_user_allowed_to_review($uid = NULL, $type=NULL)
 
 function is_user_allowed_to_edit_info($uid = NULL, $type=NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
 		$type = fetch_user_type($uid);
+	else
+		$type = get_opendb_session_var('user_type');
 	
 	if(in_array($type, get_editinfo_user_types_r()))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-function is_usertype_valid($usertype)
-{
-	if($usertype == 'N' || $usertype == 'A' || $usertype == 'B' || $usertype == 'G')
 		return TRUE;
 	else
 		return FALSE;
@@ -229,7 +192,9 @@ function is_exist_users_not_activated()
 
 function is_user_admin($uid = NULL, $type = NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
+		$type = fetch_user_type($uid);
+	else if(strlen($type)==0)
 		$type = get_opendb_session_var('user_type');
 			
 	if ($type == 'A')
@@ -238,20 +203,11 @@ function is_user_admin($uid = NULL, $type = NULL)
 		return FALSE;
 }
 
-function is_user_borrower($uid = NULL, $type = NULL)
-{
-	if(strlen($type)==0)
-		$type = get_opendb_session_var('user_type');
-			
-	if ($type == 'B')
-		return TRUE;
-	else
-		return FALSE;
-}
-
 function is_user_guest($uid = NULL, $type = NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
+		$type = fetch_user_type($uid);
+	else if(strlen($type)==0)
 		$type = get_opendb_session_var('user_type');
 
 	if ($type == 'G')
@@ -262,7 +218,9 @@ function is_user_guest($uid = NULL, $type = NULL)
 
 function is_user_normal($uid = NULL, $type = NULL)
 {
-	if(strlen($type)==0)
+	if(strlen($uid)>0)
+		$type = fetch_user_type($uid);
+	else if(strlen($type)==0)
 		$type = get_opendb_session_var('user_type');
 		
 	if ($type == 'N')

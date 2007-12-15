@@ -516,12 +516,9 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		// Either owner_id not specified, in which case we would export for current user, or owner_id is specified
-		// and is the same as current user or user is admin, where no item_id specified.
 		if( is_numeric($HTTP_VARS['item_id']) || 
-					( $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') && 
-							is_user_normal(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')) ) || 
-					is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')))
+					( $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') && is_user_granted_permission(PERM_USER_EXPORT)) ||  
+					is_user_granted_permission(PERM_ADMIN_EXPORT))
 		{
 			if($HTTP_VARS['op'] == 'export')
 			{

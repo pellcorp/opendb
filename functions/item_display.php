@@ -315,7 +315,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		}
 	}
 
-	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && is_user_granted_permission(PERM_BORROWER_USER))
+	if(get_opendb_session_var('user_id') !== $item_r['owner_id'] && is_user_granted_permission(PERM_USER_BORROWER))
 	{
 		if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 		{

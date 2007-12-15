@@ -204,20 +204,6 @@ function validate_s_config_group_item($group_id, $id, $keyid, $value)
 		        case 'datemask': // TODO: Provide a date-mask filter
 		            return $value;
 
-		        case 'usertype':
-                    $user_type_r = get_user_types_r();
-					$value = strtoupper($value);
-					if(in_array($value, $user_type_r)!==FALSE)
-						return $value;
-					else
-						return FALSE;
-
-                case 'guest_userid':
-                    if(is_user_guest($value))
-						return $value;
-					else
-						return FALSE;
-
                 case 'language':
                     if(is_exists_language($value))
 						return $value;

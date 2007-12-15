@@ -460,7 +460,7 @@ function send_newuser_email($user_r, $passwd, &$errors)
 	}
 }
 
-function validate_user_info($user_type, &$HTTP_VARS, &$address_provided_r, &$errors)
+function validate_user_info(&$HTTP_VARS, &$address_provided_r, &$errors)
 {
 	$address_attribs_provided = NULL;
 	$is_address_validated = TRUE;
@@ -685,79 +685,68 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 {
 	if(!is_user_valid($HTTP_VARS['user_id']))
 	{
-		if(is_usertype_valid($HTTP_VARS['user_type']))
+		$HTTP_VARS['user_id'] = strtolower(filter_input_field("filtered(20,20,a-zA-Z0-9_.)", $HTTP_VARS['user_id']));
+		if(!validate_input_field(get_opendb_lang_var('userid'), "filtered(20,20,a-zA-Z0-9_.)", "Y", $HTTP_VARS['user_id'], $errors))
 		{
-			$HTTP_VARS['user_id'] = strtolower(filter_input_field("filtered(20,20,a-zA-Z0-9_.)", $HTTP_VARS['user_id']));
-			if(!validate_input_field(get_opendb_lang_var('userid'), "filtered(20,20,a-zA-Z0-9_.)", "Y", $HTTP_VARS['user_id'], $errors))
+			return FALSE;
+		}
+		
+		if(validate_user_info($HTTP_VARS, $address_provided_r, $errors))
+		{
+			if($HTTP_VARS['op'] == 'signup' ) // no password saved when signing up, as user still must be activated
 			{
-				return FALSE;
+				$active_ind = 'X';
+				
+				// Will be reset when user activated
+				$HTTP_VARS['pwd'] = NULL;
 			}
-			
-			if(validate_user_info($HTTP_VARS['user_type'], $HTTP_VARS, $address_provided_r, $errors))
+			else
 			{
-				if($HTTP_VARS['op'] == 'signup' ) // no password saved when signing up, as user still must be activated
+				$active_ind = 'Y';
+				
+				if(strlen($HTTP_VARS['pwd'])==0)
 				{
-					$active_ind = 'X';
-					
-					// Will be reset when user activated
-					$HTTP_VARS['pwd'] = NULL;
-				}
-				else
-				{
-					$active_ind = 'Y';
-					
-					if(strlen($HTTP_VARS['pwd'])==0)
+					if(is_valid_opendb_mailer())
 					{
-						// check whether a password is provided or not
-						if(is_valid_opendb_mailer() &&
-								($HTTP_VARS['user_type'] == 'A' ||
-								$HTTP_VARS['user_type'] == 'N' ||
-								$HTTP_VARS['user_type'] == 'B'))
-						{
-							$HTTP_VARS['pwd'] = generate_password(8);
-						}
-						else
-						{
-							$errors[] = array('error'=>get_opendb_lang_var('passwd_not_specified'));
-							return FALSE;
-						}
+						$HTTP_VARS['pwd'] = generate_password(8);
 					}
-					else if($HTTP_VARS['pwd'] != $HTTP_VARS['confirmpwd'])
+					else
 					{
-						$errors[] = array('error'=>get_opendb_lang_var('passwds_do_not_match'));
+						$errors[] = array('error'=>get_opendb_lang_var('passwd_not_specified'));
 						return FALSE;
 					}
 				}
-			        
-				// We want to validate and perform inserts even in signup mode
-				if(insert_user($HTTP_VARS['user_id'], 
-							$HTTP_VARS['fullname'], 
-							$HTTP_VARS['pwd'],
-							$HTTP_VARS['user_type'], 
-							$HTTP_VARS['uid_language'], 
-							$HTTP_VARS['uid_theme'], 
-							$HTTP_VARS['email_addr'], 
-							$active_ind))
+				else if($HTTP_VARS['pwd'] != $HTTP_VARS['confirmpwd'])
 				{
-					$user_r = fetch_user_r($HTTP_VARS['user_id']);
-					
-					return update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, $errors);
-				}
-				else
-				{
-					$db_error = db_error();
-					$errors[] = array('error'=>get_opendb_lang_var('user_not_added', 'user_id', $HTTP_VARS['user_id']),'detail'=>$db_error);
+					$errors[] = array('error'=>get_opendb_lang_var('passwds_do_not_match'));
 					return FALSE;
 				}
 			}
-			else 
+		        
+			// We want to validate and perform inserts even in signup mode
+			if(insert_user($HTTP_VARS['user_id'], 
+						$HTTP_VARS['fullname'], 
+						$HTTP_VARS['pwd'],
+						$HTTP_VARS['user_type'], 
+						$HTTP_VARS['uid_language'], 
+						$HTTP_VARS['uid_theme'], 
+						$HTTP_VARS['email_addr'], 
+						$active_ind))
 			{
-				return FALSE;				
+				$user_r = fetch_user_r($HTTP_VARS['user_id']);
+				
+				return update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, $errors);
 			}
-		}//if(is_usertype_valid($HTTP_VARS['user_type']))
-		else
+			else
+			{
+				$db_error = db_error();
+				$errors[] = array('error'=>get_opendb_lang_var('user_not_added', 'user_id', $HTTP_VARS['user_id']),'detail'=>$db_error);
+				return FALSE;
+			}
+		}
+		else 
 		{
-			return FALSE;
+			return FALSE;				
 		}
 	}			
 	else
@@ -772,7 +761,7 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 	$user_r = fetch_user_r($HTTP_VARS['user_id']);
 	if(is_not_empty_array($user_r))
 	{
-		if(validate_user_info($user_r, $HTTP_VARS, $address_attribs_provided, $errors))
+		if(validate_user_info($HTTP_VARS, $address_attribs_provided, $errors))
 		{
 			// no password change performed here...
 			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], FALSE))

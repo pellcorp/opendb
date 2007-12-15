@@ -337,7 +337,7 @@ if(is_site_enabled())
 					$user_name = get_opendb_lang_var('user_name', array('fullname'=>$user_r['fullname'], 'user_id'=>$user_r['user_id']));
 
 					echo("<tr class=\"data\"><th>");
-					if(!is_user_guest(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+					if(is_user_granted_permission(PERM_VIEW_USER_PROFILE))
 					{
 						echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."\">".$user_name."</a>");
 					}
@@ -416,7 +416,7 @@ if(is_site_enabled())
 						$user_name = get_opendb_lang_var('user_name', array('fullname'=>$user_r['fullname'], 'user_id'=>$user_r['user_id']));
 	
 						echo("<tr class=\"data\"><th>");
-						if(!is_user_guest(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+						if(is_user_granted_permission(PERM_VIEW_USER_PROFILE))
 						{
 							echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."\">".$user_name."</a>");
 						}

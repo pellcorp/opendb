@@ -56,7 +56,7 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		if(!is_user_guest(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		if(is_user_granted_permission(PERM_VIEW_USER_PROFILE))
 		{
 			$user_r = fetch_user_r($HTTP_VARS['uid']);
 			if(is_array($user_r))
@@ -79,7 +79,8 @@ if(is_site_enabled())
 						get_opendb_lang_var('fullname'),
 						$user_r['fullname']));
 	
-				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || 
+							is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 				{
 					echo(format_field(
 						get_opendb_lang_var('email'),
@@ -103,14 +104,6 @@ if(is_site_enabled())
 								echo("<table>");
 								while($addr_attribute_type_r = db_fetch_assoc($attr_results))
 								{
-									// If display_type == '' AND input_type == 'hidden' we set to 'hidden'
-									if(strlen(trim($addr_attribute_type_r['display_type']))==0 && $addr_attribute_type_r['input_type'] == 'hidden')
-									{
-										// We allow the get_display_field to handle hidden variable, in case at some stage
-										// we might want to change the functionality of 'hidden' to something other than ignore.
-										$addr_attribute_type_r['display_type'] = 'hidden';
-									}
-									
 									$value = NULL;
 									if(is_lookup_attribute_type($addr_attribute_type_r['s_attribute_type']))
 									{
@@ -143,7 +136,7 @@ if(is_site_enabled())
 					db_free_result($addr_results);
 				}
 				
-				if(is_valid_opendb_mailer() && strlen($user_r['email_addr'])>0)
+				if(is_valid_opendb_mailer() && strlen($user_r['email_addr'])>0 && is_user_granted_permission(PERM_SEND_EMAIL))
 				{
 					$url = 'email.php?'.
 							get_url_string(Array(

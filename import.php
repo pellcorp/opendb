@@ -394,8 +394,8 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session())
 	{
-		// Only admin user or owner user allowed to access this.
-		if( ($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') && is_user_normal(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')) ) || is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')))
+		if(( $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') && is_user_granted_permission(PERM_USER_IMPORT)) ||  
+					is_user_granted_permission(PERM_ADMIN_IMPORT))
 		{
 			if(is_file_upload_enabled())
 			{

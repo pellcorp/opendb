@@ -69,12 +69,16 @@ function get_menu_options($user_id, $user_type)
 		
 		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
 						
-		if(is_user_allowed_to_own($user_id, $user_type))
+		if(is_user_granted_permission(PERM_USER_IMPORT))
 		{
 			if(is_file_upload_enabled())
 			{
 				$menu_options['item'][] = array(link=>get_opendb_lang_var('import_my_items'), url=>"import.php?owner_id=$user_id");
 			}
+		}
+		
+		if(is_user_granted_permission(PERM_USER_EXPORT))
+		{
 			$menu_options['item'][] = array(link=>get_opendb_lang_var('export_my_items'), url=>"export.php?owner_id=$user_id");
 		}
 		
@@ -124,37 +128,53 @@ function get_menu_options($user_id, $user_type)
 					$menu_options['borrow'][] = array(link=>get_opendb_lang_var('check_in_item(s)'), url=>"borrow.php?op=owner_borrowed");
 				}
 			}
-		} //if(is_user_allowed_to_borrow($user_id, $type))
+		}
 
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('advanced_search'), url=>"search.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
-		
-		if(is_user_admin($user_id, $user_type) || is_user_normal($user_id, $user_type) || is_user_borrower($user_id, $user_type))
+	
+		if(is_user_granted_permission(PERM_EDIT_USER_PROFILE))
 		{
 			$menu_options['user'][] = array(link=>get_opendb_lang_var('edit_my_info'), url=>"user_admin.php?op=edit&user_id=$user_id");
-			if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE || is_user_admin($user_id, $user_type))
+			
+			if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD))
 			{
 				$menu_options['user'][] = array(link=>get_opendb_lang_var('change_my_password'), url=>"user_admin.php?op=change_password&user_id=$user_id");
 			}
 		}
 	
-		if(is_user_admin($user_id, $user_type))
-		{
+		if(is_user_granted_permission(PERM_ADMIN_USER_LISTING))
+		{	
 			if(is_exist_users_not_activated())
 		    {
 		    	$menu_options['admin'][] = array(link=>get_opendb_lang_var('activate_users'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
 			}
+
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('user_list'), url=>"user_listing.php?order_by=fullname&sortorder=ASC");
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_CREATE_USER))
+		{
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('add_new_user'), url=>"user_admin.php?op=new_user");
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_CHANGE_USER))
+		{
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('change_user'), url=>"login.php?op=change-user");
-	
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_SEND_EMAIL))
+		{
 			// no point providing this option if email disabled.
 			if(is_valid_opendb_mailer())
 			{
 				$menu_options['admin'][] = array(link=>get_opendb_lang_var('email_users'), url=>"email.php?op=send_to_all");
 			}
-	
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_BORROWER))
+		{
 			// Is borrow functionality enabled?
 			if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 			{
@@ -165,13 +185,23 @@ function get_menu_options($user_id, $user_type)
 				$menu_options['admin'][] = array(link=>get_opendb_lang_var('quick_check_out'), url=>"quick_checkout.php?op=checkout");
 				$menu_options['admin'][] = array(link=>get_opendb_lang_var('quick_check_in'), url=>"quick_checkout.php?op=checkin");
 			}
-	
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_IMPORT))
+		{
 			if(is_file_upload_enabled())
 			{
 				$menu_options['admin'][] = array(link=>get_opendb_lang_var('import_items'), url=>"import.php");
 			}
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_EXPORT))
+		{
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('export_items'), url=>"export.php");
-			
+		}
+		
+		if(is_user_granted_permission(PERM_ADMIN_TOOLS))
+		{
 			$menu_options['admin'][] = array(link=>get_opendb_lang_var('system_admin_tools'), url=>"admin.php", target=>"_new");
 		}
 	}

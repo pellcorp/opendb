@@ -121,10 +121,11 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 		document.forms['login']['uid'].focus();
 	</script>");
 	
-	// if configuration permits PHP email, allow email new password
 	if(is_site_enabled() && is_valid_opendb_mailer())
 	{
-		if(strlen($HTTP_VARS['uid'])>0 && get_opendb_config_var('login', 'enable_new_pwd_gen')!==FALSE)
+		if(strlen($HTTP_VARS['uid'])>0 &&
+					get_opendb_config_var('login', 'enable_new_pwd_gen')!==FALSE &&  
+					is_user_granted_permission(PERM_CHANGE_PASSWORD, $HTTP_VARS['uid']))
 		{
 			$footer_links_r[] = array(url=>$PHP_SELF."?op=newpassword&uid=".urlencode($HTTP_VARS['uid']), text=>get_opendb_lang_var('forgot_your_pwd'));
 		}
@@ -173,7 +174,7 @@ function show_changeuser_form()
 	echo("\n<input type=\"hidden\" name=\"op\" value=\"change-user\">");
 
 	echo("\n<table class=\"changeUserForm\">");
-	$results = fetch_user_rs(get_changeuser_user_types_r(), NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+	$results = fetch_user_rs(NULL, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
 	if($results)
 	{
 		echo(
@@ -202,19 +203,19 @@ function perform_newpassword($HTTP_VARS, &$errors)
 {
     if(!is_user_valid($HTTP_VARS['uid']))
 	{
-		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User does not exist.', array($HTTP_VARS['uid']));
+		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User does not exist', array($HTTP_VARS['uid']));
 
 		// make user look successful to prevent mining for valid userids
 		return TRUE;
 	}
 	else if(!is_user_active($HTTP_VARS['uid'])) // Do not allow new password operation for 'deactivated' user.
 	{
-		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User is not active.', array($HTTP_VARS['uid']));
+		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User is not active', array($HTTP_VARS['uid']));
 		return FALSE;
 	}
-	else if(is_user_guest($HTTP_VARS['uid']))
+	else if(!is_user_granted_permission(PERM_CHANGE_PASSWORD, $HTTP_VARS['uid']))
 	{
-		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User is a guest.', array($HTTP_VARS['uid']));
+		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'New password request failure: User does not have permission to change password', array($HTTP_VARS['uid']));
 		return FALSE;
 	}
 	else if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')===FALSE && !is_user_granted_permission(PERM_ADMIN_CHANGE_PASSWORD))

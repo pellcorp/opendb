@@ -35,7 +35,7 @@ function get_list_username($user_id, $mode, $subject=NULL, $redirect_link=NULL, 
 	else
 	{
 		$user_name = get_opendb_lang_var('user_name', array('fullname'=>fetch_user_name($user_id), 'user_id'=>$user_id));
-		if(!is_user_guest(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		if(is_user_granted_permission(PERM_VIEW_USER_PROFILE))
 			return "<a href=\"user_profile.php?uid=".$user_id."&subject=".urlencode(ifempty($subject, get_opendb_lang_var('no_subject')))."&redirect_link=".urlencode($redirect_link)."&redirect_url=".urlencode($redirect_url)."\" title=\"".htmlspecialchars(get_opendb_lang_var('user_profile'))."\">$user_name</a>";
 		else
 			return $user_name;

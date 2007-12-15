@@ -23,11 +23,18 @@ include_once("./functions/utils.php");
 include_once("./functions/http.php");
 include_once("./functions/config.php");
 
-define('PERM_OPENDB_ADMIN_TOOLS', 'PERM_OPENDB_ADMIN_TOOLS');
-define('PERM_BORROWER_USER', 'PERM_BORROWER_USER');
+define('PERM_ADMIN_TOOLS', 'PERM_ADMIN_TOOLS');
+define('PERM_USER_BORROWER', 'PERM_USER_BORROWER');
+define('PERM_ADMIN_BORROWER', 'PERM_ADMIN_BORROWER');
 
 define('PERM_REVIEW_ADMIN', 'PERM_REVIEW_ADMIN');
 define('PERM_REVIEW_AUTHOR', 'PERM_REVIEW_AUTHOR');
+
+define('PERM_ADMIN_EXPORT', 'PERM_ADMIN_EXPORT');
+define('PERM_ADMIN_IMPORT', 'PERM_ADMIN_IMPORT');
+
+define('PERM_USER_EXPORT', 'PERM_USER_EXPORT');
+define('PERM_USER_IMPORT', 'PERM_USER_IMPORT');
 
 define('PERM_ITEM_OWNER', 'PERM_ITEM_OWNER');
 define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
@@ -38,51 +45,81 @@ define('PERM_ADMIN_ANNOUNCEMENTS', 'PERM_ADMIN_ANNOUNCEMENTS');
 
 define('PERM_ADMIN_USER_PROFILE', 'PERM_ADMIN_USER_PROFILE');
 define('PERM_ADMIN_USER_LISTING', 'PERM_ADMIN_USER_LISTING');
+define('PERM_EDIT_USER_PROFILE', 'PERM_EDIT_USER_PROFILE');
+define('PERM_VIEW_USER_PROFILE', 'PERM_VIEW_USER_PROFILE');
+define('PERM_ADMIN_CREATE_USER', 'PERM_ADMIN_CREATE_USER');
 
 define('PERM_ADMIN_CHANGE_PASSWORD', 'PERM_ADMIN_CHANGE_PASSWORD');
-define('PERM_EDIT_USER_PROFILE', 'PERM_EDIT_USER_PROFILE');
+
+define('PERM_CHANGE_PASSWORD', 'PERM_CHANGE_PASSWORD');
 
 define('PERM_ADMIN_QUICK_CHECKOUT', 'PERM_ADMIN_QUICK_CHECKOUT');
 
 define('PERM_ADMIN_LOGIN', 'PERM_ADMIN_LOGIN');
 define('PERM_ADMIN_CHANGE_USER', 'PERM_ADMIN_CHANGE_USER');
 
-function is_user_granted_permission($permission)
+define('PERM_ADMIN_SEND_EMAIL', 'PERM_ADMIN_SEND_EMAIL');
+define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
+
+/**
+ * If user_id is not null, then the permission check is not for the
+ * current user, but a user in a list, or someone not logged in, etc. 
+ *
+ * @param unknown_type $permission
+ * @param unknown_type $user_id
+ * @return unknown
+ */
+function is_user_granted_permission($permission, $user_id = NULL)
 {
-//	if(strlen($user_id)==0) {
-//		$user_id = get_opendb_session_var('user_id');	
-//	}
+	if(strlen($user_id)==0) {
+		$user_id = get_opendb_session_var('user_id');	
+	}
 	
-	if($permission == PERM_OPENDB_ADMIN_TOOLS)
-		return is_user_admin();
-	else if($permission == PERM_BORROWER_USER)
-		return is_user_allowed_to_borrow();
+	if($permission == PERM_ADMIN_TOOLS)
+		return is_user_admin($user_id);
+	else if($permission == PERM_ADMIN_EXPORT || $permission == PERM_ADMIN_IMPORT)
+		return is_user_admin($user_id);
+	else if($permission == PERM_USER_EXPORT || $permission == PERM_USER_IMPORT)
+		return is_user_normal($user_id);
+	else if($permission == PERM_USER_BORROWER)
+		return is_user_allowed_to_borrow($user_id);
+	else if($permission == PERM_ADMIN_BORROWER)
+		return is_user_admin($user_id);
 	else if($permission == PERM_REVIEW_ADMIN)
-		return is_user_admin();
+		return is_user_admin($user_id);
 	else if($permission == PERM_REVIEW_AUTHOR)
-		return is_user_allowed_to_review();
+		return is_user_allowed_to_review($user_id);
 	else if($permission == PERM_ITEM_OWNER)
-		return is_user_allowed_to_own();
+		return is_user_allowed_to_own($user_id);
 	else if($permission == PERM_ITEM_ADMIN)
-		return is_user_admin();
+		return is_user_admin($user_id);
 	else if($permission == PERM_VIEW_ANNOUNCEMENTS)
 		return TRUE; // work out what to do for this later, for now leave unrestricted
 	else if($permission == PERM_ITEM_DISPLAY)
 		return TRUE; // for the moment all have permission
 	else if($permission == PERM_ADMIN_ANNOUNCEMENTS) 
-		return is_user_admin();
+		return is_user_admin($user_id);
 	else if($permission == PERM_ADMIN_USER_PROFILE || 
 				$permission == PERM_ADMIN_USER_LISTING || 
-				$permission == PERM_ADMIN_CHANGE_PASSWORD)
-		return is_user_admin();
+				$permission == PERM_ADMIN_CHANGE_PASSWORD || 
+				$permission == PERM_ADMIN_CREATE_USER)
+		return is_user_admin($user_id);
 	else if($permission == PERM_EDIT_USER_PROFILE)	
-		return is_user_allowed_to_edit_info();
+		return is_user_allowed_to_edit_info($user_id);
 	else if($permission == PERM_ADMIN_QUICK_CHECKOUT)
-		return is_user_admin();
+		return is_user_admin($user_id);
 	else if($permission == PERM_ADMIN_LOGIN)
-		return is_user_admin();
+		return is_user_admin($user_id);
 	else if($permission == PERM_ADMIN_CHANGE_USER)
-		return is_user_admin();
+		return is_user_admin($user_id);
+	else if($permission == PERM_VIEW_USER_PROFILE)
+		return !is_user_guest($user_id);
+	else if($permission == PERM_CHANGE_PASSWORD)
+		return !is_user_guest($user_id);
+	else if($permission == PERM_SEND_EMAIL)
+		return !is_user_guest($user_id);
+	else if($permission == PERM_ADMIN_SEND_EMAIL)
+		return is_user_admin($user_id);
 	else
 		return FALSE;
 }

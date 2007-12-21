@@ -7,6 +7,7 @@ div.item_displayContent th.prompt
 div#instanceInfo, div#relatedItems
 {
 	float: left;
+	clear: left;
 }
 
 span.sitePluginDescription

@@ -107,7 +107,7 @@ ul#site-add-menu li.activeTab
 
 #site-add-content h3
 {
-	float: left;
+	display: none;
 }
 
 #site-add-content h4
@@ -118,8 +118,8 @@ ul#site-add-menu li.activeTab
 #site-add-content img.siteLogo
 {
 	vertical-align: bottom;
-	float: right;
-	margin-right: 500px;
+	float: left;
+	padding: 10px;
 }
 
 #site-add-content label, #site-add-manual label

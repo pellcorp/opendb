@@ -504,7 +504,7 @@ function fetch_user_cnt($user_types=NULL, $active_ind=NULL, $include_deactivated
 //
 function fetch_user_r($uid)
 {
-	$query = "SELECT user_id, fullname, if(length(type)>0,type,'N') as type, language, theme, email_addr, lastvisit FROM user where user_id = '".$uid."'";
+	$query = "SELECT user_id, fullname, role_name, language, theme, email_addr, lastvisit FROM user where user_id = '".$uid."'";
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)
 	{

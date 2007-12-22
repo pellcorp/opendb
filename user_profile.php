@@ -72,8 +72,8 @@ if(is_site_enabled())
 						$user_r['user_id']));
 	
 				echo(format_field(
-						get_opendb_lang_var('user_type'),
-						get_usertype_prompt(ifempty($HTTP_VARS['user_type'],$user_r['type']))));
+						get_opendb_lang_var('user_role'),
+						$user_r['role_name']));
 	
 				echo(format_field(
 						get_opendb_lang_var('fullname'),
@@ -136,7 +136,9 @@ if(is_site_enabled())
 					db_free_result($addr_results);
 				}
 				
-				if(is_valid_opendb_mailer() && strlen($user_r['email_addr'])>0 && is_user_granted_permission(PERM_SEND_EMAIL))
+				if(is_valid_opendb_mailer() && 
+						strlen($user_r['email_addr'])>0 && 
+						is_user_granted_permission(PERM_SEND_EMAIL))
 				{
 					$url = 'email.php?'.
 							get_url_string(Array(

@@ -477,7 +477,7 @@ function get_related_items_block($item_r, $HTTP_VARS)
 	if($relatedChildrenTable == NULL && $relatedParentsTable == NULL)
 	{
 		$buffer .= "<h3>".get_opendb_lang_var('related_item(s)')."</h3>";
-		$buffer .= get_opendb_lang_var('no_related_item(s)');
+		$buffer .= "<p>".get_opendb_lang_var('no_related_item(s)')."</p>";
 	}
 	
 	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) )

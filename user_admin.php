@@ -70,14 +70,15 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	}			
 
 	$buffer .= format_field(
-					get_opendb_lang_var('user_type'),
-					get_usertype_prompt(ifempty($HTTP_VARS['user_type'],$user_r['type'])));
+				get_opendb_lang_var('user_role'), 
+				custom_select(
+					'role_name', 
+					fetch_user_role_rs(), 
+					"%description%", 
+					'NA', 
+					$HTTP_VARS['role_name'],
+					'role_name'));
 	
-	if(!is_array($user_r))
-	{
-		$buffer .= "<input type=\"hidden\" name=\"user_type\" value=\"".$HTTP_VARS['user_type']."\">";
-	}
-							
 	$buffer .= get_input_field("fullname",
 				NULL, // s_attribute_type
 				get_opendb_lang_var('fullname'), 

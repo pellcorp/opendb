@@ -278,6 +278,24 @@ CREATE TABLE s_addr_attribute_type_rltshp (
   PRIMARY KEY ( s_address_type, s_attribute_type, order_no )
 ) TYPE=MyISAM COMMENT='System address attribute type relationship';
 
+CREATE TABLE s_role (
+    role_name VARCHAR(20) NOT NULL,
+    description VARCHAR(100),
+PRIMARY KEY ( role_name )
+) TYPE=MyISAM COMMENT = 'System Role table';
+
+CREATE TABLE s_permission (
+    permission_name VARCHAR(30) NOT NULL,
+	description VARCHAR(100),
+PRIMARY KEY ( permission_name )
+) TYPE=MyISAM COMMENT = 'System Permission table';
+
+CREATE TABLE s_role_permission (
+	role_name VARCHAR(20) NOT NULL,
+    permission_name VARCHAR(30) NOT NULL,
+PRIMARY KEY ( role_name, permission_name )
+) TYPE=MyISAM COMMENT = 'System Role Permission table';
+
 #
 # User table
 #
@@ -286,7 +304,7 @@ CREATE TABLE user (
   user_id		VARCHAR(20) NOT NULL,
   fullname		VARCHAR(100) NOT NULL,
   pwd			VARCHAR(40),
-  type			VARCHAR(1) NOT NULL DEFAULT 'N',
+  role_name 	VARCHAR(20) NOT NULL,
   language		VARCHAR(20),
   theme			VARCHAR(20),
   email_addr	VARCHAR(255),

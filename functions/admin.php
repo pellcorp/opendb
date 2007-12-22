@@ -123,6 +123,7 @@ function get_system_admin_tools_menu($admin_type = NULL)
 		's_site_plugin'=>array('link'=>'Site Plugins'),
         'patch_facility'=>array('link'=>'Miscellaneous Patches'),
 		'announcements'=>array('link'=>'Announcements'),
+		's_role'=>array('link'=>'Role Permissions'),
 	// disable until release 1.2
 	//	'item_review'=>array('link'=>'Item Reviews')
 	);

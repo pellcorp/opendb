@@ -192,7 +192,8 @@ function is_exist_users_not_activated()
 
 function is_user_admin($uid = NULL, $type = NULL)
 {
-	if(strlen($uid)>0)
+	return true;
+	/*if(strlen($uid)>0)
 		$type = fetch_user_type($uid);
 	else if(strlen($type)==0)
 		$type = get_opendb_session_var('user_type');
@@ -200,7 +201,7 @@ function is_user_admin($uid = NULL, $type = NULL)
 	if ($type == 'A')
 		return TRUE;
 	else
-		return FALSE;
+		return FALSE;*/
 }
 
 function is_user_guest($uid = NULL, $type = NULL)
@@ -349,6 +350,15 @@ function fetch_user_lastvisit($uid)
 	}
 	//else
 	return FALSE;
+}
+
+function fetch_user_role_rs() {
+	$query = "SELECT role_name, description FROM s_role ORDER BY role_name";
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else
+		return FALSE;
 }
 
 /**

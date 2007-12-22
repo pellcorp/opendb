@@ -519,6 +519,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_p
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_profile_for_user_name', 'User Profile for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_theme', 'Theme'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_type', 'User Type'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_role', 'User Role');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_with_borrows_not_deactivated', 'A user with item(s) checked out to them cannot be deactivated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_with_borrows_not_deleted', 'A user with item(s) checked out to them cannot be deleted.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_with_inactive_borrows_not_deleted', 'A user with closed or cancelled borrow record(s) cannot be deleted.'); 

@@ -68,7 +68,7 @@ define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
  * @param unknown_type $permission
  * @param unknown_type $user_id
  * @return unknown
- */
+ *//*
 function is_user_granted_permission($permission, $user_id = NULL)
 {
 	if(strlen($user_id)==0) {
@@ -126,6 +126,30 @@ function is_user_granted_permission($permission, $user_id = NULL)
 		return is_user_admin($user_id);
 	else
 		return FALSE;
+}*/
+
+function is_user_granted_permission($permission, $user_id = NULL)
+{
+	if(strlen($user_id)==0) {
+		$user_id = get_opendb_session_var('user_id');	
+	}
+	
+	$query = "SELECT 'X' 
+			FROM 	s_role_permission srp, 
+				 	user u 
+			WHERE 	u.role_name = srp.role_name AND
+				  	srp.permission_name = '$permission' AND
+				  	u.user_id = '$user_id'";
+	
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+
+	//else
+	return FALSE;
 }
 
 /**

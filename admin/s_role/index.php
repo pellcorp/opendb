@@ -43,7 +43,7 @@ if($HTTP_VARS['op'] == 'edit')
 {
 	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
 	
-	echo("\n<h3>Edit Role Permissions</h3>");
+	echo("\n<h3>Edit ${HTTP_VARS['role_name']} Role Permissions</h3>");
 	
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);

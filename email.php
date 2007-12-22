@@ -285,12 +285,14 @@ if(is_site_enabled())
 							$errors);
 				}
 			}
-			else if(is_user_granted_permission(PERM_ADMIN_SEND_EMAIL)) 
+			else if(($HTTP_VARS['op'] == 'send_to_all' || 
+					$HTTP_VARS['op'] == 'send_to_uids') && 
+					is_user_granted_permission(PERM_ADMIN_SEND_EMAIL)) 
 			{
 				$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
 				$HTTP_VARS['toname'] = trim(strip_tags($HTTP_VARS['toname']));
 				
-				if($HTTP_VARS['op'] == 'send_to_all' && is_user_granted_permission(PERM_ADMIN_SEND_EMAIL))
+				if($HTTP_VARS['op'] == 'send_to_all')
 				{
 					// Default toname for bulk email.
 					if(strlen($HTTP_VARS['toname'])==0)
@@ -346,32 +348,30 @@ if(is_site_enabled())
 					}
 				}
 			}
-			else if(is_user_granted_permission(PERM_SEND_EMAIL))
+			else if($HTTP_VARS['op'] == 'send_to_uid' && is_user_valid($HTTP_VARS['uid']) && 
+					is_user_granted_permission(PERM_SEND_EMAIL))
 			{
 				$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
 				$HTTP_VARS['toname'] = trim(strip_tags($HTTP_VARS['toname']));
 				
-				if($HTTP_VARS['op'] == 'send_to_uid' && is_user_valid($HTTP_VARS['uid']))
-				{
-					if($HTTP_VARS['op2'] == 'send' && 
-						send_email_to_userids(
-								array($HTTP_VARS['uid']), 
-								$from_user_r['user_id'], 
-								$HTTP_VARS['subject'], 
-								$HTTP_VARS['message'],
-								$errors)) {
-						// do nothing
-					} else {
-						show_email_form(
-								$HTTP_VARS['uid'],
-								fetch_user_name($HTTP_VARS['uid']),
-								$from_user_r['user_id'],
-								$from_user_r['fullname'],
-								$HTTP_VARS['subject'],
-								$HTTP_VARS['message'],
-								$HTTP_VARS,
-								$errors);
-					}
+				if($HTTP_VARS['op2'] == 'send' && 
+					send_email_to_userids(
+							array($HTTP_VARS['uid']), 
+							$from_user_r['user_id'], 
+							$HTTP_VARS['subject'], 
+							$HTTP_VARS['message'],
+							$errors)) {
+					// do nothing
+				} else {
+					show_email_form(
+							$HTTP_VARS['uid'],
+							fetch_user_name($HTTP_VARS['uid']),
+							$from_user_r['user_id'],
+							$from_user_r['fullname'],
+							$HTTP_VARS['subject'],
+							$HTTP_VARS['message'],
+							$HTTP_VARS,
+							$errors);
 				}
 			}
 			else

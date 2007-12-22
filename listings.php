@@ -912,7 +912,7 @@ if(is_site_enabled())
 	if (is_opendb_valid_session() || is_site_public_access())
 	{
 		// validate specified owner_id, if not an owner, unset, so we pretend it was not even specified.
-		if(strlen($HTTP_VARS['owner_id'])>0 && is_user_allowed_to_own($HTTP_VARS['owner_id']))
+		if(strlen($HTTP_VARS['owner_id'])>0 && is_user_granted_permission(PERM_ITEM_OWNER, $HTTP_VARS['owner_id']))
 		{
 			$show_owner_column=FALSE;
 		}
@@ -1040,6 +1040,8 @@ if(is_site_enabled())
  				}
 			}
 		}
+		
+		
 		
 		echo(getListingFiltersBlock());
 		echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));

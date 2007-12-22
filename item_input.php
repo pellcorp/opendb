@@ -1815,7 +1815,7 @@ if(is_site_enabled())
 
 	if (is_opendb_valid_session())
 	{
-		if(is_user_allowed_to_own(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		if(is_user_granted_permission(PERM_ITEM_OWNER))
 		{
 			if($HTTP_VARS['op'] == 'new' || 
 					$HTTP_VARS['op'] == 'insert' || 

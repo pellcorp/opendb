@@ -391,7 +391,7 @@ function debug_array($var, $return = false, $html = false, $level = 0) {
     foreach($var as $key => $value) {
         if (is_array($value) || is_object($value)) {
             $level++;
-            $value = obsafe_print_r($value, true, $html, $level);
+            $value = debug_array($value, true, $html, $level);
             $level--;
         }
         $output .= $tabs . "[" . $key . "] => " . $value . $newline;

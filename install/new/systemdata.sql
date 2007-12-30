@@ -494,14 +494,14 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'new_instance_owner_only', 2, 'New Instance Owner Only', 'Whether item instances can be created across owners', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'clone_item_support', 5, 'Clone Item Support', '', 'boolean');
-# INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_insert', 7, 'Auto Site Insert', 'Bypass new item edit screen', 'boolean');
-#INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 8, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'duplicate_title_support', 9, 'Duplicate Title Support', 'Duplicate title with same type and owner allowed', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_insert', 10, 'Confirm Duplicate Insert', 'Confrm insert of duplicate title with same type regardless of owner', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_owner_insert', 11, 'Confirm Duplicate Owner Insert', 'Confrm insert of duplicate title with same type and owner', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_item_delete', 12, 'Confirm Item Delete', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 13, 'Allow Item Delete with inactive borrow records', ' exist', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('item_input', 'title_articles', 14, 'Title Articles', 'Format title, so that articles appear at the end of the title.', 'array', 'text');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_insert', 6, 'Auto Site Insert', 'Bypass new item edit screen', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 7, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'duplicate_title_support', 8, 'Duplicate Title Support', 'Duplicate title with same type and owner allowed', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_insert', 9, 'Confirm Duplicate Insert', 'Confrm insert of duplicate title with same type regardless of owner', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_duplicate_owner_insert', 10, 'Confirm Duplicate Owner Insert', 'Confrm insert of duplicate title with same type and owner', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'confirm_item_delete', 11, 'Confirm Item Delete', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'allow_delete_with_closed_or_cancelled_borrow_records', 12, 'Allow Item Delete with inactive borrow records', ' exist', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('item_input', 'title_articles', 13, 'Title Articles', 'Format title, so that articles appear at the end of the title.', 'array', 'text');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input.site', 'debug', 1, 'Debug Site Plugins', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
@@ -676,8 +676,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_displa
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_display', 'item_image_size', 'height', '100');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'review_datetime_mask', 'Day, DDth Month YYYY HH24:MI');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'export_link', 'OpenDbExportPlugin');
-#INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_insert', 'FALSE');
-#INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_update', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_insert', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_update', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'clone_item_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'item_instance_support', 'TRUE');

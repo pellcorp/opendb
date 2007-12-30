@@ -439,55 +439,35 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 
 /**
 	Bypass get_edit_form, by choosing defaults for all data provided by site plugin, supports site / refresh operations
-
-	TODO - this needs to be reviewed for post 1.0 and re-enabled
 */
-function get_site_item_input_data($op, $item_r, $status_type_r, $HTTP_VARS)
+function get_site_item_input_data($op, $item_r, $HTTP_VARS)
 {
 	$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 	if($results)
 	{
 		while($item_attribute_type_r = db_fetch_assoc($results))
 		{
-			if($item_attribute_type_r['s_field_type'] == 'TITLE')
+			$fieldname = get_field_name($item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
+			if(is_not_empty_array($HTTP_VARS[$fieldname]))
 			{
-				if(is_not_empty_array($HTTP_VARS['title']))
-				{
-					$value = $HTTP_VARS['title'][0];
-					unset($HTTP_VARS['title']);
-					$HTTP_VARS['title'] = $value;	
-				}
-				
-				$override_title_articles_r = get_opendb_config_var('item_input', 'title_articles');
-				if(is_not_empty_array($override_title_articles_r))
-				{
-					$HTTP_VARS['title'] = trim(format_title_grammar_article($HTTP_VARS['title'], $override_title_articles_r));
-				}
-			}
-			else
-			{
-				$fieldname = get_field_name($item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
-				if(is_not_empty_array($HTTP_VARS[$fieldname]))
-				{
-					if(!is_lookup_attribute_type($item_attribute_type_r['s_attribute_type']))
-						$value = $HTTP_VARS[$fieldname][0];
-					else
-						$value = $HTTP_VARS[$fieldname];
+				if(is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
+					$value = $HTTP_VARS[$fieldname];
+				else
+					$value = $HTTP_VARS[$fieldname][0];
 
-					unset($HTTP_VARS[$fieldname]);
-					$HTTP_VARS[$fieldname] = $value;
-				}
-				else if($op == 'refresh')
-				{
-					if(is_lookup_attribute_type($item_attribute_type_r['s_attribute_type']))
-						$HTTP_VARS[$fieldname] = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
-					else
-						$HTTP_VARS[$fieldname] = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'],  $item_attribute_type_r['order_no']);
-				}
+				unset($HTTP_VARS[$fieldname]);
+				$HTTP_VARS[$fieldname] = $value;
 			}
-		}//while
+			else if($op == 'refresh')
+			{
+				if(is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
+					$HTTP_VARS[$fieldname] = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
+				else
+					$HTTP_VARS[$fieldname] = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'],  $item_attribute_type_r['order_no']);
+			}
+		}
 		db_free_result($results);
-	}//if($results)
+	}
 		
 	return $HTTP_VARS;
 }
@@ -1054,7 +1034,6 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 				$pageContents .= "\n<input type=\"hidden\" name=\"instance_no\" value=\"".$item_r['instance_no']."\">";
 		}
 		
-		// Pass owner_id parameter through
 		if(strlen($HTTP_VARS['owner_id'])>0)
 		{
 			$pageContents .= "\n<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">";
@@ -1104,10 +1083,9 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 
 function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
 {
-	if(is_user_granted_permission(PERM_ITEM_ADMIN) || 
-			(is_user_granted_permission(PERM_ITEM_OWNER) && 
-				( $item_r['owner_id'] == get_opendb_session_var('user_id') || 
-					$op == 'newinstance' )) )
+	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
+				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
+				is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
 		$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
 		if($formContents != FALSE)
@@ -1127,19 +1105,12 @@ function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILE
 	}
 }
 
-/*
-* Will validate that new/site can proceed for the get_opendb_session_var('user_id'), and will then
-* build the edit form, by calling get_edit_form.  If get_edit_form, returns
-* a NOT NULL, value then the complete get_edit_form block will be returned,
-* otherwise this function returns false.
-*/
 function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
 				is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
-		// Before trying to insert items into this structure, first ensure it is valid.
 		if(is_valid_item_type_structure($item_r['s_item_type']))
 		{
 			$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
@@ -1151,12 +1122,12 @@ function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &
 				return FALSE;
 			}
 		}
-		else//if(is_valid_item_type_structure($item_r['s_item_type']))
+		else
 		{
 			$errors = array('error'=>get_opendb_lang_var('invalid_item_type_structure', 's_item_type', $item_r['s_item_type']),'detail'=>'');
 			return FALSE;
 		}					
-	}// non-admin user attempting to insert item for someone else.
+	}
 	else
 	{
 		$errors = array('error'=>get_opendb_lang_var('operation_not_available'));
@@ -1166,19 +1137,10 @@ function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &
 	}
 }
 
-/**
-* This function will handle constructing instances of site plugin classes, to
-* present title listings.  Each title in the listing should be linkable back
-* into item_input with 'site' operation.
-* 
-* @return if returns an array, then we assume its a single match, and it contains
-* the item data.
-*/
 function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r)
 {
 	global $PHP_SELF;
 			
-	// next operation to be undertaken will be site - adding item to opendb
 	$HTTP_VARS['op'] = 'site';
 	
 	$formContents = '<div id="site-search">';
@@ -1243,7 +1205,7 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
  
  					if(strlen($row_data_r['comments'])>0)
 					{
-						$formContents .= "<br />".nl2br($row_data_r['comments']);
+						$formContents .= '<p class=\"comments\">'.nl2br($row_data_r['comments']).'</p>';
 					}
 					$formContents .= "\n</td>";
 					
@@ -1258,7 +1220,6 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
  				}
  				$formContents .= "\n</table>";
  				
- 				// we want to do it programatically.
  				unset($HTTP_VARS['page_no']);
  				
  				if($sitePlugin->isPreviousPage() || $sitePlugin->isNextPage())
@@ -1270,13 +1231,11 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
  					
  						$formContents .= "<ul class=\"listingPager\">";
  						
- 						// Include a back link if we are on page 2 or greater.
  						if($sitePlugin->isPreviousPage())
  							$formContents .= "<li class=\"previousPage\"><a href=\"item_input.php?$page_nav_url&page_no=".($sitePlugin->getPageNo() - 1)."\">".get_opendb_lang_var('previous_page')."</a></li>";
  						else
  							$formContents .= "<li class=\"previousPage disabled\">".get_opendb_lang_var('previous_page')."</a></li>"; 					
  						
- 						// If we are not at the end of the list, include a Next button!
  						if($sitePlugin->isNextPage())
  							$formContents .= "<li class=\"nextPage\"><a href=\"item_input.php?$page_nav_url&page_no=".($sitePlugin->getPageNo() + 1)."\">".get_opendb_lang_var('next_page')."</a></li>";
  						else
@@ -1286,7 +1245,7 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
  					}
  				}
  			}
- 		}//if($sitePlugin->getRowCount())
+ 		}
  		else
  		{
  			$formContents .= "<p class=\"error\">".get_opendb_lang_var('no_matches_found')."</p>";
@@ -1304,12 +1263,11 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
 			
 		return $formContents;
 		
-	}//if($sitePlugin->_queryListing($HTTP_VARS))
+	}
 	else
 	{
 		$errors = $sitePlugin->getErrors();
 		
-		// we need to provide at least some indication of why there was a problem.
 		if($errors === FALSE)
 			$errors = get_opendb_lang_var('undefined_error');
 
@@ -1357,9 +1315,6 @@ function do_op_title($item_r, $status_type_r, $op)
 	echo ("<h2>".$item_title." ".get_item_image($item_r['s_item_type'])."</h2>\n");
 }
 
-/*
- * If newinstance - $item_r will not have an instance no set
-*/
 function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
 {
 	global $PHP_SELF;
@@ -1455,12 +1410,13 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 				do_op_title($item_r, $status_type_r, 'insert');
 				echo("<p class=\"success\">".get_opendb_lang_var('item_added')."</p>");
 			}
-			echo format_error_block($errors, 'warning');//warnings
-	
+			
+			echo format_error_block($errors, 'warning');
+				
 			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
 			$footer_links_r[] = array(url=>"item_input.php?op=site-add&owner_id=".$item_r['owner_id'],text=>get_opendb_lang_var('add_new_item'));
 		}
-		else //if($return_val === FALSE)
+		else
 		{
 			do_op_title($item_r, $status_type_r, $HTTP_VARS['start-op'] == 'clone_item'?'clone_item':'insert');
 			echo format_error_block($errors);
@@ -1468,9 +1424,6 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-/**
- * This needs to cater for inserting a new instance or updating an existing one
- */
 function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
 {
 	global $PHP_SELF;
@@ -1498,7 +1451,6 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
     
 	if($return_val === "__INVALID_DATA__")
 	{
-		// We need to load the edit form again here!
 		echo format_error_block($errors);
 							
 		$HTTP_VARS['op'] = 'edit';
@@ -1520,23 +1472,16 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 		else
 			echo("<p class=\"success\">".get_opendb_lang_var('item_updated')."</p>");
 			
-		echo format_error_block($errors, 'warning');//warnings
+		echo format_error_block($errors, 'warning');
 									
 		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
 	}
-	else // if($return_val === FALSE)
+	else
 	{
 		echo format_error_block($errors);
 	}
 }
 
-/**
- * @param unknown_type $item_r
- * @param unknown_type $status_type_r
- * @param unknown_type $HTTP_VARS
- * @param unknown_type $_FILES
- * @param unknown_type $footer_links_r
- */
 function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
 {
 	global $PHP_SELF;
@@ -1744,39 +1689,41 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 			{
 				$HTTP_VARS['op'] = 'refresh';
 				
-				// if no overriding title articles, then get_edit_form or get_site_item_input_data
-				// will query config table for default set, so we don't have to do that here.
 				$titleArticlesConfig = $sitePlugin->getConfigValue('item_input.title_articles');
 				if(is_not_empty_array($titleArticlesConfig))
 					set_opendb_config_ovrd_var('item_input', 'title_articles', $titleArticlesConfig);
 
-				//if(get_opendb_config_var('item_input', 'auto_site_update')===TRUE)
-				//{
+				
+				
+				if(get_opendb_config_var('item_input', 'auto_site_update')===TRUE)
+				{
 					// expand $HTTP_VARS to bypass edit form.
-				//	$HTTP_VARS = get_site_item_input_data($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS);
-					
-				//	perform_update_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
-				//}
-				//else
-				//{
+					$HTTP_VARS = get_site_item_input_data($HTTP_VARS['op'], $item_r, $HTTP_VARS);
+
+					perform_update_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+				}
+				else
+				{
 					perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
-				//}
+				}
 			}//if(is_exists_item($item_r['item_id']))
 			else
 			{
 				$HTTP_VARS['op'] = 'site';
 				
-//				if(get_opendb_config_var('item_input', 'auto_site_insert')===TRUE)
-//				{
-					// expand $HTTP_VARS to bypass edit form.
-//					$HTTP_VARS = get_site_item_input_data($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS);
+				if(get_opendb_config_var('item_input', 'auto_site_insert')===TRUE)
+				{
+					$item_r['s_status_type'] = fetch_default_status_type();
 					
-//					perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
-//				}
-//				else
-//				{
+					// expand $HTTP_VARS to bypass edit form.
+					$HTTP_VARS = get_site_item_input_data($HTTP_VARS['op'], $item_r, $HTTP_VARS);
+				
+					perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+				}
+				else
+				{
 					perform_new_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
-//				}
+				}
 			}
 			
 			if(get_opendb_config_var('item_input.site', 'debug') === TRUE)
@@ -1857,6 +1804,11 @@ if(is_site_enabled())
 			else //otherwise either a site refresh operation or an edit/update/delete
 			{
 				$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
+
+				// a new copy should be for the current user
+				if($HTTP_VARS['op'] == 'newinstance')
+					$item_r['owner_id'] = get_opendb_session_var('user_id');
+				
 				$status_type_r = fetch_status_type_r($item_r['s_status_type']);
 			}
 			

@@ -436,8 +436,6 @@ function handle_item_update(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 	}
 }
 
-/*
-*/
 function handle_item_instance_insert(&$item_r, $status_type_r, $HTTP_VARS, &$errors)
 {
 	$owner_id = ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'));

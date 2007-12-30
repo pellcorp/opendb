@@ -403,6 +403,11 @@ UPDATE s_config_group_item_var SET group_id = 'welcome.announcements' WHERE grou
 DELETE FROM s_config_group_item WHERE group_id = 'borrow' AND id IN ('list_all_reserved', 'list_all_borrowed');
 DELETE FROM s_config_group_item_var WHERE group_id = 'borrow' AND id IN ('list_all_reserved', 'list_all_borrowed');
 
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_insert', 6, 'Auto Site Insert', 'Bypass new item edit screen', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 7, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_insert', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_update', 'FALSE');
+
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),

@@ -31,9 +31,6 @@ Post any bugs to sourceforge http://www.sourceforge.net/projects/opendb
 
 - phpThumb() - The PHP thumbnail creator.  by James Heinrich <info@silisoftware.com> 
 
-- excelgen.class.inc 2002/July/18 (c) Erh-Wen,Kuo (erhwenkuo@yahoo.com). 
-  All rights reserved.
-
 - adodb-time.inc.php - ADODb Date / Time functions.  
   Copyright (c) 2000, 2001, 2002, 2003 John Lim
 
@@ -50,6 +47,9 @@ Post any bugs to sourceforge http://www.sourceforge.net/projects/opendb
 
 - XAJAX PHP Ajax Library 
   Copyright (c) 2005-2006 by Jared White & J. Max Wilson
+  
+- ISBN Class
+  John Blyberg <blybergj@aadl.org>
 
 7. Disclaimer
 

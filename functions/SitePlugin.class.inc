@@ -24,7 +24,6 @@ include_once("./functions/site_plugin.php");
 include_once("./functions/item_type.php");
 include_once("./functions/OpenDbSnoopy.class.inc");
 include_once("./functions/TitleMask.class.php");
-include_once("./functions/phpcuecat/PHPCueCat.class.php");
 
 define('HTML_CONTENT_IS_LEGAL', 1);
 
@@ -553,101 +552,37 @@ class SitePlugin
 			{
 				if(isset($HTTP_VARS[$input_field_r['field']]) && strlen($HTTP_VARS[$input_field_r['field']])>0)
 				{
+					$field_value = trim($HTTP_VARS[$input_field_r['field']]);
+					
 					$at_least_one_search_field_populated = TRUE;
 
-					// TODO: This code should be expanded to perform check-digit validation for UPC, etc codes
 					if($input_field_r['field_type'] == 'scan-isbn' || $input_field_r['field_type'] == 'scan-upc')
 					{
                         // Determine type of scanner.
 						if(strrpos($HTTP_VARS[$input_field_r['field']],'.')) // cuecat
 						{
-						    $cuecat = new PHPCueCat;
-							if($cuecat->parse($HTTP_VARS[$input_field_r['field']]))
-							{
-								if($cuecat->is_valid())
-								{
-									if($input_field_r['field_type'] == 'scan-isbn')
-									{
-										$isbnInfo = $cuecat->get_isbn_info();
-										if ($isbnInfo!==FALSE && $cuecat->check_isbn($isbnInfo['isbn']))
-											$HTTP_VARS[$input_field_r['field']] = $isbnInfo['isbn'];
-										else
-											$HTTP_VARS[$input_field_r['field']] = $cuecat->bar_code;
-									}
-									else
-									{
-										$HTTP_VARS[$input_field_r['field']] = $cuecat->bar_code;
-									}
-								}
-							}
+							if($input_field_r['field_type'] == 'scan-isbn')
+								$scanCode = get_cuecat_isbn_code($field_value);
+							else
+								$scanCode = get_cuecat_upc_code($field_value);
 						}
 						else //non-cuecat or modified cuecat
 						{
-							$HTTP_VARS[$input_field_r['field']] = trim($HTTP_VARS[$input_field_r['field']]);
-							
-						    $scanCode = strtoupper($HTTP_VARS[$input_field_r['field']]);
-
                             if($input_field_r['field_type'] == 'scan-isbn')
-                            {
-								if (substr($scanCode, 0, 3) == '978') // EAN Format
-								    $scanCode = substr($scanCode, 3, 9);
-								else // Other Prefix Formats will need fleshing out
-									$scanCode = substr($scanCode, 0, 12); // Make sure that it never takes more than 12 characters
-
-								// Setup Loop Counters and Reformat Holder
-								$check = 0;
-								$weight = 10;
-								$scannedCode = '';
-
-								for ($i = 0; ($i < strlen($scanCode)) && ($weight > 0); $i++)
-								{
-									if ($scanCode{$i} == 'X' && $weight != 1 )
-									{
-										break; // X in wrong place don't process input
-									}
-
-									if ($scanCode{$i} == '-')
-										continue; // Ignore dashes
-
-									if (intval($scanCode{$i}) >= 0 && intval($scanCode{$i}) <= 9)
-										$check = $check + (intval($scanCode{$i}) * $weight);
-									else // Invalid Character
-										break;
-
-									$weight--;
-									$scannedCode .= $scanCode{$i};
-								}//for
-
-		                        // If input processed successfully.
-								if ($i >= strlen($scanCode))
-				                {
-									$check = (11 - ($check % 11)) % 11;
-
-									if ($check != 10)
-										$HTTP_VARS[$input_field_r['field']] = $scannedCode.strval($check);
-									else
-										$HTTP_VARS[$input_field_r['field']] = $scannedCode.'X';
-								}
-							}
-							else if($input_field_r['field_type'] == 'scan-upc')
-							{
-								$scanCode = substr($scanCode, 0, 12);
-								
-								// todo - is this accurate?!
-								if(is_numeric($scanCode))
-								{
-							    	// a UPC is only ever 12 characters long
-									$HTTP_VARS[$input_field_r['field']] = substr($scanCode, 0, 12);
-								}
-							}
+                            	$scanCode = get_isbn_code($field_value);
+                            else
+                            	$scanCode = get_upc_code($field_value);
 						}
-					}//if($input_field_r['field_type'] == 'scan-isbn' || $input_field_r['field_type'] == 'scan-upc')
-
-					$input_field_values_r[$input_field_r['field']] = $HTTP_VARS[$input_field_r['field']];
+						
+						if($scanCode!==FALSE)
+							$field_value = $scanCode;	
+					}
+					
+					$input_field_values_r[$input_field_r['field']] = $field_value;
 
 					$this->_search_query[] = array(
 								'field'=>$input_field_r['field'],
-								'value'=>$HTTP_VARS[$input_field_r['field']],
+								'value'=>$field_value,
 								'prompt'=>$input_field_r['prompt'],
 								'field_type'=>$input_field_r['field_type']);
 				}

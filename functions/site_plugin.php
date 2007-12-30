@@ -25,6 +25,71 @@ include_once("./functions/item_attribute.php");
 include_once("./functions/item_type_group.php");
 include_once("./functions/parseutils.php");
 include_once("./functions/TitleMask.class.php");
+include_once("./functions/phpcuecat/PHPCueCat.class.php");
+include_once("./lib/ISBN/ISBN.class.php");
+
+function get_cuecat_isbn_code($field)
+{
+	$cuecat = new PHPCueCat;
+	if($cuecat->parse($field))
+	{
+		if($cuecat->is_valid())
+		{
+			$isbnInfo = $cuecat->get_isbn_info();
+			if ($isbnInfo!==FALSE && $cuecat->check_isbn($isbnInfo['isbn']))
+				return $isbnInfo['isbn'];
+			else
+				return $cuecat->bar_code;
+		}
+	}
+	
+	return FALSE;
+}
+
+function get_cuecat_upc_code($field)
+{
+	$cuecat = new PHPCueCat;
+	if($cuecat->parse($field))
+	{
+		if($cuecat->is_valid())
+		{
+			return $cuecat->bar_code;
+		}
+	}
+	
+	return FALSE;
+}
+
+function get_upc_code($field)
+{
+	$scanCode = substr(strtoupper($field), 0, 12);
+								
+	if(is_numeric($scanCode))
+	{
+    	// a UPC is only ever 12 characters long
+		return substr($scanCode, 0, 12);
+	}
+	
+	return FALSE;
+}
+
+function get_isbn_code($field)
+{
+	$ISBN = new ISBN;
+	
+	$field = strtoupper($field);
+	
+	$isbntype = $ISBN->gettype($field);
+	
+	if ( ($isbntype == 10 && $ISBN->validateten($field)) || 
+			($isbntype == 13 && $ISBN->validatettn($field)) )
+	{
+		return $field;
+	}
+	
+	return FALSE;
+	
+}
 
 function is_exists_any_site_plugin()
 {

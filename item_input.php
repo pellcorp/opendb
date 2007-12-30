@@ -448,6 +448,7 @@ function get_site_item_input_data($op, $item_r, $HTTP_VARS)
 		while($item_attribute_type_r = db_fetch_assoc($results))
 		{
 			$fieldname = get_field_name($item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
+				
 			if(is_not_empty_array($HTTP_VARS[$fieldname]))
 			{
 				if(is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
@@ -456,10 +457,19 @@ function get_site_item_input_data($op, $item_r, $HTTP_VARS)
 					$value = $HTTP_VARS[$fieldname][0];
 
 				unset($HTTP_VARS[$fieldname]);
+
+				// hack
+				if($item_attribute_type_r['s_field_type'] == 'TITLE')
+					$fieldname = 'title';
+				
 				$HTTP_VARS[$fieldname] = $value;
 			}
 			else if($op == 'refresh')
 			{
+				// hack
+				if($item_attribute_type_r['s_field_type'] == 'TITLE')
+					$fieldname = 'title';
+					
 				if(is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
 					$HTTP_VARS[$fieldname] = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
 				else
@@ -468,7 +478,7 @@ function get_site_item_input_data($op, $item_r, $HTTP_VARS)
 		}
 		db_free_result($results);
 	}
-		
+	
 	return $HTTP_VARS;
 }
 

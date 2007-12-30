@@ -64,7 +64,7 @@ function get_last_num_items_rs(
 		while($item_r = db_fetch_assoc($results))
 		{
 			$item_r['title'] = $titleMaskCfg->expand_item_title($item_r);
-			$item_r['update_on'] = get_localised_timestamp(get_opendb_config_var('login.last_items_list', 'datetime_mask'), $item_r['update_on']);
+			$item_r['update_on'] = get_localised_timestamp(get_opendb_config_var('welcome.last_items_list', 'datetime_mask'), $item_r['update_on']);
 			
 			$item_r['item_display_url'] = 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'];
 			
@@ -92,7 +92,7 @@ function get_last_num_items_rs(
 			$item_r['itemtypeimage']['title'] = $item_type_r['description'];
 			$item_r['itemtypeimage']['s_item_type'] = $item_r['s_item_type'];
 				
-			if(get_opendb_config_var('login.last_items_list', 'show_item_image')!==FALSE)
+			if(get_opendb_config_var('welcome.last_items_list', 'show_item_image')!==FALSE)
 			{
 				if(!is_array( $image_attribute_type_rs ) || !is_array($image_attribute_type_rs[$item_r['s_item_type']]))
 				{
@@ -253,7 +253,7 @@ function get_whats_new_details($update_on, $user_id=NULL)
 	{
 		$search_vars_r['update_on'] = $update_on;
 
-		if(get_opendb_config_var('login.whats_new', 'exclude_current_user')!==FALSE)
+		if(get_opendb_config_var('welcome.whats_new', 'exclude_current_user')!==FALSE)
 			$search_vars_r['not_owner_id'] = $user_id;
 
 		$whats_new_r['heading'] = get_opendb_lang_var('item_stats');
@@ -288,7 +288,7 @@ function get_whats_new_details($update_on, $user_id=NULL)
         }
     }
 
-	if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('login.whats_new', 'borrow_stats')!==FALSE)
+	if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('welcome.whats_new', 'borrow_stats')!==FALSE)
 	{
 		$whats_new_r['heading'] = get_opendb_lang_var('borrow_stats');
 		
@@ -326,7 +326,7 @@ function get_whats_new_details($update_on, $user_id=NULL)
         }
 	}
 
-	if(get_opendb_config_var('login.whats_new', 'review_stats')!==FALSE)
+	if(get_opendb_config_var('welcome.whats_new', 'review_stats')!==FALSE)
 	{
 		$whats_new_r['heading'] = get_opendb_lang_var('review(s)');
 		

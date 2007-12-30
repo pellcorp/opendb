@@ -37,6 +37,54 @@ include_once("./functions/item_input.php");
 include_once("./functions/address_type.php");
 include_once("./functions/secretimage.php");
 
+function perform_changeuser($HTTP_VARS)
+{
+	// save existing user_id so we can restore it.
+    register_opendb_session_var('admin_user_id', get_opendb_session_var('user_id'));
+
+	$user_r = fetch_user_r($HTTP_VARS['uid']);
+    register_opendb_session_var('user_id', $HTTP_VARS['uid']);
+    register_opendb_session_var('user_type', $user_r['type']);
+
+	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Administrator changed user');
+}
+
+function show_changeuser_form()
+{
+	// display owner_id input field.
+	echo _theme_header(get_opendb_lang_var('change_user'));
+
+	echo("<h2>".get_opendb_lang_var('change_user')."</h2>");
+
+	echo("\n<form action=\"user_admin.php\" method=\"GET\">");
+	echo("\n<input type=\"hidden\" name=\"op\" value=\"change_user\">");
+
+	echo("\n<table class=\"changeUserForm\">");
+	$results = fetch_user_rs(PERM_ITEM_OWNER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+	if($results)
+	{
+		echo(
+			format_field(get_opendb_lang_var('user'),
+						custom_select('uid', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')
+					)
+			);
+	}
+	else
+	{
+		echo(
+			format_field(
+					get_opendb_lang_var('user'),
+					get_opendb_lang_var('no_records_found'))
+		);
+	}
+	echo("</table>");
+	
+	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
+	echo("</form>");
+	
+	echo(_theme_footer());
+}
+
 /**
 * @param $op is 'edit' or 'new'
 */
@@ -1218,6 +1266,27 @@ if(is_site_enabled())
 				{
 					echo format_error_block(get_opendb_lang_var('operation_not_available'));
 				}					
+			}
+			else if($HTTP_VARS['op'] == 'change_user')
+			{
+		        if(get_opendb_config_var('user_admin.change_user', 'enable')!==FALSE && is_user_granted_permission(PERM_ADMIN_CHANGE_USER))
+				{
+		            if(strlen($HTTP_VARS['uid'])>0 && is_user_active($HTTP_VARS['uid']))
+					{
+		                perform_changeuser($HTTP_VARS);
+						http_redirect('welcome.php');
+						return;
+					}
+					else
+					{
+						show_changeuser_form();
+					}
+				}
+				else
+				{
+					http_redirect('welcome.php');
+					return;
+				}
 			}
 			else if($HTTP_VARS['op'] == 'signup')
 			{

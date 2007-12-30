@@ -358,9 +358,6 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'themes'
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'widgets', 6, 'Widgets', 'Widgets configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login', 7, 'Login', 'Login / Logout configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.signup', 1, 'Signup', 'Signup configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.last_items_list', 2, 'Login Last Items List', 'Login last items listing configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.whats_new', 3, 'Login Whats New', 'Login whats new summary configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'login.announcements', 4, 'Login Announcements', 'Login announcements configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin', 8, 'User Administration', 'User Administration configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings', 9, 'Item Listings', 'Item Listings configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'listings.filters', 1, 'Item Listing Filters', 'Item Listing filter configuration' );
@@ -380,6 +377,11 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'stats',
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds', 17, 'Feeds', 'Feeds configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.new_items', 1, 'New Items Feed', 'New Items Feed configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.announcements', 2, 'Announcements Feed', 'Announcements Feed configuration' );
+
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'welcome', 18, 'Welcome', 'Login Welcome configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'welcome.last_items_list', 1, 'Last Items List', 'Last items listing configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'welcome.whats_new', 2, 'Whats New', 'Whats new summary configuration' );
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'welcome.announcements', 3, 'Announcements', 'Announcements configuration' );
 
 #
 # Configuration Items
@@ -443,25 +445,24 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email.smtp', 'password', 4, 'Email SMTP Password', '', 'password');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login', 'enable_new_pwd_gen', 1, 'Enable new Password request', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login', 'enable_change_user', 2, 'Enable Change User', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login', 'show_menu', 3, 'Show Menu', 'Should menu be displayed when logging in / out', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login', 'show_menu', 2, 'Show Menu', 'Should menu be displayed when logging in / out', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.signup', 'enable', 1, 'Enable', '', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items from being listed', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'borrow_stats', 4, 'Show Borrow Stats', 'Show Items Returned, Reserved, etc', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.whats_new', 'review_stats', 5, 'Show Review Stats', 'Show number of reviews added.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'enable', 1, 'Enable', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items from being listed', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'borrow_stats', 4, 'Show Borrow Stats', 'Show Items Returned, Reserved, etc', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'review_stats', 5, 'Show Review Stats', 'Show number of reviews added.', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.last_items_list', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.last_items_list', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.last_items_list', 'restrict_last_login', 4, 'Restrict Last Login', 'Restrict list to items added since last login', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.last_items_list', 'total_num_items', 5, 'Total Items to List', 'Should be evenly divisible by Items Per Column', 'number');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.last_items_list', 'datetime_mask', 8, 'Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'enable', 1, 'Enable', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'restrict_last_login', 4, 'Restrict Last Login', 'Restrict list to items added since last login', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'total_num_items', 5, 'Total Items to List', 'Should be evenly divisible by Items Per Column', 'number');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'datetime_mask', 8, 'Datetime Mask', '', 'datemask');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'display_count', 2, 'Display Count', 'Number of Announcements to list', 'number');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.announcements', 'datetime_mask', 3, 'Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.announcements', 'enable', 1, 'Enable', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.announcements', 'display_count', 2, 'Display Count', 'Number of Announcements to list', 'number');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.announcements', 'datetime_mask', 3, 'Datetime Mask', '', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('import', 'row_import_default_initcap_checked', 1, 'Row Import Initcap Enabled', 'Initcap checked by default', 'boolean');
 
@@ -472,6 +473,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 5, 'Delete user with inactive lender records', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_passwd_change_allowed', 6, 'Change Password support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'datetime_mask', 7, 'Datetime Mask', '', 'datemask');
+
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin.change_user', 1, 'Change User', 'Change User Configuration' );
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin.change_user', 'enable', 1, 'Enable', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'piechart_striped', 1, 'Piechart striped', 'Draw every other pie wedge a different colour', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'piechart_12oclock', 2, 'Piechart 12oclock', '', 'boolean');
@@ -634,23 +638,23 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email', 'no
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email.smtp', 'host', 'mail.domain.edu.au');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('email.smtp', 'username', 'jpell');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login', 'enable_new_pwd_gen', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login', 'enable_change_user', 'TRUE');
+
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login', 'show_menu', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.whats_new', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.whats_new', 'show_heading', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.whats_new', 'borrow_stats', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.whats_new', 'review_stats', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.whats_new', 'exclude_current_user', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'enable', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'show_heading', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'exclude_current_user', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'restrict_last_login', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'total_num_items', '18');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.last_items_list', 'show_item_image', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.announcements', 'enable', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.announcements', 'show_heading', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.announcements', 'display_count', '3');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'borrow_stats', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'review_stats', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'exclude_current_user', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'enable', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'show_heading', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'exclude_current_user', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'restrict_last_login', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'total_num_items', '18');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'show_item_image', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'enable', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'show_heading', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'display_count', '3');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('menu', 'other_items_listing', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('menu', 'all_items_listing', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('import', 'row_import_default_initcap_checked', 'TRUE');
@@ -661,6 +665,9 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin'
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_reviews','TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_borrower_inactive_borrowed_items', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 'FALSE');
+
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin.change_user', 'enable', 'TRUE');
+
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'image_type', 'png');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'piechart_12oclock', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'piechart_sort', 'asc');

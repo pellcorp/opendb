@@ -192,8 +192,11 @@ function is_exists_review($sequence_number)
 	return FALSE;
 }
 
-function is_review_author($sequence_number, $author_id)
+function is_review_author($sequence_number, $author_id = NULL)
 {
+	if($author_id == NULL)
+		$author_id = get_opendb_session_var('user_id');
+		
 	$query = "SELECT author_id FROM review ".
 			"WHERE sequence_number = $sequence_number";
 	

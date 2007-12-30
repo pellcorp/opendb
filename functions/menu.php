@@ -194,7 +194,7 @@ function get_menu_options($user_id)
 	
 	if(is_user_granted_permission(PERM_ADMIN_CHANGE_USER, $user_id))
 	{
-		$menu_options['user'][] = array(link=>get_opendb_lang_var('change_user'), url=>"login.php?op=change_user");
+		$menu_options['user'][] = array(link=>get_opendb_lang_var('change_user'), url=>"user_admin.php?op=change_user");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_SEND_EMAIL, $user_id))

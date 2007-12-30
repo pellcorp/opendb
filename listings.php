@@ -960,7 +960,7 @@ if(is_site_enabled())
 						strlen($HTTP_VARS['owner_id'])==0 && 
 						strlen($HTTP_VARS['not_owner_id'])==0
 					) || $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') 
-					  || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))
+					  || is_user_granted_permission(PERM_ADMIN_BORROWER)
 				) && 
 				(
 					get_opendb_config_var('listings', 'show_input_actions') || 
@@ -983,7 +983,6 @@ if(is_site_enabled())
 		{
 			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
 			
-			// Current user.
 			if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))
 				$page_title = get_opendb_lang_var('my_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
 			else if(strlen($HTTP_VARS['owner_id'])>0)
@@ -995,7 +994,6 @@ if(is_site_enabled())
 		}
 		else
 		{
-			// Current user.
 			if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))
 				$page_title = get_opendb_lang_var('my_item_listing');
 			else if(strlen($HTTP_VARS['owner_id'])>0)
@@ -1047,8 +1045,6 @@ if(is_site_enabled())
  				}
 			}
 		}
-		
-		
 		
 		echo(getListingFiltersBlock());
 		echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));
@@ -1132,8 +1128,10 @@ if(is_site_enabled())
 									is_user_granted_permission(PERM_USER_BORROWER) && 
 									!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) &&
 									
-									(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
-									(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || !is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
+									(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || 
+											!is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
+									(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || 
+											!is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
 						{
 							$listingObject->addCheckboxColumn($item_r['item_id']."_".$item_r['instance_no'], FALSE);
 						}
@@ -1236,7 +1234,7 @@ if(is_site_enabled())
 								// If a comment is allowed and defined, add it in.
 								if($status_type_rs[$item_r['s_status_type']]['status_comment_ind'] == 'Y' || 
 										get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-										is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) )
+										is_user_granted_permission(PERM_ITEM_ADMIN) )
 								{
 									 // support newlines in this field
 									$listingObject->addColumn(nl2br($item_r['status_comment']));
@@ -1265,8 +1263,7 @@ if(is_site_enabled())
 							$action_links_rs = NULL;
 						
 							// Administrator and Owner actions here.
-							if($item_r['owner_id'] == get_opendb_session_var('user_id') || 
-									is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+							if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_ADMIN))
 							{
 								// The option of having only Quick Checkout links should be provided.
 								if(get_opendb_config_var('listings', 'show_input_actions'))

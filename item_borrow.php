@@ -115,8 +115,7 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 		$errors = get_opendb_lang_var('user_must_be_borrower', 'user_id', $borrower_id);
 		return FALSE;
 	}
-	else if(!is_user_owner_of_item($item_id, $instance_no) && 
-			!is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	else if(!is_user_owner_of_item($item_id, $instance_no) && !is_user_granted_permission(PERM_ADMIN_BORROWER))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;
@@ -274,7 +273,7 @@ function handle_reminder($sequence_number, &$errors)
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
 	
 	// Administrator should be allowed to send reminders for other peoples items.
-	if(!is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) &&
+	if(!is_user_granted_permission(PERM_ADMIN_BORROWER) &&
 			!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'], get_opendb_session_var('user_id')))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
@@ -917,7 +916,7 @@ if(is_site_enabled())
 				
 				echo("\n$dashed_line\n\n");
 				
-				if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+				if(is_user_granted_permission(PERM_ADMIN_BORROWER))
 				{
 					if(is_valid_opendb_mailer())
 					{

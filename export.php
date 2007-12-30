@@ -631,7 +631,7 @@ if(is_site_enabled())
 			else
 			{
 				// A custom title.
-				if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && strlen($HTTP_VARS['owner_id'])==0)
+				if(is_user_granted_permission(PERM_ADMIN_EXPORT) && strlen($HTTP_VARS['owner_id'])==0)
 					$page_title = get_opendb_lang_var('export_items');
 				else if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') || strlen($HTTP_VARS['owner_id'])==0)
 					$page_title = get_opendb_lang_var('export_my_items');

@@ -154,10 +154,10 @@ function is_site_enabled()
 		// configured to be disabled.
 		if(get_opendb_config_var('site', 'enable')!==FALSE)
     	    return TRUE;
-		else if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+		else if(is_user_granted_permission(PERM_ADMIN_LOGIN))
 			return TRUE;
 		else if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && // change user active
-					strlen(get_opendb_session_var('admin_user_id'))>0 && is_user_admin(get_opendb_session_var('admin_user_id')))
+					strlen(get_opendb_session_var('admin_user_id'))>0 && is_user_granted_permission(PERM_ADMIN_LOGIN, get_opendb_session_var('admin_user_id')))
 		{
 			return TRUE;
 		}

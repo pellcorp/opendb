@@ -390,7 +390,7 @@ function fetch_opendb_table_list_r()
 				'announcement', 'import_cache', 'file_cache', 'php_session',
 				's_file_type_content_group', 's_file_type', 's_file_type_extension', 
 				's_language', 's_language_var', 's_table_language_var', 's_opendb_release',
-  				'item_instance_relationship', 'mailbox'
+  				'item_instance_relationship', 'mailbox', 's_role', 's_permission', 's_role_permission'
 			);
   	
     return $tables;

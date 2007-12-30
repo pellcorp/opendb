@@ -376,6 +376,26 @@ UPDATE s_attribute_type SET input_type_arg2 = NULL, prompt = 'Length (minutes)' 
 DELETE FROM s_config_group_item WHERE group_id = 'login.signup' AND id = 'restrict_usertypes';
 DELETE FROM s_config_group_item_var WHERE group_id = 'login.signup' AND id = 'restrict_usertypes';
 
+# move change user to user admin section
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin.change_user', 2, 'Change User', 'Change User Configuration' );
+
+UPDATE s_config_group_item SET group_id = 'user_admin.change_user', id = 'enable', prompt = 'Enable' WHERE group_id = 'login' AND id = 'enable_change_user';
+UPDATE s_config_group_item_var SET group_id = 'user_admin.change_user', id = 'enable' WHERE group_id = 'login' AND id = 'enable_change_user';
+
+# move welcome screen config from login to new welcome group
+INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'welcome', 18, 'Welcome', 'Login Welcome configuration' );
+
+UPDATE s_config_group SET id = 'welcome.whats_new', description = 'Last items listing configuration' WHERE id = 'login.whats_new';
+UPDATE s_config_group SET id = 'welcome.last_items_list', description = 'Whats new summary configuration' WHERE id = 'login.last_items_list';
+UPDATE s_config_group SET id = 'welcome.announcements', description = 'Announcements configuration' WHERE id = 'login.announcements';
+
+UPDATE s_config_group_item SET group_id = 'welcome.whats_new' WHERE group_id = 'login.whats_new';
+UPDATE s_config_group_item SET group_id = 'welcome.last_items_list' WHERE group_id = 'login.last_items_list';
+UPDATE s_config_group_item SET group_id = 'welcome.announcements' WHERE group_id = 'login.announcements';
+UPDATE s_config_group_item_var SET group_id = 'welcome.whats_new' WHERE group_id = 'login.whats_new';
+UPDATE s_config_group_item_var SET group_id = 'welcome.last_items_list' WHERE group_id = 'login.last_items_list';
+UPDATE s_config_group_item_var SET group_id = 'welcome.announcements' WHERE group_id = 'login.announcements';
+
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),

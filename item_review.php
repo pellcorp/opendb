@@ -128,7 +128,7 @@ if(is_site_enabled())
 				{
 					if(get_opendb_config_var('item_review', 'update_support')!==FALSE)
 					{
-						if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
+						if(is_review_author($review_r['sequence_number']) || is_user_granted_permission(PERM_REVIEW_ADMIN))
 						{
 							$HTTP_VARS['comment'] = filter_input_field('htmlarea(55,10)', $HTTP_VARS['comment']);
 							if(strlen($HTTP_VARS['comment'])>0)
@@ -158,7 +158,7 @@ if(is_site_enabled())
 				{
 					if(get_opendb_config_var('item_review', 'delete_support')!==FALSE)
 					{
-						if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
+						if(is_review_author($review_r['sequence_number']) || is_user_granted_permission(PERM_REVIEW_ADMIN))
 						{
 							if($HTTP_VARS['confirmed'] == 'true')
 							{
@@ -190,7 +190,7 @@ if(is_site_enabled())
 				{
 					if(get_opendb_config_var('item_review', 'update_support')!==FALSE)
 					{
-						if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
+						if(is_review_author($review_r['sequence_number']) || is_user_granted_permission(PERM_REVIEW_ADMIN))
 						{
 							echo get_edit_form('update', $review_r, $HTTP_VARS);
 						}

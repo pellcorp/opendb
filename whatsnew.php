@@ -61,7 +61,7 @@ if(is_site_enabled())
 			echo("\n<div id=\"lastitemlist-container\">".
 				get_last_item_list_marquee(
 					get_last_item_list(
-						get_opendb_config_var('login.last_items_list', 'total_num_items'),
+						get_opendb_config_var('welcome.last_items_list', 'total_num_items'),
 						NULL, //$owner_id
 						NULL, //$s_item_type
 						NULL, //$update_on

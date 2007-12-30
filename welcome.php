@@ -40,9 +40,9 @@ include_once("./functions/SourceforgeVersionCheck.class.php");
 
 function get_lastitems_list_blocks_r($update_on, $user_id)
 {
-	if(get_opendb_config_var('login.last_items_list', 'enable')!==FALSE)
+	if(get_opendb_config_var('welcome.last_items_list', 'enable')!==FALSE)
 	{
-		$last_items_list_conf_r = get_opendb_config_var('login.last_items_list');
+		$last_items_list_conf_r = get_opendb_config_var('welcome.last_items_list');
 		
 		if($last_items_list_conf_r['exclude_current_user']!==TRUE)
 			$user_id = NULL;
@@ -154,14 +154,13 @@ function get_announcements_block()
 		}
 	}
 
-    if(get_opendb_config_var('login.announcements', 'enable')!==FALSE && 
-							is_user_granted_permission(PERM_VIEW_ANNOUNCEMENTS))
+    if(get_opendb_config_var('welcome.announcements', 'enable')!==FALSE && is_user_granted_permission(PERM_VIEW_ANNOUNCEMENTS))
 	{
 		$results = fetch_announcement_rs(
 					'submit_on',
 					'DESC', 
 					0, 
-					get_opendb_config_var('login.announcements','display_count'), 
+					get_opendb_config_var('welcome.announcements','display_count'), 
 					'Y', 
 					'Y');
 					
@@ -170,7 +169,7 @@ function get_announcements_block()
 			while($announcement_r = db_fetch_assoc($results))
 			{
 				$buffer .= "<li><h4>".$announcement_r['title']."</h4>";
-				$buffer .= "<small class=\"submitDate\">".get_localised_timestamp(get_opendb_config_var('login.announcements', 'datetime_mask'),$announcement_r['submit_on'])."</small>";
+				$buffer .= "<small class=\"submitDate\">".get_localised_timestamp(get_opendb_config_var('welcome.announcements', 'datetime_mask'),$announcement_r['submit_on'])."</small>";
 				$buffer .= "<p class=\"content\">".nl2br($announcement_r['content'])."</p></li>";
 			}
 			db_free_result($results);
@@ -197,7 +196,7 @@ place, without having to rewrite the page logic.
 */
 function display_last_login_block($userid, $usertype, $lastvisit)
 {
-	if(get_opendb_config_var('login.whats_new', 'enable')!==FALSE && 
+	if(get_opendb_config_var('welcome.whats_new', 'enable')!==FALSE && 
 			is_user_granted_permission(PERM_VIEW_WHATSNEW))
 	{
 		$buffer .= "\n<div id=\"whatsnew\">";
@@ -227,7 +226,7 @@ function display_last_login_block($userid, $usertype, $lastvisit)
 		$buffer .= "\n</div>";
 	}
 
-	if(get_opendb_config_var('login.last_items_list', 'enable')!==FALSE && 
+	if(get_opendb_config_var('welcome.last_items_list', 'enable')!==FALSE && 
 			is_user_granted_permission(PERM_VIEW_LISTINGS))
 	{
 		$lastitemlist_blocks_r = get_lastitems_list_blocks_r($lastvisit, $userid);

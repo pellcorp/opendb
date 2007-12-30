@@ -80,20 +80,6 @@ function is_exist_users_not_activated()
 	return FALSE;
 }
 
-function is_user_admin($uid = NULL, $type = NULL)
-{
-	return true;
-	/*if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else if(strlen($type)==0)
-		$type = get_opendb_session_var('user_type');
-			
-	if ($type == 'A')
-		return TRUE;
-	else
-		return FALSE;*/
-}
-
 /**
 	Checks if uid actually exists.
 

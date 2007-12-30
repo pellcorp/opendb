@@ -1104,10 +1104,10 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 
 function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
 {
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-			$item_r['owner_id'] == get_opendb_session_var('user_id') || 
-			($op == 'newinstance' && 
-			is_user_granted_permission(PERM_ITEM_OWNER)) )
+	if(is_user_granted_permission(PERM_ITEM_ADMIN) || 
+			(is_user_granted_permission(PERM_ITEM_OWNER) && 
+				$item_r['owner_id'] == get_opendb_session_var('user_id') || 
+				$op == 'newinstance' ) )
 	{
 		$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
 		if($formContents != FALSE)

@@ -95,6 +95,9 @@ class amazon extends SitePlugin
 							//http://www.amazon.com/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
 							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
 							{
+								if(strpos($matches[1][$i], "no-img")!==FALSE)
+									$matches[1][$i] = NULL;
+								
 								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}

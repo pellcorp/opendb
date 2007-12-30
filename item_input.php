@@ -1106,8 +1106,8 @@ function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILE
 {
 	if(is_user_granted_permission(PERM_ITEM_ADMIN) || 
 			(is_user_granted_permission(PERM_ITEM_OWNER) && 
-				$item_r['owner_id'] == get_opendb_session_var('user_id') || 
-				$op == 'newinstance' ) )
+				( $item_r['owner_id'] == get_opendb_session_var('user_id') || 
+					$op == 'newinstance' )) )
 	{
 		$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
 		if($formContents != FALSE)
@@ -1810,7 +1810,7 @@ if(is_site_enabled())
 
 	if (is_opendb_valid_session())
 	{
-		if(is_user_granted_permission(PERM_ITEM_OWNER))
+		if(is_user_granted_permission(PERM_ITEM_OWNER) || is_user_granted_permission(PERM_ITEM_ADMIN))
 		{
 			if($HTTP_VARS['op'] == 'new' || 
 					$HTTP_VARS['op'] == 'insert' || 

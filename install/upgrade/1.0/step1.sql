@@ -399,6 +399,10 @@ UPDATE s_config_group_item_var SET group_id = 'welcome.whats_new' WHERE group_id
 UPDATE s_config_group_item_var SET group_id = 'welcome.last_items_list' WHERE group_id = 'login.last_items_list';
 UPDATE s_config_group_item_var SET group_id = 'welcome.announcements' WHERE group_id = 'login.announcements';
 
+# this option only available to admin borrowers - will enable more targeted role permission if required.
+DELETE FROM s_config_group_item WHERE group_id = 'borrow' AND id IN ('list_all_reserved', 'list_all_borrowed');
+DELETE FROM s_config_group_item_var WHERE group_id = 'borrow' AND id IN ('list_all_reserved', 'list_all_borrowed');
+
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),

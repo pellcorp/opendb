@@ -569,8 +569,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'checkin_email_notification', 20, 'Check in Notification', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'date_mask', 21, 'Date Mask', 'Due date formatting', 'datemask');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'datetime_mask', 22, 'Datetime Mask', '', 'datemask');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'list_all_borrowed', 23, 'All Borrowed Items Listing', 'Allow listing of all borrowed items', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'list_all_reserved', 24, 'All Reserved Items Listing', 'Allow listing of all reserved items', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow.reminder', 'duration_range', 1, 'Duration Range', 'Reminder job duration range, as follows: +X = X days overdue; 0 = on day due; -X = X days before due date', 'number');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow.checkout', 'alt_id_attribute_type', 1, 'Alt ID Attribute Type', 'The attribute type that will store the alternate ID used for auto checkin / checkout', 'instance_attribute_type');
@@ -750,8 +748,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'r
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'allow_multi_reserve',  'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'allow_reserve_if_borrowed', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'quick_checkout_use_existing_reservation', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'list_all_borrowed', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'list_all_reserved', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'include_borrower_column', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'reserve_basket', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'duration_support', 'TRUE');

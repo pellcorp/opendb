@@ -287,7 +287,9 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	// ---------------------- Borrow,Reserve,Cancel,Edit,Delete,etc operations here.
 	$action_links_rs = NULL;
 	
-	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_granted_permission(PERM_ITEM_ADMIN))
+	if((is_user_granted_permission(PERM_ITEM_OWNER) && 
+			get_opendb_session_var('user_id') === $item_r['owner_id']) || 
+			is_user_granted_permission(PERM_ITEM_ADMIN))
 	{
 		$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'edit.gif',text=>get_opendb_lang_var('edit'));
 								

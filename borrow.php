@@ -74,9 +74,7 @@ if(is_site_enabled())
 												$listingObject->getCurrentSortOrder());
 					}
 				}
-				else if($HTTP_VARS['op'] == 'all_borrowed' && 
-							(get_opendb_config_var('borrow', 'list_all_borrowed')!==FALSE || 
-									is_user_granted_permission(PERM_ADMIN_BORROWER)))
+				else if($HTTP_VARS['op'] == 'all_borrowed' && is_user_granted_permission(PERM_ADMIN_BORROWER))
 				{
 					$page_title = get_opendb_lang_var('items_borrowed');
 					
@@ -99,9 +97,7 @@ if(is_site_enabled())
 											$listingObject->getCurrentSortOrder());
 					}
 				}
-				else if($HTTP_VARS['op'] == 'all_reserved' && 
-						(get_opendb_config_var('borrow', 'list_all_reserved')!==FALSE || 
-								is_user_granted_permission(PERM_ADMIN_BORROWER)))
+				else if($HTTP_VARS['op'] == 'all_reserved' && is_user_granted_permission(PERM_ADMIN_BORROWER))
 				{
 					$page_title = get_opendb_lang_var('items_reserved');
 					if(is_numeric($listingObject->getItemsPerPage()))

@@ -82,14 +82,12 @@ function get_menu_options($user_id)
 	
 	if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 	{
-		if(is_exists_borrowed() && 
-				(get_opendb_config_var('borrow', 'list_all_borrowed')!==FALSE || is_user_granted_permission(PERM_ADMIN_BORROWER, $user_id)) )
+		if(is_exists_borrowed() && is_user_granted_permission(PERM_ADMIN_BORROWER, $user_id))
 		{
 			$menu_options['borrow'][] = array(link=>get_opendb_lang_var('items_borrowed'), url=>"borrow.php?op=all_borrowed");
 		}
 			
-		if(is_exists_reserved() && 
-				(get_opendb_config_var('borrow', 'list_all_reserved')!==FALSE || is_user_granted_permission(PERM_ADMIN_BORROWER, $user_id)) )
+		if(is_exists_reserved() && is_user_granted_permission(PERM_ADMIN_BORROWER, $user_id))
 		{
 			$menu_options['borrow'][] = array(link=>get_opendb_lang_var('items_reserved'), url=>"borrow.php?op=all_reserved");
 		}

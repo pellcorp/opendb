@@ -362,12 +362,15 @@ UPDATE s_config_group_item SET type = 'text' WHERE group_id = 'logging' AND id =
 # its not intended to expose via the configuration.
 DELETE FROM s_config_group_item WHERE group_id = 'http.cache' AND id = 'directory';
 DELETE FROM s_config_group_item WHERE group_id = 'http.item.cache' AND id = 'directory';
-DELETE FROM s_config_group_item WHERE group_id = 'import.cache' AND id = 'file_location';
-DELETE FROM s_config_group_item WHERE group_id = 'item_input.upload' AND id = 'file_location';
 DELETE FROM s_config_group_item_var WHERE group_id = 'http.cache' AND id = 'directory';
 DELETE FROM s_config_group_item_var WHERE group_id = 'http.item.cache' AND id = 'directory';
-DELETE FROM s_config_group_item_var WHERE group_id = 'import.cache' AND id = 'file_location';
-DELETE FROM s_config_group_item_var WHERE group_id = 'item_input.upload' AND id = 'file_location';
+
+DELETE FROM s_config_group_item WHERE group_id = 'import.cache';
+DELETE FROM s_config_group_item WHERE group_id = 'item_input.upload';
+DELETE FROM s_config_group_item_var WHERE group_id = 'import.cache';
+DELETE FROM s_config_group_item_var WHERE group_id = 'item_input.upload';
+DELETE FROM s_config_group WHERE id = 'import.cache';
+DELETE FROM s_config_group WHERE id = 'item_input.upload';
 
 # discontinuing support for field masks, add 'minutes' to Run Time prompt.
 UPDATE s_attribute_type SET input_type_arg2 = NULL, prompt = 'Length (minutes)' WHERE s_attribute_type = 'RUN_TIME';

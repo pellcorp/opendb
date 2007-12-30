@@ -372,7 +372,6 @@ INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'borrow.checkout', 2, 'Item Borrow Checkouts / Checkins', 'Borrow check in / check out configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'search', 14, 'Item Search', 'Item Search configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import', 15, 'Import', 'Import configuration' );
-INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'import.cache', 1, 'Import Cache', 'Import Cache configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'stats', 16, 'Statistics', 'Statistics configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds', 17, 'Feeds', 'Feeds configuration' );
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'feeds.new_items', 1, 'New Items Feed', 'New Items Feed configuration' );

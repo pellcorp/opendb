@@ -25,22 +25,22 @@ include_once("./functions/email.php");
 include_once("./functions/borrowed_item.php");
 include_once("./functions/announcement.php");
 
-function get_printable_link_r($pageid)
+function get_printable_page_url($pageid)
 {
 	global $PHP_SELF;
 	global $HTTP_VARS;
 	
 	if($pageid == 'listings' || $pageid == 'borrow')
 	{
-		return array(url=>"$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'), array('listing_link')),
-					title=>get_opendb_lang_var('printable_version'),
-					image=>_theme_image_src("printable.gif"));
+		return "$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'), array('listing_link'));
 	}
 	else if($pageid == 'item_display')
 	{
-		return array(url=>"$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable')),
-					title=>get_opendb_lang_var('printable_version'),
-					image=>_theme_image_src("printable.gif"));
+		return "$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'));
+	}
+	else
+	{
+		return NULL;
 	}
 }
 
@@ -181,28 +181,27 @@ function get_menu_options($user_id)
 	{	
 		if(is_exist_users_not_activated())
 	    {
-	    	$menu_options['admin'][] = array(link=>get_opendb_lang_var('activate_users'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
+	    	$menu_options['user'][] = array(link=>get_opendb_lang_var('activate_users'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
 		}
 
-		$menu_options['admin'][] = array(link=>get_opendb_lang_var('user_list'), url=>"user_listing.php?order_by=fullname&sortorder=ASC");
+		$menu_options['user'][] = array(link=>get_opendb_lang_var('user_list'), url=>"user_listing.php?order_by=fullname&sortorder=ASC");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_CREATE_USER, $user_id))
 	{
-		$menu_options['admin'][] = array(link=>get_opendb_lang_var('add_new_user'), url=>"user_admin.php?op=new_user");
+		$menu_options['user'][] = array(link=>get_opendb_lang_var('add_new_user'), url=>"user_admin.php?op=new_user");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_CHANGE_USER, $user_id))
 	{
-		$menu_options['admin'][] = array(link=>get_opendb_lang_var('change_user'), url=>"login.php?op=change_user");
+		$menu_options['user'][] = array(link=>get_opendb_lang_var('change_user'), url=>"login.php?op=change_user");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_SEND_EMAIL, $user_id))
 	{
-		// no point providing this option if email disabled.
 		if(is_valid_opendb_mailer())
 		{
-			$menu_options['admin'][] = array(link=>get_opendb_lang_var('email_users'), url=>"email.php?op=send_to_all");
+			$menu_options['user'][] = array(link=>get_opendb_lang_var('email_users'), url=>"email.php?op=send_to_all");
 		}
 	}
 	
@@ -255,7 +254,6 @@ function get_menu_option($option_r)
 	return $buffer;
 }
 
-// TODO - this is a bit of a hack, it should be revisited at some later time
 function is_menu_option_active($option_r)
 {
 	global $HTTP_VARS;

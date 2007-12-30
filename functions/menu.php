@@ -44,18 +44,8 @@ function get_printable_page_url($pageid)
 	}
 }
 
-/**
-	You can use this menu options function, with standard image names
-	to automatically generate a menu with images, instead of text.
-
-	The image names should match the s_language_var id for the 'link'
-	element.
-*/
 function get_menu_options($user_id)
 {
-	global $PHP_SELF;
-	global $HTTP_VARS;
-	
 	$menu_options = array();
 	
 	if(is_user_granted_permission(PERM_ITEM_OWNER, $user_id))
@@ -90,7 +80,6 @@ function get_menu_options($user_id)
 		$menu_options['item'][] = array(link=>get_opendb_lang_var('export_my_items'), url=>"export.php");
 	}
 	
-	// Is borrow functionality enabled?
 	if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 	{
 		if(is_exists_borrowed() && 
@@ -129,7 +118,6 @@ function get_menu_options($user_id)
 
 		if(is_user_granted_permission(PERM_ITEM_OWNER, $user_id))
 		{
-			$include_spacer=FALSE;
 			if(is_exists_owner_reserved($user_id))
 			{
 				$menu_options['borrow'][] = array(link=>get_opendb_lang_var('check_out_item(s)'), url=>"borrow.php?op=owner_reserved");

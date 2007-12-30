@@ -55,6 +55,7 @@ define('PERM_ADMIN_SEND_EMAIL', 'PERM_ADMIN_SEND_EMAIL');
 define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
 define('PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL');
 
+// todo - cache user_role and permissions list after first call
 function is_user_granted_permission($permission, $user_id = NULL)
 {
 	if(is_site_public_access())

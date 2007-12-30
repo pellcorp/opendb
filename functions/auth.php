@@ -23,50 +23,37 @@ include_once("./functions/utils.php");
 include_once("./functions/http.php");
 include_once("./functions/config.php");
 
-define('PERM_ADMIN_TOOLS', 'PERM_ADMIN_TOOLS');
-define('PERM_USER_BORROWER', 'PERM_USER_BORROWER');
-define('PERM_ADMIN_BORROWER', 'PERM_ADMIN_BORROWER');
-
-define('PERM_REVIEW_ADMIN', 'PERM_REVIEW_ADMIN');
-define('PERM_REVIEW_AUTHOR', 'PERM_REVIEW_AUTHOR');
-
-define('PERM_ADMIN_EXPORT', 'PERM_ADMIN_EXPORT');
-define('PERM_ADMIN_IMPORT', 'PERM_ADMIN_IMPORT');
-
-define('PERM_USER_EXPORT', 'PERM_USER_EXPORT');
-define('PERM_USER_IMPORT', 'PERM_USER_IMPORT');
-
-define('PERM_ITEM_OWNER', 'PERM_ITEM_OWNER');
-define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
-define('PERM_ITEM_DISPLAY', 'PERM_ITEM_DISPLAY');
-
-
-define('PERM_ADMIN_ANNOUNCEMENTS', 'PERM_ADMIN_ANNOUNCEMENTS');
-
-define('PERM_ADMIN_USER_PROFILE', 'PERM_ADMIN_USER_PROFILE');
-define('PERM_ADMIN_USER_LISTING', 'PERM_ADMIN_USER_LISTING');
-define('PERM_EDIT_USER_PROFILE', 'PERM_EDIT_USER_PROFILE');
-define('PERM_VIEW_USER_PROFILE', 'PERM_VIEW_USER_PROFILE');
-define('PERM_ADMIN_CREATE_USER', 'PERM_ADMIN_CREATE_USER');
-
-define('PERM_ADMIN_CHANGE_PASSWORD', 'PERM_ADMIN_CHANGE_PASSWORD');
-
-define('PERM_CHANGE_PASSWORD', 'PERM_CHANGE_PASSWORD');
-
-define('PERM_ADMIN_QUICK_CHECKOUT', 'PERM_ADMIN_QUICK_CHECKOUT');
-
-define('PERM_ADMIN_LOGIN', 'PERM_ADMIN_LOGIN');
-define('PERM_ADMIN_CHANGE_USER', 'PERM_ADMIN_CHANGE_USER');
-
-define('PERM_ADMIN_SEND_EMAIL', 'PERM_ADMIN_SEND_EMAIL');
-define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
-define('PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL');
-
 define('PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS');
 define('PERM_VIEW_WHATSNEW', 'PERM_VIEW_WHATSNEW');
 define('PERM_VIEW_LISTINGS', 'PERM_VIEW_LISTINGS');
 define('PERM_VIEW_STATS', 'PERM_VIEW_STATS');
 define('PERM_VIEW_ADVANCED_SEARCH', 'PERM_VIEW_ADVANCED_SEARCH');
+define('PERM_VIEW_USER_PROFILE', 'PERM_VIEW_USER_PROFILE');
+define('PERM_VIEW_ITEM_DISPLAY', 'PERM_VIEW_ITEM_DISPLAY');
+define('PERM_ADMIN_TOOLS', 'PERM_ADMIN_TOOLS');
+define('PERM_USER_BORROWER', 'PERM_USER_BORROWER');
+define('PERM_ADMIN_BORROWER', 'PERM_ADMIN_BORROWER');
+define('PERM_ADMIN_REVIEWER', 'PERM_ADMIN_REVIEWER');
+define('PERM_USER_REVIEWER', 'PERM_USER_REVIEWER');
+define('PERM_ADMIN_EXPORT', 'PERM_ADMIN_EXPORT');
+define('PERM_USER_EXPORT', 'PERM_USER_EXPORT');
+define('PERM_ADMIN_IMPORT', 'PERM_ADMIN_IMPORT');
+define('PERM_USER_IMPORT', 'PERM_USER_IMPORT');
+define('PERM_ITEM_OWNER', 'PERM_ITEM_OWNER');
+define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
+define('PERM_ADMIN_ANNOUNCEMENTS', 'PERM_ADMIN_ANNOUNCEMENTS');
+define('PERM_ADMIN_USER_PROFILE', 'PERM_ADMIN_USER_PROFILE');
+define('PERM_ADMIN_USER_LISTING', 'PERM_ADMIN_USER_LISTING');
+define('PERM_EDIT_USER_PROFILE', 'PERM_EDIT_USER_PROFILE');
+define('PERM_CHANGE_PASSWORD', 'PERM_CHANGE_PASSWORD');
+define('PERM_ADMIN_QUICK_CHECKOUT', 'PERM_ADMIN_QUICK_CHECKOUT');
+define('PERM_ADMIN_CREATE_USER', 'PERM_ADMIN_CREATE_USER');
+define('PERM_ADMIN_CHANGE_PASSWORD', 'PERM_ADMIN_CHANGE_PASSWORD');
+define('PERM_ADMIN_LOGIN', 'PERM_ADMIN_LOGIN');
+define('PERM_ADMIN_CHANGE_USER', 'PERM_ADMIN_CHANGE_USER');
+define('PERM_ADMIN_SEND_EMAIL', 'PERM_ADMIN_SEND_EMAIL');
+define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
+define('PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL');
 
 function is_user_granted_permission($permission, $user_id = NULL)
 {
@@ -101,51 +88,18 @@ function is_user_granted_permission($permission, $user_id = NULL)
 	return FALSE;
 }
 
-/**
-Test that public access enabled, and currently 'logged' in user is the
-configured public access user.
-
-Its important to remember that the caller is expecting this method to return TRUE, if
-public access is enabled in configuration, and page currently being access is available
-via public access configuration.  This method will only ever be used where there is not
-currently a login session.
-*/
 function is_site_public_access()
 {
-	global $PHP_SELF;
-
-	if(is_opendb_configured() && !is_opendb_valid_session())
-	{
-		$site_plugin_access_r = get_opendb_config_var('site.public_access');
-		if($site_plugin_access_r['enable'] === TRUE)
-		{
-			$page = basename($PHP_SELF, '.php');
-			return is_site_public_access_page($page);
-		}
-	}
-	
-	//else
-    return FALSE;
-}
-
-function is_site_public_access_page($page)
-{
-	$site_plugin_access_r = get_opendb_config_var('site.public_access');
-	if($page == 'index' || $site_plugin_access_r[$page]!==FALSE)
+	if(is_opendb_configured() && !is_opendb_valid_session() && get_opendb_config_var('site.public_access', 'enable') === TRUE)
 	{
 		return TRUE;
 	}
-	
-	//else
-	return FALSE;
+	else
+	{
+	    return FALSE;
+	}
 }
 
-/**
-	If currently logged in user is an Administrator, then even if site is explicitly
-	disabled, the admin will still be able to use the site.  All users will be able
-	to login, even when site is disabled, but as soon as they are successfully logged
-	in, and they are not admin, all other functions will be disabled.
-*/
 function is_site_enabled()
 {
     if(is_opendb_configured())
@@ -156,8 +110,7 @@ function is_site_enabled()
     	    return TRUE;
 		else if(is_user_granted_permission(PERM_ADMIN_LOGIN))
 			return TRUE;
-		else if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && // change user active
-					strlen(get_opendb_session_var('admin_user_id'))>0 && is_user_granted_permission(PERM_ADMIN_LOGIN, get_opendb_session_var('admin_user_id')))
+		else if(is_user_admin_changed_user())
 		{
 			return TRUE;
 		}
@@ -165,6 +118,20 @@ function is_site_enabled()
 
 	//else
     return FALSE;
+}
+
+function is_user_admin_changed_user()
+{
+	if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && 
+					strlen(get_opendb_session_var('admin_user_id'))>0 && 
+						is_user_granted_permission(PERM_ADMIN_LOGIN, get_opendb_session_var('admin_user_id')))
+	{
+		return TRUE;		
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 /**

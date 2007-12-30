@@ -907,542 +907,546 @@ function get_search_query_matrix($HTTP_VARS)
 	return $searches;
 }//function get_search_query_matrix($HTTP_VARS)
 
-if(!is_user_granted_permission(PERM_VIEW_LISTINGS))
-{
-	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
-	echo _theme_footer();
-}
+
 
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
 	{
-		// validate specified owner_id, if not an owner, unset, so we pretend it was not even specified.
-		if(strlen($HTTP_VARS['owner_id'])>0 && is_user_granted_permission(PERM_ITEM_OWNER, $HTTP_VARS['owner_id']))
+		if(is_user_granted_permission(PERM_VIEW_LISTINGS))
 		{
-			$show_owner_column=FALSE;
-		}
-		else
-		{
-			$show_owner_column=TRUE;
-			
-			// Specified owner, is not actually a valid owner user, so ignore it.
-			unset($HTTP_VARS['owner_id']);
-		}
-		
-		// Work out whether Item action checkboxes should be displayed.
-		$show_checkbox_column=FALSE;
-		if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
-				get_opendb_config_var('listings.multi_borrow', 'enable')!==FALSE &&
-					(get_opendb_config_var('listings.multi_borrow', 'reserve_action')!==FALSE ||
-						(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE &&
-						get_opendb_config_var('listings.multi_borrow', 'basket_action')===TRUE &&
-						(get_opendb_config_var('listings.multi_borrow', 'basket_action_if_not_empty_only')!==TRUE ||
-							is_exists_my_reserve_basket(get_opendb_session_var('user_id'))))))
-		{
-			// Only users who can borrow should see checkboxes and their own listings.
-			if(is_user_granted_permission(PERM_USER_BORROWER))
+			// validate specified owner_id, if not an owner, unset, so we pretend it was not even specified.
+			if(strlen($HTTP_VARS['owner_id'])>0 && is_user_granted_permission(PERM_ITEM_OWNER, $HTTP_VARS['owner_id']))
 			{
-				if($HTTP_VARS['owner_id'] !== get_opendb_session_var('user_id'))
+				$show_owner_column=FALSE;
+			}
+			else
+			{
+				$show_owner_column=TRUE;
+				
+				// Specified owner, is not actually a valid owner user, so ignore it.
+				unset($HTTP_VARS['owner_id']);
+			}
+			
+			// Work out whether Item action checkboxes should be displayed.
+			$show_checkbox_column=FALSE;
+			if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
+					get_opendb_config_var('listings.multi_borrow', 'enable')!==FALSE &&
+						(get_opendb_config_var('listings.multi_borrow', 'reserve_action')!==FALSE ||
+							(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE &&
+							get_opendb_config_var('listings.multi_borrow', 'basket_action')===TRUE &&
+							(get_opendb_config_var('listings.multi_borrow', 'basket_action_if_not_empty_only')!==TRUE ||
+								is_exists_my_reserve_basket(get_opendb_session_var('user_id'))))))
+			{
+				// Only users who can borrow should see checkboxes and their own listings.
+				if(is_user_granted_permission(PERM_USER_BORROWER))
 				{
-					$show_checkbox_column = TRUE;
+					if($HTTP_VARS['owner_id'] !== get_opendb_session_var('user_id'))
+					{
+						$show_checkbox_column = TRUE;
+					}
 				}
 			}
-		}
-	
-		// Do we need to include the actions column?
-		if(is_user_granted_permission(PERM_USER_BORROWER) &&
-		(
+		
+			// Do we need to include the actions column?
+			if(is_user_granted_permission(PERM_USER_BORROWER) &&
 			(
 				(
 					(
-						strlen($HTTP_VARS['owner_id'])==0 && 
-						strlen($HTTP_VARS['not_owner_id'])==0
-					) || $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') 
-					  || is_user_granted_permission(PERM_ADMIN_BORROWER)
-				) && 
-				(
-					get_opendb_config_var('listings', 'show_input_actions') || 
-					(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE)
-				)
-			) || (get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable'))))
-		{	
-			$show_action_column = TRUE;
-		}
+						(
+							strlen($HTTP_VARS['owner_id'])==0 && 
+							strlen($HTTP_VARS['not_owner_id'])==0
+						) || $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') 
+						  || is_user_granted_permission(PERM_ADMIN_BORROWER)
+					) && 
+					(
+						get_opendb_config_var('listings', 'show_input_actions') || 
+						(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE)
+					)
+				) || (get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable'))))
+			{	
+				$show_action_column = TRUE;
+			}
+				
+			$page_title = NULL;
+			if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
+			{
+				if(strlen($HTTP_VARS['override_page_title'])>0)
+					$page_title = $HTTP_VARS['override_page_title'];
+				else
+					$page_title = get_opendb_lang_var('search_results');
+			}
+			else if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
+			{
+				$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+				
+				if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))
+					$page_title = get_opendb_lang_var('my_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
+				else if(strlen($HTTP_VARS['owner_id'])>0)
+					$page_title = get_opendb_lang_var('s_status_type_item_listing_for_name', array('s_status_type_desc'=>$status_type_r['description'], 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
+				else if(strlen($HTTP_VARS['not_owner_id'])>0)
+					$page_title = get_opendb_lang_var('other_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
+				else
+					$page_title = get_opendb_lang_var('all_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
+			}
+			else
+			{
+				if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))
+					$page_title = get_opendb_lang_var('my_item_listing');
+				else if(strlen($HTTP_VARS['owner_id'])>0)
+					$page_title = get_opendb_lang_var('item_listing_for_name', array('fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
+				else if(strlen($HTTP_VARS['not_owner_id'])>0)
+					$page_title = get_opendb_lang_var('other_item_listing');
+				else
+					$page_title = get_opendb_lang_var('all_item_listing');
+			}
 			
-		$page_title = NULL;
-		if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
-		{
-			if(strlen($HTTP_VARS['override_page_title'])>0)
-				$page_title = $HTTP_VARS['override_page_title'];
-			else
-				$page_title = get_opendb_lang_var('search_results');
-		}
-		else if(is_valid_s_status_type($HTTP_VARS['s_status_type']))
-		{
-			$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
-			
-			if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))
-				$page_title = get_opendb_lang_var('my_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
-			else if(strlen($HTTP_VARS['owner_id'])>0)
-				$page_title = get_opendb_lang_var('s_status_type_item_listing_for_name', array('s_status_type_desc'=>$status_type_r['description'], 'fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
-			else if(strlen($HTTP_VARS['not_owner_id'])>0)
-				$page_title = get_opendb_lang_var('other_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
-			else
-				$page_title = get_opendb_lang_var('all_s_status_type_item_listing', 's_status_type_desc', $status_type_r['description']);
-		}
-		else
-		{
-			if($HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))
-				$page_title = get_opendb_lang_var('my_item_listing');
-			else if(strlen($HTTP_VARS['owner_id'])>0)
-				$page_title = get_opendb_lang_var('item_listing_for_name', array('fullname'=>fetch_user_name($HTTP_VARS['owner_id']), 'user_id'=>$HTTP_VARS['owner_id']));
-			else if(strlen($HTTP_VARS['not_owner_id'])>0)
-				$page_title = get_opendb_lang_var('other_item_listing');
-			else
-				$page_title = get_opendb_lang_var('all_item_listing');
-		}
+			// We need to force the inclusion of a listing link into the HTTP_VARS
+			$HTTP_VARS['listing_link'] = 'y';
 		
-		// We need to force the inclusion of a listing link into the HTTP_VARS
-		$HTTP_VARS['listing_link'] = 'y';
+			echo(_theme_header($page_title, $HTTP_VARS['inc_menu']));
+			echo('<h2>'.$page_title.'</h2>');
+				
+			$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
+			if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0 && is_not_empty_array($v_item_types))
+			{
+				if(!is_item_type_in_item_type_r($v_item_types, $HTTP_VARS['s_item_type']))
+				{
+					unset($HTTP_VARS['s_item_type']);
+				}
+			}
+			
+			if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
+	 		{
+				// default search term if attribute_type specified, but no value provided.
+				if(strlen($HTTP_VARS['attribute_type'])>0 && 
+						strlen($HTTP_VARS['attribute_val']) == 0 && 
+						strlen($HTTP_VARS['lookup_attribute_val'])==0)
+				{
+					$HTTP_VARS['attribute_val'] = '%';
+				}
+				
+				if($HTTP_VARS['show_search_query_matrix']!='N')
+				{
+	 				$matrix_rs = get_search_query_matrix($HTTP_VARS);
+					if(is_not_empty_array($matrix_rs))
+	 				{
+	 					echo('<div class="search-query"><dl>');
+	 					
+	 					while(list(,$matrix_r) = each($matrix_rs))
+	 					{
+	 						echo('<dt>'.$matrix_r['prompt'].'</dt>'.
+	 							'<dd>'.$matrix_r['field'].'</dd>');
+	 					}
+						echo('</dl></div>');
+	 				}
+				}
+			}
+			
+			echo(getListingFiltersBlock());
+			echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));
+			
+			$v_column_display_config_rs = get_column_display_config(
+											$HTTP_VARS, 
+											$show_owner_column, 
+											$show_action_column);
+			
+			$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+			
+			$listingObject->startListing($page_title);
+			
+			if($show_checkbox_column)
+			{
+				$listingObject->addHeaderColumn(NULL, 'item_id_instance_no', FALSE, 'checkbox');
+			}
+			
+			for($i=0; $i<count($v_column_display_config_rs); $i++)
+			{
+				if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
+				{
+					$listingObject->addHeaderColumn(
+								$v_column_display_config_rs[$i]['prompt'], 
+								$v_column_display_config_rs[$i]['fieldname'],
+								$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
+				}
+			}
+			
+			// If no items Per Page - we are listing everything.
+			if(is_numeric($listingObject->getItemsPerPage()))
+			{		
+				$listingObject->setTotalItems(
+						fetch_item_listing_cnt($HTTP_VARS, $v_column_display_config_rs));
+			}
+			
+			// -------------------------------------- Process the Query here -----------------------------------------------------------------
+			if( ($result = fetch_item_listing_rs(
+						$HTTP_VARS,
+						$v_column_display_config_rs, // calculated above
+						$listingObject->getCurrentOrderBy(), 
+						$listingObject->getCurrentSortOrder(), 
+						$listingObject->getStartIndex(),
+						$listingObject->getItemsPerPage())) ) 	
+			{
+				// ----------------------------------------------------------------------------
+				// Save current url string, so we can return to last listings page if required.
+				// ----------------------------------------------------------------------------
+				// The Listing class has already removed any $HTTP_VARS which should not
+				// be passed onto the next request.
+				$v_listing_url_vars = $HTTP_VARS;
 	
-		echo(_theme_header($page_title, $HTTP_VARS['inc_menu']));
-		echo('<h2>'.$page_title.'</h2>');
-			
-		$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
-		if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0 && is_not_empty_array($v_item_types))
-		{
-			if(!is_item_type_in_item_type_r($v_item_types, $HTTP_VARS['s_item_type']))
-			{
-				unset($HTTP_VARS['s_item_type']);
-			}
-		}
-		
-		if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
- 		{
-			// default search term if attribute_type specified, but no value provided.
-			if(strlen($HTTP_VARS['attribute_type'])>0 && 
-					strlen($HTTP_VARS['attribute_val']) == 0 && 
-					strlen($HTTP_VARS['lookup_attribute_val'])==0)
-			{
-				$HTTP_VARS['attribute_val'] = '%';
-			}
-			
-			if($HTTP_VARS['show_search_query_matrix']!='N')
-			{
- 				$matrix_rs = get_search_query_matrix($HTTP_VARS);
-				if(is_not_empty_array($matrix_rs))
- 				{
- 					echo('<div class="search-query"><dl>');
- 					
- 					while(list(,$matrix_r) = each($matrix_rs))
- 					{
- 						echo('<dt>'.$matrix_r['prompt'].'</dt>'.
- 							'<dd>'.$matrix_r['field'].'</dd>');
- 					}
-					echo('</dl></div>');
- 				}
-			}
-		}
-		
-		echo(getListingFiltersBlock());
-		echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));
-		
-		$v_column_display_config_rs = get_column_display_config(
-										$HTTP_VARS, 
-										$show_owner_column, 
-										$show_action_column);
-		
-		$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
-		
-		$listingObject->startListing($page_title);
-		
-		if($show_checkbox_column)
-		{
-			$listingObject->addHeaderColumn(NULL, 'item_id_instance_no', FALSE, 'checkbox');
-		}
-		
-		for($i=0; $i<count($v_column_display_config_rs); $i++)
-		{
-			if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
-			{
-				$listingObject->addHeaderColumn(
-							$v_column_display_config_rs[$i]['prompt'], 
-							$v_column_display_config_rs[$i]['fieldname'],
-							$v_column_display_config_rs[$i]['orderby_support_ind'] === 'Y');
-			}
-		}
-		
-		// If no items Per Page - we are listing everything.
-		if(is_numeric($listingObject->getItemsPerPage()))
-		{		
-			$listingObject->setTotalItems(
-					fetch_item_listing_cnt($HTTP_VARS, $v_column_display_config_rs));
-		}
-		
-		// -------------------------------------- Process the Query here -----------------------------------------------------------------
-		if( ($result = fetch_item_listing_rs(
-					$HTTP_VARS,
-					$v_column_display_config_rs, // calculated above
-					$listingObject->getCurrentOrderBy(), 
-					$listingObject->getCurrentSortOrder(), 
-					$listingObject->getStartIndex(),
-					$listingObject->getItemsPerPage())) ) 	
-		{
-			// ----------------------------------------------------------------------------
-			// Save current url string, so we can return to last listings page if required.
-			// ----------------------------------------------------------------------------
-			// The Listing class has already removed any $HTTP_VARS which should not
-			// be passed onto the next request.
-			$v_listing_url_vars = $HTTP_VARS;
-
-			$v_listing_url_vars['mode'] = NULL;
-			
-			// These variables should not be passed back from a 'Back to Listing' link!		
-			$v_listing_url_vars['listing_link'] = NULL;
-		
-			// These are listing specific - we do not want to save them.
-			$v_listing_url_vars['item_id_instance_no'] = NULL;
-			$v_listing_url_vars['checked_item_id_instance_no'] = NULL;
-			$v_listing_url_vars['checked_item_id_instance_no_list'] = NULL;
-
-			register_opendb_session_var('listing_url_vars', $v_listing_url_vars);
-			
-			while($item_r = db_fetch_assoc($result))
-			{  	
-				$listingObject->startRow();
+				$v_listing_url_vars['mode'] = NULL;
 				
-				// Get the Status Type config for the current item_instance.s_status_type, but grab it once.
-				if(!is_array($status_type_rs[$item_r['s_status_type']]))
-				{
-					$status_type_rs[$item_r['s_status_type']] = fetch_status_type_r($item_r['s_status_type']);
-				}
+				// These variables should not be passed back from a 'Back to Listing' link!		
+				$v_listing_url_vars['listing_link'] = NULL;
+			
+				// These are listing specific - we do not want to save them.
+				$v_listing_url_vars['item_id_instance_no'] = NULL;
+				$v_listing_url_vars['checked_item_id_instance_no'] = NULL;
+				$v_listing_url_vars['checked_item_id_instance_no_list'] = NULL;
+	
+				register_opendb_session_var('listing_url_vars', $v_listing_url_vars);
 				
-				if($show_checkbox_column)
-				{
-					if(!is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+				while($item_r = db_fetch_assoc($result))
+				{  	
+					$listingObject->startRow();
+					
+					// Get the Status Type config for the current item_instance.s_status_type, but grab it once.
+					if(!is_array($status_type_rs[$item_r['s_status_type']]))
 					{
-						if($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
-									$item_r['owner_id'] !== get_opendb_session_var('user_id') && 
-									is_user_granted_permission(PERM_USER_BORROWER) && 
-									!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) &&
-									
-									(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || 
-											!is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
-									(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || 
-											!is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
-						{
-							$listingObject->addCheckboxColumn($item_r['item_id']."_".$item_r['instance_no'], FALSE);
-						}
-						else
-						{
-							$listingObject->addColumn();
-						}
+						$status_type_rs[$item_r['s_status_type']] = fetch_status_type_r($item_r['s_status_type']);
 					}
-					else
+					
+					if($show_checkbox_column)
 					{
-						$listingObject->addColumn();
-					}
-				}
-				
-				for($i=0; $i<count($v_column_display_config_rs); $i++)
-				{
-					if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
-					{
-						if($v_column_display_config_rs[$i]['column_type'] == 's_attribute_type')
+						if(!is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
 						{
-							if($v_column_display_config_rs[$i]['search_attribute_ind'] == 'y')
+							if($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
+										$item_r['owner_id'] !== get_opendb_session_var('user_id') && 
+										is_user_granted_permission(PERM_USER_BORROWER) && 
+										!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) &&
+										
+										(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || 
+												!is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
+										(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || 
+												!is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
 							{
-								$attribute_val = $item_r[$v_column_display_config_rs[$i]['fieldname']];
-							}
-							else if($v_column_display_config_rs[$i]['multi_attribute_ind'] == 'Y' || 
-										$v_column_display_config_rs[$i]['lookup_attribute_ind'] == 'Y')
-							{
-								$attribute_val = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $v_column_display_config_rs[$i]['s_attribute_type']);
-							}
-							else
-							{
-								$attribute_val = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $v_column_display_config_rs[$i]['s_attribute_type']);
-							}
-							
-							if($attribute_val!==FALSE && $attribute_val!==NULL)
-							{
-								$listingObject->addAttrDisplayColumn(
-									$item_r,
-									fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']),
-									$attribute_val);
+								$listingObject->addCheckboxColumn($item_r['item_id']."_".$item_r['instance_no'], FALSE);
 							}
 							else
 							{
 								$listingObject->addColumn();
 							}
 						}
-						else if($v_column_display_config_rs[$i]['column_type'] == 's_field_type')
+						else
 						{
-							if($v_column_display_config_rs[$i]['s_field_type'] == 'RATING')
+							$listingObject->addColumn();
+						}
+					}
+					
+					for($i=0; $i<count($v_column_display_config_rs); $i++)
+					{
+						if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
+						{
+							if($v_column_display_config_rs[$i]['column_type'] == 's_attribute_type')
 							{
-								$rating = fetch_review_rating($item_r['item_id']);
-								if($rating !==FALSE)
+								if($v_column_display_config_rs[$i]['search_attribute_ind'] == 'y')
 								{
-									$attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
-									if(strlen($attribute_type_r['display_type'])==0 || $attribute_type_r['display_type'] == 'hidden')
-									{
-										$attribute_type_r['display_type'] = 'review';	
-									}
+									$attribute_val = $item_r[$v_column_display_config_rs[$i]['fieldname']];
+								}
+								else if($v_column_display_config_rs[$i]['multi_attribute_ind'] == 'Y' || 
+											$v_column_display_config_rs[$i]['lookup_attribute_ind'] == 'Y')
+								{
+									$attribute_val = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $v_column_display_config_rs[$i]['s_attribute_type']);
+								}
+								else
+								{
+									$attribute_val = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $v_column_display_config_rs[$i]['s_attribute_type']);
+								}
+								
+								if($attribute_val!==FALSE && $attribute_val!==NULL)
+								{
 									$listingObject->addAttrDisplayColumn(
-												$item_r, 
-												$attribute_type_r, 
-												fetch_review_rating($item_r['item_id']));
+										$item_r,
+										fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']),
+										$attribute_val);
 								}
 								else
 								{
 									$listingObject->addColumn();
 								}
 							}
-							else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEM_ID')
+							else if($v_column_display_config_rs[$i]['column_type'] == 's_field_type')
 							{
-								$attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
-								if(strlen($attribute_type_r['display_type'])==0 || $attribute_type_r['display_type'] == 'hidden')
+								if($v_column_display_config_rs[$i]['s_field_type'] == 'RATING')
 								{
-									$attribute_type_r['display_type'] = 'display';
-									$attribute_type_r['display_type_arg1'] = '%value%';
-								}
-						
-								$listingObject->addAttrDisplayColumn(
+									$rating = fetch_review_rating($item_r['item_id']);
+									if($rating !==FALSE)
+									{
+										$attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
+										if(strlen($attribute_type_r['display_type'])==0 || $attribute_type_r['display_type'] == 'hidden')
+										{
+											$attribute_type_r['display_type'] = 'review';	
+										}
+										$listingObject->addAttrDisplayColumn(
 													$item_r, 
 													$attribute_type_r, 
-													$item_r['item_id']);
-							}
-	                        else if($v_column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
-							{
-								$listingObject->addAttrDisplayColumn(
-													$item_r, 
-													fetch_cached_attribute_type_r($item_r['catia_s_attribute_type']), 
-													fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_r['catia_s_attribute_type'], $item_r['catia_order_no']));
-							}
-							else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSTYPE')
-							{
-								$listingObject->addThemeImageColumn(
-										$status_type_rs[$item_r['s_status_type']]['img'],
-										$status_type_rs[$item_r['s_status_type']]['description'],
-										$status_type_rs[$item_r['s_status_type']]['description'], //title
-										's_status_type');//type
-							}
-							else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSCMNT')
-							{
-								// If a comment is allowed and defined, add it in.
-								if($status_type_rs[$item_r['s_status_type']]['status_comment_ind'] == 'Y' || 
-										get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-										is_user_granted_permission(PERM_ITEM_ADMIN) )
-								{
-									 // support newlines in this field
-									$listingObject->addColumn(nl2br($item_r['status_comment']));
+													fetch_review_rating($item_r['item_id']));
+									}
+									else
+									{
+										$listingObject->addColumn();
+									}
 								}
-								else
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEM_ID')
 								{
-									$listingObject->addColumn(
-										get_opendb_lang_var('not_applicable'));
+									$attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
+									if(strlen($attribute_type_r['display_type'])==0 || $attribute_type_r['display_type'] == 'hidden')
+									{
+										$attribute_type_r['display_type'] = 'display';
+										$attribute_type_r['display_type_arg1'] = '%value%';
+									}
+							
+									$listingObject->addAttrDisplayColumn(
+														$item_r, 
+														$attribute_type_r, 
+														$item_r['item_id']);
+								}
+		                        else if($v_column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
+								{
+									$listingObject->addAttrDisplayColumn(
+														$item_r, 
+														fetch_cached_attribute_type_r($item_r['catia_s_attribute_type']), 
+														fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_r['catia_s_attribute_type'], $item_r['catia_order_no']));
+								}
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSTYPE')
+								{
+									$listingObject->addThemeImageColumn(
+											$status_type_rs[$item_r['s_status_type']]['img'],
+											$status_type_rs[$item_r['s_status_type']]['description'],
+											$status_type_rs[$item_r['s_status_type']]['description'], //title
+											's_status_type');//type
+								}
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'STATUSCMNT')
+								{
+									// If a comment is allowed and defined, add it in.
+									if($status_type_rs[$item_r['s_status_type']]['status_comment_ind'] == 'Y' || 
+											get_opendb_session_var('user_id') === $item_r['owner_id'] || 
+											is_user_granted_permission(PERM_ITEM_ADMIN) )
+									{
+										 // support newlines in this field
+										$listingObject->addColumn(nl2br($item_r['status_comment']));
+									}
+									else
+									{
+										$listingObject->addColumn(
+											get_opendb_lang_var('not_applicable'));
+									}
+								}
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEMTYPE')
+								{
+									$listingObject->addItemTypeImageColumn($item_r['s_item_type']);
+								}
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'TITLE')
+								{
+									$listingObject->addTitleColumn($item_r);
+								}
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'OWNER')
+								{
+									$listingObject->addUserNameColumn($item_r['owner_id']);
 								}
 							}
-							else if($v_column_display_config_rs[$i]['s_field_type'] == 'ITEMTYPE')
+							else if($v_column_display_config_rs[$i]['column_type'] == 'action_links')
 							{
-								$listingObject->addItemTypeImageColumn($item_r['s_item_type']);
-							}
-							else if($v_column_display_config_rs[$i]['s_field_type'] == 'TITLE')
-							{
-								$listingObject->addTitleColumn($item_r);
-							}
-							else if($v_column_display_config_rs[$i]['s_field_type'] == 'OWNER')
-							{
-								$listingObject->addUserNameColumn($item_r['owner_id']);
-							}
-						}
-						else if($v_column_display_config_rs[$i]['column_type'] == 'action_links')
-						{
-							$action_links_rs = NULL;
-						
-							// Administrator and Owner actions here.
-							if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_ADMIN))
-							{
-								// The option of having only Quick Checkout links should be provided.
-								if(get_opendb_config_var('listings', 'show_input_actions'))
+								$action_links_rs = NULL;
+							
+								// Administrator and Owner actions here.
+								if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_ADMIN))
 								{
+									// The option of having only Quick Checkout links should be provided.
 									if(get_opendb_config_var('listings', 'show_input_actions'))
 									{
-										$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'edit.gif',text=>get_opendb_lang_var('edit'));
-								
-										// So we only have to check the 'is_site_plugin' once!
-										if(strlen($item_types_rs[$item_r['s_item_type']]['legal_site_type'])==0)
+										if(get_opendb_config_var('listings', 'show_input_actions'))
 										{
-											$item_types_rs[$item_r['s_item_type']]['legal_site_type'] = is_item_legal_site_type($item_r['s_item_type']);
-										}
-															
-										// Only site types which are considered legal can be allowed for refresh operation.
-										if(get_opendb_config_var('listings', 'show_refresh_actions') && $item_types_rs[$item_r['s_item_type']]['legal_site_type'])
-										{
-											$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
+											$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'edit.gif',text=>get_opendb_lang_var('edit'));
+									
+											// So we only have to check the 'is_site_plugin' once!
+											if(strlen($item_types_rs[$item_r['s_item_type']]['legal_site_type'])==0)
+											{
+												$item_types_rs[$item_r['s_item_type']]['legal_site_type'] = is_item_legal_site_type($item_r['s_item_type']);
+											}
+																
+											// Only site types which are considered legal can be allowed for refresh operation.
+											if(get_opendb_config_var('listings', 'show_refresh_actions') && $item_types_rs[$item_r['s_item_type']]['legal_site_type'])
+											{
+												$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
+											}
+										
+											if($status_type_rs[$item_r['s_status_type']]['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
+											{
+												$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
+											}
 										}
 									
-										if($status_type_rs[$item_r['s_status_type']]['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
+										if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 										{
-											$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
+											if($item_r['owner_id'] == get_opendb_session_var('user_id'))
+											{
+												if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
+												{
+													$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
+												}
+												else
+												{
+													if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+															get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
+															$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
+													{
+														$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
+													}
+												}
+											}
 										}
 									}
-								
-									if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
+								}
+						
+								if($item_r['owner_id'] != get_opendb_session_var('user_id'))
+								{   
+									// Reservation/Cancel Information.
+									if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
+											get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 									{
-										if($item_r['owner_id'] == get_opendb_session_var('user_id'))
+										if(is_user_granted_permission(PERM_USER_BORROWER) && 
+													$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
 										{
-											if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
+											if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
 											{
-												$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
+												if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+												{
+													$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel'));
+												}
+												else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+												{
+													if((get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
+															(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || !is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
+													{
+														if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
+																get_opendb_config_var('listings.borrow', 'basket_action')!==FALSE)
+														{
+															$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
+														}
+														
+														if(get_opendb_config_var('listings.borrow', 'reserve_action')!==FALSE)
+														{
+															$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
+														}
+													}
+												}
 											}
 											else
 											{
-												if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-														get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
-														$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
+												if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
+														get_opendb_config_var('listings.borrow', 'basket_action')!==FALSE)
 												{
-													$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
+													$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
+												}
+												
+												if(get_opendb_config_var('listings.borrow', 'reserve_action')!==FALSE)
+												{
+													$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
 												}
 											}
 										}
 									}
 								}
-							}
-					
-							if($item_r['owner_id'] != get_opendb_session_var('user_id'))
-							{   
-								// Reservation/Cancel Information.
-								if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
-										get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
-								{
-									if(is_user_granted_permission(PERM_USER_BORROWER) && 
-												$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
-									{
-										if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
-										{
-											if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-											{
-												$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel'));
-											}
-											else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-											{
-												if((get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
-														(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || !is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )
-												{
-													if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
-															get_opendb_config_var('listings.borrow', 'basket_action')!==FALSE)
-													{
-														$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
-													}
-													
-													if(get_opendb_config_var('listings.borrow', 'reserve_action')!==FALSE)
-													{
-														$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
-													}
-												}
-											}
-										}
-										else
-										{
-											if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
-													get_opendb_config_var('listings.borrow', 'basket_action')!==FALSE)
-											{
-												$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
-											}
-											
-											if(get_opendb_config_var('listings.borrow', 'reserve_action')!==FALSE)
-											{
-												$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
-											}
-										}
-									}
-								}
-							}
-	
-							$listingObject->addActionColumn($action_links_rs);
-						}
-						else if($v_column_display_config_rs[$i]['column_type'] == 'borrow_status')
-						{
-							if(get_opendb_config_var('borrow', 'enable')!==FALSE)
-							{
-								if(is_item_borrowed($item_r['item_id'],$item_r['instance_no']))
-								{
-									$listingObject->addThemeImageColumn(
-												'borrowed.gif', 
-												get_opendb_lang_var('borrowed'), 
-												get_opendb_lang_var('borrowed'), //title
-												'borrowed_item');
-				  				}
-								else if(is_item_reserved($item_r['item_id'], $item_r['instance_no']))
-								{
-									$listingObject->addThemeImageColumn(
-												'reserved.gif', 
-												get_opendb_lang_var('reserved'), 
-												get_opendb_lang_var('borrowed'), //title
-												'borrowed_item');
-								}
-								else
-								{
-									$listingObject->addColumn(get_opendb_lang_var('not_applicable'));
-								}
-							}
-						}
-					}//if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
-				}
-					
-				$listingObject->endRow();
-			}//end of while
-			db_free_result($result);
-			// ---------------------------------------------------------------------------------------------------------------
-		}//end of if($result)
-	
-		$listingObject->endListing();
 		
-		if($listingObject->isCheckboxColumns()>0)
-		{
-			if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.multi_borrow', 'enable')!==FALSE)
+								$listingObject->addActionColumn($action_links_rs);
+							}
+							else if($v_column_display_config_rs[$i]['column_type'] == 'borrow_status')
+							{
+								if(get_opendb_config_var('borrow', 'enable')!==FALSE)
+								{
+									if(is_item_borrowed($item_r['item_id'],$item_r['instance_no']))
+									{
+										$listingObject->addThemeImageColumn(
+													'borrowed.gif', 
+													get_opendb_lang_var('borrowed'), 
+													get_opendb_lang_var('borrowed'), //title
+													'borrowed_item');
+					  				}
+									else if(is_item_reserved($item_r['item_id'], $item_r['instance_no']))
+									{
+										$listingObject->addThemeImageColumn(
+													'reserved.gif', 
+													get_opendb_lang_var('reserved'), 
+													get_opendb_lang_var('borrowed'), //title
+													'borrowed_item');
+									}
+									else
+									{
+										$listingObject->addColumn(get_opendb_lang_var('not_applicable'));
+									}
+								}
+							}
+						}//if($v_column_display_config_rs[$i]['include_in_listing']!==FALSE)
+					}
+						
+					$listingObject->endRow();
+				}//end of while
+				db_free_result($result);
+				// ---------------------------------------------------------------------------------------------------------------
+			}//end of if($result)
+		
+			$listingObject->endListing();
+			
+			if($listingObject->isCheckboxColumns()>0)
 			{
-				if(get_opendb_config_var('listings.multi_borrow', 'reserve_action')!==FALSE)
+				if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.multi_borrow', 'enable')!==FALSE)
 				{
-					$checkbox_action_rs[] = array('action'=>'item_borrow.php', 'op'=>'reserve', link=>get_opendb_lang_var('reserve_item(s)'));
+					if(get_opendb_config_var('listings.multi_borrow', 'reserve_action')!==FALSE)
+					{
+						$checkbox_action_rs[] = array('action'=>'item_borrow.php', 'op'=>'reserve', link=>get_opendb_lang_var('reserve_item(s)'));
+					}
+					
+					if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
+							(get_opendb_config_var('listings.multi_borrow', 'basket_action')===TRUE &&
+							(get_opendb_config_var('listings.multi_borrow', 'basket_action_if_not_empty_only')!==TRUE ||
+								is_exists_my_reserve_basket(get_opendb_session_var('user_id'))) ))
+					{
+						$checkbox_action_rs[] = array('action'=>'borrow.php', 'op'=>'update_my_reserve_basket', link=>get_opendb_lang_var('add_to_reserve_list'));
+					}
 				}
 				
-				if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
-						(get_opendb_config_var('listings.multi_borrow', 'basket_action')===TRUE &&
-						(get_opendb_config_var('listings.multi_borrow', 'basket_action_if_not_empty_only')!==TRUE ||
-							is_exists_my_reserve_basket(get_opendb_session_var('user_id'))) ))
-				{
-					$checkbox_action_rs[] = array('action'=>'borrow.php', 'op'=>'update_my_reserve_basket', link=>get_opendb_lang_var('add_to_reserve_list'));
-				}
+				echo(format_checkbox_action_links('item_id_instance_no', get_opendb_lang_var('no_items_checked'), $checkbox_action_rs));
 			}
 			
-			echo(format_checkbox_action_links('item_id_instance_no', get_opendb_lang_var('no_items_checked'), $checkbox_action_rs));
+			echo(format_help_block($listingObject->getHelpEntries()));
+			
+			echo("<ul class=\"listingControls\">");
+			if(get_opendb_config_var('listings', 'allow_override_show_item_image')!==FALSE)
+			{
+				echo("<li>".getToggleControl(
+				$PHP_SELF,
+				$HTTP_VARS,
+				get_opendb_lang_var('show_item_image'),
+				'show_item_image', ifempty($HTTP_VARS['show_item_image'],
+				get_opendb_config_var('listings', 'show_item_image')==TRUE?'Y':'N')).
+				"</li>");
+			}
+			echo("<li>".getItemsPerPageControl($PHP_SELF, $HTTP_VARS)."</li>");
+			echo("</ul>");
+			
+			echo("<p class=\"listingDate\">".
+				get_opendb_lang_var('listing_generated', 'datetime', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))).
+				"</p>");
+			
+			echo(_theme_footer());
 		}
-		
-		echo(format_help_block($listingObject->getHelpEntries()));
-		
-		echo("<ul class=\"listingControls\">");
-		if(get_opendb_config_var('listings', 'allow_override_show_item_image')!==FALSE)
+		else
 		{
-			echo("<li>".getToggleControl(
-			$PHP_SELF,
-			$HTTP_VARS,
-			get_opendb_lang_var('show_item_image'),
-			'show_item_image', ifempty($HTTP_VARS['show_item_image'],
-			get_opendb_config_var('listings', 'show_item_image')==TRUE?'Y':'N')).
-			"</li>");
+			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+			echo _theme_footer();
 		}
-		echo("<li>".getItemsPerPageControl($PHP_SELF, $HTTP_VARS)."</li>");
-		echo("</ul>");
-		
-		echo("<p class=\"listingDate\">".
-			get_opendb_lang_var('listing_generated', 'datetime', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))).
-			"</p>");
-		
-		echo(_theme_footer());
 	}
 	else
 	{

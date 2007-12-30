@@ -1064,30 +1064,51 @@ VALUES ('text/plain', 'DOCUMENT', 'Plain Text', NULL, 'N');
 INSERT INTO s_file_type_extension (content_type, extension, default_ind)
 VALUES ('text/plain', 'txt', 'Y');
 
+INSERT INTO s_role(role_name, description) VALUES('ADMINISTRATOR', 'Administrator');
+INSERT INTO s_role(role_name, description) VALUES('OWNER', 'Owner');
+INSERT INTO s_role(role_name, description) VALUES('BORROWER', 'Borrower');
+INSERT INTO s_role(role_name, description) VALUES('GUEST', 'Guest');
+INSERT INTO s_role(role_name, description) VALUES('PUBLICACCESS', 'Public Access');
+
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ANNOUNCEMENTS', 'View Announcements');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_WHATSNEW', 'View Whats New');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_LISTINGS', 'View Listings');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_STATS', 'View Stats');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ADVANCED_SEARCH', 'View Advanced Search');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_USER_PROFILE', 'View User Profile');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ITEM_DISPLAY', 'View Item Display');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_TOOLS', 'Admin Tools');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_BORROWER', 'Borrower User');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_BORROWER', 'Borrower Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_REVIEW_ADMIN', 'Review Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_REVIEW_AUTHOR', 'Review Author');
+
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_REVIEWER', 'Review Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_USER_REVIEWER', 'Review Author');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_EXPORT', 'Export Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_IMPORT', 'Import Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_EXPORT', 'Export User');
+
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_IMPORT', 'Import Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_IMPORT', 'Import User');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_OWNER', 'Item Owner');
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_ADMIN', 'Item Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_DISPLAY', 'Item User');
-INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ANNOUNCEMENTS', 'View Announcements');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_ANNOUNCEMENTS', 'Announcements Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_PROFILE', 'User Profile Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_LISTING', 'User Listing Administrator');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_EDIT_USER_PROFILE', 'User Profile Editor');
-INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_USER_PROFILE', 'View User Profile');
+INSERT INTO s_permission(permission_name, description) values('PERM_CHANGE_PASSWORD', 'Change Password');
+
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_QUICK_CHECKOUT', 'Quick Checkout Administrator');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CREATE_USER', 'Create User');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_PASSWORD', 'Change Password Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_CHANGE_PASSWORD', 'Change Password');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_QUICK_CHECKOUT', 'Quick Checkout Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_LOGIN', 'Login Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_USER', 'Change User');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_SEND_EMAIL', 'Send Email Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_SEND_EMAIL', 'Send Email');
+INSERT INTO s_permission(permission_name, description) values('PERM_RECEIVE_EMAIL', 'Receive Email');

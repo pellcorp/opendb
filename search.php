@@ -135,190 +135,192 @@ function encode_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategori
 				"\n// -->\n</script>\n";
 }
 
-if(!is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
-{
-	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
-	echo _theme_footer();
-}
-
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
 	{
-		$page_title = get_opendb_lang_var('advanced_search');
-		echo _theme_header($page_title);
-
-		echo(encode_search_javascript_arrays($item_type_rs, $category_type_rs, $item_attribute_type_rs));
-
-		echo("<h2>".$page_title."</h2>");
-		
-		echo("\n<form name=\"search\" method=\"GET\" action=\"listings.php\">");
-		echo("\n<input type=\"hidden\" name=\"datetimemask\" value=\"".get_opendb_config_var('search', 'datetime_mask')."\">");
-		echo("\n<input type=\"hidden\" name=\"search_list\" value=\"y\">");
-		
-		echo("<table class=\"searchForm\">");
-
-		echo format_field(
-			get_opendb_lang_var('title'),
-				"\n<input type=\"text\" class=\"text\" id=\"search-title\" size=\"50\" name=\"title\">".
-				"\n<ul class=\"searchInputOptions\">".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
-				"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"title_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
-				"\n</ul>"
-			);
-		
-		if(@count($category_type_rs)>1)
+		if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
 		{
-			$catTypeSelect = "<select name=\"category\" id=\"search-category\">".
-				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
+			$page_title = get_opendb_lang_var('advanced_search');
+			echo _theme_header($page_title);
+	
+			echo(encode_search_javascript_arrays($item_type_rs, $category_type_rs, $item_attribute_type_rs));
+	
+			echo("<h2>".$page_title."</h2>");
 			
-			reset($category_type_rs);	
-			while(list($value,$display) = each($category_type_rs))
-			{
-				$catTypeSelect .= "\n<option value=\"$value\">$display";
-			}
-			$itemTypeBlock .= "</select>";
+			echo("\n<form name=\"search\" method=\"GET\" action=\"listings.php\">");
+			echo("\n<input type=\"hidden\" name=\"datetimemask\" value=\"".get_opendb_config_var('search', 'datetime_mask')."\">");
+			echo("\n<input type=\"hidden\" name=\"search_list\" value=\"y\">");
 			
+			echo("<table class=\"searchForm\">");
+	
 			echo format_field(
-				get_opendb_lang_var('category'), 
-				$catTypeSelect);
-		}
-		
-		$attribute_type_r = fetch_attribute_type_r("S_RATING");
-		$attribute_type_r['compulsory_ind'] = 'N';
-		echo get_item_input_field("rating",
-					$attribute_type_r,
-					NULL, // $item_r
-   	  	        	NULL); //value
+				get_opendb_lang_var('title'),
+					"\n<input type=\"text\" class=\"text\" id=\"search-title\" size=\"50\" name=\"title\">".
+					"\n<ul class=\"searchInputOptions\">".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"title_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
+					"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"title_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
+					"\n</ul>"
+				);
 			
-		if(@count($item_type_rs)>1)
-		{
-			$itemTypeSelect = "<select name=\"s_item_type\" id=\"search-itemtype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
+			if(@count($category_type_rs)>1)
+			{
+				$catTypeSelect = "<select name=\"category\" id=\"search-category\">".
+					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
+				
+				reset($category_type_rs);	
+				while(list($value,$display) = each($category_type_rs))
+				{
+					$catTypeSelect .= "\n<option value=\"$value\">$display";
+				}
+				$itemTypeBlock .= "</select>";
+				
+				echo format_field(
+					get_opendb_lang_var('category'), 
+					$catTypeSelect);
+			}
+			
+			$attribute_type_r = fetch_attribute_type_r("S_RATING");
+			$attribute_type_r['compulsory_ind'] = 'N';
+			echo get_item_input_field("rating",
+						$attribute_type_r,
+						NULL, // $item_r
+	   	  	        	NULL); //value
+				
+			if(@count($item_type_rs)>1)
+			{
+				$itemTypeSelect = "<select name=\"s_item_type\" id=\"search-itemtype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
+						"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
+				
+				reset($item_type_rs);		
+				while(list(,$item_type_r) = each($item_type_rs))
+				{
+					$itemTypeSelect .= "\n<option value=\"".$item_type_r['s_item_type']."\" >".$item_type_r['s_item_type']." - ".$item_type_r['description'];
+				}
+				$itemTypeBlock .= "</select>";
+				
+				echo format_field(
+					get_opendb_lang_var('item_type'), 
+					$itemTypeSelect);
+			}
+			
+			$attrTypeSelect = "<select name=\"attribute_type\" id=\"search-attributetype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
-			reset($item_type_rs);		
-			while(list(,$item_type_r) = each($item_type_rs))
+			@reset($item_attribute_type_rs);		
+			while(list(,$item_attribute_type_r) = @each($item_attribute_type_rs))
 			{
-				$itemTypeSelect .= "\n<option value=\"".$item_type_r['s_item_type']."\" >".$item_type_r['s_item_type']." - ".$item_type_r['description'];
+				$attrTypeSelect .= "\n<option value=\"".$item_attribute_type_r['s_attribute_type']."\">".$item_attribute_type_r['s_attribute_type']." - ".$item_attribute_type_r['description'];
 			}
 			$itemTypeBlock .= "</select>";
 			
 			echo format_field(
-				get_opendb_lang_var('item_type'), 
-				$itemTypeSelect);
-		}
-		
-		$attrTypeSelect = "<select name=\"attribute_type\" id=\"search-attributetype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
-				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
-		
-		@reset($item_attribute_type_rs);		
-		while(list(,$item_attribute_type_r) = @each($item_attribute_type_rs))
-		{
-			$attrTypeSelect .= "\n<option value=\"".$item_attribute_type_r['s_attribute_type']."\">".$item_attribute_type_r['s_attribute_type']." - ".$item_attribute_type_r['description'];
-		}
-		$itemTypeBlock .= "</select>";
-		
-		echo format_field(
-			get_opendb_lang_var('s_attribute_type'), 
-			$attrTypeSelect);
-		
-		 echo format_field(
-			get_opendb_lang_var('s_attribute_type_lookup'),
-			"\n<select name=\"lookup_attribute_val\" id=\"search-lookupattributeval\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attribute_val'].disabled=true;}else{this.form['attribute_val'].disabled=false;}\">".
-				"\n<option value=\"\">".get_opendb_lang_var('use_the_value_field')." ---->".
-				"\n</select>");
-				
-		 echo format_field(
-			get_opendb_lang_var('attribute_val'), 
-				"<input type=\"text\" class=\"text\" name=\"attribute_val\" id=\"search-attributeval\" size=\"50\" value=\"\">".
-				"\n<ul class=\"searchInputOptions\">".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
-				"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"attr_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
-				"\n</ul>"
-			);
-				
-		if(strlen($HTTP_VARS['not_owner_id'])>0)
-		{
-			echo("\n<input type=\"hidden\" name=\"not_owner_id\" value=\"".$HTTP_VARS['not_owner_id']."\">");
-		}
-		
-		echo(
-			format_field(
-				get_opendb_lang_var('owner'), 
-				"\n<select name=\"owner_id\" id=\"search-owner\">".
-					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
-					custom_select(
-						'owner_id', 
-						fetch_user_rs(PERM_ITEM_OWNER), 
-						'%fullname% (%user_id%)',
-						'NA',
-						NULL,
-						'user_id'
-					).
-					"\n</select>"
-				)
-			);
-		
-		$lookup_results = fetch_status_type_rs(TRUE);
-		
-		if($lookup_results && db_num_rows($lookup_results)>1)
-		{
-			echo format_field(
-				get_opendb_lang_var('s_status_type'),
-				checkbox_grid('s_status_type',
-							$lookup_results, 
-							'%img%', // mask
-							'VERTICAL',
-							array())); // value
-		}
-		
-		echo format_field(
-			get_opendb_lang_var('status_comment'), 
-				"\n<input type=\"text\" class=\"text\" name=\"status_comment\" id=\"search-statuscomment\" size=\"50\">".
-				"\n<ul class=\"searchInputOptions\">".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
-				"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
-				"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"status_comment_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
-				"\n</ul>"
-			);
-
-		echo format_field(
-			get_opendb_lang_var('updated'), 
-			"\n<select name=\"update_on_days\" id=\"search-updateondays\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".
-				"\n<option value=\"\">".get_opendb_lang_var('specify_datetime')." ---->".
-				"\n<option value=\"1\">".get_opendb_lang_var('one_day_ago').
-				"\n<option value=\"7\">".get_opendb_lang_var('one_week_ago').
-				"\n<option value=\"28\">".get_opendb_lang_var('one_month_ago').
-				"\n<option value=\"365\">".get_opendb_lang_var('one_year_ago').
-				"\n</select>".
-					get_input_field("update_on", NULL, NULL,"datetime(".get_opendb_config_var('search', 'datetime_mask').")","N",NULL,FALSE));
-	
-		echo format_field(
-			get_opendb_lang_var('order_by'), 
-			"\n<select name=\"order_by\"  id=\"search-orderby\">".
-				"\n<option value=\"title\" SELECTED>".get_opendb_lang_var('title').
-				"\n<option value=\"owner_id\">".get_opendb_lang_var('owner').
-				"\n<option value=\"category\">".get_opendb_lang_var('category').
-				"\n<option value=\"s_item_type\">".get_opendb_lang_var('item_type').
-				"\n<option value=\"s_status_type\">".get_opendb_lang_var('s_status_type').
-				"\n<option value=\"update_on\">".get_opendb_lang_var('update_date').
-				"\n</select>".
+				get_opendb_lang_var('s_attribute_type'), 
+				$attrTypeSelect);
 			
-				"\n<input type=\"radio\" class=\"radio\" name=\"sortorder\" value=\"ASC\" CHECKED>".get_opendb_lang_var('asc').
-				"\n<input type=\"radio\" class=\"radio\" name=\"sortorder\" value=\"DESC\">".get_opendb_lang_var('desc'));
+			 echo format_field(
+				get_opendb_lang_var('s_attribute_type_lookup'),
+				"\n<select name=\"lookup_attribute_val\" id=\"search-lookupattributeval\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['attribute_val'].disabled=true;}else{this.form['attribute_val'].disabled=false;}\">".
+					"\n<option value=\"\">".get_opendb_lang_var('use_the_value_field')." ---->".
+					"\n</select>");
+					
+			 echo format_field(
+				get_opendb_lang_var('attribute_val'), 
+					"<input type=\"text\" class=\"text\" name=\"attribute_val\" id=\"search-attributeval\" size=\"50\" value=\"\">".
+					"\n<ul class=\"searchInputOptions\">".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"attr_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
+					"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"attr_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
+					"\n</ul>"
+				);
+					
+			if(strlen($HTTP_VARS['not_owner_id'])>0)
+			{
+				echo("\n<input type=\"hidden\" name=\"not_owner_id\" value=\"".$HTTP_VARS['not_owner_id']."\">");
+			}
+			
+			echo(
+				format_field(
+					get_opendb_lang_var('owner'), 
+					"\n<select name=\"owner_id\" id=\"search-owner\">".
+						"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
+						custom_select(
+							'owner_id', 
+							fetch_user_rs(PERM_ITEM_OWNER), 
+							'%fullname% (%user_id%)',
+							'NA',
+							NULL,
+							'user_id'
+						).
+						"\n</select>"
+					)
+				);
+			
+			$lookup_results = fetch_status_type_rs(TRUE);
+			
+			if($lookup_results && db_num_rows($lookup_results)>1)
+			{
+				echo format_field(
+					get_opendb_lang_var('s_status_type'),
+					checkbox_grid('s_status_type',
+								$lookup_results, 
+								'%img%', // mask
+								'VERTICAL',
+								array())); // value
+			}
+			
+			echo format_field(
+				get_opendb_lang_var('status_comment'), 
+					"\n<input type=\"text\" class=\"text\" name=\"status_comment\" id=\"search-statuscomment\" size=\"50\">".
+					"\n<ul class=\"searchInputOptions\">".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"word\">".get_opendb_lang_var('word_match')."</li>".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"partial\" CHECKED>".get_opendb_lang_var('partial_match')."</li>".
+					"\n<li><input type=\"radio\" class=\"radio\" name=\"status_comment_match\" value=\"exact\">".get_opendb_lang_var('exact_match')."</li>".
+					"\n<li><input type=\"checkbox\" class=\"checkbox\" name=\"status_comment_case\" value=\"case_sensitive\">".get_opendb_lang_var('case_sensitive')."</li>".
+					"\n</ul>"
+				);
+	
+			echo format_field(
+				get_opendb_lang_var('updated'), 
+				"\n<select name=\"update_on_days\" id=\"search-updateondays\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".
+					"\n<option value=\"\">".get_opendb_lang_var('specify_datetime')." ---->".
+					"\n<option value=\"1\">".get_opendb_lang_var('one_day_ago').
+					"\n<option value=\"7\">".get_opendb_lang_var('one_week_ago').
+					"\n<option value=\"28\">".get_opendb_lang_var('one_month_ago').
+					"\n<option value=\"365\">".get_opendb_lang_var('one_year_ago').
+					"\n</select>".
+						get_input_field("update_on", NULL, NULL,"datetime(".get_opendb_config_var('search', 'datetime_mask').")","N",NULL,FALSE));
 		
-		echo("</table>");
-		
-		echo("\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('search')."\">");
-		echo("</form>");
-
-		echo _theme_footer();
+			echo format_field(
+				get_opendb_lang_var('order_by'), 
+				"\n<select name=\"order_by\"  id=\"search-orderby\">".
+					"\n<option value=\"title\" SELECTED>".get_opendb_lang_var('title').
+					"\n<option value=\"owner_id\">".get_opendb_lang_var('owner').
+					"\n<option value=\"category\">".get_opendb_lang_var('category').
+					"\n<option value=\"s_item_type\">".get_opendb_lang_var('item_type').
+					"\n<option value=\"s_status_type\">".get_opendb_lang_var('s_status_type').
+					"\n<option value=\"update_on\">".get_opendb_lang_var('update_date').
+					"\n</select>".
+				
+					"\n<input type=\"radio\" class=\"radio\" name=\"sortorder\" value=\"ASC\" CHECKED>".get_opendb_lang_var('asc').
+					"\n<input type=\"radio\" class=\"radio\" name=\"sortorder\" value=\"DESC\">".get_opendb_lang_var('desc'));
+			
+			echo("</table>");
+			
+			echo("\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('search')."\">");
+			echo("</form>");
+	
+			echo _theme_footer();
+		}
+		else
+		{
+			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+			echo _theme_footer();
+		}
 	}
 	else
 	{

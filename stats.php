@@ -245,171 +245,87 @@ function do_stats_graph($HTTP_VARS)
 	}
 }
 
-if(!is_user_granted_permission(PERM_VIEW_STATS))
-{
-	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
-	echo _theme_footer();
-}
-
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
 	{
-		if($HTTP_VARS['op'] == 'graph')
+		if(is_user_granted_permission(PERM_VIEW_STATS))
 		{
-			do_stats_graph($HTTP_VARS);
-		}
-		else
-		{
-			echo _theme_header(get_opendb_lang_var('statistics'));
-			echo("<h2>".get_opendb_lang_var('statistics')."</h2>");
-	
-			echo("<h3>".get_opendb_lang_var('general_stats')."</h3>");
-			
-			echo("<dl class=\"generalStats\">");
-			echo("<dt>".get_opendb_lang_var('owner(s)')."</dt>");
-			$num_users = fetch_user_cnt(PERM_ITEM_OWNER);//only users who can own
-			echo("<dd>".$num_users."</dd>");
-			
-			echo("<dt>".get_opendb_lang_var('item(s)')."</dt>");
-			// This count should not include owner's items, where the owner has been DEACTIVATED.
-			$total_items = fetch_item_instance_cnt();
-			echo("<dd>".$total_items."</dd>");
-	
-			$avgrate = fetch_review_rating();
-			if($avgrate>0)
+			if($HTTP_VARS['op'] == 'graph')
 			{
-				$num_review = fetch_review_cnt();
-				
-				echo("<dt>".get_opendb_lang_var('review(s)')."</dt>");
-				echo("<dd>".$num_review."</dd>");
-			
-				echo("<dt>".get_opendb_lang_var('average_rating')."</dt>");
-				$attribute_type_r = fetch_attribute_type_r("S_RATING");
-				echo("<dd>".get_display_field($attribute_type_r['s_attribute_type'], 
-								NULL, 
-								'review()',
-								$avgrate,
-								FALSE)."</dd>");
+				do_stats_graph($HTTP_VARS);
 			}
-			echo("</dl>");
-			
-			// Get the list of valid status_types, which we can display
-		    // in this statistics page.
-		    $results = fetch_status_type_rs();
-		    if ($results)
+			else
 			{
-		        while ($status_type_r = db_fetch_assoc($results))
+				echo _theme_header(get_opendb_lang_var('statistics'));
+				echo("<h2>".get_opendb_lang_var('statistics')."</h2>");
+		
+				echo("<h3>".get_opendb_lang_var('general_stats')."</h3>");
+				
+				echo("<dl class=\"generalStats\">");
+				echo("<dt>".get_opendb_lang_var('owner(s)')."</dt>");
+				$num_users = fetch_user_cnt(PERM_ITEM_OWNER);//only users who can own
+				echo("<dd>".$num_users."</dd>");
+				
+				echo("<dt>".get_opendb_lang_var('item(s)')."</dt>");
+				// This count should not include owner's items, where the owner has been DEACTIVATED.
+				$total_items = fetch_item_instance_cnt();
+				echo("<dd>".$total_items."</dd>");
+		
+				$avgrate = fetch_review_rating();
+				if($avgrate>0)
 				{
-					$status_type_r['total'] = 0;
-		            $status_type_rs[] = $status_type_r;
-		        } 
-		        db_free_result($results);
-		    }
-	
-		    echo("<h3>".get_opendb_lang_var('item_stats')."</h3>");
-		    
-			echo("<table class=\"itemStats\">");
-			
-			echo("<tr class=\"navbar\">");
-			echo("<th>".get_opendb_lang_var('owner')."</th>");
-			
-			if(is_not_empty_array($status_type_rs))
-			{
-			    reset($status_type_rs);
-			    while(list(, $status_type_r) = each($status_type_rs))
-				{
-					echo("<th>".
-						_theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type").
-						"</th>");
+					$num_review = fetch_review_cnt();
+					
+					echo("<dt>".get_opendb_lang_var('review(s)')."</dt>");
+					echo("<dd>".$num_review."</dd>");
+				
+					echo("<dt>".get_opendb_lang_var('average_rating')."</dt>");
+					$attribute_type_r = fetch_attribute_type_r("S_RATING");
+					echo("<dd>".get_display_field($attribute_type_r['s_attribute_type'], 
+									NULL, 
+									'review()',
+									$avgrate,
+									FALSE)."</dd>");
 				}
-			}
-	
-	        echo("<th>".get_opendb_lang_var('total')."</th>");
-	        
-			echo("</tr>");
-			
-			$result = fetch_user_rs(PERM_ITEM_OWNER);
-			if($result)
-			{
-				$toggle=TRUE;
-	
-				// Totals.
-				$sum_loaned = 0;
-				$sum_reserved = 0;
-	
-				while ($user_r = db_fetch_assoc($result))
-				{
-					$user_name = get_opendb_lang_var('user_name', array('fullname'=>$user_r['fullname'], 'user_id'=>$user_r['user_id']));
-
-					echo("<tr class=\"data\"><th>");
-					if(is_user_granted_permission(PERM_VIEW_USER_PROFILE))
-					{
-						echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."\">".$user_name."</a>");
-					}
-					else
-					{
-						echo($user_name);
-					}
-					echo("</th>");
-					
-					$num_total = 0;
-					if(is_not_empty_array($status_type_rs))
-					{
-						reset($status_type_rs);
-			    		while(list($key, $status_type_r) = each($status_type_rs))
-						{
-							$status_total = fetch_owner_s_status_type_item_cnt($user_r['user_id'], $status_type_r['s_status_type']);
-							$status_type_rs[$key]['total']  += $status_total;
-					
-							echo("\n<td>");
-							if($status_total>0)
-								echo("<a href=\"listings.php?owner_id=".$user_r['user_id']."&s_status_type=".$status_type_r['s_status_type']."&order_by=title&sortorder=ASC\">$status_total</a>");
-							else
-								echo("-");
-							echo("</td>");
-					
-							$num_total += $status_total;
-						}
-						$sum_total += $num_total;
-					
-						echo("\n<td>".$num_total."</td>");
-					}
+				echo("</dl>");
 				
-					echo("</tr>");
-				}//while ($user_r = db_fetch_assoc($result))
-				db_free_result($result);
-			
-				echo("<tr class=\"data totals\"><th>".get_opendb_lang_var('totals')."</th>");
-
-				if(is_not_empty_array($status_type_rs))
+				// Get the list of valid status_types, which we can display
+			    // in this statistics page.
+			    $results = fetch_status_type_rs();
+			    if ($results)
 				{
-					reset($status_type_rs);
-		    		while(list(, $status_type_r) = each($status_type_rs))
+			        while ($status_type_r = db_fetch_assoc($results))
 					{
-						echo("<td>".$status_type_r['total']."</td>");
-					}
-					echo("<td>".$sum_total."</td>");
-				}
-				
-				echo("</tr>");
-			}
-			echo("</table>");
-			
-			if(get_opendb_config_var('borrow', 'enable') !== FALSE)
-			{
-				echo("<h3>".get_opendb_lang_var('borrow_stats')."</h3>");
+						$status_type_r['total'] = 0;
+			            $status_type_rs[] = $status_type_r;
+			        } 
+			        db_free_result($results);
+			    }
+		
+			    echo("<h3>".get_opendb_lang_var('item_stats')."</h3>");
 			    
 				echo("<table class=\"itemStats\">");
 				
 				echo("<tr class=\"navbar\">");
 				echo("<th>".get_opendb_lang_var('owner')."</th>");
-				echo("<th>"._theme_image('reserved.gif', get_opendb_lang_var('reserved'), "borrowed_item")."</th>");
-				echo("<th>"._theme_image('borrowed.gif', get_opendb_lang_var('borrowed'), "borrowed_item")."</th>");
+				
+				if(is_not_empty_array($status_type_rs))
+				{
+				    reset($status_type_rs);
+				    while(list(, $status_type_r) = each($status_type_rs))
+					{
+						echo("<th>".
+							_theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type").
+							"</th>");
+					}
+				}
+		
+		        echo("<th>".get_opendb_lang_var('total')."</th>");
+		        
 				echo("</tr>");
 				
-				$result = fetch_user_rs(PERM_ITEM_OWNER);//only ACTIVE owner users!
+				$result = fetch_user_rs(PERM_ITEM_OWNER);
 				if($result)
 				{
 					$toggle=TRUE;
@@ -433,76 +349,162 @@ if(is_site_enabled())
 						}
 						echo("</th>");
 						
-						$reserved_total = fetch_owner_reserved_item_cnt($user_r['user_id']);
-						$sum_reserved += $reserved_total;
-	
-						echo("\n<td>");
-						if($reserved_total>0)
-							echo($reserved_total);
-						else
-							echo("-");
-						echo("</td>");
-	
-						$loan_total = fetch_owner_borrowed_item_cnt($user_r['user_id']);
-						$sum_loaned += $loan_total;
-	
-						echo("\n<td>");
-						if($loan_total>0)
-							echo($loan_total);
-						else
-							echo("-");
-						echo("</td>");
+						$num_total = 0;
+						if(is_not_empty_array($status_type_rs))
+						{
+							reset($status_type_rs);
+				    		while(list($key, $status_type_r) = each($status_type_rs))
+							{
+								$status_total = fetch_owner_s_status_type_item_cnt($user_r['user_id'], $status_type_r['s_status_type']);
+								$status_type_rs[$key]['total']  += $status_total;
 						
+								echo("\n<td>");
+								if($status_total>0)
+									echo("<a href=\"listings.php?owner_id=".$user_r['user_id']."&s_status_type=".$status_type_r['s_status_type']."&order_by=title&sortorder=ASC\">$status_total</a>");
+								else
+									echo("-");
+								echo("</td>");
+						
+								$num_total += $status_total;
+							}
+							$sum_total += $num_total;
+						
+							echo("\n<td>".$num_total."</td>");
+						}
+					
 						echo("</tr>");
 					}//while ($user_r = db_fetch_assoc($result))
 					db_free_result($result);
-					
+				
 					echo("<tr class=\"data totals\"><th>".get_opendb_lang_var('totals')."</th>");
-					
-					// sum loaned.
-					if(get_opendb_config_var('borrow', 'enable') !== FALSE)
+	
+					if(is_not_empty_array($status_type_rs))
 					{
-						echo("<td>".$sum_reserved."</td>");
-						echo("<td>".$sum_loaned."</td>");
+						reset($status_type_rs);
+			    		while(list(, $status_type_r) = each($status_type_rs))
+						{
+							echo("<td>".$status_type_r['total']."</td>");
+						}
+						echo("<td>".$sum_total."</td>");
 					}
 					
 					echo("</tr>");
 				}
 				echo("</table>");
-			}
-			
-			$graphConfigURLParams = get_url_string(_theme_graph_config());
-			
-			echo("<ul class=\"itemCharts\">");
-			
-			echo("<li><h3>".get_opendb_lang_var('item_ownership')."</h3>");
-			echo("<ul class=\"graph\">");
-			echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
-			echo("<li><img src=\"stats.php?op=graph&graphtype=item_types&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
-			echo("</ul>");
-			echo("</li>");
-			
-			$itemresults = fetch_item_type_rs();
-			if($itemresults)
-			{
-				while($item_type_r = db_fetch_assoc($itemresults) )
-				{
-					$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);
-					if($type_total_items > 0) 
-					{
-		        	    echo("<li><h3>".get_opendb_lang_var('itemtype_breakdown', array('desc'=>$item_type_r['description'],'s_item_type'=>$item_type_r['s_item_type'], 'total'=>$type_total_items))."</h3>");
-						echo("<ul class=\"graph\">");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_ownership&s_item_type=".urlencode($item_type_r['s_item_type'])."&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_category&s_item_type=".urlencode($item_type_r['s_item_type'])."&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('itemtype_category_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
-						echo("</ul>");
-						echo("</li>");
-					}
-				}
-				db_free_result($itemresults);
 				
-			}
-			echo("</ul>");
+				if(get_opendb_config_var('borrow', 'enable') !== FALSE)
+				{
+					echo("<h3>".get_opendb_lang_var('borrow_stats')."</h3>");
+				    
+					echo("<table class=\"itemStats\">");
+					
+					echo("<tr class=\"navbar\">");
+					echo("<th>".get_opendb_lang_var('owner')."</th>");
+					echo("<th>"._theme_image('reserved.gif', get_opendb_lang_var('reserved'), "borrowed_item")."</th>");
+					echo("<th>"._theme_image('borrowed.gif', get_opendb_lang_var('borrowed'), "borrowed_item")."</th>");
+					echo("</tr>");
+					
+					$result = fetch_user_rs(PERM_ITEM_OWNER);//only ACTIVE owner users!
+					if($result)
+					{
+						$toggle=TRUE;
 			
+						// Totals.
+						$sum_loaned = 0;
+						$sum_reserved = 0;
+			
+						while ($user_r = db_fetch_assoc($result))
+						{
+							$user_name = get_opendb_lang_var('user_name', array('fullname'=>$user_r['fullname'], 'user_id'=>$user_r['user_id']));
+		
+							echo("<tr class=\"data\"><th>");
+							if(is_user_granted_permission(PERM_VIEW_USER_PROFILE))
+							{
+								echo("<a href=\"user_profile.php?uid=".$user_r['user_id']."\">".$user_name."</a>");
+							}
+							else
+							{
+								echo($user_name);
+							}
+							echo("</th>");
+							
+							$reserved_total = fetch_owner_reserved_item_cnt($user_r['user_id']);
+							$sum_reserved += $reserved_total;
+		
+							echo("\n<td>");
+							if($reserved_total>0)
+								echo($reserved_total);
+							else
+								echo("-");
+							echo("</td>");
+		
+							$loan_total = fetch_owner_borrowed_item_cnt($user_r['user_id']);
+							$sum_loaned += $loan_total;
+		
+							echo("\n<td>");
+							if($loan_total>0)
+								echo($loan_total);
+							else
+								echo("-");
+							echo("</td>");
+							
+							echo("</tr>");
+						}//while ($user_r = db_fetch_assoc($result))
+						db_free_result($result);
+						
+						echo("<tr class=\"data totals\"><th>".get_opendb_lang_var('totals')."</th>");
+						
+						// sum loaned.
+						if(get_opendb_config_var('borrow', 'enable') !== FALSE)
+						{
+							echo("<td>".$sum_reserved."</td>");
+							echo("<td>".$sum_loaned."</td>");
+						}
+						
+						echo("</tr>");
+					}
+					echo("</table>");
+				}
+				
+				$graphConfigURLParams = get_url_string(_theme_graph_config());
+				
+				echo("<ul class=\"itemCharts\">");
+				
+				echo("<li><h3>".get_opendb_lang_var('item_ownership')."</h3>");
+				echo("<ul class=\"graph\">");
+				echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
+				echo("<li><img src=\"stats.php?op=graph&graphtype=item_types&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
+				echo("</ul>");
+				echo("</li>");
+				
+				$itemresults = fetch_item_type_rs();
+				if($itemresults)
+				{
+					while($item_type_r = db_fetch_assoc($itemresults) )
+					{
+						$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);
+						if($type_total_items > 0) 
+						{
+			        	    echo("<li><h3>".get_opendb_lang_var('itemtype_breakdown', array('desc'=>$item_type_r['description'],'s_item_type'=>$item_type_r['s_item_type'], 'total'=>$type_total_items))."</h3>");
+							echo("<ul class=\"graph\">");
+							echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_ownership&s_item_type=".urlencode($item_type_r['s_item_type'])."&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
+							echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_category&s_item_type=".urlencode($item_type_r['s_item_type'])."&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('itemtype_category_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
+							echo("</ul>");
+							echo("</li>");
+						}
+					}
+					db_free_result($itemresults);
+					
+				}
+				echo("</ul>");
+				
+				echo _theme_footer();
+			}
+		}
+		else
+		{
+			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
 			echo _theme_footer();
 		}
 	}

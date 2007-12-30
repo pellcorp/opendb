@@ -100,7 +100,7 @@ function get_item_review_block($item_r)
 			
 			$buffer .= "<li>";
 			
-			if(is_user_granted_permission(PERM_REVIEW_ADMIN) || 
+			if(is_user_granted_permission(PERM_ADMIN_REVIEWER) || 
 					is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
 			{
 				$action_links_rs = NULL;
@@ -150,7 +150,7 @@ function get_item_review_block($item_r)
 	}
 	
 	$action_links = NULL;
-	if(is_user_granted_permission(PERM_REVIEW_AUTHOR))
+	if(is_user_granted_permission(PERM_USER_REVIEWER))
 	{
 		$action_links[] = array(
 				url=>"item_review.php?op=add&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),

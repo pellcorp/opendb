@@ -29,9 +29,7 @@ include_once("./functions/widgets.php");
 include_once("./functions/http.php");
 include_once("./functions/importcache.php");
 
-if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && 
-		strlen(get_opendb_session_var('admin_user_id'))>0 && 
-		is_user_active(get_opendb_session_var('admin_user_id')))
+if(is_user_admin_changed_user())
 {
 	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Administrator logging out change user');
 	
@@ -41,14 +39,12 @@ if(get_opendb_config_var('login', 'enable_change_user')!==FALSE &&
 
     unregister_opendb_session_var('admin_user_id');
 	
-	// invalid login, so login instead.
  	http_redirect('index.php');
 }
 else
 {
 	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'User logged out');
 
-	// delete import cache records for user.
 	if(strlen(get_opendb_session_var('user_id'))>0)
 	{
 		import_cache_delete_for_user(get_opendb_session_var('user_id'));
@@ -64,7 +60,6 @@ else
 	// close session
 	session_destroy();
 
-	// redirect to index after logout
 	http_redirect('index.php');
 }
 

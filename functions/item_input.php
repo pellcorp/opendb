@@ -257,9 +257,9 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$err
  */
 function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 {
-	if(is_user_allowed_to_own($item_r['owner_id']) && (
-				$item_r['owner_id'] == get_opendb_session_var('user_id') || 
-				is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))) )
+	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
+				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
+				is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
 		// Before trying to insert items into this structure, first ensure it is valid.
 		if(is_valid_item_type_structure($item_r['s_item_type']))
@@ -386,8 +386,7 @@ function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
  */
 function handle_item_update(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 {
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-				$item_r['owner_id'] == get_opendb_session_var('user_id'))
+	if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_ADMIN))
 	{
 		if(validate_item_attributes('update', $item_r['s_item_type'], $HTTP_VARS, $_FILES, $errors))
 		{
@@ -443,9 +442,9 @@ function handle_item_instance_insert(&$item_r, $status_type_r, $HTTP_VARS, &$err
 {
 	$owner_id = ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'));
 	
-	if(is_user_allowed_to_own($owner_id) && (
-			$owner_id == get_opendb_session_var('user_id') || 
-			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))))
+	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
+				$owner_id == get_opendb_session_var('user_id')) || 
+				is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
 		$status_type = ifempty($HTTP_VARS['s_status_type'], $item_r['s_status_type']);
 		$status_type_r = fetch_status_type_r($status_type);
@@ -518,8 +517,8 @@ function handle_item_instance_update($item_r, $status_type_r, $HTTP_VARS, &$erro
 {
 	if(is_not_empty_array($item_r))
 	{
-		if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
-					$item_r['owner_id'] == get_opendb_session_var('user_id'))
+		if($item_r['owner_id'] == get_opendb_session_var('user_id') ||
+				is_user_granted_permission(PERM_ITEM_ADMIN))
 		{
 			$update_status_type = $HTTP_VARS['s_status_type'];
 
@@ -714,8 +713,7 @@ function copy_item_to_http_vars($old_item_r, $new_item_type)
  */
 function handle_item_delete($item_r, $status_type_r, $HTTP_VARS, &$errors, $delete_with_closed_borrow_records = NULL)
 {
-	if($item_r['owner_id'] != get_opendb_session_var('user_id') && 
-				!is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+	if($item_r['owner_id'] != get_opendb_session_var('user_id') && !is_user_granted_permission(PERM_ITEM_ADMIN))
 	{
 		$errors = array('error'=>get_opendb_lang_var('cannot_delete_item_not_owned'),'detail'=>'');
 		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User to delete item instance they do not own', $item_r);

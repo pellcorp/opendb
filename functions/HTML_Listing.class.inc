@@ -269,8 +269,7 @@ class HTML_Listing extends Listing
 					{
                         $user_name = get_opendb_lang_var('user_name', array('fullname'=>$fullname, 'user_id'=>$user_id));
 						
-                        if($this->_include_href_links && 
-									is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+                        if($this->_include_href_links && is_user_granted_permission(PERM_USER_BORROWER))
 						{
 							$item_title = '';
 							// lets find the title column.

@@ -375,7 +375,7 @@ function get_upload_form($HTTP_VARS)
 				get_opendb_lang_var('owner'), 
 				custom_select(
 					'owner_id', 
-					fetch_user_rs(get_owner_user_types_r()), 
+					fetch_user_rs(PERM_USER_IMPORT), 
 					'%fullname% (%user_id%)', 
 					1, 
 					ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')), 

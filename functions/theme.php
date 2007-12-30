@@ -55,12 +55,10 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 		header("Expires: 0");
 
 		$user_id = get_opendb_session_var('user_id');
-		$user_type = get_opendb_session_var('user_type');
 		
 		if(is_site_public_access())
 		{
 			$user_id = NULL;
-			$user_type = NULL;
 		}
 		
 		$include_menu = ($inc_menu!==FALSE && $inc_menu!=='N'?TRUE:FALSE);
@@ -71,16 +69,7 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 		
 		$pageId = basename($PHP_SELF, '.php');
 		
-		$theme_header =
-			 theme_header(
-				$pageId,
-				$title,
-    			$include_menu,
-    			$HTTP_VARS['mode'],
-				$user_id,
-				$user_type);
-
-		return $theme_header;
+		return theme_header($pageId, $title, $include_menu, $HTTP_VARS['mode'], $user_id);
 	}
 	else
 	{
@@ -93,22 +82,17 @@ function _theme_footer()
 	global $PHP_SELF;
 	
 	$user_id = get_opendb_session_var('user_id');
-	$user_type = get_opendb_session_var('user_type');
 	
 	if(is_site_public_access())
 	{
 		$user_id = NULL;
-		$user_type = NULL;
 	}
 
 	$pageId = basename($PHP_SELF, '.php');
 	
 	if(function_exists('theme_footer'))
 	{
-		return theme_footer(
-			$pageId,
-			$user_id,
-			$user_type);
+		return theme_footer($pageId, $user_id);
 	}
 	else
 	{

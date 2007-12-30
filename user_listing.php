@@ -70,7 +70,7 @@ if(is_site_enabled())
 				if($listingObject->getTotalItemCount()>0)
 				{
 					$result = fetch_user_rs(
-							NULL, //$user_types
+							NULL, //$user_role_permissions
 							$active_ind, //$active_ind
 							$listingObject->getCurrentOrderBy(),
 							$listingObject->getCurrentSortOrder(),
@@ -83,7 +83,7 @@ if(is_site_enabled())
 			else
 			{
 				$result = fetch_user_rs(
-							NULL, //$user_types
+							NULL, //$user_role_permissions
 							NULL, //$active_ind
 							$listingObject->getCurrentOrderBy(),
 							$listingObject->getCurrentSortOrder(),
@@ -93,7 +93,7 @@ if(is_site_enabled())
             $listingObject->addHeaderColumn(NULL, 'user_id_rs', FALSE, 'checkbox');
 			$listingObject->addHeaderColumn(get_opendb_lang_var('user'), 'user_id');
 			$listingObject->addHeaderColumn(get_opendb_lang_var('action'));
-			$listingObject->addHeaderColumn(get_opendb_lang_var('user_type'), 'type');
+			$listingObject->addHeaderColumn(get_opendb_lang_var('user_role'), 'role');
             if($HTTP_VARS['restrict_active_ind'] != 'X')
 			{
 				$listingObject->addHeaderColumn(get_opendb_lang_var('last_visit'), 'lastvisit');
@@ -146,8 +146,7 @@ if(is_site_enabled())
 
 					$listingObject->addActionColumn($action_links_rs);
 
-					$listingObject->addColumn(
-							get_usertype_prompt($user_r['type']));
+					$listingObject->addColumn($user_r['user_role']);
 
                     if($HTTP_VARS['restrict_active_ind'] != 'X')
 					{

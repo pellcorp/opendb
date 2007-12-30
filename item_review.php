@@ -84,7 +84,7 @@ if(is_site_enabled())
 {
 	if (is_opendb_valid_session())
 	{
-		if(is_user_allowed_to_review(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))) 
+		if(is_user_granted_permission(PERM_REVIEW_AUTHOR)) 
 		{
 			if(is_numeric($HTTP_VARS['item_id']) && ($HTTP_VARS['op'] == 'insert' || $HTTP_VARS['op'] == 'add'))
 			{

@@ -171,10 +171,10 @@ function show_changeuser_form()
 	echo("<h2>".get_opendb_lang_var('change_user')."</h2>");
 
 	echo("\n<form action=\"login.php\" method=\"GET\">");
-	echo("\n<input type=\"hidden\" name=\"op\" value=\"change-user\">");
+	echo("\n<input type=\"hidden\" name=\"op\" value=\"change_user\">");
 
 	echo("\n<table class=\"changeUserForm\">");
-	$results = fetch_user_rs(NULL, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+	$results = fetch_user_rs(PERM_ITEM_OWNER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
 	if($results)
 	{
 		echo(
@@ -270,7 +270,7 @@ if(is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] 
 		//TODO: This does not work very well with a login page in middle of an item update!
 		http_redirect(urldecode($HTTP_VARS['redirect']));
 	}
-	else if($HTTP_VARS['op'] == 'change-user')
+	else if($HTTP_VARS['op'] == 'change_user')
 	{
         if(get_opendb_config_var('login', 'enable_change_user')!==FALSE && is_user_granted_permission(PERM_ADMIN_CHANGE_USER))
 		{

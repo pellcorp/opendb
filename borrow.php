@@ -74,7 +74,9 @@ if(is_site_enabled())
 												$listingObject->getCurrentSortOrder());
 					}
 				}
-				else if($HTTP_VARS['op'] == 'all_borrowed' && (get_opendb_config_var('borrow', 'list_all_borrowed')!==FALSE || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))))
+				else if($HTTP_VARS['op'] == 'all_borrowed' && 
+							(get_opendb_config_var('borrow', 'list_all_borrowed')!==FALSE || 
+									is_user_granted_permission(PERM_ADMIN_BORROWER)))
 				{
 					$page_title = get_opendb_lang_var('items_borrowed');
 					
@@ -97,7 +99,9 @@ if(is_site_enabled())
 											$listingObject->getCurrentSortOrder());
 					}
 				}
-				else if($HTTP_VARS['op'] == 'all_reserved' && (get_opendb_config_var('borrow', 'list_all_reserved')!==FALSE || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))))
+				else if($HTTP_VARS['op'] == 'all_reserved' && 
+						(get_opendb_config_var('borrow', 'list_all_reserved')!==FALSE || 
+								is_user_granted_permission(PERM_ADMIN_BORROWER)))
 				{
 					$page_title = get_opendb_lang_var('items_reserved');
 					if(is_numeric($listingObject->getItemsPerPage()))
@@ -213,7 +217,8 @@ if(is_site_enabled())
 						}
 						
 						// Cannot view item history, unless you are admin, or own the item.
-						if(is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')) || is_user_owner_of_item($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+						if(is_user_owner_of_item($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) || 
+								is_user_granted_permission(PERM_ADMIN_BORROWER))
 						{
 							$show_listings=TRUE;
 						
@@ -262,7 +267,9 @@ if(is_site_enabled())
 				}
 				else if($HTTP_VARS['op'] == 'my_history')
 				{
-					if(is_user_valid($HTTP_VARS['uid']) && $HTTP_VARS['uid']!==get_opendb_session_var('user_id') && is_user_admin(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')))
+					if(is_user_valid($HTTP_VARS['uid']) && 
+								$HTTP_VARS['uid']!==get_opendb_session_var('user_id') && 
+								is_user_granted_permission(PERM_ADMIN_BORROWER))
 					{
 						$page_title = get_opendb_lang_var('borrower_history_for_fullname', array('fullname'=>fetch_user_name($HTTP_VARS['uid']),'user_id'=>$HTTP_VARS['uid']));
 						
@@ -405,8 +412,17 @@ if(is_site_enabled())
 					echo("\n<input type=\"hidden\" name=\"op\" value=\"my_history\">");
 	
 					echo("\n<table>");
-					$results = fetch_user_rs(get_borrower_user_types_r(), NULL, "fullname", "ASC");
-					echo(format_field(get_opendb_lang_var('borrower'), custom_select('uid', $results, '%fullname% (%user_id%)', 1, NULL, 'user_id')));
+					$results = fetch_user_rs(PERM_USER_BORROWER, NULL, "fullname", "ASC");
+					echo(format_field(
+							get_opendb_lang_var('borrower'), 
+							custom_select(
+								'uid', 
+								$results, 
+								'%fullname% (%user_id%)', 
+								1, 
+								get_opendb_session_var('user_id'), 
+								'user_id')));
+								
 					echo("</table>");
 					
 					echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");

@@ -387,7 +387,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 			echo("\n<select name=\"owner_id\">".
 					custom_select(
 						'owner_id',
-						fetch_user_rs(get_owner_user_types_r()),
+						fetch_user_rs(PERM_ITEM_OWNER),
 						'%fullname% (%user_id%)',
 						'NA',
 						$HTTP_VARS['owner_id'],
@@ -891,7 +891,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 				"\n<select name=\"owner_id\">".
 				custom_select(
 					'owner_id',
-					fetch_user_rs(get_owner_user_types_r(), NULL, 'user_id', 'ASC', FALSE),
+					fetch_user_rs(PERM_ITEM_OWNER, NULL, 'user_id', 'ASC', FALSE),
 					'%fullname% (%user_id%)',
 					'NA',
 					ifempty($HTTP_VARS['owner_id'], $item_r['owner_id']),
@@ -1102,17 +1102,12 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 	}
 }
 
-/*
-* Will validate that edit/refresh can proceed for the get_opendb_session_var('user_id'), and will then
-* build the edit form, by calling get_edit_form.  If get_edit_form, returns
-* a NOT NULL value then the complete get_edit_form block will be returned,
-* otherwise this function returns false.
-*/
 function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
 {
 	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || 
 			$item_r['owner_id'] == get_opendb_session_var('user_id') || 
-			($op == 'newinstance' && is_user_allowed_to_own(get_opendb_session_var('user_id'))))
+			($op == 'newinstance' && 
+			is_user_granted_permission(PERM_ITEM_OWNER)) )
 	{
 		$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
 		if($formContents != FALSE)
@@ -1140,9 +1135,9 @@ function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILE
 */
 function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
 {
-	if(is_user_allowed_to_own($item_r['owner_id']) && (
-				$item_r['owner_id'] == get_opendb_session_var('user_id') || 
-				is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))) )
+	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
+				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
+				is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
 		// Before trying to insert items into this structure, first ensure it is valid.
 		if(is_valid_item_type_structure($item_r['s_item_type']))
@@ -1826,25 +1821,20 @@ if(is_site_enabled())
                            $HTTP_VARS['op'] == 'site-refresh' ||
 						$HTTP_VARS['op'] == 'site') && !is_exists_item($HTTP_VARS['item_id'])))
 			{	
-				// Get the status_type for instances where the s_status_type is being
-				// specified according to the s_attribute_type:order_no.  This would
-				// occur for site operations, as well as situations where the addition
-				// of an item resulted in an error which reloading the Update page.
 				if(strlen($HTTP_VARS['s_status_type'])==0)
 				{
-					// todo - change
 					$status_attr_type_r = fetch_sfieldtype_item_attribute_type_r($HTTP_VARS['s_item_type'], 'STATUSTYPE');
 					$HTTP_VARS['s_status_type'] = $HTTP_VARS[get_field_name($status_attr_type_r['s_attribute_type'], $status_attr_type_r['order_no'])];
 				}
 			
-				// No s_status_type unless actually provided.
 				if(strlen($HTTP_VARS['s_status_type'])>0)
+				{
 					$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+				}
 				else
 				{
 					// Dummy array entry, as the s_status_type will be chosen in the edit form.
-					$status_type_r = array(
-								'borrow_ind'=>'Y');
+					$status_type_r = array('borrow_ind'=>'Y');
 				}
 				
 				// where we are making a copy of an existing item

@@ -135,14 +135,13 @@ function encode_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategori
 				"\n// -->\n</script>\n";
 }
 
-//
-// Note the "----------- ALL -----------" display values is a
-// kludge to support dynamic lov's in netscape 4.  We need to
-// ensure the size of the lov does not need to get any larger,
-// so we set to the largest value it will ever get using the
-// ----------- ALL -----------.  All the other lov's include
-// this as well for uniformity.
-//
+if(!is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
+{
+	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+	echo _theme_footer();
+}
+
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
@@ -155,18 +154,11 @@ if(is_site_enabled())
 		echo("<h2>".$page_title."</h2>");
 		
 		echo("\n<form name=\"search\" method=\"GET\" action=\"listings.php\">");
-
-		// global declaration of the datetimemask, to be used by all Date fields in search page.
 		echo("\n<input type=\"hidden\" name=\"datetimemask\" value=\"".get_opendb_config_var('search', 'datetime_mask')."\">");
-
-		// Indicate to listings.php that search.php initiated it.
 		echo("\n<input type=\"hidden\" name=\"search_list\" value=\"y\">");
 		
 		echo("<table class=\"searchForm\">");
 
-		// ------------------------
-		// TITLE FIELD
-		// ------------------------
 		echo format_field(
 			get_opendb_lang_var('title'),
 				"\n<input type=\"text\" class=\"text\" id=\"search-title\" size=\"50\" name=\"title\">".
@@ -180,9 +172,6 @@ if(is_site_enabled())
 		
 		if(@count($category_type_rs)>1)
 		{
-			// ------------------------
-			// CATEGORY FIELD
-			// ------------------------
 			$catTypeSelect = "<select name=\"category\" id=\"search-category\">".
 				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 			
@@ -198,7 +187,6 @@ if(is_site_enabled())
 				$catTypeSelect);
 		}
 		
-		// Lets display the field just like item_review.php
 		$attribute_type_r = fetch_attribute_type_r("S_RATING");
 		$attribute_type_r['compulsory_ind'] = 'N';
 		echo get_item_input_field("rating",
@@ -206,9 +194,6 @@ if(is_site_enabled())
 					NULL, // $item_r
    	  	        	NULL); //value
 			
-		// ------------------------
-		// S_ITEM_TYPE FIELD
-		// ------------------------
 		if(@count($item_type_rs)>1)
 		{
 			$itemTypeSelect = "<select name=\"s_item_type\" id=\"search-itemtype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".
@@ -226,9 +211,6 @@ if(is_site_enabled())
 				$itemTypeSelect);
 		}
 		
-		// ------------------------
-		// ATTRIBUTE_TYPE FIELD
-		// ------------------------
 		$attrTypeSelect = "<select name=\"attribute_type\" id=\"search-attributetype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val'], arrayOfLookupValues, false, '".get_opendb_lang_var('use_the_value_field')." ---->', true);\">".
 				"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------";
 		
@@ -260,11 +242,6 @@ if(is_site_enabled())
 				"\n</ul>"
 			);
 				
-		// ------------------------
-		// OWNER FIELD
-		// ------------------------
-		
-		// Must pass on not_owner_id if specified.
 		if(strlen($HTTP_VARS['not_owner_id'])>0)
 		{
 			echo("\n<input type=\"hidden\" name=\"not_owner_id\" value=\"".$HTTP_VARS['not_owner_id']."\">");
@@ -277,7 +254,7 @@ if(is_site_enabled())
 					"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 					custom_select(
 						'owner_id', 
-						fetch_user_rs(get_owner_user_types_r()), 
+						fetch_user_rs(PERM_ITEM_OWNER), 
 						'%fullname% (%user_id%)',
 						'NA',
 						NULL,
@@ -287,12 +264,8 @@ if(is_site_enabled())
 				)
 			);
 		
-        // ------------------------
-        // Item Status
-        // ------------------------
 		$lookup_results = fetch_status_type_rs(TRUE);
 		
-		// Only include Status type restriction, if more than once status type.
 		if($lookup_results && db_num_rows($lookup_results)>1)
 		{
 			echo format_field(
@@ -304,9 +277,6 @@ if(is_site_enabled())
 							array())); // value
 		}
 		
-		// ------------------------
-		// Status Comment FIELD
-		// ------------------------
 		echo format_field(
 			get_opendb_lang_var('status_comment'), 
 				"\n<input type=\"text\" class=\"text\" name=\"status_comment\" id=\"search-statuscomment\" size=\"50\">".
@@ -318,9 +288,6 @@ if(is_site_enabled())
 				"\n</ul>"
 			);
 
-		// ------------------------
-		// UPDATE_ON FIELD
-		// ------------------------
 		echo format_field(
 			get_opendb_lang_var('updated'), 
 			"\n<select name=\"update_on_days\" id=\"search-updateondays\" onChange=\"if(this.options[this.options.selectedIndex].value.length>0){this.form['update_on'].disabled=true;}else{this.form['update_on'].disabled=false;}\">".

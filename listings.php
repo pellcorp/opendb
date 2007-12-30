@@ -67,7 +67,7 @@ function getListingFiltersBlock()
 				<option value=\"\"></option>".
 				custom_select(
 						'owner_id', 
-						fetch_user_rs(get_owner_user_types_r()),
+						fetch_user_rs(PERM_ITEM_OWNER),
 						'%fullname% (%user_id%)',
 						'NA',
 						$HTTP_VARS['owner_id'],
@@ -907,6 +907,13 @@ function get_search_query_matrix($HTTP_VARS)
 	return $searches;
 }//function get_search_query_matrix($HTTP_VARS)
 
+if(!is_user_granted_permission(PERM_VIEW_LISTINGS))
+{
+	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+	echo _theme_footer();
+}
+
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
@@ -935,7 +942,7 @@ if(is_site_enabled())
 							is_exists_my_reserve_basket(get_opendb_session_var('user_id'))))))
 		{
 			// Only users who can borrow should see checkboxes and their own listings.
-			if(is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
+			if(is_user_granted_permission(PERM_USER_BORROWER))
 			{
 				if($HTTP_VARS['owner_id'] !== get_opendb_session_var('user_id'))
 				{
@@ -945,7 +952,7 @@ if(is_site_enabled())
 		}
 	
 		// Do we need to include the actions column?
-		if(is_user_allowed_to_borrow(get_opendb_session_var('user_id'),get_opendb_session_var('user_type')) &&
+		if(is_user_granted_permission(PERM_USER_BORROWER) &&
 		(
 			(
 				(
@@ -1122,7 +1129,7 @@ if(is_site_enabled())
 					{
 						if($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
 									$item_r['owner_id'] !== get_opendb_session_var('user_id') && 
-									is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
+									is_user_granted_permission(PERM_USER_BORROWER) && 
 									!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) &&
 									
 									(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
@@ -1314,7 +1321,7 @@ if(is_site_enabled())
 								if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
 										get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 								{
-									if(is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) && 
+									if(is_user_granted_permission(PERM_USER_BORROWER) && 
 												$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
 									{
 										if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))

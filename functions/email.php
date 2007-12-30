@@ -113,7 +113,7 @@ function send_email_to_site_admins($from_email_addr, $subject, $message, &$error
 	
 	if($success)
 	{
-		$results = fetch_user_rs(array('A'));
+		$results = fetch_user_rs(PERM_ADMIN_SEND_EMAIL);
 		while($user_r = db_fetch_assoc($results))
 		{
 			if(!opendb_user_email($user_r['user_id'], $from_email_addr, $subject, $message, $errors))

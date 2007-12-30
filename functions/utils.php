@@ -250,9 +250,14 @@ function replace_newlines($value)
 	Does no escaping of ' quotes, so ensure they
 	are not present in the array_of_values array.
 */
-function format_sql_in_clause($array_of_values)
+function format_sql_in_clause($values_r)
 {
 	$inclause = '';
+	
+	if(!is_array($values_r) && strlen($values_r)>0)
+		$array_of_values = array($values_r);
+	else
+		$array_of_values = $values_r;
 	
 	while(list(,$value) = @each($array_of_values))
 	{

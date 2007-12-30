@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_type)
+function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 {
 	global $PHP_SELF;
 	global $HTTP_VARS;
@@ -76,8 +76,12 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 			"<input type=\"text\" class=\"text\" name=\"title\" size=\"10\">".
 			"</form></li>");
 
-		echo("<li><a href=\"search.php\">".get_opendb_lang_var('advanced')."</a></li>");
-
+		
+		if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
+		{
+			echo("<li><a href=\"search.php\">".get_opendb_lang_var('advanced')."</a></li>");
+		}
+		
 		if(strlen($user_id)>0)
 		{
 			echo("<li class=\"login\"><a href=\"logout.php\">".get_opendb_lang_var('logout', 'user_id', $user_id)."</a></li>");
@@ -98,12 +102,12 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id, $user_typ
 	if($include_menu)
 	{
 		echo("<div id=\"menu\">");
-		echo get_menu_options_list(get_menu_options($user_id, $user_type));
+		echo get_menu_options_list(get_menu_options($user_id));
 		echo("\n</div>");
 	}
 }
 
-function theme_footer($pageid, $user_id, $user_type)
+function theme_footer($pageid, $user_id)
 {
 	echo("</div>");
 	

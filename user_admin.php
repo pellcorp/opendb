@@ -72,11 +72,11 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	$buffer .= format_field(
 				get_opendb_lang_var('user_role'), 
 				custom_select(
-					'role_name', 
+					'user_role', 
 					fetch_user_role_rs(), 
 					"%description%", 
-					'NA', 
-					$HTTP_VARS['role_name'],
+					'1', 
+					$HTTP_VARS['user_role'],
 					'role_name'));
 	
 	$buffer .= get_input_field("fullname",
@@ -441,7 +441,7 @@ function send_newuser_email($user_r, $passwd, &$errors)
 			    	    	     get_opendb_lang_var('userid').": ".$user_r['user_id']."\n".
 			        	    	 get_opendb_lang_var('new_passwd').": ".$passwd;
 
-	if(is_user_allowed_to_edit_info($user_r['user_id']))
+	if(is_user_granted_permission(PERM_EDIT_USER_PROFILE))
 	{
 		// Provide a link to open User Info form in edit mode.
 		$message .= "\n\n".
@@ -1075,14 +1075,14 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 
 	$http_vars['user_id'] = $HTTP_VARS['user_id'];
 	$http_vars['fullname'] = $HTTP_VARS['fullname'];
-	$http_vars['user_type'] = $HTTP_VARS['user_type'];
+	$http_vars['user_role'] = $HTTP_VARS['user_role'];
 	$http_vars['pwd'] = $HTTP_VARS['pwd'];
 	$http_vars['confirmpwd'] = $HTTP_VARS['pwd'];
 
 	$user_info_lines =
 	    get_opendb_lang_var('userid').": ".$HTTP_VARS['user_id'].
 		"\n".get_opendb_lang_var('fullname').": ".$HTTP_VARS['fullname'].
-		"\n".get_opendb_lang_var('user_type').": ".get_usertype_prompt($HTTP_VARS['user_type']).
+		"\n".get_opendb_lang_var('user_role').": ".$HTTP_VARS['user_role'].
 		"\n".get_opendb_lang_var('user_theme').": ".$HTTP_VARS['uid_theme'].
 	    "\n".get_opendb_lang_var('email').": ".$HTTP_VARS['email_addr'];
 

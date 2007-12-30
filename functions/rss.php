@@ -16,32 +16,24 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-	@author Doug Meyers <dgmyrs@users.sourceforge.net>
 */
 
-$_OPENDB_RSS_FEEDS = array(
-	array(feed=>'new_items', langvar=>'new_items_added'),
-	array(feed=>'announcements', langvar=>'announcements')
-);
-
-/*
-	This is the script for the announcement table.
-*/
+include_once('./functions/auth.php');
 include_once("./functions/database.php");
 include_once("./functions/user.php");
 
-/**
-*/
 function get_opendb_rss_feeds()
 {
-	global $_OPENDB_RSS_FEEDS;
+	$feeds_r = array();
 	
-	$feeds_r = NULL;
-	reset($_OPENDB_RSS_FEEDS);
-	while(list(,$feed_r) = each($_OPENDB_RSS_FEEDS))
+	if(is_user_granted_permission(PERM_VIEW_ANNOUNCEMENTS))
 	{
-		$feeds_r[] = array(feed=>$feed_r['feed'], title=>get_opendb_lang_var($feed_r['langvar']));
+		$feeds_r[] = array(feed=>'announcements', title=>get_opendb_lang_var('announcements'));
+	}
+	
+	if(is_user_granted_permission(PERM_VIEW_LISTINGS))
+	{
+		$feeds_r[] = array(feed=>'new_items', title=>get_opendb_lang_var('new_items_added'));
 	}
 	
 	return $feeds_r;	

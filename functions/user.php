@@ -23,116 +23,6 @@ include_once("./functions/logging.php");
 include_once("./functions/utils.php");
 include_once("./functions/address_type.php");
 
-function get_owner_user_types_r()
-{
-	return array('A','N');
-}
-
-function get_borrower_user_types_r()
-{
-	return array('A','N','B');
-}
-
-function get_review_user_types_r()
-{
-	return array('A','N','B');
-}
-
-function get_editinfo_user_types_r()
-{
-	return array('A', 'N', 'B');
-}
-
-function get_email_user_types_r()
-{
-	return array('A', 'N', 'B');
-}
-
-function get_user_types_r()
-{
-	return array('A', 'N', 'B', 'G');
-}
-
-function is_user_allowed_to_own($uid = NULL, $type=NULL)
-{
-	if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else
-		$type = get_opendb_session_var('user_type');
-	
-	if(in_array($type, get_owner_user_types_r()))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-function is_user_allowed_to_borrow($uid = NULL, $type=NULL)
-{
-	if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else
-		$type = get_opendb_session_var('user_type');
-	
-	if(in_array($type, get_borrower_user_types_r()))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-function is_user_allowed_to_review($uid = NULL, $type=NULL)
-{
-	if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else
-		$type = get_opendb_session_var('user_type');
-		
-	if(in_array($type, get_review_user_types_r()))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-function is_user_allowed_to_edit_info($uid = NULL, $type=NULL)
-{
-	if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else
-		$type = get_opendb_session_var('user_type');
-	
-	if(in_array($type, get_editinfo_user_types_r()))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-function get_usertype_prompt($usertype)
-{
-	if($usertype == 'N')
-		return get_opendb_lang_var('normal');
-	else if($usertype == 'A')
-		return get_opendb_lang_var('administrator');
-	else if($usertype == 'B')
-		return get_opendb_lang_var('borrower');
-	else if($usertype == 'G')
-		return get_opendb_lang_var('guest');
-	else
-		return get_opendb_lang_var('unknown');
-}
-
-function get_usertype_description($usertype)
-{
-	if($usertype == 'N')
-		return get_opendb_lang_var('normal_usertype_description');
-	else if($usertype == 'A')
-		return get_opendb_lang_var('administrator_usertype_description');
-	else if($usertype == 'B')
-		return get_opendb_lang_var('borrower_usertype_description');
-	else if($usertype == 'G')
-		return get_opendb_lang_var('guest_usertype_description');
-	else
-		return NULL;
-}
-
 function is_user_active($uid)
 {
 	$query = "SELECT active_ind FROM user WHERE user_id = '$uid'";
@@ -202,32 +92,6 @@ function is_user_admin($uid = NULL, $type = NULL)
 		return TRUE;
 	else
 		return FALSE;*/
-}
-
-function is_user_guest($uid = NULL, $type = NULL)
-{
-	if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else if(strlen($type)==0)
-		$type = get_opendb_session_var('user_type');
-
-	if ($type == 'G')
-		return TRUE;
-	else
-		return FALSE;
-}
-
-function is_user_normal($uid = NULL, $type = NULL)
-{
-	if(strlen($uid)>0)
-		$type = fetch_user_type($uid);
-	else if(strlen($type)==0)
-		$type = get_opendb_session_var('user_type');
-		
-	if ($type == 'N')
-		return TRUE;
-	else
-		return FALSE;
 }
 
 /**
@@ -383,53 +247,62 @@ function fetch_user_role_rs() {
 * 	@param $exclude_user	A neat way to exclude one user from the list. Does not 
 * 							currently support excluding more than one user.
 */
-function fetch_user_rs($user_types=NULL, $active_ind=NULL, $order_by=NULL, $sortorder="ASC", $include_deactivated_users=FALSE, $exclude_user=NULL, $start_index=NULL, $items_per_page=NULL)
+function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=NULL, $sortorder="ASC", $include_deactivated_users=FALSE, $exclude_user=NULL, $start_index=NULL, $items_per_page=NULL)
 {
 	// Uses the special 'zero' value lastvisit = 0 to test for default date value.
-	$query = "SELECT user_id, active_ind, IF(LENGTH(fullname)>0,fullname,user_id) as fullname, IF(LENGTH(type)>0,type,'N') as type, language, theme, email_addr, IF(lastvisit <> 0,UNIX_TIMESTAMP(lastvisit),'') as lastvisit FROM user";
-
+	$query = "SELECT DISTINCT u.user_id, 
+					u.active_ind, IF(LENGTH(u.fullname)>0,u.fullname,u.user_id) AS fullname, 
+					u.user_role, 
+					u.language, 
+					u.theme, 
+					u.email_addr, 
+					IF(u.lastvisit <> 0,UNIX_TIMESTAMP(u.lastvisit),'') AS lastvisit 
+	FROM user u";
+	
 	// List all users who can borrow records.
-	$user_type_clause = format_sql_in_clause($user_types);
-	if($user_type_clause != NULL)
+	$user_permissions_clause = format_sql_in_clause($user_role_permissions);
+	if($user_permissions_clause != NULL)
 	{
-		$where_clause = "IF(LENGTH(type)>0,type,'N') IN($user_type_clause)";
+		$query .= ", s_role_permission srp ";
+		 
+		$where_clause = "u.user_role = srp.role_name AND 
+						srp.permission_name IN($user_permissions_clause)";
 	}
 
 	if(strlen($exclude_user)>0)
 	{
 		if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= "user_id NOT IN ('$exclude_user')";
+		$where_clause .= "u.user_id NOT IN ('$exclude_user')";
 	}
 
 	if($active_ind!=NULL)
 	{
 	    if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= "active_ind = '$active_ind'";
+		$where_clause .= "u.active_ind = '$active_ind'";
 	}
 	else if($include_deactivated_users !== TRUE)
 	{
 		if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= " active_ind = 'Y' ";
+		$where_clause .= " u.active_ind = 'Y' ";
 	}
 	
 	if(strlen($where_clause)>0)
 		$query .= " WHERE $where_clause";
 	
-	// For simplicity sake!
 	if(strlen($order_by)==0)
-		$order_by = "fullname";
+		$order_by = "u.fullname";
 
 	if($order_by === "user_id")
-		$query .= " ORDER BY user_id $sortorder";
+		$query .= " ORDER BY u.user_id $sortorder";
 	else if($order_by === "fullname")
-		$query .= " ORDER BY fullname $sortorder, user_id";
-	else if($order_by === "type")
-		$query .= " ORDER BY type $sortorder, fullname, user_id";
+		$query .= " ORDER BY u.fullname $sortorder, u.user_id";
+	else if($order_by === "role") 
+		$query .= " ORDER BY u.user_role $sortorder, u.fullname, u.user_id";
 	else if($order_by === "lastvisit")
-		$query .= " ORDER BY lastvisit $sortorder, fullname, user_id";
+		$query .= " ORDER BY u.lastvisit $sortorder, u.fullname, u.user_id";
 
 	if(is_numeric($start_index) && is_numeric($items_per_page))
 		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
@@ -451,35 +324,38 @@ function fetch_user_rs($user_types=NULL, $active_ind=NULL, $order_by=NULL, $sort
 
     @param $active_ind      If not NULL, restrict to users with active_ind=$active_ind
 */
-function fetch_user_cnt($user_types=NULL, $active_ind=NULL, $include_deactivated_users=FALSE, $exclude_user=NULL)
+function fetch_user_cnt($user_role_permissions=NULL, $active_ind=NULL, $include_deactivated_users=FALSE, $exclude_user=NULL)
 {
-	$query = "SELECT count(user_id) as count FROM user";
+	$query = "SELECT COUNT(u,user_id) AS count FROM user u";
 
 	// List all users who can borrow records.
-	$user_type_clause = format_sql_in_clause($user_types);
-	if($user_type_clause != NULL)
+	$user_permissions_clause = format_sql_in_clause($user_role_permissions);
+	if($user_permissions_clause != NULL)
 	{
-		$where_clause = "IF(LENGTH(type)>0,type,'N') IN($user_type_clause)";
+		$query .= ", s_role_permission srp ";
+		 
+		$where_clause = "u.user_role = srp.role_name AND 
+						srp.permission_name IN($user_permissions_clause)";
 	}
 	
 	if(strlen($exclude_user)>0)
 	{
 		if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= "user_id NOT IN ('$exclude_user')";
+		$where_clause .= "u.user_id NOT IN ('$exclude_user')";
 	}
 	
 	if($active_ind!=NULL)
 	{
 	    if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= "active_ind = '$active_ind'";
+		$where_clause .= "u.active_ind = '$active_ind'";
 	}
 	else if($include_deactivated_users !== TRUE)
 	{
 		if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= " active_ind = 'Y' ";
+		$where_clause .= " u.active_ind = 'Y' ";
 	}
 	
 	if(strlen($where_clause)>0)
@@ -504,7 +380,7 @@ function fetch_user_cnt($user_types=NULL, $active_ind=NULL, $include_deactivated
 //
 function fetch_user_r($uid)
 {
-	$query = "SELECT user_id, fullname, role_name, language, theme, email_addr, lastvisit FROM user where user_id = '".$uid."'";
+	$query = "SELECT user_id, fullname, user_role, language, theme, email_addr, lastvisit FROM user where user_id = '".$uid."'";
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)
 	{

@@ -40,7 +40,7 @@ define('PERM_ITEM_OWNER', 'PERM_ITEM_OWNER');
 define('PERM_ITEM_ADMIN', 'PERM_ITEM_ADMIN');
 define('PERM_ITEM_DISPLAY', 'PERM_ITEM_DISPLAY');
 
-define('PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS');
+
 define('PERM_ADMIN_ANNOUNCEMENTS', 'PERM_ADMIN_ANNOUNCEMENTS');
 
 define('PERM_ADMIN_USER_PROFILE', 'PERM_ADMIN_USER_PROFILE');
@@ -60,86 +60,35 @@ define('PERM_ADMIN_CHANGE_USER', 'PERM_ADMIN_CHANGE_USER');
 
 define('PERM_ADMIN_SEND_EMAIL', 'PERM_ADMIN_SEND_EMAIL');
 define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
+define('PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL');
 
-/**
- * If user_id is not null, then the permission check is not for the
- * current user, but a user in a list, or someone not logged in, etc. 
- *
- * @param unknown_type $permission
- * @param unknown_type $user_id
- * @return unknown
- *//*
-function is_user_granted_permission($permission, $user_id = NULL)
-{
-	if(strlen($user_id)==0) {
-		$user_id = get_opendb_session_var('user_id');	
-	}
-	
-	if($permission == PERM_ADMIN_TOOLS)
-		return is_user_admin($user_id);
-	else if($permission == PERM_ADMIN_EXPORT)
-		return is_user_admin($user_id);
-	else if($permission == PERM_ADMIN_IMPORT)
-		return is_user_admin($user_id);
-	else if($permission == PERM_USER_EXPORT)
-		return is_user_normal($user_id) || is_user_admin($user_id);
-	else if($permission == PERM_USER_IMPORT)
-		return is_user_normal($user_id) || is_user_admin($user_id);
-	else if($permission == PERM_USER_BORROWER)
-		return is_user_allowed_to_borrow($user_id);
-	else if($permission == PERM_ADMIN_BORROWER)
-		return is_user_admin($user_id);
-	else if($permission == PERM_REVIEW_ADMIN)
-		return is_user_admin($user_id);
-	else if($permission == PERM_REVIEW_AUTHOR)
-		return is_user_allowed_to_review($user_id);
-	else if($permission == PERM_ITEM_OWNER)
-		return is_user_allowed_to_own($user_id);
-	else if($permission == PERM_ITEM_ADMIN)
-		return is_user_admin($user_id);
-	else if($permission == PERM_VIEW_ANNOUNCEMENTS)
-		return TRUE; // work out what to do for this later, for now leave unrestricted
-	else if($permission == PERM_ITEM_DISPLAY)
-		return TRUE; // for the moment all have permission
-	else if($permission == PERM_ADMIN_ANNOUNCEMENTS) 
-		return is_user_admin($user_id);
-	else if($permission == PERM_ADMIN_USER_PROFILE || 
-				$permission == PERM_ADMIN_USER_LISTING || 
-				$permission == PERM_ADMIN_CHANGE_PASSWORD || 
-				$permission == PERM_ADMIN_CREATE_USER)
-		return is_user_admin($user_id);
-	else if($permission == PERM_EDIT_USER_PROFILE)	
-		return is_user_allowed_to_edit_info($user_id);
-	else if($permission == PERM_ADMIN_QUICK_CHECKOUT)
-		return is_user_admin($user_id);
-	else if($permission == PERM_ADMIN_LOGIN)
-		return is_user_admin($user_id);
-	else if($permission == PERM_ADMIN_CHANGE_USER)
-		return is_user_admin($user_id);
-	else if($permission == PERM_VIEW_USER_PROFILE)
-		return !is_user_guest($user_id);
-	else if($permission == PERM_CHANGE_PASSWORD)
-		return !is_user_guest($user_id);
-	else if($permission == PERM_SEND_EMAIL)
-		return !is_user_guest($user_id);
-	else if($permission == PERM_ADMIN_SEND_EMAIL)
-		return is_user_admin($user_id);
-	else
-		return FALSE;
-}*/
+define('PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS');
+define('PERM_VIEW_WHATSNEW', 'PERM_VIEW_WHATSNEW');
+define('PERM_VIEW_LISTINGS', 'PERM_VIEW_LISTINGS');
+define('PERM_VIEW_STATS', 'PERM_VIEW_STATS');
+define('PERM_VIEW_ADVANCED_SEARCH', 'PERM_VIEW_ADVANCED_SEARCH');
 
 function is_user_granted_permission($permission, $user_id = NULL)
 {
-	if(strlen($user_id)==0) {
-		$user_id = get_opendb_session_var('user_id');	
+	if(is_site_public_access())
+	{
+		$query = "SELECT 'X' 
+			FROM 	s_role_permission
+			WHERE 	role_name = 'PUBLICACCESS' AND
+				  	permission_name = '$permission'";
 	}
-	
-	$query = "SELECT 'X' 
+	else 
+	{
+		if(strlen($user_id)==0)
+			$user_id = get_opendb_session_var('user_id');
+
+		$query = "SELECT 'X' 
 			FROM 	s_role_permission srp, 
 				 	user u 
-			WHERE 	u.role_name = srp.role_name AND
+			WHERE 	u.user_role = srp.role_name AND
 				  	srp.permission_name = '$permission' AND
 				  	u.user_id = '$user_id'";
+	}
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

@@ -149,21 +149,8 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'item_display' AND id = 'ta
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 
-DELETE FROM s_config_group_item WHERE group_id = 'site.public_access' AND id IN ('user_id');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'welcome', 2, 'Welcome', 'Enable welcome and last items list access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'rss', 3, 'RSS Feeds', 'Enable rss feeds access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'listings', 4, 'Item Listings', 'Enable item listings access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'item_display', 5, 'Item Display', 'Enable item display access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'stats', 6, 'Statistics', 'Enable statistics access', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.public_access', 'url', 7, 'File Cache URLs', 'Enable url.php to stream cached images / thumbnails', 'boolean');
-
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'rss', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'listings', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_display', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'item_review', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'stats', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'welcome', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'url', 'TRUE');
+# delete any config introduced during earlier dev 
+DELETE FROM s_config_group_item WHERE group_id = 'site.public_access' AND id IN ('user_id', 'welcome', 'rss', 'listings', 'item_display', 'stats', 'url');
 
 # move announcements datetime mask into login.announcements section which is only place its really used.
 UPDATE s_config_group_item SET group_id = 'login.announcements', order_no = 3 WHERE group_id = 'announcements' AND id = 'datetime_mask';
@@ -413,18 +400,20 @@ INSERT INTO s_role(role_name, description) VALUES('BORROWER', 'Borrower');
 INSERT INTO s_role(role_name, description) VALUES('GUEST', 'Guest');
 INSERT INTO s_role(role_name, description) VALUES('PUBLICACCESS', 'Public Access');
 
+ALTER TABLE user ADD user_role VARCHAR(20);
 
-ALTER TABLE user ADD role_name VARCHAR(20);
+UPDATE user SET user_role = 'ADMINISTRATOR' WHERE type = 'A';
+UPDATE user SET user_role = 'OWNER' WHERE type = 'N';
+UPDATE user SET user_role = 'BORROWER' WHERE type = 'B';
+UPDATE user SET user_role = 'GUEST' WHERE type = 'G';
 
-UPDATE user SET role_name = 'ADMINISTRATOR' WHERE type = 'A';
-UPDATE user SET role_name = 'OWNER' WHERE type = 'N';
-UPDATE user SET role_name = 'BORROWER' WHERE type = 'B';
-UPDATE user SET role_name = 'GUEST' WHERE type = 'G';
-
-ALTER TABLE user CHANGE role_name role_name VARCHAR(20) NOT NULL;
+ALTER TABLE user CHANGE user_role user_role VARCHAR(20) NOT NULL;
 ALTER TABLE user DROP type;
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_role', 'User Role');
+
+# remove uneeded user type vars
+DELETE FROM s_language_var WHERE varname IN('normal', 'guest', 'borrower', 'administrator', 'unknown');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_TOOLS', 'Admin Tools');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_BORROWER', 'Borrower User');
@@ -438,7 +427,7 @@ INSERT INTO s_permission(permission_name, description) values('PERM_USER_IMPORT'
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_OWNER', 'Item Owner');
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_ADMIN', 'Item Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_DISPLAY', 'Item User');
-INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ANNOUNCEMENTS', 'View Announcements');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_ANNOUNCEMENTS', 'Announcements Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_PROFILE', 'User Profile Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_LISTING', 'User Listing Administrator');
@@ -452,3 +441,10 @@ INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_LOGIN'
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_USER', 'Change User');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_SEND_EMAIL', 'Send Email Administrator');
 INSERT INTO s_permission(permission_name, description) values('PERM_SEND_EMAIL', 'Send Email');
+INSERT INTO s_permission(permission_name, description) values('PERM_RECEIVE_EMAIL', 'Receive Email');
+
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ANNOUNCEMENTS', 'View Announcements');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_LISTINGS', 'View Listings');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_STATS', 'View Stats');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ADVANCED_SEARCH', 'Advanced Search');
+

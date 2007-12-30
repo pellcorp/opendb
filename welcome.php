@@ -197,7 +197,8 @@ place, without having to rewrite the page logic.
 */
 function display_last_login_block($userid, $usertype, $lastvisit)
 {
-	if(get_opendb_config_var('login.whats_new', 'enable')!==FALSE)
+	if(get_opendb_config_var('login.whats_new', 'enable')!==FALSE && 
+			is_user_granted_permission(PERM_VIEW_WHATSNEW))
 	{
 		$buffer .= "\n<div id=\"whatsnew\">";
 		$buffer .= "\n<h3>".get_opendb_lang_var('whats_new')."</h3>";
@@ -226,7 +227,8 @@ function display_last_login_block($userid, $usertype, $lastvisit)
 		$buffer .= "\n</div>";
 	}
 
-	if(get_opendb_config_var('login.last_items_list', 'enable')!==FALSE)
+	if(get_opendb_config_var('login.last_items_list', 'enable')!==FALSE && 
+			is_user_granted_permission(PERM_VIEW_LISTINGS))
 	{
 		$lastitemlist_blocks_r = get_lastitems_list_blocks_r($lastvisit, $userid);
 		if(is_array($lastitemlist_blocks_r))

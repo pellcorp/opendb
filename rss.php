@@ -169,9 +169,10 @@ if(is_site_enabled())
 			echo "<h2>".get_opendb_lang_var('rss_feeds')."</h2>";
 			
 			$feeds_r = get_opendb_rss_feeds();
-			reset($feeds_r);
-		
+			
 			echo "<ul id=\"rssfeeds\">";
+			
+			reset($feeds_r);
 			while(list(,$feed_r) = each($feeds_r))
 			{
 				echo('<li><a href="'.$PHP_SELF.'?feed='.$feed_r['feed'].'">'.$feed_r['title'].'</a></dd>');

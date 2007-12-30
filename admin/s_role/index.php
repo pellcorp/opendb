@@ -23,30 +23,23 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-if($HTTP_VARS['op'] == 'update')
+function display_role_permissions_editor($HTTP_VARS)
 {
-	$included_permissions_r = array();
-	while(list($permission_name,$value) = each($HTTP_VARS['s_role_permission'])) 
-	{
-		if($value == 'include')
-		{
-			$included_permissions_r[] = $permission_name;
-		}
-	}
-	
-	update_role_permissions($HTTP_VARS['role_name'], $included_permissions_r);
-	
-	$HTTP_VARS['op'] = 'edit';
-}
+	global $ADMIN_TYPE;
+	global $PHP_SELF;
 
-if($HTTP_VARS['op'] == 'edit')
-{
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
-	
-	echo("\n<h3>Edit ${HTTP_VARS['role_name']} Role Permissions</h3>");
-	
-	if(is_not_empty_array($errors))
-		echo format_error_block($errors);
+	$results = fetch_role_permission_rs($HTTP_VARS['role_name']);
+	if($results)
+	{
+		while($permission_r = db_fetch_assoc($results))
+		{
+			if(strlen($permission_r['role_name'])>0)
+				$exists_rs[] = $permission_r;
+			else
+				$not_exists_rs[] = $permission_r;
+		}
+		db_free_result($results);
+	}
 	
 	echo('<script src="./admin/select.js" language="JavaScript" type="text/javascript"></script>');
 	
@@ -55,29 +48,13 @@ if($HTTP_VARS['op'] == 'edit')
 	echo("\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">");
 	echo("\n<input type=\"hidden\" name=\"role_name\" value=\"".$HTTP_VARS['role_name']."\">");
 	
-	$results = fetch_role_permission_rs($HTTP_VARS['role_name']);
-	if($results)
-	{
-		while($permission_r = db_fetch_assoc($results))
-		{
-			if(strlen($permission_r['role_name'])>0)
-			{
-				$exists_rs[] = $permission_r;
-			}
-			else
-			{
-				$not_exists_rs[] = $permission_r;
-			}
-		}
-		db_free_result($results);
-	}
-	
 	echo("<table>");
 	echo("<tr class=\"navbar\">
 	<th>Exclude</th>
 	<th></th>
 	<th>Include</th>
 	</tr>");
+	
 	echo("<tr><td><select name=\"excluded_permissions\" size=\"15\" MULTIPLE>");
 	echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
 	while(list(,$permission_r) = @each($not_exists_rs))
@@ -120,6 +97,35 @@ if($HTTP_VARS['op'] == 'edit')
 	echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
 
 	echo("</form>");
+}
+
+if($HTTP_VARS['op'] == 'update')
+{
+	$included_permissions_r = array();
+	while(list($permission_name,$value) = each($HTTP_VARS['s_role_permission'])) 
+	{
+		if($value == 'include')
+		{
+			$included_permissions_r[] = $permission_name;
+		}
+	}
+	
+	update_role_permissions($HTTP_VARS['role_name'], $included_permissions_r);
+	
+	$HTTP_VARS['op'] = 'edit';
+}
+
+if($HTTP_VARS['op'] == 'edit')
+{
+	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
+	
+	echo("\n<h3>Edit ${HTTP_VARS['role_name']} Role Permissions</h3>");
+	
+	if(is_not_empty_array($errors))
+		echo format_error_block($errors);
+	
+	
+	display_role_permissions_editor($HTTP_VARS);
 }
 
 else if($HTTP_VARS['op'] == '')

@@ -364,7 +364,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		}			
 	}
 	
-	if(is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) || $item_r['owner_id'] == get_opendb_session_var('user_id'))
+	if($item_r['owner_id'] == get_opendb_session_var('user_id')
 	{
 		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 		{
@@ -389,8 +389,8 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	// If a comment is allowed and defined, add it in.
 	$rowcontents .= "\n<td>";
 	if($status_type_r['status_comment_ind'] == 'Y' ||
-			get_opendb_session_var('user_id') === $item_r['owner_id'] || 
-			is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) )
+			get_opendb_session_var('user_id') === $item_r['owner_id'] ||
+			is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
 		$rowcontents .= ifempty(nl2br($item_r['status_comment']),"&nbsp;"); // support newlines in this field
 	}
@@ -480,7 +480,7 @@ function get_related_items_block($item_r, $HTTP_VARS)
 		$buffer .= "<p>".get_opendb_lang_var('no_related_item(s)')."</p>";
 	}
 	
-	if(get_opendb_session_var('user_id') === $item_r['owner_id'] || is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')) )
+	if(get_opendb_session_var('user_id') === $item_r['owner_id'])
 	{
 		if(get_opendb_config_var('item_input', 'related_item_support') !== FALSE && 
 					is_numeric($item_r['item_id']) && is_numeric($item_r['instance_no']))

@@ -213,19 +213,15 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 function get_user_id_rs($exclude_current_user = FALSE)
 {
 	$user_id_rs = NULL;
-	$result = fetch_user_rs(NULL, NULL, 'user_id', 'ASC');
+	$result = fetch_user_rs(PERM_RECEIVE_EMAIL, NULL, 'user_id', 'ASC', FALSE, get_opendb_session_var('user_id'));
 	if($result)
 	{
 		while ($user_r = db_fetch_assoc($result))
 		{
-			if(!$exclude_current_user || $user_r['user_id'] != get_opendb_session_var('user_id'))
-			{
-				$user_id_rs[] = $user_r['user_id'];
-			}
+			$user_id_rs[] = $user_r['user_id'];
 		}
 		db_free_result($result);
 	}
-
 	return $user_id_rs;
 }
 

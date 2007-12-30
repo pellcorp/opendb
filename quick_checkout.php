@@ -74,7 +74,7 @@ function display_borrower_form($HTTP_VARS)
 	}
 	else
 	{
-		$results = fetch_user_rs(get_borrower_user_types_r(), NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+		$results = fetch_user_rs(PERM_USER_BORROWER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
 		if($results)
 		{
 			echo(
@@ -293,7 +293,7 @@ function validate_borrower_id($borrower_id, &$errors)
 			$errors[] = get_opendb_lang_var('invalid_borrower_user', 'user_id', $HTTP_VARS['borrower_id']);
 			return FALSE;
 		}
-		else if(!is_user_allowed_to_borrow($borrower_id))
+		else if(!is_user_granted_permission(PERM_USER_BORROWER, $borrower_id))
 		{
 			$errors[] = get_opendb_lang_var('user_must_be_borrower', 'user_id', $HTTP_VARS['borrower_id']);
 			return FALSE;

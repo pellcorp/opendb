@@ -37,10 +37,10 @@ include_once("./functions/item.php");
 
 function build_owner_item_chart_info($s_item_type)
 {
-	$result = fetch_user_rs(get_owner_user_types_r()); // fetch a list of owners
+	$result = fetch_user_rs(PERM_ITEM_OWNER);
 	if($result)
 	{
-		while ($user_r = db_fetch_assoc($result)) // next user..
+		while ($user_r = db_fetch_assoc($result))
 		{
 			$num_total = fetch_owner_item_cnt($user_r['user_id'], $s_item_type);
 			if($num_total>0)
@@ -105,7 +105,7 @@ function build_item_ownership_chart_info()
 		db_free_result($results);
 	}
 		
-	$results = fetch_user_rs(get_owner_user_types_r());//only ACTIVE owner users!
+	$results = fetch_user_rs(PERM_ITEM_OWNER);
 	if($results)
 	{
 		while ($user_r = db_fetch_assoc($results))
@@ -245,6 +245,13 @@ function do_stats_graph($HTTP_VARS)
 	}
 }
 
+if(!is_user_granted_permission(PERM_VIEW_STATS))
+{
+	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+	echo _theme_footer();
+}
+
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
@@ -262,7 +269,7 @@ if(is_site_enabled())
 			
 			echo("<dl class=\"generalStats\">");
 			echo("<dt>".get_opendb_lang_var('owner(s)')."</dt>");
-			$num_users = fetch_user_cnt(get_owner_user_types_r());//only users who can own
+			$num_users = fetch_user_cnt(PERM_ITEM_OWNER);//only users who can own
 			echo("<dd>".$num_users."</dd>");
 			
 			echo("<dt>".get_opendb_lang_var('item(s)')."</dt>");
@@ -323,7 +330,7 @@ if(is_site_enabled())
 	        
 			echo("</tr>");
 			
-			$result = fetch_user_rs(get_owner_user_types_r());//only ACTIVE owner users!
+			$result = fetch_user_rs(PERM_ITEM_OWNER);
 			if($result)
 			{
 				$toggle=TRUE;
@@ -402,7 +409,7 @@ if(is_site_enabled())
 				echo("<th>"._theme_image('borrowed.gif', get_opendb_lang_var('borrowed'), "borrowed_item")."</th>");
 				echo("</tr>");
 				
-				$result = fetch_user_rs(get_owner_user_types_r());//only ACTIVE owner users!
+				$result = fetch_user_rs(PERM_ITEM_OWNER);//only ACTIVE owner users!
 				if($result)
 				{
 					$toggle=TRUE;

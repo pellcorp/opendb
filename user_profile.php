@@ -73,7 +73,7 @@ if(is_site_enabled())
 	
 				echo(format_field(
 						get_opendb_lang_var('user_role'),
-						$user_r['role_name']));
+						$user_r['user_role']));
 	
 				echo(format_field(
 						get_opendb_lang_var('fullname'),

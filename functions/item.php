@@ -36,9 +36,12 @@ include_once("./functions/item_type_group.php");
 	will check that the user owns the specified instance, otherwise this function is
 	only checking that the $uid owns at least one instance of the item.
 */	
-function is_user_owner_of_item($item_id, $instance_no, $uid)
+function is_user_owner_of_item($item_id, $instance_no, $user_id = NULL)
 {
-	$query = "SELECT 'x' FROM item_instance WHERE item_id = '$item_id' AND owner_id = '$uid' ";
+	if(strlen($user_id)==0)
+		$user_id = get_opendb_session_var('user_id');
+		
+	$query = "SELECT 'x' FROM item_instance WHERE item_id = '$item_id' AND owner_id = '$user_id' ";
 	if(is_numeric($instance_no))
 		$query .= " AND instance_no = '$instance_no' ";
 

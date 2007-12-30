@@ -652,7 +652,7 @@ if(is_site_enabled())
 								"\n<option value=\"\">-------------- ".get_opendb_lang_var('all')." --------------".
 								custom_select(
 									'owner_id', 
-									fetch_user_rs(get_owner_user_types_r()), 
+									fetch_user_rs(PERM_USER_EXPORT), 
 									'%fullname% (%user_id%)',
 									'NA',
 									ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')),

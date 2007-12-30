@@ -110,12 +110,12 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 		$errors = get_opendb_lang_var('invalid_borrower_user', 'user_id', $borrower_id);
 		return FALSE;
 	}
-	else if(!is_user_allowed_to_borrow($borrower_id))
+	else if(!is_user_granted_permission(PERM_USER_BORROWER, $borrower_id))
 	{
 		$errors = get_opendb_lang_var('user_must_be_borrower', 'user_id', $borrower_id);
 		return FALSE;
 	}
-	else if(!is_user_owner_of_item($item_id, $instance_no, get_opendb_session_var('user_id')) && 
+	else if(!is_user_owner_of_item($item_id, $instance_no) && 
 			!is_user_admin(get_opendb_session_var('user_id'), get_opendb_session_var('user_type')))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
@@ -506,9 +506,9 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	// Include a Borrower ID select, minus the current user.
 	if($op == 'quick_check_out')
 	{
-		if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_allowed_to_borrow($HTTP_VARS['borrower_id']))
+		if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_granted_permission(PERM_USER_BORROWER, $HTTP_VARS['borrower_id']))
 		{
-			$results = fetch_user_rs(get_borrower_user_types_r(), NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+			$results = fetch_user_rs(PERM_USER_BORROWER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
 			if($results)
 			{
 				echo(
@@ -962,9 +962,8 @@ if(is_site_enabled())
 					echo get_opendb_lang_var('not_authorized_to_page');
 				}
 			}
-			else if(is_user_allowed_to_borrow(get_opendb_session_var('user_id'), get_opendb_session_var('user_type'))) // don't allow guests in!
+			else if(is_user_granted_permission(PERM_USER_BORROWER))
 			{
-				// So we can get errors back!
 				$errors = NULL;
 				
 				if( $HTTP_VARS['op'] == 'reserve_all' || $HTTP_VARS['op'] == 'reserve')
@@ -1212,7 +1211,7 @@ if(is_site_enabled())
 
 				else if($HTTP_VARS['op'] == 'quick_check_out')
 				{
-					if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_allowed_to_borrow($HTTP_VARS['borrower_id']))
+					if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_granted_permission(PERM_USER_BORROWER, $HTTP_VARS['borrower_id']))
 					{
 						echo _theme_header(get_opendb_lang_var('quick_check_out'));
 						echo("<h2>".get_opendb_lang_var('quick_check_out')."</h2>");

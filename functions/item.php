@@ -1342,6 +1342,8 @@ function validate_item_instance_fields($s_status_type, &$status_comment, &$borro
 	}
 	else
 	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Status Type', array($s_status_type));
+		
 		return FALSE;
 	}
 }

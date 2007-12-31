@@ -147,13 +147,10 @@ else //if($HTTP_VARS['op'] == 'export')
 	{
 		// the cache tables cannot be backed up as they might contain
 		// binary data, which we don't yet support.
-		if(!ends_with($table, '_cache'))
+		if(!ends_with($table, '_cache') && $table != 'php_session')
 		{
 			$checked = FALSE;
-			if(strcasecmp(substr($table,0,2),'s_')!==0 &&
-						$table != 'import_cache' &&
-						$table != 'file_cache' &&
-						$table != 'php_session')
+			if(strcasecmp(substr($table,0,2),'s_')!==0)
 			{
 				$checked = TRUE;
 			}

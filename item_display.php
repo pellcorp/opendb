@@ -46,12 +46,12 @@ if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
 	{
-		if(is_numeric($HTTP_VARS['instance_no']))
-			$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
-	
-		if(is_not_empty_array($item_r))
+		if(is_user_granted_permission(PERM_VIEW_ITEM_DISPLAY))
 		{
-			if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_VIEW_ITEM_DISPLAY))
+			if(is_numeric($HTTP_VARS['instance_no']))
+				$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
+		
+			if(is_not_empty_array($item_r))
 			{
 			    $titleMaskCfg = new TitleMask('item_display');
 
@@ -61,7 +61,7 @@ if(is_site_enabled())
 				echo ("<h2>".$page_title." ".get_item_image($item_r['s_item_type'], $item_r['item_id'])."</h2>");
                 
 				// ---------------- Display IMAGE attributes ------------------------------------
-				if(get_opendb_config_var('item_display', 'show_item_image')!==FALSE)
+				if(get_opendb_config_var('item_display', 'show_item_image')!==FALSE && is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
 				{
 					$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'IMAGE');
 					if($results)
@@ -222,30 +222,31 @@ if(is_site_enabled())
 			}
 			else
 			{
-				echo _theme_header($error);
-				echo("<p class=\"error\">".$error."</p>");
+				echo _theme_header(get_opendb_lang_var('item_not_found'));
+				echo("<p class=\"error\">".get_opendb_lang_var('item_not_found')."</p>");
 			}
+		
+			if(is_export_plugin(get_opendb_config_var('item_display', 'export_link')) && is_user_granted_permission(PERM_USER_EXPORT))
+			{
+				$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'], text=>get_opendb_lang_var('export_item_record'));
+			}
+				
+			// Include a Back to Listing link.
+			if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('listing_url_vars')))
+			{
+				$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
+			}
+		
+			echo(format_footer_links($footer_links_r));
+			
+			echo _theme_footer();
 		}
 		else
 		{
-			echo _theme_header(get_opendb_lang_var('item_not_found'));
-			echo("<p class=\"error\">".get_opendb_lang_var('item_not_found')."</p>");
-		}//$item_r found
-		
-		if(is_export_plugin(get_opendb_config_var('item_display', 'export_link')) && is_user_granted_permission(PERM_USER_EXPORT))
-		{
-			$footer_links_r[] = array(url=>"export.php?op=export&plugin=".get_opendb_config_var('item_display', 'export_link')."&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'], text=>get_opendb_lang_var('export_item_record'));
+			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+			echo _theme_footer();
 		}
-			
-		// Include a Back to Listing link.
-		if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('listing_url_vars')))
-		{
-			$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
-		}
-	
-		echo(format_footer_links($footer_links_r));
-		
-		echo _theme_footer();
 	}
 	else
 	{

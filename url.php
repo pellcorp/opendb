@@ -68,66 +68,77 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session() || is_site_public_access())
 	{
-		// The most basic required parameter for this script is the 'url' parameter
-		if(strlen($HTTP_VARS['url'])>0)
+		$HTTP_VARS['cache_type'] = ifempty($HTTP_VARS['cache_type'], 'ITEM');
+		
+		if($HTTP_VARS['cache_type'] != 'ITEM' ||
+				is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
 		{
-			$HTTP_VARS['cache_type'] = ifempty($HTTP_VARS['cache_type'], 'ITEM');
-			if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
+			// The most basic required parameter for this script is the 'url' parameter
+			if(strlen($HTTP_VARS['url'])>0)
 			{
-				// for simplicity sake, we do not ignore expired cached files when displaying, its assumed that
-				// some automated process will refresh them as required, and of course if the item is ever refreshed
-				// any cached items will be reviewed and recached as required.
-				$file_cache_r = fetch_url_file_cache_r($HTTP_VARS['url'], $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
-				if($file_cache_r!==FALSE)
+				if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
 				{
-					if($HTTP_VARS['cache_type'] == 'ITEM')
+					// for simplicity sake, we do not ignore expired cached files when displaying, its assumed that
+					// some automated process will refresh them as required, and of course if the item is ever refreshed
+					// any cached items will be reviewed and recached as required.
+					$file_cache_r = fetch_url_file_cache_r($HTTP_VARS['url'], $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
+					if($file_cache_r!==FALSE)
 					{
-						if(ifempty($HTTP_VARS['op'], 'fullsize') == 'thumbnail')
+						if($HTTP_VARS['cache_type'] == 'ITEM')
 						{
-							$file = file_cache_open_thumbnail_file($file_cache_r);
-						}
-						
-						// fallback on big image
-						if(!$file)
-						{
-							if($file_cache_r['upload_file_ind'] != 'Y')
+							if(ifempty($HTTP_VARS['op'], 'fullsize') == 'thumbnail')
 							{
-								$file = file_cache_open_file($file_cache_r);
+								$file = file_cache_open_thumbnail_file($file_cache_r);
+							}
+							
+							// fallback on big image
+							if(!$file)
+							{
+								if($file_cache_r['upload_file_ind'] != 'Y')
+								{
+									$file = file_cache_open_file($file_cache_r);
+								}
 							}
 						}
-					}
+						else
+						{
+							$file = file_cache_open_file($file_cache_r);
+						}
+					
+						if($file)
+						{
+							header("Content-disposition: inline; filename=".$file_cache_r['cache_file']);
+							header("Content-type: ".$file_cache_r['content_type']);
+							fpassthru($file);
+							fclose($file);
+						}
+						else
+						{
+							// final fallback
+							output_cache_file($HTTP_VARS['cache_type'], $HTTP_VARS['url']);
+						}
+					}//if($sequence_number!==FALSE)
 					else
 					{
-						$file = file_cache_open_file($file_cache_r);
-					}
-				
-					if($file)
-					{
-						header("Content-disposition: inline; filename=".$file_cache_r['cache_file']);
-						header("Content-type: ".$file_cache_r['content_type']);
-						fpassthru($file);
-						fclose($file);
-					}
-					else
-					{
-						// final fallback
 						output_cache_file($HTTP_VARS['cache_type'], $HTTP_VARS['url']);
 					}
-				}//if($sequence_number!==FALSE)
+				}
 				else
 				{
-					output_cache_file($HTTP_VARS['cache_type'], $HTTP_VARS['url']);
+					http_redirect($HTTP_VARS['url']);
 				}
-			}//if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
+			} //if(strlen($HTTP_VARS['url'])>0)
 			else
 			{
-				http_redirect($HTTP_VARS['url']);
+				echo _theme_header(get_opendb_lang_var('external_url_error'),FALSE);
+				echo("<p class=\"error\">".get_opendb_lang_var('external_url_error')."</p>");
+				echo _theme_footer();
 			}
-		} //if(strlen($HTTP_VARS['url'])>0)
+		}
 		else
 		{
-			echo _theme_header(get_opendb_lang_var('external_url_error'),FALSE);
-			echo("<p class=\"error\">".get_opendb_lang_var('external_url_error')."</p>");
+			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
 			echo _theme_footer();
 		}
 	}
@@ -136,7 +147,7 @@ if(is_site_enabled())
 		// invalid login, so login instead.
 		redirect_login($PHP_SELF, $HTTP_VARS);
 	}
-}//if(is_site_enabled())
+}
 
 // Cleanup after begin.inc.php
 require_once("./include/end.inc.php");

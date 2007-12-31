@@ -161,10 +161,13 @@ function get_last_item_list(
 			$href_link = "<a href=\"".$list_item_r['item_display_url']."\">";
 		}
 		
-		$imageblock = get_image_block($list_item_r['imageurl']);
-		if($imageblock!=NULL)
+		if(is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
 		{
-			$item_block .= "<span class=\"coverImage\">".$href_link .$imageblock. "</a></span>";
+			$imageblock = get_image_block($list_item_r['imageurl']);
+			if($imageblock!=NULL)
+			{
+				$item_block .= "<span class=\"coverImage\">".$href_link .$imageblock. "</a></span>";
+			}
 		}
 		
 		if(is_array($list_item_r['itemtypeimage']))
@@ -194,6 +197,7 @@ function get_last_item_list(
 function get_image_block($image_r, $class = NULL)
 {
 	$imageblock = NULL;
+	
 	
 	if(is_array($image_r))
 	{

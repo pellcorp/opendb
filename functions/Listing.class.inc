@@ -277,10 +277,11 @@ class Listing
 				
 		if($fieldname == 'title')
 		{
-			if($this->_show_item_images===TRUE ||
+			if(is_user_granted_permission(PERM_VIEW_ITEM_COVERS) && 
+					($this->_show_item_images===TRUE ||
 					((get_opendb_config_var('listings', 'allow_override_show_item_image')===FALSE && get_opendb_config_var('listings', 'show_item_image')!==FALSE) ||
 					get_opendb_config_var('listings', 'allow_override_show_item_image')!==FALSE && ((get_opendb_config_var('listings', 'show_item_image')!==FALSE && 
-					strlen($this->_http_vars['show_item_image'])==0) || $this->_http_vars['show_item_image'] == 'Y')))
+					strlen($this->_http_vars['show_item_image'])==0) || $this->_http_vars['show_item_image'] == 'Y'))))
 			{
 				$header_column_r['cover_image_support'] = TRUE;
 				

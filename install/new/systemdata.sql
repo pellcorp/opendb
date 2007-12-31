@@ -1073,38 +1073,124 @@ INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_STATS',
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ADVANCED_SEARCH', 'View Advanced Search');
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_USER_PROFILE', 'View User Profile');
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ITEM_DISPLAY', 'View Item Display');
+INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ITEM_COVERS', 'View Item Covers');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_TOOLS', 'Admin Tools');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_BORROWER', 'Borrower User');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_BORROWER', 'Borrower Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_BORROWER', 'Borrower Admin');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_REVIEWER', 'Review Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_REVIEWER', 'Review Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_REVIEWER', 'Review Author');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_EXPORT', 'Export Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_EXPORT', 'Export Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_EXPORT', 'Export User');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_IMPORT', 'Import Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_IMPORT', 'Import Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_IMPORT', 'Import User');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_OWNER', 'Item Owner');
-INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_ADMIN', 'Item Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_ADMIN', 'Item Admin');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_ANNOUNCEMENTS', 'Announcements Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_PROFILE', 'User Profile Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_LISTING', 'User Listing Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_ANNOUNCEMENTS', 'Announcements Admin');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_PROFILE', 'User Profile Admin');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_USER_LISTING', 'User Listing Admin');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_EDIT_USER_PROFILE', 'User Profile Editor');
 INSERT INTO s_permission(permission_name, description) values('PERM_CHANGE_PASSWORD', 'Change Password');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_QUICK_CHECKOUT', 'Quick Checkout Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_QUICK_CHECKOUT', 'Quick Checkout Admin');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CREATE_USER', 'Create User');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_PASSWORD', 'Change Password Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_LOGIN', 'Login Administrator');
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_USER', 'Change User');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CREATE_USER', 'Create User Admin');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_PASSWORD', 'Change Password Admin');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_LOGIN', 'Login Admin');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_USER', 'Admin Change User');
+INSERT INTO s_permission(permission_name, description) values('PERM_CHANGE_USER', 'Change To User');
 
-INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_SEND_EMAIL', 'Send Email Administrator');
+INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_SEND_EMAIL', 'Send Email Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_SEND_EMAIL', 'Send Email');
 INSERT INTO s_permission(permission_name, description) values('PERM_RECEIVE_EMAIL', 'Receive Email');
+
+# role permissions
+
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_ANNOUNCEMENTS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_BORROWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_CHANGE_PASSWORD');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_CHANGE_USER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_CREATE_USER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_EXPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_IMPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_LOGIN');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_QUICK_CHECKOUT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_SEND_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_TOOLS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_USER_LISTING');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ADMIN_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_CHANGE_PASSWORD');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_EDIT_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ITEM_ADMIN');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_ITEM_OWNER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_RECEIVE_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_SEND_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_BORROWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_EXPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_IMPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ADVANCED_SEARCH');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ANNOUNCEMENTS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ITEM_COVERS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ITEM_DISPLAY');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_LISTINGS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_STATS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_WHATSNEW');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_CHANGE_PASSWORD');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_CHANGE_USER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_EDIT_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_RECEIVE_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_SEND_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_BORROWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_EXPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ADVANCED_SEARCH');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ANNOUNCEMENTS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ITEM_COVERS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ITEM_DISPLAY');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_LISTINGS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_STATS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_WHATSNEW');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_CHANGE_USER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ADVANCED_SEARCH');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ANNOUNCEMENTS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ITEM_COVERS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ITEM_DISPLAY');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_LISTINGS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_STATS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_WHATSNEW');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_CHANGE_PASSWORD');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_CHANGE_USER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_EDIT_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_ITEM_OWNER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_RECEIVE_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_SEND_EMAIL');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_BORROWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_EXPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_IMPORT');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ADVANCED_SEARCH');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ANNOUNCEMENTS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ITEM_COVERS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ITEM_DISPLAY');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_LISTINGS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_STATS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_USER_PROFILE');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_WHATSNEW');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('PUBLICACCESS', 'PERM_VIEW_ADVANCED_SEARCH');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('PUBLICACCESS', 'PERM_VIEW_ITEM_COVERS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('PUBLICACCESS', 'PERM_VIEW_ITEM_DISPLAY');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('PUBLICACCESS', 'PERM_VIEW_LISTINGS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('PUBLICACCESS', 'PERM_VIEW_STATS');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('PUBLICACCESS', 'PERM_VIEW_WHATSNEW');
+

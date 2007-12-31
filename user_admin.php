@@ -60,7 +60,7 @@ function show_changeuser_form()
 	echo("\n<input type=\"hidden\" name=\"op\" value=\"change_user\">");
 
 	echo("\n<table class=\"changeUserForm\">");
-	$results = fetch_user_rs(PERM_ITEM_OWNER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+	$results = fetch_user_rs(PERM_CHANGE_USER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
 	if($results)
 	{
 		echo(

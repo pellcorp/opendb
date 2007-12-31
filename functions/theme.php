@@ -53,13 +53,11 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 	    header("Cache-control: no-store");
 		header("Pragma: no-store");
 		header("Expires: 0");
-
-		$user_id = get_opendb_session_var('user_id');
 		
 		if(is_site_public_access())
-		{
 			$user_id = NULL;
-		}
+		else
+			$user_id = get_opendb_session_var('user_id');
 		
 		$include_menu = ($inc_menu!==FALSE && $inc_menu!=='N'?TRUE:FALSE);
 		if(!$include_menu && strlen($HTTP_VARS['mode'])==0)

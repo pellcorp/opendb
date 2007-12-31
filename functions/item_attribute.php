@@ -749,9 +749,6 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
    	if(!is_instance_item_attribute_type($s_item_type, $s_attribute_type))
        	$instance_no = NULL;
 
-    // hack
-    get_opendb_config_var('item_input.upload', 'file_location');
-       
 	$is_file_resource_attribute_type = is_file_resource_attribute_type($s_attribute_type);
 
 	if(db_query("LOCK TABLES item_attribute WRITE"))

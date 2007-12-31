@@ -45,53 +45,24 @@ function is_valid_email_addr($email_addr)
 		return TRUE;
 }
 
-/**
-	Return email footer
-*/
 function get_email_footer()
 {
 	if(strlen(get_opendb_lang_var('email_footer'))>0)
 	{
 		$site_url = get_site_url();
 
-		// This footer text will include any newlines that are required, and because the email
-		// is text based, these newlines should be respected.  I am not sure what will happen
-		// however on Mac / Windows systems, because we only understand '\n' as a newline
-		// identifier in the language variables.
-		$footer_text = get_opendb_lang_var('email_footer', array('site'=>get_opendb_config_var('site', 'title'),'version'=>get_opendb_version(),'site_url'=>$site_url));
+		$footer_text = get_opendb_lang_var('email_footer', 
+					array('site'=>get_opendb_config_var('site', 'title'),'version'=>get_opendb_version(),'site_url'=>$site_url));
 
-		// Now lets explode any line breaks into separate lines so we
-		// can work out how long the dashed lines need to be.
-		$lines_r = explode("\n", $footer_text);
-		if(is_array($lines_r) && count($lines_r)>1)
-		{
-			$length = 0;
-			while(list(,$line) = @each($lines_r))
-			{
-				// We need to get the longest line.
-				if(strlen($line)>$length)
-					$length = strlen($line);
-			}
-		}
-		else // Only one line.
-		{
-			$length = strlen($footer_text);
-		}
-		
 		if($length>0)
 		{
-			for($i=0;$i<$length;$i++)
-				$dashed_line .= "-";
-			
-			// Now return the complete footer text
 			return	"\n\n".
-					$dashed_line
+					"--"
 					."\n"
 					.$footer_text;
 		}
 	}
 
-	//else - no footer.
 	return "";
 }
 

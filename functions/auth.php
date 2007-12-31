@@ -62,12 +62,14 @@ define('PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL');
 // todo - cache user_role and permissions list after first call
 function is_user_granted_permission($permission, $user_id = NULL)
 {
+	$user_permissions_clause = format_sql_in_clause($permission);
+	
 	if(is_site_public_access())
 	{
 		$query = "SELECT 'X' 
 			FROM 	s_role_permission
 			WHERE 	role_name = 'PUBLICACCESS' AND
-				  	permission_name = '$permission'";
+				  	permission_name IN ($user_permissions_clause)";
 	}
 	else 
 	{
@@ -78,7 +80,7 @@ function is_user_granted_permission($permission, $user_id = NULL)
 			FROM 	s_role_permission srp, 
 				 	user u 
 			WHERE 	u.user_role = srp.role_name AND
-				  	srp.permission_name = '$permission' AND
+				  	srp.permission_name IN ($user_permissions_clause) AND
 				  	u.user_id = '$user_id'";
 	}
 	

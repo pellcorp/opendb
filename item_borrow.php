@@ -961,7 +961,7 @@ if(is_site_enabled())
 					echo get_opendb_lang_var('not_authorized_to_page');
 				}
 			}
-			else if(is_user_granted_permission(PERM_USER_BORROWER))
+			else if(is_user_granted_permission(array(PERM_ADMIN_BORROWER,PERM_USER_BORROWER)))
 			{
 				$errors = NULL;
 				

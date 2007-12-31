@@ -219,43 +219,46 @@ function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $al
 		$altid_item_instance_rs = array();
 	}
 	
-	$item_instance_rs = get_new_altid_item_instance_rs($alt_item_id, $attribute_type_r, $altid_item_instance_rs);
-	if(is_array($item_instance_rs))
+	if(strlen($alt_item_id)>0)
 	{
-		while(list(,$item_instance_r) = each($item_instance_rs))
+		$item_instance_rs = get_new_altid_item_instance_rs($alt_item_id, $attribute_type_r, $altid_item_instance_rs);
+		if(is_array($item_instance_rs))
 		{
-			if($item_instance_r['owner_id'] != $HTTP_VARS['borrower_id'])
+			while(list(,$item_instance_r) = each($item_instance_rs))
 			{
-				if($op == 'checkout')
+				if($item_instance_r['owner_id'] != $HTTP_VARS['borrower_id'])
 				{
-					if(is_item_instance_checkoutable($item_instance_r, $errors))
+					if($op == 'checkout')
 					{
-						$altid_item_instance_rs[] = $item_instance_r;
+						if(is_item_instance_checkoutable($item_instance_r, $errors))
+						{
+							$altid_item_instance_rs[] = $item_instance_r;
+						}
+					}
+					else if($op == 'checkin')
+					{
+						$sequence_number = fetch_borrowed_item_seq_no($item_instance_r['item_id'], $item_instance_r['instance_no'], 'B');
+						if($sequence_number!=FALSE)
+						{
+							$item_instance_r['sequence_number'] = $sequence_number;
+							$altid_item_instance_rs[] = $item_instance_r;
+						}
+						else 
+						{
+							$errors[] = get_opendb_lang_var('item_is_not_checked_out');	
+						}
 					}
 				}
-				else if($op == 'checkin')
+				else
 				{
-					$sequence_number = fetch_borrowed_item_seq_no($item_instance_r['item_id'], $item_instance_r['instance_no'], 'B');
-					if($sequence_number!=FALSE)
-					{
-						$item_instance_r['sequence_number'] = $sequence_number;
-						$altid_item_instance_rs[] = $item_instance_r;
-					}
-					else 
-					{
-						$errors[] = get_opendb_lang_var('item_is_not_checked_out');	
-					}
+					$errors[] = get_opendb_lang_var('user_is_owner_of_item');
 				}
-			}
-			else
-			{
-				$errors[] = get_opendb_lang_var('user_is_owner_of_item');
 			}
 		}
-	}
-	else
-	{
-		$errors[] = get_opendb_lang_var('item_not_found');
+		else
+		{
+			$errors[] = get_opendb_lang_var('item_not_found');
+		}
 	}
 	
 	return $altid_item_instance_rs;
@@ -385,6 +388,8 @@ if(is_site_enabled())
 							
 						}
 						echo("</form>");
+						
+						unset($HTTP_VARS['alt_item_id']);
 						
 						$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 						$listingObject->setNoRowsMessage(get_opendb_lang_var('no_records_found'));

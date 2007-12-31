@@ -194,16 +194,45 @@ function fetch_user_lastvisit($uid)
 	{
 		$found = db_fetch_assoc($result);
 		db_free_result($result);
-		
-		//print_r($found);
 		return $found['lastvisit'];
 	}
 	//else
 	return FALSE;
 }
 
+function fetch_role_r($role_name) {
+	$query = "SELECT sr.role_name, 
+	IFNULL(stlv.value, sr.description) AS description
+	FROM s_role sr
+	LEFT JOIN s_table_language_var stlv
+	ON stlv.language = '".get_opendb_site_language()."' AND
+	stlv.tablename = 's_role' AND
+	stlv.columnname = 'description' AND
+	stlv.key1 = sr.role_name 
+	WHERE sr.role_name = '$role_name'";
+	
+	$result = db_query($query);
+	if ($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return $found;
+	}
+
+	return FALSE;
+}
+
 function fetch_user_role_rs() {
-	$query = "SELECT role_name, description FROM s_role ORDER BY role_name";
+	$query = "SELECT sr.role_name, 
+	IFNULL(stlv.value, sr.description) AS description
+	FROM s_role sr
+	LEFT JOIN s_table_language_var stlv
+	ON stlv.language = '".get_opendb_site_language()."' AND
+	stlv.tablename = 's_role' AND
+	stlv.columnname = 'description' AND
+	stlv.key1 = sr.role_name 
+	ORDER BY role_name";
+	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 		return $result;
@@ -237,46 +266,53 @@ function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=
 {
 	// Uses the special 'zero' value lastvisit = 0 to test for default date value.
 	$query = "SELECT DISTINCT u.user_id, 
-					u.active_ind, IF(LENGTH(u.fullname)>0,u.fullname,u.user_id) AS fullname, 
+					u.active_ind, 
+					IF(LENGTH(u.fullname)>0,u.fullname,u.user_id) AS fullname, 
 					u.user_role, 
+					IFNULL(stlv.value, sr.description) AS role_description,
 					u.language, 
 					u.theme, 
 					u.email_addr, 
 					IF(u.lastvisit <> 0,UNIX_TIMESTAMP(u.lastvisit),'') AS lastvisit 
-	FROM user u";
+	FROM (user u, s_role sr";
 	
-	// List all users who can borrow records.
 	$user_permissions_clause = format_sql_in_clause($user_role_permissions);
+	
 	if($user_permissions_clause != NULL)
 	{
-		$query .= ", s_role_permission srp ";
-		 
-		$where_clause = "u.user_role = srp.role_name AND 
-						srp.permission_name IN($user_permissions_clause)";
+		$query .= ", s_role_permission srp) ";
+	}
+	else
+	{
+		$query .= ") ";
+	}
+	
+	$query .= "LEFT JOIN s_table_language_var stlv
+	ON stlv.language = '".get_opendb_site_language()."' AND
+	stlv.tablename = 's_role' AND
+	stlv.columnname = 'description' AND
+	stlv.key1 = sr.role_name 
+	WHERE u.user_role = sr.role_name ";
+	
+	if($user_permissions_clause != NULL)
+	{
+		$query .= "AND sr.role_name = srp.role_name 
+				AND srp.permission_name IN($user_permissions_clause) ";
 	}
 
 	if(strlen($exclude_user)>0)
 	{
-		if(strlen($where_clause)>0)
-			$where_clause .= " AND ";
-		$where_clause .= "u.user_id NOT IN ('$exclude_user')";
+		$query .= "AND u.user_id NOT IN ('$exclude_user') ";
 	}
 
 	if($active_ind!=NULL)
 	{
-	    if(strlen($where_clause)>0)
-			$where_clause .= " AND ";
-		$where_clause .= "u.active_ind = '$active_ind'";
+		$query .= "AND u.active_ind = '$active_ind' ";
 	}
 	else if($include_deactivated_users !== TRUE)
 	{
-		if(strlen($where_clause)>0)
-			$where_clause .= " AND ";
-		$where_clause .= " u.active_ind = 'Y' ";
+		$query .= "AND u.active_ind = 'Y' ";
 	}
-	
-	if(strlen($where_clause)>0)
-		$query .= " WHERE $where_clause";
 	
 	if(strlen($order_by)==0)
 		$order_by = "u.fullname";
@@ -300,19 +336,9 @@ function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=
 		return FALSE;
 }
 
-/**
-	Returns a count of items owned by the specified owner_id, or FALSE if no records.
-	
-	@param $UserTypes = array('A','N','B','G')
-			NOTE: If a set of user_types is specified, it is assumed that
-			only ACTIVE user's should be returned, so a active_ind = 'Y'
-			clause is appended to the WHERE.
-
-    @param $active_ind      If not NULL, restrict to users with active_ind=$active_ind
-*/
 function fetch_user_cnt($user_role_permissions=NULL, $active_ind=NULL, $include_deactivated_users=FALSE, $exclude_user=NULL)
 {
-	$query = "SELECT COUNT(u,user_id) AS count FROM user u";
+	$query = "SELECT COUNT(u.user_id) AS count FROM user u";
 
 	// List all users who can borrow records.
 	$user_permissions_clause = format_sql_in_clause($user_role_permissions);
@@ -356,17 +382,28 @@ function fetch_user_cnt($user_role_permissions=NULL, $active_ind=NULL, $include_
 			return $found['count'];
 	}
 	
-	//else
 	return FALSE;
 }
 
-//
-// Returns a single user record.
-// user_id,fullname,location,type,email,lastvisit
-//
 function fetch_user_r($uid)
 {
-	$query = "SELECT user_id, fullname, user_role, language, theme, email_addr, lastvisit FROM user where user_id = '".$uid."'";
+	$query = "SELECT u.user_id, 
+			u.fullname, 
+			u.user_role,
+			IFNULL(stlv.value, sr.description) AS role_description, 
+			u.language, 
+			u.theme, 
+			u.email_addr, 
+			u.lastvisit 
+	FROM (user u, s_role sr) 
+	LEFT JOIN s_table_language_var stlv
+	ON stlv.language = '".get_opendb_site_language()."' AND
+	stlv.tablename = 's_role' AND
+	stlv.columnname = 'description' AND
+	stlv.key1 = sr.role_name
+	WHERE u.user_role = sr.role_name 
+		AND u.user_id = '".$uid."'";
+	
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)
 	{
@@ -374,13 +411,10 @@ function fetch_user_r($uid)
 		db_free_result($result);
 		return $found;
 	}
-	//else
+
 	return FALSE;
 }
 
-//
-// Checks password to see if it matches.
-//
 function validate_user_passwd($uid, $pwd)
 {
 	$query = "SELECT pwd FROM user WHERE user_id = '$uid'";
@@ -398,8 +432,6 @@ function validate_user_passwd($uid, $pwd)
 	return FALSE;
 }
 
-/*
-*/
 function deactivate_user($uid)
 {
 	$query= "UPDATE user SET active_ind = 'N' WHERE user_id = '$uid'";
@@ -417,8 +449,6 @@ function deactivate_user($uid)
 	}
 }
 
-/*
-*/
 function activate_user($uid)
 {
 	$query= "UPDATE user SET active_ind = 'Y' WHERE user_id = '$uid'";
@@ -482,51 +512,21 @@ function update_user_lastvisit($uid)
 	}
 }
 
-//
-// Will update the User type.
-//
-function update_user_type($uid, $type)
-{
-	if(strlen($type)==0)
-		$type = "N"; //default!
-		
-	$query="UPDATE user SET type='".$type."' WHERE user_id='$uid'";
-	$update = db_query($query);
-	
-	// We should not treat updates that were not actually updated because value did not change as failures.
-	$rows_affected = db_affected_rows();
-	if ($update && $rows_affected !== -1)
-	{
-		if($rows_affected>0)
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $type));
-		return TRUE;
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $type));
-		return FALSE;
-	}
-}
-
 /**
 	Update User.  
 	
-		Specify FALSE for type to not attempt to update it.
+		Specify FALSE for $user_role to not attempt to update it.
 		Specify FALSE to not update theme.
 		Specify FALSE to not update language.
 */
-function update_user($uid, $fullname, $language, $theme, $email_addr, $type)
+function update_user($uid, $fullname, $language, $theme, $email_addr, $user_role)
 {
-	// Do not set to default if explicitly set to FALSE
-	if($type!==FALSE && strlen($type)==0)
-		$type = 'N';
-
 	$query = "UPDATE user SET ".
 					"fullname='".addslashes($fullname)."'".
 					", email_addr='".addslashes($email_addr)."'".
 					($language!==FALSE?", language='".addslashes($language)."'":"").
 					($theme!==FALSE?", theme='".addslashes($theme)."'":"").
-					($type!==FALSE?", type='$type'":"").
+					($user_role!==FALSE?", user_role='$user_role'":"").
 				" WHERE user_id = '$uid'";
 
 	$update = db_query($query);
@@ -535,12 +535,12 @@ function update_user($uid, $fullname, $language, $theme, $email_addr, $type)
 	if ($update && $rows_affected !== -1)
 	{
 		if($rows_affected>0)
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $fullname, $language, $theme, $type));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $fullname, $language, $theme, $user_role));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $fullname, $language, $theme, $type));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $fullname, $language, $theme, $user_role));
 		return FALSE;
 	}
 }
@@ -550,16 +550,13 @@ function update_user($uid, $fullname, $language, $theme, $email_addr, $type)
 // This relies on the user_id UNIQUE constraint.  The $uid is the updating user.
 // Will do md5($pwd) before inserting...
 //
-function insert_user($uid, $fullname, $pwd, $type, $language, $theme, $email_addr, $active_ind='Y')
+function insert_user($uid, $fullname, $pwd, $user_role, $language, $theme, $email_addr, $active_ind='Y')
 {
-	if(strlen($type)==0)
-		$type = "N"; //default!
-
-	$query = "INSERT INTO user (user_id, fullname, pwd, type, email_addr, language, theme, active_ind, lastvisit)".
+	$query = "INSERT INTO user (user_id, fullname, pwd, user_role, email_addr, language, theme, active_ind, lastvisit)".
 				"VALUES('".$uid."',".
 						"'".addslashes($fullname)."',".
 						(strlen($pwd)>0? ("'".md5($pwd)."'") :"NULL").",".
-						"'".$type."',".
+						"'".$user_role."',".
 						"'".addslashes($email_addr)."',".
 						"'".addslashes($language)."',".
 						"'".addslashes($theme)."',".
@@ -569,12 +566,12 @@ function insert_user($uid, $fullname, $pwd, $type, $language, $theme, $email_add
 	$insert = db_query($query);
 	if($insert && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $fullname, '*', $type, $language, $theme, $email_addr, $active_ind));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid, $fullname, '*', $user_role, $language, $theme, $email_addr, $active_ind));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $fullname, '*', $type, $email_addr, $language, $theme, $email_addr, $active_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid, $fullname, '*', $user_role, $email_addr, $language, $theme, $email_addr, $active_ind));
 		return FALSE;
 	}
 }

@@ -95,7 +95,7 @@ function get_email_footer()
 	return "";
 }
 
-function send_email_to_site_admins($from_email_addr, $subject, $message, &$errors)
+function send_email_to_site_admins($user_role_permissions, $from_email_addr, $subject, $message, &$errors)
 {
 	$success = TRUE;
 	
@@ -113,12 +113,14 @@ function send_email_to_site_admins($from_email_addr, $subject, $message, &$error
 	
 	if($success)
 	{
-		$results = fetch_user_rs(PERM_ADMIN_SEND_EMAIL);
+		$success = FALSE;
+		
+		$results = fetch_user_rs($user_role_permissions);
 		while($user_r = db_fetch_assoc($results))
 		{
-			if(!opendb_user_email($user_r['user_id'], $from_email_addr, $subject, $message, $errors))
+			if(opendb_user_email($user_r['user_id'], $from_email_addr, $subject, $message, $errors))
 			{
-				$success = FALSE;
+				$success = TRUE;
 			}
 		}
 	}

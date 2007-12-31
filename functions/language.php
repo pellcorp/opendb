@@ -251,6 +251,7 @@ function fetch_opendb_db_lang_var($language, $varname)
 $_OPENDB_LANG_SYSTEM_TABLES = array(
 	's_item_type'=>array('key'=>array('s_item_type'), 'columns'=>array('description')),
 	's_item_type_group'=>array('key'=>array('s_item_type_group'), 'columns'=>array('description')),
+	's_role'=>array('key'=>array('role_name'), 'columns'=>array('description')),
 	's_attribute_type'=>array('key'=>array('s_attribute_type'), 'columns'=>array('prompt', 'description')),
 	's_item_attribute_type'=>array('key'=>array('s_item_type', 's_attribute_type', 'order_no'), 'columns'=>array('prompt')),
 	's_attribute_type_lookup'=>array('key'=>array('s_attribute_type', 'value'), 'columns'=>array('display')),
@@ -258,6 +259,7 @@ $_OPENDB_LANG_SYSTEM_TABLES = array(
 	's_address_type'=>array('key'=>array('s_address_type'), 'columns'=>array('description')),
 	's_addr_attribute_type_rltshp'=>array('key'=>array('s_address_type', 's_attribute_type', 'order_no'), 'columns'=>array('prompt')),
 	's_site_plugin_input_field'=>array('key'=>array('site_type', 'field'), 'columns'=>array('prompt')),
+	
 );
 
 function get_system_table_r()

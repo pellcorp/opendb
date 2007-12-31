@@ -146,7 +146,7 @@ if(is_site_enabled())
 
 					$listingObject->addActionColumn($action_links_rs);
 
-					$listingObject->addColumn($user_r['user_role']);
+					$listingObject->addColumn($user_r['role_description']);
 
                     if($HTTP_VARS['restrict_active_ind'] != 'X')
 					{

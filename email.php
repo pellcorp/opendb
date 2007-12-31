@@ -265,7 +265,7 @@ if(is_site_enabled())
 				$HTTP_VARS['from'] = trim(strip_tags($HTTP_VARS['from']));
 				
 				if($HTTP_VARS['op2'] == 'send' && 
-						send_email_to_site_admins($HTTP_VARS['from'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
+						send_email_to_site_admins(PERM_ADMIN_SEND_EMAIL, $HTTP_VARS['from'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
 							
 					echo("<p class=\"success\">".get_opendb_lang_var('message_sent_to')." ".get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title'))."</p>");
 					

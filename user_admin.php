@@ -516,7 +516,14 @@ function validate_user_info(&$HTTP_VARS, &$address_provided_r, &$errors)
 	
 	$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
 	$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
-		
+	
+	$role_r = fetch_role_r($HTTP_VARS['user_role']);
+	if(!is_array($role_r))
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid User Role specified', $HTTP_VARS);
+		return FALSE;	
+	}
+	
 	if(!validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors) ||
 			!validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors))
 	{
@@ -776,7 +783,7 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 			if(insert_user($HTTP_VARS['user_id'], 
 						$HTTP_VARS['fullname'], 
 						$HTTP_VARS['pwd'],
-						$HTTP_VARS['user_type'], 
+						$HTTP_VARS['user_role'], 
 						$HTTP_VARS['uid_language'], 
 						$HTTP_VARS['uid_theme'], 
 						$HTTP_VARS['email_addr'], 
@@ -1121,16 +1128,12 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 {
 	global $PHP_SELF;
 
-	$http_vars['user_id'] = $HTTP_VARS['user_id'];
-	$http_vars['fullname'] = $HTTP_VARS['fullname'];
-	$http_vars['user_role'] = $HTTP_VARS['user_role'];
-	$http_vars['pwd'] = $HTTP_VARS['pwd'];
-	$http_vars['confirmpwd'] = $HTTP_VARS['pwd'];
-
+	$role_r = fetch_role_r($HTTP_VARS['user_role']);
+	
 	$user_info_lines =
 	    get_opendb_lang_var('userid').": ".$HTTP_VARS['user_id'].
 		"\n".get_opendb_lang_var('fullname').": ".$HTTP_VARS['fullname'].
-		"\n".get_opendb_lang_var('user_role').": ".$HTTP_VARS['user_role'].
+		"\n".get_opendb_lang_var('user_role').": ".$role_r['description'].
 		"\n".get_opendb_lang_var('user_theme').": ".$HTTP_VARS['uid_theme'].
 	    "\n".get_opendb_lang_var('email').": ".$HTTP_VARS['email_addr'];
 
@@ -1151,8 +1154,6 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 					if(is_not_empty_array($HTTP_VARS[$address_type][$fieldname]) ||
 							(!is_array($HTTP_VARS[$address_type][$fieldname]) && strlen($HTTP_VARS[$address_type][$fieldname])>0))
 					{
-						$http_vars[$address_type][$fieldname] = $HTTP_VARS[$address_type][$fieldname];
-
 						if(is_not_empty_array($HTTP_VARS[$address_type][$fieldname]))
 						{
 							$value = '';
@@ -1177,7 +1178,6 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 		db_free_result($addr_results);
 	}//if($addr_results)
 
-	$http_vars['email_user'] = 'Y';
 	$activate_url = get_site_url().'user_admin.php?op=activate&user_id='.$HTTP_VARS['user_id'];
 	$delete_url = get_site_url().'user_admin.php?op=delete&user_id='.$HTTP_VARS['user_id'];
 
@@ -1191,7 +1191,12 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 				'activate_url'=>$activate_url,
 				'delete_url'=>$delete_url));
 
-	return send_email_to_site_admins($HTTP_VARS['email_addr'], get_opendb_lang_var('new_account'), $message, $errors);
+	return send_email_to_site_admins(
+				PERM_ADMIN_CREATE_USER, 
+				$HTTP_VARS['email_addr'], 
+				get_opendb_lang_var('new_account'), 
+				$message, 
+				$errors);
 }
 
 if(is_site_enabled())

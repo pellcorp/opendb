@@ -25,4 +25,18 @@ function get_javascript($filename)
 	}
 	return "<script src=\"${filename}\" language=\"JavaScript\" type=\"text/javascript\"></script>\n";
 }
+
+function encode_javascript_array($args)
+{
+	$buf="";
+	for ($i=0; $i<count($args); $i++)
+	{
+		if(strlen($buf)>0)
+			$buf .= ", '".addslashes($args[$i])."'";
+		else
+			$buf = "'".addslashes($args[$i])."'";
+	}
+	
+	return "new Array($buf)";			
+}
 ?>

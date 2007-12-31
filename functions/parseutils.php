@@ -583,4 +583,81 @@ function expand_number_range($range)
 		
 	return $retval;
 }
+
+function get_array_variable_value($lookup_r, $value_column)
+{
+	if(is_array($lookup_r))
+	{
+		// Work out what to return, based on value_column specifier.
+		if($value_column == 'key')
+			return $lookup_r['key'];
+		else if($value_column == 'valkey')// key is actual value, but not if numeric.
+		{
+			// Use value, if 'key' column is auto generated numeric index.
+			if(!is_array($lookup_r['value']) && is_numeric($lookup_r['key']))
+				return $lookup_r['value'];
+			else
+				return $lookup_r['key'];
+		}
+		else if(!is_array($lookup_r['value']) && $value_column == 'value')
+			return $lookup_r['value'];
+		else if(is_array($lookup_r['value']) && isset($lookup_r['value'][$value_column]))
+			return $lookup_r['value'][$value_column];
+		else if(isset($lookup_r[$value_column]))
+			return $lookup_r[$value_column];
+	}
+	
+	return ''; // no value found
+}
+
+/**
+	This is a simple mask processor (Used by widgets.php::custom_select(...)).  It 
+	is not as advanced as the parse_title_mask functionality, because it does not 
+	support mask functions (if, ifdef, elsedef), or the special mask options '.img', etc.
+
+	@param $display_mask	The display mask with variables delimited by $variable_char.
+							The variable_name must exist as a keyname in $values_r.
+	@param $values_r
+	@param $variable_char
+*/
+function expand_display_mask($display_mask, $values_r, $variable_char="%")
+{
+	$i = 0;
+	$inside_variable = FALSE;
+	$variable="";
+	$value = $display_mask;
+
+	for ($i=0; $i<strlen($display_mask); $i++)
+	{
+		if($inside_variable)
+		{
+			// If closing bracket
+			if($display_mask[$i] == $variable_char && ($i==0 || $display_mask[$i-1]!= '\\'))
+			{
+				// Indicate close of reference.
+				$inside_variable = FALSE;
+
+				if(strlen($variable)>0)
+				{
+					$replace = get_array_variable_value($values_r, $variable);
+					$value = str_replace($variable_char.$variable.$variable_char, $replace, $value);
+					$variable = '';
+				}
+			}
+			else
+			{
+				$variable .= $display_mask[$i];
+			}
+		}
+		else if ($display_mask[$i] == $variable_char && ($i==0 || $display_mask[$i-1]!= '\\'))
+		{
+			$inside_variable = TRUE;	
+		}
+	}
+
+	if($value!=NULL)
+		return trim($value);
+	else
+		return NULL;
+}
 ?>

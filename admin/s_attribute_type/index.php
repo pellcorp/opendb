@@ -25,6 +25,7 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 
 include_once("./functions/site_plugin.php");
 include_once("./functions/parseutils.php");
+include_once("./functions/scripts.php");
 
 $input_type_functions_cats = array(
 			'file'=>array('url'),

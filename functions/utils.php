@@ -329,6 +329,31 @@ function remove_enclosing_quotes($s)
 }
 
 /**
+ * Fetch all rows of a resultset and return as an array.
+ *
+ * @param unknown_type $results
+ */
+function fetch_results_array($results)
+{
+	if(!is_array($results) && $results)
+	{
+		$record_rs = array();
+		
+		while($record_r = db_fetch_assoc($results))
+		{
+			$record_rs[] = $record_r;
+		}
+		db_free_result($lookup_results);
+		
+		return $record_rs;
+	}
+	else
+	{
+		return $results;
+	}
+}
+
+/**
  * Replace html_entity_decode()
  *
  * @category    PHP

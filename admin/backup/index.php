@@ -141,7 +141,8 @@ else //if($HTTP_VARS['op'] == 'export')
 		."<input type=\"hidden\" name=\"mode\" value=\"job\">");
 	
 	echo("<ul class=\"checkboxGridOptionsVertical\">");
-            $opendb_tables_r = fetch_opendb_table_list_r();
+	
+	$opendb_tables_r = fetch_opendb_table_list_r();
 	while(list(,$table) = each( $opendb_tables_r ))
 	{
 		// the cache tables cannot be backed up as they might contain

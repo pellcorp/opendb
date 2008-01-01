@@ -26,6 +26,7 @@ dl.generalStats
 
 dl.generalStats dt
 {
+	
 	float: left;
 	padding-right: 10px;
 	font-weight: bold;
@@ -34,8 +35,14 @@ dl.generalStats dt
 	
 }
 
+dl.generalStats dd
+{
+	color: #626C99;
+}
+
 table.itemStats td
 {
+	color: #626C99;
 	text-align: center;
 }
 

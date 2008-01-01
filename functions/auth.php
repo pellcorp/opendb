@@ -64,7 +64,7 @@ function is_user_granted_permission($permission, $user_id = NULL)
 {
 	$user_permissions_clause = format_sql_in_clause($permission);
 	
-	if(is_site_public_access())
+	if(strlen($user_id)==0 && is_site_public_access())
 	{
 		$query = "SELECT 'X' 
 			FROM 	s_role_permission

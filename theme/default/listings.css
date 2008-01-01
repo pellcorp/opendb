@@ -115,7 +115,7 @@ ul.alphalist, ul.listingPager
 	list-style-type: none;
 	clear: both;
 	text-align: center;
-	padding-top: 12px;
+	padding-top: 0px;
 }
 
 ul.alphalist li, ul.listingPager li
@@ -144,6 +144,7 @@ ul.listingPager, li.previousPage
 
 .pageListingIndex
 {
+	color: #626C99;
 	font-size: 85%;
 }
 
@@ -164,6 +165,8 @@ th#header-category, th#header-action_links
 
 .listingDate
 {
+	padding-top: 20px;
+	color: #626C99;
 	text-align: center;
 	font-size: 80%;
 }

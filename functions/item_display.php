@@ -365,7 +365,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 			}
 		}			
 	}
-	
+
 	if($item_r['owner_id'] == get_opendb_session_var('user_id'))
 	{
 		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))

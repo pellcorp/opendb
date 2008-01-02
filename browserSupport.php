@@ -50,7 +50,7 @@ while(list(,$browser_r) = each($supportedBrowsers))
 	else
 		$browser_r['icon'] = NULL;
 			
-		echo("<li><a href=\"".$browser_r['url']."\" title=\"".$browser_r['name']."\"><img src=\"".$browser_r['icon']."\"> ".$browser_r['name']."</a></li>");
+	echo("<li><a href=\"".$browser_r['url']."\" title=\"".$browser_r['name']."\"><img src=\"".$browser_r['icon']."\"> ".$browser_r['name']."</a></li>");
 }
 echo("</ul>");
 

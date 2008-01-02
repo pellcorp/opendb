@@ -246,7 +246,7 @@ CREATE table s_status_type (
   change_owner_ind			VARCHAR(1) NOT NULL DEFAULT 'N',
   borrow_ind				VARCHAR(1) NOT NULL DEFAULT 'Y',
   status_comment_ind		VARCHAR(1) NOT NULL DEFAULT 'N',
-  hidden_ind 				VARCHAR(1) NOT NULL DEFAULT 'N'
+  hidden_ind 				VARCHAR(1) NOT NULL DEFAULT 'N',
   default_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
   closed_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( s_status_type )

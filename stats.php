@@ -466,20 +466,20 @@ if(is_site_enabled())
 					echo("</table>");
 				}
 				
-				$graphConfigURLParams = get_url_string(_theme_graph_config());
-				
-				echo("<ul class=\"itemCharts\">");
-				
-				echo("<li><h3>".get_opendb_lang_var('item_ownership')."</h3>");
-				echo("<ul class=\"graph\">");
-				echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
-				echo("<li><img src=\"stats.php?op=graph&graphtype=item_types&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
-				echo("</ul>");
-				echo("</li>");
-				
 				$itemresults = fetch_item_type_rs();
 				if($itemresults)
 				{
+					$graphConfigURLParams = get_url_string(_theme_graph_config());
+					
+					echo("<ul class=\"itemCharts\">");
+					
+					echo("<li><h3>".get_opendb_lang_var('item_ownership')."</h3>");
+					echo("<ul class=\"graph\">");
+					echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
+					echo("<li><img src=\"stats.php?op=graph&graphtype=item_types&$graphConfigURLParams\" alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
+					echo("</ul>");
+					echo("</li>");
+				
 					while($item_type_r = db_fetch_assoc($itemresults) )
 					{
 						$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);

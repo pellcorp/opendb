@@ -18,6 +18,8 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+//include_once("./lib/libchart/classes/libchart.php");
+
 /**
  */
 function ImageHexColorAllocate(&$img, $HexColorString)
@@ -30,6 +32,65 @@ function ImageHexColorAllocate(&$img, $HexColorString)
 	$G = hexdec(substr($HexColorString, $start+2, 2));
 	$B = hexdec(substr($HexColorString, $start+4, 2));
 	return ImageColorAllocate($img, $R, $G, $B);
+}
+
+function sort_data($data, $sortorder)
+{
+	if(is_array($data) && !empty($sortorder))
+	{
+		if($sortorder == 'asc')	
+			asort($data);
+		else
+			arsort($data);
+	}
+	
+	return $data;
+}
+
+function build_and_send_graph($data, $chartType)
+{
+	if(strcasecmp(get_opendb_config_var('stats', $chartType.'_sort'),"asc")===0 || 
+					strcasecmp(get_opendb_config_var('stats', $chartType.'_sort'),"desc")===0)
+	{
+		$sortorder = strtolower(get_opendb_config_var('stats', $chartType.'_sort'));
+	}
+
+	$data = sort_data($data, $sortorder);
+	
+	$graphCfg = _theme_graph_config();
+	
+	// Defines the image type to use.  'png', 'jpeg'/'jpg' supported!
+	$imgType = strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
+	
+	/*if($chartType == 'piechart')
+	{
+		$chart = new PieChart();
+	
+		$dataSet = new XYDataSet();
+		while(list($x, $y) = each($data))
+		{
+			$dataSet->addPoint(new Point($x." ($y)", $y));
+		}
+		$chart->setDataSet($dataSet);
+		$chart->setTitle("No Title");
+		$chart->render();
+		
+	}
+	else
+	{
+		$chart = new VerticalBarChart();
+		$dataSet = new XYDataSet();
+		while(list($x, $y) = each($data))
+		{
+			$dataSet->addPoint(new Point($x, $y));
+		}
+		$chart->setDataSet($dataSet);
+		$chart->setTitle("No Title");
+		$chart->render();
+	
+	}*/
+	
+	build_and_send_graph_old($data, $chartType, $graphCfg, $imgType);
 }
 
 /**
@@ -55,8 +116,31 @@ function ImageHexColorAllocate(&$img, $HexColorString)
 					'dark_border-color'=>$HTTP_VARS['dark_border-color'],
 					'background-color'=>$HTTP_VARS['background-color']);
 */
-function build_and_send_graph($itemCount, $data, $sortorder, $chartType, $chartOptions, $graphCfg, $imgType)
+function build_and_send_graph_old($data, $chartType, $graphCfg, $imgType)
 {
+		// standard threshold.
+	$chartOptions['threshold'] = 3;
+
+	if($chartType == 'barchart')
+	{
+		$chartOptions['striped'] = FALSE;
+		$chartOptions['12oclock'] = FALSE;
+	}
+	else
+	{
+		if(get_opendb_config_var('stats', 'piechart_12oclock') === TRUE)
+			$chartOptions['12oclock'] = TRUE;
+		else
+			$chartOptions['12oclock'] = FALSE;
+	
+		if(get_opendb_config_var('stats', 'piechart_striped') === TRUE)
+			$chartOptions['striped'] = TRUE;
+		else
+			$chartOptions['striped'] = FALSE;
+	}
+			
+	$itemCount = fetch_item_instance_cnt();
+	
 	// size of pie-chart (not counting text borders)
 	$imgsize = $graphCfg['size'];
 	

@@ -50,6 +50,7 @@ function build_owner_item_chart_info($s_item_type)
 		}
 		db_free_result($result);
 	}
+	
 	return $info;
 }
 
@@ -126,9 +127,10 @@ function build_item_ownership_chart_info()
 			{
 				$info[$user_r['fullname']] = $num_total;
 			}
-		}//while ($user_r = db_fetch_assoc($result))
+		}
 		db_free_result($results);
 	}
+	
 	return $info;
 }
 
@@ -147,96 +149,41 @@ function do_stats_graph($HTTP_VARS)
 			}
 		}
 	}
-	
-	$graphCfg = _theme_graph_config();
-	
-	// Defines the image type to use.  'png', 'jpeg'/'jpg' supported!
-	$imgType = strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
-	
-	// standard threshold.
-	$chartOptions['threshold'] = 3;
 
-	// Default pie chart options.		
-	if(strcasecmp(get_opendb_config_var('stats', 'piechart_sort'),"asc")===0 || strcasecmp(get_opendb_config_var('stats', 'piechart_sort'),"desc")===0)
-		$sortorder = strtolower(get_opendb_config_var('stats', 'piechart_sort'));
-			
-	if(get_opendb_config_var('stats', 'piechart_12oclock') === TRUE)
-		$chartOptions['12oclock'] = TRUE;
-	else
-		$chartOptions['12oclock'] = FALSE;
-
-	if(get_opendb_config_var('stats', 'piechart_striped') === TRUE)
-		$chartOptions['striped'] = TRUE;
-	else
-		$chartOptions['striped'] = FALSE;
-
-	$total_items = fetch_item_instance_cnt();
+	$total_items = fetch_item_instance_cnt();	
 	
 	switch($HTTP_VARS['graphtype'])
 	{
 		case 'item_ownership':
 			build_and_send_graph(
-				$total_items,
 				build_item_ownership_chart_info(), 
-				$sortorder, 
-				'piechart', //chartype
-				$chartOptions, 
-				$graphCfg, 
-				$imgType);
+				'piechart');
 			break;
 		
 		case 'item_types':
 			build_and_send_graph(
-				$total_items,
 				build_item_types_chart_info(), 
-				$sortorder, 
-				'barchart', //chartype
-				$chartOptions, 
-				$graphCfg, 
-				$imgType);
+				'barchart');
 			break;
 		
 		case 'item_type_ownership':
 			build_and_send_graph(
-				$total_items,
 				build_owner_item_chart_info($HTTP_VARS['s_item_type']), 
-				$sortorder, 
-				'piechart', //chartype
-				$chartOptions, 
-				$graphCfg, 
-				$imgType);
+				'piechart');
 			break;
 		
 		case 'item_type_category':
 			if(get_opendb_config_var('stats', 'category_barchart') === TRUE)
 			{
-				// Is the barchart being sorted.
-				if(strcasecmp(get_opendb_config_var('stats', 'barchart_sort'),"asc")===0 || strcasecmp(get_opendb_config_var('stats', 'barchart_sort'),"desc")===0)
-					$sortorder = strtolower(get_opendb_config_var('stats', 'barchart_sort'));
-			
-				// These options are currently ignored for barcharts
-				$chartOptions['striped'] = FALSE;
-				$chartOptions['12oclock'] = FALSE;
-				
 				build_and_send_graph(
-					$total_items,
 					build_item_category_chart_info($HTTP_VARS['s_item_type']),
-					$sortorder, 
-					'barchart', //chartype
-					$chartOptions, 
-					$graphCfg, 
-					$imgType);
+					'barchart');
 			}
 			else
 			{
 				build_and_send_graph(
-					$total_items,
 					build_item_category_chart_info($HTTP_VARS['s_item_type']), 
-					$sortorder, 
-					'piechart', //chartype
-					$chartOptions, 
-					$graphCfg, 
-					$imgType);
+					'piechart');
 			}
 			break;
 		

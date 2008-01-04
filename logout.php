@@ -58,7 +58,7 @@ else
 	unregister_opendb_session_var('login_lastvisit');
 
 	// close session
-	session_destroy();
+	@session_destroy();
 
 	http_redirect('index.php');
 }

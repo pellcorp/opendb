@@ -352,6 +352,8 @@ ALTER TABLE file_cache CHANGE cache_file cache_file VARCHAR(255);
 ALTER TABLE file_cache CHANGE content_length content_length INTEGER(10) UNSIGNED;
 ALTER TABLE file_cache CHANGE url url TEXT NOT NULL;
 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'overview', 'Overview');
+
 UPDATE item_attribute SET attribute_val = REPLACE(attribute_val, 'upload/', '') 
 WHERE attribute_val LIKE 'upload/%';
 

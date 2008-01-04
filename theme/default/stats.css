@@ -26,13 +26,11 @@ dl.generalStats
 
 dl.generalStats dt
 {
-	
 	float: left;
 	padding-right: 10px;
 	font-weight: bold;
 	width: 60%;
 	white-space: nowrap;
-	
 }
 
 dl.generalStats dd
@@ -52,22 +50,14 @@ table.itemStats tr.totals th
 	font-size: 90%;
 }
 
-ul.itemCharts
+ul.graph
 {
+	list-style-type: none;
 	padding-left: 0px;
 	margin-left: 0px;
-	width: 100%;
-	list-style-type: none;
 }
 
-ul.itemCharts li
-{
-	float: left;
-	list-style-type: none;
+div.tabContainer {
+	margin-top: 25px;
+	width: 800px;
 }
-
-ul.itemCharts h3
-{
-	width: 100%;
-}
-

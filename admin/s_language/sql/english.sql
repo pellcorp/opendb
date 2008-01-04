@@ -245,6 +245,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_n
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_deleted', 'Item not deleted.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_found', 'Item not found'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_not_updated', 'Item not updated.'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'overview', 'Overview');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_ownership', 'Item Ownership'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_reserved_or_borrowed', 'Item is currently reserved or borrowed'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_reserve_list', 'My Reserve Basket'); 

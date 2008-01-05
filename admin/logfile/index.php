@@ -180,7 +180,7 @@ if(strlen($logging_config_r['file'])>0)
 				{
 					if($tokens['admin_user_id'] != NULL)
 					{
-						$tokens['user_id'] .= '&nbsp;('.$tokens['admin_user_id'].')';
+						$tokens['user_id'] .= ' ('.$tokens['admin_user_id'].')';
 					}
 					
 					if($tokens['type'] == 'ERROR')

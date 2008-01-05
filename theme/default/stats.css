@@ -4,13 +4,15 @@
 	width: 600;
 	height: 250;
 	
-	text-color: #000000;
+	/* currently the libchart implementation does not readily support custom colours */
+	/*text-color: #000000;
 	caption-color: #000000;
 	light-color: #BDC7F7;
 	dark-color: #DCE6FB;
 	light-border-color: #DCE6FB;
 	dark-border-color: #000000;
 	background-color: #FAFAFA;
+	*/
 }
 
 h3

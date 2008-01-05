@@ -1,6 +1,6 @@
 <?php
 	/* Libchart - PHP chart library
-	 * Copyright (C) 2005-2007 Jean-Marc Trémeaux (jm.tremeaux at gmail.com)
+	 * Copyright (C) 2005-2007 Jean-Marc Trï¿½meaux (jm.tremeaux at gmail.com)
 	 * 
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 	/**
 	 * A set of colors, used for drawing series of data.
 	 *
-	 * @author Jean-Marc Trémeaux (jm.tremeaux at gmail.com)
+	 * @author Jean-Marc Trï¿½meaux (jm.tremeaux at gmail.com)
 	 * Created on 26 july 2007
 	 */
 	class ColorSet {
@@ -58,10 +58,20 @@
 		 *
 		 */
 		public function next() {
-			next($this->colorList);
-			next($this->shadowColorList);
+			$this->doNext($this->colorList);
+			$this->doNext($this->shadowColorList);
 		}
-
+		
+		private function doNext(&$array) {
+			$value = @next($array);
+			if($value!==FALSE) {
+				return $value;
+			} else {
+				@reset($array);
+				return $this->doNext($array);
+			}
+		}
+		
 		/**
 		 * Returns the current color.
 		 *

@@ -281,6 +281,8 @@ function build_item_category_chart_info($s_item_type)
 		}
 	}
 
+	//print_r($info);
+	
 	return $info;
 }
 
@@ -403,6 +405,25 @@ function do_stats_graph($HTTP_VARS)
 	}
 }
 
+function get_item_types_rs()
+{
+	$item_type_rs = array();
+	$itemresults = fetch_item_type_rs();
+	if($itemresults)
+	{
+		while($item_type_r = db_fetch_assoc($itemresults) )
+		{
+			$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);
+			if($type_total_items > 0) 
+			{
+				$item_type_r['count'] = $type_total_items;
+				$item_type_rs[] = $item_type_r;
+			}			
+		}
+		db_free_result($itemresults);
+	}
+	return $item_type_rs;
+}
 
 if(is_site_enabled())
 {
@@ -419,26 +440,11 @@ if(is_site_enabled())
 				echo _theme_header(get_opendb_lang_var('statistics'));
 				echo("<h2>".get_opendb_lang_var('statistics')."</h2>");
 
-				$item_type_rs = array();
-				$itemresults = fetch_item_type_rs();
-				if($itemresults)
-				{
-					while($item_type_r = db_fetch_assoc($itemresults) )
-					{
-						$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);
-						if($type_total_items > 0) 
-						{
-							$item_type_r['count'] = $type_total_items;
-							$item_type_rs[] = $item_type_r;
-						}			
-					}
-					db_free_result($itemresults);
-				}
-
 				build_review_stats();
 				build_borrower_stats();
 				build_item_stats();
 
+				$item_type_rs = get_item_types_rs();
 			    if(count($item_type_rs)>0)
 				{
 					echo("<div class=\"tabContainer\">");

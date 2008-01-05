@@ -21,7 +21,7 @@
 $chartLib = get_opendb_config_var('stats', 'chart_lib');
 
 if($chartLib == 'legacy') {
-	include_once("./functions/chart/OldStatsChart.class.php");
+	include_once("./functions/chart/LegacyStatsChart.class.php");
 } else if($chartLib == 'phplot' && is_dir("./lib/phplot")) {
 	include_once("./functions/chart/PhplotStatsChart.class.php");
 } else if($chartLib == 'jpgraph' && is_php51() && is_dir("./lib/jpgraph")) {

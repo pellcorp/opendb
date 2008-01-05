@@ -37,6 +37,7 @@ class StatsChartImpl extends StatsChart
 		if($this->chartType == 'piechart')
 		{
 			$this->graph = new PieGraph($this->width, $this->height, "");
+			
 		}
 		else
 		{
@@ -73,9 +74,10 @@ class StatsChartImpl extends StatsChart
 		if($this->chartType == 'piechart') {
 			$plot = new PiePlot3d($this->value_r);
 			$plot->SetTheme("sand");
-			$plot->SetCenter(0.3);
-			$plot->SetAngle(30);
+			$plot->SetCenter(0.35);
+			$plot->SetAngle(50);
 			$plot->SetLegends($this->display_r);
+			$plot->SetLabelType(PIE_VALUE_ADJPER);
 		} else {
 			$this->graph->xaxis->SetTickLabels($this->display_r);
 			
@@ -88,5 +90,4 @@ class StatsChartImpl extends StatsChart
 		$this->graph->Stroke();
 	}
 }
-
 ?>

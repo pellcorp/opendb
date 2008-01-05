@@ -805,66 +805,76 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 			$thumbnail_support = ($file_type_r['thumbnail_support_ind'] == 'Y');
 		}
 		
+		$file_cache_r['content_length'] = 0;
+		
 		if(($uploadFile = get_item_input_file_upload_url($url))!==FALSE)
 		{
 			$file_cache_r['content_length'] = @filesize($uploadFile);
 			$file_cache_r['cache_file'] = basename($uploadFile);
 			$file_cache_r['upload_file_ind'] = 'Y';
 		}
-		else
+		else if(strlen($content)>0)
 		{
 			$file_cache_r['content_length'] = strlen($content);
 			$file_cache_r['upload_file_ind'] = 'N';
 		}
 		
-		if(!is_numeric($file_cache_r['sequence_number']))
+		if($file_cache_r['content_length'] > 0)
 		{
-			$file_cache_r['sequence_number'] = insert_file_cache($cache_type, $file_cache_r['upload_file_ind'], $file_cache_r['url'], $file_cache_r['location'], $file_cache_r['content_type']);
-			if($file_cache_r['sequence_number'] === FALSE)
-				return FALSE;
-		}
-
-		if($file_cache_r['cache_file'] == NULL)
-		{
-			$file_cache_r['cache_file'] = filecache_generate_cache_filename($file_cache_r);
-		}
-		
-		if($content != NULL)
-		{
-			$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
-			$cacheFile = $directory.'/'.$file_cache_r['cache_file'];
+			if(!is_numeric($file_cache_r['sequence_number']))
+			{
+				$file_cache_r['sequence_number'] = insert_file_cache($cache_type, $file_cache_r['upload_file_ind'], $file_cache_r['url'], $file_cache_r['location'], $file_cache_r['content_type']);
+				if($file_cache_r['sequence_number'] === FALSE)
+					return FALSE;
+			}
+	
+			if($file_cache_r['cache_file'] == NULL)
+			{
+				$file_cache_r['cache_file'] = filecache_generate_cache_filename($file_cache_r);
+			}
 			
-			if(!file_put_contents($cacheFile, $content)!==FALSE)
+			if($content != NULL)
 			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache file not written', array($cacheFile));
+				$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
+				$cacheFile = $directory.'/'.$file_cache_r['cache_file'];
+				
+				if(!file_put_contents($cacheFile, $content)!==FALSE)
+				{
+					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Cache file not written', array($cacheFile));
+					return FALSE;
+				}
+			}
+			
+			if($thumbnail_support)
+			{
+				if(strlen($file_cache_r['cache_file_thumb']) == 0)
+				{
+					$file_cache_r['cache_file_thumb'] = filecache_generate_cache_filename($file_cache_r, TRUE);
+				}
+			}
+			
+			if($file_cache_r['upload_file_ind'] != 'Y')
+				$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
+			else
+				$expire_date = NULL; // do not expire uploaded file records.
+				
+			if(!update_file_cache($file_cache_r['sequence_number'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']))
+			{
 				return FALSE;
 			}
-		}
-		
-		if($thumbnail_support)
-		{
-			if(strlen($file_cache_r['cache_file_thumb']) == 0)
+			
+			if($thumbnail_support)
 			{
-				$file_cache_r['cache_file_thumb'] = filecache_generate_cache_filename($file_cache_r, TRUE);
+				file_cache_save_thumbnail_file($file_cache_r, $errors);
 			}
+	
+			return TRUE;
 		}
-		
-		if($file_cache_r['upload_file_ind'] != 'Y')
-			$expire_date = (is_numeric($cache_config_r['lifetime'])?"NOW()+ INTERVAL ".$cache_config_r['lifetime']." SECOND":NULL);
 		else
-			$expire_date = NULL; // do not expire uploaded file records.
-			
-		if(!update_file_cache($file_cache_r['sequence_number'], $file_cache_r['content_length'], $expire_date, $file_cache_r['cache_file'], $file_cache_r['cache_file_thumb']))
 		{
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'File content length is zero', array($url, $location, $content_type, $cache_type, $overwrite));
 			return FALSE;
 		}
-		
-		if($thumbnail_support)
-		{
-			file_cache_save_thumbnail_file($file_cache_r, $errors);
-		}
-
-		return TRUE;
 	}
 	else if(!is_array($cache_config_r))
 	{

@@ -24,7 +24,7 @@ INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type,
 #
 # This attribute is reserved for use in Borrow Duration functionality.  Please do not use it for your own s_item_attribute_type structures.
 # If you want you could run this update to change the input type for S_DURATION a numeric input field instead:
-# UPDATE s_attribute_type SET input_type = 'number(3, %field% <i>days</i>)' WHERE s_attribute_type = 'S_DURATION'
+# UPDATE s_attribute_type SET input_type = 'number(3, %field% <em>days</em>)' WHERE s_attribute_type = 'S_DURATION'
 #
 INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type) VALUES ('S_DURATION', 'Borrow Duration', 'Borrow Duration', 'single_select', '%display%', NULL, NULL, NULL, NULL, 'display', '%display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', 'DURATION', NULL);
 

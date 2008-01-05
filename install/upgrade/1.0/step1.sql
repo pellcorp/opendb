@@ -314,8 +314,8 @@ UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE input_type IN('checkbox
 
 # ratio should be horizontal - looks better
 UPDATE s_attribute_type SET input_type_arg2 = NULL WHERE s_attribute_type = 'RATIO';
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'general_stats', 'General Stats');
-DELETE FROM s_language_var WHERE varname = 'general_facts';
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'review_stats', 'Review Stats');
+DELETE FROM s_language_var WHERE varname IN('general_facts', 'general_stats');
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password', 'Change Admin User Password'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'change_admin_user_password_msg', 'You must change your password.');

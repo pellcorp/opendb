@@ -18,14 +18,14 @@ h3
 	clear: both;
 }
 
-dl.generalStats
+dl.reviewStats
 {
 	width: 30%;
 	float: left;
 	margin-top: 0px;
 }
 
-dl.generalStats dt
+dl.reviewStats dt
 {
 	float: left;
 	padding-right: 10px;
@@ -34,7 +34,7 @@ dl.generalStats dt
 	white-space: nowrap;
 }
 
-dl.generalStats dd
+dl.reviewStats dd
 {
 	color: #626C99;
 }

@@ -35,6 +35,31 @@ include_once("./functions/item_type.php");
 include_once("./functions/item_attribute.php");
 include_once("./functions/item.php");
 
+function build_review_stats()
+{
+	echo("<h3>".get_opendb_lang_var('review_stats')."</h3>");
+	
+	echo("<dl class=\"reviewStats\">");
+	
+	$avgrate = fetch_review_rating();
+	if($avgrate>0)
+	{
+		$num_review = fetch_review_cnt();
+		
+		echo("<dt>".get_opendb_lang_var('review(s)')."</dt>");
+		echo("<dd>".$num_review."</dd>");
+	
+		echo("<dt>".get_opendb_lang_var('average_rating')."</dt>");
+		$attribute_type_r = fetch_attribute_type_r("S_RATING");
+		echo("<dd>".get_display_field($attribute_type_r['s_attribute_type'], 
+						NULL, 
+						'review()',
+						$avgrate,
+						FALSE)."</dd>");
+	}
+	echo("</dl>");
+}
+
 function build_item_stats()
 {
     echo("<h3>".get_opendb_lang_var('item_stats')."</h3>");
@@ -393,35 +418,6 @@ if(is_site_enabled())
 			{
 				echo _theme_header(get_opendb_lang_var('statistics'));
 				echo("<h2>".get_opendb_lang_var('statistics')."</h2>");
-		
-				echo("<h3>".get_opendb_lang_var('general_stats')."</h3>");
-				
-				echo("<dl class=\"generalStats\">");
-				echo("<dt>".get_opendb_lang_var('owner(s)')."</dt>");
-				$num_users = fetch_user_cnt(PERM_ITEM_OWNER);//only users who can own
-				echo("<dd>".$num_users."</dd>");
-				
-				echo("<dt>".get_opendb_lang_var('item(s)')."</dt>");
-				$total_items = fetch_item_instance_cnt();
-				echo("<dd>".$total_items."</dd>");
-		
-				$avgrate = fetch_review_rating();
-				if($avgrate>0)
-				{
-					$num_review = fetch_review_cnt();
-					
-					echo("<dt>".get_opendb_lang_var('review(s)')."</dt>");
-					echo("<dd>".$num_review."</dd>");
-				
-					echo("<dt>".get_opendb_lang_var('average_rating')."</dt>");
-					$attribute_type_r = fetch_attribute_type_r("S_RATING");
-					echo("<dd>".get_display_field($attribute_type_r['s_attribute_type'], 
-									NULL, 
-									'review()',
-									$avgrate,
-									FALSE)."</dd>");
-				}
-				echo("</dl>");
 
 				$item_type_rs = array();
 				$itemresults = fetch_item_type_rs();
@@ -439,6 +435,7 @@ if(is_site_enabled())
 					db_free_result($itemresults);
 				}
 
+				build_review_stats();
 				build_borrower_stats();
 				build_item_stats();
 

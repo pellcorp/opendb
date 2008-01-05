@@ -21,26 +21,29 @@
 class StatsChart
 {
 	var $chartType;
+	var $graphCfg;
 	
 	var $width;
 	var $height;
+	var $transparent;
 	
-	var $data;
-	var $title;
-	
-	function StatsChart($chartType, $width, $height) {
+	function StatsChart($chartType, $graphCfg) {
 		$this->chartType = $chartType;
 		$this->imgType = $imgType;
-		$this->height = $height;
-		$this->width = $width;
+		$this->height = $graphCfg['height'];
+		$this->width = $graphCfg['width'];
+		if($graphCfg['background'] == 'transparent') {
+			$this->transparent = TRUE;
+		} else {
+			$this->transparent = FALSE;
+		}
+		$this->graphCfg = $graphCfg;
 	}
 	
 	function addData($display, $value) {
-		 $this->data[$display] = $value;
 	}
 	
 	function setTitle($title) {
-		$this->title = title;		
 	}
 
 	function render($imgType) {

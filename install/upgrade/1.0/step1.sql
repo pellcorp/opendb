@@ -352,8 +352,6 @@ ALTER TABLE file_cache CHANGE cache_file cache_file VARCHAR(255);
 ALTER TABLE file_cache CHANGE content_length content_length INTEGER(10) UNSIGNED;
 ALTER TABLE file_cache CHANGE url url TEXT NOT NULL;
 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'overview', 'Overview');
-
 UPDATE item_attribute SET attribute_val = REPLACE(attribute_val, 'upload/', '') 
 WHERE attribute_val LIKE 'upload/%';
 
@@ -409,6 +407,15 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'auto_site_update', 7, 'Auto Site Refresh', 'Bypass update item edit screen', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_insert', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'auto_site_update', 'FALSE');
+
+# remove most stats config as no longer supported
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'overview', 'Overview');
+
+DELETE FROM s_config_group_item WHERE group_id = 'stats' AND id IN ('piechart_striped', 'piechart_12oclock', 'piechart_sort', 'barchart_sort');
+DELETE FROM s_config_group_item_var WHERE group_id = 'stats' AND id IN ('piechart_striped', 'piechart_12oclock', 'piechart_sort', 'barchart_sort');
+
+UPDATE s_config_group_item SET order_no = '1' WHERE group_id = 'stats' AND id = 'image_type';
+UPDATE s_config_group_item SET order_no = '2' WHERE group_id = 'stats' AND id = 'category_barchart';
 
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,

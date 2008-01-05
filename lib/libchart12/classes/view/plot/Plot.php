@@ -112,6 +112,11 @@
 		protected $textColor;
 		
 		/**
+		 * @var unknown_type
+		 */
+		protected $isTransparent;
+		
+		/**
 		 * Constructor of Plot.
 		 *
 		 * @param integer width of the image
@@ -198,6 +203,10 @@
 			$this->captionArea = $captionArea->getPaddedRectangle($this->captionPadding);
 		}
 		
+		public function setTransparent($b) {
+			$this->isTransparent = $b;
+		}
+		
 		/**
 		 * Compute the layout of all areas of the graph.
 		 */
@@ -221,6 +230,10 @@
 			$this->backGroundColor = new Color(255, 255, 255);
 			$this->textColor = new Color(0, 0, 0);
 
+			if($this->isTransparent) {
+				imagecolortransparent($this->img, $this->backGroundColor->getColor($this->img));
+			}
+			
 			// White background
 			imagefilledrectangle($this->img, 0, 0, $this->width - 1, $this->height - 1, $this->backGroundColor->getColor($this->img));
 			

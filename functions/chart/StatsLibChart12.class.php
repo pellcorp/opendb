@@ -22,22 +22,27 @@ include_once("./lib/libchart12/classes/libchart.php");
 
 include_once("./functions/chart/StatsChart.class.php");
 
-class StatsLibChart extends StatsChart
+class StatsChartImpl extends StatsChart
 {
 	var $libchart;
 	var $dataSet;
 	
-	function StatsLibChart($chartType, $width, $height) {
-		parent::StatsChart($chartType, $width, $height);
+	function StatsChartImpl($chartType, $graphCfg) {
+		parent::StatsChart($chartType, $graphCfg);
 		
 		if($chartType == 'piechart')
-			$this->libchart = new PieChart($width, $height);
+			$this->libchart = new PieChart($this->width, $this->height);
 		else
-			$this->libchart = new VerticalBarChart($width, $height);
+			$this->libchart = new VerticalBarChart($this->width, $this->height);
 			
 		$this->libchart->getPlot()->setLogoFileName(NULL);
 		
 		$this->dataSet = new XYDataSet();
+		
+		if($this->transparent)
+		{
+			$this->libchart->getPlot()->setTransparent(TRUE);
+		}
 	}
 	
 	function addData($display, $value) {

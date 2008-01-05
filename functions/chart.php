@@ -19,35 +19,20 @@
 */
 
 //include_once("./functions/chart/OldStatsChart.class.php");
-include_once("./functions/chart/StatsLibChart11.class.php");
-//include_once("./functions/chart/StatsLibChart12.class.php");
+//include_once("./functions/chart/PhplotStatsChart.class.php");
 
-function sort_data($data, $sortorder)
-{
-	if(is_array($data) && !empty($sortorder))
-	{
-		if($sortorder == 'asc')	
-			asort($data);
-		else
-			arsort($data);
-	}
-	
-	return $data;
+if(is_php5()) {
+	include_once("./functions/chart/StatsLibChart12.class.php");
+} else {
+	include_once("./functions/chart/StatsLibChart11.class.php");
 }
 
 function build_and_send_graph($data, $chartType, $title)
 {
-	if(strcasecmp(get_opendb_config_var('stats', $chartType.'_sort'),"asc")===0 || 
-					strcasecmp(get_opendb_config_var('stats', $chartType.'_sort'),"desc")===0)
-	{
-		$sortorder = strtolower(get_opendb_config_var('stats', $chartType.'_sort'));
-	}
-
-	$data = sort_data($data, $sortorder);
-	
 	$imgType = strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
-
-	$chart = new StatsLibChart($chartType, 600, 250);
+	$graphCfg = _theme_graph_config();
+	
+	$chart = new StatsChartImpl($chartType, $graphCfg);
 	
 	$chart->setTitle($title);
 	while(list($x, $y) = each($data))

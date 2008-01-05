@@ -476,12 +476,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin.change_user', 1, 'Change User', 'Change User Configuration' );
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin.change_user', 'enable', 1, 'Enable', '', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'piechart_striped', 1, 'Piechart striped', 'Draw every other pie wedge a different colour', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'piechart_12oclock', 2, 'Piechart 12oclock', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'piechart_sort', 3, 'Piechart sort', '', 'value_select', 'asc,desc');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'category_barchart', 4, 'Category Barchart', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'barchart_sort', 5, 'Barchart sort', '', 'value_select', 'asc,desc');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'image_type', 6, 'Image Type', '', 'value_select', 'png,jpg,gif');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'image_type', 1, 'Image Type', '', 'value_select', 'png,jpg,gif');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'category_barchart', 2, 'Category Barchart', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'show_item_image', 1, 'Show Item Image', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_display', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
@@ -666,11 +662,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin'
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin.change_user', 'enable', 'TRUE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'image_type', 'png');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'piechart_12oclock', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'piechart_sort', 'asc');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'piechart_striped', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'category_barchart', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'barchart_sort', 'desc');
+
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'no_image', 'no-image.gif');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_display', 'item_image_size', 'height', '100');

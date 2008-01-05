@@ -18,6 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+function is_php5()
+{
+	return version_compare(phpversion(), "5.0", ">="); 
+}
+
 function generate_random_num()
 {
     mt_srand ((double)microtime()*1000000);

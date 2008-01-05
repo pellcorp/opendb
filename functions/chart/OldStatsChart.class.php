@@ -20,41 +20,22 @@
 
 include_once("./functions/chart/StatsChart.class.php");
 
-class OldStatsChart extends StatsChart
+class StatsChartImpl extends StatsChart
 {
-	function OldStatsChart($chartType, $width, $height) {
-		parent::StatsChart($chartType, $width, $height);
+	var $data;
+	
+	function StatsChartImpl($chartType, $graphCfg) {
+		parent::StatsChart($chartType, $graphCfg);
 	}
-		
-	/**
-	* 	Note that this file/feature requires GD libraries installed on the php server
-	* 
-	* @param $sortorder 'asc' or 'desc'
-	* @param $chartType 'barchart' or 'piechart'
-	* @param $imgType 'gif', 'jpg', 'png'
-	* @param $chartOptions Array of options for chart, options include:
-	* 			striped=>[TRUE|FALSE]
-	* 			12oclock=>[TRUE|FALSE]
-	* 			threshold=>a number
-	* 
-	* @param $graphCfg = array(
-						'size'=>$HTTP_VARS['size'],
-						'font-size'=>$HTTP_VARS['font-size'],
-						'background'=>$HTTP_VARS['background'],
-						'text-color'=>$HTTP_VARS['text-color'],
-						'caption-color'=>$HTTP_VARS['caption-color'],
-						'light-color'=>$HTTP_VARS['light-color'],
-						'dark-color'=>$HTTP_VARS['dark-color'],
-						'light-border-color'=>$HTTP_VARS['light-border-color'],
-						'dark_border-color'=>$HTTP_VARS['dark_border-color'],
-						'background-color'=>$HTTP_VARS['background-color']);
-	*/
-	function render($imgType)
-	{
-		$graphCfg = _theme_graph_config();
-		
+	
+	function addData($display, $value) {
+		 $this->data[$display] = $value;
+	}
+	
+	function render($imgType) {
 		$data = $this->data;
 		$chartType = $this->chartType;
+		$graphCfg = $this->graphCfg;
 		
 		// standard threshold.
 		$chartOptions['threshold'] = 3;
@@ -66,15 +47,8 @@ class OldStatsChart extends StatsChart
 		}
 		else
 		{
-			if(get_opendb_config_var('stats', 'piechart_12oclock') === TRUE)
-				$chartOptions['12oclock'] = TRUE;
-			else
-				$chartOptions['12oclock'] = FALSE;
-		
-			if(get_opendb_config_var('stats', 'piechart_striped') === TRUE)
-				$chartOptions['striped'] = TRUE;
-			else
-				$chartOptions['striped'] = FALSE;
+			$chartOptions['12oclock'] = FALSE;
+			$chartOptions['striped'] = TRUE;
 		}
 				
 		$itemCount = fetch_item_instance_cnt();
@@ -94,13 +68,13 @@ class OldStatsChart extends StatsChart
 	
 		$im = ImageCreate($xsize, $ysize);
 	
-		$bgcolor 		= ImageHexColorAllocate($im, $graphCfg['background-color']);
+		$bgcolor 	= ImageHexColorAllocate($im, $graphCfg['background-color']);
 		$text_color 	= ImageHexColorAllocate($im, $graphCfg['text-color']);
 		$captions_color = ImageHexColorAllocate($im, $graphCfg['caption-color']);
-		$lt_color 		= ImageHexColorAllocate($im, $graphCfg['light-color']);
-		$dk_color 		= ImageHexColorAllocate($im, $graphCfg['dark-color']);
-		$lt_border 		= ImageHexColorAllocate($im, $graphCfg['light-border-color']);
-		$dk_border 		= ImageHexColorAllocate($im, $graphCfg['dark-border-color']);
+		$lt_color 	= ImageHexColorAllocate($im, $graphCfg['light-color']);
+		$dk_color 	= ImageHexColorAllocate($im, $graphCfg['dark-color']);
+		$lt_border 	= ImageHexColorAllocate($im, $graphCfg['light-border-color']);
+		$dk_border 	= ImageHexColorAllocate($im, $graphCfg['dark-border-color']);
 	
 		// Do this if you want your background image to show through:
 		if($graphCfg['background'] == 'transparent')

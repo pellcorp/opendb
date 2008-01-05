@@ -35,6 +35,8 @@
 
 	class Chart
 	{
+		var $isTransparent;
+		
 		/**
 		* Creates a new chart
 		*
@@ -50,7 +52,11 @@
 
 			$this->reset();
 		}
-
+	
+		function setTransparent($b) {
+			$this->isTransparent = $b;
+		}
+		
 		/**
 		* Initialize the chart
 		*
@@ -207,6 +213,10 @@
 
 			// White background
 
+			if($this->isTransparent) {
+				imagecolortransparent($this->img, $this->backGroundColor->getColor($this->img));
+			}
+			
 			imagefilledrectangle($this->img, 0, 0, $this->width - 1, $this->height - 1, $this->backGroundColor->getColor($this->img));
 		}
 		

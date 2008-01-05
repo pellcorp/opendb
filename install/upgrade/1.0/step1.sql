@@ -330,6 +330,9 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_ne
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_site_plugins', 'No Site Plugins');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_site_plugin_msg', 'There are no Site Plugins installed.');
 
+# update inaccurate help test
+UPDATE s_config_group_item SET description = 'Number of items to list' WHERE group_id = 'welcome.last_items_list' AND id = 'total_num_items';
+
 # use s_item_attribute_type attribute_id instead of order_no which should purely be for order!!!
 #ALTER TABLE s_item_attribute_type CHANGE order_no s_attribute_type_id TINYINT(3) UNSIGNED NOT NULL;
 #ALTER TABLE item_attribute CHANGE order_no s_attribute_type_id TINYINT(3) UNSIGNED NOT NULL;

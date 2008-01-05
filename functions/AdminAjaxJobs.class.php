@@ -69,7 +69,7 @@ class AdminAjaxJobs
 					$objResponse->assign("message", "innerHTML", "Completed $completedCount of $totalItems (Failures: $failureCount)");
 					
 					// todo - how to get waitCursor to start again.
-					$objResponse->script("xajax_".$this->_id.".dojob('$job', document.forms['progressForm']['continue'].value, '$completedCount', '$failureCount');");
+					$objResponse->script("xajax_".$this->_id.".doJob('$job', document.forms['progressForm']['continue'].value, '$completedCount', '$failureCount');");
 				} else {
 					$objResponse->assign("message", "innerHTML", "Job Complete (Completed: $completedCount, Failures: $failureCount)");
 				}
@@ -107,7 +107,7 @@ class AdminAjaxJobs
 		<form id="progressForm">
 			<input type="hidden" name="continue" value="true" />
 			<input type="button" class="button" id="startButton" value="Start" 
-					onclick="this.form[\'continue\'].value=\'true\'; xajax_'.$this->_id.'.dojob(\''.$this->_job.'\', \'true\', \'0\', \'0\'); this.disabled=true; return false;" />
+					onclick="this.form[\'continue\'].value=\'true\'; xajax_'.$this->_id.'.doJob(\''.$this->_job.'\', \'true\', \'0\', \'0\'); this.disabled=true; return false;" />
 			<input type="button" class="button" id="cancelButton" value="Cancel" 
 					onclick="this.form[\'continue\'].value=\'false\'; this.disabled=true; " />
 		</form>

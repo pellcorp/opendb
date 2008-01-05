@@ -20,10 +20,9 @@
 */
 
 // TODO - not currently working very well.
+include_once("./functions/chart/StatsChart.class.php");
 
 include_once("./lib/phplot/phplot.php");
-
-include_once("./functions/chart/StatsChart.class.php");
 
 class StatsChartImpl extends StatsChart
 {

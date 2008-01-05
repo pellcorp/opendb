@@ -241,7 +241,7 @@ function build_borrower_stats()
 	}
 }
 
-function build_owner_item_chart_info($s_item_type)
+function build_owner_item_chart_data($s_item_type)
 {
 	$result = fetch_user_rs(PERM_ITEM_OWNER);
 	if($result)
@@ -251,16 +251,16 @@ function build_owner_item_chart_info($s_item_type)
 			$num_total = fetch_owner_item_cnt($user_r['user_id'], $s_item_type);
 			if($num_total>0)
 			{
-				$info[$user_r['fullname']] = $num_total;
+				$data[] = array('display'=>$user_r['fullname'], 'value'=>$num_total);
 			}
 		}
 		db_free_result($result);
 	}
 	
-	return $info;
+	return $data;
 }
 
-function build_item_category_chart_info($s_item_type)
+function build_item_category_chart_data($s_item_type)
 {
 	$category_attribute_type = fetch_sfieldtype_item_attribute_type($s_item_type, 'CATEGORY');
 	if($category_attribute_type)
@@ -273,20 +273,17 @@ function build_item_category_chart_info($s_item_type)
 				$num_total = fetch_category_item_cnt($attribute_type_r['value'], $s_item_type);
 				if($num_total > 0)
 				{
-					$key = $attribute_type_r['display'];
-					$info[$key] = $num_total;
+					$data[] = array('display'=>$attribute_type_r['display'], 'value'=>$num_total);
 				}
 			}
 			db_free_result($results);
 		}
 	}
-
-	//print_r($info);
 	
-	return $info;
+	return $data;
 }
 
-function build_item_types_chart_info()
+function build_item_types_chart_data()
 {
 	$results = fetch_item_type_rs();
 	while( $item_type_r = db_fetch_assoc($results) )
@@ -294,15 +291,15 @@ function build_item_types_chart_info()
 		$num_total = fetch_item_instance_cnt($item_type_r['s_item_type']);
 		if($num_total>0)
 		{
-			$info[$item_type_r['s_item_type']] = $num_total; // caption
+			$data[] = array('display'=>$item_type_r['s_item_type'], 'value'=>$num_total);
 		}
 	}
 	db_free_result($results);
 
-	return $info;
+	return $data;
 }
 
-function build_item_ownership_chart_info()
+function build_item_ownership_chart_data()
 {
 	$results = fetch_status_type_rs();
 	if($results)
@@ -333,13 +330,13 @@ function build_item_ownership_chart_info()
 			// pie chart data
 			if($num_total>0)
 			{
-				$info[$user_r['fullname']] = $num_total;
+				$data[] = array('display'=>$user_r['fullname'], 'value'=>$num_total);
 			}
 		}
 		db_free_result($results);
 	}
 	
-	return $info;
+	return $data;
 }
 
 function do_stats_graph($HTTP_VARS)
@@ -358,46 +355,39 @@ function do_stats_graph($HTTP_VARS)
 		}
 	}
 
-	$total_items = fetch_item_instance_cnt();	
-	
 	switch($HTTP_VARS['graphtype'])
 	{
 		case 'item_ownership':
 			build_and_send_graph(
-				build_item_ownership_chart_info(), 
+				build_item_ownership_chart_data(), 
 				'piechart',
 				get_opendb_lang_var('database_ownership_chart'));
 			break;
 		
 		case 'item_types':
 			build_and_send_graph(
-				build_item_types_chart_info(), 
+				build_item_types_chart_data(), 
 				'piechart',
 				get_opendb_lang_var('database_itemtype_chart'));
 			break;
 		
 		case 'item_type_ownership':
 			build_and_send_graph(
-				build_owner_item_chart_info($HTTP_VARS['s_item_type']), 
+				build_owner_item_chart_data($HTTP_VARS['s_item_type']), 
 				'piechart',
 				get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $HTTP_VARS['s_item_type']));
 			break;
 		
 		case 'item_type_category':
+			$chartType = 'piechart';
 			if(get_opendb_config_var('stats', 'category_barchart') === TRUE)
-			{
-				build_and_send_graph(
-					build_item_category_chart_info($HTTP_VARS['s_item_type']),
-					'barchart',
-					get_opendb_lang_var('itemtype_category_chart', 's_item_type', $HTTP_VARS['s_item_type']));
-			}
-			else
-			{
-				build_and_send_graph(
-					build_item_category_chart_info($HTTP_VARS['s_item_type']), 
-					'piechart',
-					get_opendb_lang_var('itemtype_category_chart', 's_item_type', $HTTP_VARS['s_item_type']));
-			}
+				$chartType = 'barchart';
+				
+			build_and_send_graph(
+				build_item_category_chart_data($HTTP_VARS['s_item_type']),
+				$chartType,
+				get_opendb_lang_var('itemtype_category_chart', 's_item_type', $HTTP_VARS['s_item_type']));
+			
 			break;
 		
 		default:
@@ -458,13 +448,19 @@ if(is_site_enabled())
 						echo("<li id=\"menu-${item_type_r['s_item_type']}\" onclick=\"return activateTab('${item_type_r['s_item_type']}', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">${item_type_r['s_item_type']}</li>");
 					}
 					echo("</ul>");
-									
+					
+					$graphCfg = _theme_graph_config();
+					$chartLib = get_opendb_config_var('stats', 'chart_lib');
+					if($chartLib!='legacy') {
+						$widthHeightAttribs = "width=\"${graphCfg['width']}\" height=\"${graphCfg['height']}\"";
+					}
+
 					echo("<div id=\"tab-content\">");
 	
 					echo("\n<div class=\"tabContent\" id=\"breakdown\">");
 					echo("<ul class=\"graph\">");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership\" alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=item_types\" alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
+					echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership\" $widthHeightAttribs alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
+					echo("<li><img src=\"stats.php?op=graph&graphtype=item_types\" $widthHeightAttribs alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
 					echo("</ul>");
 					echo("</div>");
 					
@@ -474,8 +470,8 @@ if(is_site_enabled())
 						echo("\n<div class=\"tabContentHidden\" id=\"${item_type_r['s_item_type']}\">");
 		        	    echo("<h3>".get_opendb_lang_var('itemtype_breakdown', array('desc'=>$item_type_r['description'],'s_item_type'=>$item_type_r['s_item_type'], 'total'=>$item_type_r['count']))."</h3>");
 						echo("<ul class=\"graph\">");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_ownership&s_item_type=".urlencode($item_type_r['s_item_type'])."\" alt=\"".get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_category&s_item_type=".urlencode($item_type_r['s_item_type'])."\" alt=\"".get_opendb_lang_var('itemtype_category_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
+						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_ownership&s_item_type=".urlencode($item_type_r['s_item_type'])."\" $widthHeightAttribs alt=\"".get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
+						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_category&s_item_type=".urlencode($item_type_r['s_item_type'])."\" $widthHeightAttribs alt=\"".get_opendb_lang_var('itemtype_category_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
 						echo("</ul>");
 						echo("</div>\n");
 					}

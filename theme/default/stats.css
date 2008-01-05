@@ -1,8 +1,8 @@
 .OpendbStatsGraphs
 {
 	background: transparent;
-	width: 600;
-	height: 250;
+	width: 550;
+	height: 275;
 	
 	/* currently the libchart implementation does not readily support custom colours */
 	/*text-color: #000000;

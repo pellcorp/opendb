@@ -18,16 +18,32 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-//include_once("./functions/chart/OldStatsChart.class.php");
-//include_once("./functions/chart/PhplotStatsChart.class.php");
+$chartLib = get_opendb_config_var('stats', 'chart_lib');
 
-if(is_php5()) {
+if($chartLib == 'legacy') {
+	include_once("./functions/chart/OldStatsChart.class.php");
+} else if($chartLib == 'phplot' && is_dir("./lib/phplot")) {
+	include_once("./functions/chart/PhplotStatsChart.class.php");
+} else if($chartLib == 'jpgraph' && is_php51() && is_dir("./lib/jpgraph")) {
+	include_once("./functions/chart/JPGraphStatsChart.class.php");
+} else if(is_php5()) {
 	include_once("./functions/chart/StatsLibChart12.class.php");
 } else {
 	include_once("./functions/chart/StatsLibChart11.class.php");
 }
 
-function build_and_send_graph($data, $chartType, $title)
+function sort_data_element($a_r, $b_r)
+{
+	$a = $a_r['value'];
+	$b = $b_r['value'];
+	
+    if ($a == $b) {
+        return 0;
+    }
+    return ($a > $b) ? -1 : 1;
+}
+
+function build_and_send_graph($data_rs, $chartType, $title)
 {
 	$imgType = strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
 	$graphCfg = _theme_graph_config();
@@ -35,14 +51,24 @@ function build_and_send_graph($data, $chartType, $title)
 	$chart = new StatsChartImpl($chartType, $graphCfg);
 	
 	$chart->setTitle($title);
-	while(list($x, $y) = each($data))
-	{
-		if($chartType == 'piechart')
-			$chart->addData($x." ($y)", $y);
-		else
-			$chart->addData($x, $y);
-	}
 	
+	if(is_array($data_rs)) {
+		
+		usort($data_rs, "sort_data_element");
+	
+		if($chartType == 'piechart' && count($data_rs)>12)
+			$data_rs = array_slice( $data_rs, 0, 11 );
+		
+		reset($data_rs);
+		while(list(, $data_r) = each($data_rs))
+		{
+			if($chartType == 'piechart')
+				$chart->addData($data_r['display']." (${data_r['value']})", $data_r['value']);
+			else
+				$chart->addData($data_r['display'], $data_r['value']);
+		}
+	}
+
 	$chart->render($imgType);
 }
 ?>

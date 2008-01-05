@@ -417,8 +417,12 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'overvi
 DELETE FROM s_config_group_item WHERE group_id = 'stats' AND id IN ('piechart_striped', 'piechart_12oclock', 'piechart_sort', 'barchart_sort');
 DELETE FROM s_config_group_item_var WHERE group_id = 'stats' AND id IN ('piechart_striped', 'piechart_12oclock', 'piechart_sort', 'barchart_sort');
 
+# addition of configurable chart library support.
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'chart_lib', 2, 'Chart Library', 'LibChart (V1.1 and 1.2) and Legacy are included, but JPGraph (V2.3) and PhpPlot (V5.0.4) will require installation.', 'value_select', 'libchart,jpgraph,phplot,legacy');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'chart_lib', 'libchart');
+
 UPDATE s_config_group_item SET order_no = '1' WHERE group_id = 'stats' AND id = 'image_type';
-UPDATE s_config_group_item SET order_no = '2' WHERE group_id = 'stats' AND id = 'category_barchart';
+UPDATE s_config_group_item SET order_no = '3' WHERE group_id = 'stats' AND id = 'category_barchart';
 
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,

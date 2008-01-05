@@ -23,6 +23,11 @@ function is_php5()
 	return version_compare(phpversion(), "5.0", ">="); 
 }
 
+function is_php51()
+{
+	return version_compare(phpversion(), "5.1", ">="); 
+}
+
 function generate_random_num()
 {
     mt_srand ((double)microtime()*1000000);

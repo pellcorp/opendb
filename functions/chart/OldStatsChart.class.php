@@ -54,7 +54,7 @@ class StatsChartImpl extends StatsChart
 		$itemCount = fetch_item_instance_cnt();
 		
 		// size of pie-chart (not counting text borders)
-		$imgsize = $this->width / 4;
+		$imgsize = $graphCfg['size'];
 		
 		$fontsize = $graphCfg['font-size'];
 		$fontheight = imagefontheight($fontsize);

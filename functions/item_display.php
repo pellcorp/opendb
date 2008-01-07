@@ -100,8 +100,11 @@ function get_item_review_block($item_r)
 			
 			$buffer .= "<li>";
 			
+			// even if already review author its possible to revoke rights to
+			// edit / modify own reviews by revoking the PERM_USER_REVIEWER grant!
 			if(is_user_granted_permission(PERM_ADMIN_REVIEWER) || 
-					is_review_author($review_r['sequence_number'], get_opendb_session_var('user_id')))
+					(is_user_granted_permission(PERM_USER_REVIEWER) && 
+							is_review_author($review_r['sequence_number'])))
 			{
 				$action_links_rs = NULL;
 				if(get_opendb_config_var('item_review', 'update_support')!==FALSE)

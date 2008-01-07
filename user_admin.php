@@ -820,7 +820,7 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 		if(validate_user_info($HTTP_VARS, $address_attribs_provided, $errors))
 		{
 			// no password change performed here...
-			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], FALSE))
+			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], $HTTP_VARS['user_role']))
 			{
 				return update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, $errors);
 			} 

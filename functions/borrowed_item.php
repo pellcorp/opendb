@@ -331,7 +331,12 @@ function is_item_in_reserve_basket($item_id, $instance_no, $borrower_id)
 
 function is_exists_my_reserve_basket($borrower_id)
 {
-	return fetch_my_basket_item_cnt($borrower_id)>0;
+	// the right to be a borrower can be revoked at any time, even if
+	// a user has active borrower records.
+	if(is_user_granted_permission(PERM_USER_BORROWER, $borrower_id))
+		return fetch_my_basket_item_cnt($borrower_id)>0;
+	else
+		return FALSE;
 }
 
 function fetch_my_basket_item_cnt($borrower_id)

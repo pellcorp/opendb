@@ -938,26 +938,26 @@ if(is_site_enabled())
 				}
 			}
 		
-			// Do we need to include the actions column?
-			if(is_user_granted_permission(PERM_USER_BORROWER) &&
-			(
-				(
-					(
-						(
-							strlen($HTTP_VARS['owner_id'])==0 && 
-							strlen($HTTP_VARS['not_owner_id'])==0
-						) || $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') 
-						  || is_user_granted_permission(PERM_ADMIN_BORROWER)
-					) && 
-					(
-						get_opendb_config_var('listings', 'show_input_actions') || 
-						(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE)
-					)
-				) || (get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable'))))
-			{	
+			if(get_opendb_config_var('borrow', 'enable')!==FALSE &&
+					is_user_granted_permission(PERM_USER_BORROWER) &&  
+					(get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE ||
+						get_opendb_config_var('listings.borrow', 'enable')!==FALSE))
+			{
 				$show_action_column = TRUE;
 			}
-				
+			
+			if(get_opendb_config_var('listings', 'show_input_actions')!==FALSE)
+			{
+				if( is_user_granted_permission(PERM_ITEM_OWNER) &&
+						(strlen($HTTP_VARS['not_owner_id']) == 0 || 
+							$HTTP_VARS['not_owner_id'] != get_opendb_session_var('user_id')) && 
+						(strlen($HTTP_VARS['owner_id'])==0 || 
+							$HTTP_VARS['owner_id'] == get_opendb_session_var('user_id') ))
+				{
+					$show_action_column = TRUE;
+				}
+			}
+
 			$page_title = NULL;
 			if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
 			{

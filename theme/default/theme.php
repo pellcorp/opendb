@@ -66,16 +66,18 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 		{
 			echo("<li><a href=\"borrow.php?op=my_reserve_basket\">"._theme_image("basket.png", get_opendb_lang_var('item_reserve_list'))."</a></li>");
 		}
-		
-		echo("<li><form class=\"quickSearch\" action=\"listings.php\">".
-			"<input type=\"hidden\" name=\"search_list\" value=\"y\">".
-			//"<input type=\"hidden\" name=\"attribute_type\" value=\"UPC_ID\">".
-			//"<input type=\"hidden\" name=\"attr_match\" value=\"partial\">".
-			//"<input type=\"text\" name=\"attribute_val\" size=\"10\">".
-			"<input type=\"hidden\" name=\"title_match\" value=\"partial\">".
-			"<input type=\"text\" class=\"text\" name=\"title\" size=\"10\">".
-			"</form></li>");
 
+		if(is_user_granted_permission(PERM_VIEW_LISTINGS))
+		{
+			echo("<li><form class=\"quickSearch\" action=\"listings.php\">".
+				"<input type=\"hidden\" name=\"search_list\" value=\"y\">".
+				//"<input type=\"hidden\" name=\"attribute_type\" value=\"UPC_ID\">".
+				//"<input type=\"hidden\" name=\"attr_match\" value=\"partial\">".
+				//"<input type=\"text\" name=\"attribute_val\" size=\"10\">".
+				"<input type=\"hidden\" name=\"title_match\" value=\"partial\">".
+				"<input type=\"text\" class=\"text\" name=\"title\" size=\"10\">".
+				"</form></li>");
+		}
 		
 		if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
 		{
@@ -91,7 +93,6 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 			echo("<li class=\"login\"><a href=\"login.php?op=login\">".get_opendb_lang_var('login')."</a></li>");
 		}
 		
-
 		echo("</ul>");
 	}
 			

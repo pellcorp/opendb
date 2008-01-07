@@ -269,7 +269,7 @@ class HTML_Listing extends Listing
 					{
                         $user_name = get_opendb_lang_var('user_name', array('fullname'=>$fullname, 'user_id'=>$user_id));
 						
-                        if($this->_include_href_links && is_user_granted_permission(PERM_USER_BORROWER))
+                        if($this->_include_href_links && is_user_granted_permission(PERM_VIEW_USER_PROFILE))
 						{
 							$item_title = '';
 							// lets find the title column.
@@ -289,7 +289,7 @@ class HTML_Listing extends Listing
 								$url .= "&".get_url_string($row_column_rs[$i]['extra_http_vars']);
 							}
 							
-							$url .= "&subject=".urlencode(ifempty($item_title,get_opendb_lang_var('no_subject')))."&redirect_link=".urlencode(get_opendb_lang_var('back_to_listing'))."&redirect_url=".urlencode($this->_php_self.'?'.get_url_string($this->_http_vars));
+							$url .= "&subject=".urlencode(ifempty($item_title,get_opendb_lang_var('no_subject')));
 							
 							$this->_write("<a href=\"$url\" title=\"".htmlspecialchars(get_opendb_lang_var('user_profile'))."\">$user_name</a>");
 						}
@@ -355,7 +355,7 @@ class HTML_Listing extends Listing
 					$is_borrowed_or_returned = $row_column_rs[$i]['is_borrowed_or_returned'];
 
 					$item_title = '';
-					if($this->_include_href_links)
+					if($this->_include_href_links && is_user_granted_permission(PERM_VIEW_ITEM_DISPLAY))
 						$item_title = '<a href="'.$title_href_link.'">'.$row_column_rs[$i]['item_title'].'</a>';
 					else
 						$item_title = $row_column_rs[$i]['item_title'];

@@ -222,7 +222,13 @@ function fetch_role_r($role_name) {
 	return FALSE;
 }
 
-function fetch_user_role_rs() {
+/**
+ * PUBLICACCESS is explicity excluded from the list of available
+ * roles.  Its an internal role for use by the system to define
+ * the permissions for public access only.
+ */
+function fetch_user_role_rs()
+{
 	$query = "SELECT sr.role_name, 
 	IFNULL(stlv.value, sr.description) AS description
 	FROM s_role sr
@@ -231,6 +237,7 @@ function fetch_user_role_rs() {
 	stlv.tablename = 's_role' AND
 	stlv.columnname = 'description' AND
 	stlv.key1 = sr.role_name 
+	WHERE sr.role_name <> 'PUBLICACCESS'
 	ORDER BY role_name";
 	
 	$result = db_query($query);

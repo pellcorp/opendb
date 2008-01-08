@@ -30,8 +30,14 @@ class StatsChart
 	function StatsChart($chartType, $graphCfg) {
 		$this->chartType = $chartType;
 		$this->imgType = $imgType;
+		
 		$this->height = $graphCfg['height'];
 		$this->width = $graphCfg['width'];
+		if(!is_numeric($this->height) && !is_numeric($this->width)) {
+			$this->width = 550;
+			$this->height = 275;
+		}
+		
 		if($graphCfg['background'] == 'transparent') {
 			$this->transparent = TRUE;
 		} else {

@@ -1,12 +1,12 @@
 #########################################################
-# OpenDb 1.0 moby.com (mobygames) Site Plugin
+# OpenDb 1.0 MobyGames.com (mobygames) Site Plugin
 #########################################################
 
 #
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'mobygames', 'mobygames', 'moby.com', 'moby.gif', 'Information and reviews of lots of computer games.', 'http://www.mobygames.com', 25, 'http://www.mobygames.com/game/{mgpltfrmid}/{mobygameid}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'mobygames', 'mobygames', 'MobyGames.com', 'moby.gif', 'Information and reviews of lots of computer games.', 'http://www.mobygames.com', 25, 'http://www.mobygames.com/game/{mgpltfrmid}/{mobygameid}' );
 
 #
 # Site Plugin Input Fields

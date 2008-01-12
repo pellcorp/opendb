@@ -22,6 +22,10 @@ include_once('./functions/auth.php');
 include_once("./functions/database.php");
 include_once("./functions/user.php");
 
+function is_exists_opendb_rss_feeds() {
+	return is_not_empty_array(get_opendb_rss_feeds());
+}
+
 function get_opendb_rss_feeds()
 {
 	$feeds_r = array();

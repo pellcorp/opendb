@@ -909,8 +909,11 @@ function is_exists_borrowed_item($status = NULL)
 // Will return true if any records are found for the item_id with a status of
 // 'R' or 'B'
 //
-function is_item_reserved_or_borrowed_by_user($item_id, $instance_no, $borrower_id)
+function is_item_reserved_or_borrowed_by_user($item_id, $instance_no, $borrower_id = NULL)
 {
+	if($borrower_id == NULL)
+		$borrower_id = get_opendb_session_var('user_id');
+		
 	// In this case, we will not do a reserve, if the borrower has already reserved,
 	// or borrowed the item.
 	$query = "SELECT 'X' FROM borrowed_item " .
@@ -932,8 +935,11 @@ function is_item_reserved_or_borrowed_by_user($item_id, $instance_no, $borrower_
 // Will return true if any records are found for the item_id with a status of
 // 'R' or 'B'
 //
-function is_item_reserved_by_user($item_id, $instance_no, $borrower_id)
+function is_item_reserved_by_user($item_id, $instance_no, $borrower_id = NULL)
 {
+	if($borrower_id == NULL)
+		$borrower_id = get_opendb_session_var('user_id');
+		
 	// In this case, we will not do a reserve, if the borrower has already reserved,
 	// or borrowed the item.
 	$query = "SELECT 'X' FROM borrowed_item " .
@@ -955,8 +961,11 @@ function is_item_reserved_by_user($item_id, $instance_no, $borrower_id)
 	Will return true if the borrower_id has borrowed the item, or previously
 	returned it.
 */
-function is_item_borrowed_or_returned_by_user($item_id, $instance_no, $borrower_id)
+function is_item_borrowed_or_returned_by_user($item_id, $instance_no, $borrower_id = NULL)
 {
+	if($borrower_id == NULL)
+		$borrower_id = get_opendb_session_var('user_id');
+		
 	// In this case, we will not do a reserve, if the borrower has already reserved,
 	// or borrowed the item.
 	$query = "SELECT 'X' FROM borrowed_item " .
@@ -977,8 +986,11 @@ function is_item_borrowed_or_returned_by_user($item_id, $instance_no, $borrower_
 //
 // Will return true if $borrower_id has borrowed item (status of 'B')
 //
-function is_item_borrowed_by_user($item_id, $instance_no, $borrower_id)
+function is_item_borrowed_by_user($item_id, $instance_no, $borrower_id = NULL)
 {
+	if($borrower_id == NULL)
+		$borrower_id = get_opendb_session_var('user_id');
+		
 	// In this case, we will not do a reserve, if the borrower has already reserved,
 	// or borrowed the item.
 	$query = "SELECT 'X' FROM borrowed_item " .

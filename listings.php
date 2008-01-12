@@ -1113,8 +1113,7 @@ if(is_site_enabled())
 							if($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
 										$item_r['owner_id'] !== get_opendb_session_var('user_id') && 
 										is_user_granted_permission(PERM_USER_BORROWER) && 
-										!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')) &&
-										
+										!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no']) &&
 										(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || 
 												!is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
 										(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || 
@@ -1306,15 +1305,15 @@ if(is_site_enabled())
 											get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 									{
 										if(is_user_granted_permission(PERM_USER_BORROWER) && 
-													$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
+												$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
 										{
 											if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
 											{
-												if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+												if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no']))
 												{
 													$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel'));
 												}
-												else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+												else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no']))
 												{
 													if((get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) &&
 															(get_opendb_config_var('borrow', 'allow_multi_reserve')!==FALSE || !is_item_reserved($item_r['item_id'], $item_r['instance_no'])) )

@@ -37,6 +37,34 @@ include_once("./functions/item_input.php");
 include_once("./functions/address_type.php");
 include_once("./functions/secretimage.php");
 
+function is_user_granted_update_permission($HTTP_VARS)
+{
+	if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') && is_user_granted_permission(PERM_EDIT_USER_PROFILE))
+		return TRUE;
+	else if(is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+function is_user_granted_change_password($HTTP_VARS)
+{
+	if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') &&
+			is_user_granted_permission(PERM_CHANGE_PASSWORD) && 
+			get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE)
+	{
+		return TRUE;		 
+	}
+	else if(is_user_granted_permission(PERM_ADMIN_CHANGE_PASSWORD))
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
 function perform_changeuser($HTTP_VARS)
 {
 	// save existing user_id so we can restore it.
@@ -1209,22 +1237,16 @@ if(is_site_enabled())
 	    {
 	        secretimage($HTTP_VARS['gfx_random_number']);
 	    }
-		else if ( $HTTP_VARS['op'] == 'signup' ||
-					($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') &&
-						is_user_granted_permission(PERM_EDIT_USER_PROFILE) &&  
-						$HTTP_VARS['op'] != 'insert' && 
-						$HTTP_VARS['op'] != 'new_user' && 
-						$HTTP_VARS['op'] != 'deactivate') || 
-					is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) 
+		else
 		{
-		    if($HTTP_VARS['op'] == 'new_user')
+		    if($HTTP_VARS['op'] == 'new_user' && is_user_granted_permission(PERM_ADMIN_CREATE_USER))
 			{
 				echo _theme_header(get_opendb_lang_var('add_new_user'));
 				echo("<h2>".get_opendb_lang_var('add_new_user')."</h2>");
 				
 				echo(get_user_input_form(NULL, $HTTP_VARS));
 			}
-			else if ($HTTP_VARS['op'] == 'edit')
+			else if ($HTTP_VARS['op'] == 'edit' && is_user_granted_update_permission($HTTP_VARS))
 			{
 				if($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
 					$page_title = get_opendb_lang_var('my_info');
@@ -1244,7 +1266,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'change_password')
+			else if($HTTP_VARS['op'] == 'change_password' && is_user_granted_change_password($HTTP_VARS))
 			{
 			    if($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
 					$page_title = get_opendb_lang_var('change_my_password');
@@ -1254,102 +1276,63 @@ if(is_site_enabled())
 				echo _theme_header($page_title);
 				echo("<h2>".$page_title."</h2>");
 				
-				if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE || 
-							is_user_granted_permission(PERM_ADMIN_CHANGE_PASSWORD))
+				$user_r = fetch_user_r($HTTP_VARS['user_id']);
+				if(is_not_empty_array($user_r))
 				{
-					$user_r = fetch_user_r($HTTP_VARS['user_id']);
-					if(is_not_empty_array($user_r))
-					{
-						echo(get_user_password_change_form($user_r, $HTTP_VARS));
-					}
-					else //user not found.
-					{
-						echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
-					}
+					echo(get_user_password_change_form($user_r, $HTTP_VARS));
 				}
-				else
+				else //user not found.
 				{
-					echo format_error_block(get_opendb_lang_var('operation_not_available'));
-				}					
+					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
+				}
 			}
-			else if($HTTP_VARS['op'] == 'change_user')
+            else if($HTTP_VARS['op'] == 'update_password' && is_user_granted_change_password($HTTP_VARS))
+            {
+                if($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
+                    $page_title = get_opendb_lang_var('change_my_password');
+                else
+                    $page_title = get_opendb_lang_var('change_user_password');
+
+                echo _theme_header($page_title);
+                echo("<h2>".$page_title."</h2>");
+
+                if(handle_user_password_change($HTTP_VARS['user_id'], $HTTP_VARS, $error))
+                {
+                    echo("<p class=\"success\">".get_opendb_lang_var('passwd_changed')."</p>");
+                }
+                else
+                {
+                    echo(format_error_block(array('error'=>get_opendb_lang_var('passwd_not_changed'), 'details'=>$error)));
+
+                    $user_r = fetch_user_r($HTTP_VARS['user_id']);
+                    if(is_not_empty_array($user_r))
+                    {
+                        $HTTP_VARS['op'] = 'change_password';
+                        echo get_user_password_change_form($user_r,$HTTP_VARS);
+                    }
+                    else //user not found.
+                    {
+                        echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
+                    }
+                }
+            }
+			else if($HTTP_VARS['op'] == 'change_user' && 
+					get_opendb_config_var('user_admin.change_user', 'enable')!==FALSE && 
+					is_user_granted_permission(PERM_ADMIN_CHANGE_USER))
 			{
-		        if(get_opendb_config_var('user_admin.change_user', 'enable')!==FALSE && is_user_granted_permission(PERM_ADMIN_CHANGE_USER))
+	            if(strlen($HTTP_VARS['uid'])>0 && is_user_active($HTTP_VARS['uid']))
 				{
-		            if(strlen($HTTP_VARS['uid'])>0 && is_user_active($HTTP_VARS['uid']))
-					{
-		                perform_changeuser($HTTP_VARS);
-						http_redirect('welcome.php');
-						return;
-					}
-					else
-					{
-						show_changeuser_form();
-					}
-				}
-				else
-				{
+	                perform_changeuser($HTTP_VARS);
 					http_redirect('welcome.php');
 					return;
 				}
-			}
-			else if($HTTP_VARS['op'] == 'signup')
-			{
-				if(get_opendb_config_var('login.signup', 'enable')!==FALSE)
-				{
-					if($HTTP_VARS['op2'] == 'send_info')
-					{
-						$page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
-						echo(_theme_header($page_title, is_show_login_menu_enabled()));
-						echo("<h2>".$page_title."</h2>");
-
-						// ensure the secret image codes check out
-						if(is_numeric($HTTP_VARS['gfx_code_check']) &&
-								is_numeric($HTTP_VARS['gfx_random_number']) &&
-								is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
-						{
-					   		$return_val = handle_user_insert($HTTP_VARS, $errors);
-							if($return_val !== FALSE)
-							{
-								echo("\n<p class=\"success\">".get_opendb_lang_var('new_account_reply', 'site', get_opendb_config_var('site', 'title'))."</p>");
-								if(send_signup_info_to_admin($HTTP_VARS, $errors))
-								{
-									echo("\n<p class=\"smsuccess\">".get_opendb_lang_var('new_account_admin_email_sent', 'site', get_opendb_config_var('site', 'title'))."</p>");
-								}
-								else
-								{
-									echo(format_error_block($errors));
-								}
-							}
-							else // $return_val === FALSE
-							{
-								echo(format_error_block($errors));
-								echo(get_user_input_form(NULL, $HTTP_VARS));
-							}
-						}//is_secretimage_code_valid
-						else
-						{
-						    echo(format_error_block(get_opendb_lang_var('invalid_verify_code')));
-							echo(get_user_input_form(NULL, $HTTP_VARS));
-						}
-					}
-					else
-					{
-						$page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
-						echo(_theme_header($page_title, is_show_login_menu_enabled()));
-						echo("\n<h2>".$page_title."</h2>");
-						echo(get_user_input_form(NULL, $HTTP_VARS));
-					}
-				}
 				else
 				{
-					echo _theme_header(get_opendb_lang_var('operation_not_available'), FALSE);
-					echo("<p class=\"error\">".get_opendb_lang_var('operation_not_available')."</p>");
+					show_changeuser_form();
 				}
-
-			    $footer_links_r[] = array(url=>"login.php",text=>get_opendb_lang_var('return_to_login_page'));
 			}
-			else if($HTTP_VARS['op'] == 'insert') //inserting a new record.
+			
+			else if($HTTP_VARS['op'] == 'insert' && is_user_granted_permission(PERM_ADMIN_CREATE_USER))
 			{
 				echo _theme_header(get_opendb_lang_var('add_new_user'));
 				echo("<h2>".get_opendb_lang_var('add_new_user')."</h2>");
@@ -1385,7 +1368,7 @@ if(is_site_enabled())
 					echo(get_user_input_form(NULL, $HTTP_VARS));
 				}
 			}
-			else if($HTTP_VARS['op'] == 'update')
+			else if($HTTP_VARS['op'] == 'update' && is_user_granted_update_permission($HTTP_VARS))
 			{
 				if($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
 					$page_title = get_opendb_lang_var('my_info');
@@ -1415,37 +1398,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'update_password')
-			{
-			    if($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
-					$page_title = get_opendb_lang_var('change_my_password');
-				else
-					$page_title = get_opendb_lang_var('change_user_password');
-
-				echo _theme_header($page_title);
-				echo("<h2>".$page_title."</h2>");
-
-				if(handle_user_password_change($HTTP_VARS['user_id'], $HTTP_VARS, $error))
-				{
-				    echo("<p class=\"success\">".get_opendb_lang_var('passwd_changed')."</p>");
-				}
-				else
-				{
-					echo(format_error_block(array('error'=>get_opendb_lang_var('passwd_not_changed'), 'details'=>$error)));
-
-					$user_r = fetch_user_r($HTTP_VARS['user_id']);
-					if(is_not_empty_array($user_r))
-					{
-                        $HTTP_VARS['op'] = 'change_password';
-						echo get_user_password_change_form($user_r,$HTTP_VARS);
-					}
-					else //user not found.
-					{
-						echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
-					}
-				}
-			}
-			else if($HTTP_VARS['op'] == 'delete')
+			else if($HTTP_VARS['op'] == 'delete' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 			{
 				echo _theme_header(get_opendb_lang_var('delete_user'));
 				echo("<h2>".get_opendb_lang_var('delete_user')."</h2>");
@@ -1497,7 +1450,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}				
 			}
-			else if($HTTP_VARS['op'] == 'deactivate')
+			else if($HTTP_VARS['op'] == 'deactivate' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 			{
 				echo _theme_header(get_opendb_lang_var('deactivate_user'));
 				echo("<h2>".get_opendb_lang_var('deactivate_user')."</h2>");
@@ -1540,7 +1493,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'activate')
+			else if($HTTP_VARS['op'] == 'activate' && is_user_granted_change_password(PERM_ADMIN_USER_PROFILE))
 			{
 				echo _theme_header(get_opendb_lang_var('activate_user'));
 				echo("<h2>".get_opendb_lang_var('activate_user')."</h2>");
@@ -1611,7 +1564,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'activate_users')
+			else if($HTTP_VARS['op'] == 'activate_users' && is_user_granted_change_password(PERM_ADMIN_USER_PROFILE))
 			{
 			    echo _theme_header(get_opendb_lang_var('activate_users'));
 				echo("<h2>".get_opendb_lang_var('activate_users')."</h2>");
@@ -1711,24 +1664,66 @@ if(is_site_enabled())
 					echo format_error_block(get_opendb_lang_var('operation_not_available'));
 				}
 			}
+            else if($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'enable')!==FALSE)
+            {
+                if($HTTP_VARS['op2'] == 'send_info')
+                {
+                    $page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
+                    echo(_theme_header($page_title, is_show_login_menu_enabled()));
+                    echo("<h2>".$page_title."</h2>");
+
+                    // ensure the secret image codes check out
+                    if(is_numeric($HTTP_VARS['gfx_code_check']) &&
+                            is_numeric($HTTP_VARS['gfx_random_number']) &&
+                            is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
+                    {
+                        $return_val = handle_user_insert($HTTP_VARS, $errors);
+                        if($return_val !== FALSE)
+                        {
+                            echo("\n<p class=\"success\">".get_opendb_lang_var('new_account_reply', 'site', get_opendb_config_var('site', 'title'))."</p>");
+                            if(send_signup_info_to_admin($HTTP_VARS, $errors))
+                            {
+                                echo("\n<p class=\"smsuccess\">".get_opendb_lang_var('new_account_admin_email_sent', 'site', get_opendb_config_var('site', 'title'))."</p>");
+                            }
+                            else
+                            {
+                                echo(format_error_block($errors));
+                            }
+                        }
+                        else // $return_val === FALSE
+                        {
+                            echo(format_error_block($errors));
+                            echo(get_user_input_form(NULL, $HTTP_VARS));
+                        }
+                    }//is_secretimage_code_valid
+                    else
+                    {
+                        echo(format_error_block(get_opendb_lang_var('invalid_verify_code')));
+                        echo(get_user_input_form(NULL, $HTTP_VARS));
+                    }
+                }
+                else
+                {
+                    $page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
+                    echo(_theme_header($page_title, is_show_login_menu_enabled()));
+                    echo("\n<h2>".$page_title."</h2>");
+                    echo(get_user_input_form(NULL, $HTTP_VARS));
+                }
+
+                $footer_links_r[] = array(url=>"login.php",text=>get_opendb_lang_var('return_to_login_page'));
+            }
 			else //End of $HTTP_VARS['op'] checks
 			{
 				echo _theme_header(get_opendb_lang_var('operation_not_available'));
 				echo("<p class=\"error\">".get_opendb_lang_var('operation_not_available')."</p>");
 			}
 			
-			if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('user_listing_url_vars')))
+			if(is_array(get_opendb_session_var('user_listing_url_vars')))
 			{
 				$footer_links_r[] = array(url=>"user_listing.php?".get_url_string(get_opendb_session_var('user_listing_url_vars')),text=>get_opendb_lang_var('back_to_user_listing'));
 			}
 	
 			echo format_footer_links($footer_links_r);
-			echo _theme_footer();
-		}
-		else //not an administrator or own user.
-		{
-			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
 			echo _theme_footer();
 		}
 	}

@@ -107,9 +107,7 @@ function get_menu_options($user_id)
 			$menu_options['borrow'][] = array(link=>get_opendb_lang_var('my_reserved_items'), url=>"borrow.php?op=my_reserved");
 		}
 			
-		if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
-					is_exists_my_reserve_basket($user_id) && 
-					is_user_granted_permission(PERM_USER_BORROWER, $user_id))
+		if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && is_exists_my_reserve_basket($user_id))
 		{
 			$menu_options['borrow'][] = array(link=>get_opendb_lang_var('item_reserve_list'), url=>"borrow.php?op=my_reserve_basket&order_by=title&sortorder=ASC");
 		}
@@ -148,7 +146,7 @@ function get_menu_options($user_id)
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
 	}
 	
-	if(is_not_empty_array(get_opendb_rss_feeds()))
+	if(is_exists_opendb_rss_feeds())
 	{
 		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
 	}

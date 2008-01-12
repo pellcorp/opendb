@@ -80,79 +80,60 @@ class mobygames extends SitePlugin
 		parent::SitePlugin($site_type);
 	}
 	
-	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r)
-	{
-		// standard block of code to cater for refresh option, where item already has
-		// reference to site item unique ID.
-		if(strlen($search_vars_r['mobygameid'])>0 && strlen($search_vars_r['mgpltfrmid'])>0)
-		{
-			$this->addListingRow(NULL, NULL, NULL, array('mobygameid'=>$search_vars_r['mobygameid'], 'mgpltfrmid'=>$search_vars_r['mgpltfrmid']));
-			return TRUE;
-		}
+function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r)
+    {
+        // standard block of code to cater for refresh option, where item already has
+        // reference to site item unique ID.
+        if(strlen($search_vars_r['mobygameid'])>0 && strlen($search_vars_r['mgpltfrmid'])>0)
+        {
+            $this->addListingRow(NULL, NULL, NULL, array('mobygameid'=>$search_vars_r['mobygameid'], 'mgpltfrmid'=>$search_vars_r['mgpltfrmid']));
+            return TRUE;
+        }
 
-		$pageBuffer = $this->fetchURI('http://www.mobygames.com/search/quick?s=Search&q='.urlencode($search_vars_r['title']));
-		if(strlen($pageBuffer)>0)
-		{
-		  	//<a href="/game/win3x/3x3-eyes-kyuusei-koushu-"><img alt="Windows 3.x Front Cover" border="0" src="/images/i/39/36/24686.jpeg" height="60" width="42" ></a>
-			// Look up all thumbnails; they are of the form:
-			$nmatches = preg_match_all(
-				";<a href=\"/game/([^/]+)/([^\"]+)\"><img [^>]*?" .
-					"src=\"([^\"<>]*?)\"" .
-					";is",
-				$pageBuffer,
-				$matches,
-				PREG_PATTERN_ORDER);
-			
-			// Enter all of the thumbnails into $games[]
-			for ($i = 0; $i < $nmatches; $i++)
-			{
-				// 1 -> Platform ID
-				// 2 -> Game ID
-				// 3 -> Thumbnail image URL (relative)
-				$games[$matches[1][$i]][$matches[2][$i]]['thumb'] = $matches[3][$i];
-			}
-		
-			// Find all of the links to games
-			$nmatches = preg_match_all(
-				";<a href=\"/game/([^/]+)/([^\"]+)\">([^\"<>]*)</a>;i",
-				$pageBuffer,
-				$matches,
-				PREG_PATTERN_ORDER);
-			
-			if($nmatches > 0)
-			{	
-				for ($i = 0; $i < $nmatches; $i++)
-				{
-					// 1 -> Platform ID
-					// 2 -> Game ID
-					// 3 -> Name
-					$games[$matches[1][$i]][$matches[2][$i]]['title'] = $matches[3][$i];
-				}
-
-				while(list($mgpltfrmid, $entries) = each($games))
-				{
-				  	while(list($game_id, $game) = each($entries))
-				  	{
-				  		$platform = $this->moby_platform_to_name[$mgpltfrmid];
-					  
-					  	$thumburl = NULL;
-					  	if(strlen($game['thumb'])>0)
-						{
-						  	$thumburl = 'http://www.mobygames.com'.$game['thumb'];
-						}
-					  	
-						$this->addListingRow($game[title], $thumburl, $platform, array('mgpltfrmid'=>$mgpltfrmid, 'mobygameid'=>$game_id));
-					}
-				}
-			}
-					  	
-			return TRUE;
-		}
-		else
-		{
-		  return FALSE;
-		}
-	}
+        $pageBuffer = $this->fetchURI('http://www.mobygames.com/search/quick/p,-1/q,'.urlencode($search_vars_r['title']).'/showOnly,9/');
+        if(strlen($pageBuffer)>0)
+        {
+            //<a href="/game/win3x/3x3-eyes-kyuusei-koushu-"><img alt="Windows 3.x Front Cover" border="0" src="/images/i/39/36/24686.jpeg" height="60" width="42" ></a>
+            // Look up all thumbnails; they are of the form:
+            if(preg_match_all("!<a href=\"/game/([^/]+)/([^\"]+)\">([^<]*)</a>!is", $pageBuffer, $matches))
+            {
+                $this->setTotalCount(count($matches[0]));
+                
+                if($offset>0)
+                    $offset = $offset -1;
+                    
+                $total = $offset+$items_per_page;
+                if($total > count($matches[0]))
+                    $total = count($matches[0]);
+                    
+                for($i=$offset; $i<$total; $i++)
+                {
+                    $title = $matches[3][$i];
+                    $platformId = $matches[1][$i];
+                    $gameId = $matches[2][$i];
+                    $thumburl = NULL;
+                    
+                    if(preg_match("!<a href=\"/game/$platformId/$gameId\"><img [^>]*?src=\"([^\"<>]*?)\"!is", $pageBuffer, $matches2))
+                    {
+                        if(strlen($matches2[1])>0)
+                        {
+                            $thumburl = 'http://www.mobygames.com'.$matches2[1];
+                        }
+                    }
+                    
+                    $platform = $this->moby_platform_to_name[$platformId];
+                    
+                    $this->addListingRow($title, $thumburl, $platform, array('mgpltfrmid'=>$platformId, 'mobygameid'=>$gameId));
+                }
+            }
+                        
+            return TRUE;
+        }
+        else
+        {
+          return FALSE;
+        }
+    }
 
 	function parse_game_value($pageBuffer, $title)
 	{

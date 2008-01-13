@@ -509,16 +509,23 @@ class amazonecs extends SitePlugin
 
 		$siteDomain = ifempty($this->siteDomain, $search_attributes_r['aecsdomain']);
 		
-		// assumes we have an exact match here
-		$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&ItemId=".$search_attributes_r[$this->siteAttributeType];
-   		$pageBuffer = $this->fetchURI($queryUrl);
+		// if search term is a 12 or 13 digits number then we assume it is an EAN number
+		if (preg_match('/[0-9]{12,13}/', $search_attributes_r[$this->siteAttributeType]))
+		{
+			$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&IdType=EAN&SearchIndex=".$index_type."&ItemId=".$search_attributes_r[$this->siteAttributeType];
+		}
+		else
+		{
+			$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&ItemId=".$search_attributes_r[$this->siteAttributeType];
+		}
+		$pageBuffer = $this->fetchURI($queryUrl);
 
 		// no sense going any further here.
    		if(strlen($pageBuffer)==0)
    			return FALSE;
 		
 		$this->amazonParseXML($pageBuffer);
-		if (!$amazonError)
+		if (!$amazonError && count($this->itemsArray) > 0)
 		{
 			$item = $this->itemsArray[0];
 			
@@ -530,6 +537,10 @@ class amazonecs extends SitePlugin
 			}
 			
 			return TRUE;
+		}
+		elseif (sizeof($this->itemsArray) <= 0)
+		{
+			$this->setError(get_opendb_lang_var('no_records_found'), $search_attributes_r[$this->siteAttributeType]);
 		}
 		else
 		{

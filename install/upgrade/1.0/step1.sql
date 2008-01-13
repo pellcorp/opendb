@@ -430,6 +430,9 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'ch
 UPDATE s_config_group_item SET order_no = '1' WHERE group_id = 'stats' AND id = 'image_type';
 UPDATE s_config_group_item SET order_no = '3' WHERE group_id = 'stats' AND id = 'category_barchart';
 
+# looks better as a pie chart now that libchart / jpgraph is used.
+UPDATE s_config_group_item_var SET value = 'FALSE' WHERE group_id = 'stats' AND id = 'category_barchart';
+
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),

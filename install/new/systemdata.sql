@@ -664,7 +664,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin.
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'image_type', 'png');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'chart_lib', 'libchart');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'category_barchart', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'category_barchart', 'FALSE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_display', 'no_image', 'no-image.gif');

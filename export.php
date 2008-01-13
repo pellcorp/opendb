@@ -477,7 +477,7 @@ function get_row_export_column_form(&$exportPlugin, $HTTP_VARS)
 					if( $item_attribute_type_r['s_field_type'] == 'TITLE' || 
 								$item_attribute_type_r['s_field_type'] == 'IMAGE' || 
 								(strlen($item_attribute_type_r['s_field_type'])==0 && 
-									strcasecmp(get_function_type(ifempty($item_attribute_type_r['display_type'],$item_attribute_type_r['input_type'])), "hidden")!==0) )
+									strcasecmp(ifempty($item_attribute_type_r['display_type'],$item_attribute_type_r['input_type']), "hidden")!==0) )
 					{
 						$buffer .= ' CHECKED';
 					}

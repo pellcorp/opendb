@@ -142,86 +142,6 @@ function is_legal_function_name($word)
 }
 
 /**
-	Get the function type of a specified 
-	function_spec.  No other processing
-	is required.
-*/
-function get_function_type($function_spec)
-{
-	$start = strpos($function_spec, '(');
-    if($start !== FALSE)
-    	$type = trim(substr($function_spec, 0, $start));
-	else
-		$type = trim($function_spec);	
-
-	return $type;
-}
-
-/*
-* Assumes the $args_r is compatible with the 'args' array
-* returned from prc_function_spec(...)
-* 
-	Will reconstitute the function arguments from
-	the array of functions.
-
-	If a argument has any ',' in it we assume it
-	needs to double quoted.
-
-	Any double quotes in the argument, and they
-	need to be escaped.
-* 
-* @param $function_name - If null, then will reconstitute
-* 			the arguments (excluding the brackets) only.
-* @param $arguments_r - The arguments.  If empty, will return
-* 		the $function_name.
-*/
-function get_rebuilt_function($function_name, $arguments_r)
-{
-	if(!is_array($arguments_r))
-	{
-		if($function_name !== NULL)
-		{
-			if(strlen($arguments_r)==0)
-				return $function_name;
-			else
-				return $function_name.'('.$arguments_r.')';
-		}
-		else 
-			return $arguments_r;
-	}
-	else
-	{
-		$argsText = '';
-
-		@reset($arguments_r);
-		while(list(,$argument) = @each($arguments_r))
-		{
-			// If argument includes a comma, or is whitespace (For a delimiter for example),
-			// it must be enclosed in quotes.
-			if( (strlen($argument)>0 && strlen(trim($argument))==0) || strpos($argument, ',') !== FALSE)
-				$argument = "\"".str_replace("\"", "\\\"", $argument)."\"";
-			else if(strpos($argument, '"')!==FALSE)
-				$argument = str_replace("\"", "\\\"", $argument);
-				
-			if(strlen($argsText)==0)
-				$argsText .= $argument;
-			else
-				$argsText .= ', '.$argument;
-		}
-
-		if($function_name !== NULL)
-		{
-			if(strlen($argsText)==0)
-				return $function_name;
-			else
-				return $function_name.'('.$argsText.')';
-		}
-		else 
-			return $argsText;
-	}
-}
-
-/**
 	Will return an array of the following form:
 		type=>function_name, args=>array(args)
 */
@@ -400,27 +320,6 @@ function prc_args($args)
 	if(strlen($argument)>0)
 		$arguments[] = $argument;
 	return $arguments;
-}
-
-function remove_function_arg($function_spec, $arg_text)
-{
-	$function_spec_r = prc_function_spec($function_spec);
-	if(is_array($function_spec_r['args']))
-	{
-		// we want to remove list-link argument and recompose the display_type
-		$new_args = array();
-		for($i=0; $i<count($function_spec_r['args']); $i++)
-		{
-			if($function_spec_r['args'][$i] != $arg_text)
-				$new_args[] = $function_spec_r['args'][$i];
-		}
-										
-		return get_rebuilt_function($function_spec_r['type'], $new_args);
-	}
-	else
-	{
-		return $function_spec;
-	}
 }
 
 function remove_illegal_chars($value, $legalChars)

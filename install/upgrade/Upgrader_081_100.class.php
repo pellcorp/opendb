@@ -20,6 +20,52 @@
 
 include_once("./functions/OpenDbUpgrader.class.php");
 
+function get_rebuilt_function($function_name, $arguments_r)
+{
+    if(!is_array($arguments_r))
+    {
+        if($function_name !== NULL)
+        {
+            if(strlen($arguments_r)==0)
+                return $function_name;
+            else
+                return $function_name.'('.$arguments_r.')';
+        }
+        else 
+            return $arguments_r;
+    }
+    else
+    {
+        $argsText = '';
+
+        @reset($arguments_r);
+        while(list(,$argument) = @each($arguments_r))
+        {
+            // If argument includes a comma, or is whitespace (For a delimiter for example),
+            // it must be enclosed in quotes.
+            if( (strlen($argument)>0 && strlen(trim($argument))==0) || strpos($argument, ',') !== FALSE)
+                $argument = "\"".str_replace("\"", "\\\"", $argument)."\"";
+            else if(strpos($argument, '"')!==FALSE)
+                $argument = str_replace("\"", "\\\"", $argument);
+                
+            if(strlen($argsText)==0)
+                $argsText .= $argument;
+            else
+                $argsText .= ', '.$argument;
+        }
+
+        if($function_name !== NULL)
+        {
+            if(strlen($argsText)==0)
+                return $function_name;
+            else
+                return $function_name.'('.$argsText.')';
+        }
+        else 
+            return $argsText;
+    }
+}
+
 function is_exists_081_item_attribute_table()
 {
 	$result = db_query("SELECT 'x' FROM item_attribute_old LIMIT 0,1");

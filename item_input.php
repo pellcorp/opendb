@@ -562,8 +562,6 @@ function get_old_field_value($item_r, $s_field_type, $attribute_val)
 // special refresh row, if the $new_value is different from the $old_value.
 function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $new_value)
 {
-	$input_widget_type = get_function_type(trim($item_attribute_type_r['input_type']));
-	
 	if($item_attribute_type_r['s_field_type'] == 'TITLE')
 	{
 		$fieldname = 'title';
@@ -575,13 +573,14 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 	
 	$refresh_field = FALSE;
 	// Hidden cannot be involved in a refresh operation directly, but refreshed hidden fields, will still be updated.
-	if(strcasecmp($input_widget_type,'hidden')!==0 && 
+	if(strcasecmp($item_attribute_type_r['input_type'],'hidden')!==0 && 
 				$old_value!==FALSE && 
 				( is_not_empty_array($new_value) || (!is_array($new_value) && strlen($new_value)>0) ) && 
 				is_value_refreshed($item_attribute_type_r['s_attribute_type'], $new_value, $old_value) &&
 				// Do not display 'Old' & 'New' options, if there was NO previous Old value (but $old_field is not FALSE!!!)
 				(is_not_empty_array($old_value) || (!is_array($old_value) && strlen($old_value)>0)))
 	{
+		
 		$refresh_field = TRUE;
 		
 		if(!is_array($new_value))
@@ -600,8 +599,11 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		// -------------
 		// If we are doing a complete refresh block, and display_type is set to 
 		// hidden, overwrite to display it.
-		if(get_function_type($item_attribute_type_r['display_type']) == 'hidden')
+		if($item_attribute_type_r['display_type'] == 'hidden')
+		{
 			$item_attribute_type_r['display_type'] = 'display(%value%)';
+			$item_attribute_type_r['display_type_arg1'] = '%value%';
+		}
 		
 		$field .= "<ul class=\"tabMenu\" id=\"${fieldname}-tab-menu\">";
 		
@@ -1702,8 +1704,6 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 				$titleArticlesConfig = $sitePlugin->getConfigValue('item_input.title_articles');
 				if(is_not_empty_array($titleArticlesConfig))
 					set_opendb_config_ovrd_var('item_input', 'title_articles', $titleArticlesConfig);
-
-				
 				
 				if(get_opendb_config_var('item_input', 'auto_site_update')===TRUE)
 				{

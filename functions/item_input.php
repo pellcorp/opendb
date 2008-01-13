@@ -57,8 +57,6 @@ function handle_item_attributes($op, $item_r, $HTTP_VARS, $_FILES, &$errors)
 		$attributes_updated = 0;
 		while($item_attribute_type_r = db_fetch_assoc($attr_results))
 		{
-			$input_widget_type = get_function_type(trim($item_attribute_type_r['input_type']));
-
 			// For all operations the {DURATION,TITLE,STATUSTYPE,STATUSCMNT,ITEM_ID} cannot be 
 			// updated because they exist at item/item_instance level.
 			if(	$item_attribute_type_r['s_field_type']!='DURATION' && 

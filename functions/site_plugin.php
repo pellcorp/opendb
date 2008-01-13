@@ -634,7 +634,13 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			else
 				$new_attributes_r[$key][] = $value;
 			
-			$new_attributes_r[$key] = array_merge($new_attributes_r[$key], $oldValue);
+			while(list(,$value) = each($oldValue))
+			{
+				if(!in_array($value, $new_attributes_r[$key]))
+				{
+				    $new_attributes_r[$key][] = $value;
+				}
+			}
 		}
 		else
 		{

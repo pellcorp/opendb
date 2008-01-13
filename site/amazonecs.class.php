@@ -16,6 +16,27 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+	Here are some sample codes for each kind of item to test the new feature if
+	you do not have a book, cd or dvd in the hand :
+	CDs :
+	5099748120229
+	724384131425
+	008811270728
+	078221908023
+	077778645528
+	0077779959426
+	
+	DVDs:
+	5050582415131
+	8711875960369
+	7321951345495
+	7321951346898
+	3459379402156
+	
+	Books:
+	9782742747955
+	9782729606107
 */
 include_once("./functions/SitePlugin.class.inc");
 
@@ -508,16 +529,15 @@ class amazonecs extends SitePlugin
 			return FALSE;
 
 		$siteDomain = ifempty($this->siteDomain, $search_attributes_r['aecsdomain']);
+
+		$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&SearchIndex=".$index_type."&ItemId=".$search_attributes_r[$this->siteAttributeType];
 		
 		// if search term is a 12 or 13 digits number then we assume it is an EAN number
 		if (preg_match('/[0-9]{12,13}/', $search_attributes_r[$this->siteAttributeType]))
 		{
-			$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&IdType=EAN&SearchIndex=".$index_type."&ItemId=".$search_attributes_r[$this->siteAttributeType];
+			$queryUrl .= "&IdType=EAN";
 		}
-		else
-		{
-			$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&ItemId=".$search_attributes_r[$this->siteAttributeType];
-		}
+
 		$pageBuffer = $this->fetchURI($queryUrl);
 
 		// no sense going any further here.

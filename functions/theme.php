@@ -105,7 +105,6 @@ function get_theme_javascript($pageid)
 	$scripts[] = 'forms.js';
 	$scripts[] = 'listings.js';
 	$scripts[] = 'marquee.js';
-	$scripts[] = 'popup.js';
 	$scripts[] = 'search.js';
 	$scripts[] = 'tabs.js';
 	$scripts[] = 'validation.js';	

@@ -109,6 +109,14 @@ varname IN(
 	'title_linked_item_exists',
 	'update_linked_item');
 
+# change of var for email to be more prescriptive of intention of var
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'site_users', '{user_desc} Users');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items', 'Items');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listings', 'Listings');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'feeds', 'Feeds');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'users', 'Users');
+
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_item(s)', 'Related Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'related_parent_item(s)', 'Related Parent Item(s)');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_related_item(s)', 'No Related Item(s)'); 
@@ -441,12 +449,12 @@ PRIMARY KEY ( role_name )
 
 CREATE TABLE s_permission (
     permission_name VARCHAR(30) NOT NULL,
-	description VARCHAR(100),
-PRIMARY KEY ( grant_name )
+    description VARCHAR(100),
+PRIMARY KEY ( permission_name )
 ) TYPE=MyISAM COMMENT = 'System Permission table';
 
 CREATE TABLE s_role_permission (
-	role_name VARCHAR(20) NOT NULL,
+    role_name VARCHAR(20) NOT NULL,
     permission_name VARCHAR(30) NOT NULL,
 PRIMARY KEY ( role_name, permission_name )
 ) TYPE=MyISAM COMMENT = 'System Role Permission table';

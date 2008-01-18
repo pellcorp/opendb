@@ -50,34 +50,34 @@ function get_menu_options($user_id)
 	
 	if(is_user_granted_permission(PERM_ITEM_OWNER, $user_id))
 	{
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('add_new_item'), url=>"item_input.php?op=site-add&owner_id=$user_id");
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_my_items'), url=>"listings.php?owner_id=$user_id");
+		$menu_options['items'][] = array(link=>get_opendb_lang_var('add_new_item'), url=>"item_input.php?op=site-add&owner_id=$user_id");
+		$menu_options['listings'][] = array(link=>get_opendb_lang_var('list_my_items'), url=>"listings.php?owner_id=$user_id");
 	}
 
 	if(is_user_granted_permission(PERM_VIEW_LISTINGS))
 	{
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
+		$menu_options['listings'][] = array(link=>get_opendb_lang_var('list_all_items'), url=>"listings.php");
 	}
 	
 	if(is_file_upload_enabled())
 	{
 		if(is_user_granted_permission(PERM_ADMIN_IMPORT, $user_id))
 		{
-			$menu_options['item'][] = array(link=>get_opendb_lang_var('import_items'), url=>"import.php");
+			$menu_options['items'][] = array(link=>get_opendb_lang_var('import_items'), url=>"import.php");
 		}
 		else if(is_user_granted_permission(PERM_USER_IMPORT, $user_id))
 		{
-			$menu_options['item'][] = array(link=>get_opendb_lang_var('import_my_items'), url=>"import.php");
+			$menu_options['items'][] = array(link=>get_opendb_lang_var('import_my_items'), url=>"import.php");
 		}
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_EXPORT, $user_id))
 	{
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('export_items'), url=>"export.php");
+		$menu_options['items'][] = array(link=>get_opendb_lang_var('export_items'), url=>"export.php");
 	}
 	else if(is_user_granted_permission(PERM_USER_EXPORT, $user_id))
 	{
-		$menu_options['item'][] = array(link=>get_opendb_lang_var('export_my_items'), url=>"export.php");
+		$menu_options['items'][] = array(link=>get_opendb_lang_var('export_my_items'), url=>"export.php");
 	}
 	
 	if(get_opendb_config_var('borrow', 'enable')!==FALSE)
@@ -138,63 +138,79 @@ function get_menu_options($user_id)
 
 	if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
 	{
-		$menu_options['misc'][] = array(link=>get_opendb_lang_var('advanced_search'), url=>"search.php");
+		$menu_options['search'][] = array(link=>get_opendb_lang_var('advanced_search'), url=>"search.php");
 	}
 	
 	if(is_user_granted_permission(PERM_VIEW_STATS))
 	{
-		$menu_options['misc'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
+		$menu_options['stats'][] = array(link=>get_opendb_lang_var('statistics'), url=>"stats.php");
 	}
 	
 	if(is_exists_opendb_rss_feeds())
 	{
-		$menu_options['misc'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
+		$menu_options['feeds'][] = array(link=>get_opendb_lang_var('rss_feeds'), url=>"rss.php");
 	}
 	
 	if(is_user_granted_permission(PERM_EDIT_USER_PROFILE, $user_id))
 	{
-		$menu_options['user'][] = array(link=>get_opendb_lang_var('edit_my_info'), url=>"user_admin.php?op=edit&user_id=$user_id");
+		$menu_options['users'][] = array(link=>get_opendb_lang_var('edit_my_info'), url=>"user_admin.php?op=edit&user_id=$user_id");
 	}
 	
 	if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $user_id))
 	{
-		$menu_options['user'][] = array(link=>get_opendb_lang_var('change_my_password'), url=>"user_admin.php?op=change_password&user_id=$user_id");
+		$menu_options['users'][] = array(link=>get_opendb_lang_var('change_my_password'), url=>"user_admin.php?op=change_password&user_id=$user_id");
 	}
 
 	if(is_user_granted_permission(PERM_ADMIN_USER_LISTING, $user_id))
 	{	
 		if(is_exist_users_not_activated())
 	    {
-	    	$menu_options['user'][] = array(link=>get_opendb_lang_var('activate_users'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
+	    	$menu_options['users'][] = array(link=>get_opendb_lang_var('activate_users'), url=>"user_listing.php?restrict_active_ind=X&order_by=fullname&sortorder=ASC");
 		}
 
-		$menu_options['user'][] = array(link=>get_opendb_lang_var('user_list'), url=>"user_listing.php?order_by=fullname&sortorder=ASC");
+		$menu_options['users'][] = array(link=>get_opendb_lang_var('user_list'), url=>"user_listing.php?order_by=fullname&sortorder=ASC");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_CREATE_USER, $user_id))
 	{
-		$menu_options['user'][] = array(link=>get_opendb_lang_var('add_new_user'), url=>"user_admin.php?op=new_user");
+		$menu_options['users'][] = array(link=>get_opendb_lang_var('add_new_user'), url=>"user_admin.php?op=new_user");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_CHANGE_USER, $user_id))
 	{
-		$menu_options['user'][] = array(link=>get_opendb_lang_var('change_user'), url=>"user_admin.php?op=change_user");
+		$menu_options['users'][] = array(link=>get_opendb_lang_var('change_user'), url=>"user_admin.php?op=change_user");
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_SEND_EMAIL, $user_id))
 	{
 		if(is_valid_opendb_mailer())
 		{
-			$menu_options['user'][] = array(link=>get_opendb_lang_var('email_users'), url=>"email.php?op=send_to_all");
+			$menu_options['users'][] = array(link=>get_opendb_lang_var('email_users'), url=>"email.php?op=send_to_all");
 		}
 	}
 	
 	if(is_user_granted_permission(PERM_ADMIN_TOOLS, $user_id))
 	{
-		$menu_options['admin'][] = array(link=>get_opendb_lang_var('system_admin_tools'), url=>"admin.php", target=>"_new");
+		$menu_options['admin_tools'][] = array(link=>get_opendb_lang_var('system_admin_tools'), url=>"admin.php", target=>"_new");
 	}
 
 	return $menu_options;
+}
+
+function get_menu_section_title($section)
+{
+	$section_vars = array(
+            'items'=>get_opendb_lang_var('items'),
+            'listings'=>get_opendb_lang_var('listings'),
+            'borrow'=>get_opendb_lang_var('borrow'),
+            'search'=>get_opendb_lang_var('search'),
+            'stats'=>get_opendb_lang_var('statistics'),
+            'feeds'=>get_opendb_lang_var('feeds'),
+            'users'=>get_opendb_lang_var('users'),
+            'admin_tools'=>get_opendb_lang_var('system_admin_tools')
+	);
+	
+	return $section_vars[$section];
 }
 
 function get_menu_options_list($options)
@@ -226,7 +242,7 @@ function get_menu_options_list($options)
 
 function get_menu_option($option_r)
 {
-	$buffer = "\n<a href=\"".$option_r['url']."\" title=\"".ifempty($option_r['alt'],$option_r['link'])."\"";
+	$buffer = "<a href=\"".$option_r['url']."\" title=\"".ifempty($option_r['alt'],$option_r['link'])."\"";
 			
 	if($option_r['target'] == '_new')
 	{

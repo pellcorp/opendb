@@ -293,7 +293,7 @@ if(is_site_enabled())
 					// Default toname for bulk email.
 					if(strlen($HTTP_VARS['toname'])==0)
 					{
-						$HTTP_VARS['toname'] = get_opendb_lang_var('users', 'user_desc', get_opendb_config_var('site', 'title'));
+						$HTTP_VARS['toname'] = get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title'));
 					}
 				
 					$user_id_r = get_user_id_rs(TRUE);
@@ -334,7 +334,7 @@ if(is_site_enabled())
 					} else {
 						show_email_form(
 								get_user_ids_tovalue($HTTP_VARS['user_id_rs']),
-								get_opendb_lang_var('users', 'user_desc', get_opendb_config_var('site', 'title')),
+								get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title')),
 								$from_user_r['user_id'],
 								$from_user_r['fullname'],
 								$HTTP_VARS['subject'],

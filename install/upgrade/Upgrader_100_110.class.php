@@ -29,7 +29,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 						'1.0',
 						'1.1.0',
 						array(
-							array('description'=>'New Related Items Table and Misc Updates'),
+							array('description'=>'New tables and system data changes'),
 							array('description'=>'New Related Status Type'),
 							array('description'=>'Transfer Linked Items'),
 							array('description'=>'Transfer Email Addresses'),
@@ -176,7 +176,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		
 		if(is_array($fc_attrib_rs))
 		{
-			$directory = filecache_get_cache_directory('ITEM');
+			$directory = file_cache_get_cache_type_directory('ITEM');
 			while(list(,$fc_attrib_r) = each($fc_attrib_rs))
 			{
 				$cacheFile = $directory.'/'.$fc_attrib_r['cache_file'];

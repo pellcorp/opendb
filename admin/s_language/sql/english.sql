@@ -489,7 +489,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'update
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'url_is_not_valid', '{prompt} url must have a valid extension. ({extensions})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user', 'User'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'userid', 'Userid'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'users', '{user_desc} Users'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'site_users', '{user_desc} Users');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'users_activated', 'The following users were activated:'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'users_not_activated', 'The following users were not activated:'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_activated', 'User activated.'); 
@@ -568,3 +568,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_ite
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_item_type_msg', 'There are no Item Types installed.');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no_site_plugins', 'No Site Plugins');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_site_plugin_msg', 'There are no Site Plugins installed.');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items', 'Items');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listings', 'Listings');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'feeds', 'Feeds');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'users', 'Users');

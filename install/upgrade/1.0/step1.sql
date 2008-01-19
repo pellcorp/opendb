@@ -180,6 +180,11 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('feeds.annou
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_related_to_other_items', 'This item is related to one or more other items.'); 
 
+UPDATE s_language_var SET varname = 'admin_tools' WHERE varname = 'system_admin_tools';
+UPDATE s_language_var SET value = 'Admin Tools' WHERE varname = 'admin_tools' AND language = 'ENGLISH';
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'admin_tools', 'Admin Tools');
+
 ALTER TABLE item_attribute ADD INDEX lookup_attribute_val_idx ( lookup_attribute_val );
 
 # action links are not printable

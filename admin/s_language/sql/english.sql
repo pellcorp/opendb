@@ -435,7 +435,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'subjec
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'submit', 'Submit'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'sunday', 'Sunday'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'sunday_abbrev', 'Sun'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'system_admin_tools', 'System Admin Tools'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'admin_tools', 'Admin Tools'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_attribute_type', 'Attribute Type'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_attribute_type_lookup', 'Attribute Type Lookup'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_item_type', 'Item Type'); 

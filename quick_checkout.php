@@ -273,9 +273,14 @@ function is_item_instance_checkoutable($item_instance_r, &$errors)
 		{
 			return TRUE;
 		}
-		else
+		else if(is_array($status_type_r))
 		{
 			$errors[] = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+		}
+		else
+		{
+			$errors[] = get_opendb_lang_var('invalid_s_status_type', 's_status_type', $item_instance_r['s_status_type']);
+			
 		}
 	}
 	else

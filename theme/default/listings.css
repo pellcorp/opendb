@@ -52,6 +52,7 @@ div.elementHidden
 {
 	display: block;
 	padding-top: 5px;
+	font-weight:bold;
 }
 
 div.search-query dl

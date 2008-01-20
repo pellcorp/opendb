@@ -64,7 +64,7 @@
 	width: 185px;
 	border:1px dashed #626C99;
 	margin-bottom: 10px;
-	margin-top: 5px;
+	margin-top: 10px;
 	margin-right: 5px;
 	font-size: 75%;
 	padding: 10px;
@@ -118,6 +118,7 @@
 	padding: 10px;
 	margin: 5px;
 	margin-left: 0px;
+	margin-top: 10px;
 }
 
 #whatsnew, #whatsnew a
@@ -164,4 +165,3 @@
 {
 	display: none;
 }
-

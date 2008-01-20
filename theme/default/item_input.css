@@ -182,7 +182,7 @@ div.tabContentContainer
 	border: 1px solid gray;
 	float: left;
 	margin-top: -1px;
-	width: 100%;
+	
 }
 
 div.tabContent .footer-links
@@ -253,6 +253,5 @@ ul.checkboxGridOptionsVertical, ul.checkboxGridOptions, ul.radioGridOptionsVerti
 ul.checkboxGridOptionsVertical li, ul.radioGridOptionsVertical li
 {
 	float: left;
-	width: 20%;
-	white-space: nowrap;
+	width: 30%;
 }

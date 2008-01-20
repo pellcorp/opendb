@@ -156,11 +156,11 @@ function get_menu_options($user_id)
 		$menu_options['users'][] = array(link=>get_opendb_lang_var('edit_my_info'), url=>"user_admin.php?op=edit&user_id=$user_id");
 	}
 	
-	if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $user_id))
+/*	if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $user_id))
 	{
 		$menu_options['users'][] = array(link=>get_opendb_lang_var('change_my_password'), url=>"user_admin.php?op=change_password&user_id=$user_id");
 	}
-
+*/
 	if(is_user_granted_permission(PERM_ADMIN_USER_LISTING, $user_id))
 	{	
 		if(is_exist_users_not_activated())
@@ -220,22 +220,36 @@ function get_menu_options_list($options)
 	{
 		$active_found = FALSE;
 		
+		$buffer .= "\n<ul class=\"menu\">";
+		
+		$startList = TRUE;
+		
 		while (list($id,$option_rs) = @each($options))
 		{
-			$buffer .= "\n<ul class=\"menu\" id=\"${id}-menu\">";
+			$startListSection = TRUE;
+			
 			while (list(,$option_r) = @each($option_rs))
 			{
-				$class = '';
+				$buffer .= "<li class=\"$id";
 				if(!$active_found && is_menu_option_active($option_r))
 				{
-					$class = ' class="active"';
+					$buffer .= ' active';
 					$active_found = TRUE;
 				}
+				
+				if($startList) {
+					$startList = FALSE;
+					$buffer .= " startList";
+				}
+				
+			     if($startListSection) {
+                    $startListSection = FALSE;
+                    $buffer .= " startListSection";
+                }
 	
-				$buffer .= "<li$class>".get_menu_option($option_r)."</li>";
+				$buffer .= "\">".get_menu_option($option_r)."</li>";
 			}
-			$buffer .= "\n</ul>";
-	}
+        }
 	}
 	return $buffer;
 }

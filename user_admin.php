@@ -1260,6 +1260,8 @@ if(is_site_enabled())
 				if(is_not_empty_array($user_r))
 				{
 					echo(get_user_input_form($user_r, $HTTP_VARS));
+					
+					$footer_links_r[] = array(url=>"$PHP_SELF?op=change_password&user_id=".$HTTP_VARS['user_id'],text=>get_opendb_lang_var(is_logged_in_user($HTTP_VARS['user_id'])?'change_my_password':'change_user_password'));
 				}
 				else //user not found.
 				{
@@ -1359,7 +1361,7 @@ if(is_site_enabled())
 					    }
 					}
 					
-					$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>($HTTP_VARS['user_id'] == get_opendb_session_var('user_id')?get_opendb_lang_var('edit_my_info'):get_opendb_lang_var('edit_user_info')));
+					$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>get_opendb_lang_var('edit_user_info'));
 				}
 				else // $return_val === FALSE
 				{
@@ -1424,7 +1426,7 @@ if(is_site_enabled())
 					else if($return_val === '__ABORTED__')
 					{
 						echo("<p class=\"success\">".get_opendb_lang_var('user_not_deleted')."</p>");
-						$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>($HTTP_VARS['user_id'] == get_opendb_session_var('user_id')?get_opendb_lang_var('edit_my_info'):get_opendb_lang_var('edit_user_info')));
+						$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>get_opendb_lang_var('edit_user_info'));
 					}
 					else if($return_val === '__DEACTIVATED__')
 					{

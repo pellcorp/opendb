@@ -23,6 +23,11 @@ include_once("./functions/logging.php");
 include_once("./functions/utils.php");
 include_once("./functions/address_type.php");
 
+function is_logged_in_user($uid)
+{
+	return $uid == get_opendb_session_var('user_id');
+}
+
 function is_user_active($uid)
 {
 	$query = "SELECT active_ind FROM user WHERE user_id = '$uid'";

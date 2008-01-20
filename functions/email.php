@@ -54,13 +54,10 @@ function get_email_footer()
 		$footer_text = get_opendb_lang_var('email_footer', 
 					array('site'=>get_opendb_config_var('site', 'title'),'version'=>get_opendb_version(),'site_url'=>$site_url));
 
-		if($length>0)
-		{
-			return	"\n\n".
-					"--"
-					."\n"
-					.$footer_text;
-		}
+		return	"\n\n".
+				"--"
+				."\n"
+				.$footer_text;
 	}
 
 	return "";

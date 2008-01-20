@@ -65,8 +65,6 @@ class amazonfr extends SitePlugin
 				else if (preg_match ("!<li><b>ISBN:</b> ([^<]*)</li>!m", $pageBuffer, $regs) || // for books, ASIN is the same as ISBN
 				        preg_match ("!<li><b>ISBN-10:</b> ([^<]*)</li>!m", $pageBuffer, $regs))
 				{
-					print_r($regs);
-					
 					$amazonasin = trim ($regs[1]);
 				} 
 			}

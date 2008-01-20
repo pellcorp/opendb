@@ -121,7 +121,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confir
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete_deactivate', 'Do you you want to deactivate user \"{fullname}\" ({user_id}) instead?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'connected_to', 'Connected to {dbname}@{host}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'content', 'Content'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'current_item_instance', 'Current Item instance'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'current_user', 'Current user'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_itemtype_chart', 'DataBase Item Types Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_ownership_chart', 'DataBase Ownership Chart'); 

@@ -107,7 +107,8 @@ varname IN(
 	'no_linked_items',
 	'refresh_linked_title',
 	'title_linked_item_exists',
-	'update_linked_item');
+	'update_linked_item',
+    'current_item_instance');
 
 # change of var for email to be more prescriptive of intention of var
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'site_users', '{user_desc} Users');

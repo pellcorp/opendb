@@ -53,7 +53,6 @@ if(is_site_enabled())
 		
 			if(is_not_empty_array($item_r))
 			{
-				
 			    $titleMaskCfg = new TitleMask('item_display');
 
 			    $page_title = $titleMaskCfg->expand_item_title($item_r);

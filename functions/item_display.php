@@ -223,11 +223,6 @@ function get_instance_info_block($item_r, $HTTP_VARS)
 		$buffer .= get_opendb_lang_var('no_records_found');
 	}
 	
-	if($numrows>1)
-	{
-		$buffer .= format_help_block(array('img'=>'tick.gif','text'=>get_opendb_lang_var('current_item_instance')));
-	}
-	
 	$instance_info_links = NULL;
 	if(is_user_granted_permission(PERM_ITEM_OWNER))
 	{
@@ -264,16 +259,15 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	global $PHP_SELF;
 	global $titleMaskCfg;
 
-	$rowcontents = "\n<tr class=\"$class\"><td>";
+	$rowcontents = "\n<tr class=\"$class\"><td";
 	
 	if($selected)
 	{
-		$rowcontents .= $item_r['instance_no'];
-		$rowcontents .= " "._theme_image("tick.gif", get_opendb_lang_var('current_item_instance'));
+		$rowcontents .= " class=\"currentItemInstance\">".$item_r['instance_no']."</span>";
 	}
 	else
 	{
-		$rowcontents .= "<a href=\"$PHP_SELF?item_id=${item_r['item_id']}&instance_no=${item_r['instance_no']}\">".$item_r['instance_no']."</a>";
+		$rowcontents .= "><a href=\"$PHP_SELF?item_id=${item_r['item_id']}&instance_no=${item_r['instance_no']}\">".$item_r['instance_no']."</a>";
 	}
 	$rowcontents .= "\n</td>";
 	

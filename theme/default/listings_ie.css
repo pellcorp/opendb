@@ -7,3 +7,8 @@ table.listing-table
 {
 	width: 80%;
 }
+
+#listing-filters span 
+{
+	float: none;
+}

@@ -55,14 +55,10 @@ A#admin-logout
 	margin-right: 10px;
 }
 
-#menu {
-	top:75px;
-}
-
 #toolType select
 {
 	position: absolute;
-	right: 4px;
+	right: 210px;
 	top: 40px;
 	margin-left: 10px; 
 	margin-top: 15px; 

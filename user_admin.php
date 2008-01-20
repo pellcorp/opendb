@@ -79,8 +79,7 @@ function perform_changeuser($HTTP_VARS)
 
 function show_changeuser_form()
 {
-	// display owner_id input field.
-	echo _theme_header(get_opendb_lang_var('change_user'));
+	
 
 	echo("<h2>".get_opendb_lang_var('change_user')."</h2>");
 
@@ -109,8 +108,6 @@ function show_changeuser_form()
 	
 	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("</form>");
-	
-	echo(_theme_footer());
 }
 
 /**
@@ -1330,10 +1327,10 @@ if(is_site_enabled())
 				}
 				else
 				{
+                    echo _theme_header(get_opendb_lang_var('change_user'));
 					show_changeuser_form();
 				}
 			}
-			
 			else if($HTTP_VARS['op'] == 'insert' && is_user_granted_permission(PERM_ADMIN_CREATE_USER))
 			{
 				echo _theme_header(get_opendb_lang_var('add_new_user'));

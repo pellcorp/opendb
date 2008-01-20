@@ -33,9 +33,9 @@ class amazonfr extends SitePlugin
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r)
 	{
-		if(strlen($search_vars_r['amazonasin'])>0)
+		if(strlen($search_vars_r['amazfrasin'])>0)
 		{
-			$this->addListingRow(NULL, NULL, NULL, array('amazonasin'=>$search_vars_r['amazonasin']));
+			$this->addListingRow(NULL, NULL, NULL, array('amazfrasin'=>$search_vars_r['amazfrasin']));
 			return TRUE;
 		}
 		else

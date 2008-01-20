@@ -256,7 +256,7 @@ ul.menu
 
 ul.menu li a
 {
-	white-space: no-wrap;
+	white-space: nowrap;
 	padding:2px;
 	display: block;
 	text-decoration: none;

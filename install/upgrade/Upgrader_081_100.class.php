@@ -696,7 +696,6 @@ function transfer_url_attribute_types(&$errors)
 				$widget = prc_function_spec($attribute_type_r['input_type']);
 	
 				// only want length, maxlength, content_group or extensions list
-				// TODO - consider auto-converting extensions list to a content group
 				$arguments_r = array($widget['args']['0'], $widget['args']['1'], $widget['args']['2']);
 				$attribute_type_r['input_type'] = get_rebuilt_function('url', $arguments_r);
 	

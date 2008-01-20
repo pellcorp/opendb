@@ -68,7 +68,7 @@ if(is_site_enabled())
 				$menu_option_r = get_system_admin_tools_menu($ADMIN_TYPE);
 				$title = $menu_option_r['link'];
 				
-				_theme_header($title, FALSE);
+				_theme_header($title);
 
 				// todo - this should really be in the <head>...</head> - does it matter?
 				if($xajax) {

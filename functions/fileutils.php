@@ -197,13 +197,6 @@ function is_exists_opendb_file($fileLocation)
 	return FALSE;
 }
 
-/**
- * TODO - perform validation on $filename to ensure it is a relative directory
- * in a legal location within opendb.
- *
- * @param unknown_type $filename
- * @return unknown
- */
 function delete_file($filename)
 {
 	if(@is_file($filename))
@@ -224,7 +217,6 @@ function delete_file($filename)
 		return FALSE;
 	}
 }
-
 
 /**
  * pre php 5 compatible definition of file_put_contents

@@ -238,7 +238,7 @@ ul.action-links img
 	position:absolute;
 	top:40px;
 	right:-1px;
-	width:170px;
+	width:185px;
     margin-top: 15px;  
     margin-right: 15px;  
     padding-right: 15px;
@@ -274,7 +274,7 @@ ul.menu li a:hover, ul.menu li.active a
 #content
 {
 	margin:0px 5px 5px 10px;
-	padding-right:210px;
+	padding-right:220px;
 }
 
 #footer
@@ -349,7 +349,7 @@ form.quickSearch img
 	text-align: right;
 	margin-top: 5px;
 	padding: 10px;
-	padding-right: 20px;
+	padding-right: 40px;
 	font-weight: bold;
 }
 

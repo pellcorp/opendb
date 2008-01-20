@@ -236,14 +236,15 @@ ul.action-links img
 {
 	border:1px dashed #626C99;
 	position:absolute;
-	top:50px;
+	top:55px;
 	right:-1px;
 	width:190px;
 	line-height:17px;
     margin: 0px;
     
     margin-right: 5px;  
-    padding-right: 5px;
+    padding-right: 15px;
+    
 }
 
 /* downloaded image from http://www.stylegala.com/features/bulletmadness/ */
@@ -276,7 +277,7 @@ ul.menu li a:hover, ul.menu li.active a
 #content
 {
 	margin:0px 5px 5px 10px;
-	padding-right:200px;
+	padding-right:210px;
 }
 
 #footer

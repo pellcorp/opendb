@@ -1,7 +1,7 @@
 body
 {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	background-color: #FAFAFA;
+	background-color: #FFFFFF;
 	color: #000000;
 	font-size: small;
 	margin: 0px;
@@ -22,14 +22,14 @@ img
 a:link, a:visited, a:active
 {
 	text-decoration: none;
-	color: #003399;
+	color: #626C99;
 	font-size : small;
 }
 
 a:hover
 {
 	text-decoration: underline;
-	color: #0000FF;
+	color: #626C99;
 	font-size: small;
 }
 
@@ -245,15 +245,11 @@ ul.action-links img
     padding-left: 0px;
 }
 
+/* downloaded image from http://www.stylegala.com/features/bulletmadness/ */
 ul.menu
 {
 	list-style-type: none;
-	list-style-image: url(../../images/collapsed.gif)
-	/*padding-left: 0px;
-	padding-top: 5px;
-	margin-top: 0px;
-	margin-top: 0px;*/
-	
+	list-style-image: url(./images/0085_blueAndPointy.png)
 }
 
 ul.menu li a
@@ -262,7 +258,6 @@ ul.menu li a
 	padding:3px;
 	padding-left: 0px;
 	display: block;
-	
 	border-top: 1px dashed Gray;
 	text-decoration: none;
 }
@@ -439,8 +434,8 @@ div.elementHidden
 {
 	background-image: url(../../images/expanded.gif);
 	background-repeat: no-repeat;
-	padding-left: 15px;
-	background-position: center left;
+	padding-right: 15px;
+	background-position: center right;
 	font-size: 100%;
 	color: #BDC7F7;
 }

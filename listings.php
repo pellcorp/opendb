@@ -151,7 +151,7 @@ function getListingFiltersBlock()
 		
 		$buffer .= "</ul>";
 		$buffer .= get_url_fields($HTTP_VARS, NULL, $excluded_vars_list);
-		$buffer .= "<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('search')."\">";
+		$buffer .= "<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">";
 		$buffer .= "</form>";
 		$buffer .= "</div>";
 		$buffer .= "</div>";

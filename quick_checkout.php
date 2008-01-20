@@ -480,6 +480,8 @@ if(is_site_enabled())
 						}
 						echo("</ul>");
 					}
+					
+					echo(_theme_footer());
 				}
 				else
 				{

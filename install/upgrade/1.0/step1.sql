@@ -108,7 +108,8 @@ varname IN(
 	'refresh_linked_title',
 	'title_linked_item_exists',
 	'update_linked_item',
-    'current_item_instance');
+    'current_item_instance',
+    'welcome_to_site');
 
 # change of var for email to be more prescriptive of intention of var
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'site_users', '{user_desc} Users');
@@ -130,6 +131,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'norepl
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_administrator', 'Email Administrator');
 
+UPDATE 
 # fix mobygames site plugin URL
 UPDATE s_site_plugin SET title = 'MobyGames.com' WHERE site_type = 'mobygames';
 

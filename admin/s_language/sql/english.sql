@@ -536,7 +536,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'wednes
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'welcome_email', 'You are receiving this email because the administrator has activated your {site} account.\\nYou can change your password once you have logged in.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'welcome_email_error', 'An error has occured while trying to send a welcome email to {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'welcome_email_sent', 'A welcome email has been sent to {fullname} ({user_id})'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'welcome_to_site', 'New Account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'whats_new', 'What\'s New'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'what_owner_add_new_item', 'What owner do you want to create a new item for?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'word_match', 'Word match'); 

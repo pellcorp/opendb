@@ -506,7 +506,7 @@ function send_newuser_email($user_r, $passwd, &$errors)
 {
 	$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
 	
-	$subject = get_opendb_lang_var('welcome_to_site', 'site', get_opendb_config_var('site', 'title'));
+	$subject = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
 	$message = get_opendb_lang_var('to_user_email_intro', 'fullname', $user_r['fullname']).
 								"\n\n".
 								get_opendb_lang_var('welcome_email', 'site', get_opendb_config_var('site', 'title')).

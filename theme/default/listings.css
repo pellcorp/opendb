@@ -11,10 +11,11 @@ div.elementHidden
 #listing-filters 
 {
 	position: absolute;
-	top: 40px;
+	top: 0px;
 	right: 210px;
     float: right;
     margin: 10px;
+    margin-top: 65px;
     background-color: #FFFFFF;
 }
 

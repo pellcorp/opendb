@@ -234,12 +234,11 @@ ul.action-links img
 
 #menu
 {
-	border:1px dashed #626C99;
 	position:absolute;
-	top:40px;
+	top:0px;
 	right:-1px;
 	width:185px;
-    margin-top: 15px;  
+    margin-top: 50px;  
     margin-right: 15px;  
     padding-right: 15px;
     

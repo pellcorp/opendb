@@ -236,27 +236,31 @@ ul.action-links img
 {
 	border:1px dashed black;
 	position:absolute;
-	top:40px;
+	top:50px;
 	right:-1px;
-	width:175px;
+	width:190px;
 	line-height:17px;
-    margin: 10px;
-    padding-right: 10px;
-    padding-left: 0px;
+    margin: 0px;
+    
+    margin-right: 5px;  
+    padding-right: 5px;
 }
 
 /* downloaded image from http://www.stylegala.com/features/bulletmadness/ */
 ul.menu
 {
-	list-style-type: none;
-	list-style-image: url(./images/0085_blueAndPointy.png)
+	list-style-type: disc;
+	list-style-image: url(./images/0085_blueAndPointy.png);
+	padding-left: 10px;
+	margin-left: 15px;
 }
 
 ul.menu li a
 {
 	white-space: no-wrap;
-	padding:3px;
-	padding-left: 0px;
+	padding:0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
 	display: block;
 	border-top: 1px dashed black;
 	text-decoration: none;

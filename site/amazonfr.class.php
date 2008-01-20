@@ -44,9 +44,6 @@ class amazonfr extends SitePlugin
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
 
 			$queryUrl = "http://www.amazon.fr/exec/obidos/external-search?index=".$index_type."&keyword=".rawurlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
-
-			//opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, $queryUrl);
-
 			$pageBuffer = $this->fetchURI($queryUrl);
 		}
 
@@ -61,21 +58,24 @@ class amazonfr extends SitePlugin
 				{
 					$amazonasin = trim($regs[1]);
 				}
-				else if (preg_match("/ASIN: (\w{10})/", strip_tags($pageBuffer), $regs))
+				else if (preg_match ("!<li><b>ASIN:</b> ([^<]*)</li>!m", $pageBuffer, $regs))
 				{
 					$amazonasin = trim($regs[1]);
 				}
-				else if (preg_match ("/ISBN: ([^;]+);/", strip_tags($pageBuffer), $regs)) // for books, ASIN is the same as ISBN
+				else if (preg_match ("!<li><b>ISBN:</b> ([^<]*)</li>!m", $pageBuffer, $regs) || // for books, ASIN is the same as ISBN
+				        preg_match ("!<li><b>ISBN-10:</b> ([^<]*)</li>!m", $pageBuffer, $regs))
 				{
+					print_r($regs);
+					
 					$amazonasin = trim ($regs[1]);
-				}
+				} 
 			}
 
 			// exact match
 			if($amazonasin!==FALSE)
 			{
 				// single record returned
-				$this->addListingRow(NULL, NULL, NULL, array('amazonasin'=>$amazonasin));
+				$this->addListingRow(NULL, NULL, NULL, array('amazfrasin'=>$amazonasin));
 
 				return TRUE;
 			}
@@ -83,6 +83,8 @@ class amazonfr extends SitePlugin
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 
+				//<td class="resultCount">Résultats 1 - 12 sur 23</td>
+				
 				//Résultats 1 - 24 sur 1&nbsp;518
 				//<td class="resultCount">Résultats 1 - 12 sur 46</td>
 				//if(preg_match("/All[\s]*([0-9]+)[\s]*results for/i", $pageBuffer, $regs))
@@ -101,7 +103,7 @@ class amazonfr extends SitePlugin
 					if(preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
 									"<img src=\"([^\"]+)\"[^>]*>".
 									".*?".
-									"<a href=\"([^\"]+)\"><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+									"<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{

@@ -79,11 +79,11 @@ function get_announcements_block()
 					(fetch_user_email(get_opendb_session_var('user_id') ) == 'opendb@iamvegan.net' || 
         			validate_user_passwd(get_opendb_session_var('user_id') , 'admin')))
 		{
-			$buffer .= "<li><h4>Change Admin User Password and Email address</h4>
-					<p class=\"content\">You must change your password and/or email address immediately.</p>
-					<p class=\"content\">Go to <a href=\"user_admin.php?op=edit&user_id=".get_opendb_session_var('user_id')."\">".get_opendb_lang_var('edit_my_info')."</a>
-					to change your email address and <a href=\"user_admin.php?op=change_password&user_id=".get_opendb_session_var('user_id')."\">".get_opendb_lang_var('change_my_password')."</a> to change your password.
-					</li>";
+			$buffer .= "<li><h4>Change Admin User Password and Email address</h4>".
+					"<p class=\"content\">You must change your password and/or email address immediately.</p>".
+					"<p class=\"content\">Go to <a href=\"user_admin.php?op=edit&user_id=".get_opendb_session_var('user_id')."\">".get_opendb_lang_var('edit_my_info')."</a>".
+					"to change your email address and <a href=\"user_admin.php?op=change_password&user_id=".get_opendb_session_var('user_id')."\">".get_opendb_lang_var('change_my_password')."</a> to change your password.".
+					"</li>";
 		}
 		
 	    // Display users awaiting activation message

@@ -237,7 +237,7 @@ ul.action-links img
 	position:absolute;
 	top:0px;
 	right:-1px;
-	width:185px;
+	width:150px;
     margin-top: 50px;  
     margin-right: 15px;  
     padding-right: 15px;
@@ -273,7 +273,7 @@ ul.menu li a:hover, ul.menu li.active a
 #content
 {
 	margin:0px 5px 5px 10px;
-	padding-right:220px;
+	padding-right:170px;
 }
 
 #footer

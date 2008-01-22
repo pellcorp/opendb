@@ -7,6 +7,12 @@ ul.itemTypeGroupList li.active
 {
 	padding-left:0px;
 	padding-top: 5px;
+	padding-right: 0px;
+}
+
+#menu
+{
+	display: none;
 }
 
 .tooltip { background: rgb(255, 238, 170); color: black; }
@@ -58,7 +64,7 @@ A#admin-logout
 #toolType select
 {
 	position: absolute;
-	right: 210px;
+	right: 0px;
 	top: 0px;
 	margin-left: 10px; 
 	margin-top: 65px; 

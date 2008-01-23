@@ -230,7 +230,7 @@ function get_menu_options_list($options)
 			
 			while (list(,$option_r) = @each($option_rs))
 			{
-				$buffer .= "<li class=\"$id";
+				$buffer .= "\n<li class=\"$id";
 				if(!$active_found && is_menu_option_active($option_r))
 				{
 					$buffer .= ' active';
@@ -250,6 +250,7 @@ function get_menu_options_list($options)
 				$buffer .= "\">".get_menu_option($option_r)."</li>";
 			}
         }
+        $buffer .= "\n</ul>";
 	}
 	return $buffer;
 }

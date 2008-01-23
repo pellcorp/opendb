@@ -179,7 +179,7 @@ if($HTTP_VARS['op'] == 'list')
 	$result = fetch_announcement_rs(); 
 	if($result)
 	{	
-	    $submitted_datetime_mask = get_opendb_config_var('announcements', 'datetime_mask');
+	    $submitted_datetime_mask = get_opendb_config_var('welcome.announcements', 'datetime_mask');
 	    echo("<ul class=\"announcement\">");
 		while ($announcement_r = db_fetch_assoc($result))
 		{

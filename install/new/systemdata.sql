@@ -647,7 +647,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.las
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'total_num_items', '18');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'enable', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'show_heading', 'FALSE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'datetime_mask', 'DD/MM/YYYY HH24:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.announcements', 'display_count', '3');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('menu', 'other_items_listing', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('menu', 'all_items_listing', 'FALSE');

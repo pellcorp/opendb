@@ -250,7 +250,7 @@ if(is_site_enabled())
 			($HTTP_VARS['op'] == 'send_to_site_admin' && get_opendb_config_var('email', 'send_to_site_admin')!==FALSE))
 	{
 		echo _theme_header(get_opendb_lang_var('send_email'), $HTTP_VARS['inc_menu']);
-		echo("<h2>".get_opendb_lang_var('send_email')."</h2>");
+		echo("<h2 class=\"sendEmail\">".get_opendb_lang_var('send_email')."</h2>");
 		
 		// no email functionality is available unless a valid mailer is configured.
 		if(is_valid_opendb_mailer())

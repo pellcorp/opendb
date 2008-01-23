@@ -254,11 +254,11 @@ span.menuToggle
 
 div.menuContent
 {
-	width: 175px;
+	width: 200px;
     background-color: #FFFFFF;
     margin-top: 25px;
     padding: 10px;
-    border:1px dashed #626C99;
+    border:1px solid #626C99;
 }
 
 /* downloaded image from http://www.stylegala.com/features/bulletmadness/ */

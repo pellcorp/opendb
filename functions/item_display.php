@@ -149,7 +149,7 @@ function get_item_review_block($item_r)
 	}
 	else
 	{
-		$buffer .= get_opendb_lang_var('no_item_reviews');
+		$buffer .= '<p>'.get_opendb_lang_var('no_item_reviews').'</p>';
 	}
 	
 	$action_links = NULL;

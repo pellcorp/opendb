@@ -5,10 +5,13 @@ div.search-query dd
 
 table.listing-table
 {
-	width: 80%;
+	width: 99%;
 }
 
 #listing-filters span 
 {
-	float: none;
+	position: absolute;
+    right: 25px;
+    white-space: nowrap;
 }
+

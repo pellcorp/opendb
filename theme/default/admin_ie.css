@@ -1,6 +1,6 @@
-#menu span 
+#admin-menu span 
 {
     position: absolute;
-    right: 0px;
+    right: 25px;
     white-space: nowrap;
 }

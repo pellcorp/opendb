@@ -410,11 +410,11 @@ if(is_array($config_group_rs))
 	{
 		if($config_group_r['id'] == $HTTP_VARS['group_id'])
 		{
-			echo "\n<li class=\"activetab\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</li>";
+			echo "\n<li class=\"activetab\">".$config_group_r['name']."</li>";
 		}
 		else
 		{
-			echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".str_replace(' ', '&nbsp;', $config_group_r['name'])."</a></li>";
+			echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".$config_group_r['name']."</a></li>";
 		}
 	}
 	db_free_result($results);

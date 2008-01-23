@@ -191,7 +191,7 @@ function get_menu_options($user_id)
 	
 	if(is_user_granted_permission(PERM_ADMIN_TOOLS, $user_id))
 	{
-		$menu_options['admin_tools'][] = array(link=>get_opendb_lang_var('admin_tools'), url=>"admin.php", target=>"_new");
+		$menu_options['admin_tools'][] = array(link=>get_opendb_lang_var('admin_tools'), url=>"admin.php");
 	}
 
 	return $menu_options;

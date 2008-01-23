@@ -131,7 +131,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'norepl
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'email_administrator', 'Email Administrator');
 
-UPDATE 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'main_menu', 'Main Menu');
+
 # fix mobygames site plugin URL
 UPDATE s_site_plugin SET title = 'MobyGames.com' WHERE site_type = 'mobygames';
 

@@ -40,7 +40,9 @@ if(is_site_enabled())
 	{
 		if(is_user_granted_permission(PERM_ADMIN_TOOLS))
 		{
-			$ADMIN_TYPE = ifempty($HTTP_VARS['type'], 'config');
+			$HTTP_VARS['type'] = ifempty($HTTP_VARS['type'], 'config');
+			
+			$ADMIN_TYPE = $HTTP_VARS['type'];
 			$ADMIN_DIR = './admin/'.$ADMIN_TYPE;
 			
 			if(file_exists("./admin/".$ADMIN_TYPE."/functions.php"))
@@ -75,21 +77,7 @@ if(is_site_enabled())
 					$xajax->printJavascript();
 				}
 				
-				$system_admin_tools_menu_options = get_system_admin_tools_menu();
-				if($HTTP_VARS['inc_menu'] != 'N')
-				{
-					echo('<form id="toolType" action="admin.php"><select name="type" onChange="this.form.submit();">');
-						
-					reset($system_admin_tools_menu_options);
-					while(list($tool, $menu_option_r) = each($system_admin_tools_menu_options))
-					{
-					    $admin_options[] = $menu_option_r;
-					    
-					    echo("\n<option value=\"".$tool."\"".($ADMIN_TYPE==$tool?" SELECTED":"").">".$menu_option_r['link']."</option>");
-					}
-					echo("\n</select></form>");
-				}
-				echo("<h2>".$system_admin_tools_menu_options[$ADMIN_TYPE]['link']."</h2>");
+				echo("<h2>".$title."</h2>");
 			}
 
 			include_once("./admin/".$ADMIN_TYPE."/index.php");

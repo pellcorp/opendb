@@ -105,7 +105,7 @@ function is_legal_admin_type($type)
 
 function get_system_admin_tools_menu($admin_type = NULL)
 {
-	$menu_options = array(
+	$admin_menu_rs = array(
 	    'config'=>array('link'=>'Configuration'),
 	    'logfile'=>array('link'=>'Log File'),
 	    'backup'=>array('link'=>'Backup Database'),
@@ -127,17 +127,22 @@ function get_system_admin_tools_menu($admin_type = NULL)
 	// disable until release 1.2
 	//	'item_review'=>array('link'=>'Item Reviews')
 	);
-		                        
+
 	if($admin_type!=NULL)
 	{
-	    if(is_array($menu_options[$admin_type]))
-		    return $menu_options[$admin_type];
+	    if(is_array($admin_menu_rs[$admin_type]))
+		    return $admin_menu_rs[$admin_type];
 		else
 		    return NULL;
 	}
 	else
 	{
-	    return $menu_options;
+        $menu_options_rs = array();
+        while(list($id,$menu_r) = each($admin_menu_rs)) {
+            $menu_r['url'] = 'admin.php?type='.$id;
+            $menu_options_rs['admin'][] = $menu_r; 
+        }
+	    return $menu_options_rs;
 	}
 }
 

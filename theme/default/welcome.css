@@ -1,14 +1,10 @@
 #lastitemslist
 {
-	position: absolute;
-	top: 40px;
-	left: 250px;
 	text-align: center;
 	border:none;
-	
-	width: 65%;
 	float: left;
 	margin-top: 5px;
+	width: 80%;
 }
 
 #lastitemslist ul
@@ -59,9 +55,9 @@
 
 #announcements
 {
+	width: 15%;
 	float: left;
 	clear: left;
-	width: 185px;
 	border:1px dashed #626C99;
 	margin-bottom: 10px;
 	margin-top: 10px;
@@ -119,6 +115,7 @@
 	margin: 5px;
 	margin-left: 0px;
 	margin-top: 10px;
+	width: 15%;
 }
 
 #whatsnew, #whatsnew a

@@ -276,6 +276,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'logout
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'log_type', 'Type'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'lost_password', 'Lost Password'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'manual_entry', 'Manual entry'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'main_menu', 'Main Menu');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'march', 'March'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'march_abbrev', 'Mar'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'may', 'May'); 

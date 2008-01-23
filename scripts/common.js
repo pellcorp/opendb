@@ -75,18 +75,18 @@ function getChildElementByTagName(parentElement, tagName)
 	return NULL;
 }
 
+// TODO - do not remove existing classes!!!!
 function toggleVisible(linkElement, element)
 {
-	if(element.className == 'elementHidden')
+	if(element.className.indexOf('elementHidden')!=-1)
 	{
-		linkElement.className = 'toggleVisible';
-		element.className = '';
-		
+		linkElement.className = linkElement.className.replace('toggleHidden', 'toggleVisible');
+		element.className = element.className.replace('elementHidden', '');
 	}
 	else
 	{
-		linkElement.className = 'toggleHidden';
-		element.className = 'elementHidden';
+	   linkElement.className = linkElement.className.replace('toggleVisible', 'toggleHidden');
+        element.className += ' elementHidden';
 	}
 	return true;
 }

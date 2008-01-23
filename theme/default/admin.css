@@ -75,40 +75,44 @@ A#admin-logout
 
 ul.announcement
 {
+	width: 100%;
+	float: left;
 	list-style-type: none;
 	margin-left: 0px;
 	padding-left: 0px;
-	width: 600px;
 }
 
-ul.announcement li
+ul.announcement>li
 {
-	border-bottom: 1px solid gray;
+	border-bottom: 1px dashed gray;
 	padding-bottom: 10px;
 	width: 100%;
 	float: left;
 }
 
-ul.announcement ul.metadata li
+ul.metadata li
 {
 	border: none;
 	padding-bottom: 0px;
 }
 
-ul.announcement .metadata
+ul.metadata
 {
+	
 	font-size: 65%;
 }
 
-ul.announcement .footer-links
+ul.footer-links
 {
+	width: 100%;
+	float: left;
 	margin-top: 10px;
 	margin-bottom: 5px;
-	float: right;
 }
 
-ul.announcement ul.footer-links li
+ul.footer-links li
 {
+	float: left;
 	border-top: none;
 	border-bottom: none;
 	padding-bottom: 0px;

@@ -68,7 +68,7 @@ if(is_site_enabled())
 			if($HTTP_VARS['mode'] != 'job')
 			{
 				$menu_option_r = get_system_admin_tools_menu($ADMIN_TYPE);
-				$title = $menu_option_r['link'];
+				$title =  $menu_option_r['link']." Admin Tool";
 				
 				_theme_header($title);
 

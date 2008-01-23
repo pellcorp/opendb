@@ -5,7 +5,7 @@ include_once("./functions/AdminAjaxJobs.class.php");
 class ItemCacheAjaxJobs extends AdminAjaxJobs
 {
 	function ItemCacheAjaxJobs($job) {
-		parent::AdminAjaxJobs('ItemCacheAjaxJobs', $job, 10);
+		parent::AdminAjaxJobs(get_class($this), $job, 10);
 	}
 	
 	function __executeJob() {

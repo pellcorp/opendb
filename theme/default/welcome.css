@@ -2,7 +2,7 @@
 {
 	float: left;
 	width: 75%;
-	padding-top: 10px;
+	padding-top: 30px;
 }
 
 #lastitemslist ul
@@ -59,7 +59,7 @@ div#lastitemslist li
     clear: right;
     border:1px dashed #626C99;
     margin-left: 0px;
-    margin-top: 35px;
+    margin-top: 50px;
     padding: 10px;
     width: 20%;
 }

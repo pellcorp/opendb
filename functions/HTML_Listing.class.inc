@@ -364,7 +364,7 @@ class HTML_Listing extends Listing
 					{
 						// show star if rated - Add it to the actual title, so we can do a bit more with title masks
 						$this->addHelpEntry(get_opendb_lang_var('item_reviewed'), 'rs.gif', 'item_reviewed');
-						$item_title .= _theme_image('rs.gif', get_opendb_lang_var('item_reviewed'));
+						$item_title .= _theme_image('rs.gif', get_opendb_lang_var('item_reviewed'), 'review');
 					}
 			
 					if($is_borrowed_or_returned)

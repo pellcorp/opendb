@@ -1257,8 +1257,6 @@ if(is_site_enabled())
 				if(is_not_empty_array($user_r))
 				{
 					echo(get_user_input_form($user_r, $HTTP_VARS));
-					
-					$footer_links_r[] = array(url=>"$PHP_SELF?op=change_password&user_id=".$HTTP_VARS['user_id'],text=>get_opendb_lang_var(is_logged_in_user($HTTP_VARS['user_id'])?'change_my_password':'change_user_password'));
 				}
 				else //user not found.
 				{

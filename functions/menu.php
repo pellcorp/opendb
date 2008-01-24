@@ -136,10 +136,10 @@ function get_menu_options($user_id)
 		}
 	}
 
-	/*if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
+	if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
 	{
 		$menu_options['search'][] = array(link=>get_opendb_lang_var('advanced_search'), url=>"search.php");
-	}*/
+	}
 	
 	if(is_user_granted_permission(PERM_VIEW_STATS))
 	{
@@ -156,11 +156,11 @@ function get_menu_options($user_id)
 		$menu_options['users'][] = array(link=>get_opendb_lang_var('edit_my_info'), url=>"user_admin.php?op=edit&user_id=$user_id");
 	}
 	
-/*	if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $user_id))
+	if(get_opendb_config_var('user_admin', 'user_passwd_change_allowed')!==FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $user_id))
 	{
 		$menu_options['users'][] = array(link=>get_opendb_lang_var('change_my_password'), url=>"user_admin.php?op=change_password&user_id=$user_id");
 	}
-*/
+
 	if(is_user_granted_permission(PERM_ADMIN_USER_LISTING, $user_id))
 	{	
 		if(is_exist_users_not_activated())

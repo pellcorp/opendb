@@ -136,22 +136,41 @@ ul.itemTypes
 	list-style-type: none;
 }
 
+div#message
+{
+	width:100%;
+}
+
+img.hidden
+{
+	display: none;
+}
+
+img#progressSpinner
+{
+	vertical-align: middle;
+}
+
 ul#progressBar
 {
 	list-style-type: none;
+	padding: 5px;
+	margin: 5px;
 }
 
 ul#progressBar li
 {
 	float: left;
 	padding-right: 15px;
+	padding: 5px;
 }
 
 div#percentage
 {
 	clear: both;
-	text-align: center;
-	width: 300px;
+	padding-left: 100px;
+	width: 100%;
+	padding-bottom: 10px;
 }
 
 tr.logRow td

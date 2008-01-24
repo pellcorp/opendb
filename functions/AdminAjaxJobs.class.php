@@ -38,8 +38,9 @@ class AdminAjaxJobs
 			$totalItems = $completedCount + $this->_remaining;
 			
 			if($this->_processed == 0 && $this->_failures > 0) {
-				$objResponse->assign("message", "className", "error");
-				$objResponse->assign("message", "innerHTML", "Job Failure (Completed: $completedCount, Failures: $failureCount)");
+				$objResponse->assign("messageText", "className", "error");
+				$objResponse->assign("progressSpinner", "className", "hidden");
+				$objResponse->assign("messageText", "innerHTML", "Job Failure (Completed: $completedCount, Failures: $failureCount)");
 			} else {
 				$percentage = 0;
 				if($this->_remaining > 0) {
@@ -66,17 +67,19 @@ class AdminAjaxJobs
 				$objResponse->assign("percentage", "innerHTML", "$percentage%");
 				
 				if($this->_remaining > 0) {
-					$objResponse->assign("message", "innerHTML", "Completed $completedCount of $totalItems (Failures: $failureCount)");
+					$objResponse->assign("messageText", "innerHTML", "Completed $completedCount of $totalItems (Failures: $failureCount)");
+					$objResponse->assign("progressSpinner", "className", "");
 					
 					// todo - how to get waitCursor to start again.
-					$objResponse->script("xajax_".$this->_id.".doJob('$job', document.forms['progressForm']['continue'].value, '$completedCount', '$failureCount');");
+					$objResponse->script("xajax_".$this->_id.".dojob('$job', document.forms['progressForm']['continue'].value, '$completedCount', '$failureCount');");
 				} else {
-					$objResponse->assign("message", "innerHTML", "Job Complete (Completed: $completedCount, Failures: $failureCount)");
+					$objResponse->assign("messageText", "innerHTML", "Job Complete (Completed: $completedCount, Failures: $failureCount)");
+					$objResponse->assign("progressSpinner", "className", "hidden");
 				}
 			}
 		} else {
-			//$objResponse->assign("message", "className", "warn");
-			$objResponse->assign("message", "innerHTML", "Job Aborted (Completed: $completedCount, Failures: $failureCount)");
+			$objResponse->assign("messageText", "innerHTML", "Job Aborted (Completed: $completedCount, Failures: $failureCount)");
+			$objResponse->assign("progressSpinner", "className", "hidden");
 		}
 		
 		if(strlen($this->_debug)>0) {
@@ -91,8 +94,12 @@ class AdminAjaxJobs
 	
 		$divContents = '
 		<div id="status" style="{width:300; margin: 4px}">
+		
 		<div id="debug"></div>
-		<div style="{width:100%;}" id="message" class="success"></div>
+		<div id="message" class="success">
+			<img id="progressSpinner" class="hidden" src="./images/spinner.gif">
+			<span id="messageText"></span>
+		</div>
 		
 		<ul id="progressBar">';
 		
@@ -104,10 +111,11 @@ class AdminAjaxJobs
 		
 		<div id="percentage">0%</div>
 		
+		
 		<form id="progressForm">
 			<input type="hidden" name="continue" value="true" />
 			<input type="button" class="button" id="startButton" value="Start" 
-					onclick="this.form[\'continue\'].value=\'true\'; xajax_'.$this->_id.'.dojob(\''.$this->_job.'\', \'true\', \'0\', \'0\'); this.disabled=true; return false;" />
+					onclick="document.getElementById(\'progressSpinner\').className=\'\'; this.form[\'continue\'].value=\'true\'; xajax_'.$this->_id.'.dojob(\''.$this->_job.'\', \'true\', \'0\', \'0\'); this.disabled=true; return false;" />
 			<input type="button" class="button" id="cancelButton" value="Cancel" 
 					onclick="this.form[\'continue\'].value=\'false\'; this.disabled=true; " />
 		</form>

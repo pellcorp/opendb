@@ -508,6 +508,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'delete_support', 2, 'Delete Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'include_other_title_reviews', 3, 'Include Other Titles', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'other_title_reviews_restrict_to_item_type_group', 4, 'Restrict Other Title Item Type Group', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'comment_compulsory', 5, 'Review Comment Compulsory', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'rating_compulsory', 6, 'Review Rating Compulsory', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_item_image', 1, 'Show Item Images', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'allow_override_show_item_image', 2, 'Allow Override Show Item Images', '', 'boolean');
@@ -692,6 +694,8 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'delete_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'include_other_title_reviews', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'other_title_reviews_restrict_to_item_type_group', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'comment_compulsory', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'rating_compulsory', 'TRUE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'items_per_page_options', '0', '0');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'items_per_page_options', '1', '21');

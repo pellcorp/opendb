@@ -41,17 +41,30 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 	$formContents .= "<form action=\"$PHP_SELF\" method=\"POST\">";
 	
 	$formContents .= "<table>";
-			
+	
+	$compulsory_ind = 'N';
+	if(get_opendb_config_var('item_review', 'comment_compulsory')===TRUE)
+	{
+		$compulsory_ind = 'Y';
+	}
+	
 	$formContents .= get_input_field("comment",
 				NULL,
 				get_opendb_lang_var('review'),
                	"htmlarea(55,10)",
-				"Y",
+				$compulsory_ind,
             	$review_r['comment'],//value
 				TRUE);
 
 	// We are now able to configure this in the database.
 	$attribute_type_r = fetch_attribute_type_r('S_RATING');
+	
+	$attribute_type_r['compulsory_ind'] = 'N';
+	if(get_opendb_config_var('item_review', 'rating_compulsory')==TRUE)
+	{
+		$attribute_type_r['compulsory_ind'] = 'Y';
+	}
+	
 	$formContents .= get_item_input_field("rating",
 						$attribute_type_r,
 						NULL, //$item_r
@@ -78,6 +91,26 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 		</form>";
 		
 	return $formContents;
+}
+
+function validate_review_input($HTTP_VARS, &$errors)
+{
+	$errors = NULL;
+	
+	if(get_opendb_config_var('item_review', 'comment_compulsory')==TRUE && strlen($HTTP_VARS['comment'])==0)
+	{
+		$errors[] = array(error=>get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('review')));
+	}
+
+	if(get_opendb_config_var('item_review', 'rating_compulsory')==TRUE && strlen($HTTP_VARS['rating'])==0)
+	{
+		$errors[] = array(error=>get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('rating')));
+	}
+	
+	if(is_array($errors))
+		return FALSE;
+	else
+		return TRUE;
 }
 
 if(is_site_enabled())
@@ -111,7 +144,8 @@ if(is_site_enabled())
 				if($HTTP_VARS['op'] == 'insert')
 				{
 					$HTTP_VARS['comment'] = filter_input_field('htmlarea(55,10)', $HTTP_VARS['comment']);
-					if(strlen($HTTP_VARS['comment'])>0)
+					
+					if(validate_review_input($HTTP_VARS, &$errors))
 					{
 						if(insert_review($HTTP_VARS['item_id'], get_opendb_session_var('user_id'), $HTTP_VARS['comment'], $HTTP_VARS['rating']))
 							echo ("<p class=\"success\">".get_opendb_lang_var('review_added')."</p>");
@@ -120,7 +154,7 @@ if(is_site_enabled())
 					}
 					else
 					{
-						echo(format_error_block(array(error=>get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('review')))));
+						echo(format_error_block($errors));
 						echo(get_edit_form('insert', array(), $HTTP_VARS));
 					}
 				}
@@ -131,7 +165,8 @@ if(is_site_enabled())
 						if(is_review_author($review_r['sequence_number']) || is_user_granted_permission(PERM_ADMIN_REVIEWER))
 						{
 							$HTTP_VARS['comment'] = filter_input_field('htmlarea(55,10)', $HTTP_VARS['comment']);
-							if(strlen($HTTP_VARS['comment'])>0)
+							
+							if(validate_review_input($HTTP_VARS, &$errors))
 							{
 								if(update_review($HTTP_VARS['sequence_number'], $HTTP_VARS['comment'], $HTTP_VARS['rating']))
 									echo ("<p class=\"success\">".get_opendb_lang_var('review_updated')."</p>");
@@ -140,7 +175,7 @@ if(is_site_enabled())
 							}
 							else
 							{
-								echo(format_error_block(array(error=>get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('review')))));
+								echo(format_error_block($errors));
 								echo(get_edit_form('update', array(), $HTTP_VARS));
 							}
 						}

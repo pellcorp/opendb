@@ -208,9 +208,11 @@ if(is_site_enabled())
 				
 				echo("</div>");
 				
+				$instance_info_links_r = array();
 				echo("<div class=\"$otherTabsClass\" id=\"instance_info\">");
-				echo(get_instance_info_block($item_r, $HTTP_VARS));
-				echo get_related_items_block($item_r, $HTTP_VARS);
+				echo(get_instance_info_block($item_r, $HTTP_VARS, $instance_info_links_r));
+				echo(get_related_items_block($item_r, $HTTP_VARS, $instance_info_links_r));
+				echo(format_footer_links($instance_info_links_r));
 				echo("</div>");
 			
 				echo("<div class=\"$otherTabsClass\" id=\"reviews\">");

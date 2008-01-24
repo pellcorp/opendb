@@ -165,7 +165,7 @@ function get_item_review_block($item_r)
 	return $buffer;
 }
 
-function get_instance_info_block($item_r, $HTTP_VARS)
+function get_instance_info_block($item_r, $HTTP_VARS, &$instance_info_links_r)
 {
 	$buffer = '<div id="instanceInfo">';
 	
@@ -223,25 +223,21 @@ function get_instance_info_block($item_r, $HTTP_VARS)
 		$buffer .= get_opendb_lang_var('no_records_found');
 	}
 	
-	$instance_info_links = NULL;
 	if(is_user_granted_permission(PERM_ITEM_OWNER))
 	{
 		if(get_opendb_config_var('item_input', 'item_instance_support') !== FALSE)
 		{
-			$instance_info_links[] = array(url=>"item_input.php?op=newinstance&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('new_item_instance'));
+			array_push($instance_info_links_r,
+			     array(url=>"item_input.php?op=newinstance&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('new_item_instance')));
 		}
 			
 		if(get_opendb_config_var('item_input', 'clone_item_support') !== FALSE)
 		{
-			$instance_info_links[] = array(url=>"item_input.php?op=clone_item&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('clone_item'));
+			array_push($instance_info_links_r,
+                array(url=>"item_input.php?op=clone_item&item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('clone_item')));
 		}
 	}
-	
-	if(is_not_empty_array($instance_info_links))
-	{
-		$buffer .= format_footer_links($instance_info_links);
-	}
-				
+
 	$buffer .= "</div>";
 	
 	return $buffer;
@@ -460,7 +456,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 	return $rowcontents;		
 } 
 
-function get_related_items_block($item_r, $HTTP_VARS)
+function get_related_items_block($item_r, $HTTP_VARS, &$instance_info_links_r)
 {
 	$buffer = '<div id="relatedItems">';
 	
@@ -485,11 +481,10 @@ function get_related_items_block($item_r, $HTTP_VARS)
 		if(get_opendb_config_var('item_input', 'related_item_support') !== FALSE && 
 					is_numeric($item_r['item_id']) && is_numeric($item_r['instance_no']))
 		{
-			$action_links = array(
-									url=>"item_input.php?op=site-add&parent_item_id=".$item_r['item_id']."&parent_instance_no=".$item_r['instance_no']."&owner_id=".$item_r['owner_id']."&listing_link=".$HTTP_VARS['listing_link'],
-									text=>get_opendb_lang_var('add_related_item'));
-									
-			$buffer .= format_footer_links($action_links);
+			array_push(
+					$instance_info_links_r, 
+					array(url=>"item_input.php?op=site-add&parent_item_id=".$item_r['item_id']."&parent_instance_no=".$item_r['instance_no']."&owner_id=".$item_r['owner_id']."&listing_link=".$HTTP_VARS['listing_link'],
+						text=>get_opendb_lang_var('add_related_item')));
 		}
 	}
 	

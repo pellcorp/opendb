@@ -8,6 +8,7 @@ div#instanceInfo, div#relatedItems
 {
 	float: left;
 	clear: left;
+	width: 100%;
 }
 
 span.sitePluginDescription

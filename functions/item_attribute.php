@@ -720,34 +720,46 @@ function fetch_arrayof_item_attribute_rs($item_id, $instance_no, $s_attribute_ty
 		return $item_attribute_rs;
 	}
 	
-	//else
 	return FALSE;
 }
 
-/**
- * This function assumes that the item_attribute table is locked to prevent a race
- * condition!
- */
-function get_unique_filename($filename)
+function get_unique_filename($old_filename)
+{
+	$file_r = get_root_filename($old_filename);
+	$filelist_r = get_filename_list($file_r);
+	
+	$filename = generate_unique_filename($file_r, $filelist_r);
+	
+	if($filename != $old_filename)
+	{
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "Upload file already exists - generating a unique filename", array($old_filename, $filename));
+	}
+	
+	return $filename;
+}
+
+function get_root_filename($filename)
 {
 	$file_r = parse_file($filename);
 	$filename_r = parse_numeric_suffix($file_r['name']);
 	
-	$count = 0;
 	if(strlen($filename_r['prefix'])>0 && is_numeric($filename['suffix'])) {
 		$file_r['name'] = $filename_r['prefix'];
-		$count = $filename_r['suffix'];
 	} else if(strlen($filename_r['suffix'])>0) { // filename is number only!
 		$file_r['name'] = $filename_r['suffix'].'_';
 	}
-	
-	$filelist_r = get_filename_list($file_r);
+	return $file_r;
+}
+
+function generate_unique_filename($file_r, $filelist_r)
+{
+	$count = 0;
 	do {
 		$count++;
-		$file = $file_r['name'].$count.'.'.$file_r['extension'];
-	} while(in_array($file, $filelist_r));
+		$filename = $file_r['name'].$count.'.'.$file_r['extension'];
+	} while(in_array($filename, $filelist_r));
 	
-	return $file;
+	return $filename;
 }
 
 function get_filename_list($file_r)

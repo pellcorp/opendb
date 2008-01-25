@@ -159,6 +159,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		$query .= ' LIMIT ' .$start_index. ', ' .($items_per_page + 1);
 		$count = 0;
 		
+		$filename_list_r = array();
 		$fc_attrib_rs = NULL;
 		$results = db_query($query);
 		if($results)
@@ -168,6 +169,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 				if($count < $items_per_page)
 				{
 					$fc_attrib_rs[] = $fc_attrib_r;
+					$filename_list_r[] = $fc_attrib_r['attribute_val'];
 					$count++;
 				}
 			}
@@ -176,15 +178,25 @@ class Upgrader_100_110 extends OpenDbUpgrader
 		
 		if(is_array($fc_attrib_rs))
 		{
+			$previous_filename_r = array(); 
+			
 			$directory = file_cache_get_cache_type_directory('ITEM');
 			while(list(,$fc_attrib_r) = each($fc_attrib_rs))
 			{
 				$cacheFile = $directory.'/'.$fc_attrib_r['cache_file'];
 				if(file_exists($cacheFile))
 				{
-					// todo - how to get unique filename
-					$filename = $fc_attrib_r['attribute_val'];
-					
+					if(in_array($fc_attrib_r['attribute_val'], $previous_filename_r))
+					{
+						$file_r = get_root_filename($fc_attrib_r['attribute_val']);
+						$filename = generate_unique_filename($file_r, $filename_list_r);
+		
+						if($filename != $fc_attrib_r['attribute_val'])
+						{
+							opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "Upload file already exists - generating a unique filename", array($old_filename, $filename));
+						}
+					}
+							
 					if($filename != $fc_attrib_r['attribute_val'])
 					{
 						if(!update_item_attribute($fc_attrib_r['item_id'],
@@ -203,6 +215,8 @@ class Upgrader_100_110 extends OpenDbUpgrader
 										);
 						}
 					}				
+					
+					$previous_filename_r[] = $filename;
 					
 					$uploadFile = $uploadDir.'/'.$filename;
 					if(copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!

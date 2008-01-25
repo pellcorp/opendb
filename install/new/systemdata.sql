@@ -410,7 +410,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('themes', 'charset', 1, 'Content Type Charset', 'This setting will force a meta http-equiv Content Type header to be included in the source of each page.', 'value_select', ',utf-8,iso-8859-1');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'enable_javascript_validation', 1, 'Enable Javascript Validation', 'Enforce javascript data validations in addition to backend validations.', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('widgets', 'show_prompt_compulsory_ind', 2, 'Show Prompt Compulsory Indicator', 'Any Mandatory data elements will show a visual mandatory element identifier', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('widgets', 'legal_html_tags', 3, 'Legal HTML Tags', '', 'array', 'text');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('logging', 'enable', 1, 'Enable', '', 'boolean');
@@ -523,12 +522,9 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_input_actions', 8, 'Show Item Input Actions', 'Show update, edit, delete actions', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_refresh_actions', 9, 'Show Item Refresh Action', '', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'title_mask_macro_theme_img_help', 11, 'Title Mask Help Entries', 'Display any \'theme_img\' title mask macro elements in the help section.', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_borrowed_or_returned', 12, 'Show Previously Borrowed Indication', 'Show indication if a user has already borrowed/returned item', 'boolean');
-
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'print_listing_datetime_mask', 15, 'Print Listing Datetime Mask', '', 'datemask');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_exact_match_search_columns', 17, 'Include Exact Match Search Columns', 'Include a column for each exact match search column.', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'alphalist_new_search_context', 18, 'Alpha List New Search Context', 'AlphaList should start a new search instead of further refining current search.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'print_listing_datetime_mask', 10, 'Print Listing Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_exact_match_search_columns', 11, 'Include Exact Match Search Columns', 'Include a column for each exact match search column.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'alphalist_new_search_context', 12, 'Alpha List New Search Context', 'AlphaList should start a new search instead of further refining current search.', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'show_item_type_group_lov', 2, 'Show Item Type Group LOV', '', 'boolean');
@@ -613,7 +609,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widg
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widgets', 'legal_html_tags', '9', 'big');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widgets', 'legal_html_tags', '10', 'sup');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widgets', 'legal_html_tags', '11', 'sub');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('widgets', 'show_prompt_compulsory_ind', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.signup', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'file', './log/usagelog.txt');
@@ -704,7 +699,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('list
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'items_per_page_options', '4', '51');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('listings', 'item_image_size', 'width', '69');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_exact_match_search_columns', 'FALSE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'title_mask_macro_theme_img_help', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'no_image', 'no-image.gif');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_item_image', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'allow_override_show_item_image', 'TRUE');
@@ -728,7 +722,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.fi
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_item_type_lov', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_owner_lov', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_s_status_type_lov', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings', 'show_borrowed_or_returned', 'TRUE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'reserve_more_information', 'TRUE');

@@ -247,7 +247,7 @@ class Listing
 	{
 		if($id === NULL || !is_array($this->_help_entry_added_r) || in_array($id, $this->_help_entry_added_r)!==TRUE)
 		{
-			$this->_help_entry_rs[] = array(img=>$img, text=>$help_text);
+			$this->_help_entry_rs[] = array(img=>$img, text=>$help_text, type=>$id);
 			$this->_help_entry_added_r[] = $id;
 		}
 	}
@@ -364,14 +364,11 @@ class Listing
 		}			
 				
 		$is_borrowed_or_returned = FALSE;
-		if(get_opendb_config_var('listings', 'show_borrowed_or_returned') !== FALSE)
+ 		if($item_r['owner_id'] != get_opendb_session_var('user_id'))
 		{
-	 		if($item_r['owner_id'] != get_opendb_session_var('user_id'))
+			if(is_item_borrowed_or_returned_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
 			{
-				if(is_item_borrowed_or_returned_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-				{
-					$is_borrowed_or_returned = TRUE;
-				}
+				$is_borrowed_or_returned = TRUE;
 			}
 		}
 		
@@ -612,15 +609,12 @@ class Listing
 				}
 			}
 			
-			if(get_opendb_config_var('listings', 'title_mask_macro_theme_img_help')!==FALSE)
+		    $title_mask_elements = $this->_titleMaskCfg->title_mask_macro_element_r('theme_img');
+			if(is_array($title_mask_elements))
 			{
-			    $title_mask_elements = $this->_titleMaskCfg->title_mask_macro_element_r('theme_img');
-				if(is_array($title_mask_elements))
+				while(list($img,$prompt) = each($title_mask_elements))
 				{
-					while(list($img,$prompt) = each($title_mask_elements))
-					{
-						$this->addHelpEntry($prompt, $img);
-					}
+					$this->addHelpEntry($prompt, $img, 'title_mask');
 				}
 			}
 			

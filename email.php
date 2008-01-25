@@ -141,15 +141,9 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 	
 	echo("</table>");
 	
-	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		$help_block_r[] = array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'));
-	}
-	
-	if(is_array($help_block_r))
-	{
-		echo format_help_block($help_block_r);
-	}
+	$help_block_r[] = array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory');
+
+	echo format_help_block($help_block_r);
 	
 	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("\n</form>");

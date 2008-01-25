@@ -850,15 +850,9 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 			$help_block_r[] = array('img'=>'rs.gif','text'=>get_opendb_lang_var('refreshed'));
 		}
 	
-		if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && $compulsory_fields!==FALSE)
-		{
-			$help_block_r[] = array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'));
-		}
-	
-		if(is_array($help_block_r))
-		{
-			$formContents .= format_help_block($help_block_r);
-		}
+		$help_block_r[] = array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory');
+
+		$formContents .= format_help_block($help_block_r);
 		
 		return $formContents;
 	}

@@ -161,6 +161,12 @@ DELETE FROM s_config_group_item_var WHERE group_id = 'item_input' AND id IN(
 DELETE FROM s_config_group_item WHERE group_id = 'item_display' AND id = 'tabbed_layout';
 DELETE FROM s_config_group_item_var WHERE group_id = 'item_display' AND id = 'tabbed_layout';
 
+DELETE FROM s_config_group_item WHERE group_id = 'widgets' AND id = 'show_prompt_compulsory_ind';
+DELETE FROM s_config_group_item_var WHERE group_id = 'widgets' AND id = 'show_prompt_compulsory_ind';
+
+DELETE FROM s_config_group_item WHERE group_id = 'listings' AND id IN('title_mask_macro_theme_img_help', 'show_borrowed_or_returned');
+DELETE FROM s_config_group_item_var WHERE group_id = 'listings' AND id IN('title_mask_macro_theme_img_help', 'show_borrowed_or_returned');
+
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_input', 'related_item_support', 4, 'Related Item Support', '', 'boolean');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_input', 'related_item_support', 'TRUE');
 

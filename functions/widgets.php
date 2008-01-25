@@ -198,13 +198,12 @@ function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL)
 	if(strlen($prompt_mask)>0 && strpos($prompt_mask, "%prompt%")!==FALSE)
 		$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
 		
-	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE && 
-			$attribute_type_r['compulsory_ind'] == 'Y')
+	if($attribute_type_r['compulsory_ind'] == 'Y')
 	{
 		if(strlen($prompt_mask)==0)
 			$prompt_mask = '%prompt%';
 			
-		$prompt .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'));
+		$prompt .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'), 'compulsory');
 	}
 	
 	$fieldid = strtolower(str_replace('_', '-', $attribute_type_r['s_attribute_type']).'-'.$attribute_type_r['order_no']);
@@ -339,7 +338,7 @@ function _format_help_list($help_entry)
 	}
 	else
 	{
-		$field .= "\n<li>"._format_help_entry($help_entry)."</li>";
+		$field .= "\n<li class=\"help_entry_".$help_entry['type']."\">"._format_help_entry($help_entry)."</li>";
 	}
 	
 	return $field;

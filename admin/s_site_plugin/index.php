@@ -1441,10 +1441,7 @@ else if($HTTP_VARS['op'] == 'edit')
 		display_edit_site_plugin($site_plugin_r, $HTTP_VARS);
 		echo("\n</table>");
 		
-		if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-		{
-			echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-		}
+		echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory')));
 			
 		if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 			echo("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.op.value='update_site_plugin'; this.form.submit();}\">");
@@ -1477,10 +1474,7 @@ else if($HTTP_VARS['op'] == 'new_site_plugin')
 	display_edit_site_plugin(NULL, $HTTP_VARS);
 	echo("\n</table>");
 	
-	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-	}
+	echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory')));
 			
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 		echo("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");

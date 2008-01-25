@@ -317,10 +317,7 @@ if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 	display_edit_form($status_type_r, $HTTP_VARS);
 	echo("\n</table>");
 		
-	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'))));
-	}
+	echo(format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory')));
 		
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 		echo("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");

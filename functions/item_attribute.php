@@ -689,7 +689,7 @@ function validate_attribute_val_r($attribute_val_r, $remove_duplicates = FALSE)
 }
 
 /**
-	Returns a array of all attribute reocrds for a specified item_id / instance_no / s_attribute_type / order_no combination
+	Returns a array of all attribute records for a specified item_id / instance_no / s_attribute_type / order_no combination
 	
 	Returns update_on in results, so that we can keep the update_on value for a attribute
 	that is only changing attribute_no
@@ -725,6 +725,75 @@ function fetch_arrayof_item_attribute_rs($item_id, $instance_no, $s_attribute_ty
 }
 
 /**
+ * This function assumes that the item_attribute table is locked to prevent a race
+ * condition!
+ */
+function get_unique_filename($filename)
+{
+	$file_r = parse_file($filename);
+	$filename_r = parse_numeric_suffix($file_r['name']);
+	
+	$count = 0;
+	if(strlen($filename_r['prefix'])>0 && is_numeric($filename['suffix'])) {
+		$file_r['name'] = $filename_r['prefix'];
+		$count = $filename_r['suffix'];
+	} else if(strlen($filename_r['suffix'])>0) { // filename is number only!
+		$file_r['name'] = $filename_r['suffix'].'_';
+	}
+	
+	$filelist_r = get_filename_list($file_r);
+	do {
+		$count++;
+		$file = $file_r['name'].$count.'.'.$file_r['extension'];
+	} while(in_array($file, $filelist_r));
+	
+	return $file;
+}
+
+function get_filename_list($file_r)
+{
+	$query = "SELECT attribute_val 
+			FROM item_attribute ia, s_attribute_type sat 
+			 WHERE ia.s_attribute_type = sat.s_attribute_type AND 
+			 sat.file_attribute_ind = 'Y' AND 
+			 ia.attribute_val LIKE '{$file_r['name']}%.{$file_r['extension']}'";
+	
+	$filename_r = array();
+	$results = db_query($query);
+	if($results && db_num_rows($results)>0)
+	{
+		while($item_attribute_r = db_fetch_assoc($results))
+		{
+			$filename_r[] = $item_attribute_r['attribute_val'];	
+		}
+		db_free_result($results);
+	}
+	
+	return $filename_r;
+}
+
+function is_exists_upload_file_item_attribute($filename)
+{
+	$filename = addslashes($filename);
+	
+	$query = "SELECT 'X' 
+			FROM item_attribute ia,
+				s_attribute_type sat
+			WHERE ia.s_attribute_type = sat.s_attribute_type AND
+			sat.file_attribute_ind = 'Y' AND
+			ia.attribute_val = '$filename'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		db_free_result($result);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+/**
 	A new item process is less expensive than an update item process, so these should probably be split up.
 */
 function insert_item_attributes($item_id, $instance_no, $s_item_type, $s_attribute_type, $order_no, $attribute_val_r, $file_r = NULL)
@@ -751,7 +820,7 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 
 	$is_file_resource_attribute_type = is_file_resource_attribute_type($s_attribute_type);
 
-	if(db_query("LOCK TABLES item_attribute WRITE"))
+	if(db_query("LOCK TABLES item_attribute WRITE, item_attribute AS ia READ, s_attribute_type AS sat READ"))
 	{
 		$item_attribute_type_rs = fetch_arrayof_item_attribute_rs($item_id, $instance_no, $s_attribute_type, $order_no);
 
@@ -793,15 +862,11 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 					{
 						if(is_array($file_r) && is_uploaded_file($file_r['tmp_name']))
 						{
-							// TODO - get unique filename for uploaded file here.
-							// ISSUES - if this is a refresh of a file with the same name, how do we know we are not overwriting 
-							// an existing uploaded file, or refreshing existing one?!!?  Is this just based on the upload item attribute
-							// - what happens if two different attributes share the same uploaded file?  It would seem to make sense that
-							// if its an update, and the filenames match, its a refresh, otherwise its considered a new file...
-							// we know what the current value is - $item_attribute_type_rs[$i]['attribute_val']!! 
-							
-							// do not look in upload directory.
-							//$attribute_val_r[$i] = get_unique_filename($attribute_val_r[$i]); 
+							if($item_attribute_type_rs[$i]['attribute_val'] != $attribute_val_r[$i] && 
+									is_exists_upload_file_item_attribute($attribute_val_r[$i]))
+							{
+								$attribute_val_r[$i] = get_unique_filename($attribute_val_r[$i]);
+							}
 							
 							if(!save_uploaded_file($file_r['tmp_name'], $attribute_val_r[$i]))
 							{

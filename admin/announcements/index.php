@@ -92,10 +92,7 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS=NULL)
 
 	$buffer .= "</table>";
 	
-    if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		$help_r[] = array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'));
-	}
+	$help_r[] = array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory');
     $help_r[] = array('text'=>'A zero in Display Days indicates the announcment will never expire.');
     $help_r[] = array('text'=>'No validation is performed on HTML entered in the Announcement text field.');
 

@@ -77,10 +77,7 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 	else
 		$onclick_event = "this.form.submit();";
 	
-	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		$formContents .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')));
-	}
+	$formContents .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory'));
 
 	$formContents .= "<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"".get_opendb_lang_var('save_review')."\">
 		<input type=\"hidden\" name=\"op\" value=\"$op\">

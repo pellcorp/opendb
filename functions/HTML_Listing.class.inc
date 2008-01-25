@@ -364,15 +364,14 @@ class HTML_Listing extends Listing
 					{
 						// show star if rated - Add it to the actual title, so we can do a bit more with title masks
 						$this->addHelpEntry(get_opendb_lang_var('item_reviewed'), 'rs.gif', 'item_reviewed');
-						$item_title .= _theme_image('rs.gif', get_opendb_lang_var('item_reviewed'), 'review');
+						$item_title .= _theme_image('rs.gif', get_opendb_lang_var('item_reviewed'), 'item_reviewed');
 					}
 			
 					if($is_borrowed_or_returned)
 					{
 						$this->addHelpEntry(get_opendb_lang_var('youve_borrow_or_return'), 'tick.gif', 'borrow_or_return');
-						$item_title .= _theme_image("tick.gif", get_opendb_lang_var('youve_borrow_or_return')); // show tick if previously borrowed or returned.
+						$item_title .= _theme_image("tick.gif", get_opendb_lang_var('youve_borrow_or_return'), 'borrow_or_return'); // show tick if previously borrowed or returned.
 					}
-
 					
 					$this->_write('<td class="title '.$columnClass.'">');
 					$this->_write($item_title);

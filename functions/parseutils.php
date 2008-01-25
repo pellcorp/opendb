@@ -18,6 +18,31 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+function parse_numeric_suffix($s) {
+	$prefix = '';
+	$suffix = '';
+		
+	if(is_numeric($s)) {
+		$suffix = $s;
+	} else if(is_numeric(substr($s, -1))) {
+		for($i=strlen($s)-1; $i>0; $i--) {
+			$s1 = substr($s, 0, $i);
+			$s2 = substr($s, $i);
+			
+			if(!is_numeric($s2)) {
+				break;			
+			}
+			
+			$prefix = $s1;
+			$suffix = $s2;
+		}
+	} else {
+		$prefix = $s;
+	}
+
+	return array(prefix=>$prefix, suffix=>$suffix);
+}
+
 /**
 	Assumes $c is single character
 */

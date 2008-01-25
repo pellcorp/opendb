@@ -291,10 +291,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		db_free_result($addr_results);
 	}//if($addr_results)
 
-	if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')));
-	}
+	$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory'));
 	
 	if($HTTP_VARS['op'] == 'new_user')
 	{
@@ -449,10 +446,7 @@ function get_user_password_change_form($user_r, $HTTP_VARS)
 
 	$buffer .= "</table>";
 	
-    if(get_opendb_config_var('widgets', 'show_prompt_compulsory_ind')!==FALSE)
-	{
-		$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field')));
-	}
+	$buffer .= format_help_block(array('img'=>'compulsory.gif', 'text'=>get_opendb_lang_var('compulsory_field'), id=>'compulsory'));
 	
     if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
 		$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";

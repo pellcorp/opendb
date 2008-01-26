@@ -169,7 +169,6 @@ class Upgrader_100_110 extends OpenDbUpgrader
 				if($count < $items_per_page)
 				{
 					$fc_attrib_rs[] = $fc_attrib_r;
-					$filename_list_r[] = $fc_attrib_r['attribute_val'];
 					$count++;
 				}
 			}
@@ -189,7 +188,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 					if(in_array($fc_attrib_r['attribute_val'], $previous_filename_r))
 					{
 						$file_r = get_root_filename($fc_attrib_r['attribute_val']);
-						$filename = generate_unique_filename($file_r, $filename_list_r);
+						$filename = generate_unique_filename($file_r, $previous_filename_r);
 		
 						if($filename != $fc_attrib_r['attribute_val'])
 						{

@@ -181,6 +181,7 @@ div.tabContentContainer
 	border: 1px solid gray;
 	float: left;
 	margin-top: -1px;
+	clear: left;
 	
 }
 

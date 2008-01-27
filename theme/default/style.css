@@ -320,7 +320,7 @@ ul.menu li a:hover, ul.menu li.active a
 	margin: 0px;
 	padding: 10px;
 	position: absolute;
-	right: -1px;
+	right: 0px;
 	top: 0px;
 	white-space: nowrap;
 }

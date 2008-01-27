@@ -55,7 +55,7 @@ td.data
 A#admin-logout
 {
 	position: absolute;
-	right: -1px;
+	right: 0px;
 	top: 0px;
 	margin: 0px;
 	margin-right: 10px;

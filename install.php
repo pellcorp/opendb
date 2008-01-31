@@ -291,7 +291,7 @@ function install_current_db_configuration()
 				installer to have the details re-entered, please delete or rename the <code>./include/local.config.php</code> file.</p>";
 		
 		$buffer .= "<table class=\"databaseDetails\">
-			<tr><td class=\"prompt\">MySQL Database Hostname:</td><td class=\"data\">".$dbserver_conf_r['host']."</td></tr>
+			<tr><td class=\"prompt\">MySQL Database Host:</td><td class=\"data\">".$dbserver_conf_r['host']."</td></tr>
 			<tr><td class=\"prompt\">MySQL Database Name:</td><td class=\"data\">".$dbserver_conf_r['dbname']."</td></tr>
 			<tr><td class=\"prompt\">MySQL User Name:</td><td class=\"data\">".$dbserver_conf_r['username']."</td></tr>
 			<tr><td class=\"prompt\">Table Prefix:</td><td class=\"data\">".(strlen($dbserver_conf_r['table_prefix'])>0?$dbserver_conf_r['table_prefix']:"(none)")."</td></tr>
@@ -314,8 +314,7 @@ function install_check_user_permissions()
 	{
 		$buffer .= "<h3>OpenDb Database User Privileges</h3>\n";
 		
-		$buffer .= "<p>The following table lists selected user privileges that may cause issues in OpenDb, not
-					all privileges are listed for the moment, only known problematic ones.</p>";
+		$buffer .= "<p>The following user privilege(s) may cause issues in OpenDb if not granted.</p>";
 		
 		$buffer .= "<table class=\"userPrivilegesList\">";
 	
@@ -409,7 +408,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 
 	$buffer .= get_input_field("host",
 		NULL, // s_attribute_type
-		"MySQL Database Hostname",
+		"MySQL Database Host",
         "text(32,32)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['host'])>0
@@ -933,7 +932,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 				any mistakes.</p>");
 				
 				echo("<table class=\"databaseDetails\">
-					<tr><td class=\"prompt\">MySQL Database Hostname:</td><td class=\"data\">".$HTTP_VARS['host']."</td></tr>
+					<tr><td class=\"prompt\">MySQL Database Host:</td><td class=\"data\">".$HTTP_VARS['host']."</td></tr>
 					<tr><td class=\"prompt\">MySQL Database Name:</td><td class=\"data\">".$HTTP_VARS['dbname']."</td></tr>
 					<tr><td class=\"prompt\">MySQL User Name:</td><td class=\"data\">".$HTTP_VARS['username']."</td></tr>
 					<tr><td class=\"prompt\">Table Prefix:</td><td class=\"data\">".(strlen($HTTP_VARS['table_prefix'])>0?$HTTP_VARS['table_prefix']:"(none)")."</td></tr>

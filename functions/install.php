@@ -884,7 +884,7 @@ function get_upgrader_r($db_version)
 		for($i=0; $i<count($upgrader_rs); $i++)
 		{
 			$upgrader_r = $upgrader_rs[$i];
-			if($db_version == $upgrader_r['to_version'])
+			if($latest_to_version == $upgrader_r['to_version'])
 			{
 				return $upgrader_r;
 			}

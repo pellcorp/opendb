@@ -393,6 +393,10 @@ ALTER TABLE file_cache CHANGE url url TEXT NOT NULL;
 UPDATE item_attribute SET attribute_val = REPLACE(attribute_val, 'upload/', '') 
 WHERE attribute_val LIKE 'upload/%';
 
+# do not think there should be any attributes like this, but its important to cleanup if exists.
+UPDATE item_attribute SET attribute_val = REPLACE(attribute_val, './upload/', '') 
+WHERE attribute_val LIKE './upload/%';
+
 # logfile config var should not be readonly.
 UPDATE s_config_group_item SET type = 'text' WHERE group_id = 'logging' AND id = 'file';
 

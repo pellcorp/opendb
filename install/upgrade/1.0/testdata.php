@@ -7,57 +7,86 @@ require_once("./include/begin.inc.php");
 
 include_once("./functions/database.php");
 
-$item_attrib_rs = NULL;
+include_once("./functions/item_attribute.php");
 
-$query = "SELECT * FROM item_attribute WHERE s_attribute_type = 'IMAGEURL' ORDER BY item_id LIMIT 0, 100";
-$results = db_query($query);
-if($results)
+function insert_item_image_attrib_and_cache($item_attrib_r, $count)
 {
-	while($item_attrib_r = db_fetch_assoc($results))
-	{
-		$item_attrib_rs[] = $item_attrib_r;
-	}
-	db_free_result($results);
+	$filename = "image$count.jpg";
+	
+	echo "<br>Inserting item...".$item_attrib_r['id']." - $filename";
+	
+	insert_item_attribute(
+		$item_attrib_r['id'], 
+		NULL, 
+		$item_attrib_r['s_attribute_type'], 
+		$item_attrib_r['order_no'], 
+		"1", 
+		NULL, 
+		$filename);
+
+	$url = "file://opendb/upload/".
+				$item_attrib_r['id']."/".
+				"0/".
+				$item_attrib_r['s_attribute_type']."/".
+				$item_attrib_r['order_no']."/".
+				"1/".
+				$filename;
+	
+	$cacheFile = "item".$item_attrib_r['id']."_0";
+	$cacheFileThumb = "T_item".$item_attrib_r['id']."_0";
+	
+	db_query("INSERT INTO file_cache(cache_type, cache_date, expire_date, url, upload_file_ind, cache_file, cache_file_thumb)
+			VALUES ('ITEM', NOW(), NULL, '$url', 'Y', '$cacheFile', '$cacheFileThumb')");
+	
+	copy("./install/upgrade/1.0/image.jpg", "./itemcache/".$cacheFile);
+	copy("./install/upgrade/1.0/image.jpg", "./itemcache/".$cacheFileThumb);
 }
 
-if(is_array($item_attrib_rs))
+function insert_unique_imageurl()
 {
-	$count = 0;
-	while(list(,$item_attrib_r) = each($item_attrib_rs))
+	$query = "SELECT i.id, siat.s_attribute_type, siat.order_no 
+		FROM item i, s_item_attribute_type siat
+		WHERE i.s_item_type = siat.s_item_type AND
+		siat.s_attribute_type = 'IMAGEURL' AND 
+		i.id LIMIT 0, 100";
+
+	$results = db_query($query);
+	if($results)
 	{
-		$filename = "image$count.jpg";
-		
-		echo "<br>Updating item...".$item_attrib_r['item_id']." - $filename";
-		
-		
-		$count++;
-		
-		db_query("UPDATE item_attribute 
-				SET attribute_val = '$filename' WHERE
-				item_id = ${item_attrib_r['item_id']} AND
-				instance_no = ${item_attrib_r['instance_no']} AND
-				s_attribute_type = 'IMAGEURL' AND 
-				order_no = ${item_attrib_r['order_no']} AND
-				attribute_no = ${item_attrib_r['attribute_no']}");
-				
-		$url = "file://opendb/upload/".
-					$item_attrib_r['item_id']."/".
-					$item_attrib_r['instance_no']."/".
-					"IMAGEURL/".
-					$item_attrib_r['order_no']."/".
-					$item_attrib_r['attribute_no']."/".
-					$filename;
-		
-		$cacheFile = "item".$item_attrib_r['item_id'].$item_attrib_r['instance'];
-		$cacheFileThumb = "T_item".$item_attrib_r['item_id'].$item_attrib_r['instance'];
-		
-		db_query("INSERT INTO file_cache(cache_type, cache_date, expire_date, url, upload_file_ind, cache_file, cache_file_thumb)
-				VALUES ('ITEM', NOW(), NULL, '$url', 'Y', '$cacheFile', '$cacheFileThumb')");
-		
-		copy("./upload/image.jpg", "./itemcache/".$cacheFile);
-		copy("./upload/image.jpg", "./itemcache/".$cacheFileThumb);
+		$count = 0;
+		while($item_attrib_r = db_fetch_assoc($results))
+		{	
+			insert_item_image_attrib_and_cache($item_attrib_r, $count);
+			$count++;
+		}
+		db_free_result($results);
 	}
 }
+
+function insert_duplicate_imageurl()
+{
+	$query = "SELECT i.id, siat.s_attribute_type, siat.order_no 
+		FROM item i, s_item_attribute_type siat
+		WHERE i.s_item_type = siat.s_item_type AND
+		siat.s_attribute_type = 'IMAGEURL' AND 
+		i.id LIMIT 101, 201";
+
+	$results = db_query($query);
+	if($results)
+	{
+		while($item_attrib_r = db_fetch_assoc($results))
+		{	
+			insert_item_image_attrib_and_cache($item_attrib_r, "XXX");
+		}
+		db_free_result($results);
+	}
+}
+
+db_query("DELETE FROM item_attribute WHERE s_attribute_type = 'IMAGEURL'");
+db_query("DELETE FROM file_cache");
+
+insert_unique_imageurl();
+insert_duplicate_imageurl();
 
 // Cleanup after begin.inc.php
 require_once("./include/end.inc.php");

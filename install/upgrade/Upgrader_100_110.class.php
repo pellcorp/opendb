@@ -21,6 +21,59 @@
 include_once("./functions/OpenDbUpgrader.class.php");
 include_once("./functions/filecache.php");
 
+/**
+@param $filename - assumes its been basenamed
+*/
+function get_upload_file_url($item_id, $instance_no, $s_attribute_type, $order_no, $attribute_no, $filename)
+{
+	return "file://opendb/upload/${item_id}/".(is_numeric($instance_no)?$instance_no:0)."/${s_attribute_type}/${order_no}/${attribute_no}/$filename";
+}
+
+/**
+	Example:
+		file://opendb/upload/123/2/IMAGEURL/1/1/JasonPell.doc
+*/
+function parse_upload_file_url($url)
+{
+	if(preg_match("!file://opendb/upload/([\d]+)/([\d]+)/([^/]+)/([\d]+)/([\d]+)/([^\$]+)!", $url, $matches))
+	{
+		return array(
+			'item_id'=>$matches[1],
+			'instance_no'=>$matches[2],
+			's_attribute_type'=>$matches[3],
+			'order_no'=>$matches[4],
+			'attribute_no'=>$matches[5],
+			'filename'=>$matches[6]);
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+/**
+ * Optionally expands URL for file upload cached files.
+ */
+function fetch_10_upload_file_cache_r($item_attrib_r)
+{
+	if(!is_url_absolute($item_attrib_r['attribute_val']) && !file_exists($item_attrib_r['attribute_val']))
+	{
+		$url = get_upload_file_url(
+					$item_attrib_r['item_id'],
+					$item_attrib_r['instance_attribute_ind']?$item_attrib_r['instance_no']:"0",
+					$item_attrib_r['s_attribute_type'],
+					$item_attrib_r['order_no'],
+					'1', // attribute_no - file attributes cannot be multivalue - so this will always be 1
+					$item_attrib_r['attribute_val']);
+	
+		return fetch_url_file_cache_r($url, 'ITEM', INCLUDE_EXPIRED);
+	}
+	else
+	{	
+		return FALSE;
+	}
+}
+
 class Upgrader_100_110 extends OpenDbUpgrader
 {
 	function Upgrader_100_110()
@@ -123,8 +176,6 @@ class Upgrader_100_110 extends OpenDbUpgrader
 	 */
 	function executeStep6($stepPart)
 	{
-		// need to copy all uploaded records from file_cache into upload directory creating using a 
-		// unique filename
 		$uploadDir = get_item_input_file_upload_directory();
 		if(!is_writable($uploadDir))
 		{
@@ -132,117 +183,96 @@ class Upgrader_100_110 extends OpenDbUpgrader
 			return FALSE;
 		}
 		
-		$query = "SELECT fc.sequence_number, 
-						fc.cache_type,
-						fc.cache_date,
-						fc.expire_date,
-						fc.url,
-						fc.location,
-						fc.upload_file_ind,
-						fc.content_type,
-						fc.content_length,
-						fc.cache_file, 
-						fc.cache_file_thumb, 
-						ia.item_id, 
-						ia.instance_no, 
-						ia.s_attribute_type, 
-						ia.order_no, 
-						ia.attribute_val, 
-						ia.attribute_no
-						FROM file_cache fc,
-						item_attribute ia
-						WHERE fc.upload_file_ind = 'Y' AND fc.cache_type = 'ITEM' AND
-						fc.url = CONCAT( 'file://opendb/upload/', ia.item_id, '/', ia.instance_no, '/', ia.s_attribute_type, '/', ia.order_no, '/', ia.attribute_no, '/', ia.attribute_val )";
-
-		$items_per_page = 50;
-		$start_index = 0; //$stepPart > 0 ? ($stepPart * $items_per_page) : 0;
-		$query .= ' LIMIT ' .$start_index. ', ' .($items_per_page + 1);
-		$count = 0;
-		
-		$filename_list_r = array();
-		$fc_attrib_rs = NULL;
+		$query = "SELECT DISTINCT ia.item_id, 
+				ia.instance_no, 
+				ia.s_attribute_type,
+				ia.order_no, 
+				ia.attribute_val, 
+				ia.attribute_no,
+				siat.instance_attribute_ind
+		FROM 	item_attribute ia,
+				s_attribute_type sat,
+				s_item_attribute_type siat
+		WHERE	sat.s_attribute_type = siat.s_attribute_type AND
+				siat.s_attribute_type = ia.s_attribute_type AND
+				siat.order_no = siat.order_no AND
+				ia.s_attribute_type = sat.s_attribute_type AND
+				sat.file_attribute_ind = 'Y' AND
+				ia.attribute_val NOT LIKE '%://%'
+		ORDER BY ia.item_id, ia.instance_no, ia.order_no, ia.attribute_no";
+						
+		$item_attrib_rs = NULL;
 		$results = db_query($query);
 		if($results)
 		{
-			while($fc_attrib_r = db_fetch_assoc($results))
+			while($item_attrib_r = db_fetch_assoc($results))
 			{
-				if($count < $items_per_page)
-				{
-					$fc_attrib_rs[] = $fc_attrib_r;
-					$count++;
+				$fc_entry_r = fetch_10_upload_file_cache_r($item_attrib_r);
+				if($fc_entry_r!==FALSE) {
+					$fc_entry_rs[] = array_merge($fc_entry_r, $item_attrib_r);
+				} else {
+					// no uploaded file so ignore?
 				}
 			}
 			db_free_result($results);
 		}
 		
-		if(is_array($fc_attrib_rs))
+		if(is_array($fc_entry_rs))
 		{
-			$previous_filename_r = array(); 
+			$previous_filename_r = array();
 			
 			$directory = file_cache_get_cache_type_directory('ITEM');
-			while(list(,$fc_attrib_r) = each($fc_attrib_rs))
+			while(list(,$fc_entry_r) = each($fc_entry_rs))
 			{
-				$cacheFile = $directory.'/'.$fc_attrib_r['cache_file'];
+				$cacheFile = $directory.'/'.$fc_entry_r['cache_file'];
 				if(file_exists($cacheFile))
 				{
-					if(in_array($fc_attrib_r['attribute_val'], $previous_filename_r))
+					if(in_array($fc_entry_r['attribute_val'], $previous_filename_r))
 					{
-						$file_r = get_root_filename($fc_attrib_r['attribute_val']);
+						$file_r = get_root_filename($fc_entry_r['attribute_val']);
 						$filename = generate_unique_filename($file_r, $previous_filename_r);
 		
-						if($filename != $fc_attrib_r['attribute_val'])
+						if($filename != $fc_entry_r['attribute_val'])
 						{
-							opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "Upload file already exists - generating a unique filename", array($old_filename, $filename));
-						}
-					}
+							opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "Upload file already exists - generating a unique filename", array($fc_entry_r['attribute_val'], $filename));
 							
-					if($filename != $fc_attrib_r['attribute_val'])
-					{
-						if(!update_item_attribute($fc_attrib_r['item_id'],
-										$fc_attrib_r['instance_no'],
-										$fc_attrib_r['s_attribute_type'],
-										$fc_attrib_r['order_no'],
-										$fc_attrib_r['attribute_no'],
-										NULL,
-										$filename))
-						{
-							$this->addError('Failed to update attribute', 
-											'item_id='.$fc_attrib_r['item_id'].
-											'; s_attribute_type='.$fc_attrib_r['s_attribute_type'].
-											'; order_no='.$fc_attrib_r['order_no'].
-											'; $filename='.$fc_attrib_r['$filename']
-										);
+							if(!update_item_attribute($fc_entry_r['item_id'],
+											$fc_entry_r['instance_no'],
+											$fc_entry_r['s_attribute_type'],
+											$fc_entry_r['order_no'],
+											$fc_entry_r['attribute_no'],
+											NULL,
+											$filename))
+							{
+								$this->addError('Failed to update attribute', 
+												'item_id='.$fc_entry_r['item_id'].
+												'; s_attribute_type='.$fc_entry_r['s_attribute_type'].
+												'; order_no='.$fc_entry_r['order_no'].
+												'; $filename='.$fc_entry_r['$filename']
+											);
+							}
 						}
-					}				
-					
-					$previous_filename_r[] = $filename;
-					
-					$uploadFile = $uploadDir.'/'.$filename;
-					if(copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
-					{
-						// fake it, so that the delete_file_cache function goes to the right spot.
-						$fc_attrib_r['upload_file_ind'] = 'N';
-				
-						delete_file_cache($fc_attrib_r);
 					}
 					else
+					{
+						$filename = $fc_entry_r['attribute_val'];
+					}
+
+					$previous_filename_r[] = $filename;
+					
+					// NOTE - we are not going to delete the cache files they can be removed later on manually
+					$uploadFile = $uploadDir.'/'.$filename;
+					if(!copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
 					{
 						$this->addError('Failed to copy upload file', 
 									'cacheFile='.$cacheFile.
 									'; uploadFile='.$uploadFile);
 					}
 				}
-				else
-				{
-					delete_file_cache($fc_attrib_r);
-				}
 			}
 		}
 		
-		if($count == $items_per_page)// still at least one result left
-			return -1; // unfinished
-		else		
-			return TRUE;
+		return TRUE;
 	}
 	
 	function executeStep7($stepPart)

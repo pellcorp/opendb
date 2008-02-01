@@ -54,7 +54,9 @@ function http_redirect($link)
 		
 		$host = $_SERVER['HTTP_HOST'];
 		
-		$path = dirname($_SERVER['PHP_SELF']);
+		// fix for windows
+		$path = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+		
 		if(substr($path, -1, 1) != '/') {
 			$path .= '/';
 		}

@@ -78,33 +78,248 @@ function get_item_display_field(
 		else 
 			$values[] = $value;
 		
-		$field = "<ul class=\"fileviewer\">";
-		
-		while(list(,$value) = each($values)) {
-			$value = trim($value);
-			$value_format_mask = $format_mask;
-			
-			if(strpos($value_format_mask, '%img%')!==FALSE)
+		if(count($values)>0)
+		{
+			$display_value_r = array();
+			while(list(,$value) = each($values))
 			{
-				$file_type_r = fetch_file_type_r(fetch_file_type_for_extension(get_file_ext($value)));
+				$value = trim($value);
+				$value_format_mask = $format_mask;
 				
-				if(strlen($file_type_r['image'])>0 && ($image_src = _theme_image_src($file_type_r['image']))!==FALSE)
-					$img = '<img src="'.$image_src.'" title="'.$value.'">';
-				else
-					$img = '';				
-			
-				$value_format_mask = str_replace('%img%', $img, $value_format_mask);
-			}
-	
-			if(strpos($value_format_mask, '%value%')!==FALSE)
-			{
-				$value_format_mask = str_replace('%value%', $value, $value_format_mask);
-			}
-	
-			$field .= "<li><a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a></li>";
-		}
+				if(strpos($value_format_mask, '%img%')!==FALSE)
+				{
+					$file_type_r = fetch_file_type_r(fetch_file_type_for_extension(get_file_ext($value)));
+					
+					if(strlen($file_type_r['image'])>0 && ($image_src = _theme_image_src($file_type_r['image']))!==FALSE)
+						$img = '<img src="'.$image_src.'" title="'.$value.'">';
+					else
+						$img = '';				
+				
+					$value_format_mask = str_replace('%img%', $img, $value_format_mask);
+				}
 		
-		$field .= "</ul>";
+				if(strpos($value_format_mask, '%value%')!==FALSE)
+				{
+					$value_format_mask = str_replace('%value%', $value, $value_format_mask);
+				}
+		
+				$display_value_r[] = "<a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a>";
+			}
+			
+			$field = format_multivalue_block($display_value_r, 'fileviewer');
+			
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+			else
+				return $field;
+		}
+		else
+		{
+			return '';			
+		}
+	}
+	else if($item_attribute_type_r['display_type'] == 'datetime')
+	{
+		if(is_array($value))
+			$values = $value;
+		else 
+			$values[] = $value;
+
+		if(count($values)>0)
+		{
+			$display_value_r = array();
+			while(list(,$value) = each($values))
+			{
+				$value = trim($value);
+				
+				$timestamp = get_timestamp_for_datetime($value, 'YYYYMMDDHH24MISS');
+				if($timestamp !== FALSE)
+				{
+					if(strlen($item_attribute_type_r['display_type_arg1'])==0)
+						$item_attribute_type_r['display_type_arg1'] = 'DD/MM/YYYY';
+		
+					$datetime = get_localised_timestamp($item_attribute_type_r['display_type_arg1'], $timestamp);
+					if($datetime!==FALSE)
+						$display_value_r[] = $datetime;
+					else
+						$display_value_r[] = $value;
+				}
+				else
+				{
+					$display_value_r[] = $value;
+				}
+			}
+			
+			$field = format_multivalue_block($display_value_r, 'datetime');
+			
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+			else
+				return $field;
+		}
+		else
+		{
+			return '';
+		}
+	}
+	else if($item_attribute_type_r['display_type'] == 'format_mins')
+	{
+		if(is_array($value))
+			$values = $value;
+		else 
+			$values[] = $value;
+
+		if(count($values)>0)
+		{
+			$display_value_r = array();
+			while(list(,$value) = each($values))
+			{
+				$value = trim($value);
+				if(is_numeric($value))
+				{
+					// Ensure we have a mask to work with.
+					$display_mask = $item_attribute_type_r['display_type_arg1'];
+					if(strlen($display_mask)==0)
+						$display_mask = '%h %H %m %M';
+		
+					$hrs = floor($value/60); // hours
+					$mins = $value%60;	// minutes
+		
+					// Process display_mask and remove any bits that are not needed because the hour/minute is zero.
+					if($mins == 0 && $hrs > 0) // only get rid of minutes if $hrs is a value.
+					{
+						$index = strpos($display_mask, '%H');
+						if($index !== FALSE)
+							$display_mask = substr($display_mask, 0, $index+2);//include the %H
+						else
+						{
+							$index = strpos($display_mask, '%m');
+							if($index!=FALSE)
+								$display_mask = substr($display_mask, 0, $index);//include the %H
+						}
+					}
+					else if($hrs == 0)
+					{
+						$index = strpos($display_mask, '%m');
+						if($index!=FALSE)
+							$display_mask = substr($display_mask, $index);//include the %H
+					}
+		
+					// Unfortunately we need to do $mins>0 and $hrs>0 if's twice, because otherwise once we
+					// replace the %h and %H the test for $mins>0 would not be able to cut the display_mask,
+					// based on the %h/%H...
+					if($hrs>0)
+					{
+						// Now do all replacements.
+						$display_mask = str_replace('%h',$hrs,$display_mask);
+						if($hrs!=1)
+							$display_mask = str_replace('%H',get_opendb_lang_var('hours'),$display_mask);
+						else
+							$display_mask = str_replace('%H',get_opendb_lang_var('hour'),$display_mask);
+					}
+		
+					if($mins>=0 || ($hrs===0 && $mins===0))
+					{
+						// Now do minute replacements only.
+						$display_mask = str_replace('%m',$mins,$display_mask);
+						if($mins!=1)
+							$display_mask = str_replace('%M',get_opendb_lang_var('minutes'),$display_mask);
+						else
+							$display_mask = str_replace('%M',get_opendb_lang_var('minute'),$display_mask);
+					}
+		
+					$display_value_r[] = $display_mask;
+				}
+				else
+				{
+					// what else can we do here?!
+					$display_value_r[] = $value;
+				}
+			}
+			
+			$field = format_multivalue_block($display_value_r, 'format_mins');
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+			else
+				return $field;
+		}
+		else
+		{
+			return '';
+		}
+	}
+	else if($item_attribute_type_r['display_type'] == 'star_rating') // arg[0] = rating range
+	{
+		if(is_array($value))
+			$values = $value;
+		else 
+			$values[] = $value;
+
+		if(count($values)>0)
+		{
+			$display_value_r = array();
+			while(list(,$value) = each($values))
+			{
+				$value = trim($value);
+
+				// no point unless numeric
+				if(is_numeric($value))
+				{
+					$total_count = $item_attribute_type_r['display_type_arg1'];
+					if(is_numeric($total_count))
+					{
+						$display_value = '';
+						$j = $value;
+						for($i=0;$i<$total_count;++$i)
+						{
+							if($j >= 0.75)
+								$display_value .= _theme_image('rs.gif');
+							else if ($j >=0.25)
+								$display_value .= _theme_image('rgs.gif');
+							else
+								$display_value .= _theme_image('gs.gif');
+							$j = $j - 1;
+						}
+		
+						$ratingmask = $item_attribute_type_r['display_type_arg2'];
+						if(strlen($ratingmask)>0)
+						{
+							$ratingmask = str_replace('%value%', $value, $ratingmask);
+							$ratingmask = str_replace('%maxrange%', $total_count, $ratingmask);
+							$display_value = str_replace('%starrating%', $display_value, $ratingmask);
+						}
+		
+						if($item_attribute_type_r['listing_link_ind'] == 'Y')
+						{
+							$display_value = format_listing_link($value, $display_value, $item_attribute_type_r, NULL);
+						}
+					}
+					
+					$display_value_r[] = $display_value;
+				}
+			}
+			
+			$field = format_multivalue_block($display_value_r, 'starrating');
+			if($dowrap)
+				return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
+			else
+				return $field;
+		}
+		else
+		{
+			return ''; // nothing to do!
+		}
+	}
+	else if(!is_array($value) && $item_attribute_type_r['display_type'] == 'display' && 
+									ifempty($item_attribute_type_r['display_type_arg1'], '%value%') == '%value%')
+	{
+		// Support newline formatting by default.
+		$value = nl2br(trim($value));
+		
+		if($item_attribute_type_r['listing_link_ind'] == 'Y')
+			$field = format_listing_links($value, $item_attribute_type_r, 'word');
+		else
+			$field = $value;
 		
 		if($dowrap)
 			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
@@ -139,205 +354,6 @@ function get_item_display_field(
 		}
 
 		$field = format_list_from_array($values, $item_attribute_type_r, $item_attribute_type_r['listing_link_ind']=='Y'?$attr_match:FALSE);
-		if($dowrap)
-			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
-		else
-			return $field;
-	}
-	else if($item_attribute_type_r['display_type'] == 'datetime')
-	{
-		$value = trim($value);
-
-		$timestamp = get_timestamp_for_datetime($value, 'YYYYMMDDHH24MISS');
-		if($timestamp !== FALSE)
-		{
-			if(strlen($item_attribute_type_r['display_type_arg1'])==0)
-				$item_attribute_type_r['display_type_arg1'] = 'DD/MM/YYYY';
-
-			$datetime = get_localised_timestamp($item_attribute_type_r['display_type_arg1'], $timestamp);
-			if($datetime!==FALSE)
-				$field = $datetime;
-			else
-				$field = $value;
-		}
-		else
-		{
-			$field = $value;
-		}
-		
-		if($dowrap)
-			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
-		else
-			return $field;
-	}
-	else if($item_attribute_type_r['display_type'] == 'format_mins')
-	{
-		$time_value=trim($value);// time display
-		if( is_numeric($time_value) )
-		{
-			// Ensure we have a mask to work with.
-			$display_mask = $item_attribute_type_r['display_type_arg1'];
-			if(strlen($display_mask)==0)
-				$display_mask = '%h %H %m %M';
-
-			$hrs = floor($time_value/60); // hours
-			$mins = $time_value%60;	// minutes
-
-			// Process display_mask and remove any bits that are not needed because the hour/minute is zero.
-			if($mins == 0 && $hrs > 0) // only get rid of minutes if $hrs is a value.
-			{
-				$index = strpos($display_mask, '%H');
-				if($index !== FALSE)
-					$display_mask = substr($display_mask, 0, $index+2);//include the %H
-				else
-				{
-					$index = strpos($display_mask, '%m');
-					if($index!=FALSE)
-						$display_mask = substr($display_mask, 0, $index);//include the %H
-				}
-			}
-			else if($hrs == 0)
-			{
-				$index = strpos($display_mask, '%m');
-				if($index!=FALSE)
-					$display_mask = substr($display_mask, $index);//include the %H
-			}
-
-			// Unfortunately we need to do $mins>0 and $hrs>0 if's twice, because otherwise once we
-			// replace the %h and %H the test for $mins>0 would not be able to cut the display_mask,
-			// based on the %h/%H...
-			if($hrs>0)
-			{
-				// Now do all replacements.
-				$display_mask = str_replace('%h',$hrs,$display_mask);
-				if($hrs!=1)
-					$display_mask = str_replace('%H',get_opendb_lang_var('hours'),$display_mask);
-				else
-					$display_mask = str_replace('%H',get_opendb_lang_var('hour'),$display_mask);
-			}
-
-			if($mins>=0 || ($hrs===0 && $mins===0))
-			{
-				// Now do minute replacements only.
-				$display_mask = str_replace('%m',$mins,$display_mask);
-				if($mins!=1)
-					$display_mask = str_replace('%M',get_opendb_lang_var('minutes'),$display_mask);
-				else
-					$display_mask = str_replace('%M',get_opendb_lang_var('minute'),$display_mask);
-			}
-
-			// Now return mask with parts of value inserted.
-			if($dowrap)
-				return format_field($item_attribute_type_r['prompt'], $display_mask, $prompt_mask);
-			else
-				return $display_mask;
-		}
-		else
-		{
-			// what else can we do here?!
-			if($dowrap)
-				return format_field($item_attribute_type_r['prompt'], $time_value, $prompt_mask);
-			else
-				return $time_value;
-		}
-	}
-	else if($item_attribute_type_r['display_type'] == 'review')
-	{
-		$total_count = fetch_attribute_type_cnt('S_RATING');
-		if(is_numeric($total_count))
-		{
-			$value = trim($value);
-			if(!is_numeric($value))
-			{
-				$value = 0;
-			}
-			$field = '';
-			$j = $value;
-			for($i=0;$i<$total_count;++$i)
-			{
-				if($j >= 0.75)
-					$field .= _theme_image('rs.gif');
-				else if ($j >=0.25)
-					$field .= _theme_image('rgs.gif');
-				else
-					$field .= _theme_image('gs.gif');
-				$j = $j - 1;
-			}
-			
-			// If a mask is defined, format the display value.
-			if(strlen($item_attribute_type_r['display_type_arg1'])>0)
-			{
-				$lookup_r = fetch_attribute_type_lookup_r('S_RATING', $value);
-				if(is_not_empty_array($lookup_r))
-				{
-					$field .= format_display_value(
-								$item_attribute_type_r['display_type_arg1'], 
-								$lookup_r['img'],
-								$lookup_r['value'],
-								$lookup_r['display']);
-				}
-			}
-			return $field; // this is only used in a few places.
-		}
-	}
-	else if($item_attribute_type_r['display_type'] == 'star_rating') // arg[0] = rating range
-	{
-		$value = trim($value);
-
-		// no point unless numeric
-		if(is_numeric($value))
-		{
-			$total_count = $item_attribute_type_r['display_type_arg1'];
-			if(is_numeric($total_count))
-			{
-				$field = '';
-				$j = $value;
-				for($i=0;$i<$total_count;++$i)
-				{
-					if($j >= 0.75)
-						$field .= _theme_image('rs.gif');
-					else if ($j >=0.25)
-						$field .= _theme_image('rgs.gif');
-					else
-						$field .= _theme_image('gs.gif');
-					$j = $j - 1;
-				}
-
-				$ratingmask = $item_attribute_type_r['display_type_arg2'];
-				if(strlen($ratingmask)>0)
-				{
-					$ratingmask = str_replace('%value%', $value, $ratingmask);
-					$ratingmask = str_replace('%maxrange%', $total_count, $ratingmask);
-					$field = str_replace('%starrating%', $field, $ratingmask);
-				}
-
-				if($item_attribute_type_r['listing_link_ind'] == 'Y')
-				{
-					$field = format_listing_link($value, $field, $item_attribute_type_r, NULL);
-				}
-
-				if($dowrap)
-					return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
-				else
-					return $field;
-			}
-		}
-		else
-		{
-			return ''; // nothing to do!
-		}
-	}
-	else if(!is_array($value) && $item_attribute_type_r['display_type'] == 'display' && 
-									ifempty($item_attribute_type_r['display_type_arg1'], '%value%') == '%value%')
-	{
-		// Support newline formatting by default.
-		$value = nl2br(trim($value));
-		
-		if($item_attribute_type_r['listing_link_ind'] == 'Y')
-			$field = format_listing_links($value, $item_attribute_type_r, 'word');
-		else
-			$field = $value;
-		
 		if($dowrap)
 			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
 		else
@@ -404,12 +420,70 @@ function get_item_display_field(
 			}
 		}
 	}
+	else if($item_attribute_type_r['display_type'] == 'review')
+	{
+		$total_count = fetch_attribute_type_cnt('S_RATING');
+		if(is_numeric($total_count))
+		{
+			$value = trim($value);
+			if(!is_numeric($value))
+			{
+				$value = 0;
+			}
+			$field = '';
+			$j = $value;
+			for($i=0;$i<$total_count;++$i)
+			{
+				if($j >= 0.75)
+					$field .= _theme_image('rs.gif');
+				else if ($j >=0.25)
+					$field .= _theme_image('rgs.gif');
+				else
+					$field .= _theme_image('gs.gif');
+				$j = $j - 1;
+			}
+			
+			// If a mask is defined, format the display value.
+			if(strlen($item_attribute_type_r['display_type_arg1'])>0)
+			{
+				$lookup_r = fetch_attribute_type_lookup_r('S_RATING', $value);
+				if(is_not_empty_array($lookup_r))
+				{
+					$field .= format_display_value(
+								$item_attribute_type_r['display_type_arg1'], 
+								$lookup_r['img'],
+								$lookup_r['value'],
+								$lookup_r['display']);
+				}
+			}
+			return $field; // this is only used in a few places.
+		}
+	}
 
    	//else -- no display type match.
    	if($dowrap)
 		return format_field($item_attribute_type_r['prompt'], nl2br($value), $prompt_mask);
 	else
 		return nl2br($value);
+}
+
+function format_multivalue_block($display_value_r, $type)
+{
+	if(count($display_value_r)>1)
+	{
+		$field = "<ul class=\"$type\">";
+		reset($display_value_r);
+		while(list(,$value) = each($display_value_r))
+		{
+			$field .= "<li>$value</li>";
+		}
+		$field .= "</ul>";
+	}
+	else
+	{
+		$field = $display_value_r[0];
+	}
+	return $field;
 }
 
 function format_lookup_display_block($item_attribute_type_r, $attribute_value_rs)

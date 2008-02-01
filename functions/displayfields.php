@@ -69,30 +69,42 @@ function get_item_display_field(
 	}
 	else if($item_attribute_type_r['display_type'] == 'fileviewer')
 	{
-		$value = trim($value);
-
 		$format_mask = ifempty($item_attribute_type_r['display_type_arg1'], '%value%');
 		$width = ifempty($item_attribute_type_r['display_type_arg2'], '400');
 		$height = ifempty($item_attribute_type_r['display_type_arg3'], '300');
 
-		if(strpos($format_mask, '%img%')!==FALSE)
-		{
-			$file_type_r = fetch_file_type_r(fetch_file_type_for_extension(get_file_ext($value)));
-			
-			if(strlen($file_type_r['image'])>0 && ($image_src = _theme_image_src($file_type_r['image']))!==FALSE)
-				$img = '<img src="'.$image_src.'" title="'.$value.'">';
-			else
-				$img = '';				
+		if(is_array($value))
+			$values = $value;
+		else 
+			$values[] = $value;
 		
-			$format_mask = str_replace('%img%', $img, $format_mask);
+		$field = "<ul class=\"fileviewer\">";
+		
+		while(list(,$value) = each($values)) {
+			$value = trim($value);
+			$value_format_mask = $format_mask;
+			
+			if(strpos($value_format_mask, '%img%')!==FALSE)
+			{
+				$file_type_r = fetch_file_type_r(fetch_file_type_for_extension(get_file_ext($value)));
+				
+				if(strlen($file_type_r['image'])>0 && ($image_src = _theme_image_src($file_type_r['image']))!==FALSE)
+					$img = '<img src="'.$image_src.'" title="'.$value.'">';
+				else
+					$img = '';				
+			
+				$value_format_mask = str_replace('%img%', $img, $value_format_mask);
+			}
+	
+			if(strpos($value_format_mask, '%value%')!==FALSE)
+			{
+				$value_format_mask = str_replace('%value%', $value, $value_format_mask);
+			}
+	
+			$field .= "<li><a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a></li>";
 		}
-
-		if(strpos($format_mask, '%value%')!==FALSE)
-		{
-			$format_mask = str_replace('%value%', $value, $format_mask);
-		}
-
-		$field = "<a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$format_mask</a>";
+		
+		$field .= "</ul>";
 		
 		if($dowrap)
 			return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);

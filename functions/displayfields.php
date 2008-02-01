@@ -472,10 +472,14 @@ function format_multivalue_block($display_value_r, $type)
 	if(count($display_value_r)>1)
 	{
 		$field = "<ul class=\"$type\">";
+		
+		$first = TRUE;
 		reset($display_value_r);
 		while(list(,$value) = each($display_value_r))
 		{
-			$field .= "<li>$value</li>";
+			$field .= '<li'.($first?' class="first"':'').'>'.$value.'</li>';
+			
+			if($first)$first = FALSE;
 		}
 		$field .= "</ul>";
 	}

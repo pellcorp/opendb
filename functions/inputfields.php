@@ -606,7 +606,7 @@ function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_
 	
 	$buffer .= "</ul>";
 	
-	$buffer .= "<a href=\"#\" onclick=\"addInputField('${name}-multi_value_list', '$name', '$length'".(is_numeric($maxlength)?", '$maxlength'":"")."); return false;\">".get_opendb_lang_var('add')."</a>";
+	$buffer .= "<a href=\"#\" onclick=\"addInputField('${name}-multi_value_list', '$name', '$size'".(is_numeric($maxlength)?", '$maxlength'":"")."); return false;\">".get_opendb_lang_var('add')."</a>";
 	
 	$buffer .= "</div>";
 	return $buffer;

@@ -44,8 +44,12 @@ function addInputField(ulElementId, name, size, maxlength)
 		var input = document.createElement("input");
 		input.name = name+'[]';
 		input.type = "text"; //Type of field - can be any valid input type like text,file,checkbox etc.
-		input.size = size;
-		input.maxlength = maxlength;
+		if(size>0) {
+			input.size = size;
+		}
+		if(maxlength>0) {
+			input.maxlength = maxlength;
+		}
 		li.appendChild(input);
 		list_area.appendChild(li);
 	} else { //Older Method

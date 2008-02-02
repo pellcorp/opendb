@@ -80,7 +80,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'1.0',
-						'1.1.0',
+						'1.5.0a1',
 						array(
 							array('description'=>'New tables and system data changes'),
 							array('description'=>'New Related Status Type'),

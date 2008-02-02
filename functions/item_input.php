@@ -631,7 +631,7 @@ function handle_item_instance_update($parent_item_r, $item_r, $status_type_r, $H
 						$borrow_duration = FALSE; // Not defined, so do not update
 					}
 					
-					$status_comment = ifempty($HTTP_VARS['status_comment'], $item_r['status_comment']);
+					$status_comment = $HTTP_VARS['status_comment'];
 					if(strlen($status_comment)>0)
 					{
 						if($update_status_type_r['status_comment_ind'] != 'Y' && $update_status_type_r['status_comment_ind'] != 'H')

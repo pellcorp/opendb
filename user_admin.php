@@ -1575,7 +1575,6 @@ if(is_site_enabled())
 					$success_userid_rs = NULL;
 					$failure_userid_rs = NULL;
 					
-					reset($filtered_user_id_rs);
 					while(list(,$userid) = each($HTTP_VARS['user_id_rs']))
 					{
 					    // if newly activated user, then we want to reset password and send notification email.

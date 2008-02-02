@@ -881,13 +881,16 @@ function get_upgrader_r($db_version)
 	
 	if(is_array($upgrader_rs) && count($upgrader_rs)>0)
     {	
+    	for($i=0; $i<count($upgrader_rs); $i++)
+		{
+			if($db_version == $upgrader_rs[$i]['to_version'])
+				return $upgrader_rs[$i];
+		}
+		
 		for($i=0; $i<count($upgrader_rs); $i++)
 		{
-			$upgrader_r = $upgrader_rs[$i];
-			if($latest_to_version == $upgrader_r['to_version'])
-			{
-				return $upgrader_r;
-			}
+			if($latest_to_version == $upgrader_rs[$i]['to_version'])
+				return $upgrader_rs[$i];
 		}
 	}
 

@@ -543,7 +543,7 @@ function handle_item_instance_update($item_r, $status_type_r, $HTTP_VARS, &$erro
 					$borrow_duration = FALSE; // Not defined, so do not update
 				}
 				
-				$status_comment = ifempty($HTTP_VARS['status_comment'], $item_r['status_comment']);
+				$status_comment = $HTTP_VARS['status_comment'];
 				
 				// trigger change owner processing at this point.
 				if(strlen($HTTP_VARS['owner_id']) && $HTTP_VARS['owner_id'] != $item_r['owner_id'])

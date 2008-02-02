@@ -28,7 +28,7 @@ include_once("./functions/logging.php");
 include_once("./functions/user.php");
 include_once("./functions/utils.php");
 
-function get_announcements_whereclause()
+function get_announcements_whereclause($limit_days, $limit_closed)
 {
 	$where = NULL;
 	if($limit_days=='Y')

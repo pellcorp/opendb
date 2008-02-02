@@ -97,7 +97,7 @@ class amazonuk extends SitePlugin
 					if(preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
 									"<img src=\"([^\"]+)\"[^>]*>".
 									".*?".
-									"<a href=\"([^\"]+)\"><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+									"<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{

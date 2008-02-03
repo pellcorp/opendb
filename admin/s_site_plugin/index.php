@@ -113,7 +113,7 @@ function display_site_plugin_link_row($record_r, $row)
 	echo("<td class=\"data\">".get_input_field("order_no[$row]", NULL, "Order No", "number(3)", "Y", $record_r['order_no'], FALSE)."</td>");
 
 	$item_type_groups[] = '*';	
-	$results = fetch_item_type_group_rs('Y');
+	$results = fetch_item_type_group_rs();
 	if($results)
 	{
 		while($item_type_group_r = db_fetch_assoc($results))
@@ -209,7 +209,7 @@ function display_site_plugin_s_attribute_type_map_row($record_r, $row)
 	}
 
 	$item_type_groups[] = '*';	
-	$results = fetch_item_type_group_rs('Y');
+	$results = fetch_item_type_group_rs();
 	if($results)
 	{
 		while($item_type_group_r = db_fetch_assoc($results))

@@ -1,14 +1,9 @@
 #
 # System Item Type Group
 #
-# system_ind - indicates if a group should be used by the system
-# to group s_item_type's or if the grouping is only for use in
-# listings functionality.
-#
 CREATE TABLE s_item_type_group (
 	s_item_type_group	VARCHAR(10) NOT NULL,
 	description		VARCHAR(60) NOT NULL,
-	system_ind		VARCHAR(1) NOT NULL DEFAULT 'N',
 	PRIMARY KEY ( s_item_type_group )
 ) TYPE=MyISAM COMMENT='System Item Type Group';
 
@@ -24,9 +19,8 @@ CREATE TABLE s_item_type_group_rltshp (
 #
 # System Item Type Group system data
 #
-INSERT INTO s_item_type_group(s_item_type_group, description, system_ind) VALUES('AUDIO', 'Audio Item Types', 'Y');
-INSERT INTO s_item_type_group(s_item_type_group, description, system_ind) VALUES('VIDEO', 'Video Item Types', 'Y');
-INSERT INTO s_item_type_group(s_item_type_group, description, system_ind) VALUES('OTHER', 'Miscellaneous Item Types', 'N');
+INSERT INTO s_item_type_group(s_item_type_group, description) VALUES('AUDIO', 'Audio Item Types');
+INSERT INTO s_item_type_group(s_item_type_group, description) VALUES('VIDEO', 'Video Item Types');
 
 INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('AUDIO', 'CD');
 INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('AUDIO', 'MP3');
@@ -35,8 +29,6 @@ INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('VID
 INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('VIDEO', 'VCD');
 INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('VIDEO', 'LD');
 INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('VIDEO', 'DIVX');
-INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('OTHER', 'BOOK');
-INSERT INTO s_item_type_group_rltshp(s_item_type_group, s_item_type) VALUES('OTHER', 'GAME');
 
 #
 # Site Plugin Configuration

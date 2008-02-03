@@ -21,8 +21,8 @@ INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description,
 # Site Plugin Links
 #
 
-INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'cmbkdbt', 'OTHER', '', 1, 'More Info', '{cmbkdbt_id}', 'http://www.comicbookdb.com/title.php?ID={cmbkdbt_id}' );
-INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'cmbkdbt', 'OTHER', '', 2, 'More Info', '{cmbkdbi_id}', 'http://www.comicbookdb.com/issue.php?ID={cmbkdbi_id}' );
+INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'cmbkdbt', '', 'BOOK', 1, 'More Info', '{cmbkdbt_id}', 'http://www.comicbookdb.com/title.php?ID={cmbkdbt_id}' );
+INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'cmbkdbt', '', 'BOOK', 2, 'More Info', '{cmbkdbi_id}', 'http://www.comicbookdb.com/issue.php?ID={cmbkdbi_id}' );
 
 #
 # Site Plugin System Attribute Type Map

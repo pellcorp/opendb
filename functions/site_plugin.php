@@ -349,7 +349,7 @@ function fetch_site_plugin_link_rs($site_type, $s_item_type = NULL)
 		$query .= "AND (s_item_type = '*' OR s_item_type = '".$s_item_type."') AND ";
 		
 		$query .= "(s_item_type_group = '*' ";
-		$item_type_group_arr = fetch_item_type_groups_for_item_type_r($s_item_type, 'Y');// only system_ind='Y' groups here.
+		$item_type_group_arr = fetch_item_type_groups_for_item_type_r($s_item_type, 'Y');
 		if(is_array($item_type_group_arr))
 			$query .= "OR s_item_type_group IN (".format_sql_in_clause($item_type_group_arr).")) ";
 		else
@@ -548,7 +548,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 	$query .= "AND (s_item_type = '*' OR s_item_type = '".$s_item_type."') AND ";
 		
 	$query .= "(s_item_type_group = '*' ";
-	$item_type_group_arr = fetch_item_type_groups_for_item_type_r($s_item_type, 'Y');// only system_ind='Y' groups here.
+	$item_type_group_arr = fetch_item_type_groups_for_item_type_r($s_item_type);
 	if(is_array($item_type_group_arr))
 		$query .= "OR s_item_type_group IN (".format_sql_in_clause($item_type_group_arr).")) ";
 	else

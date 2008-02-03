@@ -59,7 +59,7 @@ function is_exists_item_type_group_rltshp($s_item_type_group, $s_item_type = NUL
 	return FALSE;
 }
 
-function fetch_item_type_group_rs($system_ind = NULL)
+function fetch_item_type_group_rs()
 {
 	$query = "SELECT s_item_type_group, IFNULL(stlv.value, description) AS description ".
 			"FROM s_item_type_group ".
@@ -69,9 +69,6 @@ function fetch_item_type_group_rs($system_ind = NULL)
 			stlv.columnname = 'description' AND
 			stlv.key1 = s_item_type_group ";
 			
-	if(strcasecmp($system_ind,'Y')===0 || strcasecmp($system_ind,'N')===0)
-		$query .= "WHERE system_ind = '".strtoupper($system_ind)."'";
-		
 	$query .= " ORDER BY s_item_type_group";
 		
 	$result = db_query($query);
@@ -87,7 +84,7 @@ function fetch_item_type_group_r($s_item_type_group)
 	{
 		$s_item_type_group = strtoupper($s_item_type_group);
 		
-		$query = "SELECT s_item_type_group, description, system_ind ".
+		$query = "SELECT s_item_type_group, description ".
 				"FROM s_item_type_group ".
 				"LEFT JOIN s_table_language_var stlv
 				ON stlv.language = '".get_opendb_site_language()."' AND
@@ -109,19 +106,14 @@ function fetch_item_type_group_r($s_item_type_group)
 	return FALSE;
 }
 
-function fetch_item_type_groups_for_item_type_r($s_item_type, $system_ind = NULL)
+function fetch_item_type_groups_for_item_type_r($s_item_type)
 {
 	$query = "SELECT DISTINCT sitg.s_item_type_group ".
 			"FROM s_item_type_group sitg, s_item_type_group_rltshp sitgr ".
 			"WHERE sitg.s_item_type_group = sitgr.s_item_type_group AND ".
 			"sitgr.s_item_type = '".$s_item_type."'";
 	
-	if(strcasecmp($system_ind,'Y')===0 || strcasecmp($system_ind,'N')===0)
-		$query .= " AND sitg.system_ind = '".strtoupper($system_ind)."'";
-		
 	$query .= " ORDER BY sitg.s_item_type_group";
-	
-
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -139,9 +131,9 @@ function fetch_item_type_groups_for_item_type_r($s_item_type, $system_ind = NULL
 	}
 }
 
-function fetch_item_type_group_rlshp_rs($s_item_type_group = NULL, $s_item_type = NULL, $system_ind = NULL, $order_by = FALSE)
+function fetch_item_type_group_rlshp_rs($s_item_type_group = NULL, $s_item_type = NULL, $order_by = FALSE)
 {
-	$query = "SELECT sitgr.s_item_type_group, sitgr.s_item_type, sitg.system_ind ".
+	$query = "SELECT sitgr.s_item_type_group, sitgr.s_item_type ".
 			"FROM s_item_type_group sitg, s_item_type_group_rltshp sitgr ".
 			"WHERE sitg.s_item_type_group = sitgr.s_item_type_group ";
 	
@@ -151,9 +143,6 @@ function fetch_item_type_group_rlshp_rs($s_item_type_group = NULL, $s_item_type 
 	if(strlen($s_item_type)>0)
 		$query .= "AND s_item_type = '".strtoupper($s_item_type)."'";
 		
-	if(strcasecmp($system_ind,'Y')===0 || strcasecmp($system_ind,'N')===0)
-		$query .= "AND system_ind = '".strtoupper($system_ind)."'";
-	
 	if($order_by)	
 		$query .= " ORDER BY s_item_type_group, s_item_type";
 	

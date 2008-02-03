@@ -21,8 +21,6 @@
 include_once('./functions/item_type_group.php');
 include_once('./functions/item_type.php');
 
-/**
-*/
 function is_exists_item_type_item_type_group($s_item_type)
 {
 	$query = "SELECT 'x' FROM s_item_type_group_rltshp ".
@@ -72,8 +70,7 @@ function fetch_s_item_type_group_cnt()
 
 function fetch_s_item_type_group_rs()
 {
-	// we want all system_ind = 'Y' items to appear first.
-	$query = "SELECT s_item_type_group, description, system_ind FROM s_item_type_group ORDER BY system_ind DESC, s_item_type_group";
+	$query = "SELECT s_item_type_group, description FROM s_item_type_group ORDER BY s_item_type_group";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -100,29 +97,25 @@ function fetch_s_item_type_join_sitgr_rs($s_item_type_group)
 
 /*
 */ 
-function insert_s_item_type_group($s_item_type_group, $description, $system_ind)
+function insert_s_item_type_group($s_item_type_group, $description)
 {
 	if(strlen($s_item_type_group)>0 && strlen($description)>0)
 	{
 		$s_item_type_group = strtoupper($s_item_type_group);
 		$description = addslashes(trim(strip_tags($description)));
 
-		$system_ind = strtoupper($system_ind);
-		if($system_ind != 'Y' && $system_ind != 'N')
-			$system_ind = 'N';
-			
-		$query = "INSERT INTO s_item_type_group (s_item_type_group, description, system_ind) "
-				."VALUES ('$s_item_type_group', '$description', '$system_ind')";
+		$query = "INSERT INTO s_item_type_group (s_item_type_group, description) "
+				."VALUES ('$s_item_type_group', '$description')";
 	
 		$insert = db_query($query);
 		if ($insert && db_affected_rows() > 0)
 		{
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_item_type_group, $description, $system_ind));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_item_type_group, $description));
 			return TRUE;
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type_group, $description, $system_ind));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type_group, $description));
 			return FALSE;
 		}
 	}
@@ -131,22 +124,14 @@ function insert_s_item_type_group($s_item_type_group, $description, $system_ind)
 	return FALSE;
 }
 
-function update_s_item_type_group($s_item_type_group, $description, $system_ind)
+function update_s_item_type_group($s_item_type_group, $description)
 {	
 	if(strlen($s_item_type_group)>0)
 	{	
 		$s_item_type_group = strtoupper($s_item_type_group);
 		
-		if($system_ind!==FALSE)
-		{
-			$system_ind = strtoupper($system_ind);
-			if($system_ind != 'Y' && $system_ind != 'N')
-				$system_ind = 'N';
-		}
-			
 		$query = "UPDATE s_item_type_group "
 				."SET description = ".($description!==FALSE?"'".addslashes(trim(strip_tags($description)))."'":"description")
-				.($system_ind!==FALSE?", system_ind = '$system_ind'":"")
 				." WHERE s_item_type_group = '$s_item_type_group'";
 	
 		$update = db_query($query);
@@ -156,12 +141,12 @@ function update_s_item_type_group($s_item_type_group, $description, $system_ind)
 		if($update && $rows_affected !== -1)
 		{
 			if($rows_affected>0)
-				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_item_type_group, $description, $system_ind));
+				opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_item_type_group, $description));
 			return TRUE;
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type_group, $description, $system_ind));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_item_type_group, $description));
 			return FALSE;
 		}
 	}

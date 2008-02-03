@@ -35,11 +35,13 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 
 	if(is_not_empty_array($item_type_group_r))
 	{
+		if(fetch_item_type_item_type_group_cnt($item_type_group_r['s_item_type_group'])===0)
+			echo("*");
+			
 		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
         echo("<td class=\"data\">");
 		echo(get_input_field("s_item_type_group[$row]", NULL, "Item Type Group", "readonly", "Y", $item_type_group_r['s_item_type_group'], FALSE));
-   		if(fetch_item_type_item_type_group_cnt($item_type_group_r['s_item_type_group'])===0)
-			echo("*");
+   		
 		echo("</td>");
 	}		
 	else
@@ -49,7 +51,6 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 	}
 	
 	echo("<td class=\"data\">".get_input_field("description[$row]", NULL, "Description", "text(30,255)", 'Y', $item_type_group_r['description'], FALSE)."</td>");
-	echo("<td class=\"data\">".get_input_field("system_ind[$row]", NULL, "System Indicator", "checkbox(Y,N)", 'Y', $item_type_group_r['system_ind'], FALSE)."</td>");
 
 	echo("\n<td class=\"data\">");	
 	if(is_not_empty_array($item_type_group_r))
@@ -118,12 +119,12 @@ else if($HTTP_VARS['op'] == 'update_item_type_groups')
 				if($HTTP_VARS['exists_ind'][$i] == 'N')
 				{
 					$HTTP_VARS['s_item_type_group'][$i] = strtoupper(preg_replace("/[\s|'|\\\\|\"]+/", "", trim(strip_tags($HTTP_VARS['s_item_type_group'][$i]))));
-					if(!insert_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i], ifempty($HTTP_VARS['system_ind'][$i], 'N')))
+					if(!insert_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i]))
 						$errors[] = array('error'=>'Item Type Group not inserted','detail'=>db_error());
 				}
 				else
 				{
-					if(!update_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i], ifempty($HTTP_VARS['system_ind'][$i], 'N')))
+					if(!update_s_item_type_group($HTTP_VARS['s_item_type_group'][$i], $HTTP_VARS['description'][$i]))
 						$errors[] = array('error'=>'Item Type Group not updated','detail'=>db_error());
 				}
 			}
@@ -175,7 +176,6 @@ if($HTTP_VARS['op'] == 'edit_item_type_groups')
 	echo("\n<tr class=\"navbar\">"
 	."\n<th>Group</th>"
 	."\n<th>Description</th>"
-	."\n<th>System<br />Indicator</th>"
 	."\n<th></th>"
 	."\n</tr>");
 	$column_count = 4;
@@ -203,10 +203,6 @@ if($HTTP_VARS['op'] == 'edit_item_type_groups')
 		display_s_item_type_group_row(array(), $i);
 	}
 	echo("</table>");
-
-	echo(format_help_block(
-	array('If System Indicator is checked item types can be treated as groups for item listings filters, title display masks, listings column configuration and reviews.',
-		'If System Indicator is not checked item types can be treated as groups for item listings filters only.')));
 
 	echo(get_input_field("blank_rows", NULL, NULL, "value_select(\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20\",1)", "N", ifempty($HTTP_VARS['blank_rows'], "5"), FALSE, NULL, "this.form.submit();"));
 

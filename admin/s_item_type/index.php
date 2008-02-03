@@ -281,7 +281,7 @@ function generate_s_item_type_sql($s_item_type)
 					$CRLF.'INSERT INTO s_item_type ( s_item_type, description, image ) VALUES ( \''.$s_item_type.'\', \''.addslashes($s_item_type_r['description']).'\', \''.addslashes($s_item_type_r['image']).'\' );'.
 					$CRLF;
 		
-		$results = fetch_item_type_group_rlshp_rs( NULL, $s_item_type, 'Y');
+		$results = fetch_item_type_group_rlshp_rs( NULL, $s_item_type);
 		if($results)
 		{
 			$type_sql .= $CRLF.'#'.

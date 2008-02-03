@@ -88,15 +88,10 @@ CREATE TABLE s_item_type (
 #
 # System Item Type Group
 #
-# system_ind - indicates if a group should be used by the system
-# to group s_item_type or if the grouping is only for use in
-# listings functionality.
-#
 DROP TABLE IF EXISTS s_item_type_group;
 CREATE TABLE s_item_type_group (
 	s_item_type_group	VARCHAR(10) NOT NULL,
 	description			VARCHAR(60) NOT NULL,
-	system_ind			VARCHAR(1) NOT NULL DEFAULT 'N',
 	PRIMARY KEY ( s_item_type_group )
 ) TYPE=MyISAM COMMENT='System Item Type Group';
 

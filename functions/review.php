@@ -38,7 +38,7 @@ function is_item_reviewed($item_id)
 		
 		if(get_opendb_config_var('item_review', 'other_title_reviews_restrict_to_item_type_group')!==FALSE)
 		{	
-			$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type'], 'Y');// only system_ind='Y' groups here.
+			$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type']);
 			if(is_array($item_type_group_r))
 			{
 				$item_type_r = fetch_item_types_for_group_r($item_type_group_r[0]);
@@ -88,7 +88,7 @@ function fetch_review_rs($item_id)
 		{		  
 			// first of all we need to get the groups this item belongs to, then we need
 			// to get the list of all other s_item_type's that are in those groups.	  
-			$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type'], 'Y');// only system_ind='Y' groups here.
+			$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type']);
 			if(is_array($item_type_group_r))
 			{
 				$item_type_r = fetch_item_types_for_group_r($item_type_group_r[0]); // only use first one.
@@ -132,7 +132,7 @@ function fetch_review_rating($item_id = NULL)
 			{		  
 				// first of all we need to get the groups this item belongs to, then we need
 				// to get the list of all other s_item_type's that are in those groups.	  
-				$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type'], 'Y');// only system_ind='Y' groups here.
+				$item_type_group_r = fetch_item_type_groups_for_item_type_r($item_r['s_item_type']);
 				if(is_array($item_type_group_r))
 				{
 					$item_type_r = fetch_item_types_for_group_r($item_type_group_r[0]); // only use first one.

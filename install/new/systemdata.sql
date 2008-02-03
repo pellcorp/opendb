@@ -4,9 +4,8 @@
 #
 # System Item Type Group
 #
-INSERT INTO s_item_type_group(s_item_type_group, description, system_ind) VALUES('AUDIO', 'Audio Item Types', 'Y');
-INSERT INTO s_item_type_group(s_item_type_group, description, system_ind) VALUES('VIDEO', 'Video Item Types', 'Y');
-INSERT INTO s_item_type_group(s_item_type_group, description, system_ind) VALUES('OTHER', 'Miscellaneous Item Types', 'N');
+INSERT INTO s_item_type_group(s_item_type_group, description) VALUES('AUDIO', 'Audio Item Types');
+INSERT INTO s_item_type_group(s_item_type_group, description) VALUES('VIDEO', 'Video Item Types');
 
 #
 # System Attribute Types

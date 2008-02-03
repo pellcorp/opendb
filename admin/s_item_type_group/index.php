@@ -35,13 +35,11 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 
 	if(is_not_empty_array($item_type_group_r))
 	{
-		if(fetch_item_type_item_type_group_cnt($item_type_group_r['s_item_type_group'])===0)
-			echo("*");
-			
 		echo("<input type=\"hidden\" name=\"exists_ind[$row]\" value=\"Y\">");
         echo("<td class=\"data\">");
 		echo(get_input_field("s_item_type_group[$row]", NULL, "Item Type Group", "readonly", "Y", $item_type_group_r['s_item_type_group'], FALSE));
-   		
+   		if(fetch_item_type_item_type_group_cnt($item_type_group_r['s_item_type_group'])===0)
+			echo("*");
 		echo("</td>");
 	}		
 	else

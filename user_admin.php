@@ -79,8 +79,6 @@ function perform_changeuser($HTTP_VARS)
 
 function show_changeuser_form()
 {
-	
-
 	echo("<h2>".get_opendb_lang_var('change_user')."</h2>");
 
 	echo("\n<form action=\"user_admin.php\" method=\"GET\">");
@@ -754,8 +752,6 @@ function update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, &$error
 	return $address_creation_success;
 }
 
-/*
-*/
 function handle_user_insert(&$HTTP_VARS, &$errors)
 {
 	if(!is_user_valid($HTTP_VARS['user_id']))

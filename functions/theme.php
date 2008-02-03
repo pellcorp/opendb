@@ -239,23 +239,23 @@ function get_theme_search_dir_list()
 			
 	if(strlen($theme)>0 && strlen($language)>0)
 	{
-		$dirPath[] = "theme/$theme/images/$language/";
+		$dirPath[] = "theme/$theme/images/$language";
 	}
 	
 	if(strlen($theme)>0)
 	{
-		$dirPath[] = "theme/$theme/images/";
-		$dirPath[] = "theme/$theme/";
+		$dirPath[] = "theme/$theme/images";
+		$dirPath[] = "theme/$theme";
 	}			
 	
 	if(strlen($language)>0)
 	{
-		$dirPath[] = "theme/default/images/$language/";
+		$dirPath[] = "theme/default/images/$language";
 	}
 	
-	$dirPath[] = "theme/default/images/";
-	$dirPath[] = "theme/default/";
-	$dirPath[] = "images/";
+	$dirPath[] = "theme/default/images";
+	$dirPath[] = "theme/default";
+	$dirPath[] = "images";
 
 	return $dirPath;
 }
@@ -268,10 +268,10 @@ function get_theme_search_site_dir_list()
 	
 	if(strlen($theme)>0)
 	{
-		$dirPath[] = "theme/$theme/images/site/";
+		$dirPath[] = "theme/$theme/images/site";
 	}
 	
-	$dirPath[] = "site/images/";
+	$dirPath[] = "site/images";
 	
 	return $dirPath;
 }
@@ -292,7 +292,7 @@ function _theme_image_src($src)
 		else
 			$dirPaths = get_theme_search_dir_list();
 		
-		$file_r = parse_file(basename($src));
+		$file_r = parse_file(safe_filename($src));
 		$src = $file_r['name'];
 		
 		$extension_r = array('gif', 'png', 'jpg');
@@ -301,7 +301,7 @@ function _theme_image_src($src)
 			reset($extension_r);
 			while(list(,$extension) = each($extension_r))
 			{
-				$file = './'.$dir.$src.'.'.$extension;
+				$file = './'.$dir.'/'.$src.'.'.$extension;
 				if(file_exists($file))
 				{
 					return $file;
@@ -311,6 +311,31 @@ function _theme_image_src($src)
 	}
 
 	return FALSE; // no image found.
+}
+
+/**
+ * Guarantees that any image sources referenced are relative to opendb and currently
+ * to make this validation simpler, only images which have at most one directory
+ * level deep are supported, all others have their directory information removed.
+ *
+ * @param unknown_type $src
+ * @return unknown
+ */
+function safe_filename($src)
+{
+	// ensure dealing with only one path separator!
+	$src = str_replace("\\", "/", $src);
+	
+	$file = basename($src);
+	
+	$dir = dirname($src);
+	if($dir == '/' || $dir == '.')
+		$dir = NULL;
+		
+	if(strpos($dir, "/") !== FALSE)
+		return $file; // return basename as illegal pathname - more than one directory path - only one level supported currently!
+	else
+		return $dir.'/'.$file;
 }
 
 /**

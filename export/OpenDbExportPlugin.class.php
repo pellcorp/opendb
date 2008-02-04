@@ -121,7 +121,7 @@ class OpenDbExportPlugin
 						array("&quot;", "&lt;", "&gt;", "&#10;", "&#13;", "&amp;"), // replace
 						$str);
 						
-		return $str;
+		return "<![CDATA[".$str."]]>";
 	}
 	
 	//utility functions

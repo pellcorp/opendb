@@ -1380,10 +1380,8 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 		{
 			do_op_title($item_r, $status_type_r, $HTTP_VARS['start-op'] == 'clone_item'?'clone_item':'insert');
 								
-			// We need to load the edit form again here!
 			echo format_error_block($errors);
 			
-			// Reset operation 						
 			$HTTP_VARS['op'] = 'new';
 			$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);
 			if($formContents !== FALSE)
@@ -1534,6 +1532,10 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 		do_op_title($item_r, $status_type_r, 'clone_item');
 		
 		$item_r['title'] = NULL;
+		
+		// fix for clone reverting to source item on insert.
+		$item_r['item_id'] = NULL;
+		$item_r['instance_no'] = NULL;
 		
 		$errors = NULL;						
 		$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);

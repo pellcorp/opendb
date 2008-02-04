@@ -28,6 +28,24 @@ function is_php51()
 	return version_compare(phpversion(), "5.1", ">="); 
 }
 
+// Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
+function stripslashes_array($array)
+{
+	$rs = array();
+	while (list($key,$val) = @each($array))
+	{
+		if(is_array($array[$key]))
+		{
+			$rs[$key] = stripslashes_array($array[$key]);
+		}
+		else
+		{
+			$rs[$key] = stripslashes($val);
+		}
+	}
+	return $rs;
+}
+	
 function generate_random_num()
 {
     mt_srand ((double)microtime()*1000000);

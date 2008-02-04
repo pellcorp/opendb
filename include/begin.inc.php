@@ -83,23 +83,6 @@ else if(!empty($_POST))
 // Strip all slashes from this array.
 if(get_magic_quotes_gpc())
 {
-	// Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
-	function stripslashes_array($array)
-	{
-		$rs = array();
-		while (list($key,$val) = @each($array))
-		{
-			if(is_array($array[$key]))
-			{
-				$rs[$key] = stripslashes_array($array[$key]);
-			}
-			else
-			{
-				$rs[$key] = stripslashes($val);
-			}
-		}
-		return $rs;
-	}
 	$HTTP_VARS = stripslashes_array($HTTP_VARS);
 }
 

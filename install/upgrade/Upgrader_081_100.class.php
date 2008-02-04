@@ -735,7 +735,7 @@ class Upgrader_081_100 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'0.81',
-						'1.0b8',
+						'1.0',
 						array(
 							array('description'=>'Database changes'),
 							array('description'=>'Configure Lookup Attributes Types'),

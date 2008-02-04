@@ -916,31 +916,42 @@ function get_upgraders_rs($db_version, $opendb_version, &$latest_to_version)
 	
   	build_upgrader_list($all_upgrader_rs, $latest_to_version);
   	
-	$upgraders_rs = NULL;
+	$upgraders_rs = array();
 
 	if(count($all_upgrader_rs)>0) {
-		// initial filter - 
-		for($i=0; $i<count($all_upgrader_rs); $i++)
-		{  	
-			$upgrader_r = $all_upgrader_rs[$i];
-				    
-			if(strlen($db_version)==0) // no database installed so get a list of all
-			{
-				$upgraders_rs[] = $upgrader_r;
+		if(strlen($db_version)==0) // no database installed so get a list of all
+		{
+			$upgraders_rs[] = $upgrader_r;
+		}
+		else
+		{		
+			// initial filter - 
+			for($i=0; $i<count($all_upgrader_rs); $i++)
+			{  	
+				$upgrader_r = $all_upgrader_rs[$i];
+					    
+				if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && 
+									opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+				{
+					$upgraders_rs[] = $upgrader_r;
+				}
 			}
-			else if(opendb_version_compare($db_version, $upgrader_r['from_version'], '>=') && 
-								opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+			
+			// if no matches, then get latest and upgrade with that.
+			if(count($upgraders_rs)==0)
 			{
-				$upgraders_rs[] = $upgrader_r;
-			}
-			else if($latest_to_version == $upgrader_r['to_version'] && 
-								opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
-			{
-				$upgraders_rs[] = $upgrader_r;
+				for($i=0; $i<count($all_upgrader_rs); $i++)
+				{
+					if($latest_to_version == $upgrader_r['to_version'] && 
+										opendb_version_compare($db_version, $upgrader_r['to_version'], '<'))
+					{
+						$upgraders_rs[] = $upgrader_r;
+					}
+				}
 			}
 		}
-	
-		if(is_not_empty_array($upgraders_rs))
+		
+		if(count($upgraders_rs)>0)
 		{
 	     	// now have to process it to remove those options that are not appropriate
 			if(strlen($db_version)>0)

@@ -445,6 +445,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login', 'show_menu', 2, 'Show Menu', 'Should menu be displayed when logging in / out', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.signup', 'enable', 1, 'Enable', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.signup', 'disable_captcha', 2, 'Disable Captcha', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items from being listed', 'boolean');
@@ -609,6 +610,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widg
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widgets', 'legal_html_tags', '10', 'sup');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('widgets', 'legal_html_tags', '11', 'sub');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.signup', 'enable', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.signup', 'disable_captcha', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'file', './log/usagelog.txt');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('logging', 'backup_ext_date_format', 'DDMONYYYY');

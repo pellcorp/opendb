@@ -294,7 +294,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	}//if($HTTP_VARS['op'] == 'new_user')
 	
 // do verify code logic here
-	if($HTTP_VARS['op'] == 'signup')
+	if($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'disable_captcha')!==TRUE)
 	{
 		$random_num = get_secretimage_random_num();
 		$buffer .= "\n<input type=\"hidden\" name=\"gfx_random_number\" value=\"$random_num\">";
@@ -1468,9 +1468,10 @@ if(is_site_enabled())
 							echo("<h2>".$page_title."</h2>");
 
 							// ensure the secret image codes check out
-							if(is_numeric($HTTP_VARS['gfx_code_check']) &&
+							if(get_opendb_config_var('login.signup', 'disable_captcha')===TRUE ||
+									(is_numeric($HTTP_VARS['gfx_code_check']) &&
 									is_numeric($HTTP_VARS['gfx_random_number']) &&
-									is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
+									is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number'])))
 							{
 						   		$return_val = handle_user_insert($HTTP_VARS, $errors);
 								if($return_val !== FALSE)

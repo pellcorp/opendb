@@ -78,7 +78,7 @@ class OpenDbExportPlugin
 		return "\n".$this->__tabIndent($this->_level++).
 				"<Item ItemId=\"$item_id\" ItemType=\"$s_item_type\">".
 				"\n".$this->__tabIndent($this->_level).
-				"<Title>".$this->__escapeXMLEntities($title)."</Title>";
+				"<Title>".$this->__wrapString($title)."</Title>";
 	}
 
 	function end_item()
@@ -90,7 +90,7 @@ class OpenDbExportPlugin
 	{
 		$buffer = "\n".$this->__tabIndent($this->_level++)."<Instance InstanceNo=\"$instance_no\" OwnerId=\"$owner_id\" BorrowDuration=\"$borrow_duration\" StatusType=\"$s_status_type\">";
 		if(strlen($status_comment)>0) {
-			$buffer .= "\n".$this->__tabIndent($this->_level)."<StatusComment>".$this->__escapeXMLEntities($status_comment)."</StatusComment>";
+			$buffer .= "\n".$this->__tabIndent($this->_level)."<StatusComment>".$this->__wrapString($status_comment)."</StatusComment>";
 		}
 		return $buffer;
 	}
@@ -103,24 +103,15 @@ class OpenDbExportPlugin
 	function item_attribute($s_attribute_type, $order_no, $attribute_val)
 	{
 		return "\n".$this->__tabIndent($this->_level)."<Attribute AttributeType=\"$s_attribute_type\" OrderNo=\"$order_no\">".
-			$this->__escapeXMLEntities($attribute_val).
+			$this->__wrapString($attribute_val).
 			"</Attribute>";
 	}
 	
 	//
 	// Should be considered hidden methods.
 	//
-	function __escapeXMLEntities($str)
+	function __wrapString($str)
 	{
-		/*if(function_exists("utf8_encode")) {
-			$str = utf8_encode($str);
-		}*/
-		
-		/*$str = str_replace(
-						array("\"", "<", ">", "\n", "\r", "&"), // find
-						array("&quot;", "&lt;", "&gt;", "&#10;", "&#13;", "&amp;"), // replace
-						$str);*/
-						
 		return "<![CDATA[".$str."]]>";
 	}
 	

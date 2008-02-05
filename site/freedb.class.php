@@ -197,7 +197,7 @@ class freedb extends SitePlugin
 		}
 		
 		$tracks = $this->parseTracks($entryBlock);
-		if(is_array($title_r))
+		if(is_array($tracks))
 		{
 			$this->addItemAttribute('tracks', $tracks);
 		}

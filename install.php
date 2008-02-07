@@ -1051,7 +1051,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 		{
 			if(!check_opendb_table('s_opendb_release') || count_opendb_table_columns('s_opendb_release') != 6)
 			{
-				if(exec_install_sql_file('./install/upgrade/0.81/s_opendb_release.sql', $errors))
+				if(exec_install_sql_file('./install/new/s_opendb_release.sql', $errors))
 				{
 					$preinstall_details[] = 'OpenDb release table created';	
 				}

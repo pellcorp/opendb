@@ -178,7 +178,7 @@ function build_borrower_stats()
 		echo("<th>"._theme_image('borrowed.gif', get_opendb_lang_var('borrowed'), "borrowed_item")."</th>");
 		echo("</tr>");
 		
-		$result = fetch_user_rs(PERM_ITEM_OWNER);//only ACTIVE owner users!
+		$result = fetch_user_rs(PERM_ITEM_OWNER);
 		if($result)
 		{
 			$toggle=TRUE;

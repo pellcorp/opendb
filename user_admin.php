@@ -85,7 +85,7 @@ function show_changeuser_form()
 	echo("\n<input type=\"hidden\" name=\"op\" value=\"change_user\">");
 
 	echo("\n<table class=\"changeUserForm\">");
-	$results = fetch_user_rs(PERM_CHANGE_USER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+	$results = fetch_user_rs(PERM_ADMIN_CHANGE_USER, EXCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, 'fullname', 'ASC');
 	if($results)
 	{
 		echo(
@@ -142,12 +142,14 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	
 	if(is_not_empty_array($user_r) && !is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 	{
+		$role_r = fetch_role_r($user_r['user_role']);
+		
 		$buffer .= get_input_field("user_id",
 				NULL, // s_attribute_type
 				get_opendb_lang_var('user_role'), 
 				"readonly", //input type.
 				"", //compulsory!
-				$user_r['user_role'],
+				$role_r['description'],
 				TRUE);
 	}
 	else 
@@ -156,9 +158,9 @@ function get_user_input_form($user_r, $HTTP_VARS)
 					get_opendb_lang_var('user_role'), 
 					custom_select(
 						'user_role', 
-						fetch_user_role_rs(), 
+						fetch_user_role_rs($HTTP_VARS['op']=='signup'?EXCLUDE_SIGNUP_UNAVAILABLE_USER:INCLUDE_SIGNUP_UNAVAILABLE_USER), 
 						"%description%", 
-						'1', 
+						'1',
 						ifempty($user_r['user_role'], $HTTP_VARS['user_role']),
 						'role_name'));
 	}
@@ -539,21 +541,31 @@ function send_newuser_email($user_r, $passwd, &$errors)
 	}
 }
 
-function validate_user_info(&$HTTP_VARS, &$address_provided_r, &$errors)
+function validate_user_info($user_r, &$HTTP_VARS, &$address_provided_r, &$errors)
 {
 	$address_attribs_provided = NULL;
 	$is_address_validated = TRUE;
 	
-	$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
-	$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
+	// cannot change your role unless you have the permissions
+	if(is_array($user_r) && !is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+	{
+		$HTTP_VARS['user_role'] = $user_r['user_role'];
+	}
+	else if(!is_valid_signup_role($HTTP_VARS['user_role']))
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Signup User Role specified', $HTTP_VARS);
+		return FALSE;
+	}
 	
-	// TODO - validate user role if op == signup
 	$role_r = fetch_role_r($HTTP_VARS['user_role']);
 	if(!is_array($role_r))
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid User Role specified', $HTTP_VARS);
 		return FALSE;	
 	}
+	
+	$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
+	$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
 	
 	if(!validate_input_field(get_opendb_lang_var('fullname'), "text(30,100)", "Y", $HTTP_VARS['fullname'], $errors) ||
 			!validate_input_field(get_opendb_lang_var('email'), "email(30,100)", "Y", $HTTP_VARS['email_addr'], $errors))
@@ -776,9 +788,9 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 			return FALSE;
 		}
 		
-		if(validate_user_info($HTTP_VARS, $address_provided_r, $errors))
+		if(validate_user_info(NULL, $HTTP_VARS, $address_provided_r, $errors))
 		{
-			if($HTTP_VARS['op'] == 'signup' ) // no password saved when signing up, as user still must be activated
+			if($HTTP_VARS['op'] == 'signup') // no password saved when signing up, as user still must be activated
 			{
 				$active_ind = 'X';
 				
@@ -846,13 +858,8 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 	$user_r = fetch_user_r($HTTP_VARS['user_id']);
 	if(is_not_empty_array($user_r))
 	{
-		// cannot change your role unless you have the permissions.
-		if(!is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
-		{
-			$HTTP_VARS['user_role'] = $user_r['user_role'];
-		}
 		
-		if(validate_user_info($HTTP_VARS, $address_attribs_provided, $errors))
+		if(validate_user_info($user_r, $HTTP_VARS, $address_attribs_provided, $errors))
 		{
 			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], $HTTP_VARS['user_role']))
 			{

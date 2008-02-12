@@ -408,7 +408,7 @@ if(is_site_enabled())
 					echo("\n<input type=\"hidden\" name=\"op\" value=\"my_history\">");
 	
 					echo("\n<table>");
-					$results = fetch_user_rs(PERM_USER_BORROWER, NULL, "fullname", "ASC");
+					$results = fetch_user_rs(PERM_USER_BORROWER, ROLE_PERMISSIONS_INCLUDE, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, "fullname", "ASC");
 					echo(format_field(
 							get_opendb_lang_var('borrower'), 
 							custom_select(

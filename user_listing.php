@@ -51,31 +51,27 @@ if(is_site_enabled())
 			
 			$listingObject->setNoRowsMessage(get_opendb_lang_var('no_users_found'));
 
-			$active_ind = NULL; // by default
-			if(strlen($HTTP_VARS['restrict_active_ind'])>0)
-			{
-			    $active_ind = $HTTP_VARS['restrict_active_ind'];
-			}
-
-			if($HTTP_VARS['show_deactivated_users'] == 'Y')
-				$include_deactivated_users = TRUE;
+			if($HTTP_VARS['restrict_active_ind'] == 'X')
+			    $restrict_users_mode = INCLUDE_ACTIVATE_USER;
+			else if($HTTP_VARS['show_deactivated_users'] == 'Y')
+				$restrict_users_mode = INCLUDE_DEACTIVATED_USER;
 			else
-				$include_deactivated_users = FALSE;
+				$restrict_users_mode = EXCLUDE_DEACTIVATED_USER;
 			
 			$listingObject->startListing();
 			
 			if(is_numeric($listingObject->getItemsPerPage()))
 			{
-				$listingObject->setTotalItems(fetch_user_cnt(NULL, $active_ind, $include_deactivated_users));
+				$listingObject->setTotalItems(fetch_user_cnt(NULL, INCLUDE_ROLE_PERMISSIONS, INCLUDE_CURRENT_USER, $restrict_users_mode));
 				if($listingObject->getTotalItemCount()>0)
 				{
 					$result = fetch_user_rs(
 							NULL, //$user_role_permissions
-							$active_ind, //$active_ind
+							INCLUDE_ROLE_PERMISSIONS,
+							INCLUDE_CURRENT_USER,
+							$restrict_users_mode,
 							$listingObject->getCurrentOrderBy(),
 							$listingObject->getCurrentSortOrder(),
-							$include_deactivated_users, //$include_deactivated_users
-							NULL, //$exclude_user
 							$listingObject->getStartIndex(),
 							$listingObject->getItemsPerPage());
 				}
@@ -84,10 +80,11 @@ if(is_site_enabled())
 			{
 				$result = fetch_user_rs(
 							NULL, //$user_role_permissions
-							NULL, //$active_ind
+							INCLUDE_ROLE_PERMISSIONS,
+							INCLUDE_CURRENT_USER,
+							$restrict_users_mode,
 							$listingObject->getCurrentOrderBy(),
-							$listingObject->getCurrentSortOrder(),
-							$include_deactivated_users); //$include_deactivated_users
+							$listingObject->getCurrentSortOrder()); //$include_deactivated_users
 			}
 
             $listingObject->addHeaderColumn(NULL, 'user_id_rs', FALSE, 'checkbox');

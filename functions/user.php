@@ -23,6 +23,19 @@ include_once("./functions/logging.php");
 include_once("./functions/utils.php");
 include_once("./functions/address_type.php");
 
+define('EXCLUDE_ROLE_PERMISSIONS', 'EXCLUDE_ROLE_PERMISSIONS');
+define('INCLUDE_ROLE_PERMISSIONS', 'INCLUDE_ROLE_PERMISSIONS');
+
+define('EXCLUDE_CURRENT_USER', 'EXCLUDE_CURRENT_USER');
+define('INCLUDE_CURRENT_USER', 'INCLUDE_CURRENT_USER');
+
+define('EXCLUDE_DEACTIVATED_USER', 'EXCLUDE_DEACTIVATED_USER');
+define('INCLUDE_DEACTIVATED_USER', 'INCLUDE_DEACTIVATED_USER');
+define('INCLUDE_ACTIVATE_USER', 'INCLUDE_ACTIVATE_USER');
+
+define('EXCLUDE_SIGNUP_UNAVAILABLE_USER', 'EXCLUDE_SIGNUP_UNAVAILABLE_USER');
+define('INCLUDE_SIGNUP_UNAVAILABLE_USER', 'INCLUDE_SIGNUP_UNAVAILABLE_USER');
+
 function is_logged_in_user($uid)
 {
 	return $uid == get_opendb_session_var('user_id');
@@ -205,9 +218,30 @@ function fetch_user_lastvisit($uid)
 	return FALSE;
 }
 
+function is_valid_signup_role($role_name)
+{
+	$role_name = addslashes($role_name);
+	
+	$query = "SELECT 'X'
+	FROM s_role WHERE role_name = '$role_name' AND signup_avail_ind = 'Y'";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+	{
+		$found = db_fetch_assoc($result);
+		db_free_result($result);
+		return TRUE;
+	}
+	//else
+	return FALSE;
+}
+
 function fetch_role_r($role_name) {
+	$role_name = addslashes($role_name);
+	
 	$query = "SELECT sr.role_name, 
-	IFNULL(stlv.value, sr.description) AS description
+	IFNULL(stlv.value, sr.description) AS description,
+	signup_avail_ind
 	FROM s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '".get_opendb_site_language()."' AND
@@ -232,18 +266,23 @@ function fetch_role_r($role_name) {
  * roles.  Its an internal role for use by the system to define
  * the permissions for public access only.
  */
-function fetch_user_role_rs()
+function fetch_user_role_rs($signup_avail_mode = INCLUDE_SIGNUP_UNAVAILABLE_USER)
 {
 	$query = "SELECT sr.role_name, 
-	IFNULL(stlv.value, sr.description) AS description
+	IFNULL(stlv.value, sr.description) AS description,
+	signup_avail_ind
 	FROM s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '".get_opendb_site_language()."' AND
 	stlv.tablename = 's_role' AND
 	stlv.columnname = 'description' AND
 	stlv.key1 = sr.role_name 
-	WHERE sr.role_name <> 'PUBLICACCESS'
-	ORDER BY role_name";
+	WHERE sr.role_name <> 'PUBLICACCESS'";
+	
+	if($signup_avail_mode == EXCLUDE_SIGNUP_UNAVAILABLE_USER)
+		$query .= " AND sr.signup_avail_ind = 'Y'";
+	
+	$query .= " ORDER BY role_name";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -261,20 +300,26 @@ function fetch_user_role_rs()
 	is used to populate update forms, so the fullname must be 
 	included with its current value, empty or not!
 
-	@param $user_types		Specifies a list of usertypes to return in SQL statment.
-							It is specified as an array.  Example: array('A','N','B','G')
+	@param $user_role_permissions		Specifies a list of user roles to return in SQL statment.
+										It is specified as an array.
 							
-							NOTE: If a set of user_types is specified, it is assumed that
-							only ACTIVE user's should be returned, so a active_ind = 'Y'
-							clause is appended to the WHERE.
-
 	@param $active_ind      If not NULL, restrict to users with active_ind=$active_ind
 	@param $order_by		Specify an order by column. Options are: user_id, fullname,
 							location, type, email, lastvisit
 * 	@param $exclude_user	A neat way to exclude one user from the list. Does not 
 * 							currently support excluding more than one user.
+* 
+* 	@param $role_list_excludes - if TRUE, the $user_role_permissions are considered a list of role
+* permissions to exclude from the list.
 */
-function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=NULL, $sortorder="ASC", $include_deactivated_users=FALSE, $exclude_user=NULL, $start_index=NULL, $items_per_page=NULL)
+function fetch_user_rs($user_role_permissions = NULL, 
+						$user_role_permissions_mode = INCLUDE_ROLE_PERMISSIONS, 
+						$current_user_mode = INCLUDE_CURRENT_USER, 
+						$restrict_users_mode = EXCLUDE_DEACTIVATED_USER, 
+						$order_by = NULL, 
+						$sortorder = "ASC", 
+						$start_index = NULL, 
+						$items_per_page = NULL)
 {
 	// Uses the special 'zero' value lastvisit = 0 to test for default date value.
 	$query = "SELECT DISTINCT u.user_id, 
@@ -289,7 +334,6 @@ function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=
 	FROM (user u, s_role sr";
 	
 	$user_permissions_clause = format_sql_in_clause($user_role_permissions);
-	
 	if($user_permissions_clause != NULL)
 	{
 		$query .= ", s_role_permission srp) ";
@@ -309,23 +353,24 @@ function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=
 	if($user_permissions_clause != NULL)
 	{
 		$query .= "AND sr.role_name = srp.role_name 
-				AND srp.permission_name IN($user_permissions_clause) ";
+				AND srp.permission_name ";
+		
+		if($user_role_permissions_mode == EXCLUDE_ROLE_PERMISSIONS)
+			$query .= "NOT ";
+		
+		$query .= "IN($user_permissions_clause) ";
 	}
 
-	if(strlen($exclude_user)>0)
+	if($current_user_mode == EXCLUDE_CURRENT_USER)
 	{
-		$query .= "AND u.user_id NOT IN ('$exclude_user') ";
+		$query .= "AND u.user_id != '".get_opendb_session_var('user_id')."' ";
 	}
 
-	if($active_ind!=NULL)
-	{
-		$query .= "AND u.active_ind = '$active_ind' ";
-	}
-	else if($include_deactivated_users !== TRUE)
-	{
+	if($restrict_users_mode == EXCLUDE_DEACTIVATED_USER)
 		$query .= "AND u.active_ind = 'Y' ";
-	}
-	
+	else if($restrict_users_mode == INCLUDE_ACTIVATE_USER)
+		$query .= "AND u.active_ind = 'X' ";
+		
 	if(strlen($order_by)==0)
 		$order_by = "u.fullname";
 
@@ -348,7 +393,10 @@ function fetch_user_rs($user_role_permissions=NULL, $active_ind=NULL, $order_by=
 		return FALSE;
 }
 
-function fetch_user_cnt($user_role_permissions=NULL, $active_ind=NULL, $include_deactivated_users=FALSE, $exclude_user=NULL)
+function fetch_user_cnt($user_role_permissions = NULL, 
+						$user_role_permissions_mode = INCLUDE_ROLE_PERMISSIONS, 
+						$current_user_mode = INCLUDE_CURRENT_USER, 
+						$restrict_users_mode = EXCLUDE_DEACTIVATED_USER)
 {
 	$query = "SELECT COUNT(u.user_id) AS count FROM user u";
 
@@ -357,33 +405,40 @@ function fetch_user_cnt($user_role_permissions=NULL, $active_ind=NULL, $include_
 	if($user_permissions_clause != NULL)
 	{
 		$query .= ", s_role_permission srp ";
-		 
-		$where_clause = "u.user_role = srp.role_name AND 
-						srp.permission_name IN($user_permissions_clause)";
+		
+		$where_clause .= "sr.role_name = srp.role_name 
+				AND srp.permission_name ";
+		
+		if($user_role_permissions_mode == EXCLUDE_ROLE_PERMISSIONS)
+			$where_clause .= "NOT ";
+		
+		$where_clause .= "IN($user_permissions_clause) ";
 	}
-	
-	if(strlen($exclude_user)>0)
+
+	if($current_user_mode == EXCLUDE_CURRENT_USER)
 	{
 		if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= "u.user_id NOT IN ('$exclude_user')";
+		$where_clause .= "u.user_id != '".get_opendb_session_var('user_id')."' ";
 	}
-	
-	if($active_ind!=NULL)
-	{
-	    if(strlen($where_clause)>0)
-			$where_clause .= " AND ";
-		$where_clause .= "u.active_ind = '$active_ind'";
-	}
-	else if($include_deactivated_users !== TRUE)
+
+	if($restrict_users_mode == EXCLUDE_DEACTIVATED_USER)
 	{
 		if(strlen($where_clause)>0)
 			$where_clause .= " AND ";
-		$where_clause .= " u.active_ind = 'Y' ";
+		$where_clause .= "u.active_ind = 'Y' ";
+	}
+	else if($restrict_users_mode == INCLUDE_ACTIVATE_USER)
+	{
+		if(strlen($where_clause)>0)
+			$where_clause .= " AND ";
+		$where_clause .= "u.active_ind = 'X' ";
 	}
 	
 	if(strlen($where_clause)>0)
+	{
 		$query .= " WHERE $where_clause";
+	}
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

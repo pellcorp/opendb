@@ -20,7 +20,7 @@
 
 function fetch_role_rs()
 {
-	$query = "SELECT DISTINCT role_name, description FROM s_role ORDER BY 1";
+	$query = "SELECT DISTINCT role_name, description, signup_avail_ind FROM s_role ORDER BY 1";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

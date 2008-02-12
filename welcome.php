@@ -71,7 +71,7 @@ function get_admin_announcements_rs()
 {
 	$announcements_rs = array();
 	
-	$user_cnt = fetch_user_cnt(NULL, 'X', TRUE);
+	$user_cnt = fetch_user_cnt(NULL, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, INCLUDE_ACTIVATE_USER);
 	if($user_cnt>0)
 	{
 		$announcements_rs[] = array(

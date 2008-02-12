@@ -74,7 +74,7 @@ function display_borrower_form($HTTP_VARS)
 	}
 	else
 	{
-		$results = fetch_user_rs(PERM_USER_BORROWER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+		$results = fetch_user_rs(PERM_USER_BORROWER, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, 'fullname', 'ASC');
 		if($results)
 		{
 			echo(

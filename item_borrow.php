@@ -507,7 +507,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	{
 		if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_granted_permission(PERM_USER_BORROWER, $HTTP_VARS['borrower_id']))
 		{
-			$results = fetch_user_rs(PERM_USER_BORROWER, NULL, "fullname", "ASC", FALSE, get_opendb_session_var('user_id'));
+			$results = fetch_user_rs(PERM_USER_BORROWER, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, 'fullname', 'ASC');
 			if($results)
 			{
 				echo(

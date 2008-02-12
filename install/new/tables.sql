@@ -276,6 +276,7 @@ CREATE TABLE s_addr_attribute_type_rltshp (
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),
+	signup_avail_ind VARCHAR(1) NOT NULL DEFAULT 'Y',
 PRIMARY KEY ( role_name )
 ) TYPE=MyISAM COMMENT = 'System Role table';
 

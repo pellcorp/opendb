@@ -204,10 +204,10 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 	return TRUE;
 }
 
-function get_user_id_rs($exclude_current_user = FALSE)
+function get_user_id_rs()
 {
 	$user_id_rs = NULL;
-	$result = fetch_user_rs(PERM_RECEIVE_EMAIL, NULL, 'user_id', 'ASC', FALSE, get_opendb_session_var('user_id'));
+	$result = fetch_user_rs(PERM_RECEIVE_EMAIL, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, TRUE, 'user_id', 'ASC');
 	if($result)
 	{
 		while ($user_r = db_fetch_assoc($result))
@@ -290,7 +290,7 @@ if(is_site_enabled())
 						$HTTP_VARS['toname'] = get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title'));
 					}
 				
-					$user_id_r = get_user_id_rs(TRUE);
+					$user_id_r = get_user_id_rs();
 					if(is_not_empty_array($user_id_r))
 					{
 						if($HTTP_VARS['op2'] == 'send' && 

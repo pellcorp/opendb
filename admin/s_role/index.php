@@ -140,6 +140,7 @@ else if($HTTP_VARS['op'] == '')
 		echo("<table><tr class=\"navbar\">
 			<th>Role</th>
 			<th>Description</th>
+			<th>Signup?</th>
 			<th>&nbsp;</th>
 			</tr>");
 			
@@ -148,6 +149,7 @@ else if($HTTP_VARS['op'] == '')
 			echo("<tr>
 				<td class=\"data\">".$role_r['role_name']."</td>
 				<td class=\"data\">".$role_r['description']."</td>
+				<td class=\"data\">".$role_r['signup_avail_ind']."</td>
 				<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit&role_name=${role_r['role_name']}\">Edit</a> ]");
 		}
 		echo("</table>");

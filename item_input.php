@@ -877,7 +877,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 				"\n<select name=\"owner_id\">".
 				custom_select(
 					'owner_id',
-					fetch_user_rs(PERM_ITEM_OWNER, NULL, 'user_id', 'ASC', FALSE),
+					fetch_user_rs(PERM_ITEM_OWNER, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, 'user_id', 'ASC'),
 					'%fullname% (%user_id%)',
 					'NA',
 					ifempty($HTTP_VARS['owner_id'], $item_r['owner_id']),

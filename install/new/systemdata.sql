@@ -1053,11 +1053,11 @@ VALUES ('text/plain', 'DOCUMENT', 'Plain Text', NULL, 'N');
 INSERT INTO s_file_type_extension (content_type, extension, default_ind)
 VALUES ('text/plain', 'txt', 'Y');
 
-INSERT INTO s_role(role_name, description) VALUES('ADMINISTRATOR', 'Administrator');
-INSERT INTO s_role(role_name, description) VALUES('OWNER', 'Owner');
-INSERT INTO s_role(role_name, description) VALUES('BORROWER', 'Borrower');
-INSERT INTO s_role(role_name, description) VALUES('GUEST', 'Guest');
-INSERT INTO s_role(role_name, description) VALUES('PUBLICACCESS', 'Public Access');
+INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('ADMINISTRATOR', 'Administrator', 'N');
+INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('OWNER', 'Owner', 'Y');
+INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('BORROWER', 'Borrower', 'Y');
+INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('GUEST', 'Guest', 'Y');
+INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('PUBLICACCESS', 'Public Access', 'N');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ANNOUNCEMENTS', 'View Announcements');
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_WHATSNEW', 'View Whats New');
@@ -1098,7 +1098,6 @@ INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CREATE
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_PASSWORD', 'Change Password Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_LOGIN', 'Login Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_CHANGE_USER', 'Admin Change User');
-INSERT INTO s_permission(permission_name, description) values('PERM_CHANGE_USER', 'Change To User');
 
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_SEND_EMAIL', 'Send Email Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_SEND_EMAIL', 'Send Email');
@@ -1139,7 +1138,6 @@ INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATO
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_USER_PROFILE');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_WHATSNEW');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_CHANGE_PASSWORD');
-INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_CHANGE_USER');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_EDIT_USER_PROFILE');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_RECEIVE_EMAIL');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_SEND_EMAIL');
@@ -1154,7 +1152,6 @@ INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', '
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_STATS');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_USER_PROFILE');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_WHATSNEW');
-INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_CHANGE_USER');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ADVANCED_SEARCH');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ANNOUNCEMENTS');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_ITEM_COVERS');
@@ -1163,7 +1160,6 @@ INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PER
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_STATS');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('GUEST', 'PERM_VIEW_WHATSNEW');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_CHANGE_PASSWORD');
-INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_CHANGE_USER');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_EDIT_USER_PROFILE');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_ITEM_OWNER');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_RECEIVE_EMAIL');

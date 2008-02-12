@@ -139,16 +139,29 @@ function get_user_input_form($user_r, $HTTP_VARS)
 				$HTTP_VARS['user_id'],
 				TRUE);
 	}			
-
-	$buffer .= format_field(
+	
+	if(is_not_empty_array($user_r) && !is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+	{
+		$buffer .= get_input_field("user_id",
+				NULL, // s_attribute_type
 				get_opendb_lang_var('user_role'), 
-				custom_select(
-					'user_role', 
-					fetch_user_role_rs(), 
-					"%description%", 
-					'1', 
-					$HTTP_VARS['user_role'],
-					'role_name'));
+				"readonly", //input type.
+				"", //compulsory!
+				$user_r['user_role'],
+				TRUE);
+	}
+	else 
+	{
+		$buffer .= format_field(
+					get_opendb_lang_var('user_role'), 
+					custom_select(
+						'user_role', 
+						fetch_user_role_rs(), 
+						"%description%", 
+						'1', 
+						ifempty($user_r['user_role'], $HTTP_VARS['user_role']),
+						'role_name'));
+	}
 	
 	$buffer .= get_input_field("fullname",
 				NULL, // s_attribute_type
@@ -534,6 +547,7 @@ function validate_user_info(&$HTTP_VARS, &$address_provided_r, &$errors)
 	$HTTP_VARS['fullname'] = filter_input_field("text(30,100)", $HTTP_VARS['fullname']);
 	$HTTP_VARS['email_addr'] = filter_input_field("email(30,100)", $HTTP_VARS['email_addr']);
 	
+	// TODO - validate user role if op == signup
 	$role_r = fetch_role_r($HTTP_VARS['user_role']);
 	if(!is_array($role_r))
 	{
@@ -793,7 +807,7 @@ function handle_user_insert(&$HTTP_VARS, &$errors)
 					return FALSE;
 				}
 			}
-		        
+		       
 			// We want to validate and perform inserts even in signup mode
 			if(insert_user($HTTP_VARS['user_id'], 
 						$HTTP_VARS['fullname'], 
@@ -832,9 +846,14 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 	$user_r = fetch_user_r($HTTP_VARS['user_id']);
 	if(is_not_empty_array($user_r))
 	{
+		// cannot change your role unless you have the permissions.
+		if(!is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+		{
+			$HTTP_VARS['user_role'] = $user_r['user_role'];
+		}
+		
 		if(validate_user_info($HTTP_VARS, $address_attribs_provided, $errors))
 		{
-			// no password change performed here...
 			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], $HTTP_VARS['user_role']))
 			{
 				return update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, $errors);

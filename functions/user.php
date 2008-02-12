@@ -540,7 +540,7 @@ function update_user($uid, $fullname, $language, $theme, $email_addr, $user_role
 					($theme!==FALSE?", theme='".addslashes($theme)."'":"").
 					($user_role!==FALSE?", user_role='$user_role'":"").
 				" WHERE user_id = '$uid'";
-
+	
 	$update = db_query($query);
 	// We should not treat updates that were not actually updated because value did not change as failures.
 	$rows_affected = db_affected_rows();

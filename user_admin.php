@@ -526,7 +526,7 @@ function send_newuser_email($user_r, $passwd, &$errors)
 		// Provide a link to open User Info form in edit mode.
 		$message .= "\n\n".
 				get_opendb_lang_var('edit_my_info').":\n".
-				"    ".get_site_url()."user_admin.php?op=edit&user_id=".urlencode($user_r['user_id']);
+				get_site_url()."user_admin.php?op=edit&user_id=".urlencode($user_r['user_id']);
  	}
 
 	if(is_valid_email_addr($user_r['email_addr']))
@@ -551,7 +551,7 @@ function validate_user_info($user_r, &$HTTP_VARS, &$address_provided_r, &$errors
 	{
 		$HTTP_VARS['user_role'] = $user_r['user_role'];
 	}
-	else if(!is_valid_signup_role($HTTP_VARS['user_role']))
+	else if($HTTP_VARS['op'] == 'signup' && !is_valid_signup_role($HTTP_VARS['user_role']))
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid Signup User Role specified', $HTTP_VARS);
 		return FALSE;

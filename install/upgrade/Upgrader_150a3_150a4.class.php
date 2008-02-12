@@ -26,7 +26,7 @@ class Upgrader_150a3_150a4 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'1.5.0a3',
-						'1.5.0a3',
+						'1.5.0a5',
 						array(
 							array('description'=>'User Role and signup fixes'),
 						)

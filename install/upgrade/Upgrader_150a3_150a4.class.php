@@ -20,9 +20,9 @@
 
 include_once("./functions/OpenDbUpgrader.class.php");
 
-class Upgrader_150a2_150a3 extends OpenDbUpgrader
+class Upgrader_150a3_150a4 extends OpenDbUpgrader
 {
-	function Upgrader_150a2_150a3()
+	function Upgrader_150a3_150a4()
 	{
 		parent::OpenDbUpgrader(
 						'1.5.0a3',

@@ -1120,7 +1120,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 		else
 		{
 			echo("<p class=\"error\">There is no support to upgrade from versions of OpenDb prior to 0.80.  You will have to
-				download and install an older version and upgrade to at least 0.80 first.</p>");
+				install an older version and upgrade to at least 0.80 first.</p>");
 		}
 		echo _theme_footer();
 	}
@@ -1155,6 +1155,8 @@ else
 				}
 				else if($result === TRUE && !check_opendb_version())
 				{
+					echo("<h2>More Upgrades required</h2>");
+					
 					echo("The upgrade was completed successfully.  There are still additional upgrades required.</p>");
 					echo("\n<form action=\"$PHP_SELF\" method=\"GET\">");
 					echo("<input type=\"hidden\" name=\"step\" value=\"upgrade\">\n");

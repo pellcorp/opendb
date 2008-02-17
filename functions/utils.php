@@ -375,9 +375,13 @@ function fetch_results_array($results)
 		
 		return $record_rs;
 	}
-	else
+	else if(is_array($results))
 	{
 		return $results;
+	}
+	else
+	{
+		return array();
 	}
 }
 

@@ -207,7 +207,7 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 function get_user_id_rs()
 {
 	$user_id_rs = NULL;
-	$result = fetch_user_rs(PERM_RECEIVE_EMAIL, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, TRUE, 'user_id', 'ASC');
+	$result = fetch_user_rs(PERM_RECEIVE_EMAIL, INCLUDE_ROLE_PERMISSIONS, INCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, TRUE, 'user_id', 'ASC');
 	if($result)
 	{
 		while ($user_r = db_fetch_assoc($result))

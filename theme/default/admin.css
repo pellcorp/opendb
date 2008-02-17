@@ -106,3 +106,8 @@ table.sqlList
 {
 	width: 50%;
 }
+
+input.saveButton
+{
+	float: right;
+}

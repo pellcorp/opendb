@@ -156,7 +156,7 @@ function build_langvar_page($language)
 	reset($alpha_lang_var_rs);
 	
 	echo('<div id="tab-content">');
-	echo("<div style=\"{text-align: right;}\"><input class=\"saveButton\" type=\"submit\" value=\"Update\"></div>");
+	echo("<input class=\"saveButton\" type=\"submit\" value=\"Update\">");
 	
 	$isFirst = true;
 	while(list($letter, $lang_var_rs) = each($alpha_lang_var_rs))

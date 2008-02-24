@@ -23,13 +23,6 @@
 */
 include_once("./functions/SitePlugin.class.inc");
 
-//
-// Search for 'Shitters' to return no titles.
-// Search for 'Cunt' to get a single title.
-// Search for 'Filthy Fuckers' to get an exact title match.
-// Search for 'Chocolat' will return a single 'Most Popular' and multiple actual entries.
-//
-
 class imdb extends SitePlugin
 {
 	function imdb($site_type)
@@ -86,20 +79,22 @@ class imdb extends SitePlugin
 										$comments = NULL;
 										$imdb_id = NULL;
 										
-										if(preg_match("!<a href=\"/rg/photo-find/title-tiny/title/.*\"><img src=\"([^\"]+)\"!", $matches[1][$j], $regs))
+										if( preg_match("!<a href=\"/title/tt([^/]+)/\"[^>]*>([^>]+)</a>(.*)!", $matches[3][$j], $matches2))
 										{
-											$image = $regs[1];
-										}
-										
-										if( preg_match("!<a href=\"/title/tt([^/]+)/\">([^>]+)</a>(.*)!", $matches[3][$j], $matches2))
-										{
-											$title = $matches2[2];
 											$imdb_id = $matches2[1];
 											
-										    if(preg_match("/[\s]*\(([0-9]+)\)/", $matches2[3], $regs))
+											$title = $matches2[2];
+											if(preg_match("/[\s]*\(([0-9]+)\)/", $matches2[3], $regs))
 										    {
 										    	$title .= " (".$regs[1].")";
 										    }
+											
+											//\"(new Image()).src=[^>]*><img src=\"([^\"]+)\"
+											//<tr> <td valign="top"><a href="/title/tt0083944/" onclick="(new Image()).src='/rg/photo-find/title-tiny/images/b.gif?link=/title/tt0083944/';"><img src="http://ia.imdb.com/media/imdb/01/M/==/QM/0Y/jN/0E/TO/wc/TZ/tF/kX/nB/na/B5/lM/B5/FN/5I/jN/1Y/TM/3U/TM/B5/VM._SX23_SY30_.jpg" border="0" height="32" width="23"></a>&nbsp;</td><td align="right" valign="top"><img src="/images/b.gif" height="6" width="1"><br>1.</td><td valign="top"><img src="/images/b.gif" height="6" width="1"><br><a href="/title/tt0083944/">First Blood</a> (1982)<br>&nbsp;aka <em>"Rambo"</em> - Austria, USA <em>(TV title)</em>, Japan <em>(English title)</em>, Argentina, Venezuela, Hungary, Italy, Portugal, Germany, France<br>&nbsp;aka <em>"Rambo: First Blood"</em></td></tr>
+											if(preg_match("!<a href=\"/title/tt([^/]+)/\" onclick=\"\\(new Image\\(\\)\\).src=[^>]*><img src=\"([^\"]+)\"!i", $matches[1][$j], $regs))
+											{
+												$image = $regs[2];
+											}
 										    
 											if(preg_match("/<br>&#160;aka(.*)/", $matches2[3], $regs))
 										    {
@@ -110,13 +105,13 @@ class imdb extends SitePlugin
 										}
 									}
 								}
-							}//if($start!==FALSE)
-						}//if(!is_array($match_type_r) || in_array(strtolower($matches[2][$i]), $match_type_r))
-					}//for ($i = 0; $i < count($matches[0]); $i++)
+							}
+						}
+					}
 					
 					$pageBuffer = NULL;
 					return TRUE;
-				}//if(is_not_empty_array($search_blocks))
+				}
 			}
 			
 			//else no results found

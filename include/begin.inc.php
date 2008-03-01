@@ -156,6 +156,8 @@ if(function_exists('db_connect'))
 			}
 			else
 			{
+				unset($_OPENDB_THEME);
+				
 				if(strlen(get_opendb_session_var('user_id'))>0)
 				{
 					$user_theme = fetch_user_theme(get_opendb_session_var('user_id'));

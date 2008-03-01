@@ -281,8 +281,11 @@ function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $rel
 					i.s_item_type 
 			FROM	item_instance_relationship iir,
 					item_instance ii,
-				 	item i
-			WHERE 	ii.item_id = i.id AND ";
+				 	item i,
+				 	s_status_type sst
+			WHERE 	sst.s_status_type = ii.s_status_type AND 
+					ii.item_id = i.id AND ";
+			
 	
 	if($related_mode == RELATED_CHILDREN_MODE)
 	{
@@ -784,21 +787,18 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		$where_r[] = 'i.s_item_type IN('.format_sql_in_clause($HTTP_VARS['s_item_type']).')';
 	}
 	
+	$from_r[] = 's_status_type sst';
+	$where_r[] = 'sst.s_status_type = ii.s_status_type';
+		
 	//
 	// Status Type restriction
 	//
 	if(is_not_empty_array($HTTP_VARS['s_status_type']))
 	{
-		$from_r[] = 's_status_type sst';
-		$where_r[] = 'sst.s_status_type = ii.s_status_type';
-			
 		$where_r[] = 'sst.s_status_type IN('.format_sql_in_clause($HTTP_VARS['s_status_type']).')';
 	}
 	else if($HTTP_VARS['s_status_type'] != 'ALL' && strlen($HTTP_VARS['s_status_type'])>0)
 	{	// ALL = Special type, which does not restrict.
-		$from_r[] = 's_status_type sst';
-		$where_r[] = 'sst.s_status_type = ii.s_status_type';
-		
 		$where_r[] = 'sst.s_status_type = \''.$HTTP_VARS['s_status_type'].'\'';
 	}
 	

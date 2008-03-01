@@ -35,6 +35,7 @@ $_COLUMN_DESC = array(
 			'change_owner_ind'=>'Change Owner',
 			'borrow_ind'=>'Borrow Support',
 			'status_comment_ind'=>'Status Comments',
+			'hidden_ind'=>'Hidden',
 			'default_ind'=>'Default',
 			'closed_ind'=>'Closed');
 
@@ -53,6 +54,8 @@ $_COLUMN_HELP = array(
 	'default_ind'=>array(
 		'Controls which type is checked by default for item input and searching, etc.'),
 
+	'hidden_ind'=>array('Item is not visible unless Owner or user has Item Admin privilege.'),
+	
 	'status_comment_ind'=>array(
 		'If \'Y\', status comment\'s will be visible.',
 		'If \'N\', status comment\'s will be invisible to all but admins and the owner of the item.'),
@@ -163,6 +166,8 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	
 	echo get_input_field("borrow_ind", NULL, $_COLUMN_DESC['borrow_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['borrow_ind'],$HTTP_VARS['borrow_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('borrow_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	echo get_input_field("status_comment_ind", NULL, $_COLUMN_DESC['status_comment_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['status_comment_ind'],$HTTP_VARS['status_comment_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('status_comment_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	echo get_input_field("hidden_ind", NULL, $_COLUMN_DESC['hidden_ind'], "value_radio_grid('Y,N')", "N", ifempty($status_type_r['hidden_ind'],$HTTP_VARS['hidden_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('hidden_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
+	
 	echo get_input_field("default_ind", NULL, $_COLUMN_DESC['default_ind'], "checkbox(Y,N)", "N", ifempty($status_type_r['default_ind'],$HTTP_VARS['default_ind']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('default_ind')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 	
 	if(is_array($status_type_r))
@@ -234,7 +239,7 @@ else if($HTTP_VARS['op'] == 'update')
 			if(!update_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
 						$HTTP_VARS['delete_ind'], 
 						$HTTP_VARS['change_owner_ind'], 
-						$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind'],
+						$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['hidden_ind'], $HTTP_VARS['default_ind'],
 						$HTTP_VARS['closed_ind']))
 			{
 				$errors[] = array('error'=>'Status Type not updated','detail'=>db_error());
@@ -258,7 +263,7 @@ else if($HTTP_VARS['op'] == 'insert')
 		if(!insert_s_status_type($HTTP_VARS['s_status_type'], $HTTP_VARS['description'], $HTTP_VARS['img'],
 						$HTTP_VARS['delete_ind'], 
 						$HTTP_VARS['change_owner_ind'], 
-						$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['default_ind']))
+						$HTTP_VARS['borrow_ind'], $HTTP_VARS['status_comment_ind'], $HTTP_VARS['hidden_ind'], $HTTP_VARS['default_ind']))
 		{
 			$errors[] = array('error'=>'Status Type ('.$HTTP_VARS['s_status_type'].') not inserted','detail'=>db_error());
 		}

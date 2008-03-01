@@ -116,7 +116,7 @@ function fetch_status_type_rs($lookup_mode=FALSE)
 function fetch_status_type_r($s_status_type)
 {
 	$query = "SELECT sst.s_status_type, IFNULL(stlv.value, sst.description) AS description, sst.img, ".
-			"sst.delete_ind, sst.change_owner_ind, sst.borrow_ind, sst.status_comment_ind, sst.default_ind, sst.closed_ind ";
+			"sst.delete_ind, sst.change_owner_ind, sst.borrow_ind, sst.status_comment_ind, sst.hidden_ind, sst.default_ind, sst.closed_ind ";
 	
 	$query .= " FROM s_status_type sst ".
 			"LEFT JOIN s_table_language_var stlv

@@ -81,7 +81,7 @@ function is_exists_borrowed_items_for_status_type($s_status_type, $borrowed_item
 
 function insert_s_status_type($s_status_type, $description, $img, 
 							$delete_ind, $change_owner_ind, 
-							$borrow_ind, $status_comment_ind, $default_ind)
+							$borrow_ind, $status_comment_ind, $hidden_ind, $default_ind)
 {
 	$s_status_type = strtoupper(substr(trim($s_status_type),0,1));
 	
@@ -98,11 +98,11 @@ function insert_s_status_type($s_status_type, $description, $img,
 	
 	$status_comment_ind = validate_ind_column($status_comment_ind);
 	$delete_ind = validate_ind_column($delete_ind);
-	
 	$borrow_ind = validate_ind_column($borrow_ind);
+	$hidden_ind = validate_ind_column($hidden_ind);
 	
-	$query = "INSERT INTO s_status_type ( s_status_type, description, img, delete_ind, change_owner_ind, borrow_ind, status_comment_ind, default_ind, closed_ind )".
-			"VALUES ('$s_status_type', '$description', '$img', '$delete_ind', '$change_owner_ind', '$borrow_ind', '$status_comment_ind', '$default_ind', 'N')";
+	$query = "INSERT INTO s_status_type ( s_status_type, description, img, delete_ind, change_owner_ind, borrow_ind, status_comment_ind, default_ind, hidden_ind, closed_ind )".
+			"VALUES ('$s_status_type', '$description', '$img', '$delete_ind', '$change_owner_ind', '$borrow_ind', '$status_comment_ind', '$hidden_ind', '$default_ind', 'N')";
 
 	$insert = db_query($query);
 	// We should not treat updates that were not actually updated because value did not change as failures.
@@ -111,17 +111,17 @@ function insert_s_status_type($s_status_type, $description, $img,
 	{
 		if($rows_affected>0)
 		{
-					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, db_error(), array($s_status_type, $description, $img, 
-							$delete_ind, $change_owner_ind, 
-							$borrow_ind, $status_comment_ind, $default_ind));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, db_error(), 
+						array($s_status_type, $description, $img, $delete_ind, $change_owner_ind, 
+						$borrow_ind, $status_comment_ind, $hidden_ind, $default_ind));
 		}
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_status_type, $description, $img, 
-							$delete_ind, $change_owner_ind, 
-							$borrow_ind, $status_comment_ind, $default_ind));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), 
+						array($s_status_type, $description, $img, $delete_ind, $change_owner_ind, 
+							$borrow_ind, $status_comment_ind, $hidden_ind, $default_ind));
 		return FALSE;
 	}
 }
@@ -150,10 +150,8 @@ function update_default_status_type($exclude_s_status_type)
 
 /*
 */
-function update_s_status_type($s_status_type, $description, $img, 
-							$delete_ind, $change_owner_ind, 
-							$borrow_ind, $status_comment_ind, $default_ind,
-							$closed_ind)
+function update_s_status_type($s_status_type, $description, $img, $delete_ind, $change_owner_ind, $borrow_ind, $status_comment_ind, 
+							$hidden_ind, $default_ind, $closed_ind)
 {
 	$s_status_type = strtoupper($s_status_type);
 	$description = addslashes(trim(strip_tags($description)));
@@ -168,6 +166,7 @@ function update_s_status_type($s_status_type, $description, $img,
 	$status_comment_ind = validate_ind_column($status_comment_ind);
 	$default_ind = validate_ind_column($default_ind);
 	$closed_ind = validate_ind_column($closed_ind);
+	$hidden_ind = validate_ind_column($hidden_ind);
 	
 	$query = "UPDATE s_status_type ".
 				"SET description = '$description', ".
@@ -177,7 +176,8 @@ function update_s_status_type($s_status_type, $description, $img,
 				"borrow_ind = '$borrow_ind', ".
 				"status_comment_ind = '$status_comment_ind', ".
 				"default_ind = '$default_ind', ".
-				"closed_ind = '$closed_ind' ".
+				"closed_ind = '$closed_ind', ".
+				"hidden_ind = '$hidden_ind'".
 			" WHERE s_status_type = '$s_status_type'";
 
 	$update = db_query($query);
@@ -190,7 +190,7 @@ function update_s_status_type($s_status_type, $description, $img,
 		{
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($s_status_type, $description, $img, 
 							$delete_ind, $change_owner_ind,
-							$borrow_ind, $status_comment_ind, $default_ind,
+							$borrow_ind, $status_comment_ind, $hidden_ind, $default_ind,
 							$closed_ind));
 							
 			if($default_ind == 'Y')
@@ -205,7 +205,7 @@ function update_s_status_type($s_status_type, $description, $img,
 	{
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($s_status_type, $description, $img, 
 							$delete_ind, $change_owner_ind,
-							$borrow_ind, $status_comment_ind, $default_ind,
+							$borrow_ind, $status_comment_ind, $hidden_ind, $default_ind,
 							$closed_ind));
 		return FALSE;
 	}

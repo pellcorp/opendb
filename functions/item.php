@@ -109,6 +109,12 @@ function fetch_item_instance_cnt($s_item_type = NULL)
 		$where .= " AND i.s_item_type = '".$s_item_type."' ";
 	}
 	
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$where .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
+	}
+	
 	$query .= "$from $where";
 	
 	$result = db_query($query);
@@ -138,6 +144,12 @@ function fetch_item_instance_rs($item_id, $owner_id = NULL)
 					sst.s_status_type = ii.s_status_type AND 
 					ii.item_id='".$item_id."' ".(strlen($owner_id)>0?"AND ii.owner_id = '$owner_id'":"");
 	
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$query .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
+	}
+	
 	$query .= " ORDER BY ii.instance_no	";
 	
 	$result = db_query($query);
@@ -166,6 +178,12 @@ function fetch_owner_item_cnt($owner_id, $s_item_type = NULL)
 	}
 	$where .= "AND ii.owner_id = '$owner_id' "; 
 	
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$where .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
+	}
+	
 	$query .= "$from $where";
 	
 	$result = db_query($query);
@@ -192,6 +210,12 @@ function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type)
 			"FROM item_instance ii, s_status_type sst, item i ".
 			"WHERE i.id = ii.item_id AND sst.s_status_type = ii.s_status_type AND ii.owner_id='".$owner_id."' AND ii.s_status_type = '$s_status_type' ";
 
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$query .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
+	}
+	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{
@@ -228,7 +252,13 @@ function fetch_category_item_cnt($category, $s_item_type = NULL)
 	
 	if($s_item_type)
 	{
-		$query .= " AND i.s_item_type='".$s_item_type."'";
+		$query .= " AND i.s_item_type='".$s_item_type."' ";
+	}
+	
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$query .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
 	}
 	
 	$result = db_query($query);
@@ -270,15 +300,15 @@ function fetch_owner_item_instance_rs($owner_id)
 define('RELATED_CHILDREN_MODE', 'CHILDREN');
 define('RELATED_PARENTS_MODE', 'PARENTS');
 
-/**
- * 
- */
 function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $related_mode = RELATED_CHILDREN_MODE)
 {
 	$query = "SELECT DISTINCT ii.item_id, 
 					ii.instance_no, 
 					i.title,
-					i.s_item_type 
+					i.s_item_type,
+					ii.s_status_type,
+					ii.owner_id,
+					ii.status_comment
 			FROM	item_instance_relationship iir,
 					item_instance ii,
 				 	item i,
@@ -286,6 +316,11 @@ function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $rel
 			WHERE 	sst.s_status_type = ii.s_status_type AND 
 					ii.item_id = i.id AND ";
 			
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$query .= " ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') AND ";
+	}
 	
 	if($related_mode == RELATED_CHILDREN_MODE)
 	{
@@ -475,8 +510,14 @@ function is_exists_title($title, $s_item_type, $owner_id=NULL)
            	"i.s_item_type = '".$s_item_type."' ";
 			
 	if(strlen($owner_id)>0)
-		$query .= "AND ii.owner_id = '".$owner_id."'";
+		$query .= " AND ii.owner_id = '".$owner_id."'";
 
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$query .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
+	}
+	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 	{
@@ -798,8 +839,14 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		$where_r[] = 'sst.s_status_type IN('.format_sql_in_clause($HTTP_VARS['s_status_type']).')';
 	}
 	else if($HTTP_VARS['s_status_type'] != 'ALL' && strlen($HTTP_VARS['s_status_type'])>0)
-	{	// ALL = Special type, which does not restrict.
+	{	
 		$where_r[] = 'sst.s_status_type = \''.$HTTP_VARS['s_status_type'].'\'';
+	}
+	
+	// no need for such a restriction if current user is item admin
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
+	{
+		$where_r[] = "( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
 	}
 	
 	//
@@ -809,9 +856,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	{
 		$from_r[] = 'user u';
 		$where_r[] = 'u.user_id = ii.owner_id';
-		
-		// Join the s_status and user (to remove Deactivated user records) tables in, so we can do some restrictions if required.
-		$where_r[] = '(u.active_ind IS NULL OR u.active_ind = \'Y\')';
+		$where_r[] = 'u.active_ind = \'Y\'';
 	}
 	
 	//

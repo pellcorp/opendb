@@ -516,10 +516,11 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 		
 		$listingObject->addHeaderColumn(get_opendb_lang_var('type'), 'type', FALSE);
 		$listingObject->addHeaderColumn(get_opendb_lang_var('title'), 'title', FALSE);
-				
 		$listingObject->addHeaderColumn(get_opendb_lang_var('action'), 'action', FALSE);
-
+		$listingObject->addHeaderColumn(get_opendb_lang_var('status'), 'status', FALSE);
+		$listingObject->addHeaderColumn(get_opendb_lang_var('status_comment'), 'status_comment', FALSE);
 		$listingObject->addHeaderColumn(get_opendb_lang_var('category'), 'category', FALSE);
+		
 		$listingObject->startListing(NULL);
 	
 		while($related_item_r = db_fetch_assoc($results))
@@ -544,6 +545,28 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 			}		
 			$listingObject->addActionColumn($action_links_rs);
 			
+			$status_type_r = fetch_status_type_r($related_item_r['s_status_type']);
+			
+			$listingObject->addThemeImageColumn(
+						$status_type_r['img'],
+						$status_type_r['description'],
+						$status_type_r['description'], //title
+						's_status_type');//type
+			
+			// If a comment is allowed and defined, add it in.
+			if($status_type_r['status_comment_ind'] == 'Y' || 
+					get_opendb_session_var('user_id') === $related_item_r['owner_id'] || 
+					is_user_granted_permission(PERM_ITEM_ADMIN) )
+			{
+				 // support newlines in this field
+				$listingObject->addColumn(nl2br($related_item_r['status_comment']));
+			}
+			else
+			{
+				$listingObject->addColumn(
+					get_opendb_lang_var('not_applicable'));
+			}
+									
 			$attribute_type_r = fetch_sfieldtype_item_attribute_type_r($related_item_r['s_item_type'], 'CATEGORY');
 			if(is_array($attribute_type_r))
 			{
@@ -557,6 +580,7 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 					$attribute_type_r,
 					$attribute_val);
 			}
+			
 			$listingObject->endRow();
 		}
 		

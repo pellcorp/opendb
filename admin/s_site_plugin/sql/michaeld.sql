@@ -26,9 +26,9 @@ INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, orde
 #
 
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'genre', 'AUDIO_LANG', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'genre', 'SUBTITLES', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'subtitles', 'SUBTITLES', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'title', 'ALT_TITLE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'title', 'S_TITLE', 'N' );
 

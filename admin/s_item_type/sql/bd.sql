@@ -143,8 +143,8 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 # Attribute Type Lookup (BD_REGION)
 #
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 0, 'None', 'None', '', 'Y' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 1, 'A', 'A - 	Americas, East and Southeast Asia.', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 2, 'B', 'B - 	Africa, Europe, Oceania, Middle East, French territories, Greenland', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 1, 'A', 'A -	Americas, East and Southeast Asia.', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 2, 'B', 'B -	Africa, Europe, Oceania, Middle East, French territories, Greenland', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 3, 'C', 'C - Central and South Asia, Mongolia, Russia, and PRC China', '', 'N' );
 
 #

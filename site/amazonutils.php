@@ -169,4 +169,37 @@ function parse_amazon_video_people($header, $pageBuffer)
 	}
 	return $persons;
 }
+
+function parse_language_info($audio_lang, $audio_map) {
+		@reset($audio_map);
+		while(list($key,$find_r) = @each($audio_map))
+		{
+			$match = NULL;
+			
+			// all components of the $find_r have to be present for a match to occur
+			$found = TRUE;
+			while(list(,$srch) = each($find_r))
+			{
+				if (strpos($audio_lang, $srch) !== FALSE)
+				{
+					if(strlen($match)>0)
+						$match .= ' ';
+						
+					$match .= $srch;
+				} 
+				else 
+				{
+					$found=FALSE;
+					break;
+				}
+			}
+
+			if($found)
+			{
+				return $match;
+			}
+		}
+		//else
+		return NULL;
+	}
 ?>

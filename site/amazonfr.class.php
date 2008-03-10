@@ -124,9 +124,6 @@ class amazonfr extends SitePlugin
 		}
 	}
 
-	/**
-	*
-	*/
 	function queryItem($search_attributes_r, $s_item_type)
 	{
 		// assumes we have an exact match here
@@ -645,7 +642,7 @@ class amazonfr extends SitePlugin
 
         if (preg_match("/THX Certified/i", $pageBuffer))
 		{
-			$this->addItemAttribute('audio_lang', 'ENGLISH_THX');
+			$this->addItemAttribute('dvd_audio', 'ENGLISH_THX');
 		}
 
         // Spoken languages
@@ -654,59 +651,46 @@ class amazonfr extends SitePlugin
 		if(preg_match("/Langues([^:]*):([^<]*)<br>/i", $pageBuffer, $regs))
 		{
 			$audio_lang_r = explode(',', $this->unaccent($regs[2]));
+			
+			$amazon_dvd_audio_map = array(
+						array("Anglais", "2.0"), // Dolby2.0
+						array("Anglais", "5.0"), //Dolby
+						array("Anglais", "5.1"),// Dolby5.1
+						array("Anglais", "6.1", "EX"), // Dolby6.1
+						array("Anglais", "6.1", "DTS", "ES"), // DTS6.1
+						array("Anglais", "6.1"),// Dolby6.1
+						array("Anglais", "DTS"), // DTS
+						array("Franais", "2.0"), // Dolby2.0
+						array("Franais", "5.0"),//Dolby
+						array("Franais", "5.1"),// Dolby5.1
+						array("Franais", "6.1", "EX"), // Dolby6.1
+						array("Franais", "6.1", "DTS", "ES"), // DTS6.1
+						array("Franais", "6.1"),// Dolby6.1
+						array("Franais", "DTS"),// DTS
+						array("Francais", "2.0"),// Dolby2.0
+						array("Francais", "5.0"),//Dolby
+						array("Francais", "5.1"),// Dolby5.1
+						array("Francais", "6.1", "EX"), // Dolby6.1
+						array("Francais", "6.1", "DTS", "ES"), // DTS6.1
+						array("Francais", "6.1"),// Dolby6.1
+						array("Francais", "DTS"));// DTS
 
-			// this is a bit of a hack I hope to make configurable some time soon.
-			$amazon_video_audio_lang_map = array(
-						"ENGLISH_2.0"=>array("Anglais", "2.0"),
-						"ENGLISH_5.0"=>array("Anglais", "5.0"),
-						"ENGLISH_5.1"=>array("Anglais", "5.1"),
-						"ENGLISH_6.1_EX"=>array("Anglais", "6.1", "EX"), // Dolby Digital 6.1 EX
-						"ENGLISH_6.1_DTS_ES"=>array("Anglais", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
-						"ENGLISH_6.1"=>array("Anglais", "6.1"),
-						"ENGLISH_DTS"=>array("Anglais", "DTS"),
-						"ENGLISH"=>array("Anglais"),
-						"FRENCH_2.0"=>array("Franais", "2.0"),
-						"FRENCH_5.0"=>array("Franais", "5.0"),
-						"FRENCH_5.1"=>array("Franais", "5.1"),
-						"FRENCH_6.1_EX"=>array("Franais", "6.1", "EX"), // Dolby Digital 6.1 EX
-						"FRENCH_6.1_DTS_ES"=>array("Franais", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
-						"FRENCH_6.1"=>array("Franais", "6.1"),
-						"FRENCH_DTS"=>array("Franais", "DTS"),
-						"FRENCH"=>array("Franais"),
-						"FRENCH_2.0"=>array("Francais", "2.0"),
-						"FRENCH_5.0"=>array("Francais", "5.0"),
-						"FRENCH_5.1"=>array("Francais", "5.1"),
-						"FRENCH_6.1_EX"=>array("Francais", "6.1", "EX"), // Dolby Digital 6.1 EX
-						"FRENCH_6.1_DTS_ES"=>array("Francais", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
-						"FRENCH_6.1"=>array("Francais", "6.1"),
-						"FRENCH_DTS"=>array("Francais", "DTS"),
-						"FRENCH"=>array("Francais"),
-						"SPANISH"=>array("Espagnol"),
-						"ITALIAN"=>array("Italien"),
-						"GERMAN"=>array("Allemand"));
+			$amazon_audio_lang_map = array(
+						array("Anglais"),
+						array("Francais"),
+						array("Espagnol"),
+						array("Italien"),
+						array("Allemand"));
 
-			// Now we can process each separate language value.
-			while(list(,$audio_lang) = @each($audio_lang_r))
-			{
-				reset($amazon_video_audio_lang_map);
-				while(list($key,$find_r) = @each($amazon_video_audio_lang_map))
-				{
-					// all components of the $find_r have to be present for a match to occur
-					$found = TRUE;
-					while(list(,$srch) = each($find_r))
-					{
-						if (strpos($audio_lang, $srch) === FALSE)
-						{
-							$found=FALSE;
-							break;
-						}
-					}
-
-					if($found)
-					{
-						$this->addItemAttribute('audio_lang', strtoupper($key));
-						break;
-					}
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('dvd_audio', $key);
+				}
+				
+				$key = parse_language_info($audio_lang, $amazon_audio_lang_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('audio_lang', $key);
 				}
 			}
 		}
@@ -715,19 +699,20 @@ class amazonfr extends SitePlugin
 		//<li>Sous-titres : Anglais, Francais</li>
 		if (preg_match("/Sous-titres([^:]*):([^<]*)<br>/i", $pageBuffer, $regs))
 		{
-			// this is a bit of a hack I hope to make configurable some time soon.
+			$audio_lang_r = explode(',', $regs[1]);
+			
 			$amazon_video_subtitle_map = array(
-				"Anglais"=>"English",
-				"Francais"=>"French",
-				"Franais"=>"French",
-				"Espagnol"=>"Spanish",
-				"Allemand"=>"German",
-				"Italien"=>"Italian");
-			foreach ($amazon_video_subtitle_map as $subtitlefr=>$subtitle)
-			{
-				if (strpos($this->unaccent($regs[2]), $subtitlefr)!==FALSE)
-				{
-					$this->addItemAttribute('subtitles', strtoupper($subtitle));
+				array("Anglais"),
+				array("Francais"),
+				array("Franais"),
+				array("Espagnol"),
+				array("Allemand"),
+				array("Italien"));
+			
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = parse_language_info($audio_lang, $amazon_video_subtitle_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('subtitles', $key);
 				}
 			}
 		}

@@ -625,12 +625,12 @@ class amazon extends SitePlugin
 						array("German"));
 						
 			while(list(,$audio_lang) = @each($audio_lang_r)) {
-				$key = $this->parseAudioTracks($audio_lang, $amazon_dvd_audio_map);
+				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
 				if($key!==NULL) {
 					$this->addItemAttribute('dvd_audio', $key);
 				}
 				
-				$key = $this->parseAudioTracks($audio_lang, $amazon_audio_lang_map);
+				$key = parse_language_info($audio_lang, $amazon_audio_lang_map);
 				if($key!==NULL) {
 					$this->addItemAttribute('audio_lang', $key);
 				}
@@ -648,7 +648,7 @@ class amazon extends SitePlugin
 			$audio_lang_r = explode(',', $regs[1]);
 			
 			while(list(,$audio_lang) = @each($audio_lang_r)) {
-				$key = $this->parseAudioTracks($audio_lang, $amazon_video_subtitle_map);
+				$key = parse_language_info($audio_lang, $amazon_video_subtitle_map);
 				if($key!==NULL) {
 					$this->addItemAttribute('subtitles', $key);
 				}
@@ -740,39 +740,6 @@ class amazon extends SitePlugin
 				}
 			}
 		}
-	}
-	
-	function parseAudioTracks($audio_lang, $audio_map) {
-		@reset($audio_map);
-		while(list($key,$find_r) = @each($audio_map))
-		{
-			$match = NULL;
-			
-			// all components of the $find_r have to be present for a match to occur
-			$found = TRUE;
-			while(list(,$srch) = each($find_r))
-			{
-				if (strpos($audio_lang, $srch) !== FALSE)
-				{
-					if(strlen($match)>0)
-						$match .= ' ';
-						
-					$match .= $srch;
-				} 
-				else 
-				{
-					$found=FALSE;
-					break;
-				}
-			}
-
-			if($found)
-			{
-				return $match;
-			}
-		}
-		//else
-		return NULL;
 	}
 }
 ?>

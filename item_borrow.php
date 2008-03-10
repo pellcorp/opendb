@@ -120,6 +120,11 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;
 	}
+	else if(is_user_owner_of_item($item_id, $instance_no) && get_opendb_config_var('borrow', 'owner_self_checkout') !== TRUE)
+	{
+		$errors = get_opendb_lang_var('invalid_borrower_user', 'user_id', $borrower_id);
+		return FALSE;
+	}
 	else if(is_item_borrowed($item_id, $instance_no))
 	{
 		$errors = get_opendb_lang_var('item_is_already_checked_out');
@@ -507,7 +512,13 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	{
 		if(strlen($HTTP_VARS['borrower_id'])==0 || !is_user_granted_permission(PERM_USER_BORROWER, $HTTP_VARS['borrower_id']))
 		{
-			$results = fetch_user_rs(PERM_USER_BORROWER, INCLUDE_ROLE_PERMISSIONS, EXCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, 'fullname', 'ASC');
+			$current_user_mode = EXCLUDE_CURRENT_USER;
+			if(get_opendb_config_var('borrow', 'owner_self_checkout') !== FALSE)
+			{
+				$current_user_mode = INCLUDE_CURRENT_USER;
+			}
+			
+			$results = fetch_user_rs(PERM_USER_BORROWER, INCLUDE_ROLE_PERMISSIONS, $current_user_mode, EXCLUDE_DEACTIVATED_USER, 'fullname', 'ASC');
 			if($results)
 			{
 				echo(

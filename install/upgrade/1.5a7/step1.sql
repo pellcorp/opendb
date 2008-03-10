@@ -24,3 +24,6 @@ DELETE FROM s_language_var WHERE varname IN (
 	'administrator',
 	'guest');
 
+# Feature request #1757580 - Owner Can CheckOut Own Items
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'owner_self_checkout', 10, 'Owner Self Checkout', 'Allows an owner to checkout their own items', 'boolean');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'owner_self_checkout', 'FALSE');

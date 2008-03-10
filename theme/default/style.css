@@ -167,6 +167,7 @@ ul.help
 
 ul.footer-links
 {
+	clear: left;
 	float: left;
 	list-style-type: none;
 	border: none;

@@ -751,12 +751,9 @@ if(is_site_enabled())
 						}// End of while
 		
 						@db_free_result($result);
-	
-						
-					}//if( ($result || is_not_empty_array($item_reservation_rs)) && $listingObject->getTotalItemCount()>0)
+					}
 					
 					$listingObject->endListing();
-				
 					
 					if($listingObject->isCheckboxColumns()>0)
 					{
@@ -794,7 +791,7 @@ if(is_site_enabled())
 					}
 						
 					echo(format_help_block($listingObject->getHelpEntries()));
-					echo(format_footer_links($footer_links_r));
+					
 					
 					echo("<ul class=\"listingControls\">");
 					if(get_opendb_config_var('listings', 'allow_override_show_item_image')!==FALSE)
@@ -814,6 +811,7 @@ if(is_site_enabled())
 						get_opendb_lang_var('listing_generated', 'datetime', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))).
 						"</p>");
 					
+					echo(format_footer_links($footer_links_r));
 					echo(_theme_footer());
 					
 				}//end if($show_listings)		

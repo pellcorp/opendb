@@ -52,14 +52,31 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 #
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 1, 'PS1', 'Playstation', 'ps1.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 2, 'PS2', 'Playstation 2', 'ps2.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 3, 'DREAMCAST', 'Dreamcast', 'dreamcast.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 4, 'GAMEBOY', 'Gameboy', 'gameboy.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 5, 'GAMEBOYADVANCE', 'Gameboy ADVANCE', 'gba.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 6, 'N64', 'Nintendo 64', 'n64.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 7, 'GAMECUBE', 'Game Cube', 'gamecube.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 8, 'XBOX', 'Xbox', 'xbox.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 9, 'MACCDROM', 'Mac-Cdrom', 'apple.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 9, 'PCCDROM', 'PC-Cdrom', 'pc-cdrom.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 3, 'PS3', 'Playstation 3', 'ps3.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 4, 'PSP', 'Playstation Portable', 'psp.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 5, 'GAMEGEAR', 'Game Gear', 'gamegear.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 6, 'MASTER', 'Master System', 'mastersystem.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 7, 'GENESIS', 'Genesis', 'genesis.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 8, 'SATURN', 'Saturn', 'saturn.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 9, 'DREAMCAST', 'Dreamcast', 'dreamcast.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 10, 'GAMEBOY', 'Gameboy', 'gameboy.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 11, 'GAMEBOYCOLOR', 'Gameboy Color', 'gameboycolor.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 12, 'GAMEBOYADVANCE', 'Gameboy ADVANCE', 'gba.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 13, 'DS', 'DS', 'ds.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 14, 'NES', 'Nintendo Entertainment System', 'nes.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 15, 'SNES', 'Super Nintendo Entertainment System', 'snes.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 16, 'N64', 'Nintendo 64', 'n64.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 17, 'GAMECUBE', 'Game Cube', 'gamecube.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 18, 'WII', 'Wii', 'wii.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 19, 'XBOX', 'Xbox', 'xbox.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 20, 'XBOX360', 'Xbox 360', 'xbox360.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 21, 'TURBOGRAFX', 'TurboGrafx-16', 'turbografx.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 22, 'ATARI', 'Atari', 'atari.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 23, 'NEOGEO', 'NeoGeo', 'neogeo.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 24, 'MACCDROM', 'Macintosh', 'apple.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 25, 'DOS', 'DOS', 'dos.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 26, 'PCCDROM', 'Windows', 'windows.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMESYSTEM', 27, 'LINUX', 'Linux', 'linux.gif', 'N' );
 
 #
 # Attribute Type Lookup (GAMEGENRE)

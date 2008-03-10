@@ -255,3 +255,8 @@ ul.checkboxGridOptionsVertical li, ul.radioGridOptionsVertical li
 	float: left;
 	width: 30%;
 }
+
+td.gamesystem li {
+	height: 40px;
+	padding: 5px;	
+}

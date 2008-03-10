@@ -932,7 +932,8 @@ if(is_site_enabled())
 				// Only users who can borrow should see checkboxes and their own listings.
 				if(is_user_granted_permission(PERM_USER_BORROWER))
 				{
-					if($HTTP_VARS['owner_id'] !== get_opendb_session_var('user_id'))
+					if($HTTP_VARS['owner_id'] !== get_opendb_session_var('user_id') || 
+							get_opendb_config_var('borrow', 'owner_self_checkout') !== FALSE)
 					{
 						$show_checkbox_column = TRUE;
 					}
@@ -1112,7 +1113,8 @@ if(is_site_enabled())
 						if(!is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
 						{
 							if($status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
-										$item_r['owner_id'] !== get_opendb_session_var('user_id') && 
+										($item_r['owner_id'] !== get_opendb_session_var('user_id') ||
+												get_opendb_config_var('borrow', 'owner_self_checkout') !== FALSE) && 
 										is_user_granted_permission(PERM_USER_BORROWER) && 
 										!is_item_reserved_or_borrowed_by_user($item_r['item_id'], $item_r['instance_no']) &&
 										(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed')!==FALSE || 

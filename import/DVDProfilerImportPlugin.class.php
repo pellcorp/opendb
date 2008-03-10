@@ -174,7 +174,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 		{
 			if(is_array($this->v_audio)) {
 				if($this->v_audio['language'] == 'Commentary') {
-					$this->addAttribute('AUDIO_LANG', NULL, $this->__getMappedAudioLang('Commentary')); 
+					$this->addAttribute('AUDIO_XTRA', NULL, 'DIR_COMMENT'); 
 				} else if($this->v_audio['language'] == 'English') {
 					$this->addAttribute('AUDIO_LANG', NULL, $this->__getMappedAudioLang($this->v_audio['format'])); 
 				} else {
@@ -187,7 +187,6 @@ class DVDProfilerImportPlugin extends XMLImportPlugin
 	
 	function __getMappedAudioLang($lang) {
 		$audioLangMap = array(
-			'Commentary'=>'DIR_COMMENT',
 			'Dolby Digital Stereo'=>'ENGLISH',
 			'Dolby Digital 5.1'=>'ENGLISH_5.1',
 			'Dolby Digital Surround EX'=>'ENGLISH_SR',

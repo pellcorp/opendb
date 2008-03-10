@@ -135,8 +135,14 @@ class amazon extends SitePlugin
 			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2))
 				$title = $regs2[1];
 				
-			$title = str_replace("\"", "", $title);
+			$title = trim(str_replace("\"", "", $title));
 
+			// get rid of Blu ray suffix as pointless
+			if(ends_with($title, '[Blu-ray]'))
+			{
+				$title = substr($title, 0, strlen($title)-strlen('[Blu-ray]'));
+			}
+			
 			$this->addItemAttribute('title', $title);
 			
 			//Amazon.com: DVD: First Blood (Special Edition) (1982)
@@ -596,65 +602,55 @@ class amazon extends SitePlugin
 
         if (preg_match("/THX Certified/i", $pageBuffer))
 		{
-			$this->addItemAttribute('audio_lang', 'ENGLISH_THX');
+			$this->addItemAttribute('dvd_audio', 'THX');
 		}
 
-        // Spoken languages
-        //<li>Available Audio Tracks:  English (Dolby Digital 5.1), French (Dolby Digital 2.0 Surround)</li>
-		if(preg_match("/<li>Available Audio Tracks:[\s]*(.*)<\/li>/i", $pageBuffer, $regs))
+		if(preg_match("!<li><b>Language:</b>[\s]*(.*?)</li>!i", $pageBuffer, $regs))
 		{
 			$audio_lang_r = explode(',', $regs[1]);
 
-			// this is a bit of a hack I hope to make configurable some time soon.
-			$amazon_video_audio_lang_map = array(
-						"ENGLISH_2.0"=>array("English", "2.0"),
-						"ENGLISH_5.0"=>array("English", "5.0"),
-						"ENGLISH_5.1"=>array("English", "5.1"),
-						"ENGLISH_6.1_EX"=>array("English", "6.1", "EX"), // Dolby Digital 6.1 EX
-						"ENGLISH_6.1_DTS_ES"=>array("English", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
-						"ENGLISH_6.1"=>array("English", "6.1"),
-						"ENGLISH_DTS"=>array("English", "DTS"),
-						"FRENCH"=>array("French"),
-						"SPANISH"=>array("Spanish"),
-						"GERMAN"=>array("German"));
-
-			// Now we can process each separate language value.
-			while(list(,$audio_lang) = @each($audio_lang_r))
-			{
-				reset($amazon_video_audio_lang_map);
-				while(list($key,$find_r) = @each($amazon_video_audio_lang_map))
-				{
-					// all components of the $find_r have to be present for a match to occur
-					$found = TRUE;
-					while(list(,$srch) = each($find_r))
-					{
-						if (strpos($audio_lang, $srch) === FALSE)
-						{
-							$found=FALSE;
-							break;
-						}
-					}
-
-					if($found)
-					{
-						$this->addItemAttribute('audio_lang', strtoupper($key));
-						break;
-					}
+			$amazon_dvd_audio_map = array(
+						array("English", "2.0"),
+						array("English", "5.0"),
+						array("English", "5.1"),
+						array("English", "6.1", "EX"), // Dolby Digital 6.1 EX
+						array("English", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
+						array("English", "6.1"),
+						array("English", "DTS"));
+			
+			$amazon_audio_lang_map = array(
+						array("English"),
+						array("French"),
+						array("Spanish"),
+						array("German"));
+						
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = $this->parseAudioTracks($audio_lang, $amazon_dvd_audio_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('dvd_audio', $key);
+				}
+				
+				$key = $this->parseAudioTracks($audio_lang, $amazon_audio_lang_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('audio_lang', $key);
 				}
 			}
 		}
 
-		// Subtitles
-		//<li>Available Subtitles: English, French</li>
-		if (preg_match("/<li>Available Subtitles:[\s]*(.*)<\/li>/i", $pageBuffer, $regs))
+		if(preg_match("!<li><b>Subtitles:</b>[\s]*(.*?)</li>!i", $pageBuffer, $regs))
 		{
-			// this is a bit of a hack I hope to make configurable some time soon.
-			$amazon_video_subtitle_map = array("English", "French", "Spanish", "German");
-			while(list(,$subtitle) = @each($amazon_video_subtitle_map))
-			{
-				if (strpos($regs[1], $subtitle)!==FALSE)
-				{
-					$this->addItemAttribute('subtitles', strtoupper($subtitle));
+			$amazon_video_subtitle_map = array(
+						array("English"),
+						array("French"),
+						array("Spanish"),
+						array("German"));
+						
+			$audio_lang_r = explode(',', $regs[1]);
+			
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = $this->parseAudioTracks($audio_lang, $amazon_video_subtitle_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('subtitles', $key);
 				}
 			}
 		}
@@ -744,6 +740,39 @@ class amazon extends SitePlugin
 				}
 			}
 		}
+	}
+	
+	function parseAudioTracks($audio_lang, $audio_map) {
+		@reset($audio_map);
+		while(list($key,$find_r) = @each($audio_map))
+		{
+			$match = NULL;
+			
+			// all components of the $find_r have to be present for a match to occur
+			$found = TRUE;
+			while(list(,$srch) = each($find_r))
+			{
+				if (strpos($audio_lang, $srch) !== FALSE)
+				{
+					if(strlen($match)>0)
+						$match .= ' ';
+						
+					$match .= $srch;
+				} 
+				else 
+				{
+					$found=FALSE;
+					break;
+				}
+			}
+
+			if($found)
+			{
+				return $match;
+			}
+		}
+		//else
+		return NULL;
 	}
 }
 ?>

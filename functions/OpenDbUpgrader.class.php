@@ -85,6 +85,11 @@ class OpenDbUpgrader
 	    return $this->_to_version;
 	}
 	
+	function getUpgraderDir()
+	{
+		return $this->_upgraderdir;
+	}
+	
 	/**
 		Return number of steps required.
 	*/
@@ -172,10 +177,10 @@ class OpenDbUpgrader
 			{
 				return $this->$stepFuncName($stepPart);
 			}
-			else if(file_exists($this->_upgraderdir.'/step'.$index.'.sql'))
+			else if(file_exists($this->getUpgraderDir().'/step'.$index.'.sql'))
 			{
 				$errors = NULL;
-				if(exec_install_sql_file($this->_upgraderdir.'/step'.$index.'.sql', $errors))
+				if(exec_install_sql_file($this->getUpgraderDir().'/step'.$index.'.sql', $errors))
 				{
 			    	return TRUE;
 				}

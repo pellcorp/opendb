@@ -5,7 +5,7 @@
 #
 # Item Type
 #
-INSERT INTO s_item_type ( s_item_type, description, image ) VALUES ( 'BD', 'Blu-ray Disc', 'bluray.png' );
+INSERT INTO s_item_type ( s_item_type, description, image ) VALUES ( 'BD', 'Blu-ray Disc', 'bluray.gif' );
 
 #
 # Attributes (non-core)
@@ -22,6 +22,8 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'YEAR', 'Year of Release', 'Year', 'number', '4', NULL, NULL, NULL, NULL, 'display','%value%', NULL, NULL, NULL, NULL, 'Y', 'N', 'N', 'N', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'RUN_TIME', 'Running time', 'Length (minutes)', 'number', '4', NULL, NULL, NULL, NULL, 'format_mins','%h %H %m %M', NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'AUDIO_LANG', 'Audio Languages', 'Language(s)', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'Y', 'N', 'Y', 'N', NULL, NULL);
+INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'AUDIO_XTRA', 'Additional Audio Tracks', 'Additional Audio', 'checkbox_grid', NULL, 'VERTICAL', NULL, NULL, NULL, 'list',NULL, NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
+INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'BD_AUDIO', 'Blu-ray Disc Audio Format', 'Audio Format(s)', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'list','%img% %display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'SUBTITLES', 'Subtitle languages', 'Subtitles', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'Y', 'N', 'Y', 'N', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'AGE_RATING', 'Age Recommendation', 'Age', 'radio_grid', '%img% %display%', NULL, NULL, NULL, NULL, 'display','%img%', NULL, NULL, NULL, NULL, 'Y', 'N', 'Y', 'N', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'BD_REGION', 'Blu-ray Region', 'Region', 'radio_grid', NULL, NULL, NULL, NULL, NULL, 'list',NULL, NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
@@ -98,35 +100,65 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 #
 # Attribute Type Lookup (AUDIO_LANG)
 #
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ACT_COMMENT', 'Actor\'s Commentary', 'director.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'DIR_COMMENT', 'Director\'s Commentary', 'director.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH', 'English', 'english.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_2.0', 'English(2.0)', 'english.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_5.0', 'English(5.0)', 'dolby.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_5.1', 'English(5.1)', 'dolby.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_6.1', 'English(6.1)', 'dolby.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_6.1_DTS_ES', 'English (6.1 DTS ES)', 'dts.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_6.1_EX', 'English(6.1 EX)', 'dolby.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_DTS', 'English(DTS)', 'dts.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_SR', 'English(Surround)', 'english.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH_THX', 'English(THX)', 'thx.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ENGLISH', 'English', 'usa.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'FINNISH', 'Finnish', 'finnish.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'FRENCH', 'French', 'french.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'GERMAN', 'German', 'german.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'ITALIAN', 'Italian', 'italian.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'OTHER_COMMENT', 'Other Commentary', 'director.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'PROD_COMMENT', 'Producer\'s Commentary', 'director.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_LANG', NULL, 'SPANISH', 'Spanish', 'spanish.gif', 'N' );
+
+#
+# Attribute Type Lookup (AUDIO_XTRA)
+#
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 0, 'SOUNDTRACK', 'Soundtrack Only', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 1, 'ACT_COMMENT', 'Actor\'s Commentary', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 2, 'DIR_COMMENT', 'Director\'s Commentary', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 3, 'PROD_COMMENT', 'Producer\'s Commentary', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 4, 'OTHER_COMMENT', 'Other Commentary', '', 'N' );
+
+#
+# Attribute Type Lookup (BD_AUDIO)
+#
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 1, 'PCM2', 'PCM 2.0', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 2, 'PCM5', 'PCM 5.1', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 3, 'PCM6', 'PCM 6.1', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 4, 'PCM7', 'PCM 7.1', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 11, 'DOLBY', 'Dolby', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 12, 'DOLBY2.0', 'Dolby 2.0', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 13, 'DOLBY5.1', 'Dolby 5.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 16, 'DOLBYPLUS2', 'Dolby Digital Plus 2.0', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 17, 'DOLBYPLUS5', 'Dolby Digital Plus 5.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 18, 'DOLBYPLUS6', 'Dolby Digital Plus 6.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 19, 'DOLBYPLUS7', 'Dolby Digital Plus 7.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 20, 'DOLBYTH2', 'Dolby TrueHD 2.0', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 21, 'DOLBYTH5', 'Dolby TrueHD 5.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 22, 'DOLBYTH6', 'Dolby TrueHD 6.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 23, 'DOLBYTH7', 'Dolby TrueHD 7.1', 'dolby.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 31, 'DTS', 'DTS', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 32, 'DTS2.0', 'DTS 2.0', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 33, 'DTS5.1', 'DTS 5.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 34, 'DTS6.1', 'DTS 6.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 35, 'DTS7.1', 'DTS 7.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 36, 'DTSHDHR2', 'DTS-HD High Resolution 2.0', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 37, 'DTSHDHR5', 'DTS-HD High Resolution 5.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 38, 'DTSHDHR6', 'DTS-HD High Resolution 6.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 39, 'DTSHDHR7', 'DTS-HD High Resolution 7.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 40, 'DTSHDMA2', 'DTS-HD Master Audio 2.0', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 41, 'DTSHDMA5', 'DTS-HD Master Audio 5.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 42, 'DTSHDMA6', 'DTS-HD Master Audio 6.1', 'dts.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_AUDIO', 43, 'DTSHDMA7', 'DTS-HD Master Audio 7.1', 'dts.gif', 'N' );
 
 #
 # Attribute Type Lookup (SUBTITLES)
 #
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', NULL, 'ENGLISH', 'English', 'english.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', NULL, 'ENG_H_IMP', 'English (Hearing Impaired)', 'english.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', NULL, 'FRENCH', 'French', 'french.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', NULL, 'GERMAN', 'German', 'german.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', NULL, 'ITALIAN', 'Italian', 'italian.gif', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', NULL, 'SPANISH', 'Spanish', 'spanish.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 0, 'COMMENTARY', 'Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 0, 'TRIVIA', 'Trivia', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 1, 'ENGLISH', 'English', 'usa.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 1, 'ENG_H_IMP', 'English (Hearing Impaired)', 'english.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 1, 'FRENCH', 'French', 'french.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 1, 'GERMAN', 'German', 'german.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 1, 'ITALIAN', 'Italian', 'italian.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBTITLES', 1, 'SPANISH', 'Spanish', 'spanish.gif', 'N' );
 
 #
 # Attribute Type Lookup (AGE_RATING)
@@ -142,10 +174,10 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 #
 # Attribute Type Lookup (BD_REGION)
 #
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 0, 'None', 'None', '', 'Y' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 1, 'A', 'A -	Americas, East and Southeast Asia.', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 2, 'B', 'B -	Africa, Europe, Oceania, Middle East, French territories, Greenland', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 3, 'C', 'C - Central and South Asia, Mongolia, Russia, and PRC China', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 0, 'None', 'None', 'none', 'Y' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 1, 'A', 'A - 	Americas, East and Southeast Asia.', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 2, 'B', 'B - 	Africa, Europe, Oceania, Middle East, French territories, Greenland', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_REGION', 3, 'C', 'C - Central and South Asia, Mongolia, Russia, and PRC China', 'none', 'N' );
 
 #
 # Attribute Type Lookup (RATIO)
@@ -186,13 +218,13 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 #
 # Attribute Type Lookup (BD_CODEC)
 #
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_CODEC', 1, 'MPEG-2', '', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_CODEC', 2, 'H.264', '', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_CODEC', 3, 'VC-1', '', '', 'Y' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_CODEC', 1, 'MPEG-2', '', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_CODEC', 2, 'H.264', '', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_CODEC', 3, 'VC-1', '', 'none', 'Y' );
 
 #
 # Attribute Type Lookup (BD_PROFILE)
 #
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_PROFILE', 1, '1.0', '1.0 - BD-Video', '', 'Y' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_PROFILE', 2, '1.1', '1.1 - Bonus View', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_PROFILE', 3, '2.0', '2.0 - BD-Live', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_PROFILE', 1, '1.0', '1.0 - BD-Video', 'none', 'Y' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_PROFILE', 2, '1.1', '1.1 - Bonus View', 'none', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BD_PROFILE', 3, '2.0', '2.0 - BD-Live', 'none', 'N' );

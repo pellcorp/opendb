@@ -1217,7 +1217,7 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
 					
  					if(strlen($row_data_r['more_info_url'])>0)
 					{
- 						$formContents .= "\n<td class=\"moreInfo\"><a href=\"".$row_data_r['more_info_url']."&cache_type=none\" target=\"_new\">".get_opendb_lang_var('more_info')."</a></td>";
+ 						$formContents .= "\n<td class=\"moreInfo\"><a href=\"".$row_data_r['more_info_url']."\" target=\"_new\">".get_opendb_lang_var('more_info')."</a></td>";
 					}
 						
  					$formContents .= "\n</tr>";

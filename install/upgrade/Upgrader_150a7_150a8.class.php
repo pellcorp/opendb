@@ -28,9 +28,16 @@ class Upgrader_150a7_150a8 extends OpenDbUpgrader
 						'1.5.0a7',
 						'1.5.0a8',
 						array(
-							array('description'=>'Fix Michaeld system data'),
+							array('description'=>'Fix site plugin system data mappings, remove obselete lang vars'),
+							array('description'=>'Update game type definition'),
+							array('description'=>'Update DVD / DIVX / LD audio lang / subtitles structure'),
 						)
 					);
+	}
+	
+	function getUpgraderDir()
+	{
+		return './install/upgrade/1.5a7';
 	}
 }
 ?>

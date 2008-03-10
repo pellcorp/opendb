@@ -17,9 +17,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_ne
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_new_user', 'Add New User'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_to_reserve_list', 'Add to Basket'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_user', 'Add User'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'admin', 'Admin'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'administrator', 'Administrator'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'administrator_usertype_description', 'This account type is an administrator of the system and can do pretty much anything.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'advanced', 'Advanced'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'advanced_search', 'Advanced Search');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'all', 'All'); 
@@ -53,7 +50,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrower', 'Borrower'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrower_history', 'Borrower History'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrower_history_for_fullname', 'History for {fullname} ({user_id})'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrower_usertype_description', 'This account type allows browsing and borrowing of items.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_address_indicator', 'Borrow Address'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_date', 'Borrowed'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'borrow_duration', 'Borrow Duration'); 
@@ -96,7 +92,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_out_item', 'Check Out Item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'check_out_item(s)', 'Check Out Item(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_export_fields', 'Choose Export Fields'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'choose_user_type', 'Choose the user type?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clear', 'Clear'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clear_usagelog', 'Clear Usagelog'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'clone_item', 'Clone Item'); 
@@ -182,8 +177,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'from',
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'fullname', 'Fullname'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'function', 'Function'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'review_stats', 'Review Stats'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'guest', 'Guest'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'guest_usertype_description', 'This account type allows browsing of items only.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'help', 'Help'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'history_for_title', 'History for {display_title}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'hour', 'Hour'); 
@@ -314,8 +307,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'next_p
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'no', 'No'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'noreply', 'No Reply');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'none', 'None'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'normal', 'Normal'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'normal_usertype_description', 'This account type allows owning and lending items as well as browsing and borrowing of items'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'notication_email_not_sent', 'Email notification was not sent'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'notication_email_sent', 'Email notification has been sent'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_allowed_cancel_reserve', 'You are not allowed to cancel this reservation'); 
@@ -441,12 +432,9 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_attr
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_item_type', 'Item Type'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_item_type_group', 'Item Type Group'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type', 'Status Type'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_create_access_disabled_for_usertype', '{usertype} users are not permitted to create {s_status_type_desc} items.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_display_access_disabled_for_usertype', '{usertype} users are not permitted to display {s_status_type_desc} items.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_items_cannot_be_borrowed', '{s_status_type_desc} items cannot be borrowed'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_item_listing_for_name', '{s_status_type_desc} Items for {fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_not_supported', '{s_status_type_desc} item support is disabled'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 's_status_type_status_comments_not_supported', 'Status Comments not supported for {s_status_type_desc} items'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'table', 'Table(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'there_are_no_of_users_awaiting_activation', 'There are {no_of_users} user(s) awaiting activation.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'thursday', 'Thursday'); 

@@ -642,7 +642,7 @@ class amazonfr extends SitePlugin
 
         if (preg_match("/THX Certified/i", $pageBuffer))
 		{
-			$this->addItemAttribute('dvd_audio', 'ENGLISH_THX');
+			$this->addItemAttribute('dvd_audio', 'THX');
 		}
 
         // Spoken languages

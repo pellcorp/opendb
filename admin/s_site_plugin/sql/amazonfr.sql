@@ -53,6 +53,24 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'subtitles', 'SUBTITLES', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'title', 'S_TITLE', 'N' );
 
+#
+# Site Plugin System Attribute Type Lookup Map
+#
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Anglais', 'ENGLISH' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Francais', 'FRENCH' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Espagnol', 'SPANISH' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Italien', 'ITALIAN' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Allemand', 'GERMAN' );
+
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Anglais', 'ENGLISH' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Francais', 'FRENCH' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Espagnol', 'SPANISH' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Italien', 'ITALIAN' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Allemand', 'GERMAN' );
+
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'DVD_AUDIO', 'Anglais 2.0', 'DOLBY2.0' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Francais 2.0', 'DOLBY2.0' );
+
 ####################################################################################################
 # Item Type / Attribute Type relationships
 ####################################################################################################

@@ -464,10 +464,10 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 			echo format_field("Input Type Arg 2", $attribute_type_r['input_type_arg2']);
 		if(strlen($attribute_type_r['input_type_arg3'])>0)
 			echo format_field("Input Type Arg 3", $attribute_type_r['input_type_arg3']);
-		//if(strlen($attribute_type_r['input_type_arg4'])>0)
-		//	echo format_field("Input Type Arg 4", $attribute_type_r['input_type_arg4']);
-		//if(strlen($attribute_type_r['input_type_arg5'])>0)
-		//	echo format_field("Input Type Arg 5", $attribute_type_r['input_type_arg5']);
+		if(strlen($attribute_type_r['input_type_arg4'])>0)
+			echo format_field("Input Type Arg 4", $attribute_type_r['input_type_arg4']);
+		if(strlen($attribute_type_r['input_type_arg5'])>0)
+			echo format_field("Input Type Arg 5", $attribute_type_r['input_type_arg5']);
 	}
 	else
 	{
@@ -479,8 +479,8 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 		echo get_input_field("input_type_arg1", NULL, "Input Type Arg 1", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg1'], $HTTP_VARS['input_type_arg1']));
 		echo get_input_field("input_type_arg2", NULL, "Input Type Arg 2", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg2'], $HTTP_VARS['input_type_arg2']));
 		echo get_input_field("input_type_arg3", NULL, "Input Type Arg 3", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg3'], $HTTP_VARS['input_type_arg3']));
-		//echo get_input_field("input_type_arg4", NULL, "Input Type Arg 4", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg4'], $HTTP_VARS['input_type_arg4']));
-		//echo get_input_field("input_type_arg5", NULL, "Input Type Arg 5", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg5'], $HTTP_VARS['input_type_arg5']));
+		echo get_input_field("input_type_arg4", NULL, "Input Type Arg 4", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg4'], $HTTP_VARS['input_type_arg4']));
+		echo get_input_field("input_type_arg5", NULL, "Input Type Arg 5", "text(25)", 'N', ifempty($attribute_type_r['input_type_arg5'], $HTTP_VARS['input_type_arg5']));
 	}
 
     if($attribute_type_r['s_field_type'] == 'ITEM_ID' || !$is_reserved_attribute_type)
@@ -504,8 +504,8 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 		echo get_input_field("display_type_arg1", NULL, "Display Type Arg 1", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg1'], $HTTP_VARS['display_type_arg1']));
 		echo get_input_field("display_type_arg2", NULL, "Display Type Arg 2", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg2'], $HTTP_VARS['display_type_arg2']));
 		echo get_input_field("display_type_arg3", NULL, "Display Type Arg 3", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg3'], $HTTP_VARS['display_type_arg3']));
-		//echo get_input_field("display_type_arg4", NULL, "Display Type Arg 4", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg4'], $HTTP_VARS['display_type_arg4']));
-		//echo get_input_field("display_type_arg5", NULL, "Display Type Arg 5", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg5'], $HTTP_VARS['display_type_arg5']));
+		echo get_input_field("display_type_arg4", NULL, "Display Type Arg 4", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg4'], $HTTP_VARS['display_type_arg4']));
+		echo get_input_field("display_type_arg5", NULL, "Display Type Arg 5", "text(25)", 'N', ifempty($attribute_type_r['display_type_arg5'], $HTTP_VARS['display_type_arg5']));
 	}
 	else
 	{
@@ -515,10 +515,10 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 			echo format_field("Input Type Arg 2", $attribute_type_r['display_type_arg2']);
 		if(strlen($attribute_type_r['display_type_arg3'])>0)
 			echo format_field("Display Type Arg 3", $attribute_type_r['display_type_arg3']);
-		//if(strlen($attribute_type_r['display_type_arg4'])>0)
-		//	echo format_field("Display Type Arg 4", $attribute_type_r['display_type_arg4']);
-		//if(strlen($attribute_type_r['display_type_arg5'])>0)
-		//	echo format_field("Display Type Arg 5", $attribute_type_r['display_type_arg5']);
+		if(strlen($attribute_type_r['display_type_arg4'])>0)
+			echo format_field("Display Type Arg 4", $attribute_type_r['display_type_arg4']);
+		if(strlen($attribute_type_r['display_type_arg5'])>0)
+			echo format_field("Display Type Arg 5", $attribute_type_r['display_type_arg5']);
 	}
 
 	echo get_input_field("listing_link_ind", NULL, "Listing Link Indicator", "checkbox(Y,N)", "N", ifempty($attribute_type_r['listing_link_ind'],$HTTP_VARS['listing_link_ind']));

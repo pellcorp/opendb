@@ -43,6 +43,12 @@ $argument_types = array(
 							'description'=>'Specify the height of window',
 							'input_type'=>'number(3)'),
 
+			'target'=>array('prompt'=>'Target',
+							'description'=>'Specify the target window.  Options are: <ul>'.
+							'<li>_blank - New Window</li>'.
+							'<li>_self - Current Window</li></ul>',
+							'input_type'=>'text(10,10)'),
+
 			'maxrange'=>array('prompt'=>'Max Range',
 							'description'=>'Specify the maximum range',
 							'input_type'=>'number(3)'),
@@ -293,7 +299,7 @@ $display_type_functions =
 						'using a newline and formatted as required.'),
 
 			'fileviewer'=>array(
-						'args'=>array('display_file_mask','width','height'),
+						'args'=>array('display_file_mask','width','height', 'target'),
 						'description'=>'This widget, will optionally display a file icon or url text, with a popup link to display '.
 										'it in a new window.  The width & height arguments are optional, to '.
 										'control the dimensions of the window.  The window will be opened '.

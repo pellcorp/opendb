@@ -72,6 +72,7 @@ function get_item_display_field(
 		$format_mask = ifempty($item_attribute_type_r['display_type_arg1'], '%value%');
 		$width = ifempty($item_attribute_type_r['display_type_arg2'], '400');
 		$height = ifempty($item_attribute_type_r['display_type_arg3'], '300');
+		$target = ifempty($item_attribute_type_r['display_type_arg4'], '_blank');
 
 		if(is_array($value))
 			$values = $value;
@@ -103,7 +104,7 @@ function get_item_display_field(
 					$value_format_mask = str_replace('%value%', $value, $value_format_mask);
 				}
 		
-				$display_value_r[] = "<a href=\"".$value."\" onclick=\"popup('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a>";
+				$display_value_r[] = "<a href=\"".$value."\" onclick=\"fileviewer('url.php?url=".urlencode($value)."' ,'".($width+20)."', '".($height+25)."', '".$target."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a>";
 			}
 			
 			$field = format_multivalue_block($display_value_r, 'fileviewer');

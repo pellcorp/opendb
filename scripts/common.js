@@ -105,12 +105,5 @@ function popup(url, width, height)
 
 function fileviewer(url, width, height, target)
 {
-	if(width != null)
-	{
-		window.open(url, target, 'resizable=yes,toolbar=no,scrollbars=yes,location=no,menubar=no,status=no,width='+width+',height='+height);
-	}
-	else
-	{
-		window.open(url, target);
-	}
+	window.open(url, target, 'resizable=yes,toolbar=no,scrollbars=yes,location=no,menubar=no,status=no,width='+width+',height='+height);
 }

@@ -52,33 +52,36 @@ WHERE s_attribute_type = 'AUDIO_LANG' AND value IN (
 	'ENGLISH_THX');
 
 # Move existing AUDIO_LANG to AUDIO_XTRA
-UPDATE item_attribute SET s_attribute_type = 'AUDIO_XTRA'
+UPDATE item_attribute SET s_attribute_type = 'AUDIO_XTRA', order_no = 75
 WHERE s_attribute_type = 'AUDIO_LANG' AND
 lookup_attribute_val IN ('ACT_COMMENT', 'DIR_COMMENT', 'PROD_COMMENT', 'OTHER_COMMENT');
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY2.0' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY2.0', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_2.0';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_5.0';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY5.1' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY5.1', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_5.1';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS6.1' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS6.1', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1_DTS_ES';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY6.1' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY6.1', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1_EX';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_DTS';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'SURROUND' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'SURROUND', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_SR';
 
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'THX' 
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'THX', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_THX';
+
+#UPDATE item_attribute SET order_no = 75 where s_attribute_type = 'AUDIO_XTRA';
+#UPDATE item_attribute SET order_no = 76 where s_attribute_type = 'DVD_AUDIO';
 
 # fix dvdempire mappings
 DELETE FROM s_site_plugin_s_attribute_type_lookup_map

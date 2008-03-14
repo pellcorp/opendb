@@ -545,7 +545,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'reserve_email_only', 2, 'Reserve Email Only', 'Reservation of item sends email only, no other borrow functionality is enabled.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'reserve_basket', 3, 'Enable Reserve Basket', 'Enable/Disable Reserve Basket support.', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'allow_multi_reserve', 4, 'Allow Multible Reserve', 'Can more than one user can reserve same item', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'allow_multi_reserve', 4, 'Allow Multible Reserve', 'Can more than one user reserve the same item', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'allow_reserve_if_borrowed', 5, 'Allow Reservation if Borrowed', 'Allow reservation if item already borrowed', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'duration_support', 6, 'Duration Support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('borrow', 'quick_checkout', 7, 'Quick Checkout Support', '', 'boolean');

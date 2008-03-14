@@ -37,7 +37,6 @@ class StatsChartImpl extends StatsChart
 		if($this->chartType == 'piechart')
 		{
 			$this->graph = new PieGraph($this->width, $this->height, "");
-			
 		}
 		else
 		{

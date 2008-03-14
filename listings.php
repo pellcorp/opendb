@@ -29,6 +29,7 @@ include_once("./functions/utils.php");
 include_once("./functions/user.php");
 include_once("./functions/review.php");
 include_once("./functions/borrowed_item.php");
+include_once("./functions/borrowed_item.php");
 include_once("./functions/item_type.php");
 include_once("./functions/item_type_group.php");
 include_once("./functions/item.php");
@@ -1283,22 +1284,23 @@ if(is_site_enabled())
 									}
 								}
 								
-								if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ADMIN_BORROWER))
+								if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
 								{
-									if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
+									if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 									{
-										if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
+										if(is_user_allowed_to_checkin_item($item_r['item_id'], $item_r['instance_no']))
 										{
 											$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
 										}
-										else
+									}
+									else
+									{
+										if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+												get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
+												$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
+												is_user_allowed_to_checkout_item($item_r['item_id'], $item_r['instance_no']))
 										{
-											if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-													get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
-													$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
-											{
-												$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
-											}
+											$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
 										}
 									}
 								}

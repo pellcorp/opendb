@@ -300,12 +300,11 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 
 	if(is_user_granted_permission(array(PERM_USER_BORROWER, PERM_ADMIN_BORROWER)))
 	{
-			if(get_opendb_config_var('borrow', 'enable')!==FALSE)
-			{
-				if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+		if(get_opendb_config_var('borrow', 'enable')!==FALSE)
+		{
+			if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
 					$status_type_r['borrow_ind'] == 'Y' &&
-					(get_opendb_session_var('user_id') === $item_r['owner_id'] ||
-							is_user_granted_permission(PERM_ADMIN_BORROWER)))
+					is_user_allowed_to_checkout_item($item_r['item_id'], $item_r['instance_no']))
 			{
 				if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 				{
@@ -314,7 +313,7 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 			}
 				
 			// Check if already in reservation session variable.
-			if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
+			if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no']))
 			{
 				$action_links_rs[] = array(url=>'borrow.php?op=delete_from_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y&listing_link='.$listing_link,img=>'delete_reserve_basket.gif',text=>get_opendb_lang_var('delete_from_reserve_list'));		
 			}
@@ -358,13 +357,13 @@ function get_item_status_row($class, $item_r, $listing_link, $selected)
 		}			
 	}
 
+	if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']) && is_user_allowed_to_checkin_item($item_r['item_id'], $item_r['instance_no']))
+	{
+		$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
+	}
+		
 	if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ADMIN_BORROWER))
 	{
-		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-		{
-			$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
-		}
-		
 		if(is_exists_item_instance_history_borrowed_item($item_r['item_id'], $item_r['instance_no']))
 		{
 			$action_links_rs[] = array(url=>'borrow.php?op=my_item_history&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].(strlen($listing_link)>0?'&listing_link='.$listing_link:''),img=>'item_history.gif',text=>get_opendb_lang_var('item_history'));

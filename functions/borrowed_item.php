@@ -27,6 +27,319 @@ include_once("./functions/database.php");
 include_once("./functions/logging.php");
 include_once("./functions/datetime.php");
 
+function handle_reserve($item_id, $instance_no, $borrower_id, &$errors)
+{
+	$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
+	if($status_type_r['borrow_ind'] != 'Y')
+	{
+		$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+		return FALSE;
+	}
+	else if(is_user_owner_of_item($item_id, $instance_no, $borrower_id) && get_opendb_config_var('borrow', 'owner_self_checkout') !== TRUE)
+	{
+		$errors = get_opendb_lang_var('cannot_reserve_items_you_own');
+		return FALSE;
+	}
+	else if(is_item_borrowed_by_user($item_id, $instance_no, $borrower_id))
+	{
+		$errors = get_opendb_lang_var('you_have_it_borrowed');
+		return FALSE;
+	}
+	else if(is_item_reserved_by_user($item_id, $instance_no, $borrower_id))
+	{
+		$errors = get_opendb_lang_var('you_have_reservation');
+		return FALSE;
+	}
+	else if(get_opendb_config_var('borrow', 'allow_reserve_if_borrowed') ===FALSE  && is_item_borrowed($item_id, $instance_no))
+	{
+		$errors = get_opendb_lang_var('item_is_already_checked_out');
+		return FALSE;
+	}
+	else if(get_opendb_config_var('borrow', 'allow_multi_reserve') === FALSE && is_item_reserved($item_id, $instance_no))
+	{
+		$errors = get_opendb_lang_var('item_is_already_reserved');
+		return FALSE;
+	}
+	else
+	{
+		// All but the actual reservation of item should occur, when this variable is set to TRUE.
+		if(get_opendb_config_var('borrow', 'reserve_email_only') !== TRUE)
+		{
+			$new_borrowed_item_id = reserve_item($item_id, $instance_no, $borrower_id);
+			if($new_borrowed_item_id!==FALSE)
+			{
+				return new_borrowed_item_id;
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+		else
+		{
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'No Reservation was made because reserve email only is enabled.', array($item_id, $instance_no, $borrower_id));
+			
+			return TRUE;
+		}
+	}		
+}
+
+/**
+* A handle_quick_checkout will only ever handle one request at a time, because
+* they are initiated from item_display & listings.php, but not borrow.php
+*/
+function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_duration, &$errors)
+{
+	if(!is_user_valid($borrower_id))
+	{
+		$errors = get_opendb_lang_var('invalid_borrower_user', 'user_id', $borrower_id);
+		return FALSE;
+	}
+	else if(!is_user_granted_permission(PERM_USER_BORROWER, $borrower_id))
+	{
+		$errors = get_opendb_lang_var('user_must_be_borrower', 'user_id', $borrower_id);
+		return FALSE;
+	}
+	else if(!is_user_allowed_to_checkout_item($item_id, $instance_no))
+	{
+		$errors = get_opendb_lang_var('not_owner_of_item');
+		return FALSE;
+	}
+	else if(is_user_owner_of_item($item_id, $instance_no) && get_opendb_config_var('borrow', 'owner_self_checkout') !== TRUE)
+	{
+		$errors = get_opendb_lang_var('cannot_reserve_items_you_own');
+		return FALSE;
+	}
+	else if(is_item_borrowed($item_id, $instance_no))
+	{
+		$errors = get_opendb_lang_var('item_is_already_checked_out');
+		return FALSE;
+	}
+	
+	$sequence_number = fetch_borrowed_item_seq_no($item_id, $instance_no, 'R', $borrower_id);
+	if($sequence_number !== FALSE)
+	{
+		if(get_opendb_config_var('borrow', 'quick_checkout_use_existing_reservation')!==FALSE)
+		{
+			if(check_out_item($sequence_number, $borrow_duration))
+			{
+				return $sequence_number;
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+		else
+		{
+			$errors = get_opendb_lang_var('user_has_reservation', 'user_id', $borrower_id);
+			return FALSE;
+		}
+	}//if($sequence_number !== FALSE)
+	else
+	{	
+		$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
+		if($status_type_r['borrow_ind'] == 'Y')
+		{
+			$new_borrowed_item_id = quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_duration);
+			if($new_borrowed_item_id!==FALSE)
+			{
+				return $new_borrowed_item_id;
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+		else
+		{
+			$errors = get_opendb_lang_var('s_status_type_items_cannot_be_borrowed', 's_status_type_desc', $status_type_r['description']);
+			return FALSE;
+		}
+	}
+}
+
+/**
+*/
+function handle_cancelreserve($sequence_number, &$errors)
+{
+	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
+	if ($borrowed_item_r['borrower_id'] !== get_opendb_session_var('user_id') && 
+			!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) && 
+			!is_user_granted_permission(PERM_ADMIN_BORROWER) )
+	{
+		$errors = get_opendb_lang_var('not_allowed_cancel_reserve');
+		return FALSE;
+	}
+	else if($borrowed_item_r['status'] == 'X')
+	{
+		$errors = get_opendb_lang_var('already_cancelled');
+		return FALSE;
+	}
+	else if($borrowed_item_r['status'] != 'R')
+	{
+		$errors = get_opendb_lang_var('borrowed_item_not_found');
+		return FALSE;
+	}
+	else
+	{
+		if(cancel_reserve_item($sequence_number))
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+}
+
+/**
+*/
+function handle_checkout($sequence_number, $borrow_duration, &$errors)
+{
+	$item_r = fetch_borrowed_item_r($sequence_number);
+	
+	if(!is_user_allowed_to_checkout_item($item_r['item_id'], $item_r['instance_no']))
+	{
+		$errors = get_opendb_lang_var('not_owner_of_item');
+		return FALSE;
+	}
+	else if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
+	{
+		$errors = get_opendb_lang_var('item_is_already_checked_out');
+		return FALSE;
+	}
+	else if ($item_r['status'] != 'R')
+	{
+		$errors = get_opendb_lang_var('borrowed_item_not_found');
+		return FALSE;
+	}
+
+	if(check_out_item($sequence_number, $borrow_duration))
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+function is_user_allowed_to_checkout_item($item_id, $instance_no)
+{
+	if(is_user_owner_of_item($item_id, $instance_no))
+		return TRUE;
+	else if(is_user_granted_permission(PERM_ADMIN_BORROWER))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+function is_user_allowed_to_checkin_item($item_id, $instance_no)
+{
+	if(is_user_owner_of_item($item_id, $instance_no))
+		return TRUE;
+	else if(is_user_granted_permission(PERM_ADMIN_BORROWER) && is_item_borrowed_by_user($item_id, $instance_no))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+/**
+ * admin borrower can checkin items they themselves have checked out, but they
+ * cannot checkin anyone elses items.
+ *
+ * @param unknown_type $sequence_number
+ * @param unknown_type $errors
+ * @return unknown
+ */
+function handle_checkin($sequence_number, &$errors)
+{
+	$item_r = fetch_borrowed_item_r($sequence_number);
+	
+	if(!is_user_allowed_to_checkin_item($item_r['item_id'], $item_r['instance_no']))
+	{
+		$errors = get_opendb_lang_var('not_owner_of_item');
+		return FALSE;
+	}
+	else if ($item_r['status'] == 'C')
+	{
+		$errors = get_opendb_lang_var('already_checked_in');
+		return FALSE;
+	}
+	else if ($item_r['status'] != 'B')
+	{
+		$errors = get_opendb_lang_var('borrowed_item_not_found');
+		return FALSE;
+	}
+	else
+	{
+		if(check_in_item($sequence_number))
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+}
+
+function handle_reminder($sequence_number, &$errors)
+{
+	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
+	
+	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) &&
+			!is_user_granted_permission(PERM_ADMIN_BORROWER))
+	{
+		$errors = get_opendb_lang_var('not_owner_of_item');
+		return FALSE;
+	}
+	else if ($borrowed_item_r['status'] == 'C')
+	{
+		$errors = get_opendb_lang_var('already_checked_in');
+		return FALSE;
+	}
+	else if ($borrowed_item_r['status'] != 'B')
+	{
+		$errors = get_opendb_lang_var('borrowed_item_not_found');
+		return FALSE;
+	}
+	else
+	{
+		return TRUE;
+	}
+}
+
+function handle_extension($sequence_number, $borrow_extension, &$errors)
+{
+	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
+	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) &&
+			!is_user_granted_permission(PERM_ADMIN_BORROWER))
+	{
+		$errors = get_opendb_lang_var('not_owner_of_item');
+		return FALSE;
+	}
+	else if ($borrowed_item_r['status'] == 'C')
+	{
+		$errors = get_opendb_lang_var('already_checked_in');
+		return FALSE;
+	}
+	else if ($borrowed_item_r['status'] != 'B')
+	{
+		$errors = get_opendb_lang_var('borrowed_item_not_found');
+		return FALSE;
+	}
+	else
+	{
+		if(item_borrow_duration_extension($sequence_number, $borrow_extension))
+			return TRUE;
+		else
+			return FALSE;
+	}
+}
+
 /**
 	Will split up a 'item_id_instance_no' value into
 	its component item_id / instance_no or return FALSE.
@@ -324,8 +637,11 @@ function fetch_my_history_item_rs($borrower_id, $order_by, $sortorder, $start_in
 		return FALSE;
 }
 
-function is_item_in_reserve_basket($item_id, $instance_no, $borrower_id)
+function is_item_in_reserve_basket($item_id, $instance_no, $borrower_id = NULL)
 {
+	if(strlen($borrower_id)==0)
+		$borrower_id = get_opendb_session_var('user_id');
+		
 	return fetch_borrowed_item_seq_no($item_id, $instance_no, 'T', $borrower_id) !== FALSE;
 }
 

@@ -25,7 +25,7 @@ class Upgrader_150a7_150a8 extends OpenDbUpgrader
 	function Upgrader_150a7_150a8()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.0a7',
+						'1.5.0a5',
 						'1.5.0a8',
 						array(
 							array('description'=>'Fix site plugin system data mappings, remove obselete lang vars'),

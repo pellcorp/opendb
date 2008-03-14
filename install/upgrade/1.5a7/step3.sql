@@ -3,14 +3,14 @@
 # thanks to SanMadJack
 # 
 
-INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'AUDIO_XTRA', 'Additional Audio Tracks', 'Additional Audio', 'checkbox_grid', NULL, 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
+INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'AUDIO_XTRA', 'Additional Audio Tracks', 'Additional Audio', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'DVD_AUDIO', 'DVD Audio Format', 'Audio Format(s)', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
 
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 0, 'SOUNDTRACK', 'Soundtrack Only', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 1, 'ACT_COMMENT', 'Actor\'s Commentary', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 2, 'DIR_COMMENT', 'Director\'s Commentary', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 3, 'PROD_COMMENT', 'Producer\'s Commentary', '', 'N' );
-INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 4, 'OTHER_COMMENT', 'Other Commentary', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 0, 'SOUNDTRACK', 'Soundtrack Only', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 1, 'ACT_COMMENT', 'Actor\'s Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 2, 'DIR_COMMENT', 'Director\'s Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 3, 'PROD_COMMENT', 'Producer\'s Commentary', 'director.gif', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 4, 'OTHER_COMMENT', 'Other Commentary', 'director.gif', 'N' );
 
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'DVD_AUDIO', 1, 'MONO', 'Mono - 1.0', 'mono.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'DVD_AUDIO', 2, 'STEREO', 'Stereo - 2.0', 'stereo.gif', 'N' );
@@ -64,6 +64,9 @@ WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_5.0';
 
 UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY5.1', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_5.1';
+
+UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY6.1', order_no = 76 
+WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1';
 
 UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS6.1', order_no = 76 
 WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1_DTS_ES';

@@ -179,7 +179,9 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 function handle_cancelreserve($sequence_number, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
-	if ($borrowed_item_r['borrower_id'] !== get_opendb_session_var('user_id') && !is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'], get_opendb_session_var('user_id')))
+	if ($borrowed_item_r['borrower_id'] !== get_opendb_session_var('user_id') && 
+			!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) && 
+			!is_user_granted_permission(PERM_ADMIN_BORROWER) )
 	{
 		$errors = get_opendb_lang_var('not_allowed_cancel_reserve');
 		return FALSE;
@@ -212,7 +214,8 @@ function handle_cancelreserve($sequence_number, &$errors)
 function handle_checkout($sequence_number, $borrow_duration, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
-	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'], get_opendb_session_var('user_id')))
+	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) && 
+			!is_user_granted_permission(PERM_ADMIN_BORROWER))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;
@@ -238,12 +241,11 @@ function handle_checkout($sequence_number, $borrow_duration, &$errors)
 	}
 }
 
-/**
-*/
 function handle_checkin($sequence_number, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
-	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'], get_opendb_session_var('user_id')))
+	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) &&
+			!is_user_granted_permission(PERM_ADMIN_BORROWER))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;
@@ -271,15 +273,12 @@ function handle_checkin($sequence_number, &$errors)
 	}
 }
 
-/**
-*/
 function handle_reminder($sequence_number, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
 	
-	// Administrator should be allowed to send reminders for other peoples items.
-	if(!is_user_granted_permission(PERM_ADMIN_BORROWER) &&
-			!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'], get_opendb_session_var('user_id')))
+	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) &&
+			!is_user_granted_permission(PERM_ADMIN_BORROWER))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;
@@ -303,7 +302,8 @@ function handle_reminder($sequence_number, &$errors)
 function handle_extension($sequence_number, $borrow_extension, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
-	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no'], get_opendb_session_var('user_id')))
+	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) &&
+			!is_user_granted_permission(PERM_ADMIN_BORROWER))
 	{
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;

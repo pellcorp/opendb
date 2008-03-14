@@ -941,7 +941,7 @@ if(is_site_enabled())
 			}
 		
 			if(get_opendb_config_var('borrow', 'enable')!==FALSE &&
-					is_user_granted_permission(PERM_USER_BORROWER) &&  
+					is_user_granted_permission(array(PERM_USER_BORROWER, PERM_ADMIN_BORROWER)) &&  
 					(get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE ||
 						get_opendb_config_var('listings.borrow', 'enable')!==FALSE))
 			{
@@ -1279,28 +1279,30 @@ if(is_site_enabled())
 											}
 										}
 									
-										if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
+										
+									}
+								}
+								
+								if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ADMIN_BORROWER))
+								{
+									if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('listings.borrow', 'enable')!==FALSE)
+									{
+										if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 										{
-											if($item_r['owner_id'] == get_opendb_session_var('user_id'))
+											$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
+										}
+										else
+										{
+											if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
+													get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
+													$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
 											{
-												if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
-												{
-													$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
-												}
-												else
-												{
-													if(get_opendb_config_var('borrow', 'quick_checkout')!==FALSE && 
-															get_opendb_config_var('listings.borrow', 'quick_checkout_action')!==FALSE && 
-															$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y')
-													{
-														$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
-													}
-												}
+												$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
 											}
 										}
 									}
 								}
-						
+								
 								if($item_r['owner_id'] != get_opendb_session_var('user_id'))
 								{   
 									// Reservation/Cancel Information.

@@ -60,14 +60,20 @@ function get_cuecat_upc_code($field)
 	return FALSE;
 }
 
+/**
+ * UPC's can be at most 13 characters
+ *
+ * @param unknown_type $field
+ * @return unknown
+ */
 function get_upc_code($field)
 {
-	$scanCode = substr(strtoupper($field), 0, 12);
+	$scanCode = substr(strtoupper($field), 0, 13);
 								
 	if(is_numeric($scanCode))
 	{
     	// a UPC is only ever 12 characters long
-		return substr($scanCode, 0, 12);
+		return substr($scanCode, 0, 13);
 	}
 	
 	return FALSE;

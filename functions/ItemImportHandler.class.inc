@@ -465,10 +465,10 @@ class ItemImportHandler
 				$instance_valid = FALSE;
 				
 				$dummy_POST_FILES = NULL;
-				$errors = NULL;
+				$errors = array();
 				
 				$return_val = handle_item_insert($item_r, $item_vars, $dummy_POST_FILES, $errors);
-				if($return_val !== FALSE)
+				if($return_val === TRUE)
 				{
 					// store item id for later use
 					if($this->_cfg_is_trial_run!==TRUE && is_numeric($item_r['item_id']))

@@ -60,7 +60,7 @@ class amazon extends SitePlugin
 				{
 					$amazonasin = trim($regs[1]);
 				}
-				else if (preg_match ("!<li><b>ISBN-[0-9]+:</b>\s*([0-9]+)</li>!", $pageBuffer, $regs)) // for books, ASIN is the same as ISBN
+				else if (preg_match ("!<li><b>ISBN-10:</b>\s*([0-9]+)</li>!", $pageBuffer, $regs)) // for books, ASIN is the same as ISBN
 				{
 					$amazonasin = trim ($regs[1]);
 				}

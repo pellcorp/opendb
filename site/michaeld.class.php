@@ -240,11 +240,11 @@ class michaeld extends SitePlugin
 				}
 	
 				if(preg_match('#english[^,]dolby digital 5\.1#i', $matches[1]))
-					$this->addItemAttribute('audio_lang', 'ENGLISH_5.1');
+					$this->addItemAttribute('dvd_audio', 'ENGLISH_5.1');
 				if(preg_match('#english dts#i', $matches[1]))
-					$this->addItemAttribute('audio_lang', 'ENGLISH_DTS');
+					$this->addItemAttribute('dvd_audio', 'ENGLISH_DTS');
 				if(preg_match('#commentary#i', $matches[1]))
-					$this->addItemAttribute('audio_lang', 'DIR_COMMENT');
+					$this->addItemAttribute('dvd_audio', 'DIR_COMMENT');
 			}
 	
 			if (preg_match('#<!--\s*audio parameters.*?</tr.*?subtitles.*?</tr>.*?<tr.*?>(.*?)</tr#is',$page, $matches))

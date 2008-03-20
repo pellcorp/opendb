@@ -48,6 +48,7 @@ class amazon extends SitePlugin
 		{
 			$amazonasin = FALSE;
 
+			//<li><b>ISBN-10:</b> 0812929985</li>
 			// check for an exact match, but not if this is second page of listings or more
 			if(!$this->isPreviousPage())
 			{
@@ -59,7 +60,7 @@ class amazon extends SitePlugin
 				{
 					$amazonasin = trim($regs[1]);
 				}
-				else if (preg_match ("/ISBN: ([^;]+);/", strip_tags($pageBuffer), $regs)) // for books, ASIN is the same as ISBN
+				else if (preg_match ("!<li><b>ISBN-10:</b>\s*([0-9]+)</li>!", $pageBuffer, $regs)) // for books, ASIN is the same as ISBN
 				{
 					$amazonasin = trim ($regs[1]);
 				}
@@ -122,11 +123,12 @@ class amazon extends SitePlugin
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
-			
+
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
-
-		if(preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+		
+		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
 				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
@@ -154,12 +156,10 @@ class amazon extends SitePlugin
 		}
 
 		// a hack!
-		// if original search title is 12 characters and a number its probable that its a UPC code.
-		if(strlen($search_attributes_r['search.title']) == 12 &&
-		is_numeric($search_attributes_r['search.title']) &&
-				(strlen($this->getItemAttribute('title'))!=12 || !is_numeric($this->getItemAttribute('title'))))
+		$upcId = get_upc_code($search_attributes_r['search.title']);
+		if($upcId && $upcId != $this->getItemAttribute('title'))
 		{
-			$this->addItemAttribute('upc_id', $search_attributes_r['search.title']);
+			$this->addItemAttribute('upc_id', $upcId);
 		}
 
 		/*http://ecx.images-amazon.com/images/I/41CJBZZSQFL._AA240_.jpg

@@ -593,7 +593,7 @@ function update_user($uid, $fullname, $language, $theme, $email_addr, $user_role
 					", email_addr='".addslashes($email_addr)."'".
 					($language!==FALSE?", language='".addslashes($language)."'":"").
 					($theme!==FALSE?", theme='".addslashes($theme)."'":"").
-					($user_role!==FALSE?", user_role='$user_role'":"").
+					($user_role!==FALSE?", user_role='".addslashes($user_role)."'":"").
 				" WHERE user_id = '$uid'";
 	
 	$update = db_query($query);
@@ -623,7 +623,7 @@ function insert_user($uid, $fullname, $pwd, $user_role, $language, $theme, $emai
 				"VALUES('".$uid."',".
 						"'".addslashes($fullname)."',".
 						(strlen($pwd)>0? ("'".md5($pwd)."'") :"NULL").",".
-						"'".$user_role."',".
+						"'".addslashes($user_role)."',".
 						"'".addslashes($email_addr)."',".
 						"'".addslashes($language)."',".
 						"'".addslashes($theme)."',".

@@ -858,7 +858,6 @@ function handle_user_update(&$HTTP_VARS, &$errors)
 	$user_r = fetch_user_r($HTTP_VARS['user_id']);
 	if(is_not_empty_array($user_r))
 	{
-		
 		if(validate_user_info($user_r, $HTTP_VARS, $address_attribs_provided, $errors))
 		{
 			if(update_user($HTTP_VARS['user_id'], $HTTP_VARS['fullname'], $HTTP_VARS['uid_language'], $HTTP_VARS['uid_theme'], $HTTP_VARS['email_addr'], $HTTP_VARS['user_role']))

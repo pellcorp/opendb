@@ -480,7 +480,7 @@ class amazon extends SitePlugin
 		if(preg_match("!<b>Publisher:</b>.*?\(([^\)]*[0-9]+)\)!", $pageBuffer, $regs))
 		{
 			$timestamp = strtotime($regs[1]);
-    		$date = date('d/m/Y', $timestamp);
+    		$date = date('Y', $timestamp);
     		$this->addItemAttribute('pub_date', $date);
 		}
 	}

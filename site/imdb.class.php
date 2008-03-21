@@ -136,7 +136,7 @@ class imdb extends SitePlugin
 		if(strlen($pageBuffer)==0)
 			return FALSE;
 			
-		if(preg_match("!<h1>([^<]+)<span>\(<a href=\"/Sections/Years/.*\">([0-9]+)</a>[^\)]*\)</span></h1>!", $pageBuffer, $matches))
+		if(preg_match("!<h1>([^<]+)<span>\(<a href=\"/Sections/Years/.*\">([0-9]+)</a>[^\)]*\)[^<]*</span></h1>!", $pageBuffer, $matches))
 		{
 			$this->addItemAttribute('title', $matches[1]);
 			$this->addItemAttribute('year', $matches[2]);

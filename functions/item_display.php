@@ -467,12 +467,6 @@ function get_related_items_block($item_r, $HTTP_VARS, &$instance_info_links_r)
 		$buffer .= $relatedChildrenTable;
 	}
 	
-	if($relatedChildrenTable == NULL && $relatedParentsTable == NULL)
-	{
-		$buffer .= "<h3>".get_opendb_lang_var('related_item(s)')."</h3>";
-		$buffer .= "<p>".get_opendb_lang_var('no_related_item(s)')."</p>";
-	}
-	
 	if((is_user_granted_permission(PERM_ITEM_OWNER) && get_opendb_session_var('user_id') === $item_r['owner_id']) || 
 			is_user_granted_permission(PERM_ITEM_ADMIN))
 	{

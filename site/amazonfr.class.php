@@ -139,7 +139,9 @@ class amazonfr extends SitePlugin
 		// The location of the title is the same for all formats.
 		//<title>Amazon.fr : Big Fish: DVD</title>
 		//if(preg_match("/<title>.*Amazon\.fr\s:\s([^:]*):(.*)<\/title>/s", $pageBuffer, $regs))
-		if(preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs))
+		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
 

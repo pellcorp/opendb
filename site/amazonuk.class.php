@@ -132,7 +132,9 @@ class amazonuk extends SitePlugin
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		
 		//<b class="sans">The Open Door </b>
-		if(preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs))
+		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 			$title = $regs[1];
 			

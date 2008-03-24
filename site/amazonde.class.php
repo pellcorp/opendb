@@ -201,7 +201,9 @@ class amazonde extends SitePlugin
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		
 		//if(preg_match("/<title>.*Amazon\.de: ([^:]*):(.*)<\/title>/s", $pageBuffer, $regs))
-		if(preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs))
+		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
 

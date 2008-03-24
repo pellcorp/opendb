@@ -116,35 +116,41 @@ class dvdfr extends SitePlugin
 	{
 	    if(strlen($search_vars_r['dvdfr_id'])>0)
 		{
-			$this->_pageBuffer = $this->fetchURI("http://www.dvdfr.com/dvd/dvd.php?id=".$search_vars_r['dvdfr_id']);
+			$pageBuffer = $this->fetchURI("http://www.dvdfr.com/dvd/dvd.php?id=".$search_vars_r['dvdfr_id']);
 
-			if (strlen($this->_pageBuffer)>0)
+			if (strlen($pageBuffer)>0)
 				$this->addListingRow(NULL,NULL,NULL,array('dvdfr_id'=>$search_vars_r['dvdfr_id']));
             
 			return TRUE;
 		}
 		else
 		{
-			$this->_pageBuffer = $this->fetchURI("http://www.dvdfr.com/search/search.php?multiname=".rawurlencode($search_vars_r['title'])."&x=0&y=0"); 
+			$pageBuffer = $this->fetchURI("http://www.dvdfr.com/search/multisearch.php?multiname=".urlencode($search_vars_r['title'])); 
 		}
             
-		if (strlen($this->_pageBuffer)>0)
+		if (strlen($pageBuffer)>0)
 		{
-			$dvdfr_id=FALSE; 
+			$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
-			if (preg_match_all(":CLASS=.?searchText.*(/dvd/(f(\d+)_.+)\")?>(.*)<(.*):U",$this->_pageBuffer,$match))
+			if (preg_match_all("!<td colspan=\"2\" class=\"dvdTitle\">\s*<a title=\"[^\"]*\" href=\"([^\"]*)\">([^<]*)</a>!",$pageBuffer,$matches))
 			{
-				for ($idx = 0; $idx < count($match[2]); $idx=$idx+4)
+				//print_r($matches);
+				for ($i = 0; $i < count($matches[2]); $i++)
 				{
-					$date="";
-					if ( $match[4][$idx+2] != "&nbsp;" )
+					$href = $matches[1][$i];
+					
+					if(preg_match("!f([0-9]*)!", $href, $regs))
 					{
-						$date=" (".$match[4][$idx+2].") ";
+						$dvdfr_id = $regs[1];
+					
+						//<a href="../dvd/f34593_rambo_iii.html"><img src="../sodr.php?id=34593&amp;p=7" alt="Rambo III" border="0" height="70" width="50"></a>
+						if(preg_match("!<a href=\"".preg_quote($href)."\"><img src=\"([^\"]*)\"!", $pageBuffer, $regs))
+						{
+							$thumbimg = str_replace("../", "http://www.dvdfr.com/", $regs[1]);
+						}
+			    		
+						$this->addListingRow($matches[2][$i], $thumbimg, NULL, array('dvdfr_id'=>$dvdfr_id));
 					}
-		    
-					$thumbimg = "http://www.dvdfr.com/images/dvd/cover_200x280/".(strlen($match[3][$idx])<4?"0":substr($match[3][$idx],0,strlen($match[3][$idx])-3))."/".$match[3][$idx].".jpg";
-                                    
-					$this->addListingRow($match[4][$idx].$date, $thumbimg, NULL, array('dvdfr_id'=>$match[2][$idx]));
 				}
 			}
 
@@ -159,23 +165,19 @@ class dvdfr extends SitePlugin
 	
 	function queryItem($search_attributes_r, $s_item_type)
 	{
-		// assumes we have an exact match here
-		if(strlen($this->_pageBuffer)==0)
-		{
-		    $this->_pageBuffer = $this->fetchURI("http://www.dvdfr.com/dvd/dvd.php?id=".$search_attributes_r['dvdfr_id']);
-		}
+	    $pageBuffer = $this->fetchURI("http://www.dvdfr.com/dvd/dvd.php?id=".$search_attributes_r['dvdfr_id']);
 
 		// no sense going any further here.
-		if(strlen($this->_pageBuffer)==0)
+		if(strlen($pageBuffer)==0)
 		    return FALSE;
 
         // YEAR VID_FORMAT SUBTITLES(x) RUN_TIME RATIO NO_DISCS MOVIE_PLOT IMDB_ID IMAGEURL DVD_REGION DIRECTOR AUDIO_LANG(x) AGE_RATING ACTORS
 
         $startblock="<!-- END:AdSolution-Tag 4.1 -->";
 
-        $startblockPos=strpos($this->_pageBuffer,$startblock);
+        $startblockPos=strpos($pageBuffer,$startblock);
 
-        $parseblock = substr($this->_pageBuffer, $startblockPos);
+        $parseblock = substr($pageBuffer, $startblockPos);
         
         //<div class="dvd_title">RAMBO</div>
         //<div class="dvd_titlevo">First Blood</div>

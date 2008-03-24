@@ -13,7 +13,7 @@ INSERT INTO s_site_plugin ( site_type, classname, title, image, description, ext
 #
 
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'dvdfr', 'title', 1, '', 'Title Search', 'text', '', '{ifdef(alt_title, \'{alt_title} / \')}{title}' );
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'dvdfr', 'dvdfr_id', 2, '', 'DVDFr ID', 'text', '', '{dvdfr_id}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'dvdfr', 'dvdfr_id', 2, '', 'DVDFr ID', 'text', '', '{dvdfrid}' );
 
 #
 # Site Plugin Links
@@ -29,6 +29,7 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', '*', '*', 'title', 'S_TITLE', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', '*', '*', 'dvdfr_id', 'DVDFRID', 'N' );
 
 ####################################################################################################
 # Item Type / Attribute Type relationships
@@ -37,7 +38,6 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 #
 # Site Plugin Attribute Type(s)
 #
-
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, display_type, s_field_type, site_type ) VALUES ( 'DVDFRID', 'Dvdfr ID', 'Dvdfr ID', 'hidden', 'hidden', '', 'dvdfr' );
 
 #

@@ -426,20 +426,11 @@ class amazon extends SitePlugin
 	*/
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
-		$start = strpos($pageBuffer, "<div class=\"buying\">");
-		if($start!==FALSE)
-			$start = strpos($pageBuffer, "<b class=\"sans\">");
-			
-		if($start!==FALSE)
+		if(preg_match_all("!<a href=\".*?field-author=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
 		{
-			$end = strpos($pageBuffer, "</div>", $start);
-			$authorBlock = substr($pageBuffer, $start, $end-$start);
-			if(preg_match_all("!<a href=\".*?field-author=[^\"]*\">([^<]*)</a>!i", $authorBlock, $regs))
-			{
-				$this->addItemAttribute('author', $regs[1]);
-			}
+			$this->addItemAttribute('author', $regs[1]);
 		}
-		
+	
 		if( ( $startIndex = strpos($pageBuffer, "<b class=\"h1\">Look for similar items by subject</b>") ) !== FALSE &&
 				($endIndex = strpos($pageBuffer, "</form>", $startIndex) ) !== FALSE )
 		{

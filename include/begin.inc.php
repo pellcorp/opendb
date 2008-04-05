@@ -210,7 +210,6 @@ if(function_exists('db_connect'))
 			
 	if(strlen($_OPENDB_THEME)>0)
 	{
-		// All the particular functions are in this file.
 		include_once("./theme/$_OPENDB_THEME/theme.php");
 	}
 }

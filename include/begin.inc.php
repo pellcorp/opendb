@@ -187,6 +187,8 @@ if(function_exists('db_connect'))
 			}
 			else
 			{
+				unset($_OPENDB_LANGUAGE);
+				
 				if(strlen(get_opendb_session_var('user_id'))>0 && get_opendb_config_var('user_admin', 'user_language_support')!==FALSE)
 				{
 					$_OPENDB_LANGUAGE = fetch_user_language(get_opendb_session_var('user_id'));

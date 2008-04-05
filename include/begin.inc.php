@@ -161,23 +161,17 @@ if(function_exists('db_connect'))
 				if(strlen(get_opendb_session_var('user_id'))>0)
 				{
 					$user_theme = fetch_user_theme(get_opendb_session_var('user_id'));
-				
+
 					if(is_exists_theme($user_theme))
-					{
 						$_OPENDB_THEME = $user_theme;
-					}
 				}
 			
 				if(strlen($_OPENDB_THEME)==0)
 				{
 					if(is_exists_theme(get_opendb_config_var('site', 'theme')))
-					{
 						$_OPENDB_THEME = get_opendb_config_var('site', 'theme');
-					}
 					else
-					{
 						$_OPENDB_THEME = 'default';
-					}
 				}
 			}
 			
@@ -191,7 +185,10 @@ if(function_exists('db_connect'))
 				
 				if(strlen(get_opendb_session_var('user_id'))>0 && get_opendb_config_var('user_admin', 'user_language_support')!==FALSE)
 				{
-					$_OPENDB_LANGUAGE = fetch_user_language(get_opendb_session_var('user_id'));
+					$user_language = fetch_user_language(get_opendb_session_var('user_id'));
+					
+					if(is_exists_language($user_language))
+						$_OPENDB_LANGUAGE = $user_language;
 				}
 				
 				if(strlen($_OPENDB_LANGUAGE)==0)

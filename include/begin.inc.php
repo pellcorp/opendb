@@ -174,7 +174,7 @@ if(function_exists('db_connect'))
 					{
 						$_OPENDB_THEME = get_opendb_config_var('site', 'theme');
 					}
-					else // This is the final default.
+					else
 					{
 						$_OPENDB_THEME = 'default';
 					}
@@ -196,7 +196,7 @@ if(function_exists('db_connect'))
 				{
 					if(is_exists_language(get_opendb_config_var('site', 'language')))
 						$_OPENDB_LANGUAGE = strtoupper(get_opendb_config_var('site', 'language'));
-					else // This is the final default.
+					else
 						$_OPENDB_LANGUAGE = fetch_default_language();
 				}
 			}

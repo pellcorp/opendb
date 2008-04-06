@@ -1,0 +1,10 @@
+ul.footer-links li
+{
+    white-space: nowrap;
+}
+
+ul.menu li
+{
+    padding: 0px;
+    margin: -15px;
+}

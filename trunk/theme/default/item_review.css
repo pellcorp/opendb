@@ -1,0 +1,7 @@
+ul.reviewOptions, ul.reviewOptionsVertical {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+span.starRating { padding: 0 5px; }

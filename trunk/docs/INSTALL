@@ -1,0 +1,42 @@
+OpenDb Installation Instructions
+--------------------------------
+
+1) Requirements
+
+To install the Open Media Collectors Database (OpenDb) on your site, you 
+will need the following:
+
+- WebServer (Apache 1.3, 2.x, IIS,...) - Apache is recommended, but IIS should work too.
+
+- PHP 4.3.0+, 5.X
+  	* track_vars must be enabled.
+	* register_globals can be enabled/disabled.
+	* php-mysql module must be installed, so that PHP can access MySQL.
+		
+- MySQL Database 4.X, 5.X
+
+- SMTP server or PHP email configured.  If this is not possible, be sure to 
+set the email configuration Mailer to 'none'.
+
+2) Installation / Upgrade
+
+!!WARNING!! - Its extremely important to make a new directory for the 1.X installation
+files, do not extract 1.X files over the top of your existing 0.81 installation.
+
+The new installer can be activated by executing install.php.
+
+With appropriate credentials, the OpenDb installer can create the opendb database
+and user.
+
+The install.php should be removed from the root directory of the opendb installation once
+the install / upgrade process is complete.
+
+2.1) Cover Image Cache (upload/ directory)
+
+When you upgrade from 0.81, if you have any locally saved cover images, you must copy the upload/
+directory over to the new 1.X installation, so that cached images can continue to be served.
+
+3) Documentation
+	
+	Documentation is available from the OpenDb website
+		http://opendb.iamvegan.net/

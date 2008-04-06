@@ -1,0 +1,43 @@
+John Blyberg <blybergj@aadl.org>
+
+This class is based on the ISBN class provided by ManaSystems (http://www.manasystems.co.uk/isbnpm.html)
+
+convert($isbn)
+Takes a 10 diget ISBN and returns the 13 diget equivalent. Does not perform any error checking or validation.
+
+gettype($isbn)
+Takes a string value and will make a guess as to whether or not it fits the criteria of an ISBN. Returns 10 for a possible ISBN-10 and 13 for ISBN-13. Does not validate further.
+
+validateten($isbn)
+Takes a 10 digit numeric value and checks to determain if it is a valid ISBN-10.
+
+validatettn($isbn)
+Takes a 13 digit digit numeric value and checks to determain if it is a valid ISBN-13.
+
+genchksum13($isbn)
+Takes a 12 digit numeric value and generates an ISBN-13 checksum digit.
+
+genchksum10($isbn)
+Takes a 9 digit numeric value and generates an ISBN-10 checksum digit.
+
+printinvalid() Returns a message informing the user the ISBN is invalid. 
+
+Example:
+
+<?php
+
+require_once('ISBN.php');
+
+$isbn_no = "012345678";
+$ISBN = new ISBN;
+$isbntype = $ISBN->gettype($isbn_no);
+
+if ($isbntype < 1) { $ISBN->printinvalid(); }
+else if ($isbntype == 10) { $isvalidten = $ISBN->validateten($isbn_no); }
+else if ($isbntype == 13) { $isvalidttn = $ISBN->validatettn($isbn_no); }
+
+if ($isvalidten) { print "That is a valid ISBN-10\n"; } 
+else if ($isvalidttn) { print "That is a valid ISBN-13\n"; } 
+else { $ISBN->printinvalid(); }
+
+?>

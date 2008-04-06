@@ -105,9 +105,9 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 		$errors = get_opendb_lang_var('not_owner_of_item');
 		return FALSE;
 	}
-	else if(is_user_owner_of_item($item_id, $instance_no) && get_opendb_config_var('borrow', 'owner_self_checkout') !== TRUE)
+	else if(is_user_owner_of_item($item_id, $instance_no, $borrower_id) && get_opendb_config_var('borrow', 'owner_self_checkout') !== TRUE)
 	{
-		$errors = get_opendb_lang_var('cannot_reserve_items_you_own');
+		$errors = get_opendb_lang_var('cannot_checkout_items_you_own');
 		return FALSE;
 	}
 	else if(is_item_borrowed($item_id, $instance_no))

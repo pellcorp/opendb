@@ -1,0 +1,1 @@
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_checkout_items_you_own', 'You cannot checkout an item you own');

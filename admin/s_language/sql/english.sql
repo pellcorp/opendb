@@ -74,6 +74,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_delete_yourself', 'You cannot delete yourself'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_edit_item_not_owned', 'You cannot edit an item you do not own'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_reserve_items_you_own', 'You cannot reserve an item you own'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_checkout_items_you_own', 'You cannot checkout an item you own');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_update_item_not_owned', 'You cannot update an item you do not own'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'case_sensitive', 'Case Sensitive'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'category', 'Category'); 

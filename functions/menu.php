@@ -207,7 +207,7 @@ function get_menu_section_title($section)
             'stats'=>get_opendb_lang_var('statistics'),
             'feeds'=>get_opendb_lang_var('feeds'),
             'users'=>get_opendb_lang_var('users'),
-            'admin_tools'=>get_opendb_lang_var('system_admin_tools')
+            'admin_tools'=>get_opendb_lang_var('admin_tools')
 	);
 	
 	return $section_vars[$section];

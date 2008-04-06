@@ -103,7 +103,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 		if($pageid == 'admin')
 		{
 		    echo("\n<div id=\"admin-menu\" class=\"menuContainer toggleContainer\">
-                <span id=\"admin-menu-toggle\" class=\"menuToggle toggleHidden\" onclick=\"return toggleVisible(document.getElementById('admin-menu-toggle'), getChildElementByTagName(document.getElementById('admin-menu'), 'div'));\">Admin Tools</span>
+                <span id=\"admin-menu-toggle\" class=\"menuToggle toggleHidden\" onclick=\"return toggleVisible(document.getElementById('admin-menu-toggle'), getChildElementByTagName(document.getElementById('admin-menu'), 'div'));\">".get_opendb_lang_var('admin_tools')."</span>
                 <div id=\"admin-menu-content\" class=\"menuContent elementHidden\">
                 <h2 class=\"menu\">Admin Tools</h2>");
             

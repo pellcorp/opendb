@@ -6,6 +6,9 @@ if [ $# -lt 3 ]; then
 	exit;
 fi
 
+mkdir $$
+cd $$
+
 echo Exporting release ...
 svn export https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$2
 
@@ -29,8 +32,6 @@ secondRevision=`svn info https://opendb.svn.sourceforge.net/svnroot/opendb/opend
 echo Generating log for $firstRevision ... $secondRevision;
 svn2cl.sh --revision $firstRevision:$secondRevision https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/trunk
 
-
-
-
-
+cd ..
+rm -r $$
 

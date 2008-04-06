@@ -75,9 +75,11 @@ function getChildElementByTagName(parentElement, tagName)
 	return NULL;
 }
 
-// TODO - do not remove existing classes!!!!
-function toggleVisible(linkElement, element)
+function toggleVisible(menuElementId)
 {
+	var linkElement = document.getElementById(menuElementId+'-toggle');
+	var element = getChildElementByTagName(document.getElementById(menuElementId), 'div');
+
 	if(element.className.indexOf('elementHidden')!=-1)
 	{
 		linkElement.className = linkElement.className.replace('toggleHidden', 'toggleVisible');

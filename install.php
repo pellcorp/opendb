@@ -54,8 +54,8 @@ function install_check_missing_081_upload_item_attributes()
 		if(is_array($errors))
 			$buffer .= format_error_block($errors);
 			
-		$buffer .= "<div id=\"missing-files\" class=\"toggleContainer\">";
-		$buffer .= "<span id=\"missing-files-toggle\" class=\"toggleHidden\" onclick=\"return toggleVisible(document.getElementById('missing-files-toggle'), getChildElementByTagName(document.getElementById('missing-files'), 'div'));\">File Item Attributes</span>";
+		$buffer .= "<div id=\"missing-files\" class=\"toggleContainer\" onclick=\"return toggleVisible('missing-files');\">";
+		$buffer .= "<span id=\"missing-files-toggle\" class=\"toggleHidden\">File Item Attributes</span>";
 		$buffer .= "<div class=\"elementHidden\" id=\"missing-files-content\">";
 		
 		$buffer .= "<ul>";

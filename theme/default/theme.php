@@ -102,8 +102,8 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 	{
 		if($pageid == 'admin')
 		{
-		    echo("\n<div id=\"admin-menu\" class=\"menuContainer toggleContainer\">
-                <span id=\"admin-menu-toggle\" class=\"menuToggle toggleHidden\" onclick=\"return toggleVisible(document.getElementById('admin-menu-toggle'), getChildElementByTagName(document.getElementById('admin-menu'), 'div'));\">".get_opendb_lang_var('admin_tools')."</span>
+		    echo("\n<div id=\"admin-menu\" class=\"menuContainer toggleContainer\" onclick=\"return toggleVisible('admin-menu');\">
+                <span id=\"admin-menu-toggle\" class=\"menuToggle toggleHidden\">".get_opendb_lang_var('admin_tools')."</span>
                 <div id=\"admin-menu-content\" class=\"menuContent elementHidden\">
                 <h2 class=\"menu\">Admin Tools</h2>");
             
@@ -113,8 +113,8 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
             echo("\n</div>");
 		}
 		         
-		echo("\n<div id=\"menu\" class=\"menuContainer toggleContainer\">");
-        echo("<span id=\"menu-toggle\" class=\"menuToggle toggleHidden\" onclick=\"return toggleVisible(document.getElementById('menu-toggle'), getChildElementByTagName(document.getElementById('menu'), 'div'));\">".get_opendb_lang_var('main_menu')."</span>");
+		echo("\n<div id=\"menu\" class=\"menuContainer toggleContainer\" onclick=\"return toggleVisible('menu');\">");
+        echo("<span id=\"menu-toggle\" class=\"menuToggle toggleHidden\">".get_opendb_lang_var('main_menu')."</span>");
 		echo("<div id=\"menu-content\" class=\"menuContent elementHidden\">");
 		echo("<h2 class=\"menu\">".get_opendb_lang_var('main_menu').'</h2>');
 		echo get_menu_options_list(get_menu_options($user_id));

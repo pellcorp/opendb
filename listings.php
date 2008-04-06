@@ -53,9 +53,9 @@ function getListingFiltersBlock()
 	{
 		$excluded_vars_list = array('listing_link');
 		
-		$buffer .= "<div id=\"listing-filters\" class=\"menuContainer toggleContainer\">";
-		$buffer .= "<span id=\"listing-filters-toggle\" class=\"menuToggle toggleHidden\" onclick=\"return toggleVisible(document.getElementById('listing-filters-toggle'), getChildElementByTagName(document.getElementById('listing-filters'), 'div'));\">".get_opendb_lang_var('listing_filters')."</span>";
-		$buffer .= "<div id=\"listing-filters-content\" class=\"menuContent elementHidden\">";
+		$buffer .= "<div id=\"listing-filters\" class=\"menuContainer toggleContainer\" onclick=\"return toggleVisible('listing-filters');\">";
+		$buffer .= "<span id=\"listing-filters-toggle\" class=\"menuToggle toggleHidden\">".get_opendb_lang_var('listing_filters')."</span>";
+		$buffer .= "<div id=\"listing-filters-content\" class=\"menuContent elementHidden\"\">";
 		$buffer .= "<h2 class=\"menu\">".get_opendb_lang_var('listing_filters')."</h2>";
 		$buffer .= "<form name=\"listing-filters\" action=\"$PHP_SELF\" method=\"GET\">";
 		

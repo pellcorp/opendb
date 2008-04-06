@@ -75,20 +75,20 @@ function getChildElementByTagName(parentElement, tagName)
 	return NULL;
 }
 
-function toggleVisible(menuElementId)
+function toggleVisible(containerId)
 {
-	var linkElement = document.getElementById(menuElementId+'-toggle');
-	var element = getChildElementByTagName(document.getElementById(menuElementId), 'div');
-
+	var element = getChildElementByTagName(document.getElementById(containerId), 'div');
+	var linkElement = document.getElementById(containerId+'-toggle');
+	
 	if(element.className.indexOf('elementHidden')!=-1)
 	{
 		linkElement.className = linkElement.className.replace('toggleHidden', 'toggleVisible');
-		element.className = element.className.replace('elementHidden', '');
+		element.className = element.className.replace('elementHidden', 'elementVisible');
 	}
 	else
 	{
-	   linkElement.className = linkElement.className.replace('toggleVisible', 'toggleHidden');
-        element.className += ' elementHidden';
+		linkElement.className = linkElement.className.replace('toggleVisible', 'toggleHidden');
+		element.className = element.className.replace('elementVisible', 'elementHidden');
 	}
 	return true;
 }

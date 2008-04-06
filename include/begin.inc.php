@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // Set error reporting to something OpenDb is capable of handling
-$_OPENDB_ERROR_REPORTING = error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE);
 
 // In case session handler error
 //ini_set('session.save_handler', 'files'); 
@@ -58,7 +58,6 @@ include_once("./functions/OpenDbBrowserSniffer.class.php");
 if(get_magic_quotes_runtime())
 {
 	set_magic_quotes_runtime(false);
-	$_OPENDB_MAGIC_QUOTES_RUNTIME=TRUE;
 }
 
 // Only if $PHP_SELF is not already defined.

@@ -29,16 +29,4 @@ if(is_gzip_compression_enabled($PHP_SELF))
 {
 	ob_end_flush();
 }
-
-// Reset magic_quotes_runtime setting.
-if(isset($_OPENDB_MAGIC_QUOTES_RUNTIME))
-{
-	set_magic_quotes_runtime(true);
-}
-
-// Restore error level
-if(isset($_OPENDB_ERROR_REPORTING))
-{
-	error_reporting($_OPENDB_ERROR_REPORTING);
-}
 ?>

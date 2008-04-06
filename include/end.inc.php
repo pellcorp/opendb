@@ -18,11 +18,6 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-//---------------------------------------------------------------------
-// This script contains any code that needs to be executed at the end 
-// of each runnable script.
-//---------------------------------------------------------------------
-
 //db_close();
 
 if(is_gzip_compression_enabled($PHP_SELF))

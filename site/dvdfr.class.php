@@ -246,7 +246,7 @@ class dvdfr extends SitePlugin
 			if ($regs[2] < 10) {
                 $reldate="0".$reldate;
 			} 
-			$this->addItemAttribute('rel_dvd_dt',"$reldate");
+			$this->addItemAttribute('rel_dvd_dt', $reldate);
         }
 
         // Length of the movie - OK
@@ -258,7 +258,7 @@ class dvdfr extends SitePlugin
         // Ratio of the picture - OK
         if (preg_match(":alt=\"Image ratio ([\.\d]*)\" title=\"Image ratio ([\d\.]*)\":i",$parseblock,$regs))
 		{
-            $this->addItemAttribute('ratio',"$regs[1]");
+            $this->addItemAttribute('ratio', $regs[1]);
         }
        
 		// DVD Region - OK
@@ -270,13 +270,12 @@ class dvdfr extends SitePlugin
 		// Movie plot
 		if (preg_match(":Synopsis</div>[\s\t\n]*<div class=\"dvd_text\">([^<>]+)</div>:sim",$parseblock,$regs))
 		{
-			$str = preg_replace(":\n:im"," ",$regs[1]);
-			$str = preg_replace(":(\"):im","\\\"",$str);
-			$this->addItemAttribute('blurb',"$str");
+			$str = preg_replace(":\n:im"," ", replace_newlines($regs[1]));
+			$this->addItemAttribute('blurb', $str);
 		}
 
 		// Director - OK
-		if (preg_match("@R�alisation</div>\n[\t\s]*<div class=\"dvd_text\"><a class=\"dvd_text\" href=\".*\">(.*)</a>@im",$parseblock,$regs))
+		if (preg_match("@R.?alisation</div>\n[\t\s]*<div class=\"dvd_text\"><a class=\"dvd_text\" href=\".*\">(.*)</a>@im",$parseblock,$regs))
 		{
 			$this->addItemAttribute('director',trim($regs[1]));
 		} 
@@ -288,15 +287,11 @@ class dvdfr extends SitePlugin
 		}
 
 		// Subtitles available
-		if (preg_match(":title=\"Sous-titres disponibles\" vspace=\"\d\"><br>[\s\t]*\n[\t\s]*<div align=\"center\"><center>[\s\t\n]*<small>[\s\t\n]*(.*)</small>:im",$parseblock,$regs))
+		if (preg_match(":title=\"Sous-titres disponibles\"(.*?)</td>:sim",$parseblock,$regs))
 		{
-		  	global $dvdfr_language_map;
-		  	
-            $subtitles = split(", ",trim($regs[1]));
-            foreach ($subtitles as $elt)
+			if (preg_match_all(":<small>[\s]*(.*?)[\s]*</small>:sim",$regs[1],$result))
 			{
-                if ($dvdfr_language_map[$elt] != "")
-                    $this->addItemAttribute('subtitles',"$dvdfr_language_map[$elt]");
+				$this->addItemAttribute('subtitles', $result[1]);		
 			}
 		}
 
@@ -312,14 +307,11 @@ class dvdfr extends SitePlugin
 		}
 
 		// Lists of audio languages 
-		if (preg_match(":title=\"Sp�cifications audio\"(.*)</table></td></tr>:sim",$parseblock,$regs))
+		if (preg_match(":title=\"Sp.?cifications audio\"(.*)</table>:sim",$parseblock,$regs))
 		{
 			if (preg_match_all(":<small>(.*)</small>:im",$regs[1],$result))
 			{
-				foreach ($result[1] as $elt)
-				{
-			        $this->addItemAttribute('audio_lang',$elt);
-			    }
+				$this->addItemAttribute('audio_lang', $result[1]);
 			}
 		}
 		

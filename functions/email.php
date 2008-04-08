@@ -105,7 +105,7 @@ function send_email_to_site_admins($user_role_permissions, $from_email_addr, $su
 function opendb_user_email($to_userid, $from_userid, $subject, $message, &$errors, $append_site_to_subject = TRUE)
 {
 	$to_userid = trim($to_userid);
-	if(is_user_valid($to_userid))
+	if(is_user_permitted_to_receive_email($to_userid))
 	{
 		$to_user_r = fetch_user_r($to_userid);
 		$to_email_addr = trim($to_user_r['email_addr']);

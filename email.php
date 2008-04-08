@@ -195,7 +195,7 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 		echo ("<p class=\"error\">".get_opendb_lang_var('message_not_sent_to').": <ul>");
 		while (list(,$failure_r) = each($failures))
 		{
-			echo("<li class=\"smerror\">".$failure_r['user'].
+			echo("<li class=\smerror\">".$failure_r['user'].
 				format_error_block($failure_r['error'])."</li>");
 		}
 		echo("</ul></p>");
@@ -338,7 +338,7 @@ if(is_site_enabled())
 					}
 				}
 			}
-			else if($HTTP_VARS['op'] == 'send_to_uid' && is_user_valid($HTTP_VARS['uid']) && 
+			else if($HTTP_VARS['op'] == 'send_to_uid' && is_user_permitted_to_receive_email($HTTP_VARS['uid']) && 
 					is_user_granted_permission(PERM_SEND_EMAIL))
 			{
 				$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));

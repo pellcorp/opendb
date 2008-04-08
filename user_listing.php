@@ -100,6 +100,7 @@ if(is_site_enabled())
 			{
 				$v_listing_url_vars = $HTTP_VARS;
 				$v_listing_url_vars['mode'] = NULL;
+				unset($v_listing_url_vars['show_deactivated_users_cbox']);
 				
 				register_opendb_session_var('user_listing_url_vars', $v_listing_url_vars);
 			
@@ -135,8 +136,6 @@ if(is_site_enabled())
 						{
 							$action_links_rs[] = array(url=>'user_admin.php?op=activate&user_id='.$user_r['user_id'].'&listing_link=y', img=>'activate_user.gif',text=>get_opendb_lang_var('activate_user'));
 						}
-						
-						$action_links_rs[] = array(url=>'user_admin.php?op=delete&user_id='.$user_r['user_id'].'&listing_link=y', img=>'delete_user.gif',text=>get_opendb_lang_var('delete_user'));
 					}
 				
 					$action_links_rs[] = array(url=>'user_admin.php?op=change_password&user_id='.$user_r['user_id'].'&listing_link=y', img=>'change_password.gif',text=>get_opendb_lang_var('change_password'));

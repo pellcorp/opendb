@@ -61,10 +61,15 @@ if(is_site_enabled())
 			$user_r = fetch_user_r($HTTP_VARS['uid']);
 			if(is_array($user_r))
 			{
-				$page_title = get_opendb_lang_var('user_profile_for_user_name', array('user_id'=>$HTTP_VARS['uid'], 'fullname'=>fetch_user_name($HTTP_VARS['uid'])));
+				$page_title = get_opendb_lang_var('user_profile_for_user_name', array('user_id'=>$user_r['user_id'], 'fullname'=>$user_r['fullname']));
 				echo(_theme_header($page_title));
 				echo('<h2>'.$page_title.'</h2>');
-	
+
+				if($user_r['active_ind']!='Y')
+				{
+					echo("<p class=\"userDeactivatedNotice\">".get_opendb_lang_var('user_deactivated')."</p>");		
+				}
+				
 				echo("<table>");
 	
 				echo(format_field(
@@ -79,7 +84,7 @@ if(is_site_enabled())
 						get_opendb_lang_var('fullname'),
 						$user_r['fullname']));
 	
-				if($HTTP_VARS['user_id'] === get_opendb_session_var('user_id') || 
+				if($user_r['user_id'] === get_opendb_session_var('user_id') || 
 							is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 				{
 					echo(format_field(
@@ -90,7 +95,7 @@ if(is_site_enabled())
 				echo("\n</table>");
 	
 				$address_header_displayed = FALSE;
-				$addr_results = fetch_user_address_type_rs($HTTP_VARS['uid'], TRUE);
+				$addr_results = fetch_user_address_type_rs($user_r['user_id'], TRUE);
 				if($addr_results)
 				{
 					while($address_type_r = db_fetch_assoc($addr_results))
@@ -136,23 +141,24 @@ if(is_site_enabled())
 					db_free_result($addr_results);
 				}
 				
-				if(is_valid_opendb_mailer() && 
+				if(is_valid_opendb_mailer() &&
 						strlen($user_r['email_addr'])>0 && 
-						is_user_granted_permission(PERM_SEND_EMAIL))
+						is_user_granted_permission(PERM_SEND_EMAIL) && 
+						is_user_permitted_to_receive_email($user_r['user_id']))
 				{
 					$url = 'email.php?'.
 							get_url_string(Array(
 									'op'=>'send_to_uid',
-									'uid'=>$HTTP_VARS['uid'],
+									'uid'=>$user_r['user_id'],
 									'inc_menu'=>'N',
 									'subject'=>ifempty($HTTP_VARS['subject'], get_opendb_lang_var('no_subject'))));
 		
 					$footer_links_r[] = array(url=>$url, target=>'popup(640,480)', text=>get_opendb_lang_var('send_email'));
 				}
 
-				if(is_user_granted_permission(PERM_VIEW_LISTINGS))
+				if(is_user_granted_permission(PERM_VIEW_LISTINGS) && $user_r['active_ind']=='Y')
 				{
-					$footer_links_r[] = array(url=>"listings.php?owner_id=".$HTTP_VARS['uid'], text=>get_opendb_lang_var('list_user_items'));
+					$footer_links_r[] = array(url=>"listings.php?owner_id=".$user_r['user_id'], text=>get_opendb_lang_var('list_user_items'));
 				}
 				
 				if(is_user_granted_permission(PERM_ADMIN_USER_LISTING) && 
@@ -166,7 +172,7 @@ if(is_site_enabled())
 			}
 			else
 			{
-				$message = get_opendb_lang_var('user_not_found', array('user_id'=>$HTTP_VARS['uid']));
+				$message = get_opendb_lang_var('user_not_found', array('user_id'=>$user_r['user_id']));
 				
 				echo _theme_header($message);
 				echo("<p class=\"error\">".$message."</p>");

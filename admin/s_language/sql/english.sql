@@ -71,7 +71,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cancel
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cancel_reservation(s)', 'Cancel Reservation(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_deactivate_yourself', 'You cannot deactivate yourself'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_delete_item_not_owned', 'You cannot delete an item you do not own'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_delete_yourself', 'You cannot delete yourself'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_edit_item_not_owned', 'You cannot edit an item you do not own'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_reserve_items_you_own', 'You cannot reserve an item you own'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_checkout_items_you_own', 'You cannot checkout an item you own');
@@ -105,16 +104,14 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cnt_re
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'field', 'Field'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'compulsory_field', 'Compulsory'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_clear_log', 'Are you sure you want to delete the log?'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_inactive_borrowed_items_and_title', 'Are you sure you want to permanently delete (including any closed and/or cancelled borrow records) {display_title}?'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_inactive_borrowed_items_and_title', 'Are you sure you want to delete (including any closed and/or cancelled borrow records) {display_title}?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_review', 'Are you sure you want to delete the review?'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_title', 'Are you sure you want to permanently delete {display_title}?'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_title', 'Are you sure you want to delete {display_title}?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_passwd', 'Confirm'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_title_same_type_and_owner_insert', 'You already have a {s_item_type} item \"{title}\".  Do you want to continue?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_title_same_type_insert', 'This item \"{title}\" already exists.  Do you want to continue?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_activate', 'Are you sure you want to activate user \"{fullname}\" ({user_id})?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_deactivate', 'Are you sure you want to deactivate user \"{fullname}\" ({user_id})?'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete', 'Are you sure you want to permanently delete user \"{fullname}\" ({user_id})?'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete_deactivate', 'Do you you want to deactivate user \"{fullname}\" ({user_id}) instead?'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'connected_to', 'Connected to {dbname}@{host}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'content', 'Content'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'current_user', 'Current user'); 
@@ -132,7 +129,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'defaul
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete', 'Delete'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_from_reserve_list', 'Remove from Basket'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_item', 'Delete Item'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_user', 'Delete User'); 
+
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'desc', 'Desc'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'description', 'Description'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'details', 'Details'); 
@@ -293,7 +290,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'my_s_s
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'never_logged_in', 'Never'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account', 'New Account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_admin_email_sent', 'A notification email has been sent to the {site} administrator'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to delete the user:\\n{delete_url}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to deactivate the user:\\n{deactivate_url}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_reply', 'Thank you for requesting a {site} account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_items_added', 'New items added'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_item_instance', 'New Copy'); 
@@ -488,7 +485,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_a
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_address_not_added', 'User Address(es) not added.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_address_not_updated', 'User Address(es) not updated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deactivated', 'User deactivated.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deleted', 'User deleted.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_exists', 'User \"{user_id}\" already exists.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_has_reservation', 'User \'{user_id}\' has an existing reservation'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_info', 'User Info'); 

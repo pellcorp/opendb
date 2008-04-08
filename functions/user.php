@@ -41,6 +41,13 @@ function is_logged_in_user($uid)
 	return $uid == get_opendb_session_var('user_id');
 }
 
+function is_user_permitted_to_receive_email($user_id) 
+{
+	return is_user_valid($user_id) && 
+			is_user_active($user_id) && 
+			is_user_granted_permission(PERM_RECEIVE_EMAIL, $user_id);
+}
+
 function is_user_active($uid)
 {
 	$query = "SELECT active_ind FROM user WHERE user_id = '$uid'";
@@ -182,21 +189,6 @@ function fetch_user_theme($uid)
 		db_free_result($result);
 		return $found['theme'];
 	}
-	//else
-	return FALSE;
-}
-
-function fetch_user_type($uid)
-{
-	$query = "SELECT if(length(type)>0,type,'N') as type FROM user WHERE user_id = '$uid'";
-	$result = db_query($query);
-	if ($result && db_num_rows($result)>0)
-	{
-		$found = db_fetch_assoc($result);
-		db_free_result($result);
-		return $found['type'];
-	}
-	
 	//else
 	return FALSE;
 }
@@ -461,7 +453,8 @@ function fetch_user_r($uid)
 			u.language, 
 			u.theme, 
 			u.email_addr, 
-			u.lastvisit 
+			u.lastvisit,
+			u.active_ind 
 	FROM (user u, s_role sr) 
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '".get_opendb_site_language()."' AND
@@ -642,29 +635,6 @@ function insert_user($uid, $fullname, $pwd, $user_role, $language, $theme, $emai
 		return FALSE;
 	}
 }
-
-//
-// Delete user.  Assumes validation has already been performed.
-//
-function delete_user($uid)
-{
-	$query= "DELETE FROM user WHERE user_id = '$uid'";
-	$delete = db_query($query);
-	if (db_affected_rows()>0)
-	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid));
-		return TRUE;
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid));
-		return FALSE;
-	}
-}
-
-//---------------------------------------------------
-// Utilities
-//---------------------------------------------------
 
 // Randomly generates a password of $length characters
 function generate_password($length)

@@ -351,58 +351,6 @@ function is_exists_valid_user_address($user_id, $s_address_type)
 	return FALSE;
 }
 
-/**
-* Delete all user_address_attributes, followed by the address.  If no 
-* sequence number specified, all addresses for the user will be deleted.
-*/
-function delete_user_addresses($user_id, $sequence_number = NULL)
-{
-	if(db_query("LOCK TABLES user_address WRITE, user_address_attribute WRITE"))
-	{
-		$query = "SELECT sequence_number FROM user_address WHERE user_id='".$user_id."'";
-		if(is_numeric($sequence_number))
-		{
-			$query .= " AND sequence_number = '".$sequence_number."'";
-		}
-		
-		$failures = 0;
-		$results = db_query($query);
-		if($results)
-		{
-			while($user_address_r = db_fetch_assoc($results))
-			{
-				if(delete_user_address_attributes($user_address_r['sequence_number']))
-				{
-					if(!delete_user_address($user_address_r['sequence_number']))
-					{
-						$failures++;
-					}
-				}
-				else
-				{
-					$failures++;
-				}
-			}
-			db_free_result($results);
-		}
-		
-		db_query("UNLOCK TABLES");
-		if($failures == 0)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($user_id, $sequence_number));
-		return FALSE;
-	}
-}
-
 //
 // If successful will return the new ID for the item, otherwise will return FALSE.
 //

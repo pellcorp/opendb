@@ -466,9 +466,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_themes_support', 1, 'User Themes Support', 'Users can change theme', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_language_support', 2, 'User Language Support', 'Users can change language', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_reviews', 3, 'Delete User with reviews', 'User can be deleted even if they have authored review(s)', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_borrower_inactive_borrowed_items', 4, 'Delete User with inactive borrower records', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 5, 'Delete user with inactive lender records', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'user_passwd_change_allowed', 6, 'Change Password support', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin', 'datetime_mask', 7, 'Datetime Mask', '', 'datemask');
 
@@ -648,9 +645,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin'
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_themes_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_passwd_change_allowed', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_language_support', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_reviews','TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_borrower_inactive_borrowed_items', 'TRUE');
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin', 'user_delete_with_owner_inactive_borrowed_items', 'FALSE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin.change_user', 'enable', 'TRUE');
 

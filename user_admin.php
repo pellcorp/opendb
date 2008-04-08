@@ -1064,7 +1064,6 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 	}//if($addr_results)
 
 	$activate_url = get_site_url().'user_admin.php?op=activate&user_id='.$HTTP_VARS['user_id'];
-	$deactivate_url = get_site_url().'user_admin.php?op=deactivate&user_id='.$HTTP_VARS['user_id'];
 
 	$message =
 		get_opendb_lang_var(
@@ -1073,8 +1072,7 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 				'admin_name'=>get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')),
 				'user_info'=>$user_info_lines,
 				'site'=>get_opendb_config_var('site', 'title'),
-				'activate_url'=>$activate_url,
-				'deactivate_url'=>$deactivate_url));
+				'activate_url'=>$activate_url));
 
 	return send_email_to_site_admins(
 				PERM_ADMIN_CREATE_USER, 

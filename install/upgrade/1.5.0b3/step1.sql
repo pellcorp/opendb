@@ -26,6 +26,6 @@ WHERE group_id = 'user_admin' AND id IN (
 	'user_delete_with_owner_inactive_borrowed_items');
 
 UPDATE s_language_var
-SET value = 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to deactivate the user:\\n{deactivate_url}'
+SET value = 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}'
 WHERE varname = 'new_account_email' AND
 language = 'ENGLISH';

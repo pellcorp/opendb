@@ -116,11 +116,12 @@ if($HTTP_VARS['op'] == 'previewsql')
 	echo("\n<head>");
 	echo("\n<title>".get_opendb_config_var('site', 'title')." ".get_opendb_version()." - ".$HTTP_VARS['title']."</title>");
 
-	if(file_exists('./theme/default/style.css'))
-	echo("\n<link rel=stylesheet type=\"text/css\" href=\"./theme/default/style.css\">");
+	if(file_exists('./theme/default/style.css')) {
+		echo("\n<link rel=stylesheet type=\"text/css\" href=\"./theme/default/style.css\">");
+	}
+	
 	echo("\n<style type=\"text/css\">");
-	echo (
-			"\n.code 			{ color: black; font-family: courier; font-size:small }");
+	echo ("\n.code { color: black; font-family: courier; font-size:small }");
 	echo("\n</style>");
 	echo("\n</head><body>");
 
@@ -150,5 +151,5 @@ else
 
 	display_patch_list('Customise for Country', 'country');
 	display_patch_list('Miscellaneous Updates', 'extras');
-}//if($HTTP_VARS['op'] == 'patch')
+}
 ?>

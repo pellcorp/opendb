@@ -28,7 +28,7 @@ class Upgrader_150b3_150b4 extends OpenDbUpgrader
 						'1.5.0a8',
 						'1.5.0b4',
 						array(
-							array('description'=>'Add lang var for checkout functionality'),
+							array('description'=>'Remove user delete config vars and update lang vars'),
 						)
 					);
 	}

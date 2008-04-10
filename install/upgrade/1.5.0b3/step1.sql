@@ -30,7 +30,3 @@ SET value = 'Hi {admin_name},\\n\\nThe following user has requested to become a 
 WHERE varname = 'new_account_email' AND
 language = 'ENGLISH';
 
-#
-# fixes for UPC_ID
-#
-UPDATE s_attribute_type SET input_type = 'text', display_type = 'list' WHERE s_attribute_type = 'UPC_ID';

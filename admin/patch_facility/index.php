@@ -149,6 +149,6 @@ else
 	}
 
 	display_patch_list('Customise for Country', 'country');
-	display_patch_list('Miscelleous Updates', 'extras');
+	display_patch_list('Miscellaneous Updates', 'extras');
 }//if($HTTP_VARS['op'] == 'patch')
 ?>

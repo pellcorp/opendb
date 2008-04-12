@@ -334,8 +334,10 @@ function safe_filename($src)
 		
 	if(strpos($dir, "/") !== FALSE)
 		return $file; // return basename as illegal pathname - more than one directory path - only one level supported currently!
-	else
+	else if(strlen($dir)>0)
 		return $dir.'/'.$file;
+	else
+		return $file;
 }
 
 /**

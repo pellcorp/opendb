@@ -26,6 +26,7 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'MP3', '', 'music-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VCD', '', 'dvd-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VHS', '', 'vhs-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'COMIC', '', 'books-fr' );
 
 #
 # Site Plugin Input Fields

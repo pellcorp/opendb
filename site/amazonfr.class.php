@@ -42,7 +42,6 @@ class amazonfr extends SitePlugin
 		{
 			// Get the mapped AMAZON index type
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
-
 			$queryUrl = "http://www.amazon.fr/exec/obidos/external-search?index=".$index_type."&keyword=".rawurlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
 			$pageBuffer = $this->fetchURI($queryUrl);
 		}
@@ -153,7 +152,7 @@ class amazonfr extends SitePlugin
 
 			$this->addItemAttribute('title', $title);
 		}
-
+		
 		$imageBuffer = $this->fetchURI("http://www.amazon.fr/gp/product/images/".$search_attributes_r['amazfrasin']."/");
 		if($imageBuffer!==FALSE)
 	    {
@@ -211,6 +210,7 @@ class amazonfr extends SitePlugin
 
 			case 'books-fr':
 				$this->parse_amazon_books_data($search_attributes_r, $pageBuffer);
+				$this->parse_amazon_comic_title_data($search_attributes_r, $title);
 				break;
 
 			case 'music-fr':
@@ -222,66 +222,6 @@ class amazonfr extends SitePlugin
 		}
 
 		return TRUE;
-	}
-
-	/**
-		Will return an array of the following structure.
-			array(
-				"gamepblshr"=>game publisher,
-				"gamesystem"=>game platform,
-				"gamerating"=>esrb rating
-				"features"=>features listing for game,
-			);
-	*/
-	function parse_amazon_game_data($search_attributes_r, $pageBuffer)
-	{
-		// Publisher extraction block
-		if (preg_match("/de <a.*>(.*)<\/a><br>/i", $pageBuffer, $regs))
-		{
-			$this->addItemAttribute('gamepblshr', $regs[1]);
-		}
-
-		// Platform extraction block
-		if (preg_match("/<b>Plate-forme:[\s]*<\/b>(.+?)<br>/si", $pageBuffer, $regs))
-		{
-			if(preg_match(":&nbsp;[\s](.*):", $regs[1], $regs2))
-			{
-				// Different combo's of windows, lets treat them all as windows.
-				if(strpos($regs2[1], "Windows")!==FALSE)
-					$platform = "Windows";
-				else
-					$platform = trim($regs2[1]);
-
-				$this->addItemAttribute('gamesystem', $platform);
-			}
-			else
-			{
-				$this->addItemAttribute('gamesystem', $regs[1]);
-			}
-		}
-
-		// Rating extraction block
-		if (preg_match("/<b>ESRB Rating:[\s]*<\/b>(.+?)<br>/si", $pageBuffer, $regs))
-		{
-			if(preg_match(":videogames/ratings/esrb-(.*).gif:", $regs[1], $regs2))
-				$this->addItemAttribute('gamerating', $regs2[1]);
-			else
-				$this->addItemAttribute('gamerating', strtoupper($regs[1]));
-		}
-
-		// Features extraction block
-		if(preg_match("/<b>Features:<\/b>[\s]<ul>(.+?)<\/ul>/si", $pageBuffer, $featureblock))
-		{
-			if(preg_match_all("/<li.*?>(.*?)<\/li>/si", $featureblock[1], $matches))
-			{
-				for($i = 0; $i < count($matches[1]); $i++)
-				{
-					$matches[1][$i] = strip_tags($matches[1][$i]);
-				}
-
-				$this->addItemAttribute('features', implode("\n", $matches[1]));
-			}
-		}
 	}
 
 	function parse_music_tracks($pageBuffer)
@@ -388,14 +328,38 @@ class amazonfr extends SitePlugin
 		// Author extraction
 		//<meta name="description" content="Amazon.fr : The Da Vinci Code: Livres: Dan Brown by Dan Brown" />
 
+// 		if(preg_match("/<meta name=\"description\" content=\"([^\"]*)\"/i",$pageBuffer, $regs))
+// 		{
+// 			if(preg_match("/by (.*)/i", $regs[1], $regs2))
+// 			{
+// 				// the artist is the last part of the description.
+// 				// Amazon.fr : The Da Vinci Code: Livres: Dan Brown by Dan Brown
+// 				$this->addItemAttribute('author', $regs2[1]);
+// 			}
+// 		}
 		if(preg_match("/<meta name=\"description\" content=\"([^\"]*)\"/i",$pageBuffer, $regs))
 		{
-			if(preg_match("/by (.*)/i", $regs[1], $regs2))
+			if(preg_match("/.*:[\s]*(.*):[\s]*Livres/i", $regs[1], $regs2))
 			{
-				// the artist is the last part of the description.
-				// Amazon.fr : The Da Vinci Code: Livres: Dan Brown by Dan Brown
-				$this->addItemAttribute('author', $regs2[1]);
+				// the artist is the one before last part of the description.
+				// Amazon.fr: Millénium, Tome 1 : Les hommes qui n'aimaient pas les femmes: Stieg Larsson,Lena Grumbach,Marc de Gouvenain: Livres
+				$authors = preg_split("/[,|\/]+/", $regs2[1]);
+				$this->addItemAttribute('author', $authors);
 			}
+		}
+
+		//Synopsis extraction
+// 		if(preg_match("!<b>Pr&#233;sentation[\s]*de[\s]*l'&#233;diteur</b><br[\s]*/>(.*?)(</div>|<br[\s]*/>)!i",$pageBuffer, $regs))
+// 		{
+// 			$this->addItemAttribute('synopsis', $regs[1]);
+// 		}
+
+		//Synopsis extraction <b class="h1">Descriptions du produit</b><br />
+		// <b>Amazon.fr</b><br />
+		if(preg_match("!<b class=\"h1\">Descriptions du produit</b><br[\s]*/>(.*?)</div>!i",$pageBuffer, $regs))
+		{
+			if(preg_match("!<b>.*?</b><br[\s]*/>(.*)!i",$regs[1], $regs2))
+      $this->addItemAttribute('synopsis', $regs2[1]);
 		}
 
 		// <b class="h1">Détails sur le produit</b><br>
@@ -426,6 +390,11 @@ class amazonfr extends SitePlugin
 					if (preg_match("/([0-9]+)$/", $regs2[2], $regs3))
 					{
 						$this->addItemAttribute('pub_date', $regs3[1]);
+    				// if year not defined, use pub_dt
+    				if($this->getItemAttribute('year') === FALSE)
+    				{
+    					$this->addItemAttribute('year', $regs3[1]);
+    				}
 					}
 
 					if(preg_match("/([^;]+);([^$]+)$/", $regs2[1], $regs3))
@@ -448,6 +417,51 @@ class amazonfr extends SitePlugin
 //		foreach ($this->_item_data_r as $ind=>$val)
 //    		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "attrib=".$ind.":".$val);
 
+	}
+
+	function parse_amazon_comic_title_data($search_attributes_r, $title)
+	{
+		$com_series = "";
+		$com_inum = "";
+		$com_itit = "";
+
+		// for titles like:
+		// Les Forêts d'opale, tome 1 : Le Bracelet de Cohars (Album)
+		// XIII Tome 18 : La version irlandaise
+		// XIII, tome 3, Toutes les larmes de l'enfer
+		if(preg_match("/(.+?)[\s]*,?[\s]*tome[\s]*([\d]*)[\s]*(:|,)[\s]*(.*)/i",$title, $regs))
+		{
+  			$com_series = $regs[1];
+  			$com_inum = $regs[2];
+  			$com_itit = $regs[4];
+		}
+
+		// for titles like:
+    	//Les Cités obscures: La Frontière invisible, tome 1
+		if(preg_match("/(.+)[\s]*:[\s]*(.*)(:|,)[\s]*tome[\s]*([\d]*)/i",$title, $regs))
+		{
+  			$com_series = $regs[1];
+  			$com_inum = $regs[4];
+  			$com_itit = $regs[2];
+		}
+    
+		// for titles like:
+		//Wayne Shelton T7 Lance de Longinus 
+		if(preg_match("/(.+)[\s]+T([\d]+)[\s]+(.*)/",$title, $regs))
+		{
+  			$com_series = $regs[1];
+  			$com_inum = $regs[2];
+  			$com_itit = $regs[3];
+		}
+		$this->addItemAttribute('com_series', $com_series);
+		$this->addItemAttribute('com_inum', $com_inum);
+		$this->addItemAttribute('com_itit', $com_itit);
+		
+		// We propose a new title for the item (standard format)
+		if($com_series != "" &&	$com_inum != "" && $com_itit != "")
+		{
+			$this->addItemAttribute('title', $com_series . " T" . $com_inum . ", " . $com_itit);
+		}
 	}
 
 	/**
@@ -534,20 +548,39 @@ class amazonfr extends SitePlugin
 
         $this->addItemAttribute('actors', parse_amazon_video_people("Acteurs", $pageBuffer));
 		
-        if (preg_match("!<li><b>.*alisateurs[\s]*(.*?)</li>!", $pageBuffer, $regs))
-		{
-			if(preg_match_all("/<a href=([^>]+)>([^<]+)<\/a>/", $regs[1], $matches))
+//  		if (preg_match("!<li><b>.*alisateurs[\s]*(.*?)</li>!", $pageBuffer, $regs))
+// 		{
+// 			if(preg_match_all("/<a href=([^>]+)>([^<]+)<\/a>/", $regs[1], $matches))
+// 			{
+// 				for($i=0; $i<count($matches[1]); $i++)
+// 				{
+// 					if(strpos($matches[2][$i], "See more")===FALSE)
+// 					{
+// 						$this->addItemAttribute('director', $regs[1].":::".$matches[2][$i]);
+// 					}
+// 				}
+// 			}
+// 		}
+		//if (preg_match("!<li><b>.*alisateurs[\s]*:</b>(.*)</li>!i", $pageBuffer, $regs)){
+    if (preg_match("!<li><b>R.alisateurs(.*)!i", $pageBuffer, $regs)){
+		  $startidx = 0;
+			$endidx = strpos($regs[1], "</li>", $startidx);
+			if($endidx!==FALSE)
 			{
-				for($i=0; $i<count($matches[1]); $i++)
+				$personBlock = substr($regs[1], $startidx, $endidx-$startidx);
+				if(preg_match_all("/<a href=([^>]+)>([^<]+)<\/a>/", $personBlock, $matches))
 				{
-					if(strpos($matches[2][$i], "See more")===FALSE)
+					for($i=0; $i<count($matches[1]); $i++)
 					{
-						$this->addItemAttribute('director', $matches[2][$i]);
+						if(strpos($matches[2][$i], "See more")===FALSE)
+						{
+							$persons[] = trim(unhtmlentities(strip_tags($matches[2][$i])));
+						}
 					}
 				}
 			}
+			$this->addItemAttribute('director', $persons);
 		}
-
 		// Region extraction block
 		//<li><b>Région: </b>Région 1
 		if (preg_match("/<li><b>R.gion[\s]*:[\s]*<\/b>R.gion ([0-6])/", $pageBuffer, $regs))
@@ -613,27 +646,59 @@ class amazonfr extends SitePlugin
 		}
 
 		//<li><b>Date de sortie du DVD :</b> 9 janvier 2002
-		if(preg_match("/<b>Date de sortie(.*)<\/b>([^<]+)<\/li>/i", $pageBuffer, $regs))
+// 		if(preg_match("/<b>Date de sortie(.*)<\/b>([^<]+)<\/li>/i", $pageBuffer, $regs))
+// 		{
+// 			// Get year only, for now.  In the future we may add ability to
+// 			// convert date to local date format.
+// 			if(preg_match("/([0-9]+)$/m", $regs[2], $regs2))
+// 			{
+// 				$this->addItemAttribute('dvd_rel_dt', $regs2[1]);
+// 
+// 				// if year not defined, use dvd_rel_dt
+// 				if($this->getItemAttribute('year') === FALSE)
+// 				{
+// 					$this->addItemAttribute('year', $regs2[1]);
+// 				}
+// 			}
+// 		}
+
+		if(preg_match("/<li><b>Date de sortie du DVD(.*)/i", $pageBuffer, $regs))
 		{
 			// Get year only, for now.  In the future we may add ability to
 			// convert date to local date format.
-			if(preg_match("/([0-9]+)$/m", $regs[2], $regs2))
+		  $startidx = 0;
+			$endidx = strpos($regs[1], "</li>", $startidx);
+			if($endidx!==FALSE)
 			{
-				$this->addItemAttribute('dvd_rel_dt', $regs2[1]);
-
-				// if year not defined, use dvd_rel_dt
-				if($this->getItemAttribute('year') === FALSE)
+				$parseBlock = substr($regs[1], $startidx, $endidx-$startidx);
+				if(preg_match("/([0-9][0-9][0-9][0-9])/", $parseBlock, $match))
 				{
-					$this->addItemAttribute('year', $regs2[1]);
+  				$this->addItemAttribute('dvd_rel_dt', $match[1]);
+  
+  				// if year not defined, use dvd_rel_dt
+  				if($this->getItemAttribute('year') === FALSE)
+  				{
+  					$this->addItemAttribute('year', $match[1]);
+  				}
 				}
 			}
 		}
 
         // Duration extraction block
 		//<li><b>Durée :</b> 120 minutes </li>
-		if (preg_match("/<li><b>Dur.e[\s]*:<\/b>[\s]*([0-9]+) minutes/i", $pageBuffer, $regs))
+//		if (preg_match("/<li><b>Dur.e[\s]*:<\/b>[\s]*([0-9]+) minutes/i", $pageBuffer, $regs))
+		if (preg_match("/<li><b>Dur.e(.*)/i", $pageBuffer, $regs))
 		{
-   			$this->addItemAttribute('run_time', $regs[1]);
+  		  $startidx = 0;
+  			$endidx = strpos($regs[1], "minutes", $startidx);
+  			if($endidx!==FALSE)
+  			{
+  				$parseBlock = substr($regs[1], $startidx, $endidx-$startidx);
+  				if(preg_match("/([0-9]+)/", $parseBlock, $match))
+  				{
+    				$this->addItemAttribute('run_time', $match[1]);
+  				}
+  			}
 		}
 
         // Get the anamorphic format attribute - Thanks to André Monz <amonz@users.sourceforge.net
@@ -771,6 +836,12 @@ class amazonfr extends SitePlugin
 			$this->addItemAttribute('blurb', unhtmlentities(strip_tags($regs[1])));
 		}
 
+		if(preg_match("!<b class=\"h1\">Descriptions du produit</b><br[\s]*/>(.*?)</div>!i",$pageBuffer, $regs))
+		{
+			if(preg_match("!<b>.*?</b><br[\s]*/>(.*)!i",$regs[1], $regs2))
+      $this->addItemAttribute('movie_plot', $regs2[1]);
+		}
+
 		// IMDB ID block (does not seem to be present on amazon.fr)
 		//<A HREF="http://amazon.imdb.com/title/tt0319061/">
 		//http://www.amazon.com/gp/redirect.html/103-0177494-1143005?location=http://amazon.imdb.com/title/tt0319061&token=F5BF95E1B869FD4EB1192434BA5B7FECBA8B3718
@@ -836,6 +907,66 @@ class amazonfr extends SitePlugin
 			$search[]=$literal;}
 		}
 		return str_replace($search, $replace, $text);
+	}
+
+	/**
+		Will return an array of the following structure.
+			array(
+				"gamepblshr"=>game publisher,
+				"gamesystem"=>game platform,
+				"gamerating"=>esrb rating
+				"features"=>features listing for game,
+			);
+	*/
+	function parse_amazon_game_data($search_attributes_r, $pageBuffer)
+	{
+		// Publisher extraction block
+		if (preg_match("/de <a.*>(.*)<\/a><br>/i", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('gamepblshr', $regs[1]);
+		}
+
+		// Platform extraction block
+		if (preg_match("/<b>Plate-forme:[\s]*<\/b>(.+?)<br>/si", $pageBuffer, $regs))
+		{
+			if(preg_match(":&nbsp;[\s](.*):", $regs[1], $regs2))
+			{
+				// Different combo's of windows, lets treat them all as windows.
+				if(strpos($regs2[1], "Windows")!==FALSE)
+					$platform = "Windows";
+				else
+					$platform = trim($regs2[1]);
+
+				$this->addItemAttribute('gamesystem', $platform);
+			}
+			else
+			{
+				$this->addItemAttribute('gamesystem', $regs[1]);
+			}
+		}
+
+		// Rating extraction block
+		if (preg_match("/<b>ESRB Rating:[\s]*<\/b>(.+?)<br>/si", $pageBuffer, $regs))
+		{
+			if(preg_match(":videogames/ratings/esrb-(.*).gif:", $regs[1], $regs2))
+				$this->addItemAttribute('gamerating', $regs2[1]);
+			else
+				$this->addItemAttribute('gamerating', strtoupper($regs[1]));
+		}
+
+		// Features extraction block
+		if(preg_match("/<b>Features:<\/b>[\s]<ul>(.+?)<\/ul>/si", $pageBuffer, $featureblock))
+		{
+			if(preg_match_all("/<li.*?>(.*?)<\/li>/si", $featureblock[1], $matches))
+			{
+				for($i = 0; $i < count($matches[1]); $i++)
+				{
+					$matches[1][$i] = strip_tags($matches[1][$i]);
+				}
+
+				$this->addItemAttribute('features', implode("\n", $matches[1]));
+			}
+		}
 	}
 }
 ?>

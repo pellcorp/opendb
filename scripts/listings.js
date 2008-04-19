@@ -28,6 +28,32 @@ function doChecks(checked, form, cbname)
 	}
 }
 
+function doRemoveInterestAllInterestLevel(imgSrc, altText)
+{
+	for (var i=0; i < document.images.length; i++)
+	{
+		var currImgSrc = document.images[i].src;
+		if (currImgSrc != null && currImgSrc.indexOf("interest_1") >= 0){
+			// We update the images
+			document.images[i].src = imgSrc;
+			document.images[i].alt = altText;
+			document.images[i].title = altText;
+			
+			// We update the input fields with the next value
+			// The image id should be interest_level_ITEMID_INSTANCENO. 
+			// We get the ITEMID and the INSTANCENO
+			var itemId = document.images[i].id;
+			var re = /interest_level_(\d*)_(\d*)/;
+			re.exec(itemId); 
+			// We use the ITEMID to update the input field
+			var newValueField = document.getElementById("new_level_value_" + RegExp.$1 + "_" + RegExp.$2);
+			if(newValueField != null){
+				newValueField.value = 1;
+			}
+		}
+	}
+}
+
 // At least one element must be checked.
 function isChecked(form, cbname)
 {

@@ -189,7 +189,7 @@ function validate_column_type($column_type)
 
 function validate_s_field_type($s_field_type)
 {
-	$field_types_r = array('RATING', 'STATUSTYPE', 'STATUSCMNT', 'ITEM_ID', 'CATEGORY', 'ITEMTYPE', 'OWNER', 'TITLE');
+	$field_types_r = array('RATING', 'STATUSTYPE', 'STATUSCMNT', 'ITEM_ID', 'CATEGORY', 'ITEMTYPE', 'OWNER', 'INTEREST', 'TITLE');
 	
 	$s_field_type = strtoupper($s_field_type);
 	if(in_array($s_field_type, $field_types_r)!==FALSE)

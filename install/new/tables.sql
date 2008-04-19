@@ -405,6 +405,23 @@ CREATE TABLE item_attribute (
 ) TYPE=MyISAM COMMENT='Item Attribute table';
 
 #
+# User item interest table
+#
+DROP TABLE IF EXISTS user_item_interest;
+CREATE TABLE user_item_interest (
+	sequence_number	INTEGER(10) UNSIGNED NOT NULL auto_increment,
+	item_id			INTEGER(10) UNSIGNED NOT NULL,
+	instance_no		SMALLINT(5) NOT NULL,
+	user_id			VARCHAR(20) NOT NULL,
+	level			VARCHAR(1) NOT NULL,
+	comment			text,
+	update_on		TIMESTAMP(14) NOT NULL,
+	PRIMARY KEY ( sequence_number ),
+	KEY user_idx ( user_id ),
+	KEY item_idx ( item_id)
+) TYPE=MyISAM COMMENT='user item interest table';
+
+#
 # Borrowed Item table
 #
 DROP TABLE IF EXISTS borrowed_item;
@@ -671,3 +688,4 @@ CREATE TABLE s_table_language_var (
 	value		TEXT,
 	PRIMARY KEY ( language, tablename, columnname, key1, key2, key3 )
 ) TYPE=MyISAM COMMENT='System Language Variable Table';
+

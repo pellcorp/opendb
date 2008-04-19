@@ -528,6 +528,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'show_item_type_lov', 3, 'Show Item Type LOV', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'show_owner_lov', 4, 'Show Owner LOV', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'show_s_status_type_lov', 5, 'Show Status Type LOV', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.filters', 'show_interest', 6, 'Show interest', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.borrow', 'enable', 1, 'Enable', 'Enable item level actions, Reserve, Add to Basket, etc', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings.borrow', 'quick_checkout_action', 2, 'Quick Checkout Action', '', 'boolean');
@@ -711,6 +712,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.fi
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_item_type_lov', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_owner_lov', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_s_status_type_lov', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('listings.filters', 'show_interest', 'TRUE');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('borrow', 'reserve_more_information', 'TRUE');
@@ -850,6 +852,9 @@ VALUES (1, 9, 'borrow_status', NULL, NULL, NULL, 'N', NULL, 'Y');
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (1, 10, 's_field_type', 'CATEGORY', NULL, NULL, 'Y', NULL, 'Y');
 
+INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
+VALUES (1, 11, 's_field_type', 'INTEREST', NULL, NULL, 'N', NULL, 'Y');
+
 #INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 #VALUES (2, 1, 's_field_type', 'ITEM_ID', NULL, NULL, 'Y', NULL, 'Y');
 
@@ -886,6 +891,9 @@ VALUES (2, 11, 'borrow_status', NULL, NULL, NULL, 'N', NULL, 'Y');
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (2, 12, 's_field_type', 'CATEGORY', NULL, NULL, 'Y', NULL, 'Y');
 
+INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
+VALUES (2, 13, 's_field_type', 'INTEREST', NULL, NULL, 'N', NULL, 'Y');
+
 #INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 #VALUES (3, 1, 's_field_type', 'ITEM_ID', NULL, NULL, 'Y', NULL, 'Y');
 
@@ -919,6 +927,9 @@ VALUES (3, 10, 'borrow_status', NULL, NULL, NULL, 'N', NULL, 'Y');
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (3, 11, 's_field_type', 'CATEGORY', NULL, NULL, 'Y', NULL, 'Y');
 
+INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
+VALUES (3, 12, 's_field_type', 'INTEREST', NULL, NULL, 'N', NULL, 'Y');
+
 #INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 #VALUES (4, 1, 's_field_type', 'ITEM_ID', NULL, NULL, 'Y', NULL, 'Y');
 
@@ -951,6 +962,9 @@ VALUES (4, 11, 'borrow_status', NULL, NULL, NULL, 'N', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (4, 12, 's_field_type', 'CATEGORY', NULL, NULL, 'Y', NULL, 'Y');
+
+INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
+VALUES (4, 13, 's_field_type', 'INTEREST', NULL, NULL, 'N', NULL, 'Y');
 
 #INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 #VALUES (5, 1, 's_field_type', 'ITEM_ID', NULL, NULL, 'Y', NULL, 'Y');
@@ -987,6 +1001,9 @@ VALUES (5, 11, 'borrow_status', NULL, NULL, NULL, 'N', NULL, 'Y');
 
 INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
 VALUES (5, 12, 's_field_type', 'CATEGORY', NULL, NULL, 'Y', NULL, 'Y');
+
+INSERT INTO s_item_listing_column_conf (silc_id, column_no, column_type, s_field_type, s_attribute_type, override_prompt, orderby_support_ind, orderby_datatype, printable_support_ind)
+VALUES (5, 13, 's_field_type', 'INTEREST', NULL, NULL, 'N', NULL, 'Y');
 
 #
 # File Types
@@ -1071,6 +1088,8 @@ INSERT INTO s_permission(permission_name, description) values('PERM_USER_EXPORT'
 INSERT INTO s_permission(permission_name, description) values('PERM_ADMIN_IMPORT', 'Import Admin');
 INSERT INTO s_permission(permission_name, description) values('PERM_USER_IMPORT', 'Import User');
 
+INSERT INTO s_permission(permission_name, description) values('PERM_USER_INTEREST', 'User item interest');
+
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_OWNER', 'Item Owner');
 INSERT INTO s_permission(permission_name, description) values('PERM_ITEM_ADMIN', 'Item Admin');
 
@@ -1118,6 +1137,7 @@ INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATO
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_EXPORT');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_IMPORT');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_USER_INTEREST');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ADVANCED_SEARCH');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ANNOUNCEMENTS');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('ADMINISTRATOR', 'PERM_VIEW_ITEM_COVERS');
@@ -1133,6 +1153,7 @@ INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', '
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_BORROWER');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_EXPORT');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_USER_INTEREST');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ADVANCED_SEARCH');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ANNOUNCEMENTS');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('BORROWER', 'PERM_VIEW_ITEM_COVERS');
@@ -1157,6 +1178,7 @@ INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PER
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_EXPORT');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_IMPORT');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_REVIEWER');
+INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_USER_INTEREST');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ADVANCED_SEARCH');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ANNOUNCEMENTS');
 INSERT INTO s_role_permission (role_name, permission_name) VALUES ('OWNER', 'PERM_VIEW_ITEM_COVERS');

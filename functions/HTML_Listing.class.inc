@@ -180,6 +180,17 @@ class HTML_Listing extends Listing
 			{
 				 $this->_write("<input type=\"checkbox\" class=\"checkbox\" onclick=\"doChecks(this.checked, this.form, '".$header_column_rs[$i]['fieldname']."[]');return true;\">");			
 			}
+			else if($this->_header_column_rs[$i]['type'] == 'interest')
+			{
+				$level_header_display .= "<img". 
+					" src=\"" . _theme_image_src('interest_remove.gif'). "\"" .
+					" alt=\"".get_opendb_lang_var('interest_remove_all')."\"" . 
+					" title=\"".get_opendb_lang_var('interest_remove_all')."\"" . 
+					" onclick=\"xajax_ajax_remove_all_interest_level()\"".
+					" style=\"cursor:pointer;\"".
+					" >";
+				 $this->_write($level_header_display);			
+			}
 			else if($this->_header_column_rs[$i]['sortcolumn'] !== FALSE)
 			{
 				$column_value = '';
@@ -300,6 +311,43 @@ class HTML_Listing extends Listing
 					}
 					$this->_write('</td>');
 					break;
+				
+				case 'interest':
+// 					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "_xajax=" . $_xajax===NULL?"nulles":"nonnul");
+					
+					$item_id = $row_column_rs[$i]['item_id'];
+					$instance_no = $row_column_rs[$i]['instance_no'];
+					$level = $row_column_rs[$i]['level'];
+					
+					if($level > 0){
+						$this->addHelpEntry(get_opendb_lang_var('interest_help'), 'interest_1.gif', 'interest');
+						$new_level_value = 0;
+						$level_display .= "<img". 
+							" id=\"interest_level_$item_id"."_$instance_no\"" .
+							" src=\"" . _theme_image_src('interest_1.gif'). "\"" .
+							" alt=\"".get_opendb_lang_var('interest_remove')."\"" .
+							" title=\"".get_opendb_lang_var('interest_remove')."\"" .
+							" onclick=\"xajax_ajax_update_interest_level('$item_id', '$instance_no', document.getElementById('new_level_value_$item_id\_$instance_no').value);\"".
+							" style=\"cursor:pointer;\"".
+							" >";
+					}
+					else{
+						$new_level_value = 1;
+						$level_display .= "<img". 
+							" id=\"interest_level_$item_id"."_$instance_no\"" .
+							" src=\"" . _theme_image_src('interest_0.gif'). "\"" .
+							" alt=\"".get_opendb_lang_var('interest_mark')."\"" . 
+							" title=\"".get_opendb_lang_var('interest_mark')."\"" .
+							" onclick=\"xajax_ajax_update_interest_level('$item_id','$instance_no', document.getElementById('new_level_value_$item_id\_$instance_no').value);\"".
+							" style=\"cursor:pointer;\"".
+							" >";
+					}
+
+					$this->_write('<td class="interest '.$columnClass.'">');
+					$this->_write("<input id=\"new_level_value_$item_id"."_$instance_no\" type=\"hidden\" value=\"$new_level_value\" />");
+					$this->_write($level_display);
+					$this->_write('</td>');
+				break;
 				
 				case 'item_type_image':
 					$this->_write('<td class="item_type_image '.$columnClass.'">');

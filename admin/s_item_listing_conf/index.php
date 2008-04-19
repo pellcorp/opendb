@@ -157,6 +157,7 @@ function get_column_details($record_r, $row)
 			array('value'=>'STATUSTYPE', 'display'=>'Status Type'),
 			array('value'=>'STATUSCMNT', 'display'=>'Status Comment'),
 			array('value'=>'OWNER', 'display'=>'Owner'),
+			array('value'=>'INTEREST', 'display'=>'Interest'),
 			array('value'=>'RATING', 'display'=>'Rating')));
 
 	$columns_r[] = array(

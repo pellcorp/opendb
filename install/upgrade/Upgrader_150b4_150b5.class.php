@@ -29,6 +29,7 @@ class Upgrader_150b4_150b5 extends OpenDbUpgrader
 						'1.5.0b5',
 						array(
 							array('description'=>'Fix UPC ID Definition'),
+							array('description'=>'Setup User Item Interest functionality'),
 						)
 					);
 	}

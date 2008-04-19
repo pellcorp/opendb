@@ -27,6 +27,7 @@ include_once("./functions/logging.php");
 
 include_once("./functions/utils.php");
 include_once("./functions/user.php");
+include_once("./functions/interest.php");
 include_once("./functions/review.php");
 include_once("./functions/borrowed_item.php");
 include_once("./functions/borrowed_item.php");
@@ -41,6 +42,8 @@ include_once("./functions/listutils.php");
 include_once("./functions/item_listing_conf.php");
 include_once("./functions/status_type.php");
 include_once("./functions/HTML_Listing.class.inc");
+
+include_once("./lib/xajax/xajax_core/xajax.inc.php");
 
 function getListingFiltersBlock()
 {
@@ -141,6 +144,14 @@ function getListingFiltersBlock()
 						'value').
 					"\n</select></li>";
 			}
+		}
+		
+		if(get_opendb_config_var('listings.filters', 'show_interest')!==FALSE)
+		{
+			$buffer .= "<li><label for=\"select-interest\">".get_opendb_lang_var('interest_only_marked')."</label>".
+				"<input type=\"checkbox\" class=\"checkbox\" id=\"select-interest\" name=\"interest_level\" value=\"1\"".($HTTP_VARS['interest_level']>=1?' CHECKED':'')."></li>";
+				
+			$excluded_vars_list[] = 'interest_level';
 		}
 		
 		if($HTTP_VARS['owner_id'] != get_opendb_session_var('user_id'))
@@ -409,7 +420,7 @@ function &filter_for_printable_list($column_display_config_rs)
 	return $new_column_display_config_rs;
 }
 
-function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action_column)
+function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action_column, $show_interest_column)
 {
 	$v_column_display_config_rs = get_s_item_listing_column_conf_rs($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
 			
@@ -581,6 +592,14 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 				if(!$show_owner_column)
 				{
 					$v_column_display_config_rs[$i]['include_in_listing'] = FALSE;
+				}
+			}
+			else if($v_column_display_config_rs[$i]['s_field_type'] == 'INTEREST')
+			{
+				if ($show_interest_column)
+				{
+					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('interest'));
+					$v_column_display_config_rs[$i]['fieldname'] = 'interest';
 				}
 			}
 		}
@@ -905,6 +924,12 @@ function get_search_query_matrix($HTTP_VARS)
 			$searches[] = array(prompt=>get_opendb_lang_var('status_comment'),field=>$HTTP_VARS['status_comment']);
 		}
 	}
+	if(is_numeric($HTTP_VARS['interest_level']) && $HTTP_VARS['interest_level']>0)
+	{
+		$searches[] = array(
+						prompt=>get_opendb_lang_var('interest'),
+						field=>_theme_image("interest_1.gif", get_opendb_lang_var('interest'), 's_item_type')); 
+	}
 		
 	return $searches;
 }//function get_search_query_matrix($HTTP_VARS)
@@ -915,6 +940,31 @@ if(is_site_enabled())
 	{
 		if(is_user_granted_permission(PERM_VIEW_LISTINGS))
 		{
+			$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
+			if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0 && is_not_empty_array($v_item_types))
+			{
+				if(!is_item_type_in_item_type_r($v_item_types, $HTTP_VARS['s_item_type']))
+				{
+					unset($HTTP_VARS['s_item_type']);
+				}
+			}
+			
+			$show_interest_column = FALSE;
+			if(is_user_granted_permission(PERM_USER_INTEREST))
+			{
+				$show_interest_column = TRUE;
+				
+				//@TODO This should be moved to HTML_listing class.
+				$xajax = new xajax();
+				$xajax->configure('javascript URI', 'lib/xajax/');
+				$xajax->configure('debug', false);
+				$xajax->configure('statusMessages', true);
+				$xajax->configure('waitCursor', true);
+				$xajax->registerFunction("ajax_update_interest_level");
+				$xajax->registerFunction("ajax_remove_all_interest_level");
+				$xajax->processRequest();
+			}
+
 			if(strlen($HTTP_VARS['owner_id'])>0)
 				$show_owner_column=FALSE;
 			else
@@ -960,7 +1010,13 @@ if(is_site_enabled())
 					$show_action_column = TRUE;
 				}
 			}
-
+			
+			$v_column_display_config_rs = get_column_display_config(
+											$HTTP_VARS, 
+											$show_owner_column, 
+											$show_action_column,
+											$show_interest_column);
+			
 			$page_title = NULL;
 			if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
 			{
@@ -999,16 +1055,7 @@ if(is_site_enabled())
 		
 			echo(_theme_header($page_title, $HTTP_VARS['inc_menu']));
 			echo('<h2>'.$page_title.'</h2>');
-				
-			$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
-			if(!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type'])>0 && is_not_empty_array($v_item_types))
-			{
-				if(!is_item_type_in_item_type_r($v_item_types, $HTTP_VARS['s_item_type']))
-				{
-					unset($HTTP_VARS['s_item_type']);
-				}
-			}
-			
+											
 			if($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y')
 	 		{
 				// default search term if attribute_type specified, but no value provided.
@@ -1038,11 +1085,10 @@ if(is_site_enabled())
 			
 			echo(getListingFiltersBlock());
 			echo(getAlphaListBlock($PHP_SELF, $HTTP_VARS));
-			
-			$v_column_display_config_rs = get_column_display_config(
-											$HTTP_VARS, 
-											$show_owner_column, 
-											$show_action_column);
+
+			if($show_interest_column) {
+				echo($xajax->printJavascript());
+			}
 			
 			$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
 			
@@ -1247,6 +1293,10 @@ if(is_site_enabled())
 								{
 									$listingObject->addUserNameColumn($item_r['owner_id']);
 								}
+								else if($v_column_display_config_rs[$i]['s_field_type'] == 'INTEREST')
+								{
+									$listingObject->addInterestColumn($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'));
+								}
 							}
 							else if($v_column_display_config_rs[$i]['column_type'] == 'action_links')
 							{
@@ -1279,8 +1329,6 @@ if(is_site_enabled())
 												$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
 											}
 										}
-									
-										
 									}
 								}
 								

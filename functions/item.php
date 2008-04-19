@@ -785,12 +785,13 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 	If $s_item_type defined, will limit to only items of that type.
 	If $category defined, will limit to only items of that category.
 	If $letter defined will limit to item.title starting with that letter.
+	If $interest_level defined will limit to items with that interest level or higher.
 	
 	@param $HTTP_VARS['...'] variables supported: 
 		owner_id, s_item_type, s_item_type[], s_item_type_group, title, title_match, category,
 		rating, attribute_type, lookup_attribute_val, attribute_val, attr_match, 
 		update_on, datetimemask, update_on_days, letter, start_item_id
-		s_status_type[], status_comment, not_s_status_type[]
+		s_status_type[], status_comment, not_s_status_type[], interest_level
 */
 function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $query_type = 'LISTING')
 {
@@ -1187,6 +1188,16 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	if(strlen($HTTP_VARS['item_id_range'])>0)
 	{
 		$where_r[] = 'i.id IN ('.expand_number_range($HTTP_VARS['item_id_range']).')';
+	}
+
+	//
+	// Interest level restrictions
+	//
+	if(strlen($HTTP_VARS['interest_level'])>0)
+	{
+		$where_r[] = "it.item_id = ii.item_id AND it.instance_no = ii.instance_no AND it.user_id = '".get_opendb_session_var('user_id')."'".
+					 " AND it.level >= ".$HTTP_VARS['interest_level'];
+		$from_r[] = "user_item_interest it";
 	}
 
 	//

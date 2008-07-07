@@ -164,19 +164,19 @@ function import_cache_insert($user_id, $plugin_name, $infile_location)
 			}
 			else
 			{
-				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Importcache directory is not accessible', array($user_id, $plugin_name));
+				opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Importcache directory is not accessible', array($user_id, $plugin_name, $infile_location, $directory));
 				return FALSE;
 			}
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Input file is empty', array($user_id, $plugin_name));	
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Input file is empty', array($user_id, $plugin_name, $infile_location));	
 			return FALSE;
 		}
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Input file not found', array($user_id, $plugin_name));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Input file not found', array($user_id, $plugin_name, $infile_location));
 		return FALSE;
 	}
 }

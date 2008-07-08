@@ -34,7 +34,8 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 		"\n<title>".$pageTitle.(!empty($title)?" - $title":"")."</title>".
 		"\n<meta http-equiv=\"Content-Type\" content=\"".get_content_type_charset()."\">".
 		"\n<link rel=\"icon\" href=\""._theme_image_src("icon.gif")."\" type=\"image/gif\" />".
-		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Search\" href=\"./searchplugins.php\">".
+		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Title Search\" href=\"./searchplugins.php?type=title\">".
+		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." UPC Search\" href=\"./searchplugins.php?type=upc\">".
 		get_theme_css($pageid, $mode).
 		get_opendb_rss_feeds_links().
 		get_theme_javascript($pageid).
@@ -71,9 +72,9 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 				"<input type=\"hidden\" name=\"search_list\" value=\"y\">".
 				//"<input type=\"hidden\" name=\"attribute_type\" value=\"UPC_ID\">".
 				//"<input type=\"hidden\" name=\"attr_match\" value=\"partial\">".
-				//"<input type=\"text\" name=\"attribute_val\" size=\"10\">".
+				//"<input type=\"text\" class=\"text\" name=\"attribute_val\" size=\"10\" value=\"UPC Search\" onfocus=\"if(this.value=='UPC Search'){this.value='';this.style.color='black';}\" onblur=\"if(this.value==''){this.value='UPC Search';this.style.color='gray';}\">".
 				"<input type=\"hidden\" name=\"title_match\" value=\"partial\">".
-				"<input type=\"text\" class=\"text\" name=\"title\" size=\"10\">".
+				"<input type=\"text\" class=\"text\" name=\"title\" size=\"10\" value=\"Title Search\" onfocus=\"if(this.value=='Title Search'){this.value='';this.style.color='black';}\" onblur=\"if(this.value==''){this.value='Title Search';this.style.color='gray';}\">".
 				"</form></li>");
 		}
 		

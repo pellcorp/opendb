@@ -29,6 +29,7 @@ class Upgrader_150b5_150b6 extends OpenDbUpgrader
 						'1.5.0b6',
 						array(
 							array('description'=>'Add new Game, Movie and Book Genres'),
+							array('description'=>'Tweak and add attributes'),
 						)
 					);
 	}

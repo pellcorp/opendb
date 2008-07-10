@@ -65,11 +65,13 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Manga', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Mystery', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Non-Fiction', '', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Photographs', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Poetry', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Puzzles', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Reference', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Riddles', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Romance', '', '', 'N' );
+INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'RPG', 'Role Playing Game', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Sci-Fi', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Science', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'BOOKGENRE', NULL, 'Sports', '', '', 'N' );

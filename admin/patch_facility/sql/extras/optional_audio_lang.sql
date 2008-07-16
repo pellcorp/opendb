@@ -25,8 +25,8 @@ INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display,
 INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display, img, checked_ind) VALUES ( 'AUDIO_LANG', NULL, 'ISLANDIC', 'Islandic', 'islandic.gif', NULL);
 INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display, img, checked_ind) VALUES ( 'AUDIO_LANG', NULL, 'JAPANESE', 'Japanese', 'japanese.gif', NULL);
 INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display, img, checked_ind) VALUES ( 'AUDIO_LANG', NULL, 'SLOVAKIAN', 'Slovakian', 'slovakian.gif', NULL);
-
-
+INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display, img, checked_ind) VALUES ( 'AUDIO_LANG', NULL, 'KOREAN', 'Korean', 'korea.gif', 'N' );
+INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display, img, checked_ind) VALUES ( 'AUDIO_LANG', NULL, 'RUSSIAN', 'Russian', 'russian.gif', 'N' );
 
 
 

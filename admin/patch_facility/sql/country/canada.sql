@@ -14,6 +14,15 @@ SET checked_ind = 'Y'
 WHERE s_attribute_type = 'DVD_REGION' 
 AND value = '1';
 
+UPDATE `s_attribute_type_lookup`
+SET checked_ind = NULL
+WHERE s_attribute_type = 'GAMEREGION';
+
+UPDATE `s_attribute_type_lookup`
+SET checked_ind = 'Y'
+WHERE s_attribute_type = 'GAMEREGION'
+AND value = 'CA';
+
 #
 # Customize default video format for country
 #

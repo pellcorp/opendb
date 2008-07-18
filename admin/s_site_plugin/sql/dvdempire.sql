@@ -10,12 +10,17 @@ INSERT INTO s_site_plugin ( site_type, classname, title, image, description, ext
 
 #
 # Site Plugin Configuration
-#.
+#
 
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'DIVX', '', 'site_id=4' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'DVD', '', 'site_id=4' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'LD', '', 'site_id=4' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'VCD', '', 'site_id=4' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'BD', '', 'site_id=69' );
+# HD-DVD
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'HDDVD', '', 'site_id=68' );
+# VOD (Video on Demand)
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'dvdempire', 'item_type_url_config', 'VOD', '', 'site_id=55' );
 
 #
 # Site Plugin Input Fields
@@ -35,10 +40,11 @@ INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, orde
 #
 
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'blurb', 'MOVIE_PLOT', 'N' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'genre', 'MOVIEGENRE', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', 'DVD', 'dvd_audio', 'DVD_AUDIO', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'genre', 'MOVIEGENRE', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'audio_lang', 'AUDIO_LANG', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', 'DVD', 'audio_format', 'DVD_AUDIO', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', 'BD', 'audio_format', 'BD_AUDIO', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '*', '*', 'listprice', 'COVERPRICE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', '', 'CD', 'listprice', 'RET_PRICE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdempire', 'VIDEO', '*', 'listprice', 'RET_PRICE', 'N' );
@@ -49,23 +55,53 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 # Site Plugin System Attribute Type Lookup Map
 #
 
+# DVD audio maps
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AGE_RATING', 'NC-17', 'MA' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AGE_RATING', 'PG-13', 'PG' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AGE_RATING', 'R', 'MA' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AGE_RATING', 'X', 'R' ); 
 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'DTS Surround', 'DTS' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'ENGLISH: DTS 5.1', 'DTS' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'ENGLISH: DD-EX 5.1', 'DOLBY5.1' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'ENGLISH: Dolby Digital 5.1', 'DOLBY5.1' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'ENGLISH: Dolby Digital Surround', 'SURROUND' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'ENGLISH: DTS ES 6.1', 'DTS6.1' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'FRENCH: Dolby Digital 5.1', 'DOLBY5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'DTS 5.1', 'DTS' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'DD-EX 5.1', 'DOLBY5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'Dolby Digital 5.1', 'DOLBY5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'Dolby Digital Surround', 'SURROUND' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'DTS ES 6.1', 'DTS6.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'Dolby Digital 5.1', 'DOLBY5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'Dolby Digital Stereo', 'DOLBY2.0' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'Dolby Digital Mono', 'DOLBY' );
 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AUDIO_LANG', 'FRENCH: Dolby Digital 5.1', 'FRENCH' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AUDIO_LANG', 'FRENCH: Dolby Digital Surround', 'FRENCH' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'AUDIO_LANG', 'SPANISH: Dolby Digital Surround', 'SPANISH' );
+# BD audio maps
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby', 'DOLBY' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby 2.0', 'DOLBY2.0' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby 5.1', 'DOLBY5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby Digital Plus 2.0', 'DOLBYPLUS2' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby Digital Plus 5.1', 'DOLBYPLUS5' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby Digital Plus 6.1', 'DOLBYPLUS6' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby Digital Plus 7.1', 'DOLBYPLUS7' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby TrueHD 2.0', 'DOLBYTH2' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby TrueHD 5.1', 'DOLBYTH5' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby TrueHD 6.1', 'DOLBYTH6' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'Dolby TrueHD 7.1', 'DOLBYTH7' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS', 'DTS' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS 2.0', 'DTS2.0' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS 5.1', 'DTS5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS 6.1', 'DTS6.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS 7.1', 'DTS7.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD High Resolution 2.0', 'DTSHDHR2' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD High Resolution 5.1', 'DTSHDHR5' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD High Resolution 6.1', 'DTSHDHR6' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD High Resolution 7.1', 'DTSHDHR7' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD Master Audio 2.0', 'DTSHDMA2' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD Master Audio 5.1', 'DTSHDMA5' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD Master Audio 6.1', 'DTSHDMA6' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'DTS-HD Master Audio 7.1', 'DTSHDMA7' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'PCM 2.0', 'PCM2' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'PCM 5.1', 'PCM5' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'PCM 6.1', 'PCM6' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'BD_AUDIO', 'PCM 7.1', 'PCM7' );
 
+# movie genre maps
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'MOVIEGENRE', 'Action / Adventure', 'Action' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'MOVIEGENRE', 'Action / Adventure', 'Adventure' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'MOVIEGENRE', 'Anime', 'Animation' ); 
@@ -105,3 +141,4 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 #
 
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'DVDEMPR_ID',  0, '', 'N' );
+

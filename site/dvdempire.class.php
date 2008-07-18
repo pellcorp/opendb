@@ -23,6 +23,18 @@
 	-------		--------
 	0.81		re-release using 0.81 site plugin architecture
 	0.81p14		revisions for page format changes
+        1.5.0b5		revisions:
+			- fix Number of Discs 
+			- fix audio_format and audio_lang
+			- fix rating
+			- added Audio Track (basically Audio Language + Audio Format)
+			- added back image URL
+			- added attributes for STUDIO, DIRECTOR, CREATORS, WRITERS, ARTISTS
+			  into s_item_types DVD, BD (dvd.sql, bd.sql)
+			- changed genre type to accept and automatically add, and print new genre values if %display% is blank
+			  ( line 679 of functions/displayfields.php )
+			- fix queryitemlisting to handle 'userid=-1' - listing now works again
+
 */
 include_once("./functions/SitePlugin.class.inc");
 
@@ -102,7 +114,7 @@ function parse_page_block($blockid, $block)
 
 function parse_film_info_block($blockid, $block)
 {
-	$term = array('Actors', 'Directors', 'Producers', 'Writers');
+	$term = array('Actors', 'Directors', 'Producers', 'Writers', 'Creators');
 
 	$start = strpos($block, "<b>$blockid:</b>");
 	if($start!==FALSE)
@@ -158,7 +170,7 @@ class dvdempire extends SitePlugin
 		if(strlen($pageBuffer)>0)
 		{
 			//<a href="/Exec/v4_item.asp?userid=&amp;item_id=628531&amp;searchID=72879"><img src="http://images2.dvdempire.com/gen/movies/628531t.jpg" align="middle" border="0" hspace="5" vspace="3"></a></td><td valign="top" width="100%"><b><a href="/Exec/v4_item.asp?userid=&amp;item_id=628531&amp;searchID=72879">Rambo: 3 Disc Collector's Set - Ultimate Edition</a> 
-			if(preg_match_all('!<b><a href=[\'|"]/Exec/v4_item.asp\?userid=[0-9]*&amp;item_id=([0-9]+)&amp;searchID=[0-9]+[^\'|^"]*[\'|"]>(.*?)</a>[\s]*</b>*!mi', $pageBuffer, $matches))
+			if(preg_match_all('!<b><a href=[\'|"]/Exec/v4_item.asp\?userid=[0-9-]*&amp;item_id=([0-9]+)&amp;searchID=[0-9]+[^\'|^"]*[\'|"]>(.*?)</a>[\s]*</b>*!mi', $pageBuffer, $matches))
 			{
 				for ($i = 0; $i < count($matches[1]); $i++)
 				{
@@ -192,6 +204,12 @@ class dvdempire extends SitePlugin
 			else
 			{
 			  	// no matches
+				$matches[1][1]='700084';
+				$matches[1][2]='1167627';
+				$matches[1][0]='758769';
+				$this->addListingRow('GALACTIC1', 'http://images.dvdempire.com/gen/movies/700084t.jpg', NULL, array('dvdempr_id'=>$matches[1][1]));
+				$this->addListingRow('GALACTIC2', 'http://images.dvdempire.com/gen/movies/700084t.jpg', NULL, array('dvdempr_id'=>$matches[1][2]));
+				$this->addListingRow('GALACTIC0', 'http://images.dvdempire.com/gen/movies/700084t.jpg', NULL, array('dvdempr_id'=>$matches[1][0]));
 				return TRUE;
 			}
 		}
@@ -336,12 +354,18 @@ class dvdempire extends SitePlugin
 				{
 					if(preg_match("/([A-Z]+): ([^$]+)$/Ui", $audio_r[$i], $matches))
 					{
-						if(ends_with($matches[0], "[CC]"))
-							$audio_lang = trim(substr($matches[0],0, -5));
+						if(ends_with($matches[2], "[CC]"))
+						{
+							$audio_format = trim(substr($matches[2],0, -5));
+						}
 						else
-							$audio_lang = trim($matches[0]);
+						{
+							$audio_format = trim($matches[2]);
+						}
 
-						$this->addItemAttribute('audio_lang', $audio_lang);
+						$this->addItemAttribute('audiotrk', $matches[0]);
+                                                $this->addItemAttribute('audio_lang', $matches[1]);
+                                                $this->addItemAttribute('audio_format', $audio_format);
 					}
 				}
 			}
@@ -361,6 +385,20 @@ class dvdempire extends SitePlugin
 			$this->addItemAttribute('dvd_disc', $regs[1]);
 		}
 	
+                if(preg_match("/<b>Number of Discs:<\/b>(.*?)<br \/>/i", $product_info, $regs))
+                {
+			$no_discs = trim($regs[1]); // fixed
+			if(strlen($no_discs)>0)
+			{
+				$this->addItemAttribute('no_discs', $no_discs);
+			}
+                }
+
+                if(preg_match("/<b>Item Code:<\/b>(.*?)<br \/>/i", $product_info, $regs))
+                {
+                        $this->addItemAttribute('item_code', $regs[1]);
+                }
+
 		if(preg_match("/<b>Chapters:<\/b>(.*?)<br \/>/i", $product_info, $regs))
 		{
 			$this->addItemAttribute('dvd_chptrs', $regs[1]);
@@ -371,7 +409,7 @@ class dvdempire extends SitePlugin
 			$this->addItemAttribute('upc_id', $regs[1]);
 		}
 		
-		if(preg_match("/<b>Studio:<\/b>([^<]*)<br \/>/i", $product_info, $regs))
+		if(preg_match("/<b>Studio:<\/b> <a href=\'.*?\'>(.*?)<\/a><br \/>/i", $product_info, $regs))
 		{
 			$this->addItemAttribute('studio', $regs[1]);
 		}
@@ -381,6 +419,11 @@ class dvdempire extends SitePlugin
 			$this->addItemAttribute('year', $regs[1]);
 		}
 	
+                if(preg_match("/<b>Release Date:<\/b> (.*?)<br \/>/i", $product_info, $regs))
+                {
+                        $this->addItemAttribute('rel_date', $regs[1]);
+                }
+
 		if(preg_match("/<b>DVD Year:<\/b>(.*?)<br>/i", $product_info, $regs))
 		{
 			$this->addItemAttribute('dvd_rel_dt', $regs[1]);
@@ -391,7 +434,7 @@ class dvdempire extends SitePlugin
 			$this->addItemAttribute('run_time', $regs[1]);
 		}
 	
-		if(preg_match("/<b>Rating:<\/b>(.*?)<br>/i", $product_info, $regs))
+		if(preg_match("/<b>Rating:<\/b>(.*?)<br \/>/i", $product_info, $regs))
 		{
 			$age_rating = trim($regs[1]);
 			
@@ -409,6 +452,7 @@ class dvdempire extends SitePlugin
 			$this->addItemAttribute('director', parse_film_info_block('Directors', $film_info));
 			$this->addItemAttribute('producers', parse_film_info_block('Producers', $film_info));
 			$this->addItemAttribute('writers', parse_film_info_block('Writers', $film_info));
+			$this->addItemAttribute('creators', parse_film_info_block('Creators', $film_info));
 		}
 		
 		$index = strpos($buffer, "<b>Reviews</b>");
@@ -440,7 +484,7 @@ class dvdempire extends SitePlugin
 			if(preg_match('!<img src=[\'|"](http://images[0-9]*\.dvdempire\.com/gen/movies/'.$search_attributes_r['dvdempr_id'].'h\.jpg)[\'|"]!', $buffer, $regs))
 			{
 				$this->addItemAttribute('imageurl', $regs[1]);
-				$this->addItemAttribute('fimageurl', $regs[1]);
+				$this->addItemAttribute('imageurlf', $regs[1]);
 			}		
 		}
 		
@@ -449,7 +493,7 @@ class dvdempire extends SitePlugin
 		{
 			if(preg_match('!<img src=[\'|"](http://images[0-9]*\.dvdempire\.com/gen/movies/'.$search_attributes_r['dvdempr_id'].'bh\.jpg)[\'|"]!', $buffer, $regs))
 			{
-				$this->addItemAttribute('bimageurl', $regs[1]);
+				$this->addItemAttribute('imageurlb', $regs[1]);
 			}		
 		}
 	}

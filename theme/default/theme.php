@@ -33,7 +33,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 		"\n<head>".
 		"\n<title>".$pageTitle.(!empty($title)?" - $title":"")."</title>".
 		"\n<meta http-equiv=\"Content-Type\" content=\"".get_content_type_charset()."\">".
-		"\n<link rel=\"icon\" href=\""._theme_image_src("icon.gif")."\" type=\"image/gif\" />".
+		"\n<link rel=\"icon\" href=\""._theme_image_src("icon-16x16.gif")."\" type=\"image/gif\" />".
 		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." Title Search\" href=\"./searchplugins.php?type=title\">".
 		"\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"".get_opendb_title()." UPC Search\" href=\"./searchplugins.php?type=upc\">".
 		get_theme_css($pageid, $mode).

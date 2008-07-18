@@ -575,7 +575,7 @@ function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 				
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = unhtmlentities(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item));
 	
 					// Don't include the region, no_discs, anamorphic
 					if(strpos($item, "Ton:")===FALSE)  // audio languages already parse this.
@@ -724,7 +724,7 @@ function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	
 						if(strlen($track)>0)
 						{						
-							$track = unhtmlentities(strip_tags($track));
+							$track = html_entity_decode(strip_tags($track));
 							$tracks[] = $track;
 						}
 					}

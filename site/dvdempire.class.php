@@ -103,7 +103,7 @@ function parse_page_block($blockid, $block)
 			$end = strpos($block, "</td>", $start);
 			if($end!==FALSE)
 			{
-				return unhtmlentities(strip_tags(substr($block, $start, $end-($start))));
+				return html_entity_decode(strip_tags(substr($block, $start, $end-($start))));
 			}
 		}
 	}
@@ -137,7 +137,7 @@ function parse_film_info_block($blockid, $block)
 		$block = substr($block, $start, $end - $start);
 		
 		$block = str_replace("&#149;", ",", $block);
-		$block = unhtmlentities(strip_tags($block));
+		$block = html_entity_decode(strip_tags($block));
 		$block = str_replace(" , ", ",", $block);
 		
 		if($block{0} == ',')
@@ -257,7 +257,7 @@ class dvdempire extends SitePlugin
 					{
 					  	$plot = substr($buffer, $start, $end - $start);
 					  	$plot = str_replace(">", "> ", $plot); // workaround for lack of spaces between HZML tags
-						$plot = trim(preg_replace("/[\s]+/", " ", unhtmlentities(strip_tags($plot))));
+						$plot = trim(preg_replace("/[\s]+/", " ", html_entity_decode(strip_tags($plot))));
 						$this->addItemAttribute('blurb', $plot);
 					}
 				}
@@ -291,7 +291,7 @@ class dvdempire extends SitePlugin
 		//<title>DVD Empire - Item - Rambo III: Ultimate Edition  /  DVD-Video</title>
 		if(preg_match("!<title>DVD Empire - Item - (.*)/[\s]*DVD-Video<\/title>!m", $buffer, $regs))
 		{
-			$this->addItemAttribute('title', str_replace("\"", "", unhtmlentities(strip_tags($regs[1]))));
+			$this->addItemAttribute('title', str_replace("\"", "", html_entity_decode(strip_tags($regs[1]))));
 		}
 
 		if(preg_match("/Region ([0-9]+)/i", $buffer, $regs))
@@ -309,7 +309,7 @@ class dvdempire extends SitePlugin
 					preg_replace(
 						array("'[\n|\r]+'","'[\t ]+'"), 
 						array("\n"," "),
-						unhtmlentities(
+						html_entity_decode(
 							strip_tags(
 								str_replace(
 									"<br>", 

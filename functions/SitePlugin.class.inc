@@ -341,7 +341,7 @@ class SitePlugin
 			// site plugins cannot normally pass any HTML entities or tags through.
 			if($options != HTML_CONTENT_IS_LEGAL)
 			{
-				$value = unhtmlentities(strip_tags($value));
+				$value = html_entity_decode(strip_tags($value));
 			}
 			
 			// hack: remove hard spaces

@@ -127,7 +127,7 @@ class iblist extends SitePlugin
 					{
 						for($i=0; $i<count($genre_r); $i++)
 						{
-							$genre_r[$i] = unhtmlentities(strip_tags(trim($genre_r[$i])));
+							$genre_r[$i] = html_entity_decode(strip_tags(trim($genre_r[$i])));
 							
 							// only include if genre has no spaces in it.
 							if(strpos($genre_r[$i], " ")===FALSE)

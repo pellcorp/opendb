@@ -36,7 +36,7 @@ function strip_review_html_formatting($review)
 	$review = str_replace("&#8212;", "-", $review);
 	$review = str_replace("&ndash;", "-", $review);
 
-	$review = trim(unhtmlentities(strip_tags($review)));
+	$review = trim(html_entity_decode(strip_tags($review)));
 
 	// some extra processing to try and remove as many duplicate reviews as possible
 	$review = str_replace("\"", "", $review);
@@ -99,7 +99,7 @@ function parse_amazon_reviews($reviewPage)
 						if(strlen($block)>0)
 						{
 							// The author, is the first match, the actual review the second one.
-							$author = trim(unhtmlentities(strip_tags($matches[1][$i])));
+							$author = trim(html_entity_decode(strip_tags($matches[1][$i])));
 
 							if($author != 'About the Author' && 
 									strpos($author, 'Special Features') === FALSE) // a hack!
@@ -161,7 +161,7 @@ function parse_amazon_video_people($header, $pageBuffer)
 				{
 					if(strpos($matches[2][$i], "See more")===FALSE)
 					{
-						$persons[] = trim(unhtmlentities(strip_tags($matches[2][$i])));
+						$persons[] = trim(html_entity_decode(strip_tags($matches[2][$i])));
 					}
 				}
 			}

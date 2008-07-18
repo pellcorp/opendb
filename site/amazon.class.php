@@ -657,7 +657,7 @@ class amazon extends SitePlugin
 
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = unhtmlentities(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item));
 
 					// We may have a hard space here, so get rid of it.
 					$item = trim(strtr($item, chr(160), ' '));

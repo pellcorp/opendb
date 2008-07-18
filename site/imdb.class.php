@@ -98,7 +98,7 @@ class imdb extends SitePlugin
 										    
 											if(preg_match("/<br>&#160;aka(.*)/", $matches2[3], $regs))
 										    {
-										    	$comments = unhtmlentities(strip_tags($regs[1]));
+										    	$comments = html_entity_decode(strip_tags($regs[1]));
 										    }
 										    
 											$this->addListingRow($title, $image, $comments, array('imdb_id'=>$imdb_id));

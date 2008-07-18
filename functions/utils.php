@@ -386,31 +386,6 @@ function fetch_results_array($results)
 }
 
 /**
- * Replace html_entity_decode()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.html_entity_decode
- * @author      David Irvine <dave@codexweb.co.za>
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.10 $
- * @since       PHP 4.3.0
- * @internal    Setting the charset will not do anything
- * @require     PHP 4.0.0 (user_error)
- */
-function unhtmlentities($string)
-{
-    // replace numeric entities
-    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-    $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-    
-    // replace literal entities
-    $trans_tbl = get_html_translation_table(HTML_ENTITIES);
-    $trans_tbl = array_flip($trans_tbl);
-    return strtr($string, $trans_tbl);
-}
-
-/**
  * http://se2.php.net/manual/en/function.print-r.php#75872
  * 
   * An alternative to print_r that unlike the original does not use output buffering with

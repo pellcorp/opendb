@@ -54,7 +54,7 @@ function parse_amazon_reviews($reviewPage)
 	if($start === FALSE)
 		$start = strpos($reviewPage, "<b class=\"h1\">Reviews</b>");
 	if($start === FALSE)
-		$start = strpos($reviewPage, "<b class=\"h1\">Rezensionen</b>"); // todo fix
+		$start = strpos($reviewPage, "<b class=\"h1\">Produktbeschreibungen</b>"); // todo fix: done 13th July 2008
 		
 	if($start !== FALSE)
 	{

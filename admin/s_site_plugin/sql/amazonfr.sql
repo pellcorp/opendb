@@ -17,16 +17,23 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_input.title_articles', '2', '', 'Le' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_input.title_articles', '3', '', 'La' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_input.title_articles', '4', '', 'L\'' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BOOK', '', 'books-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'CD', '', 'music-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DIVX', '', 'dvd-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DVD', '', 'dvd-fr' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BOOK', '', 'books-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BOOK', '', 'books' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'CD', '', 'music-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'CD', '', 'music' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DIVX', '', 'dvd-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DIVX', '', 'dvd' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DVD', '', 'dvd-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DVD', '', 'dvd' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'GAME', '', 'video-games-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'LD', '', 'dvd-frs' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'MP3', '', 'music-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VCD', '', 'dvd-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VHS', '', 'vhs-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'COMIC', '', 'books-fr' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VCD', '', 'dvd-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VCD', '', 'dvd' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VHS', '', 'vhs-fr' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VHS', '', 'vhs' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BD', '', 'blu-ray' );
+# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'HDDVD', '', 'hd-dvd' );
 
 #
 # Site Plugin Input Fields
@@ -49,6 +56,15 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', 'DVD', 'dvd_audio', 'DVD_AUDIO', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'subtitles', 'SUBTITLES', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'title', 'S_TITLE', 'N' );
+
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'alt_title', 'ALT_TITLE', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', 'DVD', 'dvd_audio', 'DVD_AUDIO', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'subtitles', 'SUBTITLES', 'Y' );
@@ -87,3 +103,7 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 #
 
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'AMAZFRASIN',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BOOK', 'AMAZFRASIN',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'CD', 'AMAZFRASIN',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'AMAZFRASIN',  0, '', 'N' );
+# INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'GAME', 'AMAZFRASIN',  0, '', 'N' );

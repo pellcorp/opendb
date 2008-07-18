@@ -191,7 +191,8 @@ class amazonde extends SitePlugin
 	*/
 	function queryItem($search_attributes_r, $s_item_type)
 	{
-		$pageBuffer = $this->fetchURI("http://www.amazon.de/exec/obidos/ASIN/".$search_attributes_r['amazdeasin']);
+		//$pageBuffer = $this->fetchURI("http://www.amazon.de/exec/obidos/ASIN/".$search_attributes_r['amazdeasin']);
+		$pageBuffer = $this->fetchURI("http://www.amazon.de/gp/search?keywords=".$search_attributes_r['amazdeasin']."&index=books");
 		
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
@@ -200,21 +201,49 @@ class amazonde extends SitePlugin
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		
-		//if(preg_match("/<title>.*Amazon\.de: ([^:]*):(.*)<\/title>/s", $pageBuffer, $regs))
-		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
-				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
-				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
+		if(preg_match("/<title>.*Amazon\.de: ([^:(]*):(.*)<\/title>/s", $pageBuffer, $regs))
+		//if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				//preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				//preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
 
 			// If extra year appended, remove it and just get the title.
 			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2))
 				$title = $regs2[1];
-
+				
+			// If preceeded by a series, remove it and just get the title.
+			if(preg_match("/(.*)([0-9][0-9])[:.](.*)/", $title, $regs3))
+				$title = $regs3[3];
+        $series = $regs3[1];
+				$bnum = $regs3[2]; 
+				
 			$title = str_replace("\"", "", $title);
 
 			$this->addItemAttribute('title', $title);
-		}
+			$this->addItemAttribute('b_series', $series);    
+			$this->addItemAttribute('b_bnum', $bnum);        
+
+		} 
+		
+			//	if(preg_match("/<title>.*Amazon\.de: ([^:.(]*) ([0-9][0-9]*)[:.](.*)<\/title>/s", $pageBuffer, $regs2))
+		//if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				//preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				//preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
+	//	{
+	//	    $series = trim($regs2[1]);
+	//			$bnum = trim($regs2[2]); 
+  //
+	//		// If extra year appended, remove it and just get the title.
+	//		if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs3))
+	//			$series = $regs3[1];
+  //
+	//		$series = str_replace("\"", "", $series);
+
+	//		$this->addItemAttribute('b_series', $series);
+	//		$this->addItemAttribute('b_bnum', $bnum);
+
+	//	}
 
 		$imageBuffer = $this->fetchURI("http://www.amazon.de/gp/product/images/".$search_attributes_r['amazdeasin']."/");
 		if($imageBuffer!==FALSE)
@@ -238,10 +267,16 @@ class amazonde extends SitePlugin
 		
 		if (preg_match("!<b class=\"price\">EUR ([0-9,]+)[\s]*</b>!", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('price', $regs[1]);
+			$this->addItemAttribute('listprice', $regs[1]);
 		}
-		
-		if(preg_match("!<a href=\"http://www.amazon.de/gp/product/product-description/".$search_attributes_r['amazdeasin']."/[^>]*>Alle Rezensionen</a>!", $pageBuffer, $regs))
+
+		//<li><b>Sprache:</b> Deutsch</li>
+		if (preg_match("/<li><b>Sprache:<\/b> (.*?)<\/li>/i", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('language', preg_replace('/,/', '.', trim($regs[1])));
+		}
+	
+		if(preg_match("!<a href=\"http://www.amazon.de/gp/product/product-description/".$search_attributes_r['amazdeasin']."/[^>]*>Alle Produktbeschreibungen</a>!", $pageBuffer, $regs))
 		{
 			$reviewPage = $this->fetchURI("http://www.amazon.de/gp/product/product-description/".$search_attributes_r['amazdeasin']."/reviews/");
 			if(strlen($reviewPage)>0)
@@ -283,6 +318,7 @@ class amazonde extends SitePlugin
 				
 			case 'books-de':
 				$this->parse_amazon_books_data($search_attributes_r, $pageBuffer);
+				$this->get_image($this->getItemAttribute('isbn10'));
 				break;
 				
 			case 'music-de':
@@ -292,6 +328,27 @@ class amazonde extends SitePlugin
 	
 		return TRUE;
 	}
+	
+function get_image($isbn) 
+{ 
+ 
+ 
+$imageBuffer = $this->fetchURI("http://www.amazon.de/gp/product/images/".$isbn); 
+if($imageBuffer!==FALSE) 
+{ 
+ 
+if(preg_match_all("!fetchImage\(\"[^\"]+\", \"([^\"]+)\"!", $imageBuffer, $regs)) 
+{ 
+$this->addItemAttribute('imageurl', $regs[1]); 
+}  
+else if(preg_match_all("!<img src=\"([^\"]+)\" id=\"prodImage\" />!", $imageBuffer, $regs)) 
+{ 
+$this->addItemAttribute('imageurl', $regs[1]); 
+} 
+} 
+ 
+return $imageBuffer; 
+} 
 	
 	function parse_amazon_game_data($search_attributes_r, $pageBuffer)
 	{
@@ -459,9 +516,11 @@ class amazonde extends SitePlugin
 function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
 		// Author(s) and/or Editor(s)
-		if (preg_match('|von <a href=".*?">(.*?)</a>|si', $pageBuffer, $regs))
+		if (preg_match('|von <a href=".*?">(.*?) (.*?)</a>|si', $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('author', $regs[1]);
+			$this->addItemAttribute('authorln', $regs[2]);
+			$this->addItemAttribute('authorfn', $regs[1]);
+			$this->addItemAttribute('author', $regs[1]." ".$regs[2]);
 		}
 
 		// ISBN-10 (Note: there is also an ISBN-13; just change 10 to 13 to get it)
@@ -470,22 +529,31 @@ function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 			$this->addItemAttribute('isbn', $regs2[1]);
 		}
 
-		// Publisher, Edition no., Publication date
-		if (preg_match("/<li><b>Verlag:<\/b>(.*?); Auflage:(.*?)\((.*?)\)<\/li>/", $pageBuffer, $regs2))
+		if(preg_match("/<li><b>ISBN-13:<\/b>(.*?)<\/li>/", $pageBuffer, $regs2))
 		{
-			$this->addItemAttribute('publisher', $regs2[1]);
-			$this->addItemAttribute('edition', $regs2[2]);
-
-			// All we want of publication date is the year
-			if (preg_match("/([0-9]+)$/", $regs2[3], $regs3))
-				$this->addItemAttribute('pub_date', $regs3[1]);
+			$this->addItemAttribute('isbn-13', $regs2[1]);
 		}
 
+		// Publisher, Publication date
+		if (preg_match("/<li><b>Verlag:<\/b> (.*?)[;\(].*([0-9][0-9][0-9][0-9])\)<\/li>/", $pageBuffer, $regs2))
+		{
+			$this->addItemAttribute('publisher', $regs2[1]);
+		  $this->addItemAttribute('pub_date', $regs2[2]);
+		}
+		
+		// Edition no.
+		if (preg_match("/<li><b>Verlag:<\/b> (.*?); Auflage:(.*?)\((.*?)\)<\/li>/", $pageBuffer, $regs2))
+		{
+		
+			$this->addItemAttribute('edition', $regs2[2]);
+
+		}
+		
 		// Book type (edition?), Pages
 		if (preg_match("/<li><b>([Gebundene Ausgabe|Kalender|Taschenbuch|Broschiert|CD]+?):<\/b>(.*?)Seiten<\/li>/", $pageBuffer, $regs))
 		{
-			//$this->addItemAttribute('type', $regs[1]);
-			$this->addItemAttribute('nb_pages', $regs[2]);
+			$this->addItemAttribute('type', $regs[1]);
+			$this->addItemAttribute('pages', $regs[2]);
 		}
 
 		// Category -- hmmm, Amazon seems to have removed genre information from books
@@ -495,7 +563,19 @@ function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 		}
 
 		// Plot (Amazon blurb)
-		$this->addItemAttribute('blurb', $this->parse_amazon_book_blurb($pageBuffer));
+		    // no editorial reviews for amazon.de
+        // search for "Synopsis" or "Description"
+        if (preg_match("/<b>Kurzbeschreibung<\/b><br[\s]*[\/]*>([^<]*)</si", $pageBuffer, $regs))
+        {
+            $this->addItemAttribute('synopsis', $regs[1]);
+        }
+        else
+        if (preg_match("/Produktbeschreibungen<\/b><br[\s]*[\/]*>([^<]*)/si", $pageBuffer, $regs))
+        {
+            $this->addItemAttribute('synopsis', $regs[1]);
+        }		
+		
+		//$this->addItemAttribute('blurb', $this->parse_amazon_book_blurb($pageBuffer));
 
 		// Editorial reviews
 		if (preg_match("/<a href=([^\"]+)>Alle Rezensionen ansehen/i", $pageBuffer, $regs))
@@ -724,7 +804,6 @@ function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	
 						if(strlen($track)>0)
 						{						
-							$track = html_entity_decode(strip_tags($track));
 							$tracks[] = $track;
 						}
 					}

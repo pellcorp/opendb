@@ -245,6 +245,10 @@ class SitePlugin
 	*/
 	function addListingRow($title, $cover_image_url, $comments, $attributes_r)
 	{
+		$title = trim(strip_tags($title));
+		$comments = trim(strip_tags($comments));
+		$cover_image_url = trim(strip_tags($cover_image_url));
+		
 		if(is_array($attributes_r))
 		{
 			// lets make sure we don't already have a row with the same $attributes_r set.

@@ -24,6 +24,10 @@
 	0.81		initial 0.81 release
 	0.81p7		Fix to remove debug info.
 	0.81p8		Fix to parse audio_lang correctly.
+
+	Mike E <mikee@saxicola.idps.co.uk>
+	2008-07-17
+	Changes for getting books based in ISBN13 number, getting of reviews and getting book images.
 */
 include_once("./functions/SitePlugin.class.inc");
 include_once("./site/amazonutils.php");
@@ -42,6 +46,7 @@ class amazonuk extends SitePlugin
 			$this->addListingRow(NULL, NULL, NULL, array('amazukasin'=>$search_vars_r['amazukasin']));
 			return TRUE;
 		}
+
 		else
 		{
 			// Get the mapped AMAZON index type
@@ -119,10 +124,33 @@ class amazonuk extends SitePlugin
 			return FALSE;
 		}
 	}
+
 	
+// Perform a query based on !ASIN number	ISBN number
 	function queryItem($search_attributes_r, $s_item_type)
-	{
-		$pageBuffer = $this->fetchURI("http://www.amazon.co.uk/exec/obidos/ASIN/".$search_attributes_r['amazukasin']);
+	{//print_r( $search_attributes_r['amazukasin']);
+// Mike E 2008-07-16.  Not fully tested with other media types so please feel free to test.
+	switch($s_item_type)
+		{
+			case 'BOOK':
+			$index="books";
+			$search_attributes_r['amazukasin']=preg_replace("/[^0-9xX]/","",$search_attributes_r['amazukasin']);
+			break;
+			case 'DVD':
+			$index="dvds";
+			break;
+			case 'CD':
+			$index="cds";
+			break;
+			
+		}
+			
+	//print (" $s_item_type\n");// Debug
+	// We could remove hyphens here
+  
+  //print_r( $search_attributes_r['amazukasin']); print ("\n");// Debug
+    $pageBuffer = $this->fetchURI("http://www.amazon.co.uk/gp/search?keywords=". $search_attributes_r['amazukasin'] ."&index=" . $index);
+		//$pageBuffer = $this->fetchURI("http://www.amazon.co.uk/exec/obidos/ISBN/".$search_attributes_r['amazukasin']);
 		
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
@@ -146,20 +174,7 @@ class amazonuk extends SitePlugin
 			$this->addItemAttribute('title', $title);
 		}
 		
-		//http://www.amazon.co.uk/gp/product/images/B000050YLT/ref=dp_image_text_0/026-9147519-9634865?ie=UTF8
-		$imageBuffer = $this->fetchURI("http://www.amazon.co.uk/gp/product/images/".$search_attributes_r['amazukasin']);
-		if($imageBuffer!==FALSE)
-	    {
-	    	//fetchImage("alt_image_0", "http://images.amazon.com/images/P/B0000640RX.01._SS400_SCLZZZZZZZ_.jpg" );
-	        if(preg_match_all("!fetchImage\(\"[^\"]+\", \"([^\"]+)\"!", $imageBuffer, $regs))
-	        {
-	        	$this->addItemAttribute('imageurl', $regs[1]);
-	        } //<img src="http://images.amazon.com/images/P/B000FMH8RG.01._SS500_SCLZZZZZZZ_V52187861_.jpg" id="prodImage" />
-	        else if(preg_match_all("!<img src=\"([^\"]+)\" id=\"prodImage\" />!", $imageBuffer, $regs))
-	        {
-	        	$this->addItemAttribute('imageurl', $regs[1]);	
-	        }
-	    }
+
 
 	    // <td class="listprice">£20.00 </td>
 		//<td><b class="price">£14.00</b>
@@ -173,26 +188,7 @@ class amazonuk extends SitePlugin
 			$this->addItemAttribute('price', $regs[1]);
 		}
 		
-		if(preg_match("!<a href=\"http://www.amazon.co.uk/gp/product/product-description/".$search_attributes_r['amazukasin']."/[^>]*>See all Reviews</a>!", $pageBuffer, $regs))
-		{
-			$reviewPage = $this->fetchURI("http://www.amazon.co.uk/gp/product/product-description/".$search_attributes_r['amazukasin']."/reviews/");
-			if(strlen($reviewPage)>0)
-			{
-				$reviews = parse_amazon_reviews($reviewPage);
-				if(is_not_empty_array($reviews))
-				{
-					$this->addItemAttribute('blurb', $reviews);
-				}	
-			}
-		}
-		else
-		{
-			$reviews = parse_amazon_reviews($pageBuffer);
-			if(is_not_empty_array($reviews))
-			{
-				$this->addItemAttribute('blurb', $reviews);
-			}
-		}
+
 		
 		//http://g-ec2.images-amazon.com/images/G/01/x-locale/common/customer-reviews/stars-4-0._V47081936_.gif 
 		if(preg_match("!<li><b>Average Customer Review:</b>[\s]*<img src=\".*?/stars-([^\.]+).!i", $pageBuffer, $regs))
@@ -208,18 +204,23 @@ class amazonuk extends SitePlugin
 			case 'dvd-uk':
 			case 'vhs-uk':
 				$this->parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer);
+				$this->get_image($search_attributes_r['amazukasin']);
 				break;
 			
 			case 'video-games-uk':
 				$this->parse_amazon_game_data($search_attributes_r, $pageBuffer);
+				$this->get_image($search_attributes_r['amazukasin']);
 				break;
 				
 			case 'books-uk':
 				$this->parse_amazon_books_data($search_attributes_r, $pageBuffer);
+				$this->get_image($this->getItemAttribute('isbn10'));//$search_attributes_r['amazukasin']
+				$this->get_reviews($pageBuffer, $this->getItemAttribute('isbn10'));
 				break;
 				
 			case 'music':
 				$this->parse_amazon_music_data($search_attributes_r, $pageBuffer);
+				$this->get_image($search_attributes_r['amazukasin']);
 				break;
 			
 			default://Not much here, but what else can we do?
@@ -228,7 +229,108 @@ class amazonuk extends SitePlugin
 		
 		return TRUE;
 	}
+
+/**
+Get the image based in the ISBN10 number
+Mike E: 2008-07-16
+This section moved to here from lines 178 in function queryItem() as we need to parse the book data before we know the ISBN10 number to get the image URL.  Call this function at the end of parse_amazon_books_data with: .$this->get_image($this->getItemAttribute('isbn10'));
+todo: Make it work for all other media.
+*/
+function get_image($isbn)
+{
+
+		//http://www.amazon.co.uk/gp/product/images/B000050YLT/ref=dp_image_text_0/026-9147519-9634865?ie=UTF8
+		$imageBuffer = $this->fetchURI("http://www.amazon.co.uk/gp/product/images/".$isbn);
+		if($imageBuffer!==FALSE)
+	    {
+	    	//fetchImage("alt_image_0", "http://images.amazon.com/images/P/B0000640RX.01._SS400_SCLZZZZZZZ_.jpg" );
+	        if(preg_match_all("!fetchImage\(\"[^\"]+\", \"([^\"]+)\"!", $imageBuffer, $regs))
+	        {
+	        	$this->addItemAttribute('imageurl', $regs[1]);
+	        } //<img src="http://images.amazon.com/images/P/B000FMH8RG.01._SS500_SCLZZZZZZZ_V52187861_.jpg" id="prodImage" />
+	        else if(preg_match_all("!<img src=\"([^\"]+)\" id=\"prodImage\" />!", $imageBuffer, $regs))
+	        {
+	        	$this->addItemAttribute('imageurl', $regs[1]);
+	        }
+	    }
+
+return $imageBuffer;
+}
+
+
+/**
+Get the reviews from the Amazon reviews page
+Mike E 2008-07-16
+I've moved this from amazonutils.php.  It goes against the principal of not duplicating code but I think that the sites are sufficientl different in each country to justify it. See also following function.
+*/
+function get_reviews($pageBuffer, $isbn)
+{
+		if(preg_match("!http://www.amazon.co.uk/review/product/.*>See all [0-9] customer reviews\.\.\.</a>!", $pageBuffer, $regs))
+		{
+		//print "Tested for reviews";
+			$reviewPage = $this->fetchURI("http://www.amazon.co.uk/review/product/" . $isbn);//
+			//print("Getting reviews");
+			if(strlen($reviewPage)>0)
+			{//print("Parsing reviews");
+				$reviews = $this->parse_amazon_reviews($reviewPage);
+				//print ($reviews);
+				if(is_not_empty_array($reviews))
+				{
+				
+					$this->addItemAttribute('blurb', $reviews);
+				}	
+			}
+		}
+		else
+		{
+			$reviews = parse_amazon_reviews($pageBuffer);
+			if(is_not_empty_array($reviews))
+			{
+				$this->addItemAttribute('blurb', $reviews);
+			}
+		}
+
+}
+
+/**
+Mike E 2008-07-16
+New function to parse the reviews.  You end up with a set of tabs in the 'add item' page from which you can choose ONE review.  Perhaps you might want to choose more?  TODO...
+*/
+function parse_amazon_reviews($reviewPage)
+{
+$reviews = array();
+
+
+	$start = strpos($reviewPage, "<!-- BOUNDARY -->");
 	
+	if($start == FALSE)
+	return $reviews; // Nothing found
+	
+// Extract the reviewer's names
+ 	preg_match_all("!href=\"http://www.amazon.co.uk/gp/pdp/profile/[^>]+>[^>]+>([A-z\.\"\s]*)!",$reviewPage,$reg);
+ 							//print_r($reg[1][1]); // Debug
+ 							foreach($reg[1] as $key => $value) {
+ 							//print "$key => $value<br/>\n";
+ 							$this->addItemAttribute('reviewers', $value);
+ 							$reviews =  $value;
+ 							}
+ 							if(1){
+// Now get the reviews
+if(preg_match_all("!BOUNDARY.*?</div>.*?</div>.*?</div>.*?</div>(.*?)<div style!s", $reviewPage, $matches))
+				{//print_r($matches[1]);
+					foreach($matches[1] as $key => $value) {
+					//$reviews .= $value;
+					}
+				}
+//print_r ($matches);
+ 	}// END if()					
+	
+
+	return $matches[1];//$reviews;
+}
+
+
+
 	function parse_amazon_game_data($search_attributes_r, $pageBuffer)
 	{
 		if(preg_match("!by <a href=\".*?field-keywords=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
@@ -278,6 +380,7 @@ class amazonuk extends SitePlugin
 		{
 			$timestamp = strtotime($regs[1]);
     		$date = date('d/m/Y', $timestamp);
+    		$date = date('Y', $timestamp);
     		$this->addItemAttribute('gamepbdate', $date);
 		}
 		
@@ -353,6 +456,7 @@ class amazonuk extends SitePlugin
 			$tracks = parse_music_tracks($regs[1]);
 			$this->addItemAttribute('cdtrack', $tracks);
 		}
+		
 	}
 	
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
@@ -383,6 +487,14 @@ class amazonuk extends SitePlugin
 				$this->addItemAttribute('genre', $matches[1]);
 			}
 		}
+
+		// Synopsis extraction
+		// Mike E
+		if(preg_match("!<b>Synopsis</b><br[\s]*/>(.*?)</div>!mix",$pageBuffer, $regs))
+		{
+		//print_r($regs);
+		 $this->addItemAttribute('synopsis', $regs[1], HTML_CONTENT_IS_LEGAL);
+}
 		
 		//<li><b>ISBN-10:</b> 0261102389</li>
 		//<li><b>ISBN-13:</b> 978-0261102385</li>
@@ -408,11 +520,11 @@ class amazonuk extends SitePlugin
 		if(preg_match("!<b>Publisher:</b>[\s]*([^;<]+);([^<]+)</li>!U", $pageBuffer, $regs)) 
 		{
 			$this->addItemAttribute('publisher', $regs[1]);
-			
+// Mike E:  Removed day and month from date			
 			if(preg_match("!\(([^\)]*[0-9]+)\)!", $regs[2], $regs2))
 			{
 				$timestamp = strtotime($regs2[1]);
-	    		$date = date('d/m/Y', $timestamp);
+	    		$date = date('Y', $timestamp);
 	    		$this->addItemAttribute('pub_date', $date);
 			}
 		}
@@ -426,11 +538,14 @@ class amazonuk extends SitePlugin
 			if(preg_match("!\(([^\)]*[0-9]+)\)!", $regs[1], $regs2))
 			{
 				$timestamp = strtotime($regs2[1]);
-	    		$date = date('d/m/Y', $timestamp);
+	    		$date = date('Y', $timestamp);
 	    		$this->addItemAttribute('pub_date', $date);
 			}
 		}
+		//$this->get_image($this->getItemAttribute('isbn10'));//$search_attributes_r['amazukasin']
+		
 	}
+
 	
 	function parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer)
 	{

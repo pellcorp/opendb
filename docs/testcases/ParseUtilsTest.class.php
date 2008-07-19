@@ -36,6 +36,8 @@ class ParseUtilsTest extends PHPUnit_TestCase
 
 	function testExpandNumberRange() {
 		$this->assertEquals('9569', expand_number_range('9569'));
+		$this->assertEquals('9568,9569', expand_number_range('9568,9569'));
+		$this->assertEquals('1,2,3,4,5,7', expand_number_range('1-5,7'));
 	}
 }
 ?>

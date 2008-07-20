@@ -348,6 +348,7 @@ ul.menu li a:hover, ul.menu li.active a
 	background-position: top left; 
 	padding: 0px;
 	padding-left: 20px;
+	color: grey;
 }
 
 form.quickSearch img

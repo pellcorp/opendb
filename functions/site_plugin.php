@@ -763,7 +763,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 							}
 						}
 						
-						$site_item_attributes_r[$fieldname] = $lookup_value_r;
+						$site_item_attributes_r[$fieldname] = array_unique($lookup_value_r);
 					}
 					else
 					{

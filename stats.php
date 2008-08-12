@@ -440,7 +440,7 @@ if(is_site_enabled())
 					echo("<div class=\"tabContainer\">");
 					echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 					
-					echo("<li id=\"menu-breakdown\" class=\"activeTab\" onclick=\"return activateTab('breakdown', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('overview')."</li>");
+					echo("<li id=\"menu-breakdown\" class=\"first activeTab\" onclick=\"return activateTab('breakdown', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('overview')."</li>");
 					
 					reset($item_type_rs);
 					while(list(,$item_type_r) = each($item_type_rs))

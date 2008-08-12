@@ -131,9 +131,9 @@ if(is_site_enabled())
 				$otherTabsClass = "tabContentHidden";
 				echo("<div class=\"tabContainer\">");
 				echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
-				echo("<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('details')."</li>");
-				echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('instance_info')."</li>");
-				echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">".get_opendb_lang_var('review(s)')."</li>");
+				echo("<li id=\"menu-details\" class=\"first activeTab\" onclick=\"return activateTab('details')\">".get_opendb_lang_var('details')."</li>");
+				echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info')\">".get_opendb_lang_var('instance_info')."</li>");
+				echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews')\">".get_opendb_lang_var('review(s)')."</li>");
 				echo("</ul>");
 								
 				echo("<div id=\"tab-content\">");

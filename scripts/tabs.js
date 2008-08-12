@@ -17,11 +17,26 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+function ifnotset(s, notsetvar) {
+	if(s == undefined || s == null) {
+		return notsetvar;
+	} else {
+		return s;
+	}
+}
+
 /**
 @param tabClass - The hidden version will have 'Hidden' suffix
+
+, 'tab-menu', 'tab-content', 'activeTab', 'tabContent'
 */
 function activateTab(menuId, menuContainerId, contentContainerId, activeMenuClass, tabClass)
 {
+	menuContainerId = ifnotset(menuContainerId, 'tab-menu');
+	contentContainerId = ifnotset(contentContainerId, 'tab-content');
+	activeMenuClass = ifnotset(activeMenuClass, 'activeTab');
+	tabClass = ifnotset(tabClass, 'tabContent');
+
 	var menuContainer = document.getElementById( menuContainerId );
 	var contentContainer = document.getElementById( contentContainerId );
 

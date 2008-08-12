@@ -28,6 +28,33 @@ function is_php51()
 	return version_compare(phpversion(), "5.1", ">="); 
 }
 
+function get_array_for_value($value) {
+	if(!is_array($value)) {
+		$new_array[] = $value;
+		return $new_array;
+	} else {
+		return $value;
+	}
+}
+
+/**
+ * Remove duplicates from $value1 that are in $value2
+ */
+function deduplicate_array($value1, $value2) {
+	$value1 = get_array_for_value($value1);
+	$value2 = get_array_for_value($value2);
+	
+	// remove duplicates
+	for($i=0; $i<count($value1); $i++)
+	{
+		if(in_array($value1[$i], $value2)) {
+			array_splice($value1, $i, 1);
+		}
+	}
+	return $value1;
+}
+
+
 // Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
 function stripslashes_array($array)
 {

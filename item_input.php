@@ -42,7 +42,6 @@ include_once("./functions/status_type.php");
 include_once("./functions/TitleMask.class.php");
 include_once("./functions/HTML_Listing.class.inc");
 
-
 /**
 * Will test the old against the new value.
 * 
@@ -571,6 +570,8 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		$fieldname = get_field_name($item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
 	}
 	
+	$is_multi_value = is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']);
+	
 	$refresh_field = FALSE;
 	// Hidden cannot be involved in a refresh operation directly, but refreshed hidden fields, will still be updated.
 	if(strcasecmp($item_attribute_type_r['input_type'],'hidden')!==0 && 
@@ -583,16 +584,10 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		
 		$refresh_field = TRUE;
 		
-		if(!is_array($new_value))
-		{
-			$tmp = $new_value;
-			unset($new_value);
-			$new_value[] = $tmp;
-		}
+		$new_value = get_array_for_value($new_value);
 	}
 	
-	$is_multi_value = is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']);
-	if($refresh_field || (is_array($new_value) && !$is_multi_value))
+	if(($refresh_field && count($new_value)>0) || (is_array($new_value) && !$is_multi_value))
 	{
 		// -------------
 		// REFRESH FIELD
@@ -607,31 +602,25 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		
 		$field .= "<ul class=\"tabMenu\" id=\"${fieldname}-tab-menu\">";
 		
-		$count = 1;
-		if(!$is_multi_value)
-		{
-			// remove a new option if it matches the old, but do it here, so we can
-			// use the simple CHECKED functionality of comparing $i==0
-			for($i=0; $i<count($new_value); $i++)
-			{
-				if(strcasecmp($new_value[$i], $old_value) === 0)
-					array_splice($new_value, $i, 1);
-			}
+		if(!$is_multi_value) {
+			$new_value = deduplicate_array($new_value, $old_value);
 			$count = count($new_value);
+		} else {
+			$count = 1;
 		}
 		
 		for($i=1; $i<=$count; $i++)
 		{
-			$field .= "<li id=\"menu-${fieldname}_new${i}\"".($i==1?" class=\"activeTab\"":"").">
+			$field .= "<li id=\"menu-${fieldname}_new${i}\"".($i==1?" class=\"first activeTab\"":"").">
 					<label for=\"menu-${fieldname}_new${i}-cbox\">".$item_attribute_type_r['prompt']."</label>".
-					"<input type=\"radio\" class=\"radio\" name=\"".$fieldname."\" id=\"menu-${fieldname}_new${i}-cbox\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content', 'activeTab', 'tabContent');\"".($i==1?" CHECKED":"")."></li>";
+					"<input type=\"radio\" class=\"radio\" name=\"".$fieldname."\" id=\"menu-${fieldname}_new${i}-cbox\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content');\"".($i==1?" CHECKED":"")."></li>";
 		}
 	
 		if($refresh_field)
 		{
 			$field .= "<li id=\"menu-${fieldname}_old\" >
 				<label for=\"menu-${fieldname}_old-cbox\">".get_opendb_lang_var('old_prompt', 'prompt', $item_attribute_type_r['prompt'])."</label>".
-				"<input type=\"radio\" class=\"radio\" id=\"menu-${fieldname}_old-cbox\" name=\"".$fieldname."\" value=\"old\" onclick=\"return activateTab('${fieldname}_old', '${fieldname}-tab-menu', '${fieldname}-tab-content', 'activeTab', 'tabContent');\"></li>";
+				"<input type=\"radio\" class=\"radio\" id=\"menu-${fieldname}_old-cbox\" name=\"".$fieldname."\" value=\"old\" onclick=\"return activateTab('${fieldname}_old', '${fieldname}-tab-menu', '${fieldname}-tab-content');\"></li>";
 		}
 		$field .= "</ul>";
 		
@@ -639,10 +628,11 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		
 		for($i=1; $i<=$count; $i++)
 		{
-			if($is_multi_value)
+			if($is_multi_value) {
 				$value = $new_value;
-			else
+			} else {
 				$value = $new_value[$i-1];
+			}
 			
 			$field .= "<div class=\"tabContent".($i>1?"Hidden":"")."\" id=\"${fieldname}_new${i}\">".
 					get_item_input_field(
@@ -1011,10 +1001,9 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		else
 			$onclick_event = "this.form.submit();";
 		
-		//activateTab(menuId, menuContainerId, contentContainerId, activeMenuClass, tabClass)
 		$pageContents .= "<ul class=\"tabMenu\" id=\"tab-menu\">";
-		$pageContents .= "<li id=\"menu-details\" class=\"activeTab\" onclick=\"return activateTab('details', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('details')."</li>";
-		$pageContents .= "<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info', 'tab-menu', 'tab-content', 'activeTab', 'tabContent');\">".get_opendb_lang_var('instance_info')."</li>";
+		$pageContents .= "<li id=\"menu-details\" class=\"first activeTab\" onclick=\"return activateTab('details');\">".get_opendb_lang_var('details')."</li>";
+		$pageContents .= "<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info');\">".get_opendb_lang_var('instance_info')."</li>";
 		$pageContents .= "</ul>";
 		
 		$pageContents .= "<div id=\"tab-content\">";

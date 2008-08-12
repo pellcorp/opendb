@@ -404,18 +404,17 @@ if($results)
 if(is_array($config_group_rs))
 {
 	echo("\n<ul class=\"tabMenu\" id=\"tab-menu\">");
-	 
+	
+	$first = TRUE;
+	
 	reset($config_group_rs);
 	while(list(,$config_group_r) = each($config_group_rs))
 	{
 		if($config_group_r['id'] == $HTTP_VARS['group_id'])
-		{
-			echo "\n<li class=\"activetab\">".$config_group_r['name']."</li>";
-		}
+			echo "\n<li class=\"activetab ".($first?" first":"")."\">".$config_group_r['name']."</li>";
 		else
-		{
-			echo "\n<li><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".$config_group_r['name']."</a></li>";
-		}
+			echo "\n<li class=\"".($first?"first":"")."\"><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=".$config_group_r['id']."\">".$config_group_r['name']."</a></li>";
+		$first=FALSE;
 	}
 	db_free_result($results);
 		

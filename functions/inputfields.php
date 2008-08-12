@@ -1083,13 +1083,8 @@ function process_lookup_results($lookup_results, $value)
 		$values_r[] = $value;
 	else // is_empty_array!
 		$values_r = NULL;
-
-	$lookup_rs = array();
-	while($lookup_r = db_fetch_assoc($lookup_results))
-	{
-		$lookup_rs[] = $lookup_r;
-	}
-	db_free_result($lookup_results);
+	
+	$lookup_rs = fetch_results_array($lookup_results);
 	
 	$value_found = FALSE;
 	while(list(,$lookup_r) = each($lookup_rs))

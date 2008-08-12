@@ -236,7 +236,7 @@ function display_attribute_type_form($HTTP_VARS)
 	echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 	while(list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs))
 	{
-		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$letter', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">&nbsp;$letter&nbsp;</li>");
+		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"first activetab\" ":"")." onclick=\"return activateTab('pane$letter')\">&nbsp;$letter&nbsp;</li>");
 		$isFirst = false;
 	}
 	echo("</ul>");
@@ -315,7 +315,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 		
 		if($count == 0)
 		{   
-			echo("<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$pageno', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">Page&nbsp;$pageno</li>");
+			echo("<li id=\"menu-pane$pageno\"".($pageno==1?" class=\"first activetab\" ":"")." onclick=\"return activateTab('pane$pageno')\">Page&nbsp;$pageno</li>");
 		}
 		$count++;
 	}

@@ -151,7 +151,7 @@ function build_langvar_page($language)
 	$isFirst = true;
 	while(list($letter, $lang_var_rs) = each($alpha_lang_var_rs))
 	{
-		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$letter', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">&nbsp;$letter&nbsp;</li>");
+		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"first activetab\" ":"")." onclick=\"return activateTab('pane$letter')\">&nbsp;$letter&nbsp;</li>");
 		$isFirst = false;
 	}
 	echo("</ul>");
@@ -241,7 +241,7 @@ function build_table_page($language)
 							{
 								$id = "$table&nbsp;/&nbsp;$column&nbsp;/&nbsp;".$current_key1_value;
 							
-								$tabBlock .= "<li id=\"menu-pane$count\"".($count==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$count', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">$id</li>";
+								$tabBlock .= "\n<li id=\"menu-pane$count\"".($count==1?" class=\"first activetab\" ":"")." onclick=\"return activateTab('pane$count')\">$id</li>";
 				
 					    	    $paneBlock .= "<div id=\"pane$count\" class=\"".($count==1?"tabContent":"tabContentHidden")."\">\n".
 					    	    			  "<input type=\"submit\" class=\"submit\" value=\"Update\">".
@@ -267,7 +267,7 @@ function build_table_page($language)
 					else
 						$id = "$table";
 							
-					$tabBlock .= "<li id=\"menu-pane$count\"".($count==1?" class=\"activetab\" ":"")." onclick=\"return activateTab('pane$count', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">$id</li>";
+					$tabBlock .= "\n<li id=\"menu-pane$count\"".($count==1?" class=\"first activetab\" ":"")." onclick=\"return activateTab('pane$count')\">$id</li>";
 					
 					$paneBlock .= "<div id=\"pane$count\" class=\"".($count==1?"tabContent":"tabContentHidden")."\">\n".
 												"<input type=\"submit\" class=\"submit\" value=\"Update\">".

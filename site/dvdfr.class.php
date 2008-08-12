@@ -291,7 +291,17 @@ class dvdfr extends SitePlugin
 		{
 			if (preg_match_all(":<small>[\s]*(.*?)[\s]*</small>:sim",$regs[1],$result))
 			{
-				$this->addItemAttribute('subtitles', $result[1]);		
+				while(list(,$subtitle) = each($result[1])) {
+					if(substr($subtitle,-1) == '.') {
+						$subtitle = substr($subtitle, 0, -1);
+					}
+						
+					if(strpos($subtitle, ",")!==FALSE) {
+						$this->addItemAttribute('subtitles', explode(",", $subtitle));
+					} else {
+						$this->addItemAttribute('subtitles', $subtitle);
+					}
+				}		
 			}
 		}
 
@@ -307,7 +317,7 @@ class dvdfr extends SitePlugin
 		}
 
 		// Lists of audio languages 
-		if (preg_match(":title=\"Sp.?cifications audio\"(.*)</table>:sim",$parseblock,$regs))
+		if (preg_match(":title=\"Sp.?cifications audio\"(.*?)</table>:sim",$parseblock,$regs))
 		{
 			if (preg_match_all(":<small>(.*)</small>:im",$regs[1],$result))
 			{

@@ -78,18 +78,22 @@ class amazon extends SitePlugin
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
-				//<td class="resultCount">Showing 3 Results</td>
-				if(preg_match("/<td class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\/td>/i", $pageBuffer, $regs) || 
-						preg_match("/<td class=\"resultCount\">Showing ([0-9]+) Result[s]*<\/td>/i", $pageBuffer, $regs))
+				//<div class="resultCount">Showing 1 - 12 of 55 Results</div>
+				if(preg_match("/<div class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\/div>/i", $pageBuffer, $regs) || 
+						preg_match("/<div class=\"resultCount\">Showing ([0-9]+) Result[s]*<\/div>/i", $pageBuffer, $regs))
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);
 
-					// 1 = img, 2 = href, 3 = title					
-					if(preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
-									"<img src=\"([^\"]+)\"[^>]*>".
-									".*?".
-									"<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+					// 1 = img, 2 = href, 3 = title		
+					//<div class="productImage"><a href="http://www.amazon.com/First-Blood-Blu-ray-Sylvester-Stallone/dp/B000H5TVKI/ref=sr_1_1?ie=UTF8&amp;s=dvd&amp;qid=1218508106&amp;sr=1-1"> <img src="http://ecx.images-amazon.com/images/I/51ft3mOqHhL._SL160_AA115_.jpg" class="" alt="" border="0" height="115" width="115"> </a></div>
+					//<div class="productTitle"><a href="http://www.amazon.com/First-Blood-Blu-ray-Sylvester-Stallone/dp/B000H5TVKI/ref=sr_1_1?ie=UTF8&amp;s=dvd&amp;qid=1218508106&amp;sr=1-1"> First Blood [Blu-ray] </a>
+					if(preg_match_all("!<div class=\"productImage\">[\s]*".
+									"<a href=\"[^\"]+\">[\s]*".
+									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
+									"<div class=\"productData\">[\s]*".
+									"<div class=\"productTitle\">[\s]*".
+									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{

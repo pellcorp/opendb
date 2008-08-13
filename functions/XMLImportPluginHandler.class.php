@@ -40,7 +40,7 @@ class XMLImportPluginHandler
 
 	function handleImport()
 	{
-		$parser = xml_parser_create('');
+		$parser = xml_parser_create('ISO-8859-1');
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
 		xml_set_object($parser, $this);
 		xml_set_element_handler($parser, "__startElement", "__endElement");

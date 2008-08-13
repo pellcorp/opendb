@@ -56,7 +56,7 @@ class OpenDbExportPlugin
 	*/
 	function file_header($title)
 	{
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n".
+		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n".
 				"<!--\n".
 				"\t$title\n".
 				"-->\n".

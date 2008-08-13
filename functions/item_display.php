@@ -288,7 +288,7 @@ function get_item_status_row($class, $item_r, $selected)
 		// Checks if any legal site plugins defined for $item_r['s_item_type']
 		if(is_item_legal_site_type($item_r['s_item_type']))
 		{
-			$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
+			$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
 		}
 		
 		if($status_type_r['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
@@ -307,20 +307,20 @@ function get_item_status_row($class, $item_r, $selected)
 			{
 				if(!is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 				{
-					$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
+					$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
 				}						
 			}
 				
 			// Check if already in reservation session variable.
 			if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no']))
 			{
-				$action_links_rs[] = array(url=>'borrow.php?op=delete_from_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'delete_reserve_basket.gif',text=>get_opendb_lang_var('delete_from_reserve_list'));		
+				$action_links_rs[] = array(url=>'borrow.php?op=delete_from_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'delete_reserve_basket.gif',text=>get_opendb_lang_var('delete_from_reserve_list'));		
 			}
 			else if(is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
 			{
 				if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no']))
 				{
-					$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel_reservation'));
+					$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel_reservation'));
 				}
 				else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no']))
 				{
@@ -330,11 +330,11 @@ function get_item_status_row($class, $item_r, $selected)
 					{
 						if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE)
 						{
-							$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
+							$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
 						}
 						else
 						{
-							$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve_item'));
+							$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve_item'));
 						}
 					}
 				}
@@ -345,11 +345,11 @@ function get_item_status_row($class, $item_r, $selected)
 				{
 					if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE)
 					{
-						$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
+						$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
 					}
 					else
 					{
-						$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&item_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve_item'));
+						$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve_item'));
 					}
 				}
 			}

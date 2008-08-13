@@ -80,7 +80,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id)
 		
 		if(is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH))
 		{
-			echo("<li><a href=\"search.php\">".get_opendb_lang_var('advanced')."</a></li>");
+			echo("<li><a href=\"search.php\" title=\"".get_opendb_lang_var('advanced_search')."\">".get_opendb_lang_var('advanced')."</a></li>");
 		}
 		
 		if(strlen($user_id)>0)

@@ -19,8 +19,7 @@
 */
 include_once('./functions/http.php');
 
-function register_opendb_session_var($name, $value)
-{
+function register_opendb_session_var($name, $value) {
 	// supposedly not required
 	if(!isset($_SESSION)) {
 		global $_SESSION;
@@ -28,8 +27,7 @@ function register_opendb_session_var($name, $value)
 
     $_SESSION[$name] = $value;
 
-    if(is_register_globals_enabled())
-	{
+    if(is_register_globals_enabled()) {
 		// if globals enabled
 		global $$name;
 
@@ -38,15 +36,13 @@ function register_opendb_session_var($name, $value)
 	}
 }
 
-function unregister_opendb_session_var($name)
-{
+function unregister_opendb_session_var($name) {
 	// supposedly not required
 	if(!isset($_SESSION)) {
 		global $_SESSION;
 	}
 
-    if(is_register_globals_enabled())
-	{
+    if(is_register_globals_enabled()) {
 		// PHP manual suggests unregistering session variables
 		session_unregister($name);
 	}
@@ -54,19 +50,19 @@ function unregister_opendb_session_var($name)
     $_SESSION[$name] = NULL;
 }
 
-function get_opendb_session_var($name)
-{
+function is_opendb_session_var($name) {
+	return get_opendb_session_var($name)!==NULL;
+}
+
+function get_opendb_session_var($name) {
 	// supposedly not required
 	if(!isset($_SESSION)) {
 		global $_SESSION;
 	}
 
-	if(is_array($_SESSION) && isset($_SESSION[$name]))
-	{
+	if(is_array($_SESSION) && isset($_SESSION[$name])) {
 		return $_SESSION[$name];
-	}
-	else
-	{
+	} else {
 		return NULL;
 	}
 }

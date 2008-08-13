@@ -1,9 +1,9 @@
 # Rearrange the order numbers for GAMEREGION and GAMEPBDATE to allow space for the GAMEPERSP and later language attributes
 
-UPDATE `s_item_attribute_type` SET `order_no` = '45' WHERE `s_attribute_type` = 'GAMEREGION';
-UPDATE `s_item_attribute_type` SET `order_no` = '47' WHERE `s_attribute_type` = 'GAMEPBDATE';
-UPDATE `item_attribute` SET `order_no` = '45' WHERE `s_attribute_type` = 'GAMEREGION' AND `order_no` = '43';
-UPDATE `item_attribute` SET `order_no` = '47' WHERE `s_attribute_type` = 'GAMEPBDATE' AND `order_no` = '45';
+UPDATE s_item_attribute_type SET order_no = '45' WHERE s_attribute_type = 'GAMEREGION';
+UPDATE s_item_attribute_type SET order_no = '47' WHERE s_attribute_type = 'GAMEPBDATE';
+UPDATE item_attribute SET order_no = '45' WHERE s_attribute_type = 'GAMEREGION' AND order_no = '43';
+UPDATE item_attribute SET order_no = '47' WHERE s_attribute_type = 'GAMEPBDATE' AND order_no = '45';
 
 #
 # new GAMEPERSP attribute for games
@@ -204,7 +204,7 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 # Update AUDIO_LANG's prompt to reflect that it is AUDIO language
 #
 
-UPDATE `s_attribute_type` SET `prompt` = 'Audio Language(s)' WHERE `s_attribute_type` = 'AUDIO_LANG';
+UPDATE s_attribute_type SET prompt = 'Audio Language(s)' WHERE s_attribute_type = 'AUDIO_LANG';
 
 #
 # Add Subtitles to Games
@@ -234,26 +234,26 @@ DELETE FROM `s_attribute_type_lookup` WHERE `s_attribute_type`  = 'SUBTITLES' AN
 DELETE FROM `s_attribute_type_lookup` WHERE `s_attribute_type`  = 'SUBTITLES' AND `value` = 'TRIVIA';
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBS_XTRA', 0, 'COMMENTARY', 'Commentary', 'director.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBS_XTRA', 0, 'TRIVIA', 'Trivia', 'director.gif', 'N' );
-UPDATE `item_attribute` SET `s_attribute_type` = 'SUBS_XTRA', `order_no` = '71' WHERE `s_attribute_type` = 'SUBTITLES' AND `order_no` = 70 AND `lookup_attribute_val` = 'COMMENTARY';
-UPDATE `item_attribute` SET `s_attribute_type` = 'SUBS_XTRA', `order_no` = '81' WHERE `s_attribute_type` = 'SUBTITLES' AND `order_no` = 80 AND `lookup_attribute_val` = 'COMMENTARY';
-UPDATE `item_attribute` SET `s_attribute_type` = 'SUBS_XTRA', `order_no` = '91' WHERE `s_attribute_type` = 'SUBTITLES' AND `order_no` = 90 AND `lookup_attribute_val` = 'COMMENTARY';
-UPDATE `item_attribute` SET `s_attribute_type` = 'SUBS_XTRA', `order_no` = '71' WHERE `s_attribute_type` = 'SUBTITLES' AND `order_no` = 70 AND `lookup_attribute_val` = 'TRIVIA';
-UPDATE `item_attribute` SET `s_attribute_type` = 'SUBS_XTRA', `order_no` = '81' WHERE `s_attribute_type` = 'SUBTITLES' AND `order_no` = 80 AND `lookup_attribute_val` = 'TRIVIA';
-UPDATE `item_attribute` SET `s_attribute_type` = 'SUBS_XTRA', `order_no` = '91' WHERE `s_attribute_type` = 'SUBTITLES' AND `order_no` = 90 AND `lookup_attribute_val` = 'TRIVIA';
+UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '71' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 70 AND lookup_attribute_val = 'COMMENTARY';
+UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '81' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 80 AND lookup_attribute_val = 'COMMENTARY';
+UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '91' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 90 AND lookup_attribute_val = 'COMMENTARY';
+UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '71' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 70 AND lookup_attribute_val = 'TRIVIA';
+UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '81' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 80 AND lookup_attribute_val = 'TRIVIA';
+UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '91' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 90 AND lookup_attribute_val = 'TRIVIA';
 
 #
 # Set NULL values to the SUBTITLES order, as anything other than alphabetical is bloody annoying
 #
 
-UPDATE `s_attribute_type_lookup` SET `order_no` = NULL WHERE `s_attribute_type` = 'SUBTITLES';
+UPDATE s_attribute_type_lookup SET order_no = NULL WHERE s_attribute_type = 'SUBTITLES';
 
 #
 # Update ANAMORPHIC and AUDIO_XTRA to link
 #
 
-UPDATE `s_attribute_type` SET `display_type` = 'display', `display_type_arg1` = '%display%' WHERE `s_attribute_type` = 'ANAMORPHIC';
-UPDATE `s_attribute_type` SET `listing_link_ind` = 'Y' WHERE `s_attribute_type` = 'AUDIO_XTRA';
-UPDATE `s_attribute_type` SET `listing_link_ind` = 'Y' WHERE `s_attribute_type` = 'ANAMORPHIC';
+UPDATE s_attribute_type SET display_type = 'display', display_type_arg1 = '%display%' WHERE s_attribute_type = 'ANAMORPHIC';
+UPDATE s_attribute_type SET listing_link_ind = 'Y' WHERE s_attribute_type = 'AUDIO_XTRA';
+UPDATE s_attribute_type SET listing_link_ind = 'Y' WHERE s_attribute_type = 'ANAMORPHIC';
 
 #
 # Create GAME_ADDON attribute

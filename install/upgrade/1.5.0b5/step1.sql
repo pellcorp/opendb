@@ -9,7 +9,7 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 # new genres for Games
 # also sets existing to NULL as the 0 is unecessary and can interfere with sorting
 
-UPDATE `s_attribute_type_lookup` SET `order_no` = NULL WHERE `s_attribute_type` = 'GAMEGENRE';
+UPDATE s_attribute_type_lookup SET order_no = NULL WHERE s_attribute_type = 'GAMEGENRE';
 
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMEGENRE', NULL, 'Compilation', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'GAMEGENRE', NULL, 'Fantasy', '', '', 'N' );

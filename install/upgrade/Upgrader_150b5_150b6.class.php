@@ -28,10 +28,51 @@ class Upgrader_150b5_150b6 extends OpenDbUpgrader
 						'1.5.0b5',
 						'1.5.0b6',
 						array(
-							array('description'=>'Add new Game, Movie and Book Genres'),
-							array('description'=>'Tweak and add attributes'),
+							array('description'=>'Add new Book Genres'),
+							array('description'=>'Add new Game Genres'),
+							array('description'=>'Add new Movie Genres'),
+							array('description'=>'Add new Game Regions'),
+							array('description'=>'Tweak a bunch of attributes'),
 						)
 					);
 	}
+
+	function executeStep1($stepPart)
+	{
+		if(is_lookup_attribute_type('BOOKGENRE')) {
+			return exec_install_sql_file("./install/upgrade/1.5.0b5/step1.sql", $errors);
+		} else {
+			return TRUE;
+		}
+	}
+	
+	function executeStep2($stepPart)
+	{
+		if(is_lookup_attribute_type('GAMEGENRE')) {
+			return exec_install_sql_file("./install/upgrade/1.5.0b5/step2.sql", $errors);
+		} else {
+			return TRUE;
+		}
+	}
+	
+	function executeStep3($stepPart)
+	{
+		if(is_lookup_attribute_type('MOVIEGENRE')) {
+			return exec_install_sql_file("./install/upgrade/1.5.0b5/step3.sql", $errors);
+		} else {
+			return TRUE;
+		}
+	}
+	
+	function executeStep4($stepPart)
+	{
+		if(is_lookup_attribute_type('GAMEREGION')) {
+			return exec_install_sql_file("./install/upgrade/1.5.0b5/step4.sql", $errors);
+		} else {
+			return TRUE;
+		}
+	}
+	
+	
 }
 ?>

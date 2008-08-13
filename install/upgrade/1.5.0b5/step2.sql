@@ -45,8 +45,8 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 # Change NO_DISCS to NO_MEDIA for format neutrality
 #
 
-UPDATE `item_attribute` SET `s_attribute_type` = 'NO_MEDIA' WHERE `s_attribute_type` = 'NO_DISCS';
-UPDATE `s_item_attribute_type` SET `s_attribute_type` = 'NO_MEDIA' WHERE `s_attribute_type` = 'NO_DISCS';
+UPDATE item_attribute SET s_attribute_type = 'NO_MEDIA' WHERE s_attribute_type = 'NO_DISCS';
+UPDATE s_item_attribute_type SET s_attribute_type = 'NO_MEDIA' WHERE s_attribute_type = 'NO_DISCS';
 
 #
 # Make all the item types use NO_MEDIA
@@ -64,7 +64,7 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 # Update NO_PLAYERS to allow manual entry
 #
 
-UPDATE `s_attribute_type` SET `input_type` = 'text', `input_type_arg1` = '3' WHERE `s_attribute_type` = 'NO_PLAYERS';
+UPDATE s_attribute_type SET input_type = 'text', input_type_arg1 = '3' WHERE s_attribute_type = 'NO_PLAYERS';
 
 #
 # Add SERIES and VOLUME attributes to everything
@@ -101,19 +101,19 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 # They turned out to be smaller than as GIFs
 #
 
-UPDATE `s_attribute_type_lookup` SET `img` = 'mono.png' WHERE `img` = 'mono.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'stereo.png' WHERE `img` = 'stereo.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround3.png' WHERE `img` = 'surround3.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround4.png' WHERE `img` = 'surround4.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround51.png' WHERE `img` = 'surround51.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround61.png' WHERE `img` = 'surround61.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround71.png' WHERE `img` = 'surround71.gif';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround81.png' WHERE `img` = 'surround81.gif';
+UPDATE s_attribute_type_lookup SET img = 'mono.png' WHERE img = 'mono.gif';
+UPDATE s_attribute_type_lookup SET img = 'stereo.png' WHERE img = 'stereo.gif';
+UPDATE s_attribute_type_lookup SET img = 'surround3.png' WHERE img = 'surround3.gif';
+UPDATE s_attribute_type_lookup SET img = 'surround4.png' WHERE img = 'surround4.gif';
+UPDATE s_attribute_type_lookup SET img = 'surround51.png' WHERE img = 'surround51.gif';
+UPDATE s_attribute_type_lookup SET img = 'surround61.png' WHERE img = 'surround61.gif';
+UPDATE s_attribute_type_lookup SET img = 'surround71.png' WHERE img = 'surround71.gif';
+UPDATE s_attribute_type_lookup SET img = 'surround81.png' WHERE img = 'surround81.gif';
 
-UPDATE `s_attribute_type_lookup` SET `img` = 'stereo.png' WHERE `s_attribute_type` = 'BD_AUDIO' AND `value` = 'PCM2';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround51.png' WHERE `s_attribute_type` = 'BD_AUDIO' AND `value` = 'PCM5';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround61.png' WHERE `s_attribute_type` = 'BD_AUDIO' AND `value` = 'PCM6';
-UPDATE `s_attribute_type_lookup` SET `img` = 'surround71.png' WHERE `s_attribute_type` = 'BD_AUDIO' AND `value` = 'PCM7';
+UPDATE s_attribute_type_lookup SET img = 'stereo.png' WHERE s_attribute_type = 'BD_AUDIO' AND value = 'PCM2';
+UPDATE s_attribute_type_lookup SET img = 'surround51.png' WHERE s_attribute_type = 'BD_AUDIO' AND value = 'PCM5';
+UPDATE s_attribute_type_lookup SET img = 'surround61.png' WHERE s_attribute_type = 'BD_AUDIO' AND value = 'PCM6';
+UPDATE s_attribute_type_lookup SET img = 'surround71.png' WHERE s_attribute_type = 'BD_AUDIO' AND value = 'PCM7';
 
 #
 # Change BD_RES to TV_RES and add to Games
@@ -121,11 +121,11 @@ UPDATE `s_attribute_type_lookup` SET `img` = 'surround71.png' WHERE `s_attribute
 
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'GAME', 'TV_RES', 37, NULL, 'N', 'N', 'Y', 'N' );
 
-UPDATE `s_attribute_type` SET `s_attribute_type` = 'TV_RES' WHERE `s_attribute_type` = 'BD_RES';
-UPDATE `s_attribute_type` SET `description` = 'Supported TV Resolutions', `prompt` = 'TV Resolution(s)', `listing_link_ind` = 'Y' WHERE `s_attribute_type` = 'TV_RES';
-UPDATE `item_attribute` SET `s_attribute_type` = 'TV_RES' WHERE `s_attribute_type` = 'BD_RES';
-UPDATE `s_item_attribute_type` SET `s_attribute_type` = 'TV_RES' WHERE `s_attribute_type` = 'BD_RES';
-UPDATE `s_attribute_type_lookup` SET `s_attribute_type` = 'TV_RES' WHERE `s_attribute_type` = 'BD_RES';
+UPDATE s_attribute_type SET s_attribute_type = 'TV_RES' WHERE s_attribute_type = 'BD_RES';
+UPDATE s_attribute_type SET description = 'Supported TV Resolutions', prompt = 'TV Resolution(s)', listing_link_ind = 'Y' WHERE s_attribute_type = 'TV_RES';
+UPDATE item_attribute SET s_attribute_type = 'TV_RES' WHERE s_attribute_type = 'BD_RES';
+UPDATE s_item_attribute_type SET s_attribute_type = 'TV_RES' WHERE s_attribute_type = 'BD_RES';
+UPDATE s_attribute_type_lookup SET s_attribute_type = 'TV_RES' WHERE s_attribute_type = 'BD_RES';
 
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'TV_RES', 1, '480i', '', '', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'TV_RES', 2, '480p', '', '', 'N' );
@@ -230,8 +230,8 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'DIVX', 'SUBS_XTRA', 91, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'SVCD', 'SUBS_XTRA', 71, NULL, 'N', 'N', 'N', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'LD', 'SUBS_XTRA', 81, NULL, 'N', 'N', 'Y', 'N' );
-DELETE FROM `s_attribute_type_lookup` WHERE `s_attribute_type`  = 'SUBTITLES' AND `value` = 'COMMENTARY';
-DELETE FROM `s_attribute_type_lookup` WHERE `s_attribute_type`  = 'SUBTITLES' AND `value` = 'TRIVIA';
+DELETE FROM s_attribute_type_lookup WHERE s_attribute_type  = 'SUBTITLES' AND value = 'COMMENTARY';
+DELETE FROM s_attribute_type_lookup WHERE s_attribute_type  = 'SUBTITLES' AND value = 'TRIVIA';
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBS_XTRA', 0, 'COMMENTARY', 'Commentary', 'director.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'SUBS_XTRA', 0, 'TRIVIA', 'Trivia', 'director.gif', 'N' );
 UPDATE item_attribute SET s_attribute_type = 'SUBS_XTRA', order_no = '71' WHERE s_attribute_type = 'SUBTITLES' AND order_no = 70 AND lookup_attribute_val = 'COMMENTARY';
@@ -276,7 +276,7 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'VOCALIST', 'Singer', 'Vocalist(s)', 'text', '50', NULL, NULL, NULL, NULL, 'list','names', NULL, NULL, NULL, NULL, 'Y', 'N', 'N', 'Y', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'CONDUCTER', 'Musical conducter', 'Conductor(s)', 'text', '50', NULL, NULL, NULL, NULL, 'list','names', NULL, NULL, NULL, NULL, 'Y', 'N', 'N', 'Y', NULL, NULL);
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'PUBLISHER', 'Publisher', 'Publisher', 'text', '30', '*', NULL, NULL, NULL, 'display','%value%', NULL, NULL, NULL, NULL, 'Y', 'N', 'N', 'N', NULL, NULL);
-UPDATE `s_attribute_type` SET `description` = 'Music Artist or Band', `prompt` = 'Artist(s)/Band(s)' WHERE `s_attribute_type` = 'ARTIST';
+UPDATE s_attribute_type SET description = 'Music Artist or Band', prompt = 'Artist(s)/Band(s)' WHERE s_attribute_type = 'ARTIST';
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'ARTIST', 'Music Artist or Band', 'Artist(s)/Band(s)', 'text', '50', NULL, NULL, NULL, NULL, 'list','names', NULL, NULL, NULL, NULL, 'Y', 'N', 'N', 'Y', NULL, NULL);
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BD', 'EPISODES', 15, NULL, 'N', 'N', 'Y', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'BD', 'EXPRODUCER', 22, NULL, 'N', 'N', 'Y', 'N' );

@@ -84,7 +84,6 @@ function get_edit_form($op, $review_r, $HTTP_VARS)
 		<input type=\"hidden\" name=\"sequence_number\" value=\"".$review_r['sequence_number']."\">
 		<input type=\"hidden\" name=\"item_id\" value=\"".$HTTP_VARS['item_id']."\">
 		<input type=\"hidden\" name=\"instance_no\" value=\"".$HTTP_VARS['instance_no']."\">
-		<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">
 		</form>";
 		
 	return $formContents;
@@ -249,10 +248,9 @@ if(is_site_enabled())
 				echo("<p class=\"error\">".get_opendb_lang_var('item_not_found')."</p>");
 			}
 			
-			$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],text=>get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 
-			// Include a Back to Listing link.
-			if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('listing_url_vars')))
+			if(is_opendb_session_var('listing_url_vars'))
 			{
 				$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
 			}

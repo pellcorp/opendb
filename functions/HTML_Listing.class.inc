@@ -76,7 +76,7 @@ class HTML_Listing extends Listing
 			$this->_write("<ul class=\"listingPager\">");
 			
 			if($this->_page_no>1)
-				$this->_write("<li class=\"previousPage\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>($this->_page_no-1)), array('listing_link'))."\">".get_opendb_lang_var('previous_page')."</a>");
+				$this->_write("<li class=\"previousPage\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>($this->_page_no-1)))."\">".get_opendb_lang_var('previous_page')."</a>");
 			else
 				$this->_write("<li class=\"previousPage disabled\">".get_opendb_lang_var('previous_page'));
 			$this->_write("</li>");			
@@ -89,7 +89,7 @@ class HTML_Listing extends Listing
 				else
 					$page_no = 1;
 				
-//				$this->_write("<li class=\"previousTenPages\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>$page_no), array('listing_link'))."\">&lt;&lt;</a></li>");
+//				$this->_write("<li class=\"previousTenPages\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>$page_no))."\">&lt;&lt;</a></li>");
 			}
 
 			for($i=$start_page; $i<=$end_page; $i++)
@@ -97,17 +97,17 @@ class HTML_Listing extends Listing
 				if($i == $this->_page_no)
 					$this->_write("<li class=\"currentPage\">$i</li>");
 				else
-					$this->_write("<li><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>$i), array('listing_link'))."\">".$i."</a></li>");
+					$this->_write("<li><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>$i))."\">".$i."</a></li>");
 			}
 
 			// If more than 10 pages to end.
 //			if($end_page < $total_pages)
 //			{
-//				$this->_write("<li class=\"nextTenPages\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>($end_page+1)), array('listing_link'))."\">&gt;&gt;</a></li>");
+//				$this->_write("<li class=\"nextTenPages\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>($end_page+1)))."\">&gt;&gt;</a></li>");
 //			}
 			
 			if($this->_page_no < $total_pages)
-				$this->_write("<li class=\"nextPage\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>($this->_page_no+1)), array('listing_link'))."\">".get_opendb_lang_var('next_page')."</a></li>");
+				$this->_write("<li class=\"nextPage\"><a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>($this->_page_no+1)))."\">".get_opendb_lang_var('next_page')."</a></li>");
 			else
 				$this->_write("<li class=\"nextPage disabled\">".get_opendb_lang_var('next_page'));
 			$this->_write("</li>");
@@ -160,7 +160,6 @@ class HTML_Listing extends Listing
 		{
 			$this->_write("\n<form action=\"\" method=\"POST\" class=\"listingcheckboxes\" name=\"".$this->_header_column_rs[0]['fieldname']."\">");
 			$this->_write("<input type=\"hidden\" name=\"op\" value=\"\">");
-			$this->_write("<input type=\"hidden\" name=\"listing_link\" value=\"y\">");
 		}
 		
 		$this->_write("<table class=\"listing-table\">");
@@ -219,7 +218,7 @@ class HTML_Listing extends Listing
 					$sortorder = 'ASC';
 				}
 
-				$this->_write("<a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>'1', 'order_by'=>$this->_header_column_rs[$i]['fieldname'], 'sortorder'=>$sortorder), array('listing_link'))."\"");
+				$this->_write("<a href=\"".$this->_php_self."?".get_url_string($this->_http_vars, array('page_no'=>'1', 'order_by'=>$this->_header_column_rs[$i]['fieldname'], 'sortorder'=>$sortorder))."\"");
 				
 				if($this->_current_orderby == $header_column_rs[$i]['fieldname'])
 				{

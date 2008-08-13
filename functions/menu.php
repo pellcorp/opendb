@@ -30,11 +30,7 @@ function get_printable_page_url($pageid)
 	global $PHP_SELF;
 	global $HTTP_VARS;
 	
-	if($pageid == 'listings' || $pageid == 'borrow')
-	{
-		return "$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'), array('listing_link'));
-	}
-	else if($pageid == 'item_display')
+	if($pageid == 'listings' || $pageid == 'borrow' || $pageid == 'item_display')
 	{
 		return "$PHP_SELF?".get_url_string($HTTP_VARS, array('mode'=>'printable'));
 	}

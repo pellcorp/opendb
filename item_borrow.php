@@ -1221,9 +1221,9 @@ if(is_site_enabled())
 				// Include a link no matter what, because they might have initiated the action by accident.
 				if($HTTP_VARS['item_link'] === 'y' && is_numeric($HTTP_VARS['item_id']) && is_numeric($HTTP_VARS['instance_no']))
 				{
-					$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],text=>get_opendb_lang_var('back_to_item'));
+					$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 				}
-				if($HTTP_VARS['listing_link'] === 'y' && is_not_empty_array(get_opendb_session_var('listing_url_vars')))
+				if(is_opendb_session_var('listing_url_vars'))
 				{
 					$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
 				}

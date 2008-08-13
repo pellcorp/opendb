@@ -287,7 +287,6 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 			echo("<input type=hidden name=\"site_type\" value=\"".$site_plugin_r['site_type']."\">");
 			echo("<input type=hidden name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">");
 			echo("<input type=hidden name=\"s_status_type\" value=\"".$HTTP_VARS['s_status_type']."\">");
-			echo("<input type=hidden name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">");
 			echo("<input type=hidden name=\"item_id\" value=\"".$HTTP_VARS['item_id']."\">");
 			echo("<input type=hidden name=\"instance_no\" value=\"".$HTTP_VARS['instance_no']."\">");
 			echo("<input type=hidden name=\"parent_item_id\" value=\"".$HTTP_VARS['parent_item_id']."\">");
@@ -332,7 +331,6 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 		echo("\n<form action=\"item_input.php\" method=\"GET\">");
 		echo("<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">");
 		echo("<input type=\"hidden\" name=\"s_status_type\" value=\"".$HTTP_VARS['s_status_type']."\">");
-		echo("<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">");
 		echo("<input type=\"hidden\" name=\"item_id\" value=\"".$HTTP_VARS['item_id']."\">");
 		echo("<input type=\"hidden\" name=\"instance_no\" value=\"".$HTTP_VARS['instance_no']."\">");
 		echo("<input type=\"hidden\" name=\"parent_item_id\" value=\"".$HTTP_VARS['parent_item_id']."\">");
@@ -432,7 +430,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 	
 	if(is_not_empty_array($item_r))
 	{
-		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],text=>get_opendb_lang_var('back_to_item'));
+		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 	}
 }
 
@@ -1034,8 +1032,6 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 			$pageContents .= "\n<input type=\"hidden\" name=\"owner_id\" value=\"".$HTTP_VARS['owner_id']."\">";
 		}
 		
-		$pageContents .= "\n<input type=\"hidden\" name=\"listing_link\" value=\"".$HTTP_VARS['listing_link']."\">";
-	
 		$pageContents .= $formContents;
 		
 		$action_links_rs = NULL;
@@ -1406,7 +1402,7 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 			
 			echo format_error_block($errors, 'warning');
 				
-			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 			$footer_links_r[] = array(url=>"item_input.php?op=site-add&owner_id=".$item_r['owner_id'],text=>get_opendb_lang_var('add_new_item'));
 		}
 		else
@@ -1467,7 +1463,7 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 			
 		echo format_error_block($errors, 'warning');
 									
-		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
+		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 	}
 	else
 	{
@@ -1485,7 +1481,6 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 		
 		echo('<form action="'.$PHP_SELF.'">');
 		echo('<input type="hidden" name="op" value="clone_item">');
-		echo('<input type="hidden" name="listing_link" value="'.$HTTP_VARS['listing_link'].'">');
 		echo('<input type="hidden" name="item_id" value="'.$item_r['item_id'].'">');
 		echo('<input type="hidden" name="instance_no" value="'.$item_r['instance_no'].'">');
 	
@@ -1507,7 +1502,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 		
 		echo format_help_block(get_opendb_lang_var('clone_item_help'));
 	
-		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
+		$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 	}
 	else
 	{
@@ -1563,12 +1558,12 @@ function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 		if($return_val === "__ABORTED__")
 		{
 			echo("<p class=\"success\">".get_opendb_lang_var('item_not_deleted')."</p>");
-			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 		}
 		else if($return_val === FALSE)
 		{
 			echo format_error_block($errors);
-			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'].(strlen($HTTP_VARS['listing_link'])>0?'&listing_link='.$HTTP_VARS['listing_link']:''),text=>get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 		}
 		else
 		{
@@ -1879,7 +1874,7 @@ if(is_site_enabled())
 				echo format_error_block(get_opendb_lang_var('item_not_found'));
 			}
 		
-			if($HTTP_VARS['listing_link'] == 'y' && is_array(get_opendb_session_var('listing_url_vars')))
+			if(is_opendb_session_var('listing_url_vars'))
 			{
 				$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
 			}

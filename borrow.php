@@ -206,8 +206,8 @@ if(is_site_enabled())
 					$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
 					if(is_not_empty_array($item_r))
 					{
-						$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],text=>get_opendb_lang_var('back_to_item'));
-						if($HTTP_VARS['listing_link'] === 'y' && is_not_empty_array(get_opendb_session_var('listing_url_vars')))
+						$footer_links_r[] = array(url=>"item_display.php?item_id=".$item_r['item_id']."&instance_no=".$item_r['instance_no'],text=>get_opendb_lang_var('back_to_item'));
+						if(is_opendb_session_var('listing_url_vars'))
 						{
 							$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
 						}
@@ -391,10 +391,10 @@ if(is_site_enabled())
 				
 					if($HTTP_VARS['item_link'] === 'y' && is_exists_item_instance($HTTP_VARS['item_id'],$HTTP_VARS['instance_no']))
 					{
-						$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no']."&listing_link=".$HTTP_VARS['listing_link'],text=>get_opendb_lang_var('back_to_item'));
+						$footer_links_r[] = array(url=>"item_display.php?item_id=".$HTTP_VARS['item_id']."&instance_no=".$HTTP_VARS['instance_no'],text=>get_opendb_lang_var('back_to_item'));
 					}
 					
-					if($HTTP_VARS['listing_link'] === 'y' && is_not_empty_array(get_opendb_session_var('listing_url_vars')))
+					if(is_opendb_session_var('listing_url_vars'))
 					{
 						$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
 					}

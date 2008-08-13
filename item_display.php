@@ -234,7 +234,7 @@ if(is_site_enabled())
 			}
 				
 			// Include a Back to Listing link.
-			if($HTTP_VARS['listing_link'] === 'y' && is_array(get_opendb_session_var('listing_url_vars')))
+			if(is_opendb_session_var('listing_url_vars'))
 			{
 				$footer_links_r[] = array(url=>"listings.php?".get_url_string(get_opendb_session_var('listing_url_vars')),text=>get_opendb_lang_var('back_to_listing'));
 			}

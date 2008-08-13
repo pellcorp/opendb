@@ -452,7 +452,6 @@ class SitePlugin
 			unset($search_attributes_r['title']);
 			unset($search_attributes_r['owner_id']);
 			unset($search_attributes_r['s_item_type']);
-			unset($search_attributes_r['listing_link']);
 			unset($search_attributes_r['inc_menu']);
 		}
 

@@ -51,8 +51,7 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS)
 		$context_vars = array(
 			'owner_id'=>$HTTP_VARS['owner_id'],
 			'order_by'=>$HTTP_VARS['order_by'],
-			'sortorder'=>$HTTP_VARS['sortorder'],
-			'listing_link'=>$HTTP_VARS['listing_link']
+			'sortorder'=>$HTTP_VARS['sortorder']
 		);
 	}
 	
@@ -96,7 +95,7 @@ function getItemsPerPageControl($PHP_SELF, $HTTP_VARS)
 		}
 		
 		$buffer .= "<form class=\"itemsPerPageControl\" id=\"form-items_per_page\" action=\"".$PHP_SELF."\" method=\"GET\">".
-				get_url_fields($HTTP_VARS, NULL, array('listing_link')).
+				get_url_fields($HTTP_VARS).
 				"<label for=\"select-items_per_page\">".get_opendb_lang_var('items_per_page').'</label>'.
 				"<select id=\"select-items_per_page\" name=\"items_per_page\" class=\"footer\" onChange=\"this.form.submit()\">".
 					custom_select('items_per_page', 
@@ -117,7 +116,7 @@ function getItemsPerPageControl($PHP_SELF, $HTTP_VARS)
 function getToggleControl($PHP_SELF, $HTTP_VARS, $text, $fieldname, $value)
 {
 	$buffer .= "<form class=\"toggleControl\" id=\"toggle-$fieldname\" action=\"".$PHP_SELF."\" method=\"GET\">".
-				get_url_fields($HTTP_VARS, NULL, array($fieldname, 'listing_link')).
+				get_url_fields($HTTP_VARS, NULL, array($fieldname)).
 				"<input type=\"hidden\" name=\"$fieldname\" value=\"$value\">".
 				"<label for=\"toggle-$fieldname-cbox\">".$text."</label><input type=\"checkbox\" class=\"checkbox\" id=\"toggle-$fieldname-cbox\" name=\"${fieldname}_cbox\" value=\"Y\" onclick=\"if(this.checked){this.form['${fieldname}'].value='Y';}else{this.form['${fieldname}'].value='N';} this.form.submit()\"".(strcasecmp($value, 'Y')===0?" CHECKED":"").">".
 				"</form>";

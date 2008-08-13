@@ -411,9 +411,6 @@ class Listing
 		
 		$title_href_link = 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'];
 		
-		if(strlen($this->_http_vars['listing_link'])>0)
-			$title_href_link .= '&listing_link='.$this->_http_vars['listing_link'];
-		
 		if($item_cover_image!==FALSE)
 		{
 			$this->_row_column_rs[] = 

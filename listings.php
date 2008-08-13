@@ -54,7 +54,7 @@ function getListingFiltersBlock()
 	
 	if($HTTP_VARS['listings.filters']!='N' && get_opendb_config_var('listings.filters', 'enable')!==FALSE)
 	{
-		$excluded_vars_list = array('listing_link');
+		$excluded_vars_list = NULL;
 		
 		$buffer .= "<div id=\"listing-filters\" class=\"menuContainer toggleContainer\">";
 		$buffer .= "<span id=\"listing-filters-toggle\" class=\"menuToggle toggleHidden\" onclick=\"return toggleVisible('listing-filters');\">".get_opendb_lang_var('listing_filters')."</span>";
@@ -1050,9 +1050,6 @@ if(is_site_enabled())
 					$page_title = get_opendb_lang_var('all_item_listing');
 			}
 			
-			// We need to force the inclusion of a listing link into the HTTP_VARS
-			$HTTP_VARS['listing_link'] = 'y';
-		
 			echo(_theme_header($page_title, $HTTP_VARS['inc_menu']));
 			echo('<h2>'.$page_title.'</h2>');
 											
@@ -1135,9 +1132,6 @@ if(is_site_enabled())
 	
 				$v_listing_url_vars['mode'] = NULL;
 				
-				// These variables should not be passed back from a 'Back to Listing' link!		
-				$v_listing_url_vars['listing_link'] = NULL;
-			
 				// These are listing specific - we do not want to save them.
 				$v_listing_url_vars['item_id_instance_no'] = NULL;
 				$v_listing_url_vars['checked_item_id_instance_no'] = NULL;
@@ -1310,7 +1304,7 @@ if(is_site_enabled())
 									{
 										if(get_opendb_config_var('listings', 'show_input_actions'))
 										{
-											$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'edit.gif',text=>get_opendb_lang_var('edit'));
+											$action_links_rs[] = array(url=>'item_input.php?op=edit&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'edit.gif',text=>get_opendb_lang_var('edit'));
 									
 											// So we only have to check the 'is_site_plugin' once!
 											if(strlen($item_types_rs[$item_r['s_item_type']]['legal_site_type'])==0)
@@ -1321,12 +1315,12 @@ if(is_site_enabled())
 											// Only site types which are considered legal can be allowed for refresh operation.
 											if(get_opendb_config_var('listings', 'show_refresh_actions') && $item_types_rs[$item_r['s_item_type']]['legal_site_type'])
 											{
-												$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
+												$action_links_rs[] = array(url=>'item_input.php?op=site-refresh&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'refresh.gif',text=>get_opendb_lang_var('refresh'));
 											}
 										
 											if($status_type_rs[$item_r['s_status_type']]['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no']))
 											{
-												$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'delete.gif',text=>get_opendb_lang_var('delete'));
+												$action_links_rs[] = array(url=>'item_input.php?op=delete&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'delete.gif',text=>get_opendb_lang_var('delete'));
 											}
 										}
 									}
@@ -1338,7 +1332,7 @@ if(is_site_enabled())
 									{
 										if(is_user_allowed_to_checkin_item($item_r['item_id'], $item_r['instance_no']))
 										{
-											$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
+											$action_links_rs[] = array(url=>'item_borrow.php?op=check_in&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'check_in_item.gif',text=>get_opendb_lang_var('check_in_item'));
 										}
 									}
 									else
@@ -1348,7 +1342,7 @@ if(is_site_enabled())
 												$status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y' && 
 												is_user_allowed_to_checkout_item($item_r['item_id'], $item_r['instance_no']))
 										{
-											$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
+											$action_links_rs[] = array(url=>'item_borrow.php?op=quick_check_out&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'quick_check_out.gif',text=>get_opendb_lang_var('quick_check_out'));
 										}
 									}
 								}
@@ -1366,7 +1360,7 @@ if(is_site_enabled())
 											{
 												if(is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no']))
 												{
-													$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel'));
+													$action_links_rs[] = array(url=>'item_borrow.php?op=cancel_reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'cancel_reserve.gif',text=>get_opendb_lang_var('cancel'));
 												}
 												else if(!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no']))
 												{
@@ -1376,12 +1370,12 @@ if(is_site_enabled())
 														if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
 																get_opendb_config_var('listings.borrow', 'basket_action')!==FALSE)
 														{
-															$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
+															$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
 														}
 														
 														if(get_opendb_config_var('listings.borrow', 'reserve_action')!==FALSE)
 														{
-															$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
+															$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
 														}
 													}
 												}
@@ -1391,12 +1385,12 @@ if(is_site_enabled())
 												if(get_opendb_config_var('borrow', 'reserve_basket')!==FALSE && 
 														get_opendb_config_var('listings.borrow', 'basket_action')!==FALSE)
 												{
-													$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
+													$action_links_rs[] = array(url=>'borrow.php?op=update_my_reserve_basket&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'add_reserve_basket.gif',text=>get_opendb_lang_var('add_to_reserve_list'));
 												}
 												
 												if(get_opendb_config_var('listings.borrow', 'reserve_action')!==FALSE)
 												{
-													$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'].'&listing_link=y',img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
+													$action_links_rs[] = array(url=>'item_borrow.php?op=reserve&item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no'],img=>'reserve_item.gif',text=>get_opendb_lang_var('reserve'));
 												}
 											}
 										}

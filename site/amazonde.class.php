@@ -174,7 +174,7 @@ class amazonde extends SitePlugin
 								if(strpos($matches[1][$i], "no-img")!==FALSE)
 									$matches[1][$i] = NULL;
 								
-								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
+								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazdeasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
 					}

@@ -97,7 +97,7 @@ class amazonfr extends SitePlugin
 							if(strpos($matches[1][$i], "no-img")!==FALSE)
 								$matches[1][$i] = NULL;
 							
-							$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
+							$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazfrasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 						}
 					}
 				}
@@ -411,7 +411,7 @@ class amazonfr extends SitePlugin
 		// <b class="h1">Détails sur le produit</b><br>
 		if(preg_match("/<b class=\"h1\">D.tails sur le produit<\/b>(.*)<\/ul>/si", $pageBuffer, $regs))
 		{
-			$productDetails = unhtmlentities(trim($regs[1]));
+			$productDetails = html_entity_decode(trim($regs[1]));
 
 			if(preg_match("/<li><b>ISBN:<\/b>([^<]*)<\/li>/i", $productDetails, $regs2))
 			{
@@ -783,7 +783,7 @@ class amazonfr extends SitePlugin
 
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = unhtmlentities(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item));
 
 					// We may have a hard space here, so get rid of it.
 					$item = trim(strtr($item, chr(160), ' '));
@@ -812,12 +812,12 @@ class amazonfr extends SitePlugin
 		// search for "Synopsis" or "Description"
 		if (preg_match("/<b>Synopsis<\/b><br[\s]*[\/]*>([^<]*)</si", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('blurb', unhtmlentities(strip_tags($regs[1])));
+			$this->addItemAttribute('blurb', html_entity_decode(strip_tags($regs[1])));
 		}
 		else
 		if (preg_match("/<b>Description<\/b><br[\s]*[\/]*>([^<]*)/si", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('blurb', unhtmlentities(strip_tags($regs[1])));
+			$this->addItemAttribute('blurb', html_entity_decode(strip_tags($regs[1])));
 		}
 
 		// IMDB ID block (does not seem to be present on amazon.fr)

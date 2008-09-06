@@ -152,25 +152,29 @@ class amazonde extends SitePlugin
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
-				//<td class="resultCount">1-24 von 22.345 Ergebnissen</td>
-				//1-24 von 66 Ergebnissen
-				if(preg_match("/<td class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/td>/i", $pageBuffer, $regs) || 
-						preg_match("/<td class=\"resultCount\">([0-9]+) Ergebnisse<\/td>/i", $pageBuffer, $regs))
+				//<div class="resultCount">1-12 von 42 Ergebnissen</div>
+				if(preg_match("/<div class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/div>/i", $pageBuffer, $regs) || 
+						preg_match("/<div class=\"resultCount\">([0-9]+) Ergebnisse<\/div>/i", $pageBuffer, $regs))
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);
 
-					// 1 = img, 2 = href, 3 = title					
-					if(preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
-									"<img src=\"([^\"]+)\"[^>]*>".
-									".*?".
-									"<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+					if(preg_match_all("!<div class=\"productImage\">[\s]*".
+									"<a href=\"[^\"]+\">[\s]*".
+									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
+									"<div class=\"productData\">[\s]*".
+									"<div class=\"productTitle\">[\s]*".
+									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
+							//http://www.amazon.com/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
 							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
 							{
-								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazdeasin'=>$regs[1]));
+								if(strpos($matches[1][$i], "no-img")!==FALSE)
+									$matches[1][$i] = NULL;
+								
+								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
 					}

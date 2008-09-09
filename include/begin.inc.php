@@ -24,7 +24,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 //ini_set('session.save_handler', 'files'); 
 
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
-define('__OPENDB_RELEASE__', '1.5.0b5');
+define('__OPENDB_RELEASE__', '1.5.0RC2');
 define('__OPENDB_TITLE__', 'OpenDb');
 
 if(extension_loaded('mysqli'))
@@ -72,7 +72,9 @@ if(!isset($PHP_SELF))
 // any upload files will be in new post php 4.1 $_FILES array
 if(!empty($_GET))
 {
-	$HTTP_VARS = $_GET;
+	// fixes for XSS vulnerabilities reported in OpenDb 1.0.6
+	// http://secunia.com/advisories/31719
+	$HTTP_VARS = strip_tags_array($_GET);
 }
 else if(!empty($_POST))
 {

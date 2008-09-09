@@ -40,3 +40,11 @@ directory over to the new 1.X installation, so that cached images can continue t
 	
 	Documentation is available from the OpenDb website
 		http://opendb.iamvegan.net/
+
+4) Security
+
+Be sure to delete the docs/phpinfo.php file before going live with your site.  This file is 
+provided for convenient problem resolution but represents a security risk to leave active.
+
+Be sure to change the configured security hash to avoid potential security issues with CAPTCHA
+functionality.

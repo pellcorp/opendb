@@ -82,35 +82,22 @@ class amazonfr extends SitePlugin
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 
-				//<td class="resultCount">Résultats 1 - 12 sur 23</td>
-				
-				//Résultats 1 - 24 sur 1&nbsp;518
-				//<td class="resultCount">Résultats 1 - 12 sur 46</td>
-				//if(preg_match("/All[\s]*([0-9]+)[\s]*results for/i", $pageBuffer, $regs))
-				if(preg_match("/<td class=\"resultCount\">R.sultats [0-9]+[\s]*-[\s]*[0-9]+ sur ([0-9]*).*?([0-9]*)<\/td>/i", $pageBuffer, $regs) ||
-						preg_match("/<td class=\"resultCount\">([0-9]+) r.sultats<\/td>/i", $pageBuffer, $regs))
+				if(preg_match_all("!<div class=\"productImage\">[\s]*".
+									"<a href=\"[^\"]+\">[\s]*".
+									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
+									"<div class=\"productData\">[\s]*".
+									"<div class=\"productTitle\">[\s]*".
+									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
 				{
-					if(is_numeric($regs[1]) && is_numeric($regs[2]))
-						$totalCount = ($regs[1].$regs[2]);
-					else
-						$totalCount = $regs[1];
-					
-					// store total count here.
-					$this->setTotalCount($totalCount);
-					
-					// 1 = img, 2 = href, 3 = title
-					if(preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
-									"<img src=\"([^\"]+)\"[^>]*>".
-									".*?".
-									"<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+					for($i=0; $i<count($matches[0]); $i++)
 					{
-						for($i=0; $i<count($matches[0]); $i++)
+						//http://www.amazon.com/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
+						if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
 						{
-							//http://www.amazon.fr/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
-							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
-							{
-								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazfrasin'=>$regs[1]));
-							}
+							if(strpos($matches[1][$i], "no-img")!==FALSE)
+								$matches[1][$i] = NULL;
+							
+							$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazfrasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 						}
 					}
 				}
@@ -424,7 +411,7 @@ class amazonfr extends SitePlugin
 		// <b class="h1">Détails sur le produit</b><br>
 		if(preg_match("/<b class=\"h1\">D.tails sur le produit<\/b>(.*)<\/ul>/si", $pageBuffer, $regs))
 		{
-			$productDetails = unhtmlentities(trim($regs[1]));
+			$productDetails = html_entity_decode(trim($regs[1]));
 
 			if(preg_match("/<li><b>ISBN:<\/b>([^<]*)<\/li>/i", $productDetails, $regs2))
 			{
@@ -796,7 +783,7 @@ class amazonfr extends SitePlugin
 
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = unhtmlentities(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item));
 
 					// We may have a hard space here, so get rid of it.
 					$item = trim(strtr($item, chr(160), ' '));
@@ -825,12 +812,12 @@ class amazonfr extends SitePlugin
 		// search for "Synopsis" or "Description"
 		if (preg_match("/<b>Synopsis<\/b><br[\s]*[\/]*>([^<]*)</si", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('blurb', unhtmlentities(strip_tags($regs[1])));
+			$this->addItemAttribute('blurb', html_entity_decode(strip_tags($regs[1])));
 		}
 		else
 		if (preg_match("/<b>Description<\/b><br[\s]*[\/]*>([^<]*)/si", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('blurb', unhtmlentities(strip_tags($regs[1])));
+			$this->addItemAttribute('blurb', html_entity_decode(strip_tags($regs[1])));
 		}
 
 		// IMDB ID block (does not seem to be present on amazon.fr)

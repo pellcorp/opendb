@@ -54,20 +54,36 @@ function deduplicate_array($value1, $value2) {
 	return $value1;
 }
 
-
 // Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
 function stripslashes_array($array)
 {
 	$rs = array();
 	while (list($key,$val) = @each($array))
 	{
-		if(is_array($array[$key]))
+		if(is_array($val))
 		{
-			$rs[$key] = stripslashes_array($array[$key]);
+			$rs[$key] = stripslashes_array($val);
 		}
 		else
 		{
 			$rs[$key] = stripslashes($val);
+		}
+	}
+	return $rs;
+}
+
+// Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
+function strip_tags_array($params) {
+	$rs = array();
+	while (list($key,$val) = @each($params))
+	{
+		if(is_array($val))
+		{
+			$rs[$key] = strip_tags_array($val);
+		}
+		else
+		{
+			$rs[$key] = strip_tags($val);
 		}
 	}
 	return $rs;

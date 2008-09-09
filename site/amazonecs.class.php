@@ -530,7 +530,7 @@ class amazonecs extends SitePlugin
 
 		$siteDomain = ifempty($this->siteDomain, $search_attributes_r['aecsdomain']);
 
-		$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&SearchIndex=".$index_type."&ItemId=".$search_attributes_r[$this->siteAttributeType];
+		$queryUrl = "http://webservices.amazon.".$siteDomain."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=".$this->getConfigValue('amazon_access_key', 0)."&Operation=ItemLookup&ResponseGroup=Large&ItemId=".$search_attributes_r[$this->siteAttributeType];
 		
 		// if search term is a 12 or 13 digits number then we assume it is an EAN number
 		if (preg_match('/[0-9]{12,13}/', $search_attributes_r[$this->siteAttributeType]))

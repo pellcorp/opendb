@@ -72,7 +72,9 @@ if(!isset($PHP_SELF))
 // any upload files will be in new post php 4.1 $_FILES array
 if(!empty($_GET))
 {
-	$HTTP_VARS = $_GET;
+	// fixes for XSS vulnerabilities reported in OpenDb 1.0.6
+	// http://secunia.com/advisories/31719
+	$HTTP_VARS = strip_tags_array($_GET);
 }
 else if(!empty($_POST))
 {

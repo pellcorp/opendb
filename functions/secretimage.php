@@ -31,6 +31,14 @@ function get_secret_image_random_num() {
 	return $random_num;
 }
 
+/**
+ * TODO - note that date is used as part of the generated code, so if someone tries to
+ * register just before a date change, the registration may fail - but its a fairly
+ * unlikely occurence.
+ *
+ * @param unknown_type $random_num
+ * @return unknown
+ */
 function get_secret_image_code($random_num) {
 	$security_hash = get_opendb_config_var('site', 'security_hash');
 	

@@ -349,12 +349,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	
 	if($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'disable_captcha')!==TRUE)
 	{
-		$random_num = get_secretimage_random_num();
-		$buffer .= "\n<input type=\"hidden\" name=\"gfx_random_number\" value=\"$random_num\">";
-
-	   	$buffer .= "<p class=\"verifyCode\"><label for=\"gfx_code_check\">".get_opendb_lang_var('verify_code')."</label>".
-	   				"<img src=\"$PHP_SELF?op=signup&op2=gfx_code_check&gfx_random_number=$random_num\">".
-					"<input type=\"text\" class=\"text\" id=\"gfx_code_check\" name=\"gfx_code_check\" size=\"15\" maxlength=\"6\"></p>";
+		$buffer .= render_secret_image_form_field();
 	}
 	
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -1082,9 +1077,7 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session() || $HTTP_VARS['op'] == 'signup')
 	{ 
-	    if ( $HTTP_VARS['op'] == 'signup' && 
-	    		$HTTP_VARS['op2'] == 'gfx_code_check' && 
-	    		is_numeric($HTTP_VARS['gfx_random_number']))
+	    if ( $HTTP_VARS['op'] == 'gfx_code_check' && is_numeric($HTTP_VARS['gfx_random_number']))
 	    {
 	        secretimage($HTTP_VARS['gfx_random_number']);
 	    }
@@ -1292,7 +1285,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'activate' && is_user_granted_change_password(PERM_ADMIN_USER_PROFILE))
+			else if($HTTP_VARS['op'] == 'activate' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 			{
 				echo _theme_header(get_opendb_lang_var('activate_user'));
 				echo("<h2>".get_opendb_lang_var('activate_user')."</h2>");
@@ -1363,7 +1356,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'activate_users' && is_user_granted_change_password(PERM_ADMIN_USER_PROFILE))
+			else if($HTTP_VARS['op'] == 'activate_users' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 			{
 			    echo _theme_header(get_opendb_lang_var('activate_users'));
 				echo("<h2>".get_opendb_lang_var('activate_users')."</h2>");
@@ -1471,10 +1464,7 @@ if(is_site_enabled())
                     echo("<h2>".$page_title."</h2>");
 					
                     if(get_opendb_config_var('login.signup', 'disable_captcha')===TRUE ||
-                    		//ensure the secret image codes check out 
-                    		(is_numeric($HTTP_VARS['gfx_code_check']) &&
-                            is_numeric($HTTP_VARS['gfx_random_number']) &&
-                            is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number'])))
+							is_secret_image_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
                     {
                         $return_val = handle_user_insert($HTTP_VARS, $errors);
                         if($return_val !== FALSE)

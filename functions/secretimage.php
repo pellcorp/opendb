@@ -23,8 +23,7 @@
 include_once("./functions/config.php");
 include_once("./functions/http.php");
 
-function get_secretimage_random_num()
-{
+function get_secret_image_random_num() {
     mt_srand ((double)microtime()*1000000);
 	$maxran = 1000000;
 	$random_num = mt_rand(0, $maxran);
@@ -32,14 +31,32 @@ function get_secretimage_random_num()
 	return $random_num;
 }
 
-function secretimage($random_num)
-{
+function get_secret_image_code($random_num) {
 	$security_hash = get_opendb_config_var('site', 'security_hash');
 	
-    $datekey = date("F j");
+	$datekey = date("F j");
 	$rcode = hexdec(md5(get_http_env('HTTP_USER_AGENT') . $security_hash . $random_num . $datekey));
 	$code = substr($rcode, 2, 6);
+	
+	return $code;
+}
 
+/**
+	Validate code entered against the generated image number
+*/
+function is_secret_image_code_valid($gfxcode, $random_num) {
+	if(is_numeric($gfxcode) && is_numeric($random_num)) {
+		$code = get_secret_image_code($random_num);
+		if($code != $gfxcode)
+		    return FALSE;
+		else
+		    return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+function render_secret_image($random_num) {
 	$image = ImageCreateFromJPEG(_theme_image_src('code_bg.jpg'));
 	$text_color = ImageColorAllocate($image, 80, 80, 80);
 
@@ -47,25 +64,18 @@ function secretimage($random_num)
 	header("Pragma: no-store");
 	header("Expires: 0");
 	Header("Content-type: image/jpeg");
-	ImageString($image, 5, 12, 2, $code, $text_color);
+	ImageString($image, 5, 12, 2, get_secret_image_code($random_num), $text_color);
 	ImageJPEG($image, '', 75);
 	ImageDestroy($image);
 }
 
-/**
-	Validate code entered against the generated image number
-*/
-function is_secretimage_code_valid($gfxcode, $random_num)
-{
-	$security_hash = get_opendb_config_var('site', 'security_hash');
-    
-    $datekey = date("F j");
-	$rcode = hexdec(md5(get_http_env('HTTP_USER_AGENT') . $security_hash . $random_num . $datekey));
-	$code = substr($rcode, 2, 6);
-	
-	if($code != $gfxcode)
-	    return FALSE;
-	else
-	    return TRUE;
+function render_secret_image_form_field() {
+	$random_num = get_secret_image_random_num();
+	$buffer .= "\n<input type=\"hidden\" name=\"gfx_random_number\" value=\"$random_num\">";
+
+   	$buffer .= "<p class=\"verifyCode\"><label for=\"gfx_code_check\">".get_opendb_lang_var('verify_code')."</label>".
+   				"<img src=\"secretimage.php?op=gfx_code_check&gfx_random_number=$random_num\">".
+				"<input type=\"text\" class=\"text\" id=\"gfx_code_check\" name=\"gfx_code_check\" size=\"15\" maxlength=\"6\"></p>";
+   	return $buffer;
 }
 ?>

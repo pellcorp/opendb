@@ -35,7 +35,7 @@ class SourceforgeVersionCheck
 	function SourceforgeVersionCheck($htmlReleaseFile = NULL)
 	{
 		if(strlen($htmlReleaseFile)>0  && file_exists($htmlReleaseFile)) {
-			$this->latestReleasePage = file_get_contents($file);
+			$this->latestReleasePage = file_get_contents($htmlReleaseFile);
 		}
 		
 		if(strlen($this->latestReleasePage)==0) {

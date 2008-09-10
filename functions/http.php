@@ -21,6 +21,14 @@
 include_once("./functions/utils.php");
 include_once("./functions/fileutils.php");
 
+function get_page_id($url) {
+	$index=laststrpos($url, "?");
+	if($index!==FALSE) {
+		$url = substr($url, 0, $index);
+	}
+	return basename($url, '.php');
+}
+
 /**
 	this script is included by include/begin.inc.php, so available
 	to all user executable scripts.

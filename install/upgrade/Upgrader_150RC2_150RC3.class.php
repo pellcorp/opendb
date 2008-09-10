@@ -25,10 +25,11 @@ class Upgrader_150b4_150b5 extends OpenDbUpgrader
 	function Upgrader_150b4_150b5()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.0RC2',
-						'1.5.0RC3',
+						'1.5.0b4',
+						'1.5.0b5',
 						array(
-							array('description'=>'Add redirect login language var')
+							array('description'=>'Fix UPC ID Definition'),
+							array('description'=>'Setup User Item Interest functionality'),
 						)
 					);
 	}

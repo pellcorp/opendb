@@ -81,23 +81,35 @@ class amazonfr extends SitePlugin
 			else
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
-
-				if(preg_match_all("!<div class=\"productImage\">[\s]*".
-									"<a href=\"[^\"]+\">[\s]*".
-									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
-									"<div class=\"productData\">[\s]*".
-									"<div class=\"productTitle\">[\s]*".
-									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
+				
+				if(preg_match("/<div class=\"resultCount\">R.sultats [0-9]+[\s]*-[\s]*[0-9]+ sur ([0-9]*).*?([0-9]*)<\/div>/i", $pageBuffer, $regs) ||
+						preg_match("/<div class=\"resultCount\">([0-9]+) r.sultats<\/div>/i", $pageBuffer, $regs))
 				{
-					for($i=0; $i<count($matches[0]); $i++)
+					if(is_numeric($regs[1]) && is_numeric($regs[2]))
+						$totalCount = ($regs[1].$regs[2]);
+					else
+						$totalCount = $regs[1];
+					
+					// store total count here.
+					$this->setTotalCount($totalCount);
+					
+					if(preg_match_all("!<div class=\"productImage\">[\s]*".
+										"<a href=\"[^\"]+\">[\s]*".
+										"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
+										"<div class=\"productData\">[\s]*".
+										"<div class=\"productTitle\">[\s]*".
+										"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
 					{
-						//http://www.amazon.com/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
-						if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
+						for($i=0; $i<count($matches[0]); $i++)
 						{
-							if(strpos($matches[1][$i], "no-img")!==FALSE)
-								$matches[1][$i] = NULL;
-							
-							$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazfrasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
+							//http://www.amazon.com/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
+							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
+							{
+								if(strpos($matches[1][$i], "no-img")!==FALSE)
+									$matches[1][$i] = NULL;
+								
+								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazfrasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
+							}
 						}
 					}
 				}
@@ -127,7 +139,7 @@ class amazonfr extends SitePlugin
 		// The location of the title is the same for all formats.
 		//<title>Amazon.fr : Big Fish: DVD</title>
 		//if(preg_match("/<title>.*Amazon\.fr\s:\s([^:]*):(.*)<\/title>/s", $pageBuffer, $regs))
-		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/span>/s", $pageBuffer, $regs) ||
 				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
 				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{

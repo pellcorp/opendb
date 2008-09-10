@@ -22,7 +22,7 @@ include_once("./functions/utils.php");
 include_once("./functions/fileutils.php");
 
 function get_page_id($url) {
-	$index=laststrpos($url, "?");
+	$index=strpos($url, "?");
 	if($index!==FALSE) {
 		$url = substr($url, 0, $index);
 	}

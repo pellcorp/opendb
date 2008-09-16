@@ -365,11 +365,16 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		{
 			$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='update'; $onclick_event\" value=\"".get_opendb_lang_var('update_user')."\">";
 			
-			if(is_user_active($HTTP_VARS['user_id']))
+			if(is_user_not_activated($HTTP_VARS['user_id'])) 
+			{
+					$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='delete'; this.form.submit();\" value=\"".get_opendb_lang_var('delete_user')."\">";
+			}
+			else if(is_user_active($HTTP_VARS['user_id']))
 			{
 				$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='deactivate'; this.form.submit();\" value=\"".get_opendb_lang_var('deactivate_user')."\">";
 			}
-			else if(!is_user_active($HTTP_VARS['user_id']))
+			
+			if(!is_user_active($HTTP_VARS['user_id']))
 			{
 				$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='activate'; this.form.submit();\" value=\"".get_opendb_lang_var('activate_user')."\">";
 			}
@@ -1081,7 +1086,8 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 	}//if($addr_results)
 
 	$activate_url = get_site_url().'user_admin.php?op=activate&user_id='.$HTTP_VARS['user_id'];
-
+	$delete_url = get_site_url().'user_admin.php?op=delete&user_id='.$HTTP_VARS['user_id'];
+	
 	$message =
 		get_opendb_lang_var(
 			'new_account_email',
@@ -1089,7 +1095,8 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 				'admin_name'=>get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')),
 				'user_info'=>$user_info_lines,
 				'site'=>get_opendb_config_var('site', 'title'),
-				'activate_url'=>$activate_url));
+				'activate_url'=>$activate_url,
+				'delete_url'=>$delete_url));
 
 	return send_email_to_site_admins(
 				PERM_ADMIN_CREATE_USER, 

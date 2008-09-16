@@ -20,16 +20,15 @@
 
 include_once("./functions/OpenDbUpgrader.class.php");
 
-class Upgrader_150b4_150b5 extends OpenDbUpgrader
+class Upgrader_150RC2_150RC3 extends OpenDbUpgrader
 {
-	function Upgrader_150b4_150b5()
+	function Upgrader_150RC2_150RC3()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.0b4',
-						'1.5.0b5',
+						'1.5.0b6',
+						'1.5.0RC3',
 						array(
-							array('description'=>'Fix UPC ID Definition'),
-							array('description'=>'Setup User Item Interest functionality'),
+							array('description'=>'Login page security fix and reintroduction of delete user functionality just for new users'),
 						)
 					);
 	}

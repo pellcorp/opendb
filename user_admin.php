@@ -767,6 +767,32 @@ function update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, &$error
 	return $address_creation_success;
 }
 
+function handle_user_delete($user_id, $HTTP_VARS, &$errors) {
+	if(is_user_valid($user_id) && is_user_not_activated($user_id)) {
+		// If already confirmed operation.
+		if($HTTP_VARS['confirmed'] == 'true') {
+			// ignore failure to delete user addresses - will be logged.
+			delete_user_addresses($user_id);
+			
+			if(!delete_user($user_id)) {
+				$db_error = db_error();
+				$errors = array('error'=>get_opendb_lang_var('user_not_deleted'),'detail'=>$db_error);
+				return FALSE;	
+			} else {
+				return TRUE;
+			}
+		} else if($HTTP_VARS['confirmed'] != 'false') {// confirmation required.
+			return "__CONFIRM__";
+		} else {
+			return "__ABORTED__";				
+		}
+	} else {
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Attempt to delete a user which is activated or previously activated', $user_id);
+		$errors = array('error'=>get_opendb_lang_var('operation_not_available'),'detail'=>'');
+		return FALSE;
+	}
+}
+
 function handle_user_insert(&$HTTP_VARS, &$errors)
 {
 	if(!is_user_valid($HTTP_VARS['user_id']))
@@ -1453,6 +1479,33 @@ if(is_site_enabled())
    				else
 				{
 					echo format_error_block(get_opendb_lang_var('operation_not_available'));
+				}
+			}
+			else if($HTTP_VARS['op'] == 'delete' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+			{
+				echo _theme_header(get_opendb_lang_var('delete_user'));
+				echo("<h2>".get_opendb_lang_var('delete_user')."</h2>");
+				
+				$return_val = handle_user_delete($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
+				if($return_val === '__CONFIRM__')
+				{
+					echo get_op_confirm_form(
+							$PHP_SELF,
+							get_opendb_lang_var('confirm_user_delete', array('fullname'=>fetch_user_name($HTTP_VARS['user_id']),'user_id'=>$HTTP_VARS['user_id'])),
+							$HTTP_VARS);
+				}
+				else if($return_val === '__ABORTED__')
+				{
+					echo("<p class=\"success\">".get_opendb_lang_var('user_not_deleted')."</p>");
+					$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>($HTTP_VARS['user_id'] == get_opendb_session_var('user_id')?get_opendb_lang_var('edit_my_info'):get_opendb_lang_var('edit_user_info')));
+				}
+				else if($return_val === TRUE)
+				{
+					echo("<p class=\"success\">".get_opendb_lang_var('user_deleted')."</p>");
+				}
+				else //if($return_val === FALSE)
+				{
+					echo format_error_block($errors);
 				}
 			}
             else if($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'enable')!==FALSE)

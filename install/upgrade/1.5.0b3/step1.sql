@@ -11,6 +11,7 @@ DELETE FROM s_language_var WHERE varname IN (
 	'confirm_user_delete',
 	'confirm_user_delete_deactivate',
 	'user_deleted',
+	'user_not_deleted',
 	'cannot_delete_yourself');
 
 DELETE FROM s_config_group_item

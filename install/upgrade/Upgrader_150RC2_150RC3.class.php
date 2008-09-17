@@ -28,7 +28,7 @@ class Upgrader_150RC2_150RC3 extends OpenDbUpgrader
 						'1.5.0b6',
 						'1.5.0RC3',
 						array(
-							array('description'=>'Login page security fix and reintroduction of delete user functionality just for new users'),
+							array('description'=>'Login page security fix and reintroduction of delete user functionality for new users'),
 						)
 					);
 	}

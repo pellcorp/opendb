@@ -204,12 +204,6 @@ class dvdempire extends SitePlugin
 			else
 			{
 			  	// no matches
-				$matches[1][1]='700084';
-				$matches[1][2]='1167627';
-				$matches[1][0]='758769';
-				$this->addListingRow('GALACTIC1', 'http://images.dvdempire.com/gen/movies/700084t.jpg', NULL, array('dvdempr_id'=>$matches[1][1]));
-				$this->addListingRow('GALACTIC2', 'http://images.dvdempire.com/gen/movies/700084t.jpg', NULL, array('dvdempr_id'=>$matches[1][2]));
-				$this->addListingRow('GALACTIC0', 'http://images.dvdempire.com/gen/movies/700084t.jpg', NULL, array('dvdempr_id'=>$matches[1][0]));
 				return TRUE;
 			}
 		}

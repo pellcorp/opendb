@@ -40,66 +40,13 @@ $dvdfr_month_map = array(
          );
 
 $dvdfr_rating_map = array(
-         "1" => "G",
+         "1" => "U",
 		 "2" => "PG",
-		 "3" => "M",
-		 "4" => "MA",
-		 "5" => "R",
-		 "6" => "X",
-		 "7" => "NR" 
-         );
-
-/* 
-  Shamelessly copied from the previous dvdfr plugin for OpenDB 
-*/
-$dvdfr_language_map =   array (
-                "Afghan"=>"",
-                "Allemand"=>"GERMAN",
-                "Anglais"=>"ENGLISH",
-                "Anglais (australien)"=>"ENGLISH",
-                "Arabe"=>"ARABIC",
-                "Bengali"=>"",
-                "Breton"=>"",
-                "Cantonais"=>"",
-                "Chinois"=>"CHINESE",
-                "Cantonais"=>"CANTONESE",
-                "Cor�en"=>"KOREAN",
-                "Cr�ole"=>"",
-                "Croate"=>"CROATIAN",
-                "Danois"=>"DANISH",
-                "Espagnol"=>"SPANISH",
-                "Farsi"=>"",
-                "Finlandais"=>"FINNISH",
-                "Flamand"=>"DUTCH",
-                "Fran�ais"=>"FRENCH",
-                "Grec"=>"GREEK",
-                "H�breu"=>"HEBREW",
-                "Hindi"=>"HINDOE",
-                "Hongrois"=>"HUNGARIAN",
-                "International"=>"",
-                "Inuit"=>"",
-                "Islandais"=>"ISLANDIC",
-                "Italien"=>"ITALIAN",
-                "Japonais"=>"JAPANESE",
-                "Kurde"=>"",
-                "Malien"=>"",
-                "Mandarin"=>"MANDARIN",
-                "Musique"=>"",
-                "N�erlandais"=>"DUTCH",
-                "Norv�gien"=>"NORWEGIAN",
-                "Polonais"=>"POLISH",
-                "Portugais"=>"PORTUGUESE",
-                "Roumain"=>"",
-                "Russe"=>"",
-                "Serbe"=>"",
-                "Su�dois"=>"SWEDISH",
-                "Taiwanais"=>"",
-                "Tch�que"=>"CZECH",
-                "Tibetain"=>"",
-                "Tunisien"=>"",
-                "Turc"=>"TURKISH",
-                "Vietnamien"=>""
-            );
+		 "3" => "-12",
+		 "4" => "-13",
+		 "5" => "-16",
+		 "6" => "-18",
+		 "7" => "X");
 
 //
 // Search for 'hophop un lapin' to return no titles.

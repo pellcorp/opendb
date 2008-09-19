@@ -413,10 +413,10 @@ class dvdempire extends SitePlugin
 			$this->addItemAttribute('year', $regs[1]);
 		}
 	
-                if(preg_match("/<b>Release Date:<\/b> (.*?)<br \/>/i", $product_info, $regs))
-                {
-                        $this->addItemAttribute('rel_date', $regs[1]);
-                }
+		if(preg_match("/<b>Release Date:<\/b> (.*?)<br \/>/i", $product_info, $regs))
+		{
+			$this->addItemAttribute('rel_date', $regs[1]);
+		}
 
 		if(preg_match("/<b>DVD Year:<\/b>(.*?)<br>/i", $product_info, $regs))
 		{

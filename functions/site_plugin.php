@@ -28,6 +28,16 @@ include_once("./functions/TitleMask.class.php");
 include_once("./functions/phpcuecat/PHPCueCat.class.php");
 include_once("./lib/ISBN/ISBN.class.php");
 
+function get_month_num_for_name($monthname, $months) {
+	$key = array_search(strtolower($monthname), $months);
+	if($key !== FALSE)
+		$month = $key + 1;
+	else
+	  	$month = 1;
+	
+	return $month;
+}
+
 function get_cuecat_isbn_code($field)
 {
 	$cuecat = new PHPCueCat;
@@ -585,6 +595,10 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 				if(isset($site_item_attributes_r[$variable]))
 				{
 					$value = $site_item_attributes_r[$variable];
+					
+					// there is a mapping for this variable and its been mapped, so get rid of original entry now
+					// do not want to duplicate it!!!
+					unset($site_item_attributes_r[$variable]);
 				}
 				else
 				{
@@ -594,6 +608,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			
 			if($value!==NULL)
 			{
+				
 				if(isset($new_attributes_r[$key]))
 				{
 					if(!is_array($new_attributes_r[$key]))

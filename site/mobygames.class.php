@@ -28,8 +28,9 @@ include_once("./functions/SitePlugin.class.inc");
  * @param unknown_type $date
  * @return unknown
  */
-function parse_mobygames_release_date($date)
-{
+function parse_mobygames_release_date($date) {
+	$months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
+	
   	if(preg_match("/([a-zA-Z]+) ([0-9]*), ([0-9]*)/", $date, $matches) || 
   			preg_match("/([a-zA-Z]+), ([0-9]*)/", $date, $matches) ||
   			preg_match("/([0-9]*)/", $date, $matches)) {
@@ -37,11 +38,11 @@ function parse_mobygames_release_date($date)
 		$month = 1;
 		
 		if(count($matches)>3) {
-			$month = get_month_num_for_name($matches[1]);
+			$month = get_month_num_for_name($matches[1], $months);
 			$day = $matches[2];
 			$year = $matches[3];
 		} else if(count($matches)>2) {
-			$month = get_month_num_for_name($matches[1]);
+			$month = get_month_num_for_name($matches[1], $months);
 			$year = $matches[2];
 		} else {
 			$year = $matches[1];
@@ -53,18 +54,6 @@ function parse_mobygames_release_date($date)
 
 	//else
 	return FALSE;
-}
-
-function get_month_num_for_name($monthname) {
-	$months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
-	
-	$key = array_search(strtolower($monthname), $months);
-	if($key !== FALSE)
-		$month = $key + 1;
-	else
-	  	$month = 1;
-	
-	return $month;
 }
 
 /* 

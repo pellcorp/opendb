@@ -75,6 +75,7 @@ function _theme_header($title=NULL, $inc_menu=TRUE)
 	}
 }
 
+
 function _theme_footer()
 {
 	global $PHP_SELF;

@@ -86,8 +86,6 @@ class amazon extends SitePlugin
 					$this->setTotalCount($regs[1]);
 
 					// 1 = img, 2 = href, 3 = title		
-					//<div class="productImage"><a href="http://www.amazon.com/First-Blood-Blu-ray-Sylvester-Stallone/dp/B000H5TVKI/ref=sr_1_1?ie=UTF8&amp;s=dvd&amp;qid=1218508106&amp;sr=1-1"> <img src="http://ecx.images-amazon.com/images/I/51ft3mOqHhL._SL160_AA115_.jpg" class="" alt="" border="0" height="115" width="115"> </a></div>
-					//<div class="productTitle"><a href="http://www.amazon.com/First-Blood-Blu-ray-Sylvester-Stallone/dp/B000H5TVKI/ref=sr_1_1?ie=UTF8&amp;s=dvd&amp;qid=1218508106&amp;sr=1-1"> First Blood [Blu-ray] </a>
 					if(preg_match_all("!<div class=\"productImage\">[\s]*".
 									"<a href=\"[^\"]+\">[\s]*".
 									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
@@ -97,7 +95,6 @@ class amazon extends SitePlugin
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
-							//http://www.amazon.com/First-Blood-David-Morrell/dp/0446364401/sr=1-1/qid=1157433908/ref=pd_bbs_1/104-6027822-1371911?ie=UTF8&s=books
 							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
 							{
 								if(strpos($matches[1][$i], "no-img")!==FALSE)
@@ -131,7 +128,9 @@ class amazon extends SitePlugin
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		
-		if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+		
+		//<span id="btAsinTitle" style="">First Blood (Mass Market Paperback)</span>
+		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/span>/s", $pageBuffer, $regs) ||
 				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
 				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{

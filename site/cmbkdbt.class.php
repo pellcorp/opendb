@@ -145,8 +145,9 @@ class cmbkdbt extends SitePlugin
 				$this->addItemAttribute('title', $matches[1]);
 			}
 			
+			//<strong>Publisher: </strong><a href="imprint.php?ID=16">All*Star</a> (<a href="publisher.php?ID=1">DC Comics</a>)
 			//<strong>Publisher: </strong><a href="publisher.php?ID=4">Marvel Comics</a></a><br><br>
-			if(preg_match("!</strong><a href=\"publisher.php\?ID=[0-9]+\">([^<]+)!", $pageBuffer, $matches))
+			if(preg_match("!</strong><a href=\"imprint.php\?ID=[0-9]+\">([^<]+)!", $pageBuffer, $matches))
 			{
 				$this->addItemAttribute('publisher', $matches[1]);
 			}

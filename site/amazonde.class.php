@@ -152,25 +152,28 @@ class amazonde extends SitePlugin
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
-				//<td class="resultCount">1-24 von 22.345 Ergebnissen</td>
-				//1-24 von 66 Ergebnissen
-				if(preg_match("/<td class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/td>/i", $pageBuffer, $regs) || 
-						preg_match("/<td class=\"resultCount\">([0-9]+) Ergebnisse<\/td>/i", $pageBuffer, $regs))
+				//<div class="resultCount">1-12 von 42 Ergebnissen</div>
+				if(preg_match("/<div class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/div>/i", $pageBuffer, $regs) || 
+						preg_match("/<div class=\"resultCount\">([0-9]+) Ergebnisse<\/div>/i", $pageBuffer, $regs))
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);
 
-					// 1 = img, 2 = href, 3 = title					
-					if(preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
-									"<img src=\"([^\"]+)\"[^>]*>".
-									".*?".
-									"<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+					if(preg_match_all("!<div class=\"productImage\">[\s]*".
+									"<a href=\"[^\"]+\">[\s]*".
+									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
+									"<div class=\"productData\">[\s]*".
+									"<div class=\"productTitle\">[\s]*".
+									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
 							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
 							{
-								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazdeasin'=>$regs[1]));
+								if(strpos($matches[1][$i], "no-img")!==FALSE)
+									$matches[1][$i] = NULL;
+								
+								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazdeasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
 					}
@@ -186,13 +189,9 @@ class amazonde extends SitePlugin
 		}
 	}
 	
-	/**
-	* 
-	*/
 	function queryItem($search_attributes_r, $s_item_type)
 	{
-		//$pageBuffer = $this->fetchURI("http://www.amazon.de/exec/obidos/ASIN/".$search_attributes_r['amazdeasin']);
-		$pageBuffer = $this->fetchURI("http://www.amazon.de/gp/search?keywords=".$search_attributes_r['amazdeasin']."&index=books");
+		$pageBuffer = $this->fetchURI("http://www.amazon.de/exec/obidos/ASIN/".$search_attributes_r['amazdeasin']);
 		
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
@@ -201,50 +200,33 @@ class amazonde extends SitePlugin
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		
-		if(preg_match("/<title>.*Amazon\.de: ([^:(]*):(.*)<\/title>/s", $pageBuffer, $regs))
-		//if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
-				//preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
-				//preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
+		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
+				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
 
 			// If extra year appended, remove it and just get the title.
-			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2))
+			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2)) {
 				$title = $regs2[1];
+			}
 				
 			// If preceeded by a series, remove it and just get the title.
-			if(preg_match("/(.*)([0-9][0-9])[:.](.*)/", $title, $regs3))
+			if(preg_match("/(.*)([0-9][0-9])[:.](.*)/", $title, $regs3)) {
 				$title = $regs3[3];
-        $series = $regs3[1];
+        		
+				$series = $regs3[1];
 				$bnum = $regs3[2]; 
 				
-			$title = str_replace("\"", "", $title);
+				$title = str_replace("\"", "", $title);
 
+				$this->addItemAttribute('b_series', $series);    
+				$this->addItemAttribute('b_bnum', $bnum);        
+			}
+			
 			$this->addItemAttribute('title', $title);
-			$this->addItemAttribute('b_series', $series);    
-			$this->addItemAttribute('b_bnum', $bnum);        
-
 		} 
 		
-			//	if(preg_match("/<title>.*Amazon\.de: ([^:.(]*) ([0-9][0-9]*)[:.](.*)<\/title>/s", $pageBuffer, $regs2))
-		//if(preg_match("/<span id=\"btAsinTitle\">([^<]+)<\/span>/s", $pageBuffer, $regs) ||
-				//preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
-				//preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
-	//	{
-	//	    $series = trim($regs2[1]);
-	//			$bnum = trim($regs2[2]); 
-  //
-	//		// If extra year appended, remove it and just get the title.
-	//		if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs3))
-	//			$series = $regs3[1];
-  //
-	//		$series = str_replace("\"", "", $series);
-
-	//		$this->addItemAttribute('b_series', $series);
-	//		$this->addItemAttribute('b_bnum', $bnum);
-
-	//	}
-
 		$imageBuffer = $this->fetchURI("http://www.amazon.de/gp/product/images/".$search_attributes_r['amazdeasin']."/");
 		if($imageBuffer!==FALSE)
 	    {

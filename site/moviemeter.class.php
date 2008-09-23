@@ -17,9 +17,11 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+	9-9-08 : fixed search results (moviemeter site changed)
+
 */
 include_once("./functions/SitePlugin.class.inc");
-
 
 class moviemeter extends SitePlugin
 {
@@ -44,7 +46,7 @@ class moviemeter extends SitePlugin
 			$FirstSearch = $this->fetchURI("http://www.moviemeter.nl/film/search/".rawurlencode($search_vars_r['title']));
 			//this will display a page with some ajax functions/javascript redirects and a secret hash code.
 			//first get the hash code
-			$regx = "/new quickSearch\('(.*)'\);/";
+			$regx = "/search.php\?hash=((.*))\&qs=1/";
 			$matchCount = preg_match($regx,$FirstSearch,$matches);
 			if ($matchCount==0) {
 				return FALSE;

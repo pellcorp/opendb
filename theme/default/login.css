@@ -16,3 +16,9 @@
 	margin: 5px;
 	display: block;
 }
+
+.redirectMessage {
+	color: #FF3333;
+	font-weight: bold;
+	font-size: x-small;
+}

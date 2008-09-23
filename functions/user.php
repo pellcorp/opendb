@@ -636,6 +636,27 @@ function insert_user($uid, $fullname, $pwd, $user_role, $language, $theme, $emai
 	}
 }
 
+/**
+	Delete user.  Assumes validation has already been performed.
+
+	TODO - delete user_address and user_address_attributes for this user!
+*/
+function delete_user($uid)
+{
+	$query= "DELETE FROM user WHERE user_id = '$uid'";
+	$delete = db_query($query);
+	if (db_affected_rows()>0)
+	{
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($uid));
+		return TRUE;
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($uid));
+		return FALSE;
+	}
+}
+
 // Randomly generates a password of $length characters
 function generate_password($length)
 {

@@ -128,12 +128,13 @@ if(is_site_enabled())
 
 					if($user_r['user_id'] != get_opendb_session_var('user_id'))
 					{
-						if($user_is_active)
-						{
+						if($user_r['active_ind'] == 'X') {
+							$action_links_rs[] = array(url=>'user_admin.php?op=delete&user_id='.$user_r['user_id'],img=>'delete_user.gif',text=>get_opendb_lang_var('delete_user'));
+						} else if($user_is_active) {
 							$action_links_rs[] = array(url=>'user_admin.php?op=deactivate&user_id='.$user_r['user_id'], img=>'deactivate_user.gif',text=>get_opendb_lang_var('deactivate_user'));
-						}
-						else
-						{
+						} 
+						
+						if(!$user_is_active) {
 							$action_links_rs[] = array(url=>'user_admin.php?op=activate&user_id='.$user_r['user_id'], img=>'activate_user.gif',text=>get_opendb_lang_var('activate_user'));
 						}
 					}

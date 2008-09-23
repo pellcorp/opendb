@@ -32,5 +32,10 @@ class Upgrader_150RC2_150RC3 extends OpenDbUpgrader
 						)
 					);
 	}
+	
+	function getUpgraderDir()
+	{
+		return './install/upgrade/1.5.0RC2';
+	}
 }
 ?>

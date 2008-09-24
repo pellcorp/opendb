@@ -290,7 +290,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'my_s_s
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'never_logged_in', 'Never'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account', 'New Account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_admin_email_sent', 'A notification email has been sent to the {site} administrator'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to delete the user:\\n{delete_url}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to delete the user:\\n{delete_url}');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_reply', 'Thank you for requesting a {site} account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_items_added', 'New items added'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_item_instance', 'New Copy'); 
@@ -562,4 +562,4 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete', 'Are you sure you want to delete user \"{fullname}\" ({user_id})?');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deleted', 'User not deleted');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deleted', 'User deleted');
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to delete the user:\\n{delete_url}');
+

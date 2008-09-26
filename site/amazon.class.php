@@ -128,7 +128,6 @@ class amazon extends SitePlugin
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		
-		
 		//<span id="btAsinTitle" style="">First Blood (Mass Market Paperback)</span>
 		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/span>/s", $pageBuffer, $regs) ||
 				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 

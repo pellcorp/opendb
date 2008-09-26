@@ -82,7 +82,6 @@ function get_upc_code($field)
 								
 	if(is_numeric($scanCode))
 	{
-    	// a UPC is only ever 12 characters long
 		return substr($scanCode, 0, 13);
 	}
 	

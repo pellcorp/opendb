@@ -28,7 +28,7 @@ class Upgrader_150RC3_150RC4 extends OpenDbUpgrader
 						'1.5.0RC2',
 						'1.5.0RC3',
 						array(
-							array('description'=>'Language variable fix'),
+							array('description'=>'Language variable fix, Mobygames cover image View Image fix'),
 						)
 					);
 	}

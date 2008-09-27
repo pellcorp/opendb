@@ -409,7 +409,6 @@ function get_item_display_field(
 			$field = format_lookup_display_block($item_attribute_type_r, $attribute_value_rs);
 			if(strlen($field)>0)
 			{
-				// $var would be empty, if we had not been inside while and inner if!
 				if($dowrap)
 					return format_field($item_attribute_type_r['prompt'], $field, $prompt_mask);
 				else

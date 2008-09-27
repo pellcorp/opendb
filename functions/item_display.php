@@ -581,7 +581,7 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 		
 		$listingObject->endListing();
 		
-		$buffer = $listingObject->getContents();
+		$buffer =& $listingObject->getContents();
 		
 		unset($listingObject);
 		

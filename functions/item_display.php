@@ -193,7 +193,11 @@ function get_instance_info_block($item_r, $HTTP_VARS, &$instance_info_links_r)
 			
 			if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
 			{
-				$buffer .= "\n<th>".get_opendb_lang_var('due_date_or_duration')."</th>";
+				if(is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) {
+					$buffer .= "\n<th>".get_opendb_lang_var('due_date')."</th>";
+				} else {
+					$buffer .= "\n<th>".get_opendb_lang_var('borrow_duration')."</th>";
+				}
 			}
 		}
 		$buffer .= "\n</tr>";

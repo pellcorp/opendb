@@ -11,3 +11,7 @@ language = 'ENGLISH';
 # add mobygames stream external images
 #
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('http.stream_external_images', 'domain_list', '4', 'mobygames.com');
+
+# item display no longer uses this var.
+DELETE FROM s_language_var
+WHERE varname = 'due_date_or_duration';

@@ -138,7 +138,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'double
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'download_usagelog', 'Download Usagelog'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date', 'Due Date'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_detail', 'Due: {date}'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_or_duration', 'Due Date / Borrow Duration'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_duration_detail', 'Duration: {borrow_duration} day(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'dumping_data_for_table', 'Dumping data for table \'{table}\''); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit', 'Edit'); 

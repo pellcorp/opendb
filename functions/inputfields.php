@@ -820,7 +820,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 	
 	if($item_attribute_type_r['file_attribute_ind'] == 'Y')
 	{
-		$field .= "<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
+		$field .= "\n<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
 		if(is_file_upload_enabled())
 		{
@@ -830,7 +830,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 
 		$field .= "<div class=\"urlOptionsContainer\" id=\"${name}-tab-content\">";
 
-		$field .= "<div class=\"fieldContent\" id=\"${name}_saveurl\">";
+		$field .= "\n<div class=\"fieldContent\" id=\"${name}_saveurl\">";
 		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
 		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){popup('url.php?url='+escape(this.form['$name'].value),'400','300');}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
 		$field .= "</div>";

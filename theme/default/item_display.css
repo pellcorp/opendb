@@ -52,6 +52,11 @@ ul.category
 	text-align: center;
 }
 
+ul.single
+{
+	padding-top: 5px;
+}
+
 ul.category li
 {
 	padding-right: 5px;

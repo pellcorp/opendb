@@ -295,7 +295,7 @@ function _get_url_field($key, $value)
 	}
 	else
 	{
-		$fields .= "\n<input type=\"hidden\" name=\"$key\" value=\"".htmlspecialchars($value)."\">";
+		$fields .= "\n<input type=\"hidden\" name=\"$key\" value=\"".htmlspecialchars($value)."\" />";
 	}
 	
 	return $fields;

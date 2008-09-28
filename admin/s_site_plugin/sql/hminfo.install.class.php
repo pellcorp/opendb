@@ -162,13 +162,11 @@ class Install_hminfo extends Install_Table
 {
 	function Install_hminfo()
 	{
-		// the first time this class is loaded, the table will be installed.
-		if(!check_opendb_table('site_hminfo'))
-		{
-			site_hminfo_install();
-		}
-		
 		parent::Install_Table('site_hminfo');
+	}
+	
+	function doInstallTable() {
+		site_hminfo_install();
 	}
 	
 	/**

@@ -300,7 +300,6 @@ function get_lookup_attribute_type_array()
 				"\n// -->\n</script>\n";
 }
 
-
 function display_site_plugin_s_attribute_type_lookup_map_row($record_r, $row)
 {
 	global $PHP_SELF;
@@ -1506,198 +1505,81 @@ else if($HTTP_VARS['op'] == 'maintain_site_plugin_install') // special function 
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		if(file_exists("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php"))
+		if(strlen($HTTP_VARS['import_file'])>0 && file_exists('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file']))
 		{
-			$classname = "Install_".$HTTP_VARS['site_type'];
+			@set_time_limit(600);
 			
+			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&site_type=".$HTTP_VARS['site_type']."&op=maintain_site_plugin_install\">Back to CSV File List</a>]</div>");
+			
+			echo("\n<h3>".$site_plugin_r['title']." Installation Maintenance</h3>");
+			
+			echo("<p>Importing ".$HTTP_VARS['import_file']."...</p>");
+			
+			$jobObj->printJobProgressBar($HTTP_VARS['import_file']);
+								
+		}//if(strlen($HTTP_VARS['import_file'])>0)
+		else
+		{
+			echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("\n<h3>".$site_plugin_r['title']." Installation Maintenance</h3>");
+			
+			$classname = "Install_".$HTTP_VARS['site_type'];
 			include_once("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php");
 			$installPlugin =& new $classname();
 			
-			// this is currently the only type we support.
-			if($installPlugin->getInstallType() == 'Install_Table')
+			$recordCount = $installPlugin->getRecordCount();
+			if(is_numeric($recordCount)) {
+				echo("\n<p>Record Count: ".$recordCount."</p>");
+			}
+												
+			$lastUpdated = $installPlugin->getLastUpdated();
+			if($lastUpdated!==FALSE) {
+				$lastUpdatedString = get_localised_timestamp($cfg_date_mask, $lastUpdated);
+			}
+			
+			if(strlen($lastUpdated)>0) {
+				echo("\n<p>Last updated: ".$lastUpdatedString."</p>");
+			}
+			
+			echo("\n<h4>Listing <code>./admin/s_site_plugin/upload/</code> directory</h4>");
+			echo("\n<table>");
+			echo("\n<tr class=\"navbar\">"
+				."<th>CSV File</th>"
+				."<th>Action</th>"
+				."\n</tr>");
+				
+			$file_list_r = get_file_list('./admin/s_site_plugin/upload/', 'csv');
+			if(is_not_empty_array($file_list_r))
 			{
-				if(check_opendb_table($installPlugin->getInstallTable()))
+				$toggle = TRUE;
+				reset($file_list_r);
+				while(list(,$file) = each($file_list_r))
 				{
-					// get rid of any directory information.
-					if(strlen($HTTP_VARS['import_file'])>0)
-					{
-						$HTTP_VARS['import_file'] = basename($HTTP_VARS['import_file']);
-						
-						if(file_exists('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file']))
-						{
-							$extension = get_file_ext($HTTP_VARS['import_file']);
-							$importPlugin =& get_extension_import_plugin($extension);
-							if($importPlugin !== NULL)
-							{
-								$fh = @fopen('./admin/s_site_plugin/upload/'.$HTTP_VARS['import_file'], 'rb');
-								if($fh!==FALSE)
-								{
-									@set_time_limit(600);
-									
-									echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-									
-									echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Updating ".strtoupper($installPlugin->getInstallTable())." table</h3>");
-
-									echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&site_type=".$HTTP_VARS['site_type']."&op=maintain_site_plugin_install\">Back to CSV File List</a>]</div>");
-									echo("<p>Importing ".$HTTP_VARS['import_file']."...</p>");
-									
-									if(preg_match("/([0-9]*)[\s]*-[\s]*([0-9]*)/", $HTTP_VARS['range'], $matches))
-									{
-										$installPlugin->setRowRange($matches[1], $matches[2]);
-									}
-									
-									$fileHandler =& new WrapperFileHandler($fh);
-
-									$header_row = $importPlugin->read_header($fileHandler, $error);
-									
-									// pass first row in										
-									$installPlugin->_handleRow($header_row);
-									
-									while( !$installPlugin->isEndRowFound() && !$fileHandler->isEof() && ($read_row_r = $importPlugin->read_row($fileHandler, $error)) !== FALSE )
-									{
-										//to keep proxy server happy.
-										if(($installPlugin->getRowCount() % 100)===0)
-											echo("\n");
-										else
-											echo(" ");
-										
-										flush();
-										
-										$installPlugin->_handleRow($read_row_r);
-									}
-									fclose($fh);
-									
-									echo("<table>");
-									echo("<tr><td class=\"prompt\">Rows Processed:</td><td class=\"data\">".$installPlugin->getProcessedCount()."</td></tr>");
-									echo("<tr><td class=\"prompt\">Rows Inserted:</td><td class=\"data\">".$installPlugin->getInsertCount()."</td></tr>");
-									echo("<tr><td class=\"prompt\">Rows Updated:</td><td class=\"data\">".$installPlugin->getUpdateCount()."</td></tr>");
-									echo("<tr><td class=\"prompt\">Rows Deleted:</td><td class=\"data\">".$installPlugin->getDeleteCount()."</td></tr>");
-									echo("</table>");
-									
-									$errors_r = $installPlugin->getErrors();
-									if(is_not_empty_array($errors_r))
-									{
-										echo("\n<div class=\"error\">Error Details</div>");
-										echo("<table>");
-										reset($errors_r);
-										echo("<tr class=\"navbar\">
-											<th>Row No.</th>
-											<th>Error</th>
-											<th>Details</th>
-											</tr>");
-										$toggle=TRUE;
-										while(list(,$error_r) = each($errors_r))
-										{
-											$color = ($toggle?"oddRow":"evenRow");
-											$toggle = !$toggle;
-								
-											echo("<tr><td class=\"$color\">".$error_r['rowcount']."</td><td class=\"$color\">".$error_r['error']."</td><td class=\"$color\">".$error_r['details']."</td></tr>");
-										}
-										echo("</table>");
-										
-										flush();
-									}
-								}
-								else
-								{
-									$errors[] = array('error'=>'Could not access upload file', 'detail'=>$error);
-									$HTTP_VARS['op'] = 'list_site_plugins';
-								}
-							}
-							else
-							{
-								$errors[] = array('error'=>'Upload file extension not supported.');
-								$HTTP_VARS['op'] = 'list_site_plugins';
-							}
-						}
-						else
-						{
-							$errors[] = array('error'=>'Upload file not found.');
-							$HTTP_VARS['op'] = 'list_site_plugins';
-						}
-					}//if(strlen($HTTP_VARS['import_file'])>0)
-					else
-					{
-						echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
-						echo("\n<h3>".$site_plugin_r['title']." Install Maintenance - Update ".strtoupper($installPlugin->getInstallTable())." table</h3>");
-						
-						$recordCount = $installPlugin->getRecordCount();
-						if(is_numeric($recordCount))
-						{
-							echo("\n<p>Table Record Count: ".$recordCount."</p>");
-						}
-															
-						$lastUpdated = $installPlugin->getLastUpdated();
-						if($lastUpdated!==FALSE)
-						{
-							$lastUpdatedString = get_localised_timestamp(
-								$cfg_date_mask,
-								$lastUpdated);
-						}
-						if(strlen($lastUpdated)>0)
-						{
-							echo("\n<p>Table last updated: ".$lastUpdatedString."</p>");
-						}
-						
-						echo("\n<h4>Listing <code>./admin/s_site_plugin/upload/</code> directory</h4>");
-						echo("\n<table>");
-						echo("\n<tr class=\"navbar\">"
-							."<th>CSV File</th>"
-							."<th>Row Range</th>"
-							."<th>Action</th>"
-							."\n</tr>");
-							
-						$file_list_r = get_file_list('./admin/s_site_plugin/upload/', 'csv');
-						if(is_not_empty_array($file_list_r))
-						{
-							$toggle = TRUE;
-							reset($file_list_r);
-							while(list(,$file) = each($file_list_r))
-							{
-								$color = ($toggle?"oddRow":"evenRow");
-								$toggle = !$toggle;
-								
-								echo("\n<form name=\"import_file\" action=\"$PHP_SELF\" method=\"GET\">".
-									"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
-									"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
-									"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
-									"\n<input type=\"hidden\" name=\"import_file\" value=\"".$file."\">");
-								
-								echo("\n<tr>");	
-								echo("\n<td class=\"$color\">".$file."</td>");
-								echo("\n<td class=\"$color\"><input text=\"text\" class=\"text\" name=\"range\" value=\"0-\" onChange=\"this.value=legalCharFilter(this.value, '0123456789-');\"></td>");
-								echo("<td class=\"$color\"><input type=\"submit\" class=\"submit\" value=\"Import\"></td></tr>");
-								
-								echo("\n</form>");
-								
-								echo("</table>");
-							}
-						}
-						else
-						{
-							echo("</table>");
-							echo("<div class=\"error\">No files found</div>");
-						}
-						
-						echo(format_help_block(array('text'=>'Upload CSV files directly (using FTP or equivalent) to the <code>./admin/s_site_plugin/upload/</code> directory.')));
-					}
-				}
-				else
-				{
-					$errors[] = array('error'=>'Plugin table '.strtoupper($installPlugin->getInstallTable()).' does not exist.');
-					$HTTP_VARS['op'] = 'list_site_plugins';
+					$color = ($toggle?"oddRow":"evenRow");
+					$toggle = !$toggle;
+					
+					echo("\n<form name=\"import_file\" action=\"$PHP_SELF\" method=\"GET\">".
+						"\n<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
+						"\n<input type=\"hidden\" name=\"site_type\" value=\"".$HTTP_VARS['site_type']."\">".
+						"\n<input type=\"hidden\" name=\"op\" value=\"".$HTTP_VARS['op']."\">".
+						"\n<input type=\"hidden\" name=\"import_file\" value=\"".$file."\">");
+					
+					echo("\n<tr>");	
+					echo("\n<td class=\"$color\">".$file."</td>");
+					echo("<td class=\"$color\"><input type=\"submit\" class=\"submit\" value=\"Import\"></td></tr>");
+					
+					echo("\n</form>");
+					
+					echo("</table>");
 				}
 			}
 			else
 			{
-				$errors[] = array('error'=>'Operation not supported');
-				$HTTP_VARS['op'] = 'list_site_plugins';
+				echo("</table>");
+				echo("<div class=\"error\">No files found</div>");
 			}
-		}
-		else
-		{
-			$errors[] = array('error'=>'Site Plugin installation maintenance class not found');
-			$HTTP_VARS['op'] = 'list_site_plugins';
+			
+			echo(format_help_block(array('text'=>'Upload CSV files directly (using FTP or equivalent) to the <code>./admin/s_site_plugin/upload/</code> directory.')));
 		}
 	}
 	else//if(is_not_empty_array($site_plugin_r))

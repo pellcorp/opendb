@@ -130,8 +130,9 @@ class imdb extends SitePlugin
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
-			
-		if(preg_match("!<h1>([^<]+)<span>\(<a href=\"/Sections/Years/.*\">([0-9]+)</a>[^\)]*\)[^<]*</span></h1>!", $pageBuffer, $matches))
+		
+		//<h1>Rambo <span>(<a href="/Sections/Years/2008/">2008</a>) <span class="pro-link"><a href="http://pro.imdb.com/title/tt0462499/">More at IMDb Pro »</a></span></span></h1>
+		if(preg_match("!<h1>([^<]+)<span>\(<a href=\"/Sections/Years/.*\">([0-9]+)</a>!", $pageBuffer, $matches))
 		{
 			$this->addItemAttribute('title', $matches[1]);
 			$this->addItemAttribute('year', $matches[2]);
@@ -224,26 +225,29 @@ class imdb extends SitePlugin
 			if(!is_array($age_certification_codes_r) && strlen($age_certification_codes_r)>0) // single value
 				$age_certification_codes_r = array($age_certification_codes_r);
 			
-			if(is_array($age_certification_codes_r)) // single value
-			{
-				reset($age_certification_codes_r);
-				while (list(,$age_code) = @each($age_certification_codes_r))
-				{
-					if(preg_match("!<a href=\"/[^\"]*\">".preg_quote($age_code, "!").":([^<]*)</a>!", $certification, $matches))
-					{
-						$this->addItemAttribute('age_rating', $matches[1]);
-						break; // found it!
-					}
-				}
-			}
-			
 			// get a list of all age ratings, with a country prefix.
 			if(preg_match_all("!<a href=\"/[^\"]*\">([^:]*):([^<]*)</a>!", $certification, $matches))
 			{
 				for($i=0; $i<count($matches[1]); $i++)
 				{
-					$country = strtolower(str_replace(' ', '_', $matches[1][$i]));
+					$country = strtolower(trim(str_replace(' ', '_', $matches[1][$i])));
 					$this->addItemAttribute($country.'_age_rating', $matches[2][$i]);
+				}
+			}
+			
+			if(is_array($age_certification_codes_r)) // single value
+			{
+				reset($age_certification_codes_r);
+				while (list(,$country) = @each($age_certification_codes_r))
+				{
+					$country = strtolower($country);
+					
+					$ageRating = $this->getItemAttribute($country.'_age_rating');
+					if($ageRating!==FALSE) 
+					{
+						$this->addItemAttribute('age_rating', $ageRating);
+						break; // found it!
+					}
 				}
 			}
 		}

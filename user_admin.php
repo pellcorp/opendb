@@ -349,12 +349,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	
 	if($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'disable_captcha')!==TRUE)
 	{
-		$random_num = get_secretimage_random_num();
-		$buffer .= "\n<input type=\"hidden\" name=\"gfx_random_number\" value=\"$random_num\">";
-
-	   	$buffer .= "<p class=\"verifyCode\"><label for=\"gfx_code_check\">".get_opendb_lang_var('verify_code')."</label>".
-	   				"<img src=\"$PHP_SELF?op=signup&op2=gfx_code_check&gfx_random_number=$random_num\">".
-					"<input type=\"text\" class=\"text\" id=\"gfx_code_check\" name=\"gfx_code_check\" size=\"15\" maxlength=\"6\"></p>";
+		$buffer .= render_secret_image_form_field();
 	}
 	
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
@@ -370,11 +365,16 @@ function get_user_input_form($user_r, $HTTP_VARS)
 		{
 			$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='update'; $onclick_event\" value=\"".get_opendb_lang_var('update_user')."\">";
 			
-			if(is_user_active($HTTP_VARS['user_id']))
+			if(is_user_not_activated($HTTP_VARS['user_id'])) 
+			{
+					$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='delete'; this.form.submit();\" value=\"".get_opendb_lang_var('delete_user')."\">";
+			}
+			else if(is_user_active($HTTP_VARS['user_id']))
 			{
 				$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='deactivate'; this.form.submit();\" value=\"".get_opendb_lang_var('deactivate_user')."\">";
 			}
-			else if(!is_user_active($HTTP_VARS['user_id']))
+			
+			if(!is_user_active($HTTP_VARS['user_id']))
 			{
 				$buffer .= "\n<input type=\"button\" class=\"button\" onclick=\"this.form.op.value='activate'; this.form.submit();\" value=\"".get_opendb_lang_var('activate_user')."\">";
 			}
@@ -772,6 +772,32 @@ function update_user_addresses($user_r, $address_provided_r, $HTTP_VARS, &$error
 	return $address_creation_success;
 }
 
+function handle_user_delete($user_id, $HTTP_VARS, &$errors) {
+	if(is_user_valid($user_id) && is_user_not_activated($user_id)) {
+		// If already confirmed operation.
+		if($HTTP_VARS['confirmed'] == 'true') {
+			// ignore failure to delete user addresses - will be logged.
+			delete_user_addresses($user_id);
+			
+			if(!delete_user($user_id)) {
+				$db_error = db_error();
+				$errors = array('error'=>get_opendb_lang_var('user_not_deleted'),'detail'=>$db_error);
+				return FALSE;	
+			} else {
+				return TRUE;
+			}
+		} else if($HTTP_VARS['confirmed'] != 'false') {// confirmation required.
+			return "__CONFIRM__";
+		} else {
+			return "__ABORTED__";				
+		}
+	} else {
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Attempt to delete a user which is activated or previously activated', $user_id);
+		$errors = array('error'=>get_opendb_lang_var('operation_not_available'),'detail'=>'');
+		return FALSE;
+	}
+}
+
 function handle_user_insert(&$HTTP_VARS, &$errors)
 {
 	if(!is_user_valid($HTTP_VARS['user_id']))
@@ -1060,7 +1086,8 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 	}//if($addr_results)
 
 	$activate_url = get_site_url().'user_admin.php?op=activate&user_id='.$HTTP_VARS['user_id'];
-
+	$delete_url = get_site_url().'user_admin.php?op=delete&user_id='.$HTTP_VARS['user_id'];
+	
 	$message =
 		get_opendb_lang_var(
 			'new_account_email',
@@ -1068,7 +1095,8 @@ function send_signup_info_to_admin($HTTP_VARS, &$errors)
 				'admin_name'=>get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')),
 				'user_info'=>$user_info_lines,
 				'site'=>get_opendb_config_var('site', 'title'),
-				'activate_url'=>$activate_url));
+				'activate_url'=>$activate_url,
+				'delete_url'=>$delete_url));
 
 	return send_email_to_site_admins(
 				PERM_ADMIN_CREATE_USER, 
@@ -1082,9 +1110,7 @@ if(is_site_enabled())
 {
 	if(is_opendb_valid_session() || $HTTP_VARS['op'] == 'signup')
 	{ 
-	    if ( $HTTP_VARS['op'] == 'signup' && 
-	    		$HTTP_VARS['op2'] == 'gfx_code_check' && 
-	    		is_numeric($HTTP_VARS['gfx_random_number']))
+	    if ( $HTTP_VARS['op'] == 'gfx_code_check' && is_numeric($HTTP_VARS['gfx_random_number']))
 	    {
 	        secretimage($HTTP_VARS['gfx_random_number']);
 	    }
@@ -1292,7 +1318,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'activate' && is_user_granted_change_password(PERM_ADMIN_USER_PROFILE))
+			else if($HTTP_VARS['op'] == 'activate' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 			{
 				echo _theme_header(get_opendb_lang_var('activate_user'));
 				echo("<h2>".get_opendb_lang_var('activate_user')."</h2>");
@@ -1363,7 +1389,7 @@ if(is_site_enabled())
 					echo("<p class=\"error\">".get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id'])."</p>");
 				}
 			}
-			else if($HTTP_VARS['op'] == 'activate_users' && is_user_granted_change_password(PERM_ADMIN_USER_PROFILE))
+			else if($HTTP_VARS['op'] == 'activate_users' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
 			{
 			    echo _theme_header(get_opendb_lang_var('activate_users'));
 				echo("<h2>".get_opendb_lang_var('activate_users')."</h2>");
@@ -1462,6 +1488,33 @@ if(is_site_enabled())
 					echo format_error_block(get_opendb_lang_var('operation_not_available'));
 				}
 			}
+			else if($HTTP_VARS['op'] == 'delete' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE))
+			{
+				echo _theme_header(get_opendb_lang_var('delete_user'));
+				echo("<h2>".get_opendb_lang_var('delete_user')."</h2>");
+				
+				$return_val = handle_user_delete($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
+				if($return_val === '__CONFIRM__')
+				{
+					echo get_op_confirm_form(
+							$PHP_SELF,
+							get_opendb_lang_var('confirm_user_delete', array('fullname'=>fetch_user_name($HTTP_VARS['user_id']),'user_id'=>$HTTP_VARS['user_id'])),
+							$HTTP_VARS);
+				}
+				else if($return_val === '__ABORTED__')
+				{
+					echo("<p class=\"success\">".get_opendb_lang_var('user_not_deleted')."</p>");
+					$footer_links_r[] = array(url=>"$PHP_SELF?op=edit&user_id=".$HTTP_VARS['user_id'],text=>($HTTP_VARS['user_id'] == get_opendb_session_var('user_id')?get_opendb_lang_var('edit_my_info'):get_opendb_lang_var('edit_user_info')));
+				}
+				else if($return_val === TRUE)
+				{
+					echo("<p class=\"success\">".get_opendb_lang_var('user_deleted')."</p>");
+				}
+				else //if($return_val === FALSE)
+				{
+					echo format_error_block($errors);
+				}
+			}
             else if($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'enable')!==FALSE)
             {
                 if($HTTP_VARS['op2'] == 'send_info')
@@ -1471,10 +1524,7 @@ if(is_site_enabled())
                     echo("<h2>".$page_title."</h2>");
 					
                     if(get_opendb_config_var('login.signup', 'disable_captcha')===TRUE ||
-                    		//ensure the secret image codes check out 
-                    		(is_numeric($HTTP_VARS['gfx_code_check']) &&
-                            is_numeric($HTTP_VARS['gfx_random_number']) &&
-                            is_secretimage_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number'])))
+							is_secret_image_code_valid($HTTP_VARS['gfx_code_check'], $HTTP_VARS['gfx_random_number']))
                     {
                         $return_val = handle_user_insert($HTTP_VARS, $errors);
                         if($return_val !== FALSE)

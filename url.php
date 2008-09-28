@@ -35,7 +35,7 @@ function output_cache_file($cache_type, $url)
 	{
 		$snoopy =& new OpenDbSnoopy();
 		
-		$dataBuffer = $snoopy->fetchURI($url, FALSE);
+		$dataBuffer =& $snoopy->fetchURI($url, FALSE);
 		if($dataBuffer!==FALSE)
 		{
 			if(is_array($snoopy->headers))
@@ -70,8 +70,7 @@ if(is_site_enabled())
 	{
 		$HTTP_VARS['cache_type'] = ifempty($HTTP_VARS['cache_type'], 'ITEM');
 		
-		if($HTTP_VARS['cache_type'] != 'ITEM' ||
-				is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
+		if($HTTP_VARS['cache_type'] != 'ITEM' || is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
 		{
 			// The most basic required parameter for this script is the 'url' parameter
 			if(strlen($HTTP_VARS['url'])>0)

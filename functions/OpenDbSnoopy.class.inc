@@ -80,7 +80,7 @@ class OpenDbSnoopy extends Snoopy
 	* 						images, where we have no interest in caching them,
 	* 						as we rely on browser to do this.
 	*/
-	function fetchURI($URI, $http_cache=TRUE)
+	function &fetchURI($URI, $http_cache=TRUE)
 	{
 		@set_time_limit(600);
 		
@@ -205,7 +205,7 @@ class OpenDbSnoopy extends Snoopy
 	/**
 	Get content of last URL retrieved
 	*/
-	function getContent()
+	function &getContent()
 	{
 		if(is_not_empty_array($this->_file_cache_r))
 		    return $this->_file_cache_r['content'];

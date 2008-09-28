@@ -17,36 +17,41 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-	-- CHANGLOG --
-		
-	Version		Comments
-	-------		--------
-	0.81		0.81p14 release
-	
 */
 include_once("./functions/SitePlugin.class.inc");
 
-function parse_mobygames_release_date($date)
-{
-	// german months!
-  	$months = array('jan', 'feb', 'mrz', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dez');
-	if(preg_match("/([0-9]*)[\s]*([a-zA-Z]+)[\s]*([0-9]*)/", $date, $matches))
-	{
-	  	$day = $matches[1];
-	  	if(!is_numeric($day))
-	  		$day = 1; // first day of the month
-	  	
-		$key = array_search(strtolower($matches[2]), $months);
-		if($key !== FALSE)
-			$month = $key + 1;
-		else
-		  	$month = 1; // first month of the year,
+/**
+ * MMM DD, YYYY
+ * MMM, YYYY
+ * YYYY
+ *
+ * @param unknown_type $date
+ * @return unknown
+ */
+function parse_mobygames_release_date($date) {
+	$months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
 	
-		$year = $matches[3];
-	
-		return mktime(0, 0, 0, $month, $day, $year);
+  	if(preg_match("/([a-zA-Z]+) ([0-9]*), ([0-9]*)/", $date, $matches) || 
+  			preg_match("/([a-zA-Z]+), ([0-9]*)/", $date, $matches) ||
+  			preg_match("/([0-9]*)/", $date, $matches)) {
+		$day = 1;
+		$month = 1;
+		
+		if(count($matches)>3) {
+			$month = get_month_num_for_name($matches[1], $months);
+			$day = $matches[2];
+			$year = $matches[3];
+		} else if(count($matches)>2) {
+			$month = get_month_num_for_name($matches[1], $months);
+			$year = $matches[2];
+		} else {
+			$year = $matches[1];
+		}
+		  
+		$timestamp = @mktime(0, 0, 0, $month, $day, $year);
+		return date('d/m/Y', $timestamp);
 	}
-	
+
 	//else
 	return FALSE;
 }
@@ -175,8 +180,7 @@ class mobygames extends SitePlugin
 			$this->addItemAttribute('non-sport', $this->parse_game_value($pageBuffer, 'non-sport'));
 			
 			$release_date = $this->parse_game_value($pageBuffer, 'released');
-			$timestamp = parse_mobygames_release_date($release_date);
-    		$date = date('d/m/Y', $timestamp);
+			$date = parse_mobygames_release_date($release_date);
     		
     		$this->addItemAttribute('gamepbdate', $date);
     		

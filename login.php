@@ -81,6 +81,8 @@ function perform_login($HTTP_VARS)
 	}
 }
 
+
+
 function show_login_form($HTTP_VARS, $errors = NULL)
 {
 	global $PHP_SELF;
@@ -94,6 +96,11 @@ function show_login_form($HTTP_VARS, $errors = NULL)
     if(is_not_empty_array($errors))
 		echo format_error_block($errors);
 
+	if(strlen($HTTP_VARS['redirect'])>0)
+	{
+		echo("<p class=\"redirectMessage\">".get_opendb_lang_var('login_redirect_message', array('pageid'=>get_page_id($HTTP_VARS['redirect'])))."</p>");
+	}
+	
 	echo("<form id=\"loginForm\" action=\"$PHP_SELF\" method=\"POST\" name=\"login\">");
 	
 	// The user tried to go straight to a menu item with an invalid session.

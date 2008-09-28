@@ -1,5 +1,5 @@
 #########################################################
-# OpenDb 1.0.5 Moviemeter.nl (moviemeter) Site Plugin
+# OpenDb 1.5.0 RC2 Moviemeter.nl (moviemeter) Site Plugin
 # Plugin: Bas ter Vrugt <bastervrugt@gmail.com>
 #########################################################
 
@@ -7,20 +7,20 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'moviemeter', 'moviemeter', 'moviemeter.nl', 'moviemeter.png', 'Dutch film site with information', 'http://www.moviemeter.nl', 0, 'http://www.moviemeter.nl/film/{moviemeter_id}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'moviemeter', 'moviemeter', 'moviemeter.nl', 'moviemeter.png', 'Nederlandse site met film informatie.', 'http://www.moviemeter.nl', 0, 'http://www.moviemeter.nl/film/{moviemeter_id}' );
 
 #
 # Site Plugin Input Fields
 #
 
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'moviemeter', 'title', 1, '', 'Title', 'text', '', '{ifdef(alt_title, \'{alt_title} / \')}{title}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'moviemeter', 'title', 1, '', 'Zoek op titel', 'text', '', '{ifdef(alt_title, \'{alt_title} / \')}{title}' );
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'moviemeter', 'moviemeter_id', 2, '', 'Moviemeter ID', 'text', '', '{moviemeter_id}' );
 
 #
 # Site Plugin Links
 #
 
-INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'moviemeter', 'VIDEO', '*', 1, 'More Information', 'http://www.moviemeter.nl/film/{moviemeter_id}', 'http://www.moviemeter.nl/film/search/{title}' );
+INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'moviemeter', 'VIDEO', '*', 1, 'Meer informatie', 'http://www.moviemeter.nl/film/{moviemeter_id}', 'http://www.moviemeter.nl/film/search/{title}' );
 
 #
 # Site Plugin System Attribute Type Map

@@ -50,5 +50,17 @@ class UtilsTest extends PHPUnit_TestCase {
 		$this->assertEquals(1, count($new_value));
 		$this->assertEquals('Jason', $new_value[0]);
 	}
+	
+	function testStripTagsArray() {
+		$testArray = array("jason<pell>", array("Jason S<thingtag> </tag again>", "Something else no tags"));
+		
+		$new_array = strip_tags_array($testArray);
+		
+		$this->assertEquals(2, count($new_array));
+		$this->assertEquals(2, count($new_array[1]));
+		$this->assertEquals("jason", $new_array[0]);
+		$this->assertEquals("Jason S ", $new_array[1][0]);
+		$this->assertEquals("Something else no tags", $new_array[1][1]);
+	}
 }
 ?>

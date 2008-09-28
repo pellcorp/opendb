@@ -193,7 +193,11 @@ function get_instance_info_block($item_r, $HTTP_VARS, &$instance_info_links_r)
 			
 			if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
 			{
-				$buffer .= "\n<th>".get_opendb_lang_var('due_date_or_duration')."</th>";
+				if(is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) {
+					$buffer .= "\n<th>".get_opendb_lang_var('due_date')."</th>";
+				} else {
+					$buffer .= "\n<th>".get_opendb_lang_var('borrow_duration')."</th>";
+				}
 			}
 		}
 		$buffer .= "\n</tr>";
@@ -371,12 +375,12 @@ function get_item_status_row($class, $item_r, $selected)
 
 	$rowcontents .= "\n<td>";
 	$rowcontents .= ifempty(format_action_links($action_links_rs),get_opendb_lang_var('not_applicable'));
-	$rowcontents .= "\n</td>";
+	$rowcontents .= "</td>";
 	
 	// Item Status Image.
 	$rowcontents .= "\n<td>";
 	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type");
-	$rowcontents .= "\n</td>";
+	$rowcontents .= "</td>";
 	
 	// If a comment is allowed and defined, add it in.
 	$rowcontents .= "\n<td>";
@@ -390,7 +394,7 @@ function get_item_status_row($class, $item_r, $selected)
 	{
 		$rowcontents .= get_opendb_lang_var('not_applicable');
 	}
-	$rowcontents .= "\n</td>";
+	$rowcontents .= "</td>";
 	
 	if(get_opendb_config_var('borrow', 'enable')!==FALSE)
 	{
@@ -401,7 +405,7 @@ function get_item_status_row($class, $item_r, $selected)
 				$rowcontents .= get_list_username(fetch_item_borrower($item_r['item_id'], $item_r['instance_no']), NULL, $page_title, get_opendb_lang_var('back_to_item'), 'item_display.php?item_id='.$item_r['item_id'].'&instance_no='.$item_r['instance_no']);
 			else
 				$rowcontents .= get_opendb_lang_var('not_applicable');
-			$rowcontents .= "\n</td>";
+			$rowcontents .= "</td>";
 		}
 		
 		// Borrow Status Image.
@@ -418,7 +422,7 @@ function get_item_status_row($class, $item_r, $selected)
 		{
 			$rowcontents .= get_opendb_lang_var('not_applicable');
 		}
-		$rowcontents .= "\n</td>";
+		$rowcontents .= "</td>";
 		
 		if(get_opendb_config_var('borrow', 'duration_support')!==FALSE)
 		{
@@ -445,7 +449,7 @@ function get_item_status_row($class, $item_r, $selected)
 			{
 				$rowcontents .= get_opendb_lang_var('undefined');
 			}
-			$rowcontents .= "\n</td>";
+			$rowcontents .= "</td>";
 		}
 	}
 	
@@ -577,7 +581,7 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 		
 		$listingObject->endListing();
 		
-		$buffer = $listingObject->getContents();
+		$buffer =& $listingObject->getContents();
 		
 		unset($listingObject);
 		

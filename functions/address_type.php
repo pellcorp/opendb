@@ -146,16 +146,18 @@ function fetch_user_address_type_rs($user_id, $order_by = FALSE)
 				"ua.borrow_address_ind, ".
 				"sadt.s_address_type, ".
 				"IFNULL(stlv.value, sadt.description) AS description ".
-			"FROM (s_address_type sadt, user_address ua) ";
+			"FROM (s_address_type sadt) ";
+	
+	$query .= "LEFT JOIN user_address ua ".
+			"ON ua.user_id = '".$user_id."' AND ".
+			"ua.s_address_type = sadt.s_address_type AND ".
+			"ua.start_dt <= now() AND (ua.end_dt IS NULL OR ua.end_dt < now()) ";
 	
 	$query .= "LEFT JOIN s_table_language_var stlv
 			ON stlv.language = '".get_opendb_site_language()."' AND
 			stlv.tablename = 's_address_type' AND
 			stlv.columnname = 'description' AND
-			stlv.key1 = sadt.s_address_type  
-			WHERE ua.user_id = '".$user_id."' AND 
-			ua.s_address_type = sadt.s_address_type AND 
-			ua.start_dt <= now() AND (ua.end_dt IS NULL OR ua.end_dt < now()) ";
+			stlv.key1 = sadt.s_address_type ";  
 
 	if($order_by)
 	{
@@ -165,8 +167,9 @@ function fetch_user_address_type_rs($user_id, $order_by = FALSE)
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
     	return $result;
-	else
+	else {
 		return FALSE;
+	}
 }
 
 /**
@@ -417,6 +420,53 @@ function update_user_address($sequence_number, $public_address_ind, $borrow_addr
 	}
 }
 
+/**
+* Delete all user_address_attributes, followed by the address.  If no 
+* sequence number specified, all addresses for the user will be deleted.
+*/
+function delete_user_addresses($user_id)
+{
+	if(db_query("LOCK TABLES user_address WRITE, user_address_attribute WRITE"))
+	{
+		$query = "SELECT sequence_number FROM user_address WHERE user_id='".$user_id."'";
+		
+		$failures = 0;
+		$results = db_query($query);
+		if($results)
+		{
+			while($user_address_r = db_fetch_assoc($results))
+			{
+				if(delete_user_address_attributes($user_address_r['sequence_number']))
+				{
+					if(!delete_user_address($user_address_r['sequence_number']))
+					{
+						$failures++;
+					}
+				}
+				else
+				{
+					$failures++;
+				}
+			}
+			db_free_result($results);
+		}
+		
+		db_query("UNLOCK TABLES");
+		if($failures == 0)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	else
+	{
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), $user_id);
+		return FALSE;
+	}
+}
 
 /**
 	Delete user_address and return boolean indicating success or failure.
@@ -429,12 +479,12 @@ function delete_user_address($sequence_number)
 	$delete = db_query($query);
 	if($delete && db_affected_rows() > 0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array(sequence_number));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array(sequence_number));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number));
 		return FALSE;
 	}
 }

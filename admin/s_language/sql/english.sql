@@ -138,7 +138,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'double
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'download_usagelog', 'Download Usagelog'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date', 'Due Date'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_detail', 'Due: {date}'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_date_or_duration', 'Due Date / Borrow Duration'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'due_duration_detail', 'Duration: {borrow_duration} day(s)'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'dumping_data_for_table', 'Dumping data for table \'{table}\''); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'edit', 'Edit'); 
@@ -290,7 +289,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'my_s_s
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'never_logged_in', 'Never'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account', 'New Account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_admin_email_sent', 'A notification email has been sent to the {site} administrator'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_email', 'Hi {admin_name},\\n\\nThe following user has requested to become a member of {site}.\\n\\n{user_info}\\n\\nYou can use this URL to activate the user:\\n{activate_url}\\n\\nYou can use this URL to delete the user:\\n{delete_url}');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_account_reply', 'Thank you for requesting a {site} account'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_items_added', 'New items added'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'new_item_instance', 'New Copy'); 
@@ -556,3 +555,10 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items'
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'listings', 'Listings');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'feeds', 'Feeds');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'users', 'Users');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'login_redirect_message', 'You will be redirected to {pageid} page once you have successfully logged in');
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_user', 'Delete User');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete', 'Are you sure you want to delete user \"{fullname}\" ({user_id})?');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deleted', 'User not deleted');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deleted', 'User deleted');
+

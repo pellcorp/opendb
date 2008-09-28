@@ -55,6 +55,10 @@ class Install_Table
 	function Install_Table($table)
 	{
 		$this->_table_name = $table;
+		
+		if(!check_opendb_table($this->_table_name)) {
+			$this->doInstallTable();
+		}
 	}
 	
 	/**
@@ -64,6 +68,9 @@ class Install_Table
 	function getInstallType()
 	{
 		return 'Install_Table';
+	}
+	
+	function doInstallTable() {
 	}
 	
 	function getLastUpdated()
@@ -243,7 +250,7 @@ class Install_Table
 				}
 				else
 				{
-					$this->addError('Invalid record', $row, 'Incorrect number or columns');
+					$this->addError('Invalid record', $row, 'Incorrect number of columns');
 					return FALSE; // mismatch row count
 				}
 			}
@@ -253,9 +260,12 @@ class Install_Table
 		return FALSE;
 	}
 	
+	/**
+	 * @return unknown
+	 */
 	function isEndRowFound()
 	{
-		if(is_numeric($this->_end_row) && $this->_rowcount > $this->_end_row)
+		if(is_numeric($this->_end_row) && $this->_rowcount >= $this->_end_row)
 			return TRUE;
 		else
 			return FALSE;

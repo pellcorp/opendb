@@ -23,7 +23,7 @@
  *
  * TODO - make this a more generic function
  */
-function strip_review_html_formatting($review)
+function &strip_review_html_formatting($review)
 {
 	// some specific fucked up review formatting to deal with!!!
 	$review = preg_replace("/<p>/i", "\n\n", $review);
@@ -43,7 +43,7 @@ function strip_review_html_formatting($review)
 	$review = preg_replace("/[ \t]+/i", " ", $review);
 	$review = str_replace("\n ", "\n", $review);
 
-	return $review;
+	return trim($review);
 }
 
 function parse_amazon_reviews($reviewPage)

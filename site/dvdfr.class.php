@@ -23,83 +23,30 @@
 */
 include_once("./functions/SitePlugin.class.inc");
 
-$dvdfr_month_map = array(
-         "janvier" => "01",
-		 "f�vrier" => "02",
-		 "mars" => "03",
-		 "avril" => "04",
-		 "mai" => "05",
-		 "juin" => "06",
-		 "juillet" =>"07",
-		 "aout" => "08",
-		 "ao�t" => "08",
-		 "septembre" => "09",
-		 "octobre" => "10",
-		 "novembre" => "11",
-		 "d�cembre" => "12"
-         );
+function parse_dvdfr_age_rating($ratingimg) {
+	$dvdfr_rating_map = array("1" => "U", "2" => "PG", "3" => "-12",
+		 "4" => "-13", "5" => "-16", "6" => "-18", "7" => "X");
+	
+	if(strlen($dvdfr_rating_map[$ratingimg])>0) {
+		return $dvdfr_rating_map[$ratingimg];
+	} else {
+		return FALSE;
+	}
+}
 
-$dvdfr_rating_map = array(
-         "1" => "G",
-		 "2" => "PG",
-		 "3" => "M",
-		 "4" => "MA",
-		 "5" => "R",
-		 "6" => "X",
-		 "7" => "NR" 
-         );
-
-/* 
-  Shamelessly copied from the previous dvdfr plugin for OpenDB 
-*/
-$dvdfr_language_map =   array (
-                "Afghan"=>"",
-                "Allemand"=>"GERMAN",
-                "Anglais"=>"ENGLISH",
-                "Anglais (australien)"=>"ENGLISH",
-                "Arabe"=>"ARABIC",
-                "Bengali"=>"",
-                "Breton"=>"",
-                "Cantonais"=>"",
-                "Chinois"=>"CHINESE",
-                "Cantonais"=>"CANTONESE",
-                "Cor�en"=>"KOREAN",
-                "Cr�ole"=>"",
-                "Croate"=>"CROATIAN",
-                "Danois"=>"DANISH",
-                "Espagnol"=>"SPANISH",
-                "Farsi"=>"",
-                "Finlandais"=>"FINNISH",
-                "Flamand"=>"DUTCH",
-                "Fran�ais"=>"FRENCH",
-                "Grec"=>"GREEK",
-                "H�breu"=>"HEBREW",
-                "Hindi"=>"HINDOE",
-                "Hongrois"=>"HUNGARIAN",
-                "International"=>"",
-                "Inuit"=>"",
-                "Islandais"=>"ISLANDIC",
-                "Italien"=>"ITALIAN",
-                "Japonais"=>"JAPANESE",
-                "Kurde"=>"",
-                "Malien"=>"",
-                "Mandarin"=>"MANDARIN",
-                "Musique"=>"",
-                "N�erlandais"=>"DUTCH",
-                "Norv�gien"=>"NORWEGIAN",
-                "Polonais"=>"POLISH",
-                "Portugais"=>"PORTUGUESE",
-                "Roumain"=>"",
-                "Russe"=>"",
-                "Serbe"=>"",
-                "Su�dois"=>"SWEDISH",
-                "Taiwanais"=>"",
-                "Tch�que"=>"CZECH",
-                "Tibetain"=>"",
-                "Tunisien"=>"",
-                "Turc"=>"TURKISH",
-                "Vietnamien"=>""
-            );
+function parse_dvdfr_release_date($day, $monthname, $year) {
+	$dvdfr_month_map = array(
+		"janvier", "février", "mars", "avril", "mai", "juin", "juillet", 
+		"aout", "septembre", "octobre", "novembre", "décembre");
+	
+	$month = get_month_num_for_name($monthname, $dvdfr_month_map);
+	if($month<10) {
+		$month = '0'.$month;
+	}
+	
+  	$timestamp = @mktime(0, 0, 0, $month, $day, $year);
+	return date('d/m/Y', $timestamp);
+}
 
 //
 // Search for 'hophop un lapin' to return no titles.
@@ -219,14 +166,12 @@ class dvdfr extends SitePlugin
         // Age rating
         if (preg_match("@<img src=\"../images/ratings/(\d).gif@i",$parseblock,$regs))
 		{
-		  	global $dvdfr_rating_map;
-		  	
-            $this->addItemAttribute('age_rating',$dvdfr_rating_map[$regs[1]]);
+            $this->addItemAttribute('age_rating', parse_dvdfr_age_rating($regs[1]));
         }
 
         // Video encoding format
         // Should be PAL or SECAM
-        if (preg_match("@title=\"Standard vid�o du DVD\" vspace=\"\d\">\n[\s\t]+<div align=\"center\"><center>\n[\s\d]+([A-Z]+)@i",$parseblock,$regs))
+        if (preg_match("@title=\"Standard vid.o du DVD\" vspace=\"\d\">\n[\s\t]+<div align=\"center\"><center>\n[\s\d]+([A-Z]+)@i",$parseblock,$regs))
 		{
             $this->addItemAttribute('vid_format',trim($regs[1]));
         }
@@ -238,15 +183,12 @@ class dvdfr extends SitePlugin
         }
 
         // Release date for the dvd => dvd_text
-        if (preg_match(":(S|s)orti le</div>\n.*class=\"dvd_text\"> *(\d*) *(\w*) *(\d*)<:im", $parseblock, $regs))
+        if (preg_match(":<div class=\"dvd_subtitle\">Annonc. pour le</div>\s*<div class=\"dvd_text\">([\d]*) ([\w]*) ([\d]*)</div>:mi", $parseblock, $regs))
 		{
-			global $dvdfr_month_map;
-		  	
-			$reldate=$regs[2].":".$dvdfr_month_map[$regs[3]].":".$regs[4];
-			if ($regs[2] < 10) {
-                $reldate="0".$reldate;
-			} 
-			$this->addItemAttribute('rel_dvd_dt', $reldate);
+		  	$date = parse_dvdfr_release_date($regs[1], $regs[2], $regs[3]);
+		  	if($date!==FALSE) {
+		  		$this->addItemAttribute('rel_dvd_dt', $date);
+		  	}
         }
 
         // Length of the movie - OK

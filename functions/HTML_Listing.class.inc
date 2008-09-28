@@ -64,7 +64,7 @@ class HTML_Listing extends Listing
 		$this->_buffer_output = $boolean;
 	}
 	
-	function getContents()
+	function &getContents()
 	{
 		return $this->_buffer;
 	}

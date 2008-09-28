@@ -28,6 +28,16 @@ include_once("./functions/TitleMask.class.php");
 include_once("./functions/phpcuecat/PHPCueCat.class.php");
 include_once("./lib/ISBN/ISBN.class.php");
 
+function get_month_num_for_name($monthname, $months) {
+	$key = array_search(strtolower($monthname), $months);
+	if($key !== FALSE)
+		$month = $key + 1;
+	else
+	  	$month = 1;
+	
+	return $month;
+}
+
 function get_cuecat_isbn_code($field)
 {
 	$cuecat = new PHPCueCat;
@@ -72,7 +82,6 @@ function get_upc_code($field)
 								
 	if(is_numeric($scanCode))
 	{
-    	// a UPC is only ever 12 characters long
 		return substr($scanCode, 0, 13);
 	}
 	
@@ -566,6 +575,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 	
 	// cache this, so we can check if lookup_attribute_val_restrict_ind = 'Y'
 	$lookup_attribute_val_restrict_ind = array();
+	$mapped_attributes_r = array();
 	
 	$results = db_query($query);
 	if($results && db_num_rows($results)>0)
@@ -574,24 +584,21 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 		
 		while($attribute_type_map_r = db_fetch_assoc($results))
 		{
-		    $key = strtolower($attribute_type_map_r['s_attribute_type']);
 		    $value = NULL;
 		    
-			if($variable == NULL || $variable != $attribute_type_map_r['variable'])
+			$variable = $attribute_type_map_r['variable'];
+			
+			if(isset($site_item_attributes_r[$variable]))
 			{
-				$variable = $attribute_type_map_r['variable'];
+				$value = $site_item_attributes_r[$variable];
 				
-				// need to know whether there is a matching entry
-				if(isset($site_item_attributes_r[$variable]))
-				{
-					$value = $site_item_attributes_r[$variable];
-				}
-				else
-				{
-					$value = NULL;
+				// at least one direct mapping - title should not be flagged - as there is requirement for multiple mappings
+				if($variable!='title') {
+					$mapped_attributes_r[] = $variable;
 				}
 			}
 			
+			$key = strtolower($attribute_type_map_r['s_attribute_type']);
 			if($value!==NULL)
 			{
 				if(isset($new_attributes_r[$key]))
@@ -614,8 +621,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 			{
 				$lookup_attribute_val_restrict_ind_r[$key] = 'Y';
 			}
-			
-		}//while
+		}
 		db_free_result($results);
 	}
 	
@@ -648,7 +654,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 				}
 			}
 		}
-		else
+		else if(!in_array($key, $mapped_attributes_r))
 		{
 			$new_attributes_r[$key] = $value;
 		}

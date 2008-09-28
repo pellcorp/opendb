@@ -1,0 +1,17 @@
+div.search-query dd
+{
+	float: none;
+}
+
+table.listing-table
+{
+	width: 99%;
+}
+
+#listing-filters span 
+{
+	position: absolute;
+    right: 25px;
+    white-space: nowrap;
+}
+

@@ -114,8 +114,8 @@ function get_theme_javascript($pageid)
 	{
 		$scripts[] = './scripts/overlibmws/overlibmws.js';
 		$scripts[] = './scripts/overlibmws/overlibmws_function.js';
-		$scripts[] = './scripts/overlibmws_iframe.js';
-		$scripts[] = './scripts/overlibmws_hide.js';
+		$scripts[] = './scripts/overlibmws/overlibmws_iframe.js';
+		$scripts[] = './scripts/overlibmws/overlibmws_hide.js';
 		$scripts[] = './admin/tooltips.js';
 	}
 	

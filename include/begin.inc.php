@@ -24,7 +24,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 //ini_set('session.save_handler', 'files'); 
 
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
-define('__OPENDB_RELEASE__', '1.5.0RC3');
+define('__OPENDB_RELEASE__', '1.5.0RC4');
 define('__OPENDB_TITLE__', 'OpenDb');
 
 if(extension_loaded('mysqli'))

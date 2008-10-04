@@ -1,26 +1,26 @@
 <?php
-/* 	
-	Open Media Collectors Database
-	Copyright (C) 2001,2006 by Jason Pell
+/*
+ Open Media Collectors Database
+ Copyright (C) 2001,2006 by Jason Pell
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-	Plugin created by Laurent Chauvin <lchauvin@yahoo.com>
-	Converted to 0.81 format by Jason Pell <jasonpell@users.sourceforge.net>
-	Updated for 1.0 by Marc Powell <shaddw@users.sourceforge.net>
-*/
+ Plugin created by Laurent Chauvin <lchauvin@yahoo.com>
+ Converted to 0.81 format by Jason Pell <jasonpell@users.sourceforge.net>
+ Updated for 1.0 by Marc Powell <shaddw@users.sourceforge.net>
+ */
 include_once("./functions/SitePlugin.class.inc");
 include_once("./site/amazonutils.php");
 
@@ -64,10 +64,10 @@ class amazonfr extends SitePlugin
 					$amazonasin = trim($regs[1]);
 				}
 				else if (preg_match ("!<li><b>ISBN:</b> ([^<]*)</li>!m", $pageBuffer, $regs) || // for books, ASIN is the same as ISBN
-				        preg_match ("!<li><b>ISBN-10:</b> ([^<]*)</li>!m", $pageBuffer, $regs))
+							preg_match ("!<li><b>ISBN-10:</b> ([^<]*)</li>!m", $pageBuffer, $regs))
 				{
 					$amazonasin = trim ($regs[1]);
-				} 
+				}
 			}
 
 			// exact match
@@ -81,7 +81,7 @@ class amazonfr extends SitePlugin
 			else
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
-				
+
 				if(preg_match("/<div class=\"resultCount\">R.sultats [0-9]+[\s]*-[\s]*[0-9]+ sur ([0-9]*).*?([0-9]*)<\/div>/i", $pageBuffer, $regs) ||
 						preg_match("/<div class=\"resultCount\">([0-9]+) r.sultats<\/div>/i", $pageBuffer, $regs))
 				{
@@ -89,10 +89,10 @@ class amazonfr extends SitePlugin
 						$totalCount = ($regs[1].$regs[2]);
 					else
 						$totalCount = $regs[1];
-					
+						
 					// store total count here.
 					$this->setTotalCount($totalCount);
-					
+						
 					if(preg_match_all("!<div class=\"productImage\">[\s]*".
 										"<a href=\"[^\"]+\">[\s]*".
 										"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
@@ -107,7 +107,7 @@ class amazonfr extends SitePlugin
 							{
 								if(strpos($matches[1][$i], "no-img")!==FALSE)
 									$matches[1][$i] = NULL;
-								
+
 								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazfrasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
@@ -131,19 +131,19 @@ class amazonfr extends SitePlugin
 
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
-			return FALSE;
+		return FALSE;
 
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
-		
+
 		// The location of the title is the same for all formats.
 		//<title>Amazon.fr : Big Fish: DVD</title>
 		//if(preg_match("/<title>.*Amazon\.fr\s:\s([^:]*):(.*)<\/title>/s", $pageBuffer, $regs))
 		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/span>/s", $pageBuffer, $regs) ||
-				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
-				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
+					preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) ||
+					preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
-		    $title = trim($regs[1]);
+			$title = trim($regs[1]);
 
 			// If extra year appended, remove it and just get the title.
 			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2))
@@ -156,37 +156,37 @@ class amazonfr extends SitePlugin
 
 		if(preg_match("/de <a href=\"(.*?)\">(.*?)<\/a> \(Auteur\)/", $pageBuffer, $regs))
 		{
-	 		$this->addItemAttribute('author', $regs[2]);
+			$this->addItemAttribute('author', $regs[2]);
 		}
 
 		$imageBuffer = $this->fetchURI("http://www.amazon.fr/gp/product/images/".$search_attributes_r['amazfrasin']."/");
 		if($imageBuffer!==FALSE)
-	    {
-	        //fetchImage("alt_image_0", "http://images.amazon.com/images/P/B0000640RX.01._SS400_SCLZZZZZZZ_.jpg" );
-	        if(preg_match_all("!fetchImage\(\"[^\"]+\", \"([^\"]+)\"!", $imageBuffer, $regs))
-	        {
-                        if(preg_match("!(.*)/(.*?)\.(.*)\.jpg!", $regs[1][0], $regs2))
-                        {
-                                $this->addItemAttribute('imageurl', $regs2[1]."/".$regs2[2].".jpg");
-                        }
+		{
+			//fetchImage("alt_image_0", "http://images.amazon.com/images/P/B0000640RX.01._SS400_SCLZZZZZZZ_.jpg" );
+			if(preg_match_all("!fetchImage\(\"[^\"]+\", \"([^\"]+)\"!", $imageBuffer, $regs))
+			{
+				if(preg_match("!(.*)/(.*?)\.(.*)\.jpg!", $regs[1][0], $regs2))
+				{
+					$this->addItemAttribute('imageurl', $regs2[1]."/".$regs2[2].".jpg");
+				}
 
-	        	$this->addItemAttribute('imageurl', $regs[1]);
+				$this->addItemAttribute('imageurl', $regs[1]);
 
-	        } //<img src="http://images.amazon.com/images/P/B000FMH8RG.01._SS500_SCLZZZZZZZ_V52187861_.jpg" id="prodImage" />
-	        else if(preg_match_all("!<img src=\"([^\"]+)\" id=\"prodImage\" />!", $imageBuffer, $regs))
-	        {
-                        if(preg_match("!(.*)/(.*?)\.(.*)\.jpg!", $regs[1][0], $regs2))
-                        {
-                                $this->addItemAttribute('imageurl', $regs2[1]."/".$regs2[2].".jpg");
-                        }
+			} //<img src="http://images.amazon.com/images/P/B000FMH8RG.01._SS500_SCLZZZZZZZ_V52187861_.jpg" id="prodImage" />
+			else if(preg_match_all("!<img src=\"([^\"]+)\" id=\"prodImage\" />!", $imageBuffer, $regs))
+			{
+				if(preg_match("!(.*)/(.*?)\.(.*)\.jpg!", $regs[1][0], $regs2))
+				{
+					$this->addItemAttribute('imageurl', $regs2[1]."/".$regs2[2].".jpg");
+				}
 
-	        	$this->addItemAttribute('imageurl', $regs[1]);
-	        }
-	    }
-	   
+				$this->addItemAttribute('imageurl', $regs[1]);
+			}
+		}
+
 		if(preg_match("/Descriptions du produit(.*?)<div class=\"content\">(.*?)<\/div>/", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('synopsis', $regs[2]);
+			$this->addItemAttribute('blurb', $regs[2]);
 		}
 
 		if(preg_match("/<span class=\"price\">EUR ([^<]*)<\/span>/m", $pageBuffer, $regs))
@@ -216,7 +216,7 @@ class amazonfr extends SitePlugin
 		{
 			$this->addItemAttribute('amznrating', str_replace('-', '.', $regs[1])) ;
 		}
-		
+
 		// Get the mapped AMAZON index type
 		$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
 		switch($index_type)
@@ -248,41 +248,30 @@ class amazonfr extends SitePlugin
 
 	/**
 		Will return an array of the following structure.
-			array(
-				"gamepblshr"=>game publisher,
-				"gamesystem"=>game platform,
-				"gamerating"=>esrb rating
-				"features"=>features listing for game,
-			);
-	*/
+		array(
+		"gamepblshr"=>game publisher,
+		"gamesystem"=>game platform,
+		"gamerating"=>esrb rating
+		"features"=>features listing for game,
+		);
+		*/
 	function parse_amazon_game_data($search_attributes_r, $pageBuffer)
 	{
-		// Publisher extraction block
-		if (preg_match("/de <a.*>(.*)<\/a><br>/i", $pageBuffer, $regs))
+		if (preg_match("/de <a[^<]*>([^<]+)<\/a>/i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('gamepblshr', $regs[1]);
 		}
 
-		// Platform extraction block
-		if (preg_match("/<b>Plate-forme:[\s]*<\/b>(.+?)<br>/si", $pageBuffer, $regs))
+		if (preg_match("/<b>Plate-forme:[\s]*<\/b>([^<]+)<\/li>/si", $pageBuffer, $regs) || 
+				preg_match("/<b>Plate-forme:[\s]*<\/b>[^<]+<img [^<]*>([^<]+)<\/li>/si", $pageBuffer, $regs))
 		{
-			if(preg_match(":&nbsp;[\s](.*):", $regs[1], $regs2))
-			{
-				// Different combo's of windows, lets treat them all as windows.
-				if(strpos($regs2[1], "Windows")!==FALSE)
-					$platform = "Windows";
-				else
-					$platform = trim($regs2[1]);
-
-				$this->addItemAttribute('gamesystem', $platform);
-			}
+			// Different combo's of windows, lets treat them all as windows.
+			if(strpos($regs[1], "Windows")!==FALSE)
+				$this->addItemAttribute('gamesystem', "Windows");
 			else
-			{
 				$this->addItemAttribute('gamesystem', $regs[1]);
-			}
 		}
 
-		// Rating extraction block
 		if (preg_match("/<b>ESRB Rating:[\s]*<\/b>(.+?)<br>/si", $pageBuffer, $regs))
 		{
 			if(preg_match(":videogames/ratings/esrb-(.*).gif:", $regs[1], $regs2))
@@ -291,7 +280,6 @@ class amazonfr extends SitePlugin
 				$this->addItemAttribute('gamerating', strtoupper($regs[1]));
 		}
 
-		// Features extraction block
 		if(preg_match("/<b>Features:<\/b>[\s]<ul>(.+?)<\/ul>/si", $pageBuffer, $featureblock))
 		{
 			if(preg_match_all("/<li.*?>(.*?)<\/li>/si", $featureblock[1], $matches))
@@ -314,20 +302,20 @@ class amazonfr extends SitePlugin
 		}
 		return NULL;
 	}
-	
+
 	/*
-	* 	Parse Amazon.com CD item
-	*
-	* 	Will return
-	* 	Array(
-	* 		'artist'=>'',
-	* 		'release_dt'=>'',
-	* 		'year'=>'',
-	* 		'musiclabel'=>'',
-	* 		'no_discs'=>'',
-	* 		'cdtrack'=>Array(...)
-	* 	);
-	*/
+	 * 	Parse Amazon.com CD item
+	 *
+	 * 	Will return
+	 * 	Array(
+	 * 		'artist'=>'',
+	 * 		'release_dt'=>'',
+	 * 		'year'=>'',
+	 * 		'musiclabel'=>'',
+	 * 		'no_discs'=>'',
+	 * 		'cdtrack'=>Array(...)
+	 * 	);
+	 */
 	function parse_amazon_music_data($search_attributes_r, $pageBuffer)
 	{
 		//<meta name="description" content="Dangerous [Remastered], Michael Jackson">
@@ -382,8 +370,8 @@ class amazonfr extends SitePlugin
 				$this->addItemAttribute('cdtrack', $tracks);
 			}
 		}
-		else if(preg_match("!<div class=\"bucket\">[\s]*<b class=\"h1\">&Eacute;couter des extraits musicaux</b>(.*?)</div>!", $pageBuffer, $regs) || 
-				preg_match("!<div class=\"bucket\">[\s]*<b class=\"h1\">Liste des titres</b>(.*?)</div>!", $pageBuffer, $regs))
+		else if(preg_match("!<div class=\"bucket\">[\s]*<b class=\"h1\">&Eacute;couter des extraits musicaux</b>(.*?)</div>!", $pageBuffer, $regs) ||
+		preg_match("!<div class=\"bucket\">[\s]*<b class=\"h1\">Liste des titres</b>(.*?)</div>!", $pageBuffer, $regs))
 		{
 			$tracks = $this->parse_music_tracks($regs[1]);
 			$this->addItemAttribute('cdtrack', $tracks);
@@ -392,17 +380,17 @@ class amazonfr extends SitePlugin
 
 	/**
 		Will return an array of the following structure.
-			array(
-				"author"=>author,
-				"publisher"=>publisher,
-				"pub_date"=>date published,
-				"isbn"=>ISBN number,
-				"listprice"=>Regular price,
-			);
+		array(
+		"author"=>author,
+		"publisher"=>publisher,
+		"pub_date"=>date published,
+		"isbn"=>ISBN number,
+		"listprice"=>Regular price,
+		);
 
 		If nothing parsed correctly, then this function will returned
 		unitialised array.
-	*/
+		*/
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
 		// Author extraction
@@ -486,29 +474,25 @@ class amazonfr extends SitePlugin
 				}
 			}
 		}
-
-//		foreach ($this->_item_data_r as $ind=>$val)
-//    		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, "attrib=".$ind.":".$val);
-
 	}
 
 	/**
 		Will return an array of the following structure.
-			array(
-				"year"=>year,
-				"age_rating"=>age_rating,
-				"dvd_region"=>dvd_region, // not applicable for VHS,DIVX,etc
-				"ratio"=>ration,
-				"audio_lang"=>spoken languages,
-				"subtitles"=>subtitles,
-				"run_time"=>runtime,
-				"director"=>director,
-				"actors"=>actors,
-			);
+		array(
+		"year"=>year,
+		"age_rating"=>age_rating,
+		"dvd_region"=>dvd_region, // not applicable for VHS,DIVX,etc
+		"ratio"=>ration,
+		"audio_lang"=>spoken languages,
+		"subtitles"=>subtitles,
+		"run_time"=>runtime,
+		"director"=>director,
+		"actors"=>actors,
+		);
 
 		If nothing parsed correctly, then this function will returned
 		unitialised array.
-	*/
+		*/
 	function parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer)
 	{
 		if (preg_match("/<b>Date(.*)<\/b>(.*)<\/li>/", $pageBuffer, $regs))
@@ -527,15 +511,15 @@ class amazonfr extends SitePlugin
 			if(preg_match("/PAL/",$regs[1]))
 			{
 				$this->addItemAttribute('vid_format', 'PAL');
-	   		}
+			}
 			else if(preg_match("/NTSC/",$regs[1]))
 			{
 				$this->addItemAttribute('vid_format', 'NTSC');
-	   		}
+			}
 			else if(preg_match("/SECAM/",$regs[1]))
 			{
 				$this->addItemAttribute('vid_format', 'SECAM');
-	   		}
+			}
 		}
 		else
 		{
@@ -572,11 +556,11 @@ class amazonfr extends SitePlugin
 
 				$this->addItemAttribute('genre', explode(",", $genre));
 			}
-        }
+		}
 
-        $this->addItemAttribute('actors', parse_amazon_video_people("Acteurs", $pageBuffer));
-		
-        if (preg_match("!<li><b>.*alisateurs[\s]*(.*?)</li>!", $pageBuffer, $regs))
+		$this->addItemAttribute('actors', parse_amazon_video_people("Acteurs", $pageBuffer));
+
+		if (preg_match("!<li><b>.*alisateurs[\s]*(.*?)</li>!", $pageBuffer, $regs))
 		{
 			if(preg_match_all("/<a href=([^>]+)>([^<]+)<\/a>/", $regs[1], $matches))
 			{
@@ -602,15 +586,15 @@ class amazonfr extends SitePlugin
 					break;
 				case 0:
 				case 2:
-                                	$this->addItemAttribute('bd_region', "B");
-                                	break;
+					$this->addItemAttribute('bd_region', "B");
+					break;
 				case 3:
 				case 5:
 				case 6:
-                                	$this->addItemAttribute('bd_region', "C");
-                                	break;
+					$this->addItemAttribute('bd_region', "C");
+					break;
 				default:
-                                	$this->addItemAttribute('bd_region', "B");
+					$this->addItemAttribute('bd_region', "B");
 					break;
 			}
 		}
@@ -646,7 +630,7 @@ class amazonfr extends SitePlugin
 		}
 
 		// rating not given on amazon.fr
-   		//<li><b>Rating</b> <img src="http://g-images.amazon.com/images/G/01/detail/pg-13.gif" width=35 height=11 width=35 height=11>
+		//<li><b>Rating</b> <img src="http://g-images.amazon.com/images/G/01/detail/pg-13.gif" width=35 height=11 width=35 height=11>
 		// Rating extraction block
 		if (preg_match("/<b>Rating[\s]*<\/b>[\s]*<img src=\"([^\"]+)\"/mi", $pageBuffer, $regs))
 		{
@@ -690,67 +674,67 @@ class amazonfr extends SitePlugin
 			}
 		}
 
-        // Duration extraction block
+		// Duration extraction block
 		//<li><b>Durée :</b> 120 minutes </li>
 		if (preg_match("/<li><b>Dur.e[\s]*:<\/b>[\s]*([0-9]+) minutes/i", $pageBuffer, $regs))
 		{
-   			$this->addItemAttribute('run_time', $regs[1]);
+			$this->addItemAttribute('run_time', $regs[1]);
 		}
 
-        // Get the anamorphic format attribute - Thanks to André Monz <amonz@users.sourceforge.net
+		// Get the anamorphic format attribute - Thanks to André Monz <amonz@users.sourceforge.net
 		if(preg_match("/anamorphic/",$pageBuffer))
 		{
 			$this->addItemAttribute('anamorphic', 'Y');
-   		}
+		}
 
-        if (preg_match("/THX Certified/i", $pageBuffer))
+		if (preg_match("/THX Certified/i", $pageBuffer))
 		{
 			$this->addItemAttribute('dvd_audio', 'THX');
 		}
 
-        // Spoken languages
-        //<BR>Langues et formats sonores :  Francais (Dolby Digital 5.1), Francais (DTS)<BR>
-        //<li>Available Audio Tracks:  English (Dolby Digital 5.1), French (Dolby Digital 2.0 Surround)</li>
+		// Spoken languages
+		//<BR>Langues et formats sonores :  Francais (Dolby Digital 5.1), Francais (DTS)<BR>
+		//<li>Available Audio Tracks:  English (Dolby Digital 5.1), French (Dolby Digital 2.0 Surround)</li>
 		if(preg_match("/Langues([^:]*):([^<]*)<br>/i", $pageBuffer, $regs))
 		{
 			$audio_lang_r = explode(',', $this->unaccent($regs[2]));
-			
+				
 			$amazon_dvd_audio_map = array(
-						array("Anglais", "2.0"), // Dolby2.0
-						array("Anglais", "5.0"), //Dolby
-						array("Anglais", "5.1"),// Dolby5.1
-						array("Anglais", "6.1", "EX"), // Dolby6.1
-						array("Anglais", "6.1", "DTS", "ES"), // DTS6.1
-						array("Anglais", "6.1"),// Dolby6.1
-						array("Anglais", "DTS"), // DTS
-						array("Franais", "2.0"), // Dolby2.0
-						array("Franais", "5.0"),//Dolby
-						array("Franais", "5.1"),// Dolby5.1
-						array("Franais", "6.1", "EX"), // Dolby6.1
-						array("Franais", "6.1", "DTS", "ES"), // DTS6.1
-						array("Franais", "6.1"),// Dolby6.1
-						array("Franais", "DTS"),// DTS
-						array("Francais", "2.0"),// Dolby2.0
-						array("Francais", "5.0"),//Dolby
-						array("Francais", "5.1"),// Dolby5.1
-						array("Francais", "6.1", "EX"), // Dolby6.1
-						array("Francais", "6.1", "DTS", "ES"), // DTS6.1
-						array("Francais", "6.1"),// Dolby6.1
-						array("Francais", "DTS"));// DTS
+				array("Anglais", "2.0"), // Dolby2.0
+				array("Anglais", "5.0"), //Dolby
+				array("Anglais", "5.1"),// Dolby5.1
+				array("Anglais", "6.1", "EX"), // Dolby6.1
+				array("Anglais", "6.1", "DTS", "ES"), // DTS6.1
+				array("Anglais", "6.1"),// Dolby6.1
+				array("Anglais", "DTS"), // DTS
+				array("Franais", "2.0"), // Dolby2.0
+				array("Franais", "5.0"),//Dolby
+				array("Franais", "5.1"),// Dolby5.1
+				array("Franais", "6.1", "EX"), // Dolby6.1
+				array("Franais", "6.1", "DTS", "ES"), // DTS6.1
+				array("Franais", "6.1"),// Dolby6.1
+				array("Franais", "DTS"),// DTS
+				array("Francais", "2.0"),// Dolby2.0
+				array("Francais", "5.0"),//Dolby
+				array("Francais", "5.1"),// Dolby5.1
+				array("Francais", "6.1", "EX"), // Dolby6.1
+				array("Francais", "6.1", "DTS", "ES"), // DTS6.1
+				array("Francais", "6.1"),// Dolby6.1
+				array("Francais", "DTS"));// DTS
 
 			$amazon_audio_lang_map = array(
-						array("Anglais"),
-						array("Francais"),
-						array("Espagnol"),
-						array("Italien"),
-						array("Allemand"));
+				array("Anglais"),
+				array("Francais"),
+				array("Espagnol"),
+				array("Italien"),
+				array("Allemand"));
 
 			while(list(,$audio_lang) = @each($audio_lang_r)) {
 				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
 				if($key!==NULL) {
 					$this->addItemAttribute('dvd_audio', $key);
 				}
-				
+
 				$key = parse_language_info($audio_lang, $amazon_audio_lang_map);
 				if($key!==NULL) {
 					$this->addItemAttribute('audio_lang', $key);
@@ -763,7 +747,7 @@ class amazonfr extends SitePlugin
 		if (preg_match("/Sous-titres([^:]*):([^<]*)<br>/i", $pageBuffer, $regs))
 		{
 			$audio_lang_r = explode(',', $regs[1]);
-			
+				
 			$amazon_video_subtitle_map = array(
 				array("Anglais"),
 				array("Francais"),
@@ -771,7 +755,7 @@ class amazonfr extends SitePlugin
 				array("Espagnol"),
 				array("Allemand"),
 				array("Italien"));
-			
+				
 			while(list(,$audio_lang) = @each($audio_lang_r)) {
 				$key = parse_language_info($audio_lang, $amazon_video_subtitle_map);
 				if($key!==NULL) {
@@ -780,11 +764,11 @@ class amazonfr extends SitePlugin
 			}
 		}
 
-        // Edition details block - 'dvd_extras' attribute
-        // <li><b>Fonctions DVD&nbsp;:</b><ul>
+		// Edition details block - 'dvd_extras' attribute
+		// <li><b>Fonctions DVD&nbsp;:</b><ul>
 		if(preg_match("/<li><b>Fonctions DVD[^:]*:<\/b><ul>(.+?)<\/ul>/si", $pageBuffer, $regs))
 		{
-		    $dvdFeaturesBlock = $regs[1];
+			$dvdFeaturesBlock = $regs[1];
 
 			// may use "bullet" character instead of <li>
 			$dvdFeaturesBlock = str_replace("&#149;", "</li><li>", $dvdFeaturesBlock);
@@ -802,8 +786,8 @@ class amazonfr extends SitePlugin
 
 					// Don't include anamorphic, subtitles, audio tracks, etc
 					if(strpos($item, "anamorphic")===FALSE &&
-								strpos($item, "Sous-titres")===FALSE &&
-								strpos($item, "Langues")===FALSE)
+							strpos($item, "Sous-titres")===FALSE &&
+							strpos($item, "Langues")===FALSE)
 					{
 						if(preg_match("/\"([^\"]+)\"/", $item, $reg2))
 						{
@@ -853,7 +837,7 @@ class amazonfr extends SitePlugin
 					// no mapping process is performed here, as no $s_item_type was provided.
 					$itemData = $sitePlugin->getItemData();
 					if(is_array($itemData))
-	      			{
+					{
 						// merge data in here.
 						while(list($key,$value) = each($itemData))
 						{
@@ -891,10 +875,10 @@ class amazonfr extends SitePlugin
 		{
 			//Don't contemplate other characters such as fractions, quotes etc.
 			if (ord($literal)>=192){
-			//Get 'E' from string '&Eaccute' etc.
-			$replace[]=substr($entity,1,1);
-			//Get accented form of the letter
-			$search[]=$literal;}
+				//Get 'E' from string '&Eaccute' etc.
+				$replace[]=substr($entity,1,1);
+				//Get accented form of the letter
+				$search[]=$literal;}
 		}
 		return str_replace($search, $replace, $text);
 	}

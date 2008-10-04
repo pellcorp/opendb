@@ -14,11 +14,11 @@ SET checked_ind = 'Y'
 WHERE s_attribute_type = 'DVD_REGION' 
 AND value = '2';
 
-UPDATE `s_attribute_type_lookup`
+UPDATE s_attribute_type_lookup
 SET checked_ind = NULL
 WHERE s_attribute_type = 'GAMEREGION';
 
-UPDATE `s_attribute_type_lookup`
+UPDATE s_attribute_type_lookup
 SET checked_ind = 'Y'
 WHERE s_attribute_type = 'GAMEREGION'
 AND value = 'EU_DE';
@@ -55,13 +55,13 @@ INSERT INTO s_attribute_type_lookup (s_attribute_type, order_no, value, display,
 # Customize ratings for country
 #
 DELETE FROM s_attribute_type_lookup WHERE s_attribute_type = 'AGE_RATING' AND value LIKE 'USK%';
-INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'AGE_RATING', 'USK0', 'Ohne Altersbeschränkung', 'rating/USK0.gif', NULL, '1');
+INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'AGE_RATING', 'USK0', 'Ohne Altersbeschrï¿½nkung', 'rating/USK0.gif', NULL, '1');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'AGE_RATING', 'USK6', 'Ab 6 Jahren', 'rating/USK6.gif', NULL, '2');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'AGE_RATING', 'USK12', 'Ab 12 Jahren', 'rating/USK12.gif', NULL, '3');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'AGE_RATING', 'USK16', 'Ab 16 Jahren', 'rating/USK16.gif', 'Y', '4');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'AGE_RATING', 'USK18', 'Nicht geeignet unter 18 Jahren', 'rating/USK18.gif', NULL, '5');
 DELETE FROM s_attribute_type_lookup WHERE s_attribute_type = 'GAMERATING' AND value LIKE 'USK%';
-INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'GAMERATING', 'USK0', 'Ohne Altersbeschränkung', 'rating/USK0.gif', NULL, '1');
+INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'GAMERATING', 'USK0', 'Ohne Altersbeschrï¿½nkung', 'rating/USK0.gif', NULL, '1');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'GAMERATING', 'USK6', 'Ab 6 Jahren', 'rating/USK6.gif', NULL, '2');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'GAMERATING', 'USK12', 'Ab 12 Jahren', 'rating/USK12.gif', NULL, '3');
 INSERT INTO s_attribute_type_lookup (s_attribute_type, value, display, img, checked_ind, order_no) VALUES ( 'GAMERATING', 'USK16', 'Ab 16 Jahren', 'rating/USK16.gif', 'Y', '4');

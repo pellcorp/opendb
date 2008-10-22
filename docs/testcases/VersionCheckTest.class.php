@@ -48,7 +48,7 @@ class VersionCheckTest extends PHPUnit_TestCase
 		$this->assertTrue(opendb_version_compare('1.0b3', '1.0a4', '>'), '1.0b3 > 1.0a4');
 	}
 	
-	function testVersionBeta6ToReleaseCandidate1()
+	function testVersionBeta6ToRC1()
 	{
 		$this->assertTrue(opendb_version_compare('1.0RC1', '1.0b6', '>'), 'RC1 > 1.0b6');
 	}
@@ -115,12 +115,17 @@ class VersionCheckTest extends PHPUnit_TestCase
 	
 	function testVersion111To110pl1()
 	{
-		$this->assertTrue(opendb_version_compare('1.1.0pl1', '1.1.0', '>='), '1.1.0pl1 > 1.1.0');
+		$this->assertTrue(opendb_version_compare('1.1.0pl1', '1.1.0', '>'), '1.1.0pl1 > 1.1.0');
 	}
 	
 	function testVersion106To150RC1()
 	{
-		$this->assertTrue(opendb_version_compare('1.5.0RC1', '1.0.6', '>='), '1.5.0RC1 > 1.0.6');
+		$this->assertTrue(opendb_version_compare('1.5.0RC1', '1.0.6', '>'), '1.5.0RC1 > 1.0.6');
+	}
+	
+	function testVersion150RC4To150()
+	{
+		$this->assertTrue(opendb_version_compare('1.5.0', '1.5.0RC4', '>'), '1.5.0 > 1.5.0RC4');
 	}
 }
 

@@ -4,8 +4,8 @@
 
 Snoopy - the PHP net client
 Author: Monte Ohrt <monte@ispi.net>
-Copyright (c): 1999-2000 ispi, all rights reserved
-Version: 1.01
+Copyright (c): 1999-2008 New Digital Group, all rights reserved
+Version: 1.2.4
 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,13 +22,7 @@ Version: 1.01
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 You may contact the author of Snoopy by e-mail at:
-monte@ispi.net
-
-Or, write to:
-Monte Ohrt
-CTO, ispi
-237 S. 70th suite 220
-Lincoln, NE 68510
+monte@ohrt.com
 
 The latest version of Snoopy can be obtained from:
 http://snoopy.sourceforge.net/
@@ -48,7 +42,7 @@ class Snoopy
 	var $proxy_user		=	"";					// proxy user to use
 	var $proxy_pass		=	"";					// proxy password to use
 	
-	var $agent			=	"Snoopy v1.2.3";	// agent we masquerade as
+	var $agent			=	"Snoopy v1.2.4";	// agent we masquerade as
 	var	$referer		=	"";					// referer info to pass
 	var $cookies		=	array();			// array of cookies to pass
 												// $cookies["username"]="joe";
@@ -77,7 +71,7 @@ class Snoopy
 	var $error			=	"";					// error messages sent here
 	var	$response_code	=	"";					// response code returned from server
 	var	$headers		=	array();			// headers returned from server sent here
-	var	$maxlength		=	8192;				// max return data length (body)
+	var	$maxlength		=	500000;				// max return data length (body)
 	var $read_timeout	=	0;					// timeout on read operations, in seconds
 												// supported only since PHP 4 Beta 4
 												// set to 0 to disallow timeouts
@@ -128,6 +122,7 @@ class Snoopy
 
 	function fetch($URI)
 	{
+	
 		//preg_match("|^([^:]+)://([^:/]+)(:[\d]+)*(.*)|",$URI,$URI_PARTS);
 		$URI_PARTS = parse_url($URI);
 		if (!empty($URI_PARTS["user"]))
@@ -257,7 +252,7 @@ class Snoopy
 				break;
 			default:
 				// not a valid protocol
-				$this->error	=	'Invalid protocol "'.$URI_PARTS["scheme"].'"';
+				$this->error	=	'Invalid protocol "'.$URI_PARTS["scheme"].'"\n';
 				return false;
 				break;
 		}		
@@ -423,7 +418,7 @@ class Snoopy
 				
 			default:
 				// not a valid protocol
-				$this->error	=	'Invalid protocol "'.$URI_PARTS["scheme"].'"';
+				$this->error	=	'Invalid protocol "'.$URI_PARTS["scheme"].'"\n';
 				return false;
 				break;
 		}		
@@ -718,13 +713,13 @@ class Snoopy
 							chr(176),
 							chr(39),
 							chr(128),
-							"ï¿½",
-							"ï¿½",
-							"ï¿½",
-							"ï¿½",
-							"ï¿½",
-							"ï¿½",
-							"ï¿½",
+							"ä",
+							"ö",
+							"ü",
+							"Ä",
+							"Ö",
+							"Ü",
+							"ß",
 						);
 					
 		$text = preg_replace($search,$replace,$document);
@@ -838,6 +833,7 @@ class Snoopy
 		if(!empty($this->proxy_user))	
 			$headers .= 'Proxy-Authorization: ' . 'Basic ' . base64_encode($this->proxy_user . ':' . $this->proxy_pass)."\r\n";
 
+
 		$headers .= "\r\n";
 		
 		// set the read timeout if needed
@@ -866,7 +862,6 @@ class Snoopy
 			{
 				// get URL portion of the redirect
 				preg_match("/^(Location:|URI:)[ ]+(.*)/i",chop($currentHeader),$matches);
-				
 				// look for :// in the Location header to see if hostname is included
 				if(!preg_match("|\:\/\/|",$matches[2]))
 				{
@@ -874,14 +869,12 @@ class Snoopy
 					$this->_redirectaddr = $URI_PARTS["scheme"]."://".$this->host.":".$this->port;
 					// eliminate double slash
 					if(!preg_match("|^/|",$matches[2]))
-						$this->_redirectaddr .= "/".$matches[2];
+							$this->_redirectaddr .= "/".$matches[2];
 					else
-						$this->_redirectaddr .= $matches[2];
+							$this->_redirectaddr .= $matches[2];
 				}
 				else
-				{
 					$this->_redirectaddr = $matches[2];
-				}
 			}
 		
 			if(preg_match("|^HTTP/|",$currentHeader))
@@ -895,9 +888,8 @@ class Snoopy
 				
 			$this->headers[] = $currentHeader;
 		}
-		
+
 		$results = '';
-		
 		do {
     		$_data = fread($fp, $this->maxlength);
     		if (strlen($_data) == 0) {
@@ -915,6 +907,7 @@ class Snoopy
 		// check if there is a a redirect meta tag
 		
 		if(preg_match("'<meta[\s]*http-equiv[^>]*?content[\s]*=[\s]*[\"\']?\d+;[\s]*URL[\s]*=[\s]*([^\"\']*?)[\"\']?>'i",$results,$match))
+
 		{
 			$this->_redirectaddr = $this->_expandlinks($match[1],$URI);	
 		}
@@ -946,7 +939,7 @@ class Snoopy
 \*======================================================================*/
 	
 	function _httpsrequest($url,$URI,$http_method,$content_type="",$body="")
-	{
+	{  
 		if($this->passcookies && $this->_redirectaddr)
 			$this->setcookies();
 
@@ -1013,8 +1006,7 @@ class Snoopy
 		
 		$headerfile = tempnam($temp_dir, "sno");
 
-		$safer_URI = strtr( $URI, "\"", " " ); // strip quotes from the URI to avoid shell access
-		exec($this->curl_path." -D \"$headerfile\"".$cmdline_params." \"".$safer_URI."\"",$results,$return);
+		exec($this->curl_path." -k -D \"$headerfile\"".$cmdline_params." \"".escapeshellcmd($URI)."\"",$results,$return);
 		
 		if($return)
 		{
@@ -1141,7 +1133,7 @@ class Snoopy
 	
 		$this->status = 0;
 		
-		if($fp = @fsockopen(
+		if($fp = fsockopen(
 					$host,
 					$port,
 					$errno,

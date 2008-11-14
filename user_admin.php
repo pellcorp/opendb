@@ -144,7 +144,7 @@ function get_user_input_form($user_r, $HTTP_VARS)
 	{
 		$role_r = fetch_role_r($user_r['user_role']);
 		
-		$buffer .= get_input_field("user_id",
+		$buffer .= get_input_field("user_role",
 				NULL, // s_attribute_type
 				get_opendb_lang_var('user_role'), 
 				"readonly", //input type.

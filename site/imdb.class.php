@@ -183,7 +183,7 @@ class imdb extends SitePlugin
 			}
 		}
 	
-		if(preg_match("!<b>User Rating:</b>[\s]*<b>([0-9|\.]+)/10</b>!", $pageBuffer, $regs))
+		if(preg_match("!<div class=\"usr rating\">.*?<div class=\"meta\">.*?<b>([0-9|\.]+)/10</b>!ms", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('imdbrating', $regs[1]);
 		}

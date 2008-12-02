@@ -22,6 +22,7 @@
 
 include_once("./functions/config.php");
 include_once("./functions/http.php");
+require_once("./functions/GDImage.class.php");
 
 function get_secret_image_random_num() {
     mt_srand ((double)microtime()*1000000);
@@ -64,17 +65,24 @@ function is_secret_image_code_valid($gfxcode, $random_num) {
 	}
 }
 
+function get_opendb_image_type() {
+	return strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
+}
+
 function render_secret_image($random_num) {
-	$image = ImageCreateFromJPEG(_theme_image_src('code_bg.jpg'));
+	$gdImage = new GDImage(get_opendb_image_type());
+	$gdImage->createImage('code_bg');
+	$image =& $gdImage->getImage();
 	$text_color = ImageColorAllocate($image, 80, 80, 80);
 
 	header("Cache-control: no-store");
 	header("Pragma: no-store");
 	header("Expires: 0");
-	Header("Content-type: image/jpeg");
 	ImageString($image, 5, 12, 2, get_secret_image_code($random_num), $text_color);
-	ImageJPEG($image, '', 75);
-	ImageDestroy($image);
+	
+	$gdImage->sendImage();
+	
+	unset($gdImage);
 }
 
 function render_secret_image_form_field() {

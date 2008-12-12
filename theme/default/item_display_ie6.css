@@ -1,0 +1,8 @@
+ul.names li
+{
+	white-space: nowrap;
+}
+
+div#relatedItems {
+	padding-top: 10px;
+}

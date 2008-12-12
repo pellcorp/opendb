@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Export OpenDb XML - Open Media Collectors Database XML "First Blood" (1982) #2 (item_id=2872,instance_no=2)
+-->
+<Items version="1.3" xmlns="http://opendb.iamvegan.net/xsd/Items-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://opendb.iamvegan.net/xsd/Items-1.3.xsd">
+	<Item ItemId="2872" ItemType="DVD">
+		<Title>First Blood</Title>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Sylvester Stallone</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Richard Crenna</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Brian Dennehy</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Bill McKinney</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Jack Starrett</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Michael Talbott</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Chris Mulkey</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">John McLiam</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Alf Humphreys</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Caruso</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David L. Crowley</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Don MacKay</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Charles A. Tamburro</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">David Petersen</Attribute>
+		<Attribute AttributeType="ACTORS" OrderNo="30">Craig Huston</Attribute>
+		<Attribute AttributeType="AGE_RATING" OrderNo="90">M</Attribute>
+		<Attribute AttributeType="ANAMORPHIC" OrderNo="115">Y</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH</Attribute>
+		<Attribute AttributeType="AUDIO_LANG" OrderNo="70">ENGLISH_5.1</Attribute>
+		<Attribute AttributeType="DIRECTOR" OrderNo="20">Ted Kotcheff</Attribute>
+		<Attribute AttributeType="DVD_EXTRAS" OrderNo="130">Main Menu Introduction&amp;#10;Main Menu Audio &amp; Animation&amp;#10;Scene Selection Anim &amp; Audio</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">2</Attribute>
+		<Attribute AttributeType="DVD_REGION" OrderNo="100">4</Attribute>
+		<Attribute AttributeType="IMAGEURL" OrderNo="2">http://www.michaeldvd.com.au/CoverArtUnverified/11883.jpg</Attribute>
+		<Attribute AttributeType="IMDBRATING" OrderNo="5">7.1</Attribute>
+		<Attribute AttributeType="IMDB_ID" OrderNo="0">0083944</Attribute>
+		<Attribute AttributeType="MICHAELDID" OrderNo="0">11883</Attribute>
+		<Attribute AttributeType="MIKER4R1" OrderNo="140">Region 1</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Action</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Drama</Attribute>
+		<Attribute AttributeType="MOVIEGENRE" OrderNo="40">Thriller</Attribute>
+		<Attribute AttributeType="MOVIE_PLOT" OrderNo="10">Giving his toughest performance since Rocky, Sylvester Stallone stars as a larger-than-life super warrior in this gutsy action thriller filmed in the wilds of Western Canada.He plays an ex-Green Beret, a peacetime misfit haunted by memories of Vietnam. Falling foul of an over-zealous small town sheriff, all hell is let loose as he goes on the run. In the life or death manhunt that ensues, he will need all his old skills to stay alive and outwit his pursuers - the sheriff, his posse, and more than 200 National Guardsmen.</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.35</Attribute>
+		<Attribute AttributeType="RATIO" OrderNo="110">2.30</Attribute>
+		<Attribute AttributeType="RUN_TIME" OrderNo="60">89</Attribute>
+		<Attribute AttributeType="VID_FORMAT" OrderNo="120">PAL</Attribute>
+		<Attribute AttributeType="YEAR" OrderNo="50">1982</Attribute>
+		<Instance InstanceNo="2" OwnerId="admin" BorrowDuration="" StatusType="W">
+			<StatusComment>this is another test &amp;#10;&amp;#10;thanks for it.&amp;#10;&amp;#10;thanks again!</StatusComment>
+		<Attribute AttributeType="ALT_ID" OrderNo="1">33333</Attribute>
+		<Attribute AttributeType="ALT_ID" OrderNo="2">44444</Attribute>
+		</Instance>
+	</Item>
+</Items>

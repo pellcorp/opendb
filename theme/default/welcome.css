@@ -1,0 +1,160 @@
+#lastitemslist
+{
+	float: left;
+	width: 75%;
+	padding-top: 30px;
+}
+
+#lastitemslist ul
+{
+	text-align: center;
+	list-style-type: none;
+	margin-left: 0px;
+	padding: 5px;
+}
+
+div#lastitemslist li
+{
+    float: left;
+    width: 200px;
+    height: 250px;
+    padding: 0px 5px;
+    text-align: center;
+    padding-bottom: 25px;
+}
+
+#lastitemslist small
+{
+	display: block;
+	color: #626C99;
+	font-size: 85%;
+	margin: 0px;
+}
+
+#lastitemslist h3
+{
+	display: none;
+}
+
+#lastitemslist h4
+{
+	display: block;
+	font-weight: bold;
+	font-size: 95%;
+}
+
+#lastitemslist img.s_item_type
+{
+	vertical-align: middle;
+}
+
+#lastitemslist span.coverImage
+{
+}
+
+#whatsnew
+{
+    color: #626C99;
+    float: right;
+    clear: right;
+    border:1px dashed #626C99;
+    margin-left: 0px;
+    margin-top: 50px;
+    padding: 10px;
+    width: 20%;
+}
+
+#whatsnew, #whatsnew a
+{
+    font-size: 85%;
+}
+
+#whatsnew ul
+{
+    list-style-type: none;
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+}
+
+#whatsnew ul.block
+{
+    padding-bottom: 15px;
+}
+
+#whatsnew li
+{
+    padding-left: 20px;
+}
+
+#whatsnew li.tick
+{
+    background:url(../../images/tick.gif) left top no-repeat;
+}
+
+#whatsnew li.cross
+{
+    background: url(../../images/cross.gif) left top no-repeat;
+}
+
+#whatsnew h4
+{
+    font-size: 110%;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+#whatsnew h3
+{
+    display: none;
+}
+
+#announcements
+{
+	float: right;
+    clear: right;
+    width: 20%;
+	border:1px dashed #626C99;
+	margin-top: 10px;
+	font-size: 75%;
+	padding: 10px;
+}
+
+#announcements ul
+{
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 0px;
+	padding-top: 0px;
+	margin-top: 0px;
+}
+
+#announcements h3
+{
+	display: none;
+}
+
+#announcements h4
+{
+	color: #626C99;
+	font-size: 110%;
+	margin: 0px;
+}
+
+#announcements small
+{
+	color: #626C99;
+	font-size: 95%;
+	margin: 0px;
+}
+
+#announcements p, #announcements a
+{
+	font-size: 100%;
+}
+
+#announcements a.adminLink
+{
+	margin-top: 5px;
+	display: block;
+}

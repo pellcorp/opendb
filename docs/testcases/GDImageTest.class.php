@@ -50,6 +50,17 @@ class GDImageTest extends PHPUnit_TestCase
 		print_r($gdImage->getErrors());
 	}
 	
+	/**
+	 * Assumes default image type is PNG for this test to work - more on this later!
+	 *
+	 */
+	function testAutoBasicFunctions() {
+		$gdImage = new GDImage('auto');
+		$this->assertEquals('png', $gdImage->getImageExtension());
+		
+		print_r($gdImage->getErrors());
+	}
+	
 	function testGetImageConfig() {
 		$gdImage = new GDImage('png');
 		$image_config_r = $gdImage->getImageTypeConfig();

@@ -18,6 +18,8 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+require_once("./functions/GDImage.class.php");
+
 $chartLib = get_opendb_config_var('stats', 'chart_lib');
 
 if($chartLib == 'legacy') {
@@ -45,7 +47,10 @@ function sort_data_element($a_r, $b_r)
 
 function build_and_send_graph($data_rs, $chartType, $title)
 {
-	$imgType = strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
+	$gdImage = new GDImage(get_opendb_image_type());
+	$imgType = $gdImage->getImageType();
+	unset($gdImage);
+	
 	$graphCfg = _theme_graph_config();
 	
 	$chart = new StatsChartImpl($chartType, $graphCfg);

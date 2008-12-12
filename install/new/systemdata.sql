@@ -395,6 +395,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site', 'register_globals_enabled', 11, 'Enable Register Globals', 'Override PHP register globals configuration', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site', 'restrict_session_cookie_to_host_path', 12, 'Restrict Session to Virtual Location', 'Restrict session to this OpenDb instance. [EXPERIMENTAL]', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site', 'upgrade_check', 13, 'Upgrade Check', 'Whenever index.php is accessed a version check will be made between the OpenDb database and opendb installation to make sure they match.', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site', 'image_type', 14, 'Image Type', 'Stats and Captcha Image Type', 'value_select', 'auto,png,jpg,gif');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('site.gzip_compression', 'enable', 1, 'Enable GZIP Compression', 'If enabled all html output from opendb will be gzip compressed', 'boolean'); 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('site.gzip_compression', 'disabled', 2, 'Exclude Specific Pages', 'This is a workaround where low memory limits are enabled.', 'array', 'text'); 
@@ -472,9 +473,8 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group ( id, order_no, name, description ) VALUES ( 'user_admin.change_user', 1, 'Change User', 'Change User Configuration' );
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('user_admin.change_user', 'enable', 1, 'Enable', '', 'boolean');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'image_type', 1, 'Image Type', '', 'value_select', 'png,jpg,gif');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'chart_lib', 2, 'Chart Library', 'LibChart (V1.1 and 1.2) and Legacy are included, but JPGraph (V2.3) and PhpPlot (V5.0.4) will require installation.', 'value_select', 'libchart,jpgraph,phplot,legacy');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'category_barchart', 3, 'Category Barchart', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('stats', 'chart_lib', 1, 'Chart Library', 'LibChart (V1.1 and 1.2) and Legacy are included, but JPGraph (V2.3) and PhpPlot (V5.0.4) will require installation.', 'value_select', 'libchart,jpgraph,phplot,legacy');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('stats', 'category_barchart', 2, 'Category Barchart', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_display', 'show_item_image', 1, 'Show Item Image', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_display', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
@@ -586,6 +586,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'fil
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'register_globals_enabled', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'restrict_session_cookie_to_host_path', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'upgrade_check', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site', 'image_type', 'auto');
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('site.public_access', 'enable', 'FALSE');
 
@@ -651,7 +652,6 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin'
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('user_admin.change_user', 'enable', 'TRUE');
 
-INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'image_type', 'png');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'chart_lib', 'libchart');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('stats', 'category_barchart', 'FALSE');
 

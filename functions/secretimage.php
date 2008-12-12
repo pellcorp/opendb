@@ -65,10 +65,6 @@ function is_secret_image_code_valid($gfxcode, $random_num) {
 	}
 }
 
-function get_opendb_image_type() {
-	return strlen(get_opendb_config_var('stats', 'image_type'))>0? get_opendb_config_var('stats', 'image_type') : "png";
-}
-
 function render_secret_image($random_num) {
 	$gdImage = new GDImage(get_opendb_image_type());
 	$gdImage->createImage('code_bg');

@@ -24,10 +24,10 @@ class GDImage {
 	var $_image_type_r;
 	var $_errors;
 	
-	function GDImage($imgType = NULL) {
+	function GDImage($imgType = 'auto') {
 		global $GD_IMAGE_TYPES;
 		
-		if($imgType != NULL) {
+		if($imgType != NULL && $imgType != 'auto') {
 			if($this->isImageTypeValid($imgType)!==FALSE) {
 				$this->_imgType = $imgType;
 				$this->_image_type_r = $this->getImageTypeConfig($imgType);

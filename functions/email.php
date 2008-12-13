@@ -240,7 +240,7 @@ function insert_email($to_user_id, $from_user_id, $from_email_addr, $subject, $m
 	} else if( strlen($from_user_id)==0 && 
 			( strlen($from_email_addr)==0 || !is_valid_email_addr($from_email_addr)) ) {
 				
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid From User Email', array($to_user_id, $from_user_id, $from_email_addr, $subject));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid From Email', array($to_user_id, $from_user_id, $from_email_addr, $subject));
 		return FALSE;
 	}
 	

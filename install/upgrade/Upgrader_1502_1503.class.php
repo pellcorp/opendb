@@ -25,8 +25,8 @@ class Upgrader_1502_1503 extends OpenDbUpgrader
 	function Upgrader_1502_1503()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.0.2',
-						'1.5.0.3',
+						'1.5.0RC4',
+						'1.5.0.4',
 						array(
 							array('description'=>'Mergee signup and stats image type config'),
 						)

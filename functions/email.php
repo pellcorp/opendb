@@ -152,11 +152,11 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 		}
 		
 		$message = trim(stripslashes($message));
-		$message .= get_email_footer();
 		
+		$message .= get_email_footer();
+		 
 		if( sendEmail($to_email_addr, $to_name, $from_email_addr, $from_name, $subject, $message, $errors) ) {
 
-			// save email record.
 			insert_email(
 				$to_userid, 
 				$from_userid!=$from_email_addr?$from_userid:NULL, 
@@ -164,7 +164,6 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 				$subject, 
 				$message);
 			
-			// todo - save record of sent message
 			return TRUE;	
 		}
 	}
@@ -210,6 +209,7 @@ function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors)
 	}
 }
 
+
 /**
  * The table structure could be more sophisticated where a message is sent to multiple
  * addresses, but since the email function does not provide this, I see no reason to
@@ -228,12 +228,19 @@ function insert_email($to_user_id, $from_user_id, $from_email_addr, $subject, $m
 	$from_email_addr = trim($from_email_addr);
 	
 	if(!is_user_valid($to_user_id)) {
+		
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid To User', array($to_user_id, $from_user_id, $from_email_addr, $subject));
 		return FALSE;
-	} else if( strlen($from_user_id)>0 && 
-			( !is_user_valid($from_user_id) || $from_user_id == $to_user_id ) ) {
+		
+	} else if( strlen($from_user_id)>0 && !is_user_valid($from_user_id)) {
+
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid From User', array($to_user_id, $from_user_id, $from_email_addr, $subject));
 		return FALSE;
+		
 	} else if( strlen($from_user_id)==0 && 
 			( strlen($from_email_addr)==0 || !is_valid_email_addr($from_email_addr)) ) {
+				
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Invalid From User Email', array($to_user_id, $from_user_id, $from_email_addr, $subject));
 		return FALSE;
 	}
 	
@@ -252,12 +259,12 @@ function insert_email($to_user_id, $from_user_id, $from_email_addr, $subject, $m
 	$insert = db_query($query);
 	if ($insert && db_affected_rows() > 0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($to_user_id, $from_user_id, $from_email_addr, $subject, NULL));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($to_user_id, $from_user_id, $from_email_addr, $subject));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($to_user_id, $from_user_id, $from_email_addr, $subject, NULL));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($to_user_id, $from_user_id, $from_email_addr, $subject));
 		return FALSE;
 	}
 }

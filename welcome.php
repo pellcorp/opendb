@@ -37,35 +37,10 @@ include_once("./functions/borrowed_item.php");
 include_once("./functions/whatsnew.php");
 include_once("./functions/announcement.php");
 include_once("./functions/SourceforgeVersionCheck.class.php");
+include_once("./functions/statsdata.php");
+include_once("./functions/welcome.php");
 
-function get_lastitems_list_blocks_r($update_on, $user_id)
-{
-	if(get_opendb_config_var('welcome.last_items_list', 'enable')!==FALSE)
-	{
-		$last_items_list_conf_r = get_opendb_config_var('welcome.last_items_list');
-		
-		if($last_items_list_conf_r['exclude_current_user']!==TRUE)
-			$user_id = NULL;
-	
-		if($last_items_list_conf_r['restrict_last_login']!==TRUE)
-			$update_on = NULL;
 
-			$blocks_r = get_last_item_list(
-					$last_items_list_conf_r['total_num_items'],
-					NULL, 
-					NULL, 
-					$update_on, 
-					$user_id,
-					NULL,
-					FALSE);
-
-		return $blocks_r;
-	}
-	else
-	{
-		return NULL;
-	}
-}
 
 function get_admin_announcements_rs()
 {
@@ -194,55 +169,26 @@ function get_announcements_block()
 simple function so the last items lists and co can be called from more than one
 place, without having to rewrite the page logic.
 */
-function display_last_login_block($userid, $usertype, $lastvisit)
+function display_last_login_block($userid, $lastvisit)
 {
-	if(get_opendb_config_var('welcome.whats_new', 'enable')!==FALSE && 
-			is_user_granted_permission(PERM_VIEW_WHATSNEW))
-	{
-		$buffer .= "\n<div id=\"whatsnew\">";
-		$buffer .= "\n<h3>".get_opendb_lang_var('whats_new')."</h3>";
-		
-		$whats_new_rs = get_whats_new_details($lastvisit, $userid);
-		if(is_array($whats_new_rs))
-		{
-			$buffer .= "\n<ul>";
-			while(list(,$whats_new_r) = each($whats_new_rs))
-			{
-				if(is_array($whats_new_r['items']))
-				{
-					$buffer .= "\n<li><ul class=\"block\">";
-					$buffer .= "\n<h4>".$whats_new_r['heading']."</h4>";
-					
-					reset($whats_new_r['items']);
-					while(list(,$item_rs) = each($whats_new_r['items']))
-					{
-						$buffer .= "\n<li class=\"".$item_rs['class']."\">".$item_rs['content']."</li>";
-					}
-					$buffer .= "\n</ul></li>";
-				}
-			}
-			$buffer .= "\n</ul>";
-		}
-		$buffer .= "\n</div>";
-	}
-
-	if(get_opendb_config_var('welcome.last_items_list', 'enable')!==FALSE && 
-			is_user_granted_permission(PERM_VIEW_LISTINGS))
-	{
-		$lastitemlist_blocks_r = get_lastitems_list_blocks_r($lastvisit, $userid);
-		if(is_array($lastitemlist_blocks_r))
-		{
-			$buffer .= "\n<div id=\"lastitemslist\">";
-			$buffer .= '<h3>'.get_opendb_lang_var('last_items_list').'</h3>';
-			
-			$buffer .= get_last_item_list_table($lastitemlist_blocks_r);
-						
-			$buffer .= "\n</div>";
+//	$block = new WhatsNew();
+//	$buffer .= $block->render($userid, $lastvisit);
+//	
+//	$block = new LastItemsList();
+//	$buffer .= $block->render($userid, $lastvisit);
+//	
+//	$block = new CategoryStats();
+//	$buffer .= $block->render($userid, $lastvisit);
+	
+	$plugins_r = get_welcome_block_plugin_r();
+	if(is_array($plugins_r)) {
+		while(list(,$plugin) = each($plugins_r)) {
+			$buffer .= renderWelcomeBlockPlugin($plugin, $userid, $lastvisit);
 		}
 	}
 	
 	$buffer .= get_announcements_block();
-	
+
 	return $buffer;
 }
 
@@ -254,7 +200,6 @@ if(is_site_enabled())
 	
 		echo(display_last_login_block(
 			get_opendb_session_var('user_id'),
-			get_opendb_session_var('user_type'),
 			get_opendb_session_var('login_lastvisit')));
 	
 		echo(_theme_footer());

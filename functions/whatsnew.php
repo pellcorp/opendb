@@ -247,6 +247,33 @@ function get_last_item_list_table($blocks_r)
 	return $buffer;
 }
 
+function get_welcome_last_item_list($update_on, $user_id)
+{
+	if(get_opendb_config_var('welcome.last_items_list', 'enable')!==FALSE)
+	{
+		$last_items_list_conf_r = get_opendb_config_var('welcome.last_items_list');
+		
+		if($last_items_list_conf_r['exclude_current_user']!==TRUE)
+			$user_id = NULL;
+	
+		if($last_items_list_conf_r['restrict_last_login']!==TRUE)
+			$update_on = NULL;
+
+			return get_last_item_list(
+					$last_items_list_conf_r['total_num_items'],
+					NULL, 
+					NULL, 
+					$update_on, 
+					$user_id,
+					NULL,
+					FALSE);
+	}
+	else
+	{
+		return NULL;
+	}
+}
+	
 function get_whats_new_details($update_on, $user_id=NULL)
 {
 	$whats_new_rs = NULL;

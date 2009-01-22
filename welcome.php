@@ -40,8 +40,6 @@ include_once("./functions/SourceforgeVersionCheck.class.php");
 include_once("./functions/statsdata.php");
 include_once("./functions/welcome.php");
 
-
-
 function get_admin_announcements_rs()
 {
 	$announcements_rs = array();
@@ -165,21 +163,8 @@ function get_announcements_block()
 	}
 }
 
-/**
-simple function so the last items lists and co can be called from more than one
-place, without having to rewrite the page logic.
-*/
 function display_last_login_block($userid, $lastvisit)
 {
-//	$block = new WhatsNew();
-//	$buffer .= $block->render($userid, $lastvisit);
-//	
-//	$block = new LastItemsList();
-//	$buffer .= $block->render($userid, $lastvisit);
-//	
-//	$block = new CategoryStats();
-//	$buffer .= $block->render($userid, $lastvisit);
-	
 	$plugins_r = get_welcome_block_plugin_r();
 	if(is_array($plugins_r)) {
 		while(list(,$plugin) = each($plugins_r)) {

@@ -306,9 +306,10 @@ if(is_site_enabled())
 	
 					echo("\n<div class=\"tabContent\" id=\"breakdown\">");
 					echo("<ul class=\"graph\">");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership\" $widthHeightAttribs alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=item_types\" $widthHeightAttribs alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=categories\" $widthHeightAttribs alt=\"".get_opendb_lang_var('category_chart')."\"></li>");
+					
+					echo("<li>".render_chart_image('item_ownership')."</li>");
+					echo("<li>".render_chart_image('item_types')."</li>");
+					echo("<li>".render_chart_image('categories')."</li>");
 					echo("</ul>");
 					echo("</div>");
 					
@@ -318,8 +319,8 @@ if(is_site_enabled())
 						echo("\n<div class=\"tabContentHidden\" id=\"${item_type_r['s_item_type']}\">");
 		        	    echo("<h3>".get_opendb_lang_var('itemtype_breakdown', array('desc'=>$item_type_r['description'],'s_item_type'=>$item_type_r['s_item_type'], 'total'=>$item_type_r['count']))."</h3>");
 						echo("<ul class=\"graph\">");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_ownership&s_item_type=".urlencode($item_type_r['s_item_type'])."\" $widthHeightAttribs alt=\"".get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_category&s_item_type=".urlencode($item_type_r['s_item_type'])."\" $widthHeightAttribs alt=\"".get_opendb_lang_var('itemtype_category_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
+						echo("<li>".render_chart_image('item_type_ownership', $item_type_r['s_item_type'])."</li>");
+						echo("<li>".render_chart_image('item_type_category', $item_type_r['s_item_type'])."</li>");
 						echo("</ul>");
 						echo("</div>\n");
 					}

@@ -165,14 +165,14 @@ function do_stats_graph($HTTP_VARS)
 			build_and_send_graph(
 				build_item_ownership_chart_data(), 
 				'piechart',
-				get_opendb_lang_var('database_ownership_chart'));
+				get_chart_alt_text($HTTP_VARS['graphtype']));
 			break;
 		
 		case 'item_types':
 			build_and_send_graph(
 				build_item_types_chart_data(), 
 				'piechart',
-				get_opendb_lang_var('database_itemtype_chart'));
+				get_chart_alt_text($HTTP_VARS['graphtype']));
 			break;
 		
 		case 'categories':
@@ -183,7 +183,7 @@ function do_stats_graph($HTTP_VARS)
 			build_and_send_graph(
 				build_category_chart_data(),
 				$chartType,
-				get_opendb_lang_var('category_chart'));
+				get_chart_alt_text($HTTP_VARS['graphtype']));
 			
 			break;
 			
@@ -191,7 +191,7 @@ function do_stats_graph($HTTP_VARS)
 			build_and_send_graph(
 				build_owner_item_chart_data($HTTP_VARS['s_item_type']), 
 				'piechart',
-				get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $HTTP_VARS['s_item_type']));
+				get_chart_alt_text($HTTP_VARS['graphtype'], $HTTP_VARS['s_item_type']));
 			break;
 		
 		case 'item_type_category':
@@ -202,14 +202,41 @@ function do_stats_graph($HTTP_VARS)
 			build_and_send_graph(
 				build_item_category_chart_data($HTTP_VARS['s_item_type']),
 				$chartType,
-				get_opendb_lang_var('itemtype_category_chart', 's_item_type', $HTTP_VARS['s_item_type']));
+				get_chart_alt_text($HTTP_VARS['graphtype'], $HTTP_VARS['s_item_type']));
 			
 			break;
-		
-		
 			
 		default:
 			// what to do here!
 	}
 }
+
+function render_chart_image($graphType, $itemType=NULL) {
+	$graphCfg = _theme_graph_config();
+	$chartLib = get_opendb_config_var('stats', 'chart_lib');
+	if($chartLib!='legacy') {
+		$widthHeightAttribs = "width=\"${graphCfg['width']}\" height=\"${graphCfg['height']}\"";
+	}
+	
+	$altText = get_chart_alt_text($graphType, $itemType);
+	
+	return "<img src=\"stats.php?op=graph&graphtype=$graphType".(strlen($itemType)>0?"&s_item_type=".urlencode($itemType):"")."\" $widthHeightAttribs alt=\"$altText\">";
+}	
+
+function get_chart_alt_text($graphType, $itemType=NULL) {
+	switch($graphType) {
+		case 'item_ownership':
+			return get_opendb_lang_var('database_ownership_chart');
+		case 'item_types':
+			return get_opendb_lang_var('database_itemtype_chart');
+		case 'categories':
+			return get_opendb_lang_var('category_chart');
+		case 'item_type_ownership':
+			return get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $itemType);
+		case 'item_type_category':
+			return get_opendb_lang_var('itemtype_category_chart', 's_item_type', $itemType);
+		default:
+			return NULL;
+	}
+}		
 ?>

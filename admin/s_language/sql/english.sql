@@ -210,7 +210,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_have_not_been_reserved', 'The following item(s) were not reserved:'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_per_page', 'Items per page'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_reserved', 'All Reserved Items'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_breakdown', 'Breakdown for {desc} ({s_item_type}) ({total} items)'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_breakdown', 'Breakdown for {desc} ({s_item_type}) ({total} items)');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'category_chart', 'Category Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_category_chart', '{s_item_type} Category Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_ownership_chart', '{s_item_type} Ownership Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_added', 'Item added.'); 

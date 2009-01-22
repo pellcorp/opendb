@@ -130,6 +130,27 @@ function fetch_attribute_type_lookup_rs($s_attribute_type=NULL, $order_by = 'val
 		return FALSE;
 }
 
+function fetch_field_type_attribute_lookup_rs($field_type)
+{
+	$query = "SELECT DISTINCT satl.value, IF(LENGTH(IFNULL(stlv.value, display))>0,IFNULL(stlv.value, display),satl.value) AS display
+	FROM (s_attribute_type_lookup satl, s_attribute_type sat)
+	LEFT JOIN s_table_language_var stlv 
+	ON stlv.language = '".get_opendb_site_language()."' AND
+		stlv.tablename = 's_attribute_type_lookup' AND
+		stlv.columnname = 'display' AND
+		stlv.key1 = satl.s_attribute_type AND
+		stlv.key2 = satl.value 
+	WHERE sat.s_attribute_type = satl.s_attribute_type AND 
+		sat.s_field_type = '$field_type'
+	ORDER BY order_no, value ASC";
+
+	$result = db_query($query);
+	if($result && db_num_rows($result)>0)
+		return $result;
+	else
+		return FALSE;
+}
+
 /**
 	Return s_attribute_type_lookup record for the specified $s_attribute_type and $value
 	parameters.
@@ -333,6 +354,7 @@ function fetch_item_attribute_type_rs($s_item_type, $restrict_type = NULL, $orde
 		"SELECT".($distinct?" DISTINCT ":" ")."
 				siat.s_attribute_type,
        			siat.order_no,
+       			siat.s_item_type,
 				UPPER(sat.s_field_type) as s_field_type, 
 				IF(LENGTH(IFNULL(stlv2.value, siat.prompt))>0,IFNULL(stlv2.value, siat.prompt),IFNULL(stlv.value, sat.prompt)) AS prompt,
 				IFNULL(stlv3.value, sat.description) AS description,		      
@@ -375,8 +397,11 @@ function fetch_item_attribute_type_rs($s_item_type, $restrict_type = NULL, $orde
 				stlv3.tablename = 's_attribute_type' AND
 				stlv3.columnname = 'description' AND
 				stlv3.key1 = sat.s_attribute_type
-		WHERE	siat.s_item_type = '".$s_item_type."' AND 
-				sat.s_attribute_type = siat.s_attribute_type ";
+		WHERE	sat.s_attribute_type = siat.s_attribute_type ";
+	
+	if(strlen($s_item_type)>0) {
+		$query .= "AND siat.s_item_type = '".$s_item_type."' "; 
+	}
 	
 	if($restrict_type == 'rss_ind')
 	{

@@ -49,7 +49,7 @@ class WelcomeBlock {
 		return $this->_permId;
 	}
 	
-	function isAvailable() {
+	function isAvailable($userid) {
 		if(($this->getConfigId() == NULL || get_opendb_config_var($this->getConfigId(), 'enable')===TRUE) && 
 				($this->getPermId() == NULL || is_user_granted_permission($this->getPermId(), $userid))) {
 			return TRUE;
@@ -71,7 +71,7 @@ class WelcomeBlock {
 	}
 	
 	function render($userid, $lastvisit) {
-		if($this-> isAvailable()) {
+		if($this-> isAvailable($userid)) {
 			$block = $this->renderBlock($userid, $lastvisit);
 			
 			if($block) {

@@ -61,6 +61,7 @@ function build_and_send_graph($data_rs, $chartType, $title)
 		
 		usort($data_rs, "sort_data_element");
 	
+		// only show first 12 items - otherwise graph will not render correctly.
 		if($chartType == 'piechart' && count($data_rs)>12)
 			$data_rs = array_slice( $data_rs, 0, 11 );
 		

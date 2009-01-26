@@ -418,7 +418,7 @@ function is_exists_related_item_instance_relationship($item_id, $instance_no, $p
 //
 function fetch_item_instance_r($item_id, $instance_no)
 {
-	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, i.title, i.s_item_type 
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, ii.update_on, i.title, i.s_item_type 
 			FROM item i, item_instance ii 
 			WHERE i.id = ii.item_id AND i.id ='".$item_id."' AND ii.instance_no = '".$instance_no."'";
 	

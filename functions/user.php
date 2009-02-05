@@ -253,11 +253,6 @@ function fetch_role_r($role_name) {
 	return FALSE;
 }
 
-/**
- * PUBLICACCESS is explicity excluded from the list of available
- * roles.  Its an internal role for use by the system to define
- * the permissions for public access only.
- */
 function fetch_user_role_rs($signup_avail_mode = INCLUDE_SIGNUP_UNAVAILABLE_USER)
 {
 	$query = "SELECT sr.role_name, 
@@ -269,7 +264,7 @@ function fetch_user_role_rs($signup_avail_mode = INCLUDE_SIGNUP_UNAVAILABLE_USER
 	stlv.tablename = 's_role' AND
 	stlv.columnname = 'description' AND
 	stlv.key1 = sr.role_name 
-	WHERE sr.role_name <> 'PUBLICACCESS'";
+	WHERE sr.role_name <> '".get_public_access_rolename()."'";
 	
 	if($signup_avail_mode == EXCLUDE_SIGNUP_UNAVAILABLE_USER)
 		$query .= " AND sr.signup_avail_ind = 'Y'";

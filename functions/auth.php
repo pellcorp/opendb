@@ -58,6 +58,15 @@ define('PERM_ADMIN_SEND_EMAIL', 'PERM_ADMIN_SEND_EMAIL');
 define('PERM_SEND_EMAIL', 'PERM_SEND_EMAIL');
 define('PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL');
 
+/**
+ * reduce hardcoding of this value - ideally should be a flag in the s_role table.
+ *
+ * @return unknown
+ */
+function get_public_access_rolename() {
+	return "PUBLICACCESS";
+}
+
 // todo - cache user_role and permissions list after first call
 function is_user_granted_permission($permission, $user_id = NULL)
 {
@@ -67,7 +76,7 @@ function is_user_granted_permission($permission, $user_id = NULL)
 	{
 		$query = "SELECT 'X' 
 			FROM 	s_role_permission
-			WHERE 	role_name = 'PUBLICACCESS' AND
+			WHERE 	role_name = '".get_public_access_rolename()."' AND
 				  	permission_name IN ($user_permissions_clause)";
 	}
 	else 

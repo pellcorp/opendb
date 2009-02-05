@@ -29,6 +29,7 @@ $_FIELD_TYPES = array(
 		'STATUSCMNT'=>'Status Comment',
 		'DURATION'=>'Borrow Duration',
 		'ITEM_ID'=>'Item ID',
+		'UPDATE_ON'=>'Last Updated',
 		'IMAGE'=>'Cover Image',
 		'RATING'=>'System rating attribute',
 		'ADDRESS'=>'System address attribute'

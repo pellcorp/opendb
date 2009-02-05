@@ -220,7 +220,8 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 				$attribute_type_r['s_field_type'] != 'STATUSCMNT' && 
 				$attribute_type_r['s_field_type'] != 'DURATION' && 
 				$attribute_type_r['s_field_type'] != 'TITLE' && 
-				$attribute_type_r['s_field_type'] != 'ITEM_ID'))
+				$attribute_type_r['s_field_type'] != 'ITEM_ID' && 
+				$attribute_type_r['s_field_type'] != 'UPDATE_ON'))
 	{
         echo("<td class=\"$class\">");
 		echo(get_input_field("instance_attribute_ind[$row]", NULL, NULL, "simple_checkbox(".(strtoupper($s_item_attribute_type_r['instance_attribute_ind'])== "Y"?"CHECKED":"").")", "N", "Y", FALSE));

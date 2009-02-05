@@ -35,7 +35,6 @@ if(is_user_admin_changed_user())
 	
 	$user_r = fetch_user_r(get_opendb_session_var('admin_user_id'));
     register_opendb_session_var('user_id', get_opendb_session_var('admin_user_id'));
-	register_opendb_session_var('user_type', $user_r['type']);
 
     unregister_opendb_session_var('admin_user_id');
 	
@@ -51,7 +50,6 @@ else
 	}
 
     unregister_opendb_session_var('user_id');
-	unregister_opendb_session_var('user_type');
 	unregister_opendb_session_var('hash_check');
 	unregister_opendb_session_var('login_time');
 	unregister_opendb_session_var('last_access_time');

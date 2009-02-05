@@ -152,16 +152,22 @@ class imdb extends SitePlugin
 			}
 		}
 	
-		/*<div class="info">
-		<h5>Director:</h5>
-		<a href="/name/nm0467646/">Ted Kotcheff</a><br>
-		</div>*/
+		/**
+		 * <div id="director-info" class="info">
+<h5>Directors:</h5>
+<a href="/name/nm0905152/">Andy Wachowski</a><br><a href="/name/nm0905154/">Larry Wachowski</a><br>
+</div>
+		 */
 /*<h5>Director:</h5>
 <a href="/name/nm0268380/">Peter Farrelly</a><br><a class="tn15more" href="fullcredits#directors">more</a>
 */
-		if(preg_match("!<h5>Director:</h5>[\s]*<a href=\".*?\">([^<]*)</a>!", $pageBuffer, $matches))
+		if(preg_match("!<div id=\"director-info\" class=\"info\">(.*?)</div>!ms", $pageBuffer, $matches))
 		{
-			$this->addItemAttribute('director', $matches[1]);
+			$buffer = $matches[1];
+			if(preg_match_all("!<a href=\"/name/nm([0-9]+)/\">([^<]+)</a>!", $buffer, $matches))
+			{
+				$this->addItemAttribute('director', $matches[2]);
+			}
 		}
 		
 		$start = strpos($pageBuffer,"<h5>Genre:</h5>", $end);
@@ -177,7 +183,7 @@ class imdb extends SitePlugin
 			}
 		}
 	
-		if(preg_match("!<b>User Rating:</b>[\s]*<b>([0-9|\.]+)/10</b>!", $pageBuffer, $regs))
+		if(preg_match("!<div class=\"usr rating\">.*?<div class=\"meta\">.*?<b>([0-9|\.]+)/10</b>!ms", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('imdbrating', $regs[1]);
 		}

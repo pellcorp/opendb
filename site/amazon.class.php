@@ -76,6 +76,7 @@ class amazon extends SitePlugin
 			}
 			else
 			{
+				// this is a severe memory hog!!!
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div>
@@ -428,7 +429,8 @@ class amazon extends SitePlugin
 	*/
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
-		if(preg_match_all("!<a href=\".*?field-author=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
+		//by <a href="/exec/obidos/search-handle-url/ref=ntt_athr_dp_sr_1?%5Fencoding=UTF8&amp;search-type=ss&amp;index=books&amp;field-author=J.%20K.%20Rowling">J. K. Rowling</a> (Author)
+		if(preg_match_all("!<a href=\"[^\>]+field-author=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('author', $regs[1]);
 		}

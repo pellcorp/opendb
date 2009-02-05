@@ -173,6 +173,8 @@ if(is_site_enabled())
 						
 						if($item_attribute_type_r['s_field_type'] == 'ITEM_ID')
 							$value = $item_r['item_id'];
+						else if($item_attribute_type_r['s_field_type'] == 'UPDATE_ON')
+							$value = $item_r['update_on'];
 						else if(is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
 							$value = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
 						else

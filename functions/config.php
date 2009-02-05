@@ -45,6 +45,10 @@ function is_gzip_compression_enabled($php_self)
 	return FALSE;
 }
 
+function get_opendb_image_type() {
+	return strlen(get_opendb_config_var('site', 'image_type'))>0? get_opendb_config_var('site', 'image_type') : "auto";
+}
+
 /**
  * @return unknown
  */

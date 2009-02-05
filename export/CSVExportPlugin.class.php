@@ -67,6 +67,7 @@ class CSVExportPlugin
 	{
 		$buffer = "";
 	
+		$isFirst = TRUE;
 		while(list(,$column) = each($columns))
 		{
 			if(is_array($column))
@@ -74,7 +75,7 @@ class CSVExportPlugin
 				$colval = '';
 				for($i=0; $i<count($column); $i++)
 				{
-					if(!empty($colval))
+					if($i>0)
 						$colval .= ',';
 					$colval .= $column[$i];
 				}
@@ -98,10 +99,12 @@ class CSVExportPlugin
 			if($doQuote)
 				$column = "\"".$column."\"";
 							
-			if(strlen($buffer)>0)
+			if(!$isFirst) {
 				$buffer .= ",$column";
-			else
+			} else {
 				$buffer .= "$column";
+				$isFirst = FALSE;
+			}
 		}
 		return $buffer."\n";
 	}

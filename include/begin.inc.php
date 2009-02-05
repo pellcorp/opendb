@@ -24,7 +24,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 //ini_set('session.save_handler', 'files'); 
 
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
-define('__OPENDB_RELEASE__', '1.5.0');
+define('__OPENDB_RELEASE__', '1.5.0.5');
 define('__OPENDB_TITLE__', 'OpenDb');
 
 if(extension_loaded('mysqli'))
@@ -141,15 +141,6 @@ if(function_exists('db_connect'))
 			// We want to start the session here, so we can get access to the $_SESSION properly.
 			session_start();
 
-			if(!is_opendb_valid_session())
-			{
-			    $site_public_access_r = get_opendb_config_var('site.public_access');
-				if($site_public_access_r['enable']!==FALSE)
-				{
-		            register_opendb_session_var('user_type', 'G');
-				}
-			}
-			
 			//allows specific pages to overide themes
 			if(is_exists_theme($_OVRD_OPENDB_THEME))
 			{

@@ -25,25 +25,45 @@ include_once("./functions/database.php");
 include_once("./functions/auth.php");
 include_once("./functions/logging.php");
 
-include_once("./functions/borrowed_item.php");
+include_once("./functions/chart.php");
 include_once("./functions/widgets.php");
+include_once("./functions/statsdata.php");
 include_once("./functions/user.php");
 include_once("./functions/item.php");
 include_once("./functions/review.php");
-include_once("./functions/chart.php");
 include_once("./functions/item_type.php");
 include_once("./functions/item_attribute.php");
 include_once("./functions/item.php");
 
+function get_item_type_totals_rs()
+{
+	$item_type_rs = array();
+	$itemresults = fetch_item_type_rs();
+	if($itemresults)
+	{
+		while($item_type_r = db_fetch_assoc($itemresults) )
+		{
+			$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);
+			if($type_total_items > 0) 
+			{
+				$item_type_r['count'] = $type_total_items;
+				$item_type_rs[] = $item_type_r;
+			}			
+		}
+		db_free_result($itemresults);
+	}
+	return $item_type_rs;
+}
+
 function build_review_stats()
 {
-	echo("<h3>".get_opendb_lang_var('review_stats')."</h3>");
-	
-	echo("<dl class=\"reviewStats\">");
-	
 	$avgrate = fetch_review_rating();
 	if($avgrate>0)
 	{
+		echo("<h3>".get_opendb_lang_var('review_stats')."</h3>");
+	
+		echo("<dl class=\"reviewStats\">");
+	
 		$num_review = fetch_review_cnt();
 		
 		echo("<dt>".get_opendb_lang_var('review(s)')."</dt>");
@@ -56,8 +76,9 @@ function build_review_stats()
 						'review()',
 						$avgrate,
 						FALSE)."</dd>");
+		
+		echo("</dl>");
 	}
-	echo("</dl>");
 }
 
 function build_item_stats()
@@ -241,180 +262,6 @@ function build_borrower_stats()
 	}
 }
 
-function build_owner_item_chart_data($s_item_type)
-{
-	$result = fetch_user_rs(PERM_ITEM_OWNER);
-	if($result)
-	{
-		while ($user_r = db_fetch_assoc($result))
-		{
-			$num_total = fetch_owner_item_cnt($user_r['user_id'], $s_item_type);
-			if($num_total>0)
-			{
-				$data[] = array('display'=>$user_r['fullname'], 'value'=>$num_total);
-			}
-		}
-		db_free_result($result);
-	}
-	
-	return $data;
-}
-
-function build_item_category_chart_data($s_item_type)
-{
-	$category_attribute_type = fetch_sfieldtype_item_attribute_type($s_item_type, 'CATEGORY');
-	if($category_attribute_type)
-	{
-		$results = fetch_attribute_type_lookup_rs($category_attribute_type, 'order_no, value ASC');
-		if($results)
-		{
-			while($attribute_type_r = db_fetch_assoc($results)) // next category...
-			{
-				$num_total = fetch_category_item_cnt($attribute_type_r['value'], $s_item_type);
-				if($num_total > 0)
-				{
-					$data[] = array('display'=>$attribute_type_r['display'], 'value'=>$num_total);
-				}
-			}
-			db_free_result($results);
-		}
-	}
-	
-	return $data;
-}
-
-function build_item_types_chart_data()
-{
-	$results = fetch_item_type_rs();
-	while( $item_type_r = db_fetch_assoc($results) )
-	{
-		$num_total = fetch_item_instance_cnt($item_type_r['s_item_type']);
-		if($num_total>0)
-		{
-			$data[] = array('display'=>$item_type_r['s_item_type'], 'value'=>$num_total);
-		}
-	}
-	db_free_result($results);
-
-	return $data;
-}
-
-function build_item_ownership_chart_data()
-{
-	$results = fetch_status_type_rs();
-	if($results)
-	{
-		while ($status_type_r = db_fetch_assoc($results))
-		{
-			$status_type_rs[] = $status_type_r;
-		} 
-		db_free_result($results);
-	}
-		
-	$results = fetch_user_rs(PERM_ITEM_OWNER);
-	if($results)
-	{
-		while ($user_r = db_fetch_assoc($results))
-		{
-			$num_total = 0;
-			if(is_not_empty_array($status_type_rs))
-			{
-				reset($status_type_rs);
-	    		while(list($key, $status_type_r) = each($status_type_rs))
-				{
-					$status_total = fetch_owner_s_status_type_item_cnt($user_r['user_id'], $status_type_r['s_status_type']);
-					$num_total += $status_total;
-				}
-			}
-
-			// pie chart data
-			if($num_total>0)
-			{
-				$data[] = array('display'=>$user_r['fullname'], 'value'=>$num_total);
-			}
-		}
-		db_free_result($results);
-	}
-	
-	return $data;
-}
-
-function do_stats_graph($HTTP_VARS)
-{
-	// Load GD Library if not already loaded - todo is this still required
-	// Thanks to Laurent CHASTEL (lchastel)
-	if (!@extension_loaded('gd'))
-	{
-		if((boolean)@ini_get('enable_dl'))// is dynamic load enabled
-		{ 
-		    $gd_library = get_opendb_config_var('site.gd', 'library');
-			if(strlen($gd_library)>0)
-			{
-				@dl($gd_library);
-			}
-		}
-	}
-
-	switch($HTTP_VARS['graphtype'])
-	{
-		case 'item_ownership':
-			build_and_send_graph(
-				build_item_ownership_chart_data(), 
-				'piechart',
-				get_opendb_lang_var('database_ownership_chart'));
-			break;
-		
-		case 'item_types':
-			build_and_send_graph(
-				build_item_types_chart_data(), 
-				'piechart',
-				get_opendb_lang_var('database_itemtype_chart'));
-			break;
-		
-		case 'item_type_ownership':
-			build_and_send_graph(
-				build_owner_item_chart_data($HTTP_VARS['s_item_type']), 
-				'piechart',
-				get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $HTTP_VARS['s_item_type']));
-			break;
-		
-		case 'item_type_category':
-			$chartType = 'piechart';
-			if(get_opendb_config_var('stats', 'category_barchart') === TRUE)
-				$chartType = 'barchart';
-				
-			build_and_send_graph(
-				build_item_category_chart_data($HTTP_VARS['s_item_type']),
-				$chartType,
-				get_opendb_lang_var('itemtype_category_chart', 's_item_type', $HTTP_VARS['s_item_type']));
-			
-			break;
-		
-		default:
-			// what to do here!
-	}
-}
-
-function get_item_types_rs()
-{
-	$item_type_rs = array();
-	$itemresults = fetch_item_type_rs();
-	if($itemresults)
-	{
-		while($item_type_r = db_fetch_assoc($itemresults) )
-		{
-			$type_total_items = fetch_item_instance_cnt($item_type_r['s_item_type']);
-			if($type_total_items > 0) 
-			{
-				$item_type_r['count'] = $type_total_items;
-				$item_type_rs[] = $item_type_r;
-			}			
-		}
-		db_free_result($itemresults);
-	}
-	return $item_type_rs;
-}
-
 if(is_site_enabled())
 {
 	if (is_opendb_valid_session() || is_site_public_access())
@@ -434,7 +281,7 @@ if(is_site_enabled())
 				build_borrower_stats();
 				build_item_stats();
 
-				$item_type_rs = get_item_types_rs();
+				$item_type_rs = get_item_type_totals_rs();
 			    if(count($item_type_rs)>0)
 				{
 					echo("<div class=\"tabContainer\">");
@@ -459,8 +306,10 @@ if(is_site_enabled())
 	
 					echo("\n<div class=\"tabContent\" id=\"breakdown\">");
 					echo("<ul class=\"graph\">");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=item_ownership\" $widthHeightAttribs alt=\"".get_opendb_lang_var('database_ownership_chart')."\"></li>");
-					echo("<li><img src=\"stats.php?op=graph&graphtype=item_types\" $widthHeightAttribs alt=\"".get_opendb_lang_var('database_itemtype_chart')."\"></li>");
+					
+					echo("<li>".render_chart_image('item_ownership')."</li>");
+					echo("<li>".render_chart_image('item_types')."</li>");
+					echo("<li>".render_chart_image('categories')."</li>");
 					echo("</ul>");
 					echo("</div>");
 					
@@ -470,8 +319,8 @@ if(is_site_enabled())
 						echo("\n<div class=\"tabContentHidden\" id=\"${item_type_r['s_item_type']}\">");
 		        	    echo("<h3>".get_opendb_lang_var('itemtype_breakdown', array('desc'=>$item_type_r['description'],'s_item_type'=>$item_type_r['s_item_type'], 'total'=>$item_type_r['count']))."</h3>");
 						echo("<ul class=\"graph\">");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_ownership&s_item_type=".urlencode($item_type_r['s_item_type'])."\" $widthHeightAttribs alt=\"".get_opendb_lang_var('itemtype_ownership_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
-						echo("<li><img src=\"stats.php?op=graph&graphtype=item_type_category&s_item_type=".urlencode($item_type_r['s_item_type'])."\" $widthHeightAttribs alt=\"".get_opendb_lang_var('itemtype_category_chart', 's_item_type', $item_type_r['s_item_type'])."\"></li>");
+						echo("<li>".render_chart_image('item_type_ownership', $item_type_r['s_item_type'])."</li>");
+						echo("<li>".render_chart_image('item_type_category', $item_type_r['s_item_type'])."</li>");
 						echo("</ul>");
 						echo("</div>\n");
 					}

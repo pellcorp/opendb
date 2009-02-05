@@ -375,12 +375,9 @@ class Listing
 		}			
 				
 		$is_borrowed_or_returned = FALSE;
- 		if($item_r['owner_id'] != get_opendb_session_var('user_id'))
+		if(is_item_borrowed_or_returned_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
 		{
-			if(is_item_borrowed_or_returned_by_user($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id')))
-			{
-				$is_borrowed_or_returned = TRUE;
-			}
+			$is_borrowed_or_returned = TRUE;
 		}
 		
 		$item_cover_image = FALSE;

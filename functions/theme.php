@@ -277,7 +277,7 @@ function get_theme_search_site_dir_list()
 	return $dirPath;
 }
 
-function _theme_image_src($src)
+function _theme_image_src($src, $PermitOtherExtension = TRUE)
 {
 	if(strlen($src)>0)
 	{
@@ -293,25 +293,44 @@ function _theme_image_src($src)
 		else
 			$dirPaths = get_theme_search_dir_list();
 		
-		$file_r = parse_file(safe_filename($src));
+		$src = safe_filename($src);
+		$file_r = parse_file($src);
 		$src = $file_r['name'];
 		
-		$extension_r = array('gif', 'png', 'jpg');
-		while(list(,$dir) = each($dirPaths))
-		{
+		// this might seem a little weird, but its simpler code to write
+		if($PermitOtherExtension) {
+			$extension_r = array('gif', 'png', 'jpg');
+		} else {
+			$extension_r = array($file_r['extension']);
+		}
+		
+		while(list(,$dir) = each($dirPaths)) {
 			reset($extension_r);
-			while(list(,$extension) = each($extension_r))
-			{
+			while(list(,$extension) = each($extension_r)) {
 				$file = './'.$dir.'/'.$src.'.'.$extension;
-				if(file_exists($file))
-				{
+				if(file_exists($file)) {
 					return $file;
 				}
-			}			
+			}
 		}
 	}
 
 	return FALSE; // no image found.
+}
+
+function find_filename() {
+	while(list(,$dir) = each($dirPaths))
+	{
+		reset($extension_r);
+		while(list(,$extension) = each($extension_r))
+		{
+			$file = './'.$dir.'/'.$src.'.'.$extension;
+			if(file_exists($file))
+			{
+				return $file;
+			}
+		}			
+	}
 }
 
 /**

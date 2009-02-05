@@ -115,8 +115,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confir
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'connected_to', 'Connected to {dbname}@{host}'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'content', 'Content'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'current_user', 'Current user'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_itemtype_chart', 'DataBase Item Types Chart'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_ownership_chart', 'DataBase Ownership Chart'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_itemtype_chart', 'Item Types Chart'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'database_ownership_chart', 'Ownership Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'date', 'Date'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'datetime_is_not_valid', '{prompt} must be a date/time (format: {format_mask}).'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'db_backup_generated', 'Db Backup generated: {date}'); 
@@ -210,7 +210,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_have_not_been_reserved', 'The following item(s) were not reserved:'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_per_page', 'Items per page'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'items_reserved', 'All Reserved Items'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_breakdown', 'Breakdown for {desc} ({s_item_type}) ({total} items)'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_breakdown', 'Breakdown for {desc} ({s_item_type}) ({total} items)');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'category_chart', 'Category Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_category_chart', '{s_item_type} Category Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'itemtype_ownership_chart', '{s_item_type} Ownership Chart'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_added', 'Item added.'); 

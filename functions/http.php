@@ -70,9 +70,15 @@ function http_redirect($link)
 		}
 		$path .= $link;
 		
-		header('Location: '.$protocol.'://'.$host.$path);
+		$url = $protocol.'://'.$host.$path;
+		
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($link, $url));
+		
+		header('Location: '.$url);
 			
 	} else {
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($link));
+		
 		header("Location: $link");
 	}
 }

@@ -72,7 +72,6 @@ function perform_changeuser($HTTP_VARS)
 
 	$user_r = fetch_user_r($HTTP_VARS['uid']);
     register_opendb_session_var('user_id', $HTTP_VARS['uid']);
-    register_opendb_session_var('user_type', $user_r['type']);
 
 	opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'Administrator changed user');
 }

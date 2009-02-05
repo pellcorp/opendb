@@ -102,7 +102,7 @@ if(is_site_enabled())
 					{
 						if(is_user_address_visible($HTTP_VARS, $address_type_r))
 						{
-							$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], get_opendb_session_var('user_type'), 'query', TRUE);
+							$attr_results = fetch_address_type_attribute_type_rs($address_type_r['s_address_type'], 'query', TRUE);
 							if($attr_results)
 							{
 								echo('<h3>'.$address_type_r['description'].'</h3>');

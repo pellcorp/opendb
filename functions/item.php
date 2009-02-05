@@ -200,9 +200,6 @@ function fetch_owner_item_cnt($owner_id, $s_item_type = NULL)
 }
 
 /*
-* 	We do not know which s_status_type's the get_opendb_session_var('user_type')
-* 	can have access to so we include a join to s_status_type to hide any
-* 	items with a s_status_type the current user should not see.
 */
 function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type)
 {

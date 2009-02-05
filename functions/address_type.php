@@ -134,11 +134,6 @@ function fetch_user_address_type_r($user_id, $address_type)
 	return FALSE;
 }
 
-/**
-	@$min_user_type - where not specified only return existing user address details, otherwise
-						return a list of all address types matching the min user type, including
-						any user_address details
-*/
 function fetch_user_address_type_rs($user_id, $order_by = FALSE)
 {
 	$query = "SELECT ua.sequence_number, ".

@@ -190,7 +190,7 @@ div.tabContent .footer-links
 	float: right;
 }
 
-ul.urlOptionsMenu
+ul.multiFieldMenu
 {
 	padding: 3px;
 	margin: 2px;
@@ -200,7 +200,7 @@ ul.urlOptionsMenu
 	padding-bottom: 0px;
 }
 
-ul.urlOptionsMenu li
+ul.multiFieldMenu li
 {
 	float: left;
 	border: 1px solid black; 
@@ -212,14 +212,14 @@ ul.urlOptionsMenu li
 	cursor: pointer;
 }
 
-ul.urlOptionsMenu li.activeTab
+ul.multiFieldMenu li.activeTab
 {
 	background-color: white; 
 	font-weight: bold; 
 	cursor: default;
 }
 
-div.urlOptionsContainer
+div.multiFieldContainer
 {
 	clear: both;
 	float: left;

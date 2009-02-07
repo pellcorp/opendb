@@ -200,6 +200,10 @@ function get_item_input_field(
 	{
 		$field = url($fieldname, $item_r, $item_attribute_type_r, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled);
 	}
+	else if($item_attribute_type_r['input_type'] == 'custom')//arg[0] = length of field, arg[1] = maxlength of field, arg[2] = field prompts, arg[3] = field names, arg[4] = No Of Fields
+	{
+		$field = multivalue_custom_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $widget['args']['3'], $widget['args']['4'], $value, $onchange_event, $disabled);
+	}
 	else
 	{
 		$field = ">>> ERROR (input_type = $input_type) <<<";
@@ -270,6 +274,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 			case 'textarea':
 			case 'htmlarea':
 			case 'text':
+			case 'custom':
 			case 'password':
 			case 'simple_checkbox':
 			case 'checkbox':
@@ -468,6 +473,7 @@ function filter_item_input_field($item_attribute_type_r, $value)
 				case 'hidden':
 				case 'readonly':
 				case 'text':
+				case 'custom':
 				case 'password':
 				case 'textarea':
 					$value[$i] = strip_tags($value[$i]);
@@ -575,6 +581,109 @@ function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value
 	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
 }
 
+/**
+	Arg1=Field Prompt 1, Field Prompt 2
+	Arg2=field_name1, field_name2
+	Arg3=HowManyFields
+ */
+function multivalue_custom_field($name, $prompt, $length, $maxlength, $field_prompts, $field_names, $num_fields, $compulsory_ind, $values_r, $onchange_event, $disabled = FALSE) {
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
+		$size = 50;
+	
+	if(!is_numeric($num_fields)) {
+		$num_fields = 1;
+	}
+	
+	$fields_r = merge_custom_fields($field_prompts, $field_names);
+	
+	$buffer .= "\n<div class=\"multiValue\">";
+	$buffer .= "<ul class=\"multiValue\" id=\"${name}-multi_value_list\">";
+	
+	// handle blank too!
+	if(count($values_r)==0) {
+		unset($values_r);
+		$values_r[] = '';
+	}
+	
+	for($i=0; $i<$num_fields; $i++)
+	{
+		if(isset($values_r[$i])) {
+			$value = $values_r[$i];
+		} else {
+			$value = NULL;
+		}
+		
+		$buffer .= "\n<li>".custom_field($i, $name, $size, $maxlength, $fields_r, $compulsory_ind, $value)."</li>";
+	}
+	
+	$buffer .= "</ul>";
+	$buffer .= "</div>";
+	return $buffer;
+}
+
+function custom_field($idx, $name, $size, $maxlength, $fields_r, $compulsory_ind, $value) {
+	$fields_r = append_custom_field_values($fields_r, $value);
+	
+	$field = '';
+	$field .= "\n<ul class=\"multiFieldMenu\" id=\"${name}_${idx}-tab-menu\">";
+	@reset($fields_r);
+	$active=TRUE;
+	while(list(,$field_r) = @each($fields_r)) {
+		$field .= "\n<li id=\"menu-${name}_${idx}-${field_r['name']}\" ".($active?"class=\"activeTab\" ":"")." onclick=\"return activateTab('${name}_${idx}-${field_r['name']}', '${name}_${idx}-tab-menu', '${name}_${idx}-tab-content', 'activeTab', 'fieldContent');\">${field_r['prompt']}</li>";
+		$active=FALSE;
+	}
+	$field .= "</ul>";
+	
+	$field .= "<div class=\"multiFieldContainer\" id=\"${name}_${idx}-tab-content\">";
+	
+	$active=TRUE;
+	@reset($fields_r);
+	while(list(,$field_r) = @each($fields_r)) {
+		$field .= "\n<div class=\"fieldContent".(!$active?"Hidden":"")."\" id=\"${name}_${idx}-${field_r['name']}\">";
+		$field .= "\n<input type=\"text\" class=\"text\" name=\"".$name."[$idx][${field_r['name']}]\" size=\"$size\" value=\"${field_r['value']}\">";
+		$field .= '</div>';
+		$active=FALSE;
+	}
+	$field .= '</div>';
+	
+	return $field;
+}
+
+function append_custom_field_values($fields_r, $value) {
+	$values_r = prc_args($value);
+		
+	for($i=0; $i<count($fields_r); $i++) {
+		if(isset($values_r[$i])) {
+			$fields_r[$i]['value'] = $values_r[$i];
+		} else {
+			$fields_r[$i]['value'] = NULL;
+		}
+	}
+	return $fields_r;
+}
+
+function merge_custom_fields($field_prompts, $field_names) {
+	$field_names_r = trim_explode(",", $field_names);
+	$field_prompts_r = trim_explode(",", $field_prompts);
+	
+	$fields_r = array();
+	if(count($field_names_r)>0) {
+		for($i=0; $i<count($field_names_r); $i++) {
+			$field_r['name'] = $field_names_r[$i];
+			if(isset($field_prompts_r[$i])) {
+				$field_r['prompt'] = $field_prompts_r[$i];
+			} else {
+				$field_r['prompt'] = initcap($field_names_r[$i]);
+			}
+			
+			$fields_r[] = $field_r;
+		}
+	}
+	
+	return $fields_r;
+}
+	
 function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
 	// Default size.
@@ -592,25 +701,25 @@ function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_
 	}
 	$buffer .= "\n<div class=\"multiValue\">";
 	$buffer .= "<ul class=\"multiValue\" id=\"${name}-multi_value_list\">";
-	if(count($value)>0)
-	{
-		for($i=0; $i<count($value); $i++)
-		{
-			$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value[$i]."\"></li>";
-		}
+	
+	// handle blank too!
+	if(count($values_r)==0) {
+		unset($values_r);
+		$values_r[] = '';
 	}
-	else
+	
+	for($i=0; $i<count($value); $i++)
 	{
-		$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"\"></li>";
+		$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value[$i]."\"></li>";
 	}
 	
 	$buffer .= "</ul>";
-	
 	$buffer .= "<a href=\"#\" onclick=\"addInputField('${name}-multi_value_list', '$name', '$size'".(is_numeric($maxlength)?", '$maxlength'":"")."); return false;\">".get_opendb_lang_var('add')."</a>";
-	
 	$buffer .= "</div>";
 	return $buffer;
 }
+
+
 
 function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
@@ -820,7 +929,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 	
 	if($item_attribute_type_r['file_attribute_ind'] == 'Y')
 	{
-		$field .= "\n<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
+		$field .= "\n<ul class=\"multiFieldMenu\" id=\"${name}-tab-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
 		if(is_file_upload_enabled())
 		{
@@ -828,7 +937,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		}
 		$field .= "</ul>";
 
-		$field .= "<div class=\"urlOptionsContainer\" id=\"${name}-tab-content\">";
+		$field .= "<div class=\"multiFieldContainer\" id=\"${name}-tab-content\">";
 
 		$field .= "\n<div class=\"fieldContent\" id=\"${name}_saveurl\">";
 		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";

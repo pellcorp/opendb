@@ -49,11 +49,23 @@ $argument_types = array(
 							'<li>_blank - New Window</li>'.
 							'<li>_self - Current Window</li></ul>',
 							'input_type'=>'text(10,10)'),
-
+			
 			'maxrange'=>array('prompt'=>'Max Range',
 							'description'=>'Specify the maximum range',
 							'input_type'=>'number(3)'),
 
+			'field_names'=>array('prompt'=>'Field Names',
+							'description'=>'Specify the field names (comma delimited)',
+							'input_type'=>'text(50,100)'),
+
+			'field_prompts'=>array('prompt'=>'Tab Prompts',
+							'description'=>'Specify Prompt for each input field tab (comma delimited)',
+							'input_type'=>'text(50,100)'),
+
+			'num_fields'=>array('prompt'=>'Number of Fields',
+							'description'=>'How many fields to create',
+							'input_type'=>'number(3)'),
+			
 			'ratingmask'=>array('prompt'=>'Rating Display Mask',
 							'description'=>'Specify the rating display mask, with the following special variables:'.
 							'<table>'.
@@ -226,6 +238,7 @@ $input_type_functions = array(
 			'text'=>array(
 						'args'=>array('length[Y]','maxlength'),
 						'description'=>'A text field'),
+			
 			'textarea'=>array(
 						'args'=>array('cols[Y]','rows[Y]'),
 						'description'=>'A textarea field'),
@@ -288,7 +301,10 @@ $input_type_functions = array(
 			'value_select'=>array(
 						'args'=>array('value_list[Y]','size'),
 						'description'=>'A <i>multiple / single</i> (size parameter controls this) select object which formats a '
-									.' select object with the specified value_list')
+									.' select object with the specified value_list'),
+			'custom'=>array(
+						'args'=>array('length[Y]','maxlength', 'field_prompts', 'field_names', 'num_fields'),
+						'description'=>'A custom input field'),
 		);
 
 // Display type functions.

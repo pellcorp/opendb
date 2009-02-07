@@ -1238,8 +1238,7 @@ if($HTTP_VARS['op'] == 'edit_site_plugin_item_types')
 			<th></th>
 			<th>Include</th>
 			</tr>");
-			echo("<tr><td><select name=\"from_item_types\" size=\"15\" MULTIPLE>");
-			echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
+			echo("<tr><td><select name=\"from_item_types\" class=\"includeExcludeWidget\" size=\"15\" MULTIPLE>");
 			for($i=0; $i<count($not_exists_item_type_rs); $i++)
 			{
 				echo("<option value=\"".$not_exists_item_type_rs[$i]['s_item_type']."\">".$not_exists_item_type_rs[$i]['s_item_type']." - ".$not_exists_item_type_rs[$i]['description']."\n");
@@ -1255,8 +1254,7 @@ if($HTTP_VARS['op'] == 'edit_site_plugin_item_types')
 				
 			echo("</td>");
 				
-			echo("<td><select name=\"to_item_types\" size=\"15\" MULTIPLE>");
-			echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
+			echo("<td><select name=\"to_item_types\" class=\"includeExcludeWidget\" size=\"15\" MULTIPLE>");
 			for($i=0; $i<count($exists_item_type_rs); $i++)
 			{
 				echo("<option value=\"".$exists_item_type_rs[$i]['s_item_type']."\">".$exists_item_type_rs[$i]['s_item_type']." - ".$exists_item_type_rs[$i]['description']."\n");

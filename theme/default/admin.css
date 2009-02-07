@@ -3,6 +3,10 @@ ul.itemTypeGroupList li.active
 	font-weight: bold;
 }
 
+select.includeExcludeWidget {
+	width: 170px;
+}
+
 #admin-menu
 {
     right:125px;

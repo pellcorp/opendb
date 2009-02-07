@@ -607,6 +607,8 @@ function update_user($uid, $fullname, $language, $theme, $email_addr, $user_role
 //
 function insert_user($uid, $fullname, $pwd, $user_role, $language, $theme, $email_addr, $active_ind='Y')
 {
+	$uid = strtolower($uid);
+	
 	$query = "INSERT INTO user (user_id, fullname, pwd, user_role, email_addr, language, theme, active_ind, lastvisit)".
 				"VALUES('".$uid."',".
 						"'".addslashes($fullname)."',".

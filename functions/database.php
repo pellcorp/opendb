@@ -131,26 +131,29 @@ function parse_sql_statement($sql, $prefix)
 	
 	// A copy of $sql variable for parsing only!
 	$upper_sql = strtoupper($sql);
-
+	
 	if(substr($upper_sql,0,7) == 'SELECT ')
 	{
 		$start_idx = strpos($upper_sql, 'FROM ', $start_idx);
 		if($start_idx !== FALSE)
 		{
-			$start_idx += 5;//5="FROM "
+			$start_idx += 4;//4="FROM"
 			
-			// LEFT JOIN at the moment - will add more if required.
+			//FROM <table name> LEFT JOIN <table name> ON 
 			$end_idx = strpos($upper_sql, 'LEFT JOIN ', $start_idx);
 			if($end_idx !== FALSE)
 			{
 				$tmp_end_idx = $end_idx;
 				while($tmp_end_idx !== FALSE)
 				{
-					$left_join_end_idx = strpos($upper_sql, 'ON', $tmp_end_idx);
+					$left_join_end_idx = strpos($upper_sql, ' ON ', $tmp_end_idx);
 					if($left_join_end_idx === FALSE)
 					{
-						$left_join_end_idx = strpos($upper_sql, 'USING', $tmp_end_idx);
+						$left_join_end_idx = strpos($upper_sql, ' USING ', $tmp_end_idx);
 					}
+					
+					// get rid of the extra space
+					$left_join_end_idx++;
 					
 					// Nothing else we can do if it does not match.
 					if($left_join_end_idx === FALSE)
@@ -167,7 +170,7 @@ function parse_sql_statement($sql, $prefix)
 					// Its too complicated to work out where we are in $upper_sql compared to $sql, so
 					// lets just reassign in this case.
 					$upper_sql = strtoupper($sql);
-				
+					
 					$tmp_end_idx = strpos($upper_sql, 'LEFT JOIN ', $left_join_end_idx+strlen($prefix));
 				}
 			}		

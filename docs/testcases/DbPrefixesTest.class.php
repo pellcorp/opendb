@@ -31,6 +31,16 @@ class DbPrefixesTest extends PHPUnit_TestCase
 	{
 	}
 	
+	function testLeftJoin() {
+		$this->assertEquals( "SELECT p.permission_name, p.description, s.role_name FROM opendb_s_permission p LEFT JOIN opendb_s_role_permissions ON s.permission_name = p.permission_name AND s.role_name = 'PUBLICACCESS'",
+							parse_sql_statement("SELECT p.permission_name, p.description, s.role_name FROM s_permission p LEFT JOIN s_role_permissions ON s.permission_name = p.permission_name AND s.role_name = 'PUBLICACCESS'", 'opendb_'));
+	}
+	
+	function testMultiLeftJoin() {
+		$this->assertEquals( "SELECT * FROM opendb_s_permission p LEFT JOIN opendb_s_role_permissions p1 ON s.permission_name = p.permission_name LEFT JOIN opendb_s_shit_hole_one_and_two_three_four_five p2 ON stuff AND stuff2",
+							parse_sql_statement("SELECT * FROM s_permission p LEFT JOIN s_role_permissions p1 ON s.permission_name = p.permission_name LEFT JOIN s_shit_hole_one_and_two_three_four_five p2 ON stuff AND stuff2", 'opendb_'));
+	}
+	
 	function testAlterTable()
 	{
 		$this->assertEquals( "ALTER TABLE opendb_user_address ADD public_address_ind VARCHAR(1) NOT NULL DEFAULT 'N'",
@@ -103,5 +113,4 @@ class DbPrefixesTest extends PHPUnit_TestCase
 							parse_sql_statement("ALTER TABLE item_attribute ADD INDEX attribute_val_idx ( attribute_val ( 255 ) )", 'opendb_'));
 	}
 }
-
 ?>

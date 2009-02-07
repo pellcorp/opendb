@@ -695,7 +695,8 @@ function install_opendb_upgrade($HTTP_VARS, &$errors)
 			}
 			else if(count($upgraders_rs) > 1)
 			{
-				$errors[] = "More than one upgrader is available for this version, this is an error, please contact the author."; 
+				$errors[] = "More than one upgrader is available for this version, this is an error, please contact the author.".
+				debug_upgraders_rs($upgraders_rs);
 				return FALSE; // more than one upgrade step possible is an error!
 			}
 		} else {
@@ -715,6 +716,17 @@ function install_opendb_upgrade($HTTP_VARS, &$errors)
 	  	
 	  	return TRUE;
 	}	  
+}
+
+function debug_upgraders_rs($upgraders_rs) {
+	@reset($upgraders_rs);
+	
+	$buffer = '<ul class="error">';
+	while(list(,$upgraders_r) = @each($upgraders_rs)) {
+		$buffer .= "<li>${upgraders_r['description']} (${upgraders_r['upgrader_plugin']}) [${upgraders_r['from_version']} => ${upgraders_r['to_version']}]</li>";
+	}
+	$buffer .= '</ul>';
+	return $buffer;
 }
 
 function perform_upgrade_step($HTTP_VARS, $opendb_release_r, $latest_to_version = NULL)

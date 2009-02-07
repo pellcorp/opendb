@@ -20,22 +20,17 @@
 
 include_once("./functions/OpenDbUpgrader.class.php");
 
-class Upgrader_150RC4_1505 extends OpenDbUpgrader
+class Upgrader_1504_1505 extends OpenDbUpgrader
 {
-	function Upgrader_150RC4_1505()
+	function Upgrader_1504_1505()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.0RC4',
+						'1.5.0.4',
 						'1.5.0.5',
 						array(
 							array('description'=>'Support Global Category Stats Chart'),
 						)
 					);
-	}
-	
-	function getUpgraderDir()
-	{
-		return './install/upgrade/1.5.0.4';
 	}
 }
 ?>

@@ -28,7 +28,7 @@ class Upgrader_1502_1503 extends OpenDbUpgrader
 						'1.5.0RC4',
 						'1.5.0.4',
 						array(
-							array('description'=>'Mergee signup and stats image type config'),
+							array('description'=>'Merge signup and stats image type config'),
 						)
 					);
 	}

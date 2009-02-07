@@ -55,8 +55,7 @@ function display_role_permissions_editor($HTTP_VARS)
 	<th>Include</th>
 	</tr>");
 	
-	echo("<tr><td><select name=\"excluded_permissions\" size=\"15\" MULTIPLE>");
-	echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
+	echo("<tr><td><select class=\"includeExcludeWidget\" name=\"excluded_permissions\" size=\"15\" MULTIPLE>");
 	while(list(,$permission_r) = @each($not_exists_rs))
 	{
 		echo("<option value=\"".$permission_r['permission_name']."\">".$permission_r['description']."\n");
@@ -72,8 +71,7 @@ function display_role_permissions_editor($HTTP_VARS)
 		
 	echo("</td>");
 		
-	echo("<td><select name=\"included_permissions\" size=\"15\" MULTIPLE>");
-	echo("<option value=\"\" onClick=\"this.selected=false;\">-----------------------------------------\n");
+	echo("<td><select class=\"includeExcludeWidget\" name=\"included_permissions\" size=\"15\" MULTIPLE>");
 	while(list(,$permission_r) = @each($exists_rs))
 	{
 		echo("<option value=\"".$permission_r['permission_name']."\">".$permission_r['description']."\n");
@@ -123,7 +121,6 @@ if($HTTP_VARS['op'] == 'edit')
 	
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);
-	
 	
 	display_role_permissions_editor($HTTP_VARS);
 }

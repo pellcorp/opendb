@@ -42,7 +42,7 @@ function moveOptions(form, hidden_nm, from, to)
 		return;
 	}
 	
-	for (var i=1; i<from.options.length; i++)
+	for (var i=0; i<from.options.length; i++)
 	{
 		var o = from.options[i];
 		if (o.selected)
@@ -71,7 +71,7 @@ function moveOptions(form, hidden_nm, from, to)
 	}
 	
 	// Delete them from original
-	for (var i=(from.options.length-1); i>=1; i--)
+	for (var i=(from.options.length-1); i>=0; i--)
 	{
 		var o = from.options[i];
 		if (o.selected)

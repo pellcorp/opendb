@@ -170,11 +170,13 @@ function db_affected_rows($result = NULL, $link = NULL)
                 break ;
             case postgresql:
 		// may remove once running
+/*
 		if ($result == NULL) 
 		{
 			echo "DEBUG :Needs a result when getting affected rows in postgres" ;
 			print_r(apd_callstack());
 		}
+*/
 	        return @pgsql_db_affected_rows($result);
                 break ;
         }

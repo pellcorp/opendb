@@ -20,6 +20,28 @@
 
 $_OPENDB_DB_CONNECTED = NULL;
 
+/*
+ * let database.php handle all database layers
+ * The wrapper should start here with correct database layer to load (and not all)
+ * may be improved in the future
+ */
+if(extension_loaded('mysqli'))
+{
+	include_once('./functions/database/mysqli.inc.php');
+}
+elseif(extension_loaded('mysql'))
+{
+	include_once('./functions/database/mysql.inc.php');
+}
+
+if(extension_loaded('pgsql'))
+{
+        include_once('./functions/database/postgresql.inc.php') ;
+}
+include_once "./functions/database/databaseabstract.inc.php" ;
+
+
+
 function init_db_connection()
 {
 	$dbserver_conf_r = get_opendb_config_var('db_server');
@@ -29,7 +51,8 @@ function init_db_connection()
 				$dbserver_conf_r['host'], 
 				$dbserver_conf_r['username'], 
 				$dbserver_conf_r['passwd'], 
-				$dbserver_conf_r['dbname']);
+				$dbserver_conf_r['dbname'],
+                                $dbserver_conf_r['dbtype']);
 	}
 	
 	//else
@@ -378,7 +401,7 @@ function fetch_opendb_table_list_r()
 {
   	$tables = array(
                 's_item_type', 's_item_type_group', 's_item_type_group_rltshp', 's_attribute_type',
-				's_attribute_type_lookup', 's_item_attribute_type', 's_status_type',
+				's_attribute_type_loup', 's_item_attribute_type', 's_status_type',
 				's_address_type', 's_addr_attribute_type_rltshp', 's_site_plugin',
 				's_site_plugin_conf', 's_site_plugin_input_field', 's_site_plugin_s_attribute_type_map',
 				's_site_plugin_s_attribute_type_lookup_map', 's_site_plugin_link',

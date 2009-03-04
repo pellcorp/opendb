@@ -406,9 +406,15 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
     
 	$buffer .= "<table>";
 
+        /* DB: Ask the user for database type
+         * need to put hardcoded select input cause no database is configured (unusable get_input_field) - need improvement
+         */
+        $buffer .= "<tr id=\"-\"><th class=\"prompt\" scope=\"row\">Database Type<img src=\"./images/compulsory.gif\" alt=\"Compulsory\" class=\"compulsory\">:</th><td class=\"data \">" ;
+	$buffer .= "<select name=\"dbtype\"><option ".($HTTP_VARS['dbtype']=="mysql"?'selected ':'')."value=\"mysql\">mysql</option><option ".($HTTP_VARS['dbtype']=="postgresql"?'selected ':'')."value=\"postgresql\">postgresql</option></select></td></tr>" ;
+
 	$buffer .= get_input_field("host",
 		NULL, // s_attribute_type
-		"MySQL Database Host",
+		"Database Host",
         "text(32,32)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['host'])>0
@@ -418,7 +424,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 
     $buffer .= get_input_field("dbname",
 		NULL, // s_attribute_type
-		"MySQL Database Name",
+		"Database Name",
         "text(32,32)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['dbname'])>0
@@ -428,7 +434,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 
     $buffer .= get_input_field("username",
 		NULL, // s_attribute_type
-		"MySQL User Name",
+		"User Name",
         "text(32,32)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['username'])>0
@@ -438,7 +444,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 
 	$buffer .= get_input_field("passwd",
 		NULL, // s_attribute_type
-		"MySQL User Password",
+		"User Password",
         "text(32,32)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['passwd'])>0
@@ -504,25 +510,29 @@ function install_create_opendb_user_and_database($HTTP_VARS, &$db_details_r, &$e
 	$HTTP_VARS['db_passwd'] = trim($HTTP_VARS['db_passwd']);
 	$HTTP_VARS['host'] = trim($HTTP_VARS['host']);
 	$HTTP_VARS['dbname'] = trim($HTTP_VARS['dbname']);
+	$HTTP_VARS['dbtype'] = trim($HTTP_VARS['dbtype']);
 	$HTTP_VARS['username'] = trim($HTTP_VARS['username']);
 	$HTTP_VARS['passwd'] = trim($HTTP_VARS['passwd']);
-	
+
 	// if info provided, then we can move onto next screen
 	if(strlen($HTTP_VARS['host'])>0 &&
 			strlen($HTTP_VARS['dbname'])>0 &&
 			strlen($HTTP_VARS['username'])>0 &&
-			strlen($HTTP_VARS['passwd'])>0)
+			strlen($HTTP_VARS['passwd'])>0&&
+			strlen($HTTP_VARS['dbtype'])>0)
 	{
+
 	  	// set database config array
 		$db_details_r =
 			array('host'=>$HTTP_VARS['host'],
 				'dbname'=>$HTTP_VARS['dbname'],
 				'username'=>$HTTP_VARS['username'],
 				'passwd'=>$HTTP_VARS['passwd'],
-				'table_prefix'=>$HTTP_VARS['table_prefix']);
+				'table_prefix'=>$HTTP_VARS['table_prefix'],
+                                'dbtype'=>$HTTP_VARS['dbtype']);
 		
 		$error = NULL;
-	    $check_result = check_opendb_database($HTTP_VARS['host'], $HTTP_VARS['dbname'], $HTTP_VARS['username'], $HTTP_VARS['passwd'], $error);
+	    $check_result = check_opendb_database($HTTP_VARS['host'], $HTTP_VARS['dbname'], $HTTP_VARS['username'], $HTTP_VARS['passwd'], $error,$HTTP_VARS['dbtype']);
 	    if($check_result === TRUE)
 		{
 			return 'DATABASE_ALREADY_EXISTS';
@@ -536,6 +546,7 @@ function install_create_opendb_user_and_database($HTTP_VARS, &$db_details_r, &$e
 					$HTTP_VARS['dbname'],
 					$HTTP_VARS['username'],
 					$HTTP_VARS['passwd'],
+					$HTTP_VARS['dbtype'],
 					$error))
 			{
 				return TRUE;
@@ -586,6 +597,7 @@ function install_write_config_file($db_details_r, &$config_file, &$errors)
     		$config_file = "<?php\n".
     				"\$CONFIG_VARS['db_server'] = array(\n".
 					"	'host'=>'{$db_details_r['host']}',		//OpenDb database host\n".
+                                        "       'dbtype'=>'{$db_details_r['dbtype']}',        //OpenDb database type\n".
 					"	'dbname'=>'{$db_details_r['dbname']}',		//OpenDb database name\n".
 					"	'username'=>'{$db_details_r['username']}',		//OpenDb database user name\n".
 					"	'passwd'=>'{$db_details_r['passwd']}',		//OpenDb user password\n".
@@ -621,13 +633,12 @@ function install_write_config_file($db_details_r, &$config_file, &$errors)
 
 function install_opendb_new_install($HTTP_VARS, &$errors)
 {
-  	global $PHP_SELF;
-  	
+  	global $PHP_SELF,$CONFIG_VARS;
 	if($HTTP_VARS['confirmed'] === 'true')
   	{
-		if(exec_install_sql_file("./install/new/tables.sql", $errors))
+		if(exec_install_sql_file("./install/new/".$CONFIG_VARS['db_server']['dbtype']."/tables.sql", $errors))
 	   	{
-	   	  	if(exec_install_sql_file("./install/new/systemdata.sql", $errors) && 
+	   	  	if(exec_install_sql_file("./install/new/".$CONFIG_VARS['db_server']['dbtype']."/systemdata.sql", $errors) && 
 				 	exec_install_sql_file("./admin/s_language/sql/english.sql", $errors))
 	   		{
 	   			exec_install_sql_file("./admin/s_status_type/sql/A-Available.sql", $errors);
@@ -637,7 +648,7 @@ function install_opendb_new_install($HTTP_VARS, &$errors)
 				exec_install_sql_file("./admin/s_status_type/sql/W-Wishlist.sql", $errors);
 				exec_install_sql_file("./admin/s_status_type/sql/R-Related.sql", $errors);
 				
-				exec_install_sql_file("./install/new/adminuser.sql", $errors);
+				exec_install_sql_file("./install/new/".$CONFIG_VARS['db_server']['dbtype']."/adminuser.sql", $errors);
 
 				// no steps to complete, its all in one, so we can insert release record with 
 				// NULL step (indicating complete) straight away.
@@ -909,14 +920,13 @@ else if($HTTP_VARS['step'] == 'pre-install')
 	@set_time_limit(600);
   	
   	$errors = NULL;
-  	
+
 	if(!is_db_connected()) // database does not exist or cannot be connected to
 	{
 		echo _theme_header("OpenDb ".get_opendb_version()." Installation", FALSE);
 		echo("<h2>Pre Installation</h2>");
 	
 		$db_created = install_create_opendb_user_and_database($HTTP_VARS, $db_details_r, $errors);
-		
 		if($db_created === 'DATABASE_ALREADY_EXISTS')
 		{
 		  	if($HTTP_VARS['confirmed'] === 'true')
@@ -932,9 +942,9 @@ else if($HTTP_VARS['step'] == 'pre-install')
 				any mistakes.</p>");
 				
 				echo("<table class=\"databaseDetails\">
-					<tr><td class=\"prompt\">MySQL Database Host:</td><td class=\"data\">".$HTTP_VARS['host']."</td></tr>
-					<tr><td class=\"prompt\">MySQL Database Name:</td><td class=\"data\">".$HTTP_VARS['dbname']."</td></tr>
-					<tr><td class=\"prompt\">MySQL User Name:</td><td class=\"data\">".$HTTP_VARS['username']."</td></tr>
+					<tr><td class=\"prompt\">Database Host:</td><td class=\"data\">".$HTTP_VARS['host']."</td></tr>
+					<tr><td class=\"prompt\">Database Name:</td><td class=\"data\">".$HTTP_VARS['dbname']."</td></tr>
+					<tr><td class=\"prompt\">User Name:</td><td class=\"data\">".$HTTP_VARS['username']."</td></tr>
 					<tr><td class=\"prompt\">Table Prefix:</td><td class=\"data\">".(strlen($HTTP_VARS['table_prefix'])>0?$HTTP_VARS['table_prefix']:"(none)")."</td></tr>
 				</table>");
 				
@@ -1044,14 +1054,13 @@ else if($HTTP_VARS['step'] == 'pre-install')
 		
 		$preinstall_details = NULL;
 		$db_version = NULL;
-
 		if(!check_opendb_table('s_opendb_release') || 
 						count_opendb_table_rows('s_opendb_release')==0 || 
 						count_opendb_table_columns('s_opendb_release') != 6)
 		{
 			if(!check_opendb_table('s_opendb_release') || count_opendb_table_columns('s_opendb_release') != 6)
 			{
-				if(exec_install_sql_file('./install/new/s_opendb_release.sql', $errors))
+				if(exec_install_sql_file('./install/new/'.$CONFIG_VARS['db_server']['dbtype'].'/s_opendb_release.sql', $errors))
 				{
 					$preinstall_details[] = 'OpenDb release table created';	
 				}
@@ -1099,7 +1108,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 		if($db_version!==FALSE)
 		{
 		    echo("\n<form action=\"$PHP_SELF\" method=\"GET\">");
-		    
+	    
 		    if(check_opendb_table('s_opendb_release') && 
 		    			count_opendb_table_columns('s_opendb_release') == 6 && 
 		    			(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release')>0))

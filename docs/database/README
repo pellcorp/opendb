@@ -1,0 +1,18 @@
+OpenDB Database support
+=======================
+
+What's this ?
+The aim of this is to be able to use any database type beside OpenDB.
+
+How it works ?
+The file functions/database/databaseabstract.php is responsible of redirecting to 
+the right php database calls (eg: mysql_query(), pg_query(), ...).
+So adding new database support could be much simpler.
+In addition, when installing OpenDB for the first time, the database is populated of system data. 
+This done by importing a SQL dumps. Those SQL dumps might be provided in install/new/[DBMS-NAME]/*.sql .
+
+And what about non-regular SQL functions ?
+Avoid using them !!! This is the cost of compatibility. However, a simple parser/rewriter can help by rewriting queries of functions.
+It is possible to add SQL procedural functions too (check install/new/postgresql/tables.sql at the end of file).
+
+

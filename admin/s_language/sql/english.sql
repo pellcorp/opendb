@@ -560,6 +560,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'login_
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_user', 'Delete User');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_user_delete', 'Are you sure you want to delete user \"{fullname}\" ({user_id})?');
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deleted', 'User not deleted');
+-- INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deleted', 'User not deleted');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deleted', 'User deleted');
 

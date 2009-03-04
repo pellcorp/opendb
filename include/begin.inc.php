@@ -27,15 +27,6 @@ error_reporting(E_ALL & ~E_NOTICE);
 define('__OPENDB_RELEASE__', '1.5.0.5');
 define('__OPENDB_TITLE__', 'OpenDb');
 
-if(extension_loaded('mysqli'))
-{
-	include_once('./functions/database/mysqli.inc.php');
-}
-else if(extension_loaded('mysql'))
-{
-	include_once('./functions/database/mysql.inc.php');
-}
-
 if(file_exists("./include/local.config.php"))
 {
 	include_once("./include/local.config.php");

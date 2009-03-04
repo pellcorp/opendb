@@ -393,17 +393,20 @@ function exec_install_sql_statement($sql, &$error)
 	$result = db_query($sql);
 	if($result)
 	{
-	    $error = NULL;
+		$error = NULL;
 		return TRUE;
 	}
 	else
 	{
-	    $errno = db_errno();
+	$errno = db_errno();
         $error = array('error'=>db_error().' ('.$errno.')', 'detail'=>$sql);
         
         // Need to keep this up to date, for any errors which are not
         // strictly errors!
         
+	/* TODO DB
+	 * Add error support for postgres...
+	 */
 		if($errno == 1062) // row already exists
 			return TRUE;
 		else if($errno == 1060) // column already exists
@@ -471,15 +474,13 @@ function check_opendb_table($table)
 	// In this case the db_query() would return FALSE, if
     // table does not exist.
 
-	$result = db_query("DESCRIBE $table");
+	$result = db_get_table_info($table);
 	if($result)
 	{
 		db_free_result($result);
-
 		// The table exists (Does not have to have any records!)
 		return TRUE;
 	}
-
 	//else
 	return FALSE;
 }
@@ -491,7 +492,7 @@ function count_opendb_table_rows($table)
 {
 	// Only get one row, to save processing them.
 	$result = db_query("SELECT count(*) as count FROM $table");
-	
+
 	// In this case the db_query() would return FALSE, if table does not exist.
 	if($result)
 	{
@@ -510,7 +511,6 @@ function count_opendb_table_rows($table)
 			return 0;
 		}
 	}
-
 	//else
 	return FALSE;
 }
@@ -520,7 +520,7 @@ function count_opendb_table_rows($table)
 */
 function count_opendb_table_columns($table)
 {
-	$result = db_query("SELECT * FROM $table LIMIT 0,1");
+	$result = db_query("SELECT * FROM $table LIMIT 1"); // limit 1 works for pgsql and mysql
 	if($result)
 	{
 		// count fields (columns) in table
@@ -550,9 +550,10 @@ function create_opendb_user_and_database(
 				$database,
 				$username,
 				$password,
+                                $dbtype,
 				&$error)
 {
-	$link = db_connect($hostname, $db_root_username, $db_root_password, 'mysql', FALSE);
+	$link = db_connect($hostname, $db_root_username, $db_root_password, 'mysql', $dbtype, FALSE);
 	if($link!==FALSE)
 	{
 		if(db_query('CREATE DATABASE '.$database, $link))
@@ -589,13 +590,12 @@ function create_opendb_user_and_database(
 
 	returns FALSE if database@hostname is invalid.
 */
-function check_opendb_database($hostname, $database, $username, $password, &$error)
+function check_opendb_database($hostname, $database, $username, $password, &$error, $dbtype)
 {
-	$link = db_connect($hostname, $username, $password, $database, FALSE);
+	$link = db_connect($hostname, $username, $password, $database, $dbtype, FALSE);
 	if($link !== FALSE)
 	{
 		db_close($link);
-		
 		return TRUE;
 	}
 	else
@@ -603,6 +603,7 @@ function check_opendb_database($hostname, $database, $username, $password, &$err
 	    $error = db_error();
 		return FALSE;
 	}
+
 }
 
 /**
@@ -704,7 +705,7 @@ function install_filter_opendb_tables($tables_r, $table_prefix = NULL)
 
 function install_determine_opendb_database_status(&$db_details_r, &$db_version)
 {
-	$dblink = db_connect($db_details_r['host'], $db_details_r['username'], $db_details_r['passwd'], $db_details_r['dbname'], FALSE);
+	$dblink = db_connect($db_details_r['host'], $db_details_r['username'], $db_details_r['passwd'], $db_details_r['dbname'], $db_details_r['dbtype'], FALSE);
 	if($dblink!==FALSE)
 	{
 		// get a list of ALL tables from the database specified, not just opendb tables.
@@ -821,13 +822,12 @@ function is_opendb_partially_installed()
 		// ignore release table
 		if($table != 's_opendb_release')
 		{
-	    	if(check_opendb_table($table))
-	    	{
-	    	    return TRUE;
+	    		if(check_opendb_table($table))
+	    		{
+	    		    	return TRUE;
+	    		}
 	    	}
-	    }
 	}
-	
 	//else - no tables found
 	return FALSE;
 }
@@ -1005,12 +1005,12 @@ function is_upgrader_plugin($plugin)
 */
 function fetch_opendb_release_version_r($upgrade_steps_complete=TRUE)
 {
-	$query = "SELECT sequence_number, release_version, description, upgrade_step, upgrade_step_part, UNIX_TIMESTAMP(update_on) as update_on FROM s_opendb_release ";
+ 	$query = "SELECT sequence_number, release_version, description, upgrade_step, upgrade_step_part, UNIX_TIMESTAMP(update_on) as update_on FROM s_opendb_release ";
 
 	if($upgrade_steps_complete)
 		$query .= "WHERE upgrade_step IS NULL ";
 
-	$query .= "ORDER BY sequence_number DESC LIMIT 0,1";
+	$query .= "ORDER BY sequence_number DESC LIMIT 1";
 
 	$result = db_query($query);
 	if($result)
@@ -1064,11 +1064,12 @@ function insert_opendb_release($release_version, $description, $step = '0')
 {
 	$description = addslashes(replace_newlines(trim($description)));
 
+	// missing space
 	$query = "INSERT INTO s_opendb_release (release_version, description, upgrade_step)".
-			"VALUES ('$release_version','$description', ".(is_numeric($step)?"'$step'":"NULL").")";
+			" VALUES ('$release_version','$description', ".(is_numeric($step)?"'$step'":"NULL").")";
 
 	$insert = db_query($query);
-	if ($insert && db_affected_rows() > 0)
+	if ($insert && db_affected_rows($insert) > 0)
 	{
 	    $new_item_id = db_insert_id();
 		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($release_version, $description));

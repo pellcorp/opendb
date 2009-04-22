@@ -82,8 +82,17 @@ function fetch_announcement_rs($order_by='submit_on', $sortorder='DESC', $start_
 	else if($order_by === "closed_ind")
 		$query .= " ORDER BY closed_ind ".$sortorder.", submit_on DESC";
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 		
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

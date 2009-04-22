@@ -48,7 +48,7 @@ function insert_unique_imageurl()
 		FROM item i, s_item_attribute_type siat
 		WHERE i.s_item_type = siat.s_item_type AND
 		siat.s_attribute_type = 'IMAGEURL' AND 
-		i.id LIMIT 0, 100";
+		i.id LIMIT 100";
 
 	$results = db_query($query);
 	if($results)
@@ -65,11 +65,29 @@ function insert_unique_imageurl()
 
 function insert_duplicate_imageurl()
 {
-	$query = "SELECT i.id, siat.s_attribute_type, siat.order_no 
+/*	$query = "SELECT i.id, siat.s_attribute_type, siat.order_no 
 		FROM item i, s_item_attribute_type siat
 		WHERE i.s_item_type = siat.s_item_type AND
 		siat.s_attribute_type = 'IMAGEURL' AND 
 		i.id LIMIT 101, 201";
+*/
+	switch ($_opendb_dbtype) {
+		case 'mysql':
+			$query = "SELECT i.id, siat.s_attribute_type, siat.order_no 
+					FROM item i, s_item_attribute_type siat
+					WHERE i.s_item_type = siat.s_item_type AND
+					siat.s_attribute_type = 'IMAGEURL' AND 
+					i.id LIMIT 101, 201";
+			break ;
+		case 'postgresql':
+			$query = "SELECT i.id, siat.s_attribute_type, siat.order_no 
+					FROM item i, s_item_attribute_type siat
+					WHERE i.s_item_type = siat.s_item_type AND
+					siat.s_attribute_type = 'IMAGEURL' AND 
+					i.id LIMIT 201 OFFSET 101";
+			break;
+	}
+	
 
 	$results = db_query($query);
 	if($results)

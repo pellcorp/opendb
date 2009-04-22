@@ -486,7 +486,14 @@ function fetch_file_cache_rs($cache_type='HTTP', $order_by = NULL, $sortorder = 
 
 	if(is_numeric($start_index) && is_numeric($items_per_page))
 	{
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
 	}
 
 	$result = db_query($query);
@@ -528,7 +535,7 @@ function fetch_file_cache_refresh_rs($cache_type='HTTP', $limit = NULL)
 	" (expire_date IS NOT NULL AND expire_date <= NOW())";
 
 	if(is_numeric($limit))
-		$query .= ' LIMIT 0, '.$limit;
+		$query .= ' LIMIT '.$limit;
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -649,7 +656,7 @@ function fetch_file_cache_new_item_attribute_rs($limit = NULL)
 
 	if(is_numeric($limit))
 	{
-		$query .= " LIMIT 0,$limit";
+		$query .= " LIMIT $limit";
 	}
 
 	$result = db_query($query);

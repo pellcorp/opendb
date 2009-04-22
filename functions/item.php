@@ -543,7 +543,7 @@ function is_exists_item_instance($item_id, $instance_no=NULL)
 	$query = "SELECT 'x' FROM item_instance WHERE item_id = '$item_id' ";
 	if($instance_no)
 		$query .= "AND instance_no = '$instance_no'";
-	$query .= " LIMIT 0,1";
+	$query .= " LIMIT 1";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -745,23 +745,31 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		$query .= ' ORDER BY '.$column_order_by.' '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
 	}
 	else if($order_by == 's_item_type')
-		$query .= ' ORDER BY i.s_item_type '.$sortorder.', i.title, ii.instance_no ASC';	
+		$query .= ' ORDER BY s_item_type '.$sortorder.', i.title, ii.instance_no ASC';	
 	else if($order_by == 'category')
 		$query .= ' ORDER BY catia_lookup_attribute_val '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
 	else if($order_by == 'owner_id')
-		$query .= ' ORDER BY ii.owner_id '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
+		$query .= ' ORDER BY owner_id '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
 	else if($order_by == 's_status_type')
-		$query .= ' ORDER BY ii.s_status_type '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
+		$query .= ' ORDER BY s_status_type '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
 	else if($order_by == 'update_on')
-		$query .= ' ORDER BY ii.update_on '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
+		$query .= ' ORDER BY update_on '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
 	else if($order_by === 'item_id')
-		$query .= ' ORDER BY i.id '.$sortorder.', ii.instance_no ASC, i.s_item_type';
+		$query .= ' ORDER BY id '.$sortorder.', ii.instance_no ASC, i.s_item_type';
 	else //if($order_by === 'title')
-		$query .= ' ORDER BY i.title '.$sortorder.', ii.instance_no ASC, i.s_item_type';
+		$query .= ' ORDER BY title '.$sortorder.', ii.instance_no ASC, i.s_item_type';
 	
 	if(is_numeric($start_index) && is_numeric($items_per_page))
 	{
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
 	}
 	
 	//echo "\n<code>Listing Query: $query</code>";
@@ -1209,7 +1217,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 				$from_clause .= ', ';
 			$from_clause .= $from_r[$i];
 		}
-		$query .= 'FROM ('.$from_clause.') ';
+		$query .= 'FROM '.$from_clause.' ';
 	}
 	
 	if(is_array($left_join_from_r))

@@ -185,7 +185,7 @@ function get_opendb_db_config_var($group, $id = NULL, $keyid = NULL)
 						"cgiv.group_id = '$group' AND ".
 						"cgiv.id = '$id' AND ".
 						"cgiv.keyid = '$keyid' ".
-		                "LIMIT 0,1"; // enforce only one record returned.
+		                "LIMIT 1"; // enforce only one record returned.
 			}
 			else if($id!=NULL)
 			{

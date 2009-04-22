@@ -749,3 +749,54 @@ CREATE OR REPLACE FUNCTION unix_timestamp(timestamp with time zone) RETURNS inte
 SELECT
 ROUND(EXTRACT( EPOCH FROM ABSTIME($1) ))::int4 AS result;
 ' LANGUAGE 'SQL';
+
+CREATE OR REPLACE FUNCTION IFNULL (text, text) RETURNS text AS
+  'SELECT COALESCE($1,$2) AS result'
+LANGUAGE 'sql';
+
+CREATE OR REPLACE FUNCTION ifnull (int4, int4) returns int4 as '
+select coalesce($1, $2) as result
+' language 'sql';
+CREATE OR REPLACE FUNCTION to_days(timestamp) returns integer as '
+       select date_part(''day'', $1 - ''0000-01-01'')::int4 as result
+' language 'sql';
+CREATE OR REPLACE FUNCTION to_days(timestamp with time zone) returns integer as '
+       select date_part(''day'', $1 - ''0000-01-01'')::int4 as result
+' language 'sql';
+CREATE OR REPLACE FUNCTION from_days(integer) returns timestamp as '
+       select ''0000-01-02''::timestamp + ($1 || '' days'')::interval as result
+' language 'SQL';
+
+CREATE OR REPLACE FUNCTION concat(text, text) RETURNS text AS $$
+    SELECT $1 || $2;
+$$ LANGUAGE 'sql';
+
+CREATE OR REPLACE FUNCTION concat(text, text, text) RETURNS text AS $$
+    SELECT $1 || $2 || $3;
+$$ LANGUAGE 'sql';
+
+CREATE OR REPLACE FUNCTION concat(text, text, text, text) RETURNS text AS $$
+    SELECT $1 || $2 || $3 || $4;
+$$ LANGUAGE 'sql';
+
+CREATE LANGUAGE "plpgsql" ;
+
+CREATE OR REPLACE FUNCTION "if"(boolean, text, text) RETURNS text AS '
+BEGIN
+IF $1 IS NOT NULL AND $1 IS TRUE THEN
+RETURN $2;
+ELSE
+RETURN $3;
+END IF;
+END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION "if"(integer, text, text) RETURNS text AS '
+BEGIN
+IF $1 IS NOT NULL AND $1 > 0 THEN
+RETURN $2;
+ELSE
+RETURN $3;
+END IF;
+END;
+' LANGUAGE 'plpgsql';

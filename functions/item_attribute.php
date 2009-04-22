@@ -239,7 +239,7 @@ function fetch_attribute_type_lookup_value($s_attribute_type, $value)
 function is_exists_lookup_value($s_attribute_type, $attribute_val)
 {
 	$query = "SELECT 'x' FROM s_attribute_type_lookup WHERE s_attribute_type = '$s_attribute_type' AND ".
-			"value = '".addslashes($attribute_val)."' LIMIT 0,1";
+			"value = '".addslashes($attribute_val)."' LIMIT 1";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -509,7 +509,7 @@ function fetch_s_item_attribute_type_next_order_no($s_item_type, $s_attribute_ty
 		$query .= " AND	order_no > $order_no ";
 	}
 	
-	$query .= "ORDER BY order_no ASC LIMIT 0,1";
+	$query .= "ORDER BY order_no ASC LIMIT 1";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

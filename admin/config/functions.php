@@ -155,7 +155,7 @@ function validate_s_config_group_item($group_id, $id, $keyid, $value)
             $query .= " AND keyid = '$keyid' ";
 		}
 
-		$query .= "LIMIT 0,1";
+		$query .= "LIMIT 1";
 
         $result = db_query($query);
 		if($result && db_num_rows($result)>0)

@@ -38,7 +38,8 @@ function is_exists_item_type($s_item_type)
 {
 	if(strlen($s_item_type)>0)
 	{
-		$query = "SELECT 'x' FROM s_item_type WHERE s_item_type = '".$s_item_type."'";
+		//$query = "SELECT 'x' FROM s_item_type WHERE s_item_type = '".$s_item_type."'";
+		$query = "SELECT * FROM s_item_type WHERE s_item_type = '".$s_item_type."'"; // * works better here
 		$result = db_query($query);
 		if($result && db_num_rows($result)>0)
 		{

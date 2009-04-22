@@ -125,7 +125,15 @@ function fetch_hometheaterinfo_rs($title, $upc_id=NULL, $hmi_id=NULL, $start_ind
 		
 		if(is_numeric($start_index) && is_numeric($items_per_page))
 		{
-			$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+//			$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+			switch ($_opendb_dbtype) {
+				case 'mysql':
+					$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+					break;
+				case 'postgresql':
+					$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+					break;
+			}
 		}
 	
 		$result = db_query($query);

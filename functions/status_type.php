@@ -125,7 +125,7 @@ function fetch_status_type_r($s_status_type)
 			stlv.columnname = 'description' AND
 			stlv.key1 = sst.s_status_type ".
 			"WHERE sst.s_status_type = '$s_status_type' ".
-			"LIMIT 0,1";
+			"LIMIT 1";
 	 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -144,7 +144,7 @@ function fetch_default_status_type()
 			"FROM s_status_type sst ".
 			"WHERE sst.closed_ind <> 'Y' AND ".
 			"sst.default_ind = 'Y' ".
-			"ORDER BY 1 ASC LIMIT 0,1";
+			"ORDER BY 1 ASC LIMIT 1";
 		
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

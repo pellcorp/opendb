@@ -453,9 +453,16 @@ function fetch_all_borrowed_item_rs($order_by, $sortorder, $start_index=NULL, $i
 				"bi.status = 'B' ".
 				get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
-
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
 		return $result;
@@ -497,8 +504,17 @@ function fetch_my_borrowed_item_rs($borrower_id, $order_by, $sortorder, $start_i
 				"bi.status = 'B' and bi.borrower_id = '".$borrower_id."' ".
 				get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -535,8 +551,17 @@ function fetch_all_reserved_item_rs($order_by, $sortorder, $start_index=NULL, $i
 				"bi.status = 'R' ".
 				get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -579,8 +604,17 @@ function fetch_my_reserved_item_rs($borrower_id, $order_by=NULL, $sortorder=NULL
 	if(strlen($order_by)>0)
 		$query .= get_orderby_clause($order_by, $sortorder);
 		
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -627,8 +661,17 @@ function fetch_my_history_item_rs($borrower_id, $order_by, $sortorder, $start_in
 			 bi.status IN('C','X', 'R', 'B') AND bi.borrower_id = '$borrower_id' ".
 				get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -692,8 +735,17 @@ function fetch_my_basket_item_rs($borrower_id, $order_by, $sortorder, $start_ind
 				" bi.status  = 'T' AND bi.borrower_id = '".$borrower_id."' ".
 				get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -763,8 +815,17 @@ function fetch_item_instance_history_rs($item_id, $instance_no, $order_by, $sort
 			 bi.item_id = '".$item_id."' AND bi.instance_no = '".$instance_no."' AND bi.status IN ('X', 'C', 'R', 'B') ".
 			get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -810,8 +871,17 @@ function fetch_owner_reserved_item_rs($owner_id, $order_by=NULL, $sortorder=NULL
 	if(strlen($order_by)>0)
 		$query .= get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -853,8 +923,17 @@ function fetch_owner_borrowed_item_rs($owner_id, $order_by, $sortorder, $start_i
 				"bi.status = 'B' ".
 				get_orderby_clause($order_by, $sortorder);
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 		
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -1121,7 +1200,7 @@ function is_exists_borrower_borrowed_item($borrower_id, $status = NULL)
 	else if($status != NULL)
 		 $query .= " AND status = '".$status."' ";
 	
-	$query .= "LIMIT 0,1";
+	$query .= "LIMIT 1";
 	
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)
@@ -1166,7 +1245,7 @@ function is_exists_owner_borrowed_item($owner_id, $status = NULL)
 	else if($status != NULL)
 		 $query .= " AND bi.status = '".$status."' ";
 	
-	$query .= "LIMIT 0,1";
+	$query .= "LIMIT 1";
 	
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)
@@ -1209,7 +1288,7 @@ function is_exists_borrowed_item($status = NULL)
 	else if($status !== NULL)
 		 $query .= "WHERE status = '".$status."' ";
 	
-	$query .= "LIMIT 0,1";
+	$query .= "LIMIT 1";
 	
 	$result = db_query($query);
 	if ($result && db_num_rows($result)>0)

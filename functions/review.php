@@ -54,7 +54,7 @@ function is_item_reviewed($item_id)
 		$query .= "WHERE r.item_id = $item_id";
 	}
 	
-	$query .= " LIMIT 0,1";
+	$query .= " LIMIT 1";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

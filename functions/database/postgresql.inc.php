@@ -85,6 +85,14 @@ function pgsql_db_errno($link = NULL)
 {
 	global $_opendb_dblink;
 	
+	/* hack to get errno from error strings (errors number are mysql compatiable)
+	 */
+	$errorstring = pgsql_db_error($link!=NULL?$link:$_opendb_dblink) ;
+	if (preg_match("/duplicate key value violates unique constraint/", $errorstring))
+		return(1062) ; //row already exists
+
+	if (preg_match("/relation .* already exists/", $errorstring))
+		return(1050) ; // table already existent
 	return 0;
 }
 

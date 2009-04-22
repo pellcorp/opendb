@@ -370,8 +370,17 @@ function fetch_user_rs($user_role_permissions = NULL,
 	else if($order_by === "lastvisit")
 		$query .= " ORDER BY u.lastvisit $sortorder, u.fullname, u.user_id";
 
-	if(is_numeric($start_index) && is_numeric($items_per_page))
-		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+	if(is_numeric($start_index) && is_numeric($items_per_page)) {
+//		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+		switch ($_opendb_dbtype) {
+			case 'mysql':
+				$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
+				break ;
+			case 'postgresql':
+				$query .= ' OFFSET ' .$start_index. ' LIMIT ' .$items_per_page ;
+				break;
+		}
+	}
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -450,7 +459,7 @@ function fetch_user_r($uid)
 			u.email_addr, 
 			u.lastvisit,
 			u.active_ind 
-	FROM (user u, s_role sr) 
+	FROM user u, s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '".get_opendb_site_language()."' AND
 	stlv.tablename = 's_role' AND

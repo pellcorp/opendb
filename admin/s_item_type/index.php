@@ -952,6 +952,7 @@ if(strlen($HTTP_VARS['op'])==0 ||
 		$row = 0;
 		while($item_type_r = db_fetch_assoc($results))
 		{
+print_r($item_type_r) ;
 			display_s_item_type_row($item_type_r, $row);
 			$row++;
 		}

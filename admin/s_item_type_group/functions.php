@@ -24,7 +24,7 @@ include_once('./functions/item_type.php');
 function is_exists_item_type_item_type_group($s_item_type)
 {
 	$query = "SELECT 'x' FROM s_item_type_group_rltshp ".
-			"WHERE s_item_type = '$s_item_type' LIMIT 0,1";
+			"WHERE s_item_type = '$s_item_type' LIMIT 1";
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

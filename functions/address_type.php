@@ -50,7 +50,7 @@ function fetch_address_type_r($address_type)
 			stlv.columnname = \'description\' AND
 			stlv.key1 = s_address_type '.
 			'WHERE s_address_type = \''.$address_type.'\' '.
-			'LIMIT 0,1';
+			'LIMIT 1';
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)
@@ -90,7 +90,7 @@ function fetch_addr_attribute_type_rltshp_r($address_type, $attribute_type, $ord
 		$query .= 'ORDER BY order_no ';
 	}
 	
-	$query .= 'LIMIT 0,1';
+	$query .= 'LIMIT 1';
 	
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

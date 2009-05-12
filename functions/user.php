@@ -317,8 +317,9 @@ function fetch_user_rs($user_role_permissions = NULL,
 					u.language, 
 					u.theme, 
 					u.email_addr, 
-					IF(u.lastvisit <> 0,UNIX_TIMESTAMP(u.lastvisit),'') AS lastvisit 
-	FROM (user u, s_role sr";
+					u.fullname,
+					IF(UNIX_TIMESTAMP(u.lastvisit) <> 0,UNIX_TIMESTAMP(u.lastvisit),'0') AS lastvisit 
+	FROM user u, s_role sr";
 	
 	$user_permissions_clause = format_sql_in_clause($user_role_permissions);
 	if($user_permissions_clause != NULL)
@@ -327,7 +328,7 @@ function fetch_user_rs($user_role_permissions = NULL,
 	}
 	else
 	{
-		$query .= ") ";
+		$query .= " ";
 	}
 	
 	$query .= "LEFT JOIN s_table_language_var stlv
@@ -368,7 +369,7 @@ function fetch_user_rs($user_role_permissions = NULL,
 	else if($order_by === "role") 
 		$query .= " ORDER BY u.user_role $sortorder, u.fullname, u.user_id";
 	else if($order_by === "lastvisit")
-		$query .= " ORDER BY u.lastvisit $sortorder, u.fullname, u.user_id";
+		$query .= " ORDER BY lastvisit $sortorder, u.fullname, u.user_id";
 
 	if(is_numeric($start_index) && is_numeric($items_per_page)) {
 //		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;

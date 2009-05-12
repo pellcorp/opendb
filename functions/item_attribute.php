@@ -103,7 +103,8 @@ function is_exists_site_item_attribute($site_type, $item_id, $instance_no)
 function fetch_attribute_type_lookup_rs($s_attribute_type=NULL, $order_by = 'value ASC', $default_display = TRUE)
 {
 	$query = "SELECT satl.value, ".($default_display?"IF(LENGTH(IFNULL(stlv.value, display))>0,IFNULL(stlv.value, display),satl.value)":"IFNULL(stlv.value, display)")." AS display, satl.img, IF(LENGTH(satl.checked_ind)>0,satl.checked_ind,'N') as checked_ind, satl.s_attribute_type, satl.order_no, sat.s_field_type 
-	FROM (s_attribute_type_lookup satl, s_attribute_type sat)
+	FROM s_attribute_type sat
+	cross join s_attribute_type_lookup satl
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '".get_opendb_site_language()."' AND
 	stlv.tablename = 's_attribute_type_lookup' AND

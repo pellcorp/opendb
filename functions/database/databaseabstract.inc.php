@@ -152,15 +152,41 @@ function db_query($sql, $link = NULL)
             case postgresql:
 		// try to make some query to work with postgres
 		// attention !!! heavy use of hack here !!!
+
+		// this one is quotes user table as user is a special keyword in postgresql
 		$sql = preg_replace("/\buser\b/", "\"user\"", $sql) ;
 
+		// This one is for locking tables
+		if (preg_match("/^LOCK\s*TABLES\s*([a-zA-Z_]*)\s*([a-zA-Z]*)/", $sql, $matches)) {
+			$newsql = "LOCK TABLE ".$matches[1]." ";
+			switch(strtoupper($matches[2])) {
+				case WRITE:
+					$newsql .= "IN EXCLUSIVE MODE" ;
+					break;
+				case READ:
+				default:
+					$newsql .= "IN SHARE MODE" ;
+					break ;
+			}
+			$sql = $newsql ;
+		}
+		// This one is for unlocking tables
+		if (preg_match("/^UNLOCK\s*TABLES/", $sql)) {
+			$alltablesquery = "select tablename from pg_tables where tablename not like 'pg_%';" ;
+			$alltables = db_query($alltablesquery, $link) ;
+			while($row = db_fetch_row($alltables)) {
+				$unlockquery = "LOCK TABLE ".$row[0] ." IN SHARE MODE" ;
+				db_query($unlockquery, $link) ;
+			}
+			return(true) ;
+		}
 	        return @pgsql_db_query($sql, $link!=NULL?$link:$_opendb_dblink);
                 break ;
         }
 	
 }
 
-function db_affected_rows($result = NULL, $link = NULL)
+function db_affected_rows($link = NULL, $result = NULL)
 {
 	global $_opendb_dblink,$_opendb_dbtype;
 	switch ($_opendb_dbtype) 

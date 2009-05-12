@@ -141,7 +141,7 @@ function fetch_user_address_type_rs($user_id, $order_by = FALSE)
 				"ua.borrow_address_ind, ".
 				"sadt.s_address_type, ".
 				"IFNULL(stlv.value, sadt.description) AS description ".
-			"FROM (s_address_type sadt) ";
+			"FROM s_address_type sadt ";
 	
 	$query .= "LEFT JOIN user_address ua ".
 			"ON ua.user_id = '".$user_id."' AND ".
@@ -290,16 +290,16 @@ function fetch_address_type_attribute_type_rs($s_address_type, $mode = 'query', 
 		$query .= ", 'N' as compulsory_ind ";
 	}
 	
-	$query .= "FROM	(s_addr_attribute_type_rltshp saatr, ".
-				"s_attribute_type sat, ".
-				"s_address_type sadt) ".
-			"LEFT JOIN s_table_language_var stlv
+	$query .= "FROM	s_address_type sadt " ;
+	$query .= "cross join s_addr_attribute_type_rltshp saatr " ;
+	$query .= "cross join s_attribute_type sat 
+			LEFT JOIN s_table_language_var stlv
 			ON stlv.language = '".get_opendb_site_language()."' AND
 			stlv.tablename = 's_addr_attribute_type_rltshp' AND
 			stlv.columnname = 'prompt' AND
 			stlv.key1 = saatr.s_address_type AND
 			stlv.key2 = saatr.s_attribute_type AND
-			stlv.key3 = saatr.order_no ".
+			stlv.key3 = cast(saatr.order_no as char) ".
 			"LEFT JOIN s_table_language_var stlv2
 			ON stlv2.language = '".get_opendb_site_language()."' AND
 			stlv2.tablename = 's_attribute_type' AND
@@ -365,7 +365,12 @@ function insert_user_address($user_id, $s_address_type, $public_address_ind, $bo
 		$insert = db_query($query);
 		if ($insert && db_affected_rows() > 0)
 		{
-			$new_sequence_number = db_insert_id();
+			$sql = "select sequence_number from user_address where user_id = '$user_id' and s_address_type = '$s_address_type' and public_address_ind = '$public_address_ind' and borrow_address_ind = '$borrow_address_ind" ;
+			$sequence = db_query($sql) ;
+			$row = db_fetch_row($sequence) ;
+			$new_sequence_number = $row[0] ;
+			
+			//$new_sequence_number = db_insert_id();
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($user_id, $s_address_type, $public_address_ind, $borrow_address_ind, $start_dt, $end_dt));
 			return $new_sequence_number;
 		}
@@ -396,7 +401,8 @@ function update_user_address($sequence_number, $public_address_ind, $borrow_addr
 	
 		$update = db_query($query);
 		// We should not treat updates that were not actually updated because value did not change as failures.
-		$rows_affected = db_affected_rows();
+		$rows_affected = db_affected_rows(NULL, $update); // hacked this to work with postgresql
+
 		if ($update && $rows_affected !== -1)
 		{
 			if($rows_affected>0)
@@ -543,7 +549,7 @@ function _insert_or_update_user_address_attributes($ua_sequence_number, $s_attri
 						"VALUES ('$ua_sequence_number','$s_attribute_type', $order_no, ".($i+1).", '$attribute_val')";
 				
 				$insert = db_query($query);
-				if ($insert && db_affected_rows() > 0)
+				if ($insert && db_affected_rows(NULL,$insert) > 0) // hacked here for postgres
 				{
 					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($ua_sequence_number, $s_attribute_type, $order_no, $attribute_val));
 				}
@@ -554,7 +560,6 @@ function _insert_or_update_user_address_attributes($ua_sequence_number, $s_attri
 					return FALSE;
 				}
 			}
-			
 			db_query("UNLOCK TABLES");
 			return TRUE;
 		}

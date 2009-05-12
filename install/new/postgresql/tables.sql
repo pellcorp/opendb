@@ -350,7 +350,7 @@ CREATE TABLE user_address (
   end_dt                DATE,
   public_address_ind    VARCHAR(1) NOT NULL DEFAULT 'N',
   borrow_address_ind    VARCHAR(1) NOT NULL DEFAULT 'N',
-  update_on             TIMESTAMP NOT NULL,
+  update_on             TIMESTAMP NOT NULL DEFAULT now(),
   PRIMARY KEY ( sequence_number )
 );
 CREATE INDEX user_address_idx ON user_address(user_id, s_address_type, start_dt) ;
@@ -367,7 +367,7 @@ CREATE TABLE user_address_attribute (
   attribute_no 			INTEGER NOT NULL DEFAULT 1,
   lookup_attribute_val 	VARCHAR(50),
   attribute_val			TEXT,
-  update_on				TIMESTAMP NOT NULL,
+  update_on				TIMESTAMP NOT NULL DEFAULT now(),
   PRIMARY KEY ( ua_sequence_number, s_attribute_type, order_no, attribute_no )
 );
 COMMENT ON TABLE user_address_attribute IS 'User address attribute';
@@ -397,7 +397,7 @@ CREATE table item_instance (
   borrow_duration	INTEGER,
   s_status_type		VARCHAR(1) NOT NULL DEFAULT 'Y',
   status_comment 	VARCHAR(255),
-  update_on			TIMESTAMP NOT NULL,
+  update_on			TIMESTAMP NOT NULL DEFAULT now(),
   PRIMARY KEY ( item_id, instance_no )
 );
 CREATE INDEX owner_id_idx ON item_instance (owner_id) ;
@@ -426,7 +426,7 @@ CREATE TABLE item_attribute (
   attribute_no 			SMALLINT NOT NULL DEFAULT 1,
   lookup_attribute_val	VARCHAR(50),
   attribute_val			TEXT,
-  update_on				TIMESTAMP NOT NULL,
+  update_on				TIMESTAMP NOT NULL DEFAULT now(),
   PRIMARY KEY ( item_id, instance_no, s_attribute_type, order_no, attribute_no )
 );
 COMMENT ON TABLE item_attribute IS 'Item Attribute table';
@@ -442,7 +442,7 @@ CREATE TABLE user_item_interest (
 	user_id			VARCHAR(20) NOT NULL,
 	level			VARCHAR(1) NOT NULL,
 	comment			text,
-	update_on		TIMESTAMP NOT NULL,
+	update_on		TIMESTAMP NOT NULL DEFAULT now(),
 	PRIMARY KEY ( sequence_number )
 );
 CREATE INDEX user_idx ON user_item_interest(user_id) ;
@@ -461,7 +461,7 @@ CREATE TABLE borrowed_item (
   borrow_duration	SMALLINT,
   total_duration	SMALLINT,
   status			VARCHAR(1) NOT NULL,
-  update_on			TIMESTAMP NOT NULL,
+  update_on			TIMESTAMP NOT NULL DEFAULT now(),
   PRIMARY KEY ( sequence_number )
 );
 CREATE INDEX borrower_idx ON borrowed_item(borrower_id) ;
@@ -478,7 +478,7 @@ CREATE TABLE review (
   item_id			INTEGER NOT NULL,
   comment			TEXT,
   rating			VARCHAR(1) NOT NULL,
-  update_on			TIMESTAMP NOT NULL,
+  update_on			TIMESTAMP NOT NULL DEFAULT now(),
   PRIMARY KEY ( sequence_number )
 );
 CREATE INDEX author_idx ON review(author_id) ;
@@ -652,7 +652,7 @@ CREATE TABLE announcement (
   user_id           VARCHAR(20) NOT NULL,
   title             VARCHAR(255) NOT NULL,
   content	        TEXT,
-  submit_on         TIMESTAMP NOT NULL,
+  submit_on         TIMESTAMP,
   display_days      INTEGER NOT NULL DEFAULT 0,
   closed_ind        VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( sequence_number )
@@ -800,3 +800,13 @@ RETURN $3;
 END IF;
 END;
 ' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION "if"(boolean, anyelement, anyelement) RETURNS anyelement AS '
+BEGIN
+IF $1 IS NOT NULL AND $1 IS TRUE THEN
+RETURN $2;
+ELSE
+RETURN $3;
+END IF;
+END;
+ ' LANGUAGE 'plpgsql' ;

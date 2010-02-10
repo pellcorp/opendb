@@ -411,7 +411,7 @@ class amazonfr extends SitePlugin
 		// <b class="h1">Détails sur le produit</b><br>
 		if(preg_match("/<b class=\"h1\">D.tails sur le produit<\/b>(.*)<\/ul>/si", $pageBuffer, $regs))
 		{
-			$productDetails = html_entity_decode(trim($regs[1]));
+			$productDetails = html_entity_decode(trim($regs[1]), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 
 			if(preg_match("/<li><b>ISBN:<\/b>([^<]*)<\/li>/i", $productDetails, $regs2))
 			{
@@ -779,7 +779,7 @@ class amazonfr extends SitePlugin
 
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = html_entity_decode(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 
 					// We may have a hard space here, so get rid of it.
 					$item = trim(strtr($item, chr(160), ' '));
@@ -808,12 +808,12 @@ class amazonfr extends SitePlugin
 		// search for "Synopsis" or "Description"
 		if (preg_match("/<b>Synopsis<\/b><br[\s]*[\/]*>([^<]*)</si", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('blurb', html_entity_decode(strip_tags($regs[1])));
+			$this->addItemAttribute('blurb', $regs[1]);
 		}
 		else
 		if (preg_match("/<b>Description<\/b><br[\s]*[\/]*>([^<]*)/si", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('blurb', html_entity_decode(strip_tags($regs[1])));
+			$this->addItemAttribute('blurb', $regs[1]);
 		}
 
 		// IMDB ID block (does not seem to be present on amazon.fr)

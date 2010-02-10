@@ -80,28 +80,30 @@ class amazon extends SitePlugin
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div>
-				if(preg_match("/<div class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\/div>/i", $pageBuffer, $regs) || 
-						preg_match("/<div class=\"resultCount\">Showing ([0-9]+) Result[s]*<\/div>/i", $pageBuffer, $regs))
+				if( (preg_match("/ class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\//i", $pageBuffer, $regs) || 
+						preg_match("/ class=\"resultCount\">Showing ([0-9]+) Result[s]*<\//i", $pageBuffer, $regs) ) )
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);
 
-					// 1 = img, 2 = href, 3 = title		
-					if(preg_match_all("!<div class=\"productImage\">[\s]*".
-									"<a href=\"[^\"]+\">[\s]*".
-									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
-									"<div class=\"productData\">[\s]*".
-									"<div class=\"productTitle\">[\s]*".
-									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
+					// 2 = img, 1 = href, 3 = title		
+					if(preg_match_all("!<td class=\"imageColumn\".*?".
+									"<a href=\"([^\"]+)\">[\s]*".
+									"<img src=\"([^\"]+)\".*?".
+									"\"srTitle\">([^<]*)?<\/span!m", $pageBuffer, $matches))
+
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
-							if(preg_match("!/dp/([^/]+)/!", $matches[2][$i], $regs))
+
+							$imageuri = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $matches[2][$i]);
+
+							if(preg_match("!/dp/([^/]+)/!", $matches[1][$i], $regs))
 							{
-								if(strpos($matches[1][$i], "no-img")!==FALSE)
-									$matches[1][$i] = NULL;
-								
-								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
+								if(strpos($matches[2][$i], "no-img")!==FALSE)
+									$matches[2][$i] = NULL;
+
+								$this->addListingRow($matches[3][$i], $imageuri, NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
 					}
@@ -170,7 +172,8 @@ class amazon extends SitePlugin
 		*/		
 		if(preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs))
 		{
-			$image = str_replace('AA240', 'SS500', $regs[1]);
+			// remove image extras _xxx_.
+			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
 		}
 		
@@ -427,16 +430,101 @@ class amazon extends SitePlugin
 		If nothing parsed correctly, then this function will returned
 		unitialised array.
 	*/
+
+
+/*
+Some search URL examples:
+- search by ISBN:
+  http://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-isbn=1591163056
+
+*/
+
+
+
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
 		//by <a href="/exec/obidos/search-handle-url/ref=ntt_athr_dp_sr_1?%5Fencoding=UTF8&amp;search-type=ss&amp;index=books&amp;field-author=J.%20K.%20Rowling">J. K. Rowling</a> (Author)
-		if(preg_match_all("!<a href=\"[^\>]+field-author=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
+
+		if(preg_match_all("!\"btAsinTitle\" style=\"\">(.*?\(([^)]*)\))</span>.*?<a href=\"[^\>]+field-author=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('author', $regs[1]);
+			$this->addItemAttribute('binding', $regs[2]);
+			$this->addItemAttribute('author', $regs[3]);
 		}
-	
-		if( ( $startIndex = strpos($pageBuffer, "<b class=\"h1\">Look for similar items by subject</b>") ) !== FALSE &&
-				($endIndex = strpos($pageBuffer, "</form>", $startIndex) ) !== FALSE )
+
+		//<span>4.5 out of 5 stars</span></span>&nbsp;</a>&nbsp;<span class="histogramButton"
+		if(preg_match("!<span>([0-9.]+) out of [0-9]+ stars</span></span>&nbsp;</a>&nbsp;<span class=\"histogramButton\"!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('rating', $regs[1]);
+		}
+
+		if(preg_match("!class=\"productDescriptionWrapper\">[\s]*([^<]+)<div!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('synopsis', $regs[1]);
+		}
+
+		// "priceBlockLabel">List Price:</td><td>$9.99 </td
+		if(preg_match_all("!\"priceBlockLabel\">List Price:</.*?\\$([0-9.]+)[\s]*?<!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('listprice', $regs[1]);
+		}
+
+		//<b>Reading level:</b> Young Adult<br
+		if(preg_match("!<b>Reading level:</b>[\s]*([^<]+)<br!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('readinglevel', $regs[1]);
+		}
+
+                //<li><b>Paperback:</b> 1500 pages</li>
+                if(preg_match("/([0-9]+) pages/", $pageBuffer, $regs))
+                {
+                        $this->addItemAttribute('no_pages', $regs[1]);
+                }
+
+                //<li><b>Publisher:</b> Prima Games (November 24, 1998)</li>
+                //<li><b>Publisher:</b> HarperCollins; New Ed edition (1 Mar 1999)</li>
+		//pages</li><li><b>Publisher:</b> VIZ Media LLC; 2 edition (June 23, 2004)</li><li><b>Language:</b> English</li><li><b>
+                if(preg_match("!<b>Publisher:</b>[\s]*([^;\(]+);!U", $pageBuffer, $regs) ||
+                                preg_match("!<b>Publisher:</b>[\s]*([^\(]+)\(!U", $pageBuffer, $regs) ||
+                                preg_match("!<b>Publisher:</b>[\s]*([^<]+)</li>!U", $pageBuffer, $regs))
+                {
+                        $this->addItemAttribute('publisher', $regs[1]);
+                }
+
+                if(preg_match("!<b>Publisher:</b>.*?\(([^\)]*[0-9]+)\)!", $pageBuffer, $regs))
+                {
+                        $timestamp = strtotime($regs[1]);
+                $date = date('d M Y', $timestamp);
+                $this->addItemAttribute('pub_date', $date);
+                }
+
+		if(preg_match("!<b>Language:</b>[\s]*([^<]+)</li!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('language', $regs[1]);
+		}
+
+                if(preg_match("!<b>ISBN-10:</b>[\s]*([0-9X]+)!", $pageBuffer, $regs))
+                {
+                        $this->addItemAttribute('isbn', $regs[1]);
+                        $this->addItemAttribute('isbn10', $regs[1]);
+                }
+
+                if(preg_match("!<b>ISBN-13:</b>[\s]*([0-9\-]+)!", $pageBuffer, $regs))
+                {
+                        $this->addItemAttribute('isbn13', $regs[1]);
+                }
+
+		if(preg_match("!<b>[\s]*Product Dimensions:[\s]*</b>[\s]*([^<]+)</!", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('dimensions', $regs[1]);
+		}
+
+                if(preg_match("!<b>[\s]*Shipping Weight:[\s]*</b>[\s]*([^(]+)\(!", $pageBuffer, $regs))
+                {
+                        $this->addItemAttribute('weight', $regs[1]);
+                }
+
+		if( ( $startIndex = strpos($pageBuffer, "<h2>Look for Similar Items by Subject</h2>") ) !== FALSE &&
+				($endIndex = strpos($pageBuffer, "Find books matching ALL checked", $startIndex) ) !== FALSE )
 		{
 			$subjectform = substr($pageBuffer, $startIndex, $endIndex-$startIndex);
 			
@@ -446,38 +534,6 @@ class amazon extends SitePlugin
 			}
 		}
 		
-		if(preg_match("!<b>ISBN-10:</b>[\s]*([0-9X]+)!", $pageBuffer, $regs))
-		{
-			$this->addItemAttribute('isbn', $regs[1]);
-			$this->addItemAttribute('isbn10', $regs[1]);
-		}
-		
-		if(preg_match("!<b>ISBN-13:</b>[\s]*([0-9\-]+)!", $pageBuffer, $regs))
-		{
-			$this->addItemAttribute('isbn13', $regs[1]);
-		}
-
-		//<li><b>Paperback:</b> 1500 pages</li>
-		if(preg_match("/([0-9]+) pages/", $pageBuffer, $regs))
-		{
-			$this->addItemAttribute('nb_pages', $regs[1]);
-		}
-		
-		//<li><b>Publisher:</b> Prima Games (November 24, 1998)</li>
-		//<li><b>Publisher:</b> HarperCollins; New Ed edition (1 Mar 1999)</li>
-		if(preg_match("!<b>Publisher:</b>[\s]*([^;\(]+);!U", $pageBuffer, $regs) || 
-				preg_match("!<b>Publisher:</b>[\s]*([^\(]+)\(!U", $pageBuffer, $regs) || 
-				preg_match("!<b>Publisher:</b>[\s]*([^<]+)</li>!U", $pageBuffer, $regs)) 
-		{
-			$this->addItemAttribute('publisher', $regs[1]);
-		}
-		
-		if(preg_match("!<b>Publisher:</b>.*?\(([^\)]*[0-9]+)\)!", $pageBuffer, $regs))
-		{
-			$timestamp = strtotime($regs[1]);
-    		$date = date('Y', $timestamp);
-    		$this->addItemAttribute('pub_date', $date);
-		}
 	}
 
 	/**
@@ -661,7 +717,7 @@ class amazon extends SitePlugin
 
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = html_entity_decode(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 
 					// We may have a hard space here, so get rid of it.
 					$item = trim(strtr($item, chr(160), ' '));

@@ -103,7 +103,7 @@ function parse_page_block($blockid, $block)
 			$end = strpos($block, "</td>", $start);
 			if($end!==FALSE)
 			{
-				return html_entity_decode(strip_tags(substr($block, $start, $end-($start))));
+				return html_entity_decode(strip_tags(substr($block, $start, $end-($start))), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 			}
 		}
 	}
@@ -137,12 +137,12 @@ function parse_film_info_block($blockid, $block)
 		$block = substr($block, $start, $end - $start);
 		
 		$block = str_replace("&#149;", ",", $block);
-		$block = html_entity_decode(strip_tags($block));
+		$block = str_replace("&nbsp;", " ", $block);
+		$block = html_entity_decode(strip_tags($block), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 		$block = str_replace(" , ", ",", $block);
 		
-		if($block{0} == ',')
+		if($block[0] == ',')
 			$block = substr($block, 1);
-		
 		return explode(",", $block);
 	}
 }
@@ -169,8 +169,7 @@ class dvdempire extends SitePlugin
 		$pageBuffer = $this->fetchURI('http://www.dvdempire.com/exec/v5_search_item.asp?display_pic=1&page='.$page_no.'&string='.urlencode($search_vars_r['title']).'&'.$item_type_url_options);
 		if(strlen($pageBuffer)>0)
 		{
-			//<a href="/Exec/v4_item.asp?userid=&amp;item_id=628531&amp;searchID=72879"><img src="http://images2.dvdempire.com/gen/movies/628531t.jpg" align="middle" border="0" hspace="5" vspace="3"></a></td><td valign="top" width="100%"><b><a href="/Exec/v4_item.asp?userid=&amp;item_id=628531&amp;searchID=72879">Rambo: 3 Disc Collector's Set - Ultimate Edition</a> 
-			if(preg_match_all('!<b><a href=[\'|"]/Exec/v4_item.asp\?userid=[0-9-]*&amp;item_id=([0-9]+)&amp;searchID=[0-9]+[^\'|^"]*[\'|"]>(.*?)</a>[\s]*</b>*!mi', $pageBuffer, $matches))
+			if(preg_match_all('!<b><a href=[\'|"]/Exec/v4_item.asp\?item_id=([0-9]+)[\'|"]>(.*?)</a>!mi', $pageBuffer, $matches))
 			{
 				for ($i = 0; $i < count($matches[1]); $i++)
 				{
@@ -251,7 +250,7 @@ class dvdempire extends SitePlugin
 					{
 					  	$plot = substr($buffer, $start, $end - $start);
 					  	$plot = str_replace(">", "> ", $plot); // workaround for lack of spaces between HZML tags
-						$plot = trim(preg_replace("/[\s]+/", " ", html_entity_decode(strip_tags($plot))));
+						$plot = trim(preg_replace("/[\s]+/", " ", html_entity_decode(strip_tags($plot), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1')));
 						$this->addItemAttribute('blurb', $plot);
 					}
 				}
@@ -261,11 +260,15 @@ class dvdempire extends SitePlugin
 			$start = strpos($buffer, "<b>Genre</b>");
 			if($start!==FALSE)
 			{
+					$this->addItemAttribute('start', $start);
+					//					$this->addItemAttribute('buffer', $buffer);
 				$end = strpos($buffer, "</td>", $start);
-				
-				if(preg_match_all("!<a href=\"/exec/v2_category.asp.*?\">([^<]*)</a>!", substr($buffer, $start, $end - $start), $matches))
+				$genre = trim(substr($buffer,$start,$end-$start));
+				if(preg_match_all("!<a href=\"/exec/v2_category.asp[^\"]*\">([^<]*)</a>!", $genre, $matches))
+				//  if(preg_match_all("!<a href=\"/exec/v2_category.asp\?.*\">([^<]*)</a>!", substr($buffer, $start, $end - $start), $matches))
 				{
-					$this->addItemAttribute('genre', $matches[1]);
+				  $this->addItemAttribute('genre', str_replace("'", "", str_replace(" ", "", $matches[1])));
+
 				}
 			}
 			
@@ -285,7 +288,12 @@ class dvdempire extends SitePlugin
 		//<title>DVD Empire - Item - Rambo III: Ultimate Edition  /  DVD-Video</title>
 		if(preg_match("!<title>DVD Empire - Item - (.*)/[\s]*DVD-Video<\/title>!m", $buffer, $regs))
 		{
-			$this->addItemAttribute('title', str_replace("\"", "", html_entity_decode(strip_tags($regs[1]))));
+			$this->addItemAttribute('title', str_replace("\"", "", html_entity_decode(strip_tags($regs[1]), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1')));
+		}
+		//<title>Buy Just Friends DVD @ DVD Empire </title>
+		if(preg_match("!<title>Buy (.*) DVD @ DVD Empire <\/title>!", $buffer, $matches))
+		{
+			$this->addItemAttribute('title', $matches[1]);
 		}
 
 		if(preg_match("/Region ([0-9]+)/i", $buffer, $regs))
@@ -303,16 +311,7 @@ class dvdempire extends SitePlugin
 					preg_replace(
 						array("'[\n|\r]+'","'[\t ]+'"), 
 						array("\n"," "),
-						html_entity_decode(
-							strip_tags(
-								str_replace(
-									"<br>", 
-									"\n",
-									parse_page_block(
-										'Features',
-										$product_info)
-								)
-							)
+						html_entity_decode(strip_tags(str_replace("<br>", "\n", parse_page_block('Features', $product_info))), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1'
 						)
 					)
 				);

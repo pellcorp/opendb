@@ -54,7 +54,7 @@ class OpenDbImportPlugin extends XMLImportPlugin
 		}
 		else if(strcmp($name, 'Title')===0)
 		{
-			$this->setTitle(html_entity_decode($pcdata));
+			$this->setTitle(html_entity_decode($pcdata), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 		}
 		else if(strcmp($name, 'Instance')===0)
 		{
@@ -64,11 +64,11 @@ class OpenDbImportPlugin extends XMLImportPlugin
 		}
 		else if(strcmp($name, 'StatusComment')===0)
 		{
-			$this->setInstanceStatusComment(html_entity_decode($pcdata));
+			$this->setInstanceStatusComment(html_entity_decode($pcdata), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 		}
 		else if(strcmp($name, 'Attribute')===0)
 		{
-			$this->addAttribute($attribs['AttributeType'], NULL, html_entity_decode($pcdata));
+			$this->addAttribute($attribs['AttributeType'], NULL, html_entity_decode($pcdata), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 		}
 	}
 	

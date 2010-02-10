@@ -501,7 +501,7 @@ class amazonde extends SitePlugin
 
 	function parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer)
 	{
-		if(preg_match("!<li><b>Produktion:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
+		if(preg_match("!<li><b>Produktionsjahr:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('year', $regs[1]);
 		}
@@ -564,7 +564,7 @@ class amazonde extends SitePlugin
 
 				while(list(,$item) = @each($matches[1]))
 				{
-					$item = html_entity_decode(strip_tags($item));
+					$item = html_entity_decode(strip_tags($item), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 
 					// Don't include the region, no_discs, anamorphic
 					if(strpos($item, "Ton:")===FALSE)  // audio languages already parse this.

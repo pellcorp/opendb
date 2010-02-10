@@ -98,7 +98,7 @@ class imdb extends SitePlugin
 										    
 											if(preg_match("/<br>&#160;aka(.*)/", $matches2[3], $regs))
 										    {
-										    	$comments = html_entity_decode(strip_tags($regs[1]));
+										    	$comments = html_entity_decode(strip_tags($regs[1]), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 										    }
 										    
 											$this->addListingRow($title, $image, $comments, array('imdb_id'=>$imdb_id));
@@ -126,7 +126,7 @@ class imdb extends SitePlugin
 	function queryItem($search_attributes_r, $s_item_type)
 	{
 		$pageBuffer = $this->fetchURI("http://us.imdb.com/Title?".$search_attributes_r['imdb_id']);
-		
+
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
@@ -152,21 +152,21 @@ class imdb extends SitePlugin
 			}
 		}
 	
-		/**
-		 * <div id="director-info" class="info">
-<h5>Directors:</h5>
-<a href="/name/nm0905152/">Andy Wachowski</a><br><a href="/name/nm0905154/">Larry Wachowski</a><br>
-</div>
-		 */
-/*<h5>Director:</h5>
-<a href="/name/nm0268380/">Peter Farrelly</a><br><a class="tn15more" href="fullcredits#directors">more</a>
-*/
 		if(preg_match("!<div id=\"director-info\" class=\"info\">(.*?)</div>!ms", $pageBuffer, $matches))
 		{
 			$buffer = $matches[1];
-			if(preg_match_all("!<a href=\"/name/nm([0-9]+)/\">([^<]+)</a>!", $buffer, $matches))
+			if(preg_match_all("!<a href=\"/name/nm([0-9]+)/\"[^>]*>([^<]+)</a>!", $buffer, $matches))
 			{
 				$this->addItemAttribute('director', $matches[2]);
+			}
+		}
+
+		if(preg_match("!<h5>Writer.*?</h5>(.*?)</div>!ms", $pageBuffer, $matches))
+		{
+			$buffer = $matches[1];
+			if(preg_match_all("!<a href=\"/name/nm([0-9]+)/\"[^>]*>([^<]+)</a>!", $buffer, $matches))
+			{
+				$this->addItemAttribute('writer', $matches[2]);
 			}
 		}
 		
@@ -183,7 +183,7 @@ class imdb extends SitePlugin
 			}
 		}
 	
-		if(preg_match("!<div class=\"usr rating\">.*?<div class=\"meta\">.*?<b>([0-9|\.]+)/10</b>!ms", $pageBuffer, $regs))
+		if(preg_match("!<div class=\"starbar-meta\">.*?<b>([0-9|\.]+)/10</b>!ms", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('imdbrating', $regs[1]);
 		}
@@ -192,23 +192,39 @@ class imdb extends SitePlugin
 		if($start!==FALSE)
 		{
 			$end = strpos($pageBuffer,"</table>", $start);
-			$actorBlock = substr($pageBuffer, $start, $end);
+			$actorBlock = substr($pageBuffer, $start, $end-$start);
 
 			if(preg_match_all("!<tr.*?>".
-							"<td.*?>(.*?)</td>".
-							"<td.*?><a href=\"([^\"]*)\">([^<]*)</a></td>".
-							"<td.*?>([^<]*)</td>".
-							"<td.*?>([^<]*)</td></tr>!", $actorBlock, $matches))
+							".*?".
+							"<td class=\"nm\"><a href=\"([^\"]*)\"[^>]*>([^<]*)</a></td>".
+							".*?".
+//							"<td class=\"char\"><a href=\"([^\"]*)\"[^>]*>([^<]*)</a></td>".
+							"</tr>!", $actorBlock, $matches))
 			{
-				$this->addItemAttribute('actors', $matches[3]);
+				$this->addItemAttribute('actors', $matches[2]);
 			}
 		}
 	
-		if(preg_match("!<h5>Runtime:</h5>[\s]*([0-9]*) min!", $pageBuffer, $matches))
+		if(preg_match("!<h5>Runtime:</h5>[\D]*([0-9]*) min!", $pageBuffer, $matches))
 		{
 			$this->addItemAttribute('run_time', $matches[1]);
 		}
 		
+//FCG 
+                 /* <div class="info">
+                     <h5>Language:</h5>
+                     <div class="info-content">
+                     <a href="/Sections/Languages/English/">
+                     English</a>
+
+                     </div>
+                     </div>
+                 */
+                if(preg_match_all("!<a href=\"/Sections/Languages/[^/]*/\">[\s]*([^/]*)</a>!", $pageBuffer, $matches))
+                {
+                        $this->addItemAttribute('audio_lang', $matches[1]);
+                }
+
 		/**
 		 * <div class="info">
 		 <h5>Aspect Ratio:</h5>
@@ -220,6 +236,22 @@ class imdb extends SitePlugin
 			$this->addItemAttribute('ratio', $matches[1]);
 		}
 		
+//FCG	
+                /*
+                    <div class="info">
+                    <h5>Sound Mix:</h5>
+                    <div class="info-content">
+
+                    <a href="/List?sound-mix=Dolby%20Digital&&heading=15;Dolby%20Digital">
+                    Dolby Digital</a> 
+                    </div>
+                    </div>
+                */
+                if(preg_match_all("!<a href=\"/List\?sound-mix=[^/]*\">[\s]*([^/]*)</a>!", $pageBuffer, $matches))
+                {
+                        $this->addItemAttribute('dvd_audio', $matches[1]);
+                }
+
 		//Certification extraction block
 		$start = strpos($pageBuffer,"<h5>Certification:</h5>", $end);
 		if($start !== FALSE)
@@ -257,8 +289,9 @@ class imdb extends SitePlugin
 				}
 			}
 		}
-		
+
 		$plotPage = $this->fetchURI("http://us.imdb.com/Plot?".$search_attributes_r['imdb_id']);
+
 		if(preg_match_all("!<p class=\"plotpar\">[\s]*(.*?)<i>[\s]*Written by[\s]*<a href=\"([^<]*)\">(.*?)</a>[\s]*</i>[\s]*</p>!ms", $plotPage, $matches))
 		{
 			$this->addItemAttribute('plot', $matches[1]);

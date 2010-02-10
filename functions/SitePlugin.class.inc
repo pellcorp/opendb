@@ -345,7 +345,7 @@ class SitePlugin
 			// site plugins cannot normally pass any HTML entities or tags through.
 			if($options != HTML_CONTENT_IS_LEGAL)
 			{
-				$value = html_entity_decode(strip_tags($value));
+				$value = html_entity_decode(strip_tags($value), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1'); //thawn: fix utf-8 issues
 			}
 			
 			// hack: remove hard spaces
@@ -692,7 +692,7 @@ class SitePlugin
 	{
 		$page = $this->_httpClient->fetchURI($uri);
 		if($page !== FALSE)
-			return $page;
+			return get_opendb_config_var('themes', 'charset')=='utf-8'?utf8_encode($page):$page;
 		else
 			$this->setError($this->_httpClient->error);
 	}

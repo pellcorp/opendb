@@ -169,18 +169,18 @@ class amazonde extends SitePlugin
 		}
 
 		//<td class="listprice">EUR 9,99 </td>
-		if (preg_match("/<td class=\"listprice\">EUR ([^<]*) <\/td>/i", $pageBuffer, $regs))
+		if (preg_match("/<td class=\"listprice\">EUR ([^<]*)<\/td>/i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('listprice', preg_replace('/,/', '.', trim($regs[1])));
 		}
 
-		if (preg_match("!<b class=\"price\">EUR ([0-9,]+)[\s]*</b>!", $pageBuffer, $regs))
+		if (preg_match("!<b class=\"priceLarge\">EUR ([0-9,]+)[\s]*</b>!", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('listprice', $regs[1]);
+			$this->addItemAttribute('listprice', preg_replace('/,/', '.', trim($regs[1])));
 		}
 
 		//<li><b>Sprache:</b> Deutsch</li>
-		if (preg_match("/<li><b>Sprache:<\/b> (.*?)<\/li>/i", $pageBuffer, $regs))
+		if (preg_match("/<b>Sprache:<\/b> ([^<]*)<\/li>/i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('language', preg_replace('/,/', '.', trim($regs[1])));
 		}
@@ -205,10 +205,10 @@ class amazonde extends SitePlugin
 				$this->addItemAttribute('blurb', $reviews);
 			}
 		}
-
-		if(preg_match("!<li><b>Durchschnittliche Kundenbewertung:</b>[\s]*<img src=\".*?/stars-([^\.]+).!i", $pageBuffer, $regs))
+		//<span>4.4 von 5 Sternen</span>
+		if(preg_match("!<span>([0-9\.]*) von 5 Sternen</span>!i", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('amznrating', str_replace('-', '.', $regs[1])) ;
+			$this->addItemAttribute('amznrating', $regs[1]) ;
 		}
 
 		// Get the mapped AMAZON index type
@@ -437,14 +437,14 @@ class amazonde extends SitePlugin
 		{
 			$this->addItemAttribute('isbn', $regs2[1]);
 		}
-
-		if(preg_match("/<li><b>ISBN-13:<\/b>(.*?)<\/li>/", $pageBuffer, $regs2))
+//print_r($pageBuffer);
+		if(preg_match("/<li><b>ISBN-13:<\/b>[\s]*(.*?)<\/li>/i", $pageBuffer, $regs2))
 		{
-			$this->addItemAttribute('isbn-13', $regs2[1]);
+			$this->addItemAttribute('isbn13', $regs2[1]);
 		}
 
 		// Publisher, Publication date
-		if (preg_match("/<li><b>Verlag:<\/b> (.*?)[;\(].*([0-9][0-9][0-9][0-9])\)<\/li>/", $pageBuffer, $regs2))
+		if (preg_match("/<li><b>Verlag:<\/b> (.*?)[;\(].*?([0-9][0-9][0-9][0-9])\)<\/li>/", $pageBuffer, $regs2))
 		{
 			$this->addItemAttribute('publisher', $regs2[1]);
 			$this->addItemAttribute('pub_date', $regs2[2]);
@@ -461,29 +461,34 @@ class amazonde extends SitePlugin
 		// Book type (edition?), Pages
 		if (preg_match("/<li><b>([Gebundene Ausgabe|Kalender|Taschenbuch|Broschiert|CD]+?):<\/b>(.*?)Seiten<\/li>/", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('type', $regs[1]);
-			$this->addItemAttribute('pages', $regs[2]);
+			$this->addItemAttribute('binding', $regs[1]);
+			$this->addItemAttribute('no_pages', $regs[2]);
 		}
 
-		// Category -- hmmm, Amazon seems to have removed genre information from books
-		if (preg_match('|<b>Kategorie\(n\):</b> <a .*?>(.*?)</a>|', $pageBuffer, $regs2))
+		// Category -- hmmm, Amazon seems to have removed genre information from books thawn: but we can get them from the categories
+		if (preg_match("!<b>Amazon.de Verkaufsrang:</b>(.*?)</li>!i", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('genre', $regs2[1]);
+			//<a href="/gp/bestsellers/dvd-de/289099/ref=pd_zg_hrsr_d_1_3">Fantasy</a>
+			if (preg_match_all('!<a href=\".*?\">(.*?)</a>!i', $regs[1], $genres))
+			{
+				$moviegenres=array_map("unaccent", array_unique($genres[1]));
+				sort($moviegenres);
+				//print_r($moviegenres);
+				$this->addItemAttribute('genre', $moviegenres);
+			}
 		}
 
 		// Plot (Amazon blurb)
 		// no editorial reviews for amazon.de
 		// search for "Synopsis" or "Description"
-		if (preg_match("/<b>Kurzbeschreibung<\/b><br[\s]*[\/]*>([^<]*)</si", $pageBuffer, $regs))
+		if (preg_match_all("/Produktbeschreibungen<\/h2>(.*?)<div class=\"seeAll\">/i", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('synopsis', $regs[1]);
+			//<div class="productDescriptionWrapper">...<div class="emptyClear">
+			if (preg_match_all("/<div class=\"productDescriptionWrapper\">(.*?)<div class=\"emptyClear\">/i", $regs[1][0], $synopsis))
+			{
+				$this->addItemAttribute('synopsis', $synopsis[1]);
+			}
 		}
-		else
-		if (preg_match("/Produktbeschreibungen<\/b><br[\s]*[\/]*>([^<]*)/si", $pageBuffer, $regs))
-		{
-			$this->addItemAttribute('synopsis', $regs[1]);
-		}
-
 		//$this->addItemAttribute('blurb', $this->parse_amazon_book_blurb($pageBuffer));
 
 		// Editorial reviews
@@ -531,7 +536,7 @@ class amazonde extends SitePlugin
 		// Rating extraction block
 		if(preg_match("!<li><b>FSK:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('age_rating', $regs[1]);
+			$this->addItemAttribute('age_rating', unaccent($regs[1]));
 		}
 
 		// Actor extraction block
@@ -539,6 +544,7 @@ class amazonde extends SitePlugin
 
 		// Director extraction block
 		$this->addItemAttribute('director', parse_amazon_video_people("Regisseur(e)",$pageBuffer));
+		$this->addItemAttribute('writer', parse_amazon_video_people("Komponist", $pageBuffer));
 
 		if(preg_match("!<li><b>Studio:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
 		{
@@ -614,7 +620,7 @@ class amazonde extends SitePlugin
 			}
 		}
 
-		// If possible, fetch additional (technical) info from the site
+		// If possible, fetch additional (technical) info from the site  thawn: it seems, that this does not work any more...
 		if(preg_match("/<a href=\"([^\"]+)\">Technische Informationen/i", $pageBuffer, $regs))
 		{
 			$detailPage = $this->fetchURI('http://www.amazon.de/' . $regs[1]);
@@ -655,8 +661,67 @@ class amazonde extends SitePlugin
 				// Subtitles
 				if(preg_match("/Untertitel:([^<]*)<br>/i", $detailPage, $regs))
 				{
-					$this->addItemAttribute('subtitles', trim_explode(",", $regs[1]));
+					$this->addItemAttribute('subtitles', trim_explode(",", unaccent($regs[1])));
 				}
+			}
+		}
+		//getting technical information from main page:
+		//<li><b>Sprache:</b> Deutsch</li>
+		$amazon_dvd_audio_map = array(
+			array("Englisch"),
+			array("Spanisch"),
+			array("Franzosisch"),
+			array("Deutsch"),
+			array("Italienisch"));
+
+		if (preg_match("/<b>Sprache:<\/b> ([^<]*)<\/li>/i", $pageBuffer, $regs))
+		{
+			$audio_lang_r = explode(',', unaccent($regs[1]));
+
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('audio_lang', $key);
+				}
+			}
+
+			if (preg_match_all("/\(([^\)]*)\)/", $regs[1], $aud))
+				{
+					$this->addItemAttribute('dvd_audio', preg_replace('/Dolby Digital/i', 'Dolby', array_unique($aud[1])));
+				}
+		}
+		if (preg_match("/<b>Untertitel:<\/b> ([^<]*)<\/li>/i", $pageBuffer, $regs))
+		{
+			$audio_lang_r = explode(',', unaccent($regs[1]));
+
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('subtitles', $key);
+				}
+			}
+		}
+		//<b>Bildseitenformat:</b> 16:9 - 1.77:1</li>
+		if (preg_match("/<b>Bildseitenformat:<\/b>.*?([0-9].[0-9][0-9])\:1<\/li>/i", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('ratio', $regs[1]);
+		}
+		//<b>Anzahl Disks:</b> 4</li>
+		if (preg_match("/b>Anzahl Disks:<\/b> ([0-9]*)<\/li>/i", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('no_media', $regs[1]);
+		}
+		//get genres from categories
+		//<b>Amazon.de Verkaufsrang:</b>
+		if (preg_match("!<b>Amazon.de Verkaufsrang:</b>(.*?)</li>!i", $pageBuffer, $regs))
+		{
+			//<a href="/gp/bestsellers/dvd-de/289099/ref=pd_zg_hrsr_d_1_3">Fantasy</a>
+			if (preg_match_all('!<a href=\".*?\">(.*?)</a>!i', $regs[1], $genres))
+			{
+				$moviegenres=array_map("unaccent", array_unique($genres[1]));
+				sort($moviegenres);
+				//print_r($moviegenres);
+				$this->addItemAttribute('genre', $moviegenres);
 			}
 		}
 	}

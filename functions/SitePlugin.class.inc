@@ -347,9 +347,9 @@ class SitePlugin
 			{
 				$value = html_entity_decode(strip_tags($value), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1'); //thawn: fix utf-8 issues
 			}
-			
 			// hack: remove hard spaces
-			$value = strtr($value, chr(160), ' ');
+			$replace = array(utf8_encode(chr(160)) => ' '); //thawn: fixes issue with 3param version of strtr() not being utf-8 compatible.
+			$value = strtr($value, $replace);
 			
 			$value = trim($value);
 			

@@ -202,4 +202,29 @@ function parse_language_info($audio_lang, $audio_map) {
 	//else
 	return NULL;
 }
+
+function unaccent($text)
+{
+	if (get_opendb_config_var('themes', 'charset')=='utf-8')
+	{
+		$text = utf8_decode($text);
+	}
+	// strip out characters that aren't valid in ISO-8859-1 (latin1)
+	$text = preg_replace('/[^\x09\x0A\x0D\x20-\x7F\xC0-\xFF]/', '', $text);
+
+	//Get the entities table into an array
+	$trans = get_html_translation_table(HTML_ENTITIES);
+
+	//Create two arrays, for accented and unaccented forms
+	foreach ($trans as $literal =>$entity)
+	{
+		//Don't contemplate other characters such as fractions, quotes etc.
+		if (ord($literal)>=192){
+			//Get 'E' from string '&Eaccute' etc.
+			$replace[]=substr($entity,1,1);
+			//Get accented form of the letter
+			$search[]=$literal;}
+	}
+	return str_replace($search, $replace, $text);
+}
 ?>

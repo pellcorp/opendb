@@ -42,16 +42,15 @@ class amazonfr extends SitePlugin
 		{
 			// Get the mapped AMAZON index type
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
-
-			// $queryUrl = "http://www.amazon.fr/exec/obidos/external-search?index=".$index_type."&keyword=".rawurlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
-			$queryUrl = "http://www.amazon.fr/s/url=search-alias%3D".$index_type."&field-keywords=".rawurlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
+			
+			$queryUrl = "http://www.amazon.fr/exec/obidos/external-search?index=".$index_type."&keyword=".rawurlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
+			//$queryUrl = "http://www.amazon.fr/s/url=search-alias%3D".$index_type."&field-keywords=".rawurlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
 			$pageBuffer = $this->fetchURI($queryUrl);
 		}
 
 		if(strlen($pageBuffer)>0)
 		{
-			$amazonasin = FALSE;
-
+			$amazonasin = false;
 			// check for an exact match, but not if this is second page of listings or more
 			if(!$this->isPreviousPage())
 			{
@@ -69,9 +68,8 @@ class amazonfr extends SitePlugin
 					$amazonasin = trim ($regs[1]);
 				}
 			}
-
 			// exact match
-			if($amazonasin!==FALSE)
+			if($amazonasin!==false)
 			{
 				// single record returned
 				$this->addListingRow(NULL, NULL, NULL, array('amazfrasin'=>$amazonasin));
@@ -81,24 +79,23 @@ class amazonfr extends SitePlugin
 			else
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
-
-				if(preg_match("/<div class=\"resultCount\">R.sultats [0-9]+[\s]*-[\s]*[0-9]+ sur ([0-9]*).*?([0-9]*)<\/div>/i", $pageBuffer, $regs) ||
-						preg_match("/<div class=\"resultCount\">([0-9]+) r.sultats<\/div>/i", $pageBuffer, $regs))
+//print_r($pageBuffer); important use this for debugging, since amazon.fr creates a table based layout when queried by the script (probably a browser check, since in firefox it is a div based layout.)
+				//<td class="resultCount">Résultats 1 - 12 sur 38</td>
+				if(preg_match("/<td class=\"resultCount\">R.*?sultats \d+ - \d+ sur (\d*).*?(\d*)<\/td>/i", $pageBuffer, $regs) ||
+						preg_match("/<td class=\"resultCount\">([0-9]+) r.*?sultats<\/td>/i", $pageBuffer, $regs))
 				{
 					if(is_numeric($regs[1]) && is_numeric($regs[2]))
 						$totalCount = ($regs[1].$regs[2]);
 					else
 						$totalCount = $regs[1];
-						
 					// store total count here.
 					$this->setTotalCount($totalCount);
 						
-					if(preg_match_all("!<div class=\"productImage\">[\s]*".
-										"<a href=\"[^\"]+\">[\s]*".
-										"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
-										"<div class=\"productData\">[\s]*".
-										"<div class=\"productTitle\">[\s]*".
-										"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
+					if(preg_match_all("!<td class=\"imageColumn\".*?".
+										"<a href=\"[^\"]+\">.*?".
+										"<img .*?src=\"([^\"]+)\".*?".
+										"<td class=\"dataColumn\">.*?".
+										"<a href=\"([^\"]+)\"><span class=\"srTitle\">([^<]*)</span></a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
@@ -560,7 +557,7 @@ class amazonfr extends SitePlugin
 
 		$this->addItemAttribute('actors', parse_amazon_video_people("Acteurs", $pageBuffer));
 
-		if (preg_match("!<li><b>.*alisateurs[\s]*(.*?)</li>!", $pageBuffer, $regs))
+		if (preg_match("!<li><b>.*?alisateurs[\s]*(.*?)</li>!", $pageBuffer, $regs))
 		{
 			if(preg_match_all("/<a href=([^>]+)>([^<]+)<\/a>/", $regs[1], $matches))
 			{
@@ -576,7 +573,7 @@ class amazonfr extends SitePlugin
 
 		// Region extraction block
 		//<li><b>Région: </b>Région 1
-		if (preg_match("/<li><b>R.gion[\s]*:[\s]*<\/b>R.gion ([0-6])/", $pageBuffer, $regs))
+		if (preg_match("/<li><b>R.*?gion[\s]*:[\s]*<\/b>R.*?gion ([0-6])/", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('dvd_region', $regs[1]);
 			switch($regs[1]) {
@@ -621,12 +618,10 @@ class amazonfr extends SitePlugin
 				$this->addItemAttribute('ratio', $matches[1]);
 			}
 		}
-
-		// Often used in the title
-		// Paris je t'aime - Edition Collector 2 DVD
-		if (preg_match("/([0-9]*) DVD/", $this->getItemAttribute('title'), $regs2));
+		//<b>Nombre de disques&nbsp;:</b> 1</li>
+		if (preg_match("/<b>Nombre de disques.*?:<\/b> ([0-9]*)<\/li>/i", $pageBuffer, $regs));
 		{
-			$this->addItemAttribute('no_discs', $regs2[1]);
+			$this->addItemAttribute('no_media', $regs[1]);
 		}
 
 		// rating not given on amazon.fr
@@ -676,7 +671,7 @@ class amazonfr extends SitePlugin
 
 		// Duration extraction block
 		//<li><b>Durée :</b> 120 minutes </li>
-		if (preg_match("/<li><b>Dur.e[\s]*:<\/b>[\s]*([0-9]+) minutes/i", $pageBuffer, $regs))
+		if (preg_match("/<li><b>Dur.*?e.*?:<\/b>[\s]*([0-9]+) minutes/i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('run_time', $regs[1]);
 		}
@@ -695,10 +690,11 @@ class amazonfr extends SitePlugin
 		// Spoken languages
 		//<BR>Langues et formats sonores :  Francais (Dolby Digital 5.1), Francais (DTS)<BR>
 		//<li>Available Audio Tracks:  English (Dolby Digital 5.1), French (Dolby Digital 2.0 Surround)</li>
-		if(preg_match("/Langues([^:]*):([^<]*)<br>/i", $pageBuffer, $regs))
+		if(preg_match("/<b>Langue.*?:<\/b>[\s]*([^<]*)<\/li>/i", $pageBuffer, $regs))
 		{
-			$audio_lang_r = explode(',', $this->unaccent($regs[2]));
-				
+			//print_r($regs[1]);
+			$audio_lang_r = explode(',', unaccent($regs[1]));
+			
 			$amazon_dvd_audio_map = array(
 				array("Anglais", "2.0"), // Dolby2.0
 				array("Anglais", "5.0"), //Dolby
@@ -744,14 +740,13 @@ class amazonfr extends SitePlugin
 
 		// Subtitles
 		//<li>Sous-titres : Anglais, Francais</li>
-		if (preg_match("/Sous-titres([^:]*):([^<]*)<br>/i", $pageBuffer, $regs))
+		if (preg_match("/<b>Sous-titre.*?:<\/b>[\s]*([^<]*)<\/li>/i", $pageBuffer, $regs))
 		{
-			$audio_lang_r = explode(',', $regs[1]);
+			$audio_lang_r = explode(',', unaccent($regs[1]));
 				
 			$amazon_video_subtitle_map = array(
 				array("Anglais"),
 				array("Francais"),
-				array("Franais"),
 				array("Espagnol"),
 				array("Allemand"),
 				array("Italien"));
@@ -804,9 +799,11 @@ class amazonfr extends SitePlugin
 			}
 		}
 
+//print_r($pageBuffer);
 		// no editorial reviews for amazon.fr
 		// search for "Synopsis" or "Description"
-		if (preg_match("/<b>Synopsis<\/b><br[\s]*[\/]*>([^<]*)</si", $pageBuffer, $regs))
+		//<h3 class="productDescriptionSource">Synopsis</h3><div class="productDescriptionWrapper">
+		if (preg_match("/Synopsis<\/h3><div.*?>[\s]*(.*?)<div class=\"emptyClear\">/si", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('blurb', $regs[1]);
 		}
@@ -814,6 +811,18 @@ class amazonfr extends SitePlugin
 		if (preg_match("/<b>Description<\/b><br[\s]*[\/]*>([^<]*)/si", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('blurb', $regs[1]);
+		}
+		//genres:
+		if (preg_match("!<b>Classement parmi les ventes Amazon.fr.*?:</b>(.*?)</li>!i", $pageBuffer, $regs))
+		{
+			//<a href="/gp/bestsellers/dvd-de/289099/ref=pd_zg_hrsr_d_1_3">Fantasy</a>
+			if (preg_match_all('!<a href=\".*?\">(.*?)</a>!i', $regs[1], $genres))
+			{
+				$moviegenres=array_map("unaccent", array_unique($genres[1]));
+				sort($moviegenres);
+				//mahbe here we should add some kind of mapping function that maps amazon.de genres to opendb default genres?
+				$this->addItemAttribute('genre', $moviegenres);
+			}
 		}
 
 		// IMDB ID block (does not seem to be present on amazon.fr)
@@ -860,27 +869,6 @@ class amazonfr extends SitePlugin
 				}
 			}
 		}
-	}
-
-	function unaccent($text)
-	{
-		// strip out characters that aren't valid in ISO-8859-1 (latin1)
-		$text = preg_replace('/[^\x09\x0A\x0D\x20-\x7F\xC0-\xFF]/', '', $text);
-
-		//Get the entities table into an array
-		$trans = get_html_translation_table(HTML_ENTITIES);
-
-		//Create two arrays, for accented and unaccented forms
-		foreach ($trans as $literal =>$entity)
-		{
-			//Don't contemplate other characters such as fractions, quotes etc.
-			if (ord($literal)>=192){
-				//Get 'E' from string '&Eaccute' etc.
-				$replace[]=substr($entity,1,1);
-				//Get accented form of the letter
-				$search[]=$literal;}
-		}
-		return str_replace($search, $replace, $text);
 	}
 }
 ?>

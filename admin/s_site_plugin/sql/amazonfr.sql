@@ -80,6 +80,14 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'DVD_AUDIO', 'Anglais 2.0', 'DOLBY2.0' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Francais 2.0', 'DOLBY2.0' );
 
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Comedie', 'COMEDY' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Aventure', 'ADVENTURE' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Guerre', 'WAR' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Science-fiction', 'SCIENCEFICTION' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Documentaires', 'DOCUMENTATION' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Policier et Thriller', 'THRILLER' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Drame et Emotion', 'DRAMA' );
+
 ####################################################################################################
 # Item Type / Attribute Type relationships
 ####################################################################################################

@@ -89,20 +89,20 @@ class amazonuk extends SitePlugin
 			else
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
+			//print_r($pageBuffer);
 			
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div>
-				if(preg_match("/<div class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\/div>/i", $pageBuffer, $regs) || 
-						preg_match("/<div class=\"resultCount\">Showing ([0-9]+) Result[s]*<\/div>/i", $pageBuffer, $regs))
+				if(preg_match("/<td class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9]+)[,]*([\d]*) Results<\/td>/i", $pageBuffer, $regs) || 
+						preg_match("/<td class=\"resultCount\">Showing ([0-9]+) Result[s]*<\/td>/i", $pageBuffer, $regs))
 				{
 					// store total count here.
-					$this->setTotalCount($regs[1]);
-						
-					if(preg_match_all("!<div class=\"productImage\">[\s]*".
-										"<a href=\"[^\"]+\">[\s]*".
-										"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
-										"<div class=\"productData\">[\s]*".
-										"<div class=\"productTitle\">[\s]*".
-										"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches))
+					$this->setTotalCount($regs[1].$regs[2]);
+
+					if(preg_match_all("!<td class=\"imageColumn\".*?".
+										"<a href=\"[^\"]+\">.*?".
+										"<img .*?src=\"([^\"]+)\".*?".
+										"<td class=\"dataColumn\">.*?".
+										"<a href=\"([^\"]+)\"><span class=\"srTitle\">([^<]*)</span></a>!m", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
@@ -180,12 +180,12 @@ class amazonuk extends SitePlugin
 
 	    // <td class="listprice">£20.00 </td>
 		//<td><b class="price">£14.00</b>
-		if (preg_match("!<td class=\"listprice\">.?([0-9\.]+)[\s]*</td>!", $pageBuffer, $regs))
+		if (preg_match("!<span class=\"listprice\">.?([0-9\.]+)[\s]*</span>!", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('listprice', $regs[1]);
 		}
 		
-		if (preg_match("!<b class=\"price\">.?([0-9\.]+)[\s]*</b>!", $pageBuffer, $regs))
+		if (preg_match("!<b class=\"priceLarge\">.?([0-9\.]+)[\s]*</b>!", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('price', $regs[1]);
 		}
@@ -200,7 +200,20 @@ class amazonuk extends SitePlugin
 				
 		// Get the mapped AMAZON index type
 		$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
-				
+		
+		//genre:
+		if (preg_match("!<b>Amazon.co.uk Sales Rank:</b>(.*?)</li>!i", $pageBuffer, $regs))
+		{
+			//<a href="/gp/bestsellers/dvd-de/289099/ref=pd_zg_hrsr_d_1_3">Fantasy</a>
+			if (preg_match_all('!<a href=\".*?\">(.*?)</a>!i', $regs[1], $genres))
+			{
+				$genres=array_map("unaccent", array_unique($genres[1]));
+				sort($genres);
+				//print_r($moviegenres);
+				$this->addItemAttribute('genre', $genres);
+			}
+		}
+
 		switch($index_type)
 		{
 			case 'dvd-uk':
@@ -562,15 +575,20 @@ if(preg_match_all("!BOUNDARY.*?</div>.*?</div>.*?</div>.*?</div>(.*?)<div style!
 		{
 			$this->addItemAttribute('year', $regs[1]);
 		}
+		else if(preg_match("!DVD Release Date:</b>.*?([\d][\d][\d][\d])</li>!i", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('year', $regs[1]);
+		}
 	
-		//<img src="http://g-images.amazon.com/images/G/02/uk-video/misc/15-rating-27x21.gif" width="27" alt="15" height="21" border="0" />
-		if (preg_match("/<b>Classification:<\/b>[\s]*<img src=.*? alt=\"([^\"]+)\".*?>/mi", $pageBuffer, $regs))
+		//<b>Classification: </b> <span class="medSprite s_med15 " ><span>15</span></span> </li>
+		if (preg_match("/<b>Classification:.*?<span>(.*?)<\/span>/i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('age_rating', $regs[1]);
 		}
 		
 		$this->addItemAttribute('actors', parse_amazon_video_people("Actors", $pageBuffer));
 		$this->addItemAttribute('director', parse_amazon_video_people("Directors", $pageBuffer));
+		$this->addItemAttribute('writer', parse_amazon_video_people("Writers", $pageBuffer));
 
 		//<li><b>Studio:</b>  Momentum Pictures Home Ent</li>			
 		if (preg_match("!<li><b>Studio:[\s]*</b>([^<]*)</li>!", $pageBuffer, $regs))
@@ -588,9 +606,9 @@ if(preg_match_all("!BOUNDARY.*?</div>.*?</div>.*?</div>.*?</div>(.*?)<div style!
 			}
 		}
 		
-		if (preg_match("!<li><b>Number of discs:[\s]*</b>[\s]*([0-9]+)!", $pageBuffer, $regs))
+		if (preg_match("!<b>Number of discs:[\s]*</b>[\s]*([0-9]+)!", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('no_discs', $regs[1]);
+			$this->addItemAttribute('no_media', $regs[1]);
 		}
 		
 		if (preg_match("!<li><b>Aspect Ratio:[\s]*</b>[\s]*([0-9\.]+)!", $pageBuffer, $regs))
@@ -620,7 +638,43 @@ if(preg_match_all("!BOUNDARY.*?</div>.*?</div>.*?</div>.*?</div>(.*?)<div style!
 			if (preg_match("/Anamorphic/", $regs[1], $regs2))
 				$this->addItemAttribute('anamorphic', 'Y');
 		}
-		
+
+		$amazon_dvd_audio_map = array(
+			array("English"),
+			array("Spanish"),
+			array("French"),
+			array("German"),
+			array("Italian"));
+
+		if (preg_match("/<b>Language.*?<\/b> ([^<]*)<\/li>/i", $pageBuffer, $regs))
+		{
+			$audio_lang_r = explode(',', unaccent($regs[1]));
+								
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('audio_lang', $key);
+				}
+			}
+
+			if (preg_match_all("/\(([^\)]*)\)/", $regs[1], $aud))
+				{
+					$this->addItemAttribute('dvd_audio', preg_replace('/Dolby Digital/i', 'Dolby', array_unique($aud[1])));
+				}
+		}
+		if (preg_match("/<b>Subtitle.*?<\/b> ([^<]*)<\/li>/i", $pageBuffer, $regs))
+		{
+			$audio_lang_r = explode(',', unaccent($regs[1]));
+				
+			while(list(,$audio_lang) = @each($audio_lang_r)) {
+				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
+				if($key!==NULL) {
+					$this->addItemAttribute('subtitles', $key);
+				}
+			}
+		}
+
+
 		if (preg_match("!<li><b>DVD Features:[\s]*</b><ul>(.*?)</ul>!", $pageBuffer, $regs))
 		{
 			//Available Subtitles, Available Audio Tracks, Main Language, Available Audio Tracks, Sub Titles, Disc Format

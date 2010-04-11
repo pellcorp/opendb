@@ -131,8 +131,8 @@ class imdb extends SitePlugin
 		if(strlen($pageBuffer)==0)
 			return FALSE;
 		
-		//<h1>Rambo <span>(<a href="/Sections/Years/2008/">2008</a>) <span class="pro-link"><a href="http://pro.imdb.com/title/tt0462499/">More at IMDb Pro »</a></span></span></h1>
-		if(preg_match("!<h1>([^<]+)<span>\(<a href=\"/Sections/Years/.*\">([0-9]+)</a>!", $pageBuffer, $matches))
+		//<h1>Monsters vs Aliens <span>(<a href="/year/2009/">2009</a>) <span class="pro-link"><a href="http://pro.imdb.com/rg/maindetails-title/tconst-pro-header-link/title/tt0892782/">More at <strong>IMDbPro</strong></a>&nbsp;&raquo;</span><span class="title-extra"></span></span></h1>
+		if(preg_match("!<h1>([^<]+)<span>\(<a href=\".*\">([0-9]+)</a>!", $pageBuffer, $matches))
 		{
 			$this->addItemAttribute('title', $matches[1]);
 			$this->addItemAttribute('year', $matches[2]);

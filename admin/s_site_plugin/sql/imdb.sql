@@ -12,8 +12,9 @@ INSERT INTO s_site_plugin ( site_type, classname, title, image, description, ext
 # Site Plugin Configuration
 #.
 
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '0', '', 'Australia' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '1', '', 'USA' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '0', '', 'USA' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '1', '', 'Australia' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '2', '', 'Germany' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_match_types', '0', '', 'exact' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_match_types', '1', '', 'partial' );
 
@@ -44,10 +45,10 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 # Site Plugin System Attribute Type Lookup Map
 #
 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'NC-17', 'MA' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'PG-13', 'PG' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'R', 'MA' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'X', 'R' ); 
+#INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'NC-17', 'MA' ); 
+#INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'PG-13', 'PG' ); 
+#INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'R', 'MA' ); 
+#INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', 'X', 'R' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', '0', 'USK0' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', '6', 'USK6' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'imdb', 'AGE_RATING', '12', 'USK12' ); 

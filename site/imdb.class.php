@@ -138,6 +138,16 @@ class imdb extends SitePlugin
 			$this->addItemAttribute('year', $matches[2]);
 		}
 		
+		//<h5>Also Known As:</h5><div class="info-content">       "Ong-Bak: The Thai Warrior" - Philippines <em>(English title)</em>, USA <em>(trailer title)</em><br>"Daredevil" - USA <em>(informal literal English title)</em><br>"Ong Bak: Muay Thai Warrior" - Singapore <em>(English title)</em><br>"Ong-Bak: Muay Thai Warrior" - International <em>(English title)</em> <em>(festival title)</em><br>"Thai Fist" - Hong Kong <em>(English title)</em><br>
+		if(preg_match("!<h5>Also Known As:</h5>[^>]*[^\"]*(.*)<br>!", $pageBuffer, $matches))
+		{
+			$buffer=$matches[1];
+			if (preg_match_all("!\"([^\"]*)\"!", $buffer, $matches))
+			{
+				$this->addItemAttribute('alt_title', $matches[1]);
+			}
+		}
+	
 		//image src extraction block
 		$start = strpos($pageBuffer,"alt=\"No poster or movie still available\"", $end);
 		if($start === FALSE)

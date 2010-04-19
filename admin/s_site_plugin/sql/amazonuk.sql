@@ -70,6 +70,8 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Animated', 'ANIMATION' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Crime, Thrillers & Mystery', 'THRILLER' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Horror & Suspense', 'HORROR' ); 
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Action & Adventure', 'ACTION' ); 
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Heroes & Heroines', 'ADVENTURE' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Romantic', 'ROMANCE' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Westerns', 'WESTERN' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'BOOKGENRE', 'Children\'s Books', 'Children' ); 

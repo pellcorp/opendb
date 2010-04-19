@@ -32,7 +32,7 @@ class moviemeter extends SitePlugin
 	
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r)
 	{
-	    if(strlen($search_vars_r['moviemeter_id'])>0)
+		if(strlen($search_vars_r['moviemeter_id'])>0)
 		{
 			$pageBuffer = $this->fetchURI("http://www.moviemeter.nl/film/".$search_vars_r['moviemeter_id']);
 
@@ -48,7 +48,8 @@ class moviemeter extends SitePlugin
 			//first get the hash code
 			$regx = "/search.php\?hash=((.*))\&qs=1/";
 			$matchCount = preg_match($regx,$FirstSearch,$matches);
-			if ($matchCount==0) {
+			if ($matchCount==0)
+			{
 				return FALSE;
 			}
 			$SearchHash = $matches[1];
@@ -58,7 +59,7 @@ class moviemeter extends SitePlugin
 		
 		if(strlen($pageBuffer)>0)
 		{
-			if(preg_match_all('/film;;([0-9]{1,6});;(.*) %/', $pageBuffer, $matches))
+			if(preg_match_all('/film;;([0-9]{1,6});;(.*) %28([0-9]+)%/', $pageBuffer, $matches))
 			{
 				for ($i = 0; $i < count($matches[1]); $i++)
 				{
@@ -77,7 +78,7 @@ class moviemeter extends SitePlugin
 					}
 					$thumbimg = "http://www.moviemeter.nl/images/covers/". $imagedir ."/". $movieid . ".jpg";;
 					
-					$title = urldecode($matches[2][$i]);
+					$title = urldecode($matches[2][$i].' ('.$matches[3][$i].')');
 					$this->addListingRow($title, $thumbimg, NULL, array('moviemeter_id'=>$matches[1][$i]));
 				}
 				return TRUE;
@@ -99,7 +100,7 @@ class moviemeter extends SitePlugin
 	function queryItem($search_attributes_r, $s_item_type)
 	{
 		$pageBuffer = $this->fetchURI("http://www.moviemeter.nl/film/".$search_attributes_r['moviemeter_id']);
-		
+		//print_r($pageBuffer);
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
@@ -111,13 +112,19 @@ class moviemeter extends SitePlugin
 			$this->addItemAttribute('year', $matches[2]);
 		}
 		
-		//image
-		if(preg_match("!([^<]*)><img class=\"poster\"([^<]*)([^<]*)src=\"([^<]*)\" style=\"width:!", $pageBuffer, $matches))
+		//Alternate titles Alternatieve titels: Cyber Wars, Matrix Hunter&nbsp;</p>
+		if(preg_match("!Alternatieve titels: (.*?)<!", $pageBuffer, $matches))
 		{
-			if(starts_with($matches[4], 'http://'))
-				$this->addItemAttribute('imageurl', $matches[4]);
+			$this->addItemAttribute('alt_title', explode(', ' , $matches[1]));
+		}
+		
+		//image
+		if(preg_match("!<img.*?class=\"poster\".*?src=\"(.*?)\"!", $pageBuffer, $matches))
+		{
+			if(starts_with($matches[1], 'http://'))
+				$this->addItemAttribute('imageurl', $matches[1]);
 			else
-				$this->addItemAttribute('imageurl', 'http://'.$matches[4]);
+				$this->addItemAttribute('imageurl', 'http://'.$matches[1]);
 		}
 	
 		//director
@@ -126,13 +133,14 @@ class moviemeter extends SitePlugin
 			$this->addItemAttribute('director', $matches[1]);
 		}
 		
-		//  genre, runtime
-		if(preg_match("!<div id=\"film_info\">([^<]*)<br \/>([^<]*)<br \/>([0-9]*) minuten!", $pageBuffer, $matches))
+		//  genre, runtime <div id="film_info" class="film_info"><!-- geachte schrijvers van grabbers, scrapers en import scriptjes: gebruik svp de API - http://wiki.moviemeter.nl/index.php/API -->Singapore<br />Science-Fiction / Actie<br />102 minuten<br /><br />geregisseerd door <a href="http://www.moviemeter.nl/director/6132">Jian Hong Kuo</a><br />met Genevieve O'Reilly, Luoyong Wang en Kay Siu Lim<br /><br />In de nabije toekomst wordt iedereen's identiteit bijgehouden in de CyberLink database. Hier is geen ontkomen aan, behalve via illegale implantaten. Een jonge bountyhunter die op zoek gaat naar personen met deze implantaten ontmoet een politieagent, die vermoed dat de CyberLink voor minder legale doeleinden gebruikt wordt. Samen besluiten ze de waarheid te onthullen.</div></div><a name="messages"></a><br /><br /><div class="to_page entitypages" id="pages_top">&nbsp;</div><br /><div class="form_horizontal_divider"><p>&nbsp;</p></div><div class="forum_message_header"><div class="forum_message_header_user">gebruiker</div><div class="forum_message_header_message">bericht</div></div><div class="form_horizontal_divider"><p>&nbsp;</p></div><a name="0"></a><div class="forum_message_row1" id="message_482849"><div class="forum_message_user"><a href="http://www.moviemeter.nl/user/4270">Onderhond</a><br /><span class="subtext"></span><br /><img src="http://www.moviemeter.nl/images/avatars/4000/4270.jpg?date=1260983075" alt="avatar van Onderhond" /></div><div class="message_icons"><a href="http://www.moviemeter.nl/film/31586/message/quote/482849"><img src="http://www.moviemeter.nl/images/icon_quote_new.gif" style="width: 18px; height: 20px;" alt="quote" title="quote" /></a></div><div class="forum_message_message_date"><span class="subgray" title="Onderhond heeft dit bericht als persoonlijke recensie of mening gemarkeerd, en geeft deze film 1,5 sterren" style="margin-right: 8px;"><img src="http://www.moviemeter.nl/images/star_full_small.gif" style="margin-left: 2px; margin-bottom: -1px; margin-top: -2px;" /> 1,5</span><img src="http://www.moviemeter.nl/images/icon_minipost_new_nd.gif" alt="nieuw bericht" title="nieuw bericht" /> <span class="subgray log">[<a class="subgray" href="http://www.moviemeter.nl/film/31586/info/0#0">permalink</a>] geplaatst op 23 augustus 2005, 11:34 uur</span></div><div class="forum_message_message avatar_message">Nogal vreemde film.<br />
+
+		if(preg_match("!<br \/>([^<]*)<br \/>([0-9]*) minuten!", $pageBuffer, $matches))
 		{
 			//runtime
-			$this->addItemAttribute('run_time', $matches[3]);
+			$this->addItemAttribute('run_time', $matches[2]);
 			//genre
-			$genre = explode(" / ", $matches[2]);
+			$genre = explode(" / ", $matches[1]);
 			$this->addItemAttribute('genre', $genre);
 		}
 		

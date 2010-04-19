@@ -110,7 +110,7 @@ class amazonuk extends SitePlugin
 							{
 								if(strpos($matches[1][$i], "no-img")!==FALSE)
 									$matches[1][$i] = NULL;
-								
+
 								$this->addListingRow($matches[3][$i], $matches[1][$i], NULL, array('amazukasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
@@ -151,9 +151,10 @@ class amazonuk extends SitePlugin
 	// We could remove hyphens here
   
   //print_r( $search_attributes_r['amazukasin']); print ("\n");// Debug
-    $pageBuffer = $this->fetchURI("http://www.amazon.co.uk/gp/search?keywords=". $search_attributes_r['amazukasin'] ."&index=" . $index);
-		//$pageBuffer = $this->fetchURI("http://www.amazon.co.uk/exec/obidos/ISBN/".$search_attributes_r['amazukasin']);
-		
+    //$pageBuffer = $this->fetchURI("http://www.amazon.co.uk/gp/search?keywords=". $search_attributes_r['amazukasin'] ."&index=" . $index);
+		$pageBuffer = $this->fetchURI("http://www.amazon.co.uk/exec/obidos/ASIN/".$search_attributes_r['amazukasin']);
+		//print_r($pageBuffer);
+
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
@@ -180,7 +181,7 @@ class amazonuk extends SitePlugin
 
 	    // <td class="listprice">£20.00 </td>
 		//<td><b class="price">£14.00</b>
-		if (preg_match("!<span class=\"listprice\">.?([0-9\.]+)[\s]*</span>!", $pageBuffer, $regs))
+		if (preg_match("!<span.*?class=\"listprice\">.*?([0-9\.]+)[\s]*</span>!", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('listprice', $regs[1]);
 		}
@@ -209,7 +210,7 @@ class amazonuk extends SitePlugin
 			{
 				$genres=array_map("unaccent", array_unique($genres[1]));
 				sort($genres);
-				//print_r($moviegenres);
+				//print_r($genres);
 				$this->addItemAttribute('genre', $genres);
 			}
 		}

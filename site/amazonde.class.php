@@ -78,12 +78,13 @@ class amazonde extends SitePlugin
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 					
 				if(preg_match("/<(td|div) class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/(td|div)>/i", $pageBuffer, $regs) ||
-							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Ergebnisse<\/(td|div)>/i", $pageBuffer, $regs))
+							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Ergebnisse<\/(td|div)>/i", $pageBuffer, $regs) ||
+							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Treffer<\/(td|div)>/i", $pageBuffer, $regs))
 				{
 
 					// store total count here.
 					$this->setTotalCount($regs[2]);
-
+					
 					if(preg_match_all("!<div class=\"productImage\">[\s]*".
 									"<a href=\"[^\"]+\">[\s]*".
 									"<img src=\"([^\"]+)\"[^>]*>[\s]*</a>[\s]*</div>[\s]*".
@@ -92,7 +93,7 @@ class amazonde extends SitePlugin
 									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches) ||
 								//books 
 								preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
-											"<img src=\"([^\"]+)\"[^>]*>.*?<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
+											"<img.*?src=\"([^\"]+)\"[^>]*>.*?<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
 					{
 
 						for($i=0; $i<count($matches[0]); $i++)

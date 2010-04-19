@@ -79,18 +79,18 @@ class amazon extends SitePlugin
 				// this is a severe memory hog!!!
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
-				//<div class="resultCount">Showing 1 - 12 of 55 Results</div>
+				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
 				if( (preg_match("/ class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\//i", $pageBuffer, $regs) || 
-						preg_match("/ class=\"resultCount\">Showing ([0-9]+) Result[s]*<\//i", $pageBuffer, $regs) ) )
+						preg_match("/ class=\"resultCount\">Showing.([0-9]+).Result.*?<\//i", $pageBuffer, $regs) ) )
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);
 
 					// 2 = img, 1 = href, 3 = title		
-					if(preg_match_all("!<td class=\"imageColumn\".*?".
-									"<a href=\"([^\"]+)\">[\s]*".
-									"<img src=\"([^\"]+)\".*?".
-									"\"srTitle\">([^<]*)?<\/span!m", $pageBuffer, $matches))
+					if(preg_match_all("! class=\"imageColumn\".*?".
+									"href=\"(.*?)\">.*?".
+									"<img.*?src=\"([^\"]+)\".*?".
+									"\"srTitle\">([^<]*)<\/span!i", $pageBuffer, $matches))
 
 					{
 						for($i=0; $i<count($matches[0]); $i++)

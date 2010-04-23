@@ -17,8 +17,12 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+
 // Set error reporting to something OpenDb is capable of handling
-error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+if (!defined('E_DEPRECATED')) {
+	define('E_DEPRECATED',0);
+}
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 // In case session handler error
 //ini_set('session.save_handler', 'files'); 

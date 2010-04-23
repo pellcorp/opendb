@@ -386,35 +386,26 @@ function send_data($buffer)
 	}
 }
 
-function send_header(&$exportPlugin, $page_title)
-{
-	// hard code for now
+function send_header(&$exportPlugin, $page_title) {
 	$filename_prefix = 'export';
 
-	if(method_exists($exportPlugin, 'get_file_extension'))
-	{
+	if(method_exists($exportPlugin, 'get_file_name')) {
+		$filename_prefix = $exportPlugin->get_file_name();
+	} else if(method_exists($exportPlugin, 'get_file_extension')) {
 		$filename = $filename_prefix.'.'.$exportPlugin->get_file_extension();
-	}
-	else
-	{
+	} else {
 		$filename = $filename_prefix.'.txt';
 	}
 		
-	if(method_exists($exportPlugin, 'get_file_content_type'))
-	{
+	if(method_exists($exportPlugin, 'get_file_content_type')) {
 		$content_type = $exportPlugin->get_file_content_type();
-	}
-	else
-	{
+	} else {
 		$content_type = 'text/plain';
 	}
 	
-	if(method_exists($exportPlugin, 'http_header'))
-	{
+	if(method_exists($exportPlugin, 'http_header')) {
 		$exportPlugin->http_header($filename, $content_type);
-	}
-	else
-	{
+	} else {
 		header("Cache-control: no-store");
 		header("Pragma: no-store");
 		header("Expires: 0");
@@ -422,8 +413,7 @@ function send_header(&$exportPlugin, $page_title)
 		header("Content-type: $content_type");
 	}
 	
-	if(method_exists($exportPlugin, 'file_header'))
-	{
+	if(method_exists($exportPlugin, 'file_header')) {
 		send_data($exportPlugin->file_header($page_title));
 	}
 }

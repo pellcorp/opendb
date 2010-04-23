@@ -696,6 +696,11 @@ function install_opendb_upgrade($HTTP_VARS, &$errors)
 			else if(count($upgraders_rs) > 1)
 			{
 				$errors[] = "More than one upgrader is available for this version, this is an error, please contact the author."; 
+				reset($upgraders_rs);
+				while(list(,$upgraders_r) = each($upgraders_rs)) {
+					$errors[] = 'Upgrader: '.$upgraders_r['description']; 
+				}
+				
 				return FALSE; // more than one upgrade step possible is an error!
 			}
 		} else {

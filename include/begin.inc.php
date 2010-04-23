@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // Set error reporting to something OpenDb is capable of handling
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 
 // In case session handler error
 //ini_set('session.save_handler', 'files'); 

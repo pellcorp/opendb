@@ -134,7 +134,7 @@ class XMMMovieDatabasePlugin {
 		while(list($type,$value) = each($this->attribute_rs)) {
 			if($type == 'Cover') {
 				//while(list(,$url) = each($value)) { 
-				$file = $this->get_cache_thumbnail_file($value);
+				$file = $this->get_cached_image($value);
 				
 				if($file!=FALSE) {
 					$filename = basename($file);
@@ -163,13 +163,14 @@ class XMMMovieDatabasePlugin {
 		return NULL;
 	}
 
-	function get_cache_thumbnail_file($url) {
+	function get_cached_image($url) {
 		$file_cache_r = fetch_url_file_cache_r($url, 'ITEM', INCLUDE_EXPIRED);
 		
 		if($file_cache_r!=FALSE) {
-			$thumbnailfile = file_cache_get_cache_file_thumbnail($file_cache_r);
-			if($thumbnailfile!=FALSE) {
-				return $thumbnailfile;		
+			//$imagefile = file_cache_get_cache_file_thumbnail($file_cache_r);
+			$imagefile = file_cache_get_cache_file($file_cache_r);
+			if($imagefile!=FALSE) {
+				return $imagefile;		
 			}
 		} 
 		//else

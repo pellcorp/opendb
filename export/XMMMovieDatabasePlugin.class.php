@@ -31,6 +31,9 @@ class XMMMovieDatabasePlugin {
 	var $buffer;
 	var $isZip;
 	
+	/**
+	 * @param $isZip Allows disabling of ZIP function mostly just for testing.
+	 */
 	function XMMMovieDatabasePlugin($isZip = TRUE) {
 		$this->isZip = $isZip;
 		

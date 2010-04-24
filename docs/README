@@ -21,6 +21,9 @@ Post any bugs to sourceforge http://www.sourceforge.net/projects/opendb
 
 - Snoopy, the PHP net client.  Copyright (c)1999-2000 ispi, All Rights Reserved
 
+- zip.lib.php - zip file class
+	Copyright phpMyAdmin team 
+
 - overlibmws - Copyright Foteos Macrides 2002-2005. All rights reserved.
 
 - phpCueCat - 2003 Blake Watters

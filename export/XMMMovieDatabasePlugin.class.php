@@ -18,6 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+include_once("./lib/zip.lib.php");
 include_once("./functions/review.php");
 include_once("./functions/filecache.php");
 include_once("./functions/item_attribute.php");
@@ -26,8 +27,17 @@ include_once("./functions/datetime.php");
 class XMMMovieDatabasePlugin {
 	var $purchasedateformatmask;
 	var $attribute_rs;
+	var $zipfile;
+	var $buffer;
+	var $isZip;
+	
+	function XMMMovieDatabasePlugin($isZip = TRUE) {
+		$this->isZip = $isZip;
 		
-	function XMMMovieDatabasePlugin() {
+		if($this->isZip) {
+			$this->zipfile = new zipfile();
+		}
+		
 		$attribute_type_r = fetch_attribute_type_r('PUR_DATE');
 		if($attribute_type_r!=FALSE) {
 			$this->purchasedateformatmask = $attribute_type_r['display_type_arg1'];
@@ -42,18 +52,22 @@ class XMMMovieDatabasePlugin {
 	* The content type, when saved as file.
 	*/
 	function get_file_content_type() {
-		return 'text/xml';
+		if($this->isZip) {
+			return 'application/zip';
+		} else {
+			return 'text/xml';
+		}
 	}
 
 	/*
 	* The filename, when saved as file.
 	*/
 	function get_file_name() {
-		return 'Movies.xml';
+		return 'Movies.zip';
 	}
 	
 	function get_display_name() {
-		return 'XMM Movie Database XML';
+		return 'XMM Movie Database';
 	}
 	
 	function get_plugin_type() {
@@ -61,34 +75,27 @@ class XMMMovieDatabasePlugin {
 	}
 	
 	function file_header($title) {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>".
+		$this->buffer = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>".
 				"\n<XMM_Movie_Database>";
+		
+		return NULL;
 	}
 
-	function file_footer() {
-		return "\n</XMM_Movie_Database>\n";
+	function &file_footer() {
+		$this->buffer .= "\n</XMM_Movie_Database>\n";
+
+		if($this->isZip) {
+			$this->zipfile->addFile($this->buffer, 'export.xml');
+		
+			unset($this->buffer);
+			$zipFile =& $this->zipfile->file();
+			unset($this->zipfile);
+			return $zipFile;
+		} else {
+			return $this->buffer;
+		}
 	}
 
-/*
-Media Types: 	"Blu-Ray",
-		"Digital Media", 
-		"DVD", 
-		"HD-DVD", 
-		"VHS"
-Genres: 	"Action",
-		"Adventure",
-		"Animation",
-		"Biography",
-		"Comedy",
-		"Crime", @"Documentary", @"Drama",
-    @"Family", @"Fantasy", @"Film-Noir", @"Game-Show",
-    @"History", @"Horror", @"Music", @"Musical",
-    @"Mystery", @"News", @"Reality-TV", @"Romance",
-    @"Sci-Fi", @"Sport", @"Talk-Show", @"Thriller",
-                          @"War", @"Western"
-
-	*/
-	
 	var $item_type_map = array('DVD'=>'DVD-Rom', 
 								'BD'=>'Blu-Ray', 
 								'VHS'=>'VHS',
@@ -100,55 +107,59 @@ Genres: 	"Action",
 	function start_item($item_id, $s_item_type, $title) {
 		$this->attribute_rs = array();
 		
-		$buffer = "\n\t<Movie>";
-		$buffer .= "\n\t\t<MovieID>$item_id</MovieID>";
-		$buffer .= "\n\t\t<Title>$title</Title>";
+		$this->buffer .= "\n\t<Movie>";
+		$this->buffer .= "\n\t\t<MovieID>$item_id</MovieID>";
+		$this->buffer .= "\n\t\t<Title>".$this->encode($title)."</Title>";
 		
 		$review = fetch_review_rating($item_id);
 		if($review!=FALSE) {
-			$buffer .= "\n\t\t<PersonalRating>$review</PersonalRating>";
+			$this->buffer .= "\n\t\t<PersonalRating>$review</PersonalRating>";
 		}
 		
 		if(isset($this->item_type_map[$s_item_type])) {
-				$mediaType = $this->item_type_map[$s_item_type];
+			$mediaType = $this->item_type_map[$s_item_type];
 		} else {
 			$mediaType = 'DVD-Rom'; // default type in this is DVD-ROM, not DVD!!!
 		}
 		
-		$buffer .= "\n\t<Media>$mediaType</Media>";
+		$this->buffer .= "\n\t\t<Media>$mediaType</Media>";
 			
-		return $buffer;
+		return NULL;
 	}
 
 	function end_item() {
-		$buffer = '';	
-	
 		// now do the attributes
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
 			if($type == 'Cover') {
 				//while(list(,$url) = each($value)) {
-				$filename = $this->get_cache_thumbnail_file($value);
+				$file = $this->get_cache_thumbnail_file($value);
+				$filename = basename($file);
+				
+				if($this->isZip) {
+					$this->zipfile->addFile(file_get_contents($file), $filename);
+				}
+				
 				// TODO - need to copy to the export directory
 				if($filename!=FALSE) {
-					$buffer .= "\n\t\t<Cover>".basename($filename)."</Cover>";
+					$this->buffer .= "\n\t\t<Cover>".$filename."</Cover>";
 				}
 				//}
 			} else if($type == 'Genre') {
-				$buffer .= "\n\t\t<Genre>".implode(",", $value)."</Genre>";
+				$this->buffer .= "\n\t\t<Genre>".implode(",", $value)."</Genre>";
 			} else if($type == 'Actor') {
-				$buffer .= "\n\t\t<Actors>";
+				$this->buffer .= "\n\t\t<Actors>";
 				while(list(,$actor) = each($value)) {
-					$buffer .= "\n\t\t\t<Actor>$actor</Actor>";
+					$this->buffer .= "\n\t\t\t<Actor>".$this->encode($actor)."</Actor>";
 				}
-				$buffer .= "\n\t\t</Actors>";
+				$this->buffer .= "\n\t\t</Actors>";
 			} else {
-				$buffer .= "\n\t\t<$type>$value</$type>";
+				$this->buffer .= "\n\t\t<$type>".$this->encode($value)."</$type>";
 			}
 		}
-		$buffer .= "\n\t</Movie>";
+		$this->buffer .= "\n\t</Movie>";
 		
-		return $buffer;
+		return NULL;
 	}
 
 	function get_cache_thumbnail_file($url) {
@@ -166,12 +177,12 @@ Genres: 	"Action",
 	
 	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment) {
 		// return nothing yet as we will wrap it all up in end_item
-		return '';
+		return NULL;
 	}
 	
 	function end_item_instance() {
 		// return nothing yet as we will wrap it all up in end_item
-		return '';
+		return NULL;
 	}
 
 	/**
@@ -207,7 +218,7 @@ Genres: 	"Action",
 	function item_attribute($s_attribute_type, $order_no, $attribute_val) { 
 		if($s_attribute_type == 'MOVIEGENRE') {
 			$this->attribute_rs['Genre'][] = $attribute_val;
-		} else if($s_attribute_type == 'ACTOR') {
+		} else if($s_attribute_type == 'ACTORS') {
 			$this->attribute_rs['Actor'][] = $attribute_val;
 		} else if($s_attribute_type == 'IMAGEURL') { //  || $s_attribute_type == 'IMAGEURLB'
 			$this->attribute_rs['Cover'] = $attribute_val;
@@ -236,7 +247,27 @@ Genres: 	"Action",
 		}
 		
 		// return nothing yet as we will wrap it all up in end_item
-		return '';
+		return NULL;
+	}
+	
+	function encode($str) {
+		$str = htmlspecialchars($str);
+		return utf8_encode($str);
 	}
 }
+
+/*
+Genres: 	"Action",
+		"Adventure",
+		"Animation",
+		"Biography",
+		"Comedy",
+		"Crime", @"Documentary", @"Drama",
+    @"Family", @"Fantasy", @"Film-Noir", @"Game-Show",
+    @"History", @"Horror", @"Music", @"Musical",
+    @"Mystery", @"News", @"Reality-TV", @"Romance",
+    @"Sci-Fi", @"Sport", @"Talk-Show", @"Thriller",
+                          @"War", @"Western"
+	*/
+
 ?>

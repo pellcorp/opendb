@@ -29,9 +29,11 @@ class XMMMovieDatabaseExportTest extends PHPUnit_TestCase
 	}
 	
 	function testXMLParse() {
-		$plugin = new XMMMovieDatabasePlugin();
+		$plugin = new XMMMovieDatabasePlugin(FALSE);
 		
-		$startItem = $plugin->start_item(1, 'DVD', 'Family Man, The');
+		$plugin->file_header('Family Man, The');
+		
+		$plugin->start_item(1, 'DVD', 'Family Man, The');
 		
 		/**
 		 * 'YEAR'=>'Year', 
@@ -66,36 +68,35 @@ class XMMMovieDatabaseExportTest extends PHPUnit_TestCase
 		
 		$plugin->item_attribute('DVD_REGION', NULL, '4');
 
-		$xml = $plugin->file_header('Family Man, The')
-		.$startItem
-		.$plugin->end_item()
-		.$plugin->file_footer();
+		$plugin->end_item();
+		
+		$xml = $plugin->file_footer();
 		
 		$this->assertEquals(
 "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <XMM_Movie_Database>
 	<Movie>
-	<MovieID>1</MovieID>
-	<Title>Family Man, The</Title>
-	<PersonalRating>5</PersonalRating>
-	<Media>DVD-Rom</Media>
-	<Year>2002</Year>
-	<Length>93</Length>
-	<Plot>This is a test again
-	thanks again
-	stuff all</Plot>
-	<Purchase>12/09/2002</Purchase>
-	<UPC>2132133123213213</UPC>
-	<Director>Jason Pell</Director>
-	<Rating>R</Rating>
-	<Genre>Action,Adventure,Comedy</Genre>
-	<Actors>
-	<Actor>Clair Pell</Actor>
-	<Actor>Lucy Pell</Actor>
-	<Actor>Thomas Pell</Actor>
-	</Actors>
-	<Cover>itemThumb_846_86051.jpeg</Cover>
-	<Country>Australia</Country>
+		<MovieID>1</MovieID>
+		<Title>Family Man, The</Title>
+		<PersonalRating>5</PersonalRating>
+		<Media>DVD-Rom</Media>
+		<Year>2002</Year>
+		<Length>93</Length>
+		<Plot>This is a test again
+		thanks again
+		stuff all</Plot>
+		<Purchase>12/09/2002</Purchase>
+		<UPC>2132133123213213</UPC>
+		<Director>Jason Pell</Director>
+		<Rating>R</Rating>
+		<Genre>Action,Adventure,Comedy</Genre>
+		<Actors>
+		<Actor>Clair Pell</Actor>
+		<Actor>Lucy Pell</Actor>
+		<Actor>Thomas Pell</Actor>
+		</Actors>
+		<Cover>itemThumb_846_86051.jpeg</Cover>
+		<Country>Australia</Country>
 	</Movie>
 </XMM_Movie_Database>
 ",

@@ -48,9 +48,6 @@ class XMMMovieDatabasePlugin {
 		}
 	}
 	
-	/*
-	* The content type, when saved as file.
-	*/
 	function get_file_content_type() {
 		if($this->isZip) {
 			return 'application/zip';
@@ -59,11 +56,12 @@ class XMMMovieDatabasePlugin {
 		}
 	}
 
-	/*
-	* The filename, when saved as file.
-	*/
 	function get_file_name() {
-		return 'Movies.zip';
+		if($this->isZip) {
+			return 'Movies.zip';
+		} else {
+			return "export.xml";
+		}
 	}
 	
 	function get_display_name() {
@@ -119,7 +117,7 @@ class XMMMovieDatabasePlugin {
 		if(isset($this->item_type_map[$s_item_type])) {
 			$mediaType = $this->item_type_map[$s_item_type];
 		} else {
-			$mediaType = 'DVD-Rom'; // default type in this is DVD-ROM, not DVD!!!
+			$mediaType = 'DVD-Rom';
 		}
 		
 		$this->buffer .= "\n\t\t<Media>$mediaType</Media>";
@@ -132,7 +130,7 @@ class XMMMovieDatabasePlugin {
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
 			if($type == 'Cover') {
-				//while(list(,$url) = each($value)) { // TODO - only getting first cover image for now.
+				//while(list(,$url) = each($value)) { 
 				$file = $this->get_cache_thumbnail_file($value);
 				
 				if($file!=FALSE) {

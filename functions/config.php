@@ -34,8 +34,11 @@ function is_gzip_compression_enabled($php_self)
 	
 	if(get_opendb_config_var('site.gzip_compression', 'enable') === TRUE)
 	{
-		// hard code disable for installer
-		if($page != 'install' && !in_array($page, get_opendb_config_var('site.gzip_compression', 'disabled')))
+		// hard code disable for installer and url as most images already compressed
+		// so is superfluous.
+		if($page != 'install' &&
+		   $page != 'url' &&  
+				!in_array($page, get_opendb_config_var('site.gzip_compression', 'disabled')))
 		{
 			return TRUE;
 		}

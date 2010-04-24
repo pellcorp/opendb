@@ -390,7 +390,7 @@ function send_header(&$exportPlugin, $page_title) {
 	$filename_prefix = 'export';
 
 	if(method_exists($exportPlugin, 'get_file_name')) {
-		$filename_prefix = $exportPlugin->get_file_name();
+		$filename = $exportPlugin->get_file_name();
 	} else if(method_exists($exportPlugin, 'get_file_extension')) {
 		$filename = $filename_prefix.'.'.$exportPlugin->get_file_extension();
 	} else {

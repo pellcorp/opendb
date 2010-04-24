@@ -22,13 +22,6 @@
 		</xsd:restriction> 
 	</xsd:simpleType>
 	
-	<xsd:simpleType name="Rating">
-		<xsd:restriction base="xsd:string">
-			<xsd:length value="3"/>
-     		<xsd:pattern value="\d{1}\.\d{1}"/>
-		</xsd:restriction> 
-	</xsd:simpleType>
-	
 	<xsd:simpleType name="Year">
 		<xsd:restriction base="xsd:string">
 			<xsd:length value="4"/>
@@ -39,7 +32,7 @@
 	<!-- YYYY-MM-DD -->
 	<xsd:simpleType name="PurchaseDate">
 		<xsd:restriction base="xsd:string">
-			<xsd:length value="10"/>
+			<xsd:length value="9"/>
      		<xsd:pattern value="\d{4}\-\d{2}\-\d{2}"/>
 		</xsd:restriction> 
 	</xsd:simpleType>
@@ -61,7 +54,7 @@
 			<xsd:element name="Length" type="xsd:int" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Plot" type="xsd:string" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Cover" type="xsd:string" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="PersonalRating" type="Rating" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="PersonalRating" type="xsd:decimal" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="URL" type="xsd:string" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Purchase" type="PurchaseDate" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Actors" type="Actors" minOccurs="0" maxOccurs="1" />
@@ -69,7 +62,7 @@
 			<xsd:element name="Position" type="xsd:string" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Country" type="xsd:string" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="UPC" type="xsd:string" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Rating" type="Rating" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Rating" type="xsd:decimal" minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
 </xsd:schema>

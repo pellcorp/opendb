@@ -45,7 +45,7 @@
 	</xsd:simpleType>
 	
 	<xsd:complexType name="Actors">
-		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+		<xsd:sequence minOccurs="0" maxOccurs="1">
 			<xsd:element name="Actor" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -53,9 +53,9 @@
 	<xsd:complexType name="Movie">
 		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
 			<xsd:element name="MovieID" type="xsd:string" minOccurs="1" maxOccurs="1" />
-			<xsd:element name="Title" type="xsd:string" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Media" type="Media" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Genre" type="xsd:string" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Title" type="xsd:string" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Media" type="Media" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Genre" type="xsd:string" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Year" type="Year" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Length" type="xsd:int" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Plot" type="xsd:string" minOccurs="0" maxOccurs="1" />

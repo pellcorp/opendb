@@ -175,6 +175,9 @@ Genres: 	"Action",
 	}
 
 	/**
+	 * 	MovieID
+	 * 	Title
+	 * 	Media
 	 	Genre [?????] MOVIEGENRE
 		Year [YYYY] YEAR
 		Length [in minutes] RUN_TIME

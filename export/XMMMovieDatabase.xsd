@@ -6,7 +6,7 @@
 
 	<xsd:element name="XMM_Movie_Database">
 		<xsd:complexType>
-			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			<xsd:sequence>
 				<xsd:element name="Movie" type="Movie" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:sequence>
 		</xsd:complexType>
@@ -45,13 +45,13 @@
 	</xsd:simpleType>
 	
 	<xsd:complexType name="Actors">
-		<xsd:sequence minOccurs="0" maxOccurs="1">
+		<xsd:sequence>
 			<xsd:element name="Actor" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
 	<xsd:complexType name="Movie">
-		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+		<xsd:sequence>
 			<xsd:element name="MovieID" type="xsd:string" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Title" type="xsd:string" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Media" type="Media" minOccurs="1" maxOccurs="1" />

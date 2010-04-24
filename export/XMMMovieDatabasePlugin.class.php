@@ -132,16 +132,16 @@ class XMMMovieDatabasePlugin {
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
 			if($type == 'Cover') {
-				//while(list(,$url) = each($value)) {
+				//while(list(,$url) = each($value)) { // TODO - only getting first cover image for now.
 				$file = $this->get_cache_thumbnail_file($value);
-				$filename = basename($file);
 				
-				if($this->isZip) {
-					$this->zipfile->addFile(file_get_contents($file), $filename);
-				}
+				if($file!=FALSE) {
+					$filename = basename($file);
+					
+					if($this->isZip) {
+						$this->zipfile->addFile(file_get_contents($file), $filename);
+					}
 				
-				// TODO - need to copy to the export directory
-				if($filename!=FALSE) {
 					$this->buffer .= "\n\t\t<Cover>".$filename."</Cover>";
 				}
 				//}

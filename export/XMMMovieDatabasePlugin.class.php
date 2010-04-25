@@ -23,6 +23,7 @@ include_once("./functions/review.php");
 include_once("./functions/filecache.php");
 include_once("./functions/item_attribute.php");
 include_once("./functions/datetime.php");
+include_once("./functions/site_plugin.php");
 
 class XMMMovieDatabasePlugin {
 	var $purchasedateformatmask;
@@ -30,6 +31,8 @@ class XMMMovieDatabasePlugin {
 	var $zipfile;
 	var $buffer;
 	var $isZip;
+	var $imdbUrl;
+	var $updated;
 	
 	/**
 	 * @param $isZip Allows disabling of ZIP function mostly just for testing.
@@ -41,13 +44,12 @@ class XMMMovieDatabasePlugin {
 			$this->zipfile = new zipfile();
 		}
 		
-		$attribute_type_r = fetch_attribute_type_r('PUR_DATE');
-		if($attribute_type_r!=FALSE) {
-			$this->purchasedateformatmask = $attribute_type_r['display_type_arg1'];
-		}
-		
-		if(strlen($this->purchasedateformatmask)==0) {
-			$this->purchasedateformatmask = 'DD/MM/YYYY'; // default
+		// TODO - support other site plugins to provide DVD image
+		$site_plugin_r = fetch_site_plugin_r('imdb');
+		if($site_plugin_r!==FALSE) {
+			$this->imdbUrl = $site_plugin_r['more_info_url'];
+		} else {
+			$this->imdbUrl = NULL;
 		}
 	}
 	
@@ -61,7 +63,7 @@ class XMMMovieDatabasePlugin {
 
 	function get_file_name() {
 		if($this->isZip) {
-			return 'Movies.zip';
+			return 'export.zip';
 		} else {
 			return "export.xml";
 		}
@@ -124,11 +126,20 @@ class XMMMovieDatabasePlugin {
 		}
 		
 		$this->buffer .= "\n\t\t<Media>$mediaType</Media>";
-			
+
+		// TODO - what do we put here???
+		//$this->buffer .= "\n\t\t<Position>Default</Position>";
+		
 		return NULL;
 	}
 
 	function end_item() {
+		// fall back to last time instance was updated, its approximate but better 
+		// than nothing.
+		if(!isset($this->attribute_rs['Purchase']) && isset($this->updated)) {
+			$this->attribute_rs['Purchase'] = get_localised_timestamp('YYYY-MM-DD', $this->updated);
+		}
+		
 		// now do the attributes
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
@@ -154,7 +165,7 @@ class XMMMovieDatabasePlugin {
 					$this->buffer .= "\n\t\t\t<Actor>".$this->encode($actor)."</Actor>";
 				}
 				$this->buffer .= "\n\t\t</Actors>";
-			} else {
+			} else if(strlen($value)>0) {
 				$this->buffer .= "\n\t\t<$type>".$this->encode($value)."</$type>";
 			}
 		}
@@ -177,8 +188,10 @@ class XMMMovieDatabasePlugin {
 		return NULL;
 	}
 	
-	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment) {
-		// return nothing yet as we will wrap it all up in end_item
+	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on) {
+		// if purchase date is not provided fall back to last time the instance was updated.
+		$this->updated = $update_on;
+		
 		return NULL;
 	}
 	
@@ -197,7 +210,7 @@ class XMMMovieDatabasePlugin {
 		Plot [free text] MOVIE_PLOT
 		Cover [file location minus path information] COVER 
 		PersonalRating [decimal (1 decimal place) rating] 
-		URL [URL] // todo - get from site plugin
+		URL [URL] 
 		Purchase [YYYY-MM-DD] PUR_DATE
 		Actors/Actor [complex structure / free text] ACTOR
 		Director [free text] DIRECTOR
@@ -217,8 +230,12 @@ class XMMMovieDatabasePlugin {
 			'AGE_RATING'=>'Rating',
 		);
 	
-	function item_attribute($s_attribute_type, $order_no, $attribute_val) { 
-		if($s_attribute_type == 'MOVIEGENRE') {
+	function item_attribute($s_attribute_type, $order_no, $attribute_val) {
+		if($s_attribute_type == 'IMDB_ID') {
+			if($this->imdbUrl!=NULL) {
+				$this->attribute_rs['URL'] = str_replace('{imdb_id}', $attribute_val, $this->imdbUrl);
+			}
+		} else if($s_attribute_type == 'MOVIEGENRE') {
 			$this->attribute_rs['Genre'][] = $attribute_val;
 		} else if($s_attribute_type == 'ACTORS') {
 			$this->attribute_rs['Actor'][] = $attribute_val;
@@ -226,7 +243,7 @@ class XMMMovieDatabasePlugin {
 			$this->attribute_rs['Cover'] = $attribute_val;
 		} else if($s_attribute_type == 'PUR_DATE') {
 			$timestamp = get_timestamp_for_datetime($attribute_val, 'YYYYMMDDHH24MISS');
-			$this->attribute_rs['Purchase'] = get_localised_timestamp($this->purchasedateformatmask, $timestamp);
+			$this->attribute_rs['Purchase'] = get_localised_timestamp('YYYY-MM-DD', $timestamp);
 		} else if($s_attribute_type == 'DVD_REGION') { // this is a giant hack!
 			switch($attribute_val) {
 				case '2':
@@ -248,6 +265,8 @@ class XMMMovieDatabasePlugin {
 			}
 		}
 		
+		
+
 		// return nothing yet as we will wrap it all up in end_item
 		return NULL;
 	}

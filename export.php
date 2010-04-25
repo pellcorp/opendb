@@ -88,7 +88,7 @@ function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_ty
 		$item_instance_r = fetch_item_instance_r($item_id, $instance_no);
 		if(is_not_empty_array($item_instance_r))
 		{
-			$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment']);
+			$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment'], $item_instance_r['update_on']);
 			$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
 			$buffer .= $exportPlugin->end_item_instance();
 		}
@@ -100,7 +100,7 @@ function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_ty
 		{
 			while($item_instance_r = db_fetch_assoc($iiresults))
 			{
-				$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment']);
+				$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment'], $item_instance_r['update_on']);
 				$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
 				$buffer .= $exportPlugin->end_item_instance();
 			}

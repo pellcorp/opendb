@@ -58,7 +58,7 @@ function fetch_export_item_rs($s_item_type, $owner_id)
 */
 function fetch_export_item_instance_rs($s_item_type, $owner_id)
 {
-	$query = "SELECT i.id as item_id, ii.instance_no, i.title, i.s_item_type, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
+	$query = "SELECT i.id as item_id, ii.instance_no, i.title, i.s_item_type, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment, UNIX_TIMESTAMP(ii.update_on) AS update_on ".
 			"FROM user u, item i, item_instance ii, s_status_type sst ".
 			"WHERE u.user_id = ii.owner_id AND i.id = ii.item_id AND sst.s_status_type = ii.s_status_type ";
 

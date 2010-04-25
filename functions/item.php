@@ -136,7 +136,7 @@ function fetch_item_instance_cnt($s_item_type = NULL)
 function fetch_item_instance_rs($item_id, $owner_id = NULL)
 {
 	// so that both resultset use item_id for the item.id or item_instance.item_id!!!
-	$query = "SELECT ii.item_id, ii.instance_no, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment ".
+	$query = "SELECT ii.item_id, ii.instance_no, ii.owner_id, ii.borrow_duration, ii.s_status_type, ii.status_comment, UNIX_TIMESTAMP(ii.update_on) AS update_on ".
 			" FROM item_instance ii, s_status_type sst, user u, item i".
 			" WHERE i.id = ii.item_id AND 
 					u.user_id = ii.owner_id AND 
@@ -415,7 +415,7 @@ function is_exists_related_item_instance_relationship($item_id, $instance_no, $p
 //
 function fetch_item_instance_r($item_id, $instance_no)
 {
-	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, ii.update_on, i.title, i.s_item_type 
+	$query = "SELECT ii.item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.borrow_duration, ii.owner_id, UNIX_TIMESTAMP(ii.update_on) AS update_on, i.title, i.s_item_type 
 			FROM item i, item_instance ii 
 			WHERE i.id = ii.item_id AND i.id ='".$item_id."' AND ii.instance_no = '".$instance_no."'";
 	

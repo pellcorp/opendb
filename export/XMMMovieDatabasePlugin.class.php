@@ -30,15 +30,21 @@ class XMMMovieDatabasePlugin {
 	var $attribute_rs;
 	var $zipfile;
 	var $buffer;
+	var $itemBuffer;
 	var $isZip;
 	var $imdbUrl;
 	var $updated;
+	var $related;
+	var $itemid;
+	var $includeParent;
 	
 	/**
 	 * @param $isZip Allows disabling of ZIP function mostly just for testing.
+	 * @param $includeParent Include parent items that have related items.
 	 */
-	function XMMMovieDatabasePlugin($isZip = TRUE) {
+	function XMMMovieDatabasePlugin($isZip = TRUE, $includeParent = FALSE) {
 		$this->isZip = $isZip;
+		$this->includeParent = $includeParent;
 		
 		if($this->isZip) {
 			$this->zipfile = new zipfile();
@@ -108,11 +114,13 @@ class XMMMovieDatabasePlugin {
 								'LD'=>'Digital Media');
 	
 	function start_item($item_id, $s_item_type, $title) {
+		$this->itemid = $item_id;
+		
 		$this->attribute_rs = array();
 		
-		$this->buffer .= "\n\t<Movie>";
-		$this->buffer .= "\n\t\t<MovieID>$item_id</MovieID>";
-		$this->buffer .= "\n\t\t<Title>".$this->encode($title)."</Title>";
+		$this->itemBuffer = "\n\t<Movie>";
+		$this->itemBuffer .= "\n\t\t<MovieID>$item_id</MovieID>";
+		$this->itemBuffer .= "\n\t\t<Title>".$this->encode($title)."</Title>";
 		
 		$review = fetch_review_rating($item_id);
 		if($review!=FALSE) {
@@ -125,10 +133,9 @@ class XMMMovieDatabasePlugin {
 			$mediaType = 'DVD-Rom';
 		}
 		
-		$this->buffer .= "\n\t\t<Media>$mediaType</Media>";
+		$this->itemBuffer .= "\n\t\t<Media>$mediaType</Media>";
 
-		// TODO - what do we put here???
-		//$this->buffer .= "\n\t\t<Position>Default</Position>";
+		$this->itemBuffer .= "\n\t\t<Position>Default</Position>";
 		
 		return NULL;
 	}
@@ -156,31 +163,36 @@ class XMMMovieDatabasePlugin {
 						$this->zipfile->addFile(file_get_contents($file), $filename);
 					}
 				
-					$this->buffer .= "\n\t\t<Cover>".$filename."</Cover>";
+					$this->itemBuffer .= "\n\t\t<Cover>".$filename."</Cover>";
 				}
 				//}
 			} else if($type == 'Genre') {
-				$this->buffer .= "\n\t\t<Genre>".implode(",", $value)."</Genre>";
+				$this->itemBuffer .= "\n\t\t<Genre>".implode(",", $value)."</Genre>";
 			} else if($type == 'Actor') {
 				$actorsFound = TRUE;
 				
-				$this->buffer .= "\n\t\t<Actors>";
+				$this->itemBuffer .= "\n\t\t<Actors>";
 				while(list(,$actor) = each($value)) {
-					$this->buffer .= "\n\t\t\t<Actor>".$this->encode($actor)."</Actor>";
+					$this->itemBuffer .= "\n\t\t\t<Actor>".$this->encode($actor)."</Actor>";
 				}
-				$this->buffer .= "\n\t\t</Actors>";
+				$this->itemBuffer .= "\n\t\t</Actors>";
 			} else if(strlen($value)>0) {
-				$this->buffer .= "\n\t\t<$type>".$this->encode($value)."</$type>";
+				$this->itemBuffer .= "\n\t\t<$type>".$this->encode($value)."</$type>";
 			}
 		}
 		
 		// fix for buggy import!
 		if(!$actorsFound) {
-			$this->buffer .= "\n\t\t<Actors />";
+			$this->itemBuffer .= "\n\t\t<Actors />";
 		}
 		
-		$this->buffer .= "\n\t</Movie>";
+		$this->itemBuffer .= "\n\t</Movie>";
 		
+		if($this->includeParent || !$this->related) {
+			$this->buffer .= $this->itemBuffer;
+		}
+		
+		$this->itemBuffer = NULL;
 		return NULL;
 	}
 
@@ -201,7 +213,7 @@ class XMMMovieDatabasePlugin {
 	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on) {
 		// if purchase date is not provided fall back to last time the instance was updated.
 		$this->updated = $update_on;
-		
+		$this->related = is_exists_item_instance_relationship($this->itemid, $instance_no);
 		return NULL;
 	}
 	
@@ -274,8 +286,6 @@ class XMMMovieDatabasePlugin {
 				$this->attribute_rs[$key] = $attribute_val;
 			}
 		}
-		
-		
 
 		// return nothing yet as we will wrap it all up in end_item
 		return NULL;

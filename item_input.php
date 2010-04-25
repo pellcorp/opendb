@@ -51,7 +51,10 @@ include_once("./functions/HTML_Listing.class.inc");
 function is_value_refreshed($s_attribute_type, $new_value, $old_value)
 {
 	// Do the simplest check first!
-	if(strlen($old_value)==0 && strlen($new_value)>0)
+	if(!is_array($old_value) && 
+			strlen($old_value)==0 && 
+			!is_array($new_value) && 
+			strlen($new_value)>0)
 	{
 		return TRUE;
 	}

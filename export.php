@@ -676,7 +676,13 @@ if(is_site_enabled())
 				{
 					while(list(,$plugin_r) = @each($plugin_list_r))
 					{
-						$field .= '<option value="'.$plugin_r['name'].'">'.$plugin_r['description']."\n";
+						$field .= '<option value="'.$plugin_r['name'].'"';
+						
+						if($plugin_r['name'] == 'OpenDbExportPlugin') {
+							$field .= ' SELECTED';
+						}
+						
+						$field .= '>'.$plugin_r['description']."\n";
 					}
 				}
 				$field .= "</select>";

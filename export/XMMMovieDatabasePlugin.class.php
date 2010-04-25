@@ -140,6 +140,8 @@ class XMMMovieDatabasePlugin {
 			$this->attribute_rs['Purchase'] = get_localised_timestamp('YYYY-MM-DD', $this->updated);
 		}
 		
+		$actorsFound = FALSE;
+		
 		// now do the attributes
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
@@ -160,6 +162,8 @@ class XMMMovieDatabasePlugin {
 			} else if($type == 'Genre') {
 				$this->buffer .= "\n\t\t<Genre>".implode(",", $value)."</Genre>";
 			} else if($type == 'Actor') {
+				$actorsFound = TRUE;
+				
 				$this->buffer .= "\n\t\t<Actors>";
 				while(list(,$actor) = each($value)) {
 					$this->buffer .= "\n\t\t\t<Actor>".$this->encode($actor)."</Actor>";
@@ -169,6 +173,12 @@ class XMMMovieDatabasePlugin {
 				$this->buffer .= "\n\t\t<$type>".$this->encode($value)."</$type>";
 			}
 		}
+		
+		// fix for buggy import!
+		if(!$actorsFound) {
+			$this->buffer .= "\n\t\t<Actors />";
+		}
+		
 		$this->buffer .= "\n\t</Movie>";
 		
 		return NULL;

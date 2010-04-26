@@ -167,7 +167,7 @@ class XMMMovieDatabasePlugin {
 				}
 				//}
 			} else if($type == 'Genre') {
-				$this->itemBuffer .= "\n\t\t<Genre>".implode(",", $value)."</Genre>";
+				$this->itemBuffer .= "\n\t\t<Genre>".implode(", ", $value)."</Genre>";
 			} else if($type == 'Actor') {
 				$actorsFound = TRUE;
 				

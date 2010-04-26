@@ -86,7 +86,7 @@ class OpenDbExportPlugin
 		return "\n".$this->__tabIndent(--$this->_level)."</Item>";
 	}
 
-	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on)
+	function start_item_instance($item_id, $instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on)
 	{
 		$buffer = "\n".$this->__tabIndent($this->_level++)."<Instance InstanceNo=\"$instance_no\" OwnerId=\"$owner_id\" BorrowDuration=\"$borrow_duration\" StatusType=\"$s_status_type\">";
 		if(strlen($status_comment)>0) {

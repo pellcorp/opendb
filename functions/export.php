@@ -25,7 +25,7 @@ include_once("./functions/status_type.php");
 * Fetch a complete list of item records, which have at least one
 * item instance, for the specified owner_id.
 */
-function fetch_export_item_rs($s_item_type, $owner_id)
+function fetch_export_item_rs($s_item_type, $owner_id, $restrict_status_type_r = NULL)
 {
 	$query = "SELECT DISTINCT i.id as item_id, i.title, i.s_item_type ".
 			"FROM user u, item i, item_instance ii, s_status_type sst ".
@@ -40,8 +40,12 @@ function fetch_export_item_rs($s_item_type, $owner_id)
 	if(strlen($s_item_type)>0)
 		$query .= "AND i.s_item_type = '$s_item_type'";
 	
-	if(!is_user_granted_permission(PERM_ITEM_ADMIN))
-	{
+	if(is_not_empty_array($restrict_status_type_r)) {
+		$query .= 'AND sst.s_status_type IN('.format_sql_in_clause($restrict_status_type_r).')';
+	}
+	
+	// Not the status_type restriction could override this, but thats fine leave it as is.
+	if(!is_user_granted_permission(PERM_ITEM_ADMIN)) {
 		$query .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '".get_opendb_session_var('user_id')."') ";
 	}
 	

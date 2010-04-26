@@ -35,7 +35,6 @@ class XMMMovieDatabasePlugin {
 	var $imdbUrl;
 	var $updated;
 	var $related;
-	var $itemid;
 	var $includeParent;
 	
 	/**
@@ -114,8 +113,6 @@ class XMMMovieDatabasePlugin {
 								'LD'=>'Digital Media');
 	
 	function start_item($item_id, $s_item_type, $title) {
-		$this->itemid = $item_id;
-		
 		$this->attribute_rs = array();
 		
 		$this->itemBuffer = "\n\t<Movie>";
@@ -130,7 +127,7 @@ class XMMMovieDatabasePlugin {
 		if(isset($this->item_type_map[$s_item_type])) {
 			$mediaType = $this->item_type_map[$s_item_type];
 		} else {
-			$mediaType = 'DVD-Rom';
+			$mediaType = 'DVD-Rom';// XMM default
 		}
 		
 		$this->itemBuffer .= "\n\t\t<Media>$mediaType</Media>";
@@ -141,15 +138,13 @@ class XMMMovieDatabasePlugin {
 	}
 
 	function end_item() {
-		// fall back to last time instance was updated, its approximate but better 
-		// than nothing.
+		// fall back to last time instance was updated, its approximate but better than nothing.
 		if(!isset($this->attribute_rs['Purchase']) && isset($this->updated)) {
 			$this->attribute_rs['Purchase'] = get_localised_timestamp('YYYY-MM-DD', $this->updated);
 		}
 		
 		$actorsFound = FALSE;
 		
-		// now do the attributes
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
 			if($type == 'Cover') {
@@ -210,15 +205,14 @@ class XMMMovieDatabasePlugin {
 		return NULL;
 	}
 	
-	function start_item_instance($instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on) {
+	function start_item_instance($item_id, $instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on) {
 		// if purchase date is not provided fall back to last time the instance was updated.
 		$this->updated = $update_on;
-		$this->related = is_exists_item_instance_relationship($this->itemid, $instance_no);
+		$this->related = is_exists_item_instance_relationship($item_id, $instance_no);
 		return NULL;
 	}
 	
 	function end_item_instance() {
-		// return nothing yet as we will wrap it all up in end_item
 		return NULL;
 	}
 
@@ -274,7 +268,6 @@ class XMMMovieDatabasePlugin {
 				case '4':
 					$this->attribute_rs['Country'] = 'Australia';
 					break;
-				
 				case '1':
 				default:
 					$this->attribute_rs['Country'] = 'United States';

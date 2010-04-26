@@ -35,31 +35,36 @@ include_once("./functions/TitleMask.class.php");
 
 /*
 * Export Type 
+* 
+* @param $item_id - if provided will restrict export to this single item.instance combo
+* @param $instance_no 
+* @param $restrict_status_type_r - an array of status_type's to restrict to.
 */
-function export_type_items(&$exportPlugin, $page_title, $s_item_type, $item_id, $instance_no, $owner_id)
-{
-	if(is_numeric($item_id) && is_numeric($instance_no))
-	{
+function export_type_items(&$exportPlugin, 
+				$page_title, 
+				$s_item_type, 
+				$item_id, 
+				$instance_no, 
+				$owner_id, 
+				$restrict_status_type_r = NULL) {
+					
+	// the $restrict_status_type_r is ignored for a single item
+	if(is_numeric($item_id) && is_numeric($instance_no)) {
 		send_header($exportPlugin, $page_title);
 		
 		$item_r = fetch_item_instance_r($item_id, $instance_no);
-		if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_VIEW_ITEM_DISPLAY))
-		{
+		if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_VIEW_ITEM_DISPLAY)) {
 			send_data(get_export_type_item($exportPlugin, $item_id, $instance_no, $item_r['s_item_type'], $item_r['title'], $owner_id));
 		}
 		
 		send_footer($exportPlugin);
 		return TRUE;
-	}
-	else
-	{
-		$itemresults = fetch_export_item_rs($s_item_type, $owner_id);
-		if($itemresults)
-		{
+	} else {
+		$itemresults = fetch_export_item_rs($s_item_type, $owner_id, $restrict_status_type_r);
+		if($itemresults) {
 			send_header($exportPlugin, $page_title);
-			while($item_r = db_fetch_assoc($itemresults))
-			{
-				send_data(get_export_type_item($exportPlugin, $item_r['item_id'], NULL, $item_r['s_item_type'], $item_r['title'], $owner_id));
+			while($item_r = db_fetch_assoc($itemresults)) {
+				send_data(get_export_type_item($exportPlugin, $item_r['item_id'], NULL, $item_r['s_item_type'], $item_r['title'], $owner_id, $include_parent_related_item));
 			}
 			db_free_result($itemresults);
 			
@@ -72,10 +77,7 @@ function export_type_items(&$exportPlugin, $page_title, $s_item_type, $item_id, 
 	return FALSE;
 }
 
-/*
-*/
-function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_type, $title, $owner_id)
-{
+function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_type, $title, $owner_id) {
 	$buffer = '';
 	
 	$buffer .= $exportPlugin->start_item($item_id, $s_item_type, $title);
@@ -83,24 +85,20 @@ function get_export_type_item(&$exportPlugin, $item_id, $instance_no, $s_item_ty
 	// export item (non instance level) attributes.
 	$buffer .= export_type_item_attributes($exportPlugin, $item_id, NULL, $s_item_type);
 	
-	if(is_numeric($instance_no))
-	{
+	// $instance_no will have been provided if a single item.instance is being exported, otherwise
+	// we are exporting all instances for this particular item.
+	if(is_numeric($instance_no)) {
 		$item_instance_r = fetch_item_instance_r($item_id, $instance_no);
-		if(is_not_empty_array($item_instance_r))
-		{
-			$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment'], $item_instance_r['update_on']);
+		if(is_not_empty_array($item_instance_r)) {
+			$buffer .= $exportPlugin->start_item_instance($item_instance_r['item_id'], $item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment'], $item_instance_r['update_on']);
 			$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
 			$buffer .= $exportPlugin->end_item_instance();
 		}
-	}
-	else
-	{
+	} else {
 		$iiresults = fetch_item_instance_rs($item_id, $owner_id);
-		if($iiresults)
-		{
-			while($item_instance_r = db_fetch_assoc($iiresults))
-			{
-				$buffer .= $exportPlugin->start_item_instance($item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment'], $item_instance_r['update_on']);
+		if($iiresults) {
+			while($item_instance_r = db_fetch_assoc($iiresults)) {
+				$buffer .= $exportPlugin->start_item_instance($item_instance_r['item_id'], $item_instance_r['instance_no'], $item_instance_r['owner_id'], $item_instance_r['borrow_duration'], $item_instance_r['s_status_type'], $item_instance_r['status_comment'], $item_instance_r['update_on']);
 				$buffer .= export_type_item_attributes($exportPlugin, $item_id, $item_instance_r['instance_no'], $s_item_type);
 				$buffer .= $exportPlugin->end_item_instance();
 			}
@@ -587,7 +585,7 @@ if(is_site_enabled())
 							}
 							
 							@set_time_limit(600);
-							if(!export_type_items($exportPlugin, $page_title, $HTTP_VARS['s_item_type'], $HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['owner_id']))
+							if(!export_type_items($exportPlugin, $page_title, $HTTP_VARS['s_item_type'], $HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], $HTTP_VARS['owner_id'], $HTTP_VARS['s_status_type']))
 							{
 								echo _theme_header($page_title);
 								echo("<h2>".$page_title."</h2>");
@@ -634,6 +632,25 @@ if(is_site_enabled())
 				
 				echo("<table>");
 				
+				$field = "\n<select name=\"plugin\">\n";
+				$plugin_list_r = get_export_plugin_list_r();
+				if(is_array($plugin_list_r))
+				{
+					while(list(,$plugin_r) = @each($plugin_list_r))
+					{
+						$field .= '<option value="'.$plugin_r['name'].'"';
+						
+						if($plugin_r['name'] == 'OpenDbExportPlugin') {
+							$field .= ' SELECTED';
+						}
+						
+						$field .= '>'.$plugin_r['description']."\n";
+					}
+				}
+				$field .= "</select>";
+				
+				echo format_field(get_opendb_lang_var('type'), $field);
+				
 				if(is_user_granted_permission(PERM_ADMIN_EXPORT))
 				{
 					echo format_field(
@@ -669,26 +686,18 @@ if(is_site_enabled())
 									's_item_type').
 						"\n</select>"
 					);
-					
-				$field = "\n<select name=\"plugin\">\n";
-				$plugin_list_r = get_export_plugin_list_r();
-				if(is_array($plugin_list_r))
-				{
-					while(list(,$plugin_r) = @each($plugin_list_r))
-					{
-						$field .= '<option value="'.$plugin_r['name'].'"';
-						
-						if($plugin_r['name'] == 'OpenDbExportPlugin') {
-							$field .= ' SELECTED';
-						}
-						
-						$field .= '>'.$plugin_r['description']."\n";
-					}
+
+				$lookup_results = fetch_status_type_rs(TRUE);
+				if($lookup_results && db_num_rows($lookup_results)>1) {
+					echo format_field(
+						get_opendb_lang_var('s_status_type'),
+						checkbox_grid('s_status_type',
+									$lookup_results, 
+									'%img%', // mask
+									'VERTICAL',
+									NULL)); // value
 				}
-				$field .= "</select>";
-				
-				echo format_field(get_opendb_lang_var('type'), $field);
-				
+			
 				echo("</table>");
 					
 				echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");

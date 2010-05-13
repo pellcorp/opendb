@@ -202,7 +202,7 @@ function sendEmail($to, $toname, $from, $fromname, $subject, $message, &$errors)
 	else
 	{
 		// No errors returned indicates correct execution.
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, subject, $message));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, $mailer->ErrorInfo, array($to, $toname, $from, $fromname, $subject));
 
 		$errors[] = $mailer->ErrorInfo;
 		return FALSE;

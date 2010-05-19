@@ -173,9 +173,9 @@ class dvdempire extends SitePlugin
 			{
 				for ($i = 0; $i < count($matches[1]); $i++)
 				{
-					//http://images2.dvdempire.com/gen/movies/628531t.jpg
+					//<img src='http://cdn3a.dvdempire.org/products/48/1322848t.jpg'
 					// Ensure an image is found for the specified item, before trying to include it in the listing.
-					if(preg_match('!<img src=[\'|"](http://images[0-9]*\.dvdempire\.com/gen/movies/'.$matches[1][$i].'t.jpg)[\'|"]!', $pageBuffer, $regs))
+					if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$matches[1][$i].'t.jpg)[\'|"]!', $pageBuffer, $regs))
 						$thumbimg = $regs[1];
 					else
 						$thumbimg = NULL;
@@ -464,7 +464,7 @@ class dvdempire extends SitePlugin
 		// Now the Cover images
 		// ----------------------------
 		//http://images2.dvdempire.com/gen/movies/3073.jpg
-		if(preg_match('!<img src=[\'|"](http://images[0-9]*\.dvdempire\.com/gen/movies/'.$search_attributes_r['dvdempr_id'].'\.jpg)[\'|"]!', $buffer, $regs))
+		if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'\.jpg)[\'|"]!', $buffer, $regs))
 		{
 			$this->addItemAttribute('thumbimg', $regs[1]);
 		}
@@ -474,7 +474,7 @@ class dvdempire extends SitePlugin
 		if(strlen($buffer)>0)
 		{
 			//<img src="http://images2.dvdempire.com/gen/movies/3073h.jpg" valign="top" align="middle" border="0" hspace="0" vspace="0">
-			if(preg_match('!<img src=[\'|"](http://images[0-9]*\.dvdempire\.com/gen/movies/'.$search_attributes_r['dvdempr_id'].'h\.jpg)[\'|"]!', $buffer, $regs))
+			if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'h\.jpg)[\'|"]!', $buffer, $regs))
 			{
 				$this->addItemAttribute('imageurl', $regs[1]);
 				$this->addItemAttribute('imageurlf', $regs[1]);
@@ -484,7 +484,7 @@ class dvdempire extends SitePlugin
 		$buffer = $this->fetchURI('http://www.dvdempire.com/Exec/v4_item.asp?item_id='.$search_attributes_r['dvdempr_id'].'&tab=5&back=1');
 		if(strlen($buffer)>0)
 		{
-			if(preg_match('!<img src=[\'|"](http://images[0-9]*\.dvdempire\.com/gen/movies/'.$search_attributes_r['dvdempr_id'].'bh\.jpg)[\'|"]!', $buffer, $regs))
+			if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'bh\.jpg)[\'|"]!', $buffer, $regs))
 			{
 				$this->addItemAttribute('imageurlb', $regs[1]);
 			}		

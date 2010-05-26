@@ -168,15 +168,18 @@ class dvdempire extends SitePlugin
 		
 		$pageBuffer = $this->fetchURI('http://www.dvdempire.com/exec/v5_search_item.asp?display_pic=1&page='.$page_no.'&string='.urlencode($search_vars_r['title']).'&'.$item_type_url_options);
 		if(strlen($pageBuffer)>0)
-		{
+		{//print_r($pageBuffer);
 			if(preg_match_all('!<b><a href=[\'|"]/Exec/v4_item.asp\?item_id=([0-9]+)[\'|"]>(.*?)</a>!mi', $pageBuffer, $matches))
 			{
 				for ($i = 0; $i < count($matches[1]); $i++)
 				{
 					//<img src='http://cdn3a.dvdempire.org/products/48/1322848t.jpg'
 					// Ensure an image is found for the specified item, before trying to include it in the listing.
-					if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$matches[1][$i].'t.jpg)[\'|"]!', $pageBuffer, $regs))
+					if(preg_match('!<img.*?src=[\'|"](http://\w*?\.dvdempire\.org/products/[0-9]*/'.$matches[1][$i].'t.jpg)[\'|"]!i', $pageBuffer, $regs))
+						{
 						$thumbimg = $regs[1];
+						//print_r($regs);
+						}
 					else
 						$thumbimg = NULL;
 					
@@ -268,7 +271,7 @@ class dvdempire extends SitePlugin
 				//  if(preg_match_all("!<a href=\"/exec/v2_category.asp\?.*\">([^<]*)</a>!", substr($buffer, $start, $end - $start), $matches))
 				{
 				  $this->addItemAttribute('genre', str_replace("'", "", str_replace(" ", "", $matches[1])));
-
+				  //print_r($matches[1]);
 				}
 			}
 			
@@ -464,7 +467,7 @@ class dvdempire extends SitePlugin
 		// Now the Cover images
 		// ----------------------------
 		//http://images2.dvdempire.com/gen/movies/3073.jpg
-		if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'\.jpg)[\'|"]!', $buffer, $regs))
+		if(preg_match('!<img src=[\'|"](http://\w*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'\.jpg)[\'|"]!', $buffer, $regs))
 		{
 			$this->addItemAttribute('thumbimg', $regs[1]);
 		}
@@ -474,7 +477,7 @@ class dvdempire extends SitePlugin
 		if(strlen($buffer)>0)
 		{
 			//<img src="http://images2.dvdempire.com/gen/movies/3073h.jpg" valign="top" align="middle" border="0" hspace="0" vspace="0">
-			if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'h\.jpg)[\'|"]!', $buffer, $regs))
+			if(preg_match('!<img src=[\'|"](http://\w*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'h\.jpg)[\'|"]!', $buffer, $regs))
 			{
 				$this->addItemAttribute('imageurl', $regs[1]);
 				$this->addItemAttribute('imageurlf', $regs[1]);
@@ -484,7 +487,7 @@ class dvdempire extends SitePlugin
 		$buffer = $this->fetchURI('http://www.dvdempire.com/Exec/v4_item.asp?item_id='.$search_attributes_r['dvdempr_id'].'&tab=5&back=1');
 		if(strlen($buffer)>0)
 		{
-			if(preg_match('!<img src=[\'|"](http://.*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'bh\.jpg)[\'|"]!', $buffer, $regs))
+			if(preg_match('!<img src=[\'|"](http://\w*?\.dvdempire\.org/products/[0-9]*/'.$search_attributes_r['dvdempr_id'].'bh\.jpg)[\'|"]!', $buffer, $regs))
 			{
 				$this->addItemAttribute('imageurlb', $regs[1]);
 			}		

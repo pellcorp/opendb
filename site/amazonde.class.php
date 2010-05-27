@@ -482,14 +482,14 @@ class amazonde extends SitePlugin
 		// Plot (Amazon blurb)
 		// no editorial reviews for amazon.de
 		// search for "Synopsis" or "Description"
-		if (preg_match_all("/Produktbeschreibungen<\/h2>(.*?)<div class=\"seeAll\">/i", $pageBuffer, $regs))
-		{
+		//if (preg_match_all("/Produktbeschreibungen<\/h2>(.*?)<div class=\"seeAll\">/i", $pageBuffer, $regs))
+		//{
 			//<div class="productDescriptionWrapper">...<div class="emptyClear">
-			if (preg_match_all("/<div class=\"productDescriptionWrapper\">(.*?)<div class=\"emptyClear\">/i", $regs[1][0], $synopsis))
+			if (preg_match_all("/<div class=\"productDescriptionWrapper\">(.*?)<div class=\"emptyClear\">/i", $pageBuffer, $synopsis))
 			{
 				$this->addItemAttribute('synopsis', $synopsis[1]);
 			}
-		}
+		//}
 		//$this->addItemAttribute('blurb', $this->parse_amazon_book_blurb($pageBuffer));
 
 		// Editorial reviews

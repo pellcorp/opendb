@@ -28,6 +28,12 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'VHS', '', 'vhs-de' );
 
 #
+# Update the binding attribute
+#
+
+UPDATE s_attribute_type SET input_type_arg1='Hardcover,Paperback,Taschenbuch,Gebundene Ausgabe' WHERE s_attribute_type Like 'BINDING';
+
+#
 # Site Plugin Input Fields
 #
 

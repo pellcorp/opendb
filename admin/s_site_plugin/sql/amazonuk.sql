@@ -26,8 +26,8 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 # Site Plugin Input Fields
 #
 
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonuk', 'title', 1, '', 'Title Search', 'text', '', '{title}' );
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonuk', 'amazukasin', 2, '', 'ASIN / ISBN Number', 'text', '', '{ifdef(amazukasin,{amazukasin},{if(s_item_type==BOOK,{isbn},\'\')})}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonuk', 'title', 1, '', 'Title/UPC/ISBN Search', 'text', '', '{title}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonuk', 'amazukasin', 2, '', 'ASIN Number', 'text', '', '{ifdef(amazukasin,{amazukasin},{if(s_item_type==BOOK,{isbn},\'\')})}' );
 
 #
 # Site Plugin Links

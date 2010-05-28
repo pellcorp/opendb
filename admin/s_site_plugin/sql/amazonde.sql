@@ -37,8 +37,8 @@ UPDATE s_attribute_type SET input_type_arg1='Hardcover,Paperback,Taschenbuch,Geb
 # Site Plugin Input Fields
 #
 
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonde', 'title', 1, '', 'Title Search', 'text', '', '{title}' );
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonde', 'amazdeasin', 2, '', 'ASIN / ISBN Number', 'text', '', '{ifdef(amazdeasin,{amazdeasin},{if(s_item_type==BOOK,{isbn},\'\')})}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonde', 'title', 1, '', 'Title/ISBN/UPC Search', 'text', '', '{title}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'amazonde', 'amazdeasin', 2, '', 'ASIN Number', 'text', '', '{ifdef(amazdeasin,{amazdeasin},{if(s_item_type==BOOK,{isbn},\'\')})}' );
 
 #
 # Site Plugin Links

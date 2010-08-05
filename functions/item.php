@@ -786,10 +786,6 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		return FALSE;          
 }
 
-function get_orderby_fieldtype_fieldname() {
-	
-}
-
 /**
 * 	NOTE: PRIVATE FUNCTION.
 

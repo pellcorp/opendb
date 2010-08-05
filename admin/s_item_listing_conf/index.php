@@ -86,7 +86,10 @@ function is_field_disabled($name, $record_r)
 	}
 	else if($name == 'orderby_support_ind')
 	{
-		return ($record_r['column_type'] != 's_attribute_type' && $record_r['column_type'] != 's_field_type');
+		return ($record_r['column_type'] != 's_attribute_type' && 
+						($record_r['column_type'] != 's_field_type' || 
+						$record_r['s_field_type'] == 'RATING' ||
+						$record_r['s_field_type'] == 'STATUSCMNT'));
 	}
 	else if($name == 'orderby_datatype' || $name == 'orderby_default_ind')
 	{

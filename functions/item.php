@@ -700,38 +700,41 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
 
 	$attr_order_by = NULL;
-	$column_order_by = NULL;
+	$column_order_by_rs = array();
+	
 	if(is_array($column_display_config_rs))
 	{
 		for($i=0; $i<count($column_display_config_rs); $i++)
 		{
+			$fieldname = NULL;
+			
 			if($column_display_config_rs[$i]['column_type'] == 's_attribute_type')
 			{
+				$fieldname = get_field_name($column_display_config_rs[$i]['s_attribute_type'], $column_display_config_rs[$i]['order_no']);
+				
 				// if not an order by column, we want to generate the fields individually in the listings page.
 				if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y' || $column_display_config_rs[$i]['search_attribute_ind'] === 'y')
 				{
-					$fieldname = get_field_name($column_display_config_rs[$i]['s_attribute_type'], $column_display_config_rs[$i]['order_no']);
-					
 					if($column_display_config_rs[$i]['orderby_datatype'] === 'numeric')
 						$query .= ', (ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val)+0) AS '.$fieldname;
 					else
 						$query .= ', ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val) AS '.$fieldname;
-			
-					if( $column_order_by == NULL && strlen($order_by)>0 && strcasecmp($order_by, $fieldname) === 0)
-					{
-						$column_order_by = $fieldname;
-					}
-				}//if($column_display_config_rs[$i]['orderby']!==FALSE)
+				}
 			}
             else if($column_display_config_rs[$i]['column_type'] == 's_field_type')
 			{
-                if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y')
-				{
-                	if($column_display_config_rs[$i]['s_field_type'] == 'CATEGORY')
-					{
-                        // add the category columns
-						$query .= ',catia.lookup_attribute_val AS catia_lookup_attribute_val, catia.s_attribute_type AS catia_s_attribute_type, catia.order_no AS catia_order_no';
-					}
+				if($column_display_config_rs[$i]['s_field_type'] == 'CATEGORY') {
+					$fieldname = 'catia_lookup_attribute_val';
+					$query .= ',catia.lookup_attribute_val AS catia_lookup_attribute_val, catia.s_attribute_type AS catia_s_attribute_type, catia.order_no AS catia_order_no';
+				} else if($column_display_config_rs[$i]['s_field_type'] == 'INTEREST') {
+					$fieldname = 'interest_level';
+					$query .= ',it.level AS interest_level';
+				}
+			}
+			
+			if(strlen($fieldname)>0 && strlen($order_by)==0) {
+				if($column_display_config_rs[$i]['orderby_default_ind'] === 'Y') { // default order by 
+					$column_order_by_rs[] = array('orderby'=>$fieldname, 'sortorder'=>strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC')));
 				}
 			}
 		}
@@ -740,11 +743,19 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 	$query .= " ".
 			from_and_where_clause($HTTP_VARS, $column_display_config_rs, 'LISTING');
 
-	if($column_order_by != NULL)
-	{
-		$query .= ' ORDER BY '.$column_order_by.' '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
-	}
-	else if($order_by == 's_item_type')
+	if(count($column_order_by_rs)>0) {
+		$orderbyquery = '';
+		
+		while(list(,$column_order_by_r) = each($column_order_by_rs)) {
+			if(strlen($orderbyquery)>0) {
+				$orderbyquery .= ', ';
+			} 
+			$orderbyquery .= $column_order_by_r['orderby'].' '.$column_order_by_r['sortorder'];
+		}
+		
+		$query .= ' ORDER BY '.$orderbyquery.', i.title, ii.instance_no ASC, i.s_item_type';
+		
+	} else if($order_by == 's_item_type')
 		$query .= ' ORDER BY i.s_item_type '.$sortorder.', i.title, ii.instance_no ASC';	
 	else if($order_by == 'category')
 		$query .= ' ORDER BY catia_lookup_attribute_val '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
@@ -756,6 +767,8 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		$query .= ' ORDER BY ii.update_on '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
 	else if($order_by === 'item_id')
 		$query .= ' ORDER BY i.id '.$sortorder.', ii.instance_no ASC, i.s_item_type';
+	else if($order_by === 'interest')
+		$query .= ' ORDER BY interest_level '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
 	else //if($order_by === 'title')
 		$query .= ' ORDER BY i.title '.$sortorder.', ii.instance_no ASC, i.s_item_type';
 	
@@ -771,6 +784,10 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		return $result;
 	else
 		return FALSE;          
+}
+
+function get_orderby_fieldtype_fieldname() {
+	
 }
 
 /**
@@ -1081,6 +1098,16 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 					}
 
 					$left_join_from_r[] = $left_join_clause;
+				} else if($column_display_config_rs[$i]['s_field_type'] == 'INTEREST') {
+					// can only restrict interest level if its displayed as a column
+					if(strlen($HTTP_VARS['interest_level'])>0) {
+						$where_r[] = "it.item_id = ii.item_id AND it.instance_no = ii.instance_no AND it.user_id = '".get_opendb_session_var('user_id')."'".
+									 " AND it.level >= ".$HTTP_VARS['interest_level'];
+						
+						$from_r[] = "user_item_interest it";
+					} else {
+						$left_join_from_r[] = "LEFT JOIN user_item_interest it ON it.item_id = i.id AND it.instance_no = ii.instance_no AND it.user_id = '".get_opendb_session_var('user_id')."'";
+					}
 				}
 			}
 		}
@@ -1187,15 +1214,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		$where_r[] = 'i.id IN ('.expand_number_range($HTTP_VARS['item_id_range']).')';
 	}
 
-	//
-	// Interest level restrictions
-	//
-	if(strlen($HTTP_VARS['interest_level'])>0)
-	{
-		$where_r[] = "it.item_id = ii.item_id AND it.instance_no = ii.instance_no AND it.user_id = '".get_opendb_session_var('user_id')."'".
-					 " AND it.level >= ".$HTTP_VARS['interest_level'];
-		$from_r[] = "user_item_interest it";
-	}
+	
 
 	//
 	// Now build the SQL query

@@ -255,18 +255,6 @@ function is_item_type_in_item_type_r($v_item_types, $s_item_type)
 	return FALSE;
 }
 
-function find_default_orderby_column_config($v_column_display_config_rs)
-{
-	reset($v_column_display_config_rs);
-	for($k=0; $k<count($v_column_display_config_rs); $k++)
-	{
-		if($v_column_display_config_rs[$k]['orderby_default_ind'] == 'Y')
-		{
-			return $v_column_display_config_rs[$k];
-		}
-	}
-}
-
 function find_field_type_column_config($s_field_type, $display_column_config)
 {
 	$idx_of_element = -1;
@@ -618,31 +606,12 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 		else if(get_opendb_config_var('borrow', 'enable')!==FALSE && 
 					$v_column_display_config_rs[$i]['column_type'] == 'borrow_status')
 		{
-			$v_column_display_config_rs[$i]['prompt'] = 
-										ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('borrow_status'));
-
+			$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], get_opendb_lang_var('borrow_status'));
 			$v_column_display_config_rs[$i]['fieldname'] = 'borrow_status';
 			$v_column_display_config_rs[$i]['orderby_support_ind'] = 'N';
 		}
 	}
 	
-	// order_by, sortorder
-	if( strlen($HTTP_VARS['order_by']) == 0 )
-	{
-		$column_config_r = find_default_orderby_column_config($v_column_display_config_rs);
-		if($column_config_r!=NULL)
-		{
-			$HTTP_VARS['order_by'] = $column_config_r['fieldname'];
-			$HTTP_VARS['sortorder'] = strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC'));
-		}
-		else
-		{
-			// failsafe title.
-			$HTTP_VARS['order_by'] = 'title';
-			$HTTP_VARS['sortorder'] = 'ASC';
-		}
-	}
-		
 	return $v_column_display_config_rs;
 }
 
@@ -1289,7 +1258,7 @@ if(is_site_enabled())
 								}
 								else if($v_column_display_config_rs[$i]['s_field_type'] == 'INTEREST')
 								{
-									$listingObject->addInterestColumn($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'));
+									$listingObject->addInterestColumn($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'), $item_r['interest_level']);
 								}
 							}
 							else if($v_column_display_config_rs[$i]['column_type'] == 'action_links')

@@ -333,14 +333,14 @@ class Listing
 					extra_http_vars=>$extra_http_vars);
 	}
 	
-	function addInterestColumn($item_id, $instance_no, $user_id, $extra_http_vars = NULL)
+	function addInterestColumn($item_id, $instance_no, $user_id, $level, $extra_http_vars = NULL)
 	{
 		$this->_row_column_rs[] = array(
 					column_type=>'interest',
  					item_id=>$item_id,
  					instance_no=>$instance_no,
  					user_id=>$user_id,
-					level=>fetch_interest_level($item_id, $instance_no, $user_id),
+					level=>$level,
 					extra_http_vars=>$extra_http_vars);
 	}
 

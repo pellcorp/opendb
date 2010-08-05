@@ -699,43 +699,50 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 {
 	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
 
-	$attr_order_by = NULL;
 	$column_order_by_rs = array();
 	
-	if(is_array($column_display_config_rs))
-	{
-		for($i=0; $i<count($column_display_config_rs); $i++)
-		{
+	if(is_array($column_display_config_rs)) {
+		for($i=0; $i<count($column_display_config_rs); $i++) {
 			$fieldname = NULL;
 			
-			if($column_display_config_rs[$i]['column_type'] == 's_attribute_type')
-			{
+			if($column_display_config_rs[$i]['column_type'] == 's_attribute_type') {
 				$fieldname = get_field_name($column_display_config_rs[$i]['s_attribute_type'], $column_display_config_rs[$i]['order_no']);
 				
 				// if not an order by column, we want to generate the fields individually in the listings page.
-				if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y' || $column_display_config_rs[$i]['search_attribute_ind'] === 'y')
-				{
+				if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y' || $column_display_config_rs[$i]['search_attribute_ind'] === 'y') {
 					if($column_display_config_rs[$i]['orderby_datatype'] === 'numeric')
 						$query .= ', (ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val)+0) AS '.$fieldname;
 					else
 						$query .= ', ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val) AS '.$fieldname;
 				}
-			}
-            else if($column_display_config_rs[$i]['column_type'] == 's_field_type')
-			{
+			} else if($column_display_config_rs[$i]['column_type'] == 's_field_type') {
+				
+				// TODO - we need to be able to specify the order by which the default order by's are actioned.  At the
+				// moment in the code title, instance_no and item_type are hardcoded to be added.  When we an order field
+				// for default order by for a listing config we can get rid of the hard coded order by and enable the TITLE
+				// and ITEMTYPE.
+				$field_type_fieldnames_r = array(
+					'ITEM_ID'=>'i.id', 
+					//'TITLE'=>'i.title',
+				 	'STATUSTYPE'=>'ii.s_status_type',
+					//'ITEMTYPE'=>'i.s_item_type',
+					'OWNER'=>'ii.owner_id');
+					
 				if($column_display_config_rs[$i]['s_field_type'] == 'CATEGORY') {
+					$query .= ', catia.lookup_attribute_val AS catia_lookup_attribute_val, catia.s_attribute_type AS catia_s_attribute_type, catia.order_no AS catia_order_no';
 					$fieldname = 'catia_lookup_attribute_val';
-					$query .= ',catia.lookup_attribute_val AS catia_lookup_attribute_val, catia.s_attribute_type AS catia_s_attribute_type, catia.order_no AS catia_order_no';
 				} else if($column_display_config_rs[$i]['s_field_type'] == 'INTEREST') {
+					$query .= ', it.level AS interest_level';
 					$fieldname = 'interest_level';
-					$query .= ',it.level AS interest_level';
+				} else {
+					$fieldname = $field_type_fieldnames_r[$column_display_config_rs[$i]['s_field_type']];	
 				}
 			}
 			
-			if(strlen($fieldname)>0 && strlen($order_by)==0) {
-				if($column_display_config_rs[$i]['orderby_default_ind'] === 'Y') { // default order by 
-					$column_order_by_rs[] = array('orderby'=>$fieldname, 'sortorder'=>strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC')));
-				}
+			if(strlen($fieldname)>0 && 
+						strlen($order_by)==0 && 
+						$column_display_config_rs[$i]['orderby_default_ind'] === 'Y') { 
+				$column_order_by_rs[] = array('orderby'=>$fieldname, 'sortorder'=>strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC')));
 			}
 		}
 	}

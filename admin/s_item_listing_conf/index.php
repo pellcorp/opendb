@@ -149,7 +149,7 @@ function get_column_details($record_r, $row)
 			array('value'=>'', 'display'=>''));
 	}
 
-	//ITEM_ID, TITLE, STATUSTYPE, STATUSCMNT, CATEGORY, RATING, ITEMTYPE, OWNER
+	//ITEM_ID, TITLE, STATUSTYPE, STATUSCMNT, CATEGORY, RATING, ITEMTYPE, OWNER, INTEREST
 	$field_type_r = array_merge(
 		$field_type_r,
 		array(

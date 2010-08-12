@@ -735,13 +735,13 @@ function perform_upgrade_step($HTTP_VARS, $opendb_release_r, $latest_to_version 
  			if($latest_to_version == $upgraderPlugin->getToVersion())
  			{
 				$to_version = $latest_to_version;
- 				$description = 'Upgrade from '.$opendb_release_r['release_version'].' to '.$to_version;
  			}
  			else
  			{
  				$to_version = $upgraderPlugin->getToVersion();
- 				$description = $upgraderPlugin->getDescription();
  			}
+ 			
+ 			$description = 'Upgrade from '.$opendb_release_r['release_version'].' to '.$to_version;
  			
  			// insert release record now.
 			if(!is_exists_opendb_release_version($to_version))
@@ -889,7 +889,7 @@ if(strlen($HTTP_VARS['step'])==0)
 	if(is_db_connected())
 	{
 		// make sure there are actually pre-install changes that are required.  	
-		if(check_opendb_table('s_opendb_release') && count_opendb_table_columns('s_opendb_release') == 6 && 
+		if(is_valid_opendb_release_table() && 
 				// require a release record if opendb database has tables other than s_opendb_release already extant!
 				(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release')>0))
 		{
@@ -1105,8 +1105,7 @@ else if($HTTP_VARS['step'] == 'pre-install')
 		{
 		    echo("\n<form action=\"$PHP_SELF\" method=\"GET\">");
 		    
-		    if(check_opendb_table('s_opendb_release') && 
-		    			count_opendb_table_columns('s_opendb_release') == 6 && 
+		    if(is_valid_opendb_release_table() && 
 		    			(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release')>0))
 			{
 		    	echo("<input type=\"hidden\" name=\"step\" value=\"install\">\n");
@@ -1138,8 +1137,7 @@ else
 	
 	$is_new_install = FALSE;
 	
-	if(is_db_connected() && 
-				check_opendb_table('s_opendb_release') && count_opendb_table_columns('s_opendb_release') == 6 && 
+	if(is_db_connected() && is_valid_opendb_release_table() && 
 				// require a release record if opendb database has tables other than s_opendb_release already!
 				(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release')>0))
 	{
@@ -1215,4 +1213,4 @@ else
 
 // Cleanup after begin.inc.php
 require_once("./include/end.inc.php");
-?>	
+?>

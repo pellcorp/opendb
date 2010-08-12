@@ -1027,6 +1027,11 @@ function fetch_opendb_release_version_r($upgrade_steps_complete=TRUE)
     return FALSE;
 }
 
+function is_valid_opendb_release_table() {
+	return check_opendb_table('s_opendb_release') && 
+		   count_opendb_table_columns('s_opendb_release') == 6; 
+}
+
 /**
 	Get the last record added to the database.
 

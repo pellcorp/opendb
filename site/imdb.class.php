@@ -138,13 +138,26 @@ class imdb extends SitePlugin
 			$this->addItemAttribute('year', $matches[2]);
 		}
 		
-		//<h5>Also Known As:</h5><div class="info-content">       "Ong-Bak: The Thai Warrior" - Philippines <em>(English title)</em>, USA <em>(trailer title)</em><br>"Daredevil" - USA <em>(informal literal English title)</em><br>"Ong Bak: Muay Thai Warrior" - Singapore <em>(English title)</em><br>"Ong-Bak: Muay Thai Warrior" - International <em>(English title)</em> <em>(festival title)</em><br>"Thai Fist" - Hong Kong <em>(English title)</em><br>
-		if(preg_match("!<h5>Also Known As:</h5>[^>]*[^\"]*(.*)<br>!", $pageBuffer, $matches))
+		//<h5>Also Known As:</h5><div class="info-content">       <a class="tn15more" href="/title/tt1234548/releaseinfo#akas"
+		if(preg_match("!<h5>Also Known As:</h5>.*?href=\"(.*?)#akas\"!", $pageBuffer, $matches))
 		{
-			$buffer=$matches[1];
-			if (preg_match_all("!\"([^\"]*)\"!", $buffer, $matches))
+			$akas = $this->fetchURI("http://us.imdb.com".$matches[1]);
+			//print_r($akas);
+			//<h5><a name="akas">Also Known As (AKA)</a></h5>
+			if(preg_match("!Also Known As \(AKA\)(.*?)</table>!ms", $akas, $matches))
 			{
-				$this->addItemAttribute('alt_title', $matches[1]);
+/*
+<tr>
+<td>Hombres de mentes</td>
+
+<td>Argentina (festival title)</td>
+
+</tr>
+*/
+				if (preg_match_all("!<tr>.*?<td>([^<]*)</td>!ms", $matches[1], $results))
+				{
+					$this->addItemAttribute('alt_title', $results[1]);
+				}
 			}
 		}
 	

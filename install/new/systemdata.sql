@@ -745,6 +745,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('search', 'd
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('announcements', 'datetime_mask', 'DD/MM/YYYY HH:MI:SS');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('feeds.new_items', 'total_num_items', '18');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('feeds.announcements', 'total_num_items', '5');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('themes', 'charset', 'utf-8');
 
 #
 # Title Display Mask data

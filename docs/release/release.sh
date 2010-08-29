@@ -1,37 +1,32 @@
 #!/bin/bash
 
-if [ $# -lt 3 ]; then
-	echo "Usage $0 <PreviousRelease> <CurrentRelease> <CurrentReleaseZipVersion>"
-	echo "Example $0 1_5_0_A6 1_5_0_A7 1.5.0a7"
+if [ $# -lt 2 ]; then
+	echo "Usage `basename $0` <PreviousReleaseTag> <CurrentReleaseTag>"
+	echo "Example `basename $0` 1_5_0_A6 1_5_0_A7"
+	echo "Do not include the RELEASE_ prefix!!!"
 	exit;
 fi
 
-mkdir $$
-cd $$
+RELEASE_OPENDB_EXPORT_DIR=/tmp/OpenDb_Export_$$
+mkdir $RELEASE_OPENDB_EXPORT_DIR
+cd $RELEASE_OPENDB_EXPORT_DIR
 
 echo Exporting release ...
 svn export https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$2
 
-echo Creating Zip File ... OpenDb-$3.zip
-cd RELEASE_$2
-zip -r OpenDb-$3.zip *
-mv OpenDb-$3.zip ..
-cd ..
-rm -r RELEASE_$2
+CurrentReleaseZip="OpenDb-`echo $2 | tr _ . | tr [:upper:] [:lower:]`.zip"
+echo Creating Zip File ... $RELEASE_OPENDB_EXPORT_DIR/$CurrentReleaseZip
+cd $RELEASE_OPENDB_EXPORT_DIR/RELEASE_$2
+zip -r $CurrentReleaseZip *
+mv $CurrentReleaseZip $RELEASE_OPENDB_EXPORT_DIR
+cd $RELEASE_OPENDB_EXPORT_DIR
+rm -r $RELEASE_OPENDB_EXPORT_DIR/RELEASE_$2
 
-echo Uploading to sourceforge
-lftp upload.sourceforge.net <<EOF
-cd incoming
-put OpenDb-$3.zip
-quit
-EOF
-
-echo Generating Changelog...
+CurrentReleaseChangelog="ReleaseNotes-`echo $2 | tr _ . | tr [:upper:] [:lower:]`.txt"
+echo Generating Release Notes... $CurrentReleaseChangelog
 firstRevision=`svn info https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$1 | grep "Last Changed Rev:" | egrep -o "([0-9]+)"`
 secondRevision=`svn info https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$2 | grep "Last Changed Rev:" | egrep -o "([0-9]+)"`
 echo Generating log for $firstRevision ... $secondRevision;
-svn2cl.sh --revision $firstRevision:$secondRevision https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/trunk
+svn2cl.sh --output=$CurrentReleaseChangelog --revision $firstRevision:$secondRevision https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/trunk
 
-cd ..
-rm -r $$
-
+echo "The zip file and ChangeLog can be found in the $RELEASE_OPENDB_EXPORT_DIR directory"

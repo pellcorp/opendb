@@ -45,10 +45,10 @@ function deduplicate_array($value1, $value2) {
 	$value2 = get_array_for_value($value2);
 	
 	// remove duplicates
-	for($i=0; $i<count($value1); $i++)
+	foreach($value1 as $key => $val)
 	{
-		if(in_array($value1[$i], $value2)) {
-			array_splice($value1, $i, 1);
+		if(in_array($val, $value2)) {
+			unset($value1[$key]);
 		}
 	}
 	return $value1;

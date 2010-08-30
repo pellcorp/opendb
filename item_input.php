@@ -88,9 +88,9 @@ function is_value_refreshed($s_attribute_type, $new_value, $old_value)
 		{
 			if(is_array($new_value)) // multi-value option automatically means a refreshed field
 			{
-				for($i=0; $i<count($new_value); $i++)
+				foreach($new_value as $val)
 				{
-					if(strcmp($new_value[$i], $old_value)!==0)
+					if(strcmp($val, $old_value)!==0)
 					{
 						return TRUE;
 					}
@@ -605,16 +605,17 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		
 		if(!$is_multi_value) {
 			$new_value = deduplicate_array($new_value, $old_value);
-			$count = count($new_value);
+			$count = count($new_value)-1;
 		} else {
-			$count = 1;
+			$count = 0;
 		}
 		
-		for($i=1; $i<=$count; $i++)
+		$key = array_keys($new_value);
+		for($i=0; $i<=$count; $i++)
 		{
-			$field .= "<li id=\"menu-${fieldname}_new${i}\"".($i==1?" class=\"first activeTab\"":"").">
-					<label for=\"menu-${fieldname}_new${i}-cbox\">".$item_attribute_type_r['prompt']."</label>".
-					"<input type=\"radio\" class=\"radio\" name=\"".$fieldname."\" id=\"menu-${fieldname}_new${i}-cbox\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content');\"".($i==1?" CHECKED":"")."></li>";
+			$field .= "<li id=\"menu-${fieldname}_new${i}\"".($i==0?" class=\"first activeTab\"":"").">
+					<label for=\"menu-${fieldname}_new${i}-cbox\">".$item_attribute_type_r['prompt']." : ${key[$i]}</label>".
+					"<input type=\"radio\" class=\"radio\" name=\"".$fieldname."\" id=\"menu-${fieldname}_new${i}-cbox\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content');\"".($i==0?" CHECKED":"")."></li>";
 		}
 	
 		if($refresh_field)
@@ -627,15 +628,15 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		
 		$field .= "<div class=\"tabContentContainer\" id=\"${fieldname}-tab-content\">";
 		
-		for($i=1; $i<=$count; $i++)
+		for($i=0; $i<=$count; $i++)
 		{
 			if($is_multi_value) {
 				$value = $new_value;
 			} else {
-				$value = $new_value[$i-1];
+				$value = $new_value[$key[$i]];
 			}
 			
-			$field .= "<div class=\"tabContent".($i>1?"Hidden":"")."\" id=\"${fieldname}_new${i}\">".
+			$field .= "<div class=\"tabContent".($i>0?"Hidden":"")."\" id=\"${fieldname}_new${i}\">".
 					get_item_input_field(
 						$fieldname."_new${i}",
 						$item_attribute_type_r, 
@@ -756,9 +757,9 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 				if(is_not_empty_array($new_value) &&
 						!is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
 				{
-					for($i=0; $i<count($new_value); $i++)
+					foreach($new_value as $key => $val)
 					{
-						$new_value[$i] = filter_item_input_field($item_attribute_type_r, $new_value[$i]);
+						$new_value[$key] = filter_item_input_field($item_attribute_type_r, $val);
 					}
 				}
 				else
@@ -779,9 +780,9 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 				if(is_not_empty_array($new_value) &&
 						!is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
 				{
-					for($i=0; $i<count($new_value); $i++)
+					foreach($new_value as $key => $val)
 					{
-						$new_value[$i] = filter_item_input_field($item_attribute_type_r, $new_value[$i]);
+						$new_value[$key] = filter_item_input_field($item_attribute_type_r, $val);
 					}
 				}
 				else
@@ -806,9 +807,9 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 				{
 					if(is_not_empty_array($new_value))
 					{
-						for($i=0; $i<count($new_value); $i++)
+						foreach($new_value as $key => $val)
 						{
-							$new_value[$i] = trim(format_title_grammar_article($new_value[$i], $override_title_articles_r));
+							$new_value[$key] = trim(format_title_grammar_article($val, $override_title_articles_r));
 						}
 					}
 					else

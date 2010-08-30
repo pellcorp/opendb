@@ -8,6 +8,9 @@
 
 INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'imdb', 'imdb', 'Imdb.com', 'imdb.gif', 'The source of movie information, but with nothing specific to distribution formats such as DVD and VHS.', 'http://www.imdb.com', 0, 'http://www.imdb.com/title/tt{imdb_id}' );
 
+#imdb and imdbphp are mutually exclusive
+DELETE FROM s_site_plugin WHERE site_type = 'imdbphp';
+
 #
 # Site Plugin Configuration
 #.
@@ -65,6 +68,8 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 #
 
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, display_type, s_field_type, site_type ) VALUES ( 'IMDB_ID', 'ImDb ID', 'Imdb ID', 'hidden', 'hidden', '', 'imdb' );
+# just in case an old imdb_id exists:
+UPDATE s_attribute_type SET site_type='imdb' WHERE s_attribute_type="IMDB_ID";
 
 #
 # Site Plugin Item Attribute Type Relationship(s)

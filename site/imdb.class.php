@@ -96,7 +96,7 @@ class imdb extends SitePlugin
 												$image = $regs[2];
 											}
 										    
-											if(preg_match("/<br>&#160;aka(.*)/", $matches2[3], $regs))
+											if(preg_match("!<p class=\"find-aka\">aka (.*?)</p>!", $matches2[3], $regs))
 										    {
 										    	$comments = html_entity_decode(strip_tags($regs[1]), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
 										    }
@@ -154,9 +154,10 @@ class imdb extends SitePlugin
 
 </tr>
 */
-				if (preg_match_all("!<tr>.*?<td>([^<]*)</td>!ms", $matches[1], $results))
+				if (preg_match_all("!<tr>.*?<td>([^<]*)</td>.*?<td>([^\(/]*)[^<]*?</td>!ms", $matches[1], $results))
 				{
-					$this->addItemAttribute('alt_title', $results[1]);
+					$res = array_combine($results[2], $results[1]);
+					$this->addItemAttribute('alt_title', $res);
 				}
 			}
 		}

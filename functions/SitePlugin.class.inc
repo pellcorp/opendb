@@ -329,15 +329,15 @@ class SitePlugin
 	/*
 	* If a value already exists for $attribute
 	*/
-	function addItemAttribute($attribute, $value, $options = NULL)
+	function addItemAttribute($attribute, $value, $options = NULL, $keyname = NULL)
 	{
 		// where value is array, recursively call the addItemAttribute function,
 		// so rest of function can assume string $value.
 		if(is_array($value))
 		{
-			for($i=0; $i<count($value); $i++)
+			foreach($value as $key => $val)
 			{
-				$this->addItemAttribute($attribute, $value[$i], $options);
+				$this->addItemAttribute($attribute, $val, $options, $key);
 			}
 		}
 		else
@@ -369,9 +369,17 @@ class SitePlugin
 
 							$this->_item_data_r[$attribute] = array();
 							$this->_item_data_r[$attribute][] = $tmpvalue;
+							
 
 							// add new value to array
-							$this->_item_data_r[$attribute][] = $value;
+							if(is_numeric($keyname) || is_null($keyname))
+							{
+								$this->_item_data_r[$attribute][] = $value;
+							}
+							else
+							{
+								$this->_item_data_r[$attribute][$keyname] = $value;
+							}
 						}
 					}
 					else
@@ -379,13 +387,27 @@ class SitePlugin
 						// do not add duplicates
 						if(array_search2($value, $this->_item_data_r[$attribute]) === FALSE)
 						{
-							$this->_item_data_r[$attribute][] = $value;
+							if(is_numeric($keyname) || is_null($keyname))
+							{
+								$this->_item_data_r[$attribute][] = $value;
+							}
+							else
+							{
+								$this->_item_data_r[$attribute][$keyname] = $value;
+							}
 						}
 					}
 				}
 				else // otherwise single value only
 				{
-					$this->_item_data_r[$attribute] = $value;
+					if(is_numeric($keyname) || is_null($keyname))
+					{
+						$this->_item_data_r[$attribute] = $value;
+					}
+					else
+					{
+						$this->_item_data_r[$attribute] = array($keyname => $value);
+					}
 				}
 			}//if(strlen($value)>0)
 		}

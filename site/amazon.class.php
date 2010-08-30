@@ -760,7 +760,20 @@ Some search URL examples:
 		// as IMDB does not work with BOOKS or CD's.
 		if(is_numeric($this->getItemAttribute('imdb_id')))
 		{
-			$sitePlugin =& get_site_plugin_instance('imdb');
+			$imdb_plugin = 'imdb';
+			$query = "SELECT site_type
+			FROM 	s_attribute_type
+			WHERE 	s_attribute_type = 'IMDB_ID'";
+
+			$results = db_query($query);
+			if($results && db_num_rows($results)>0)
+			{
+				$imdb_plugin = db_fetch_assoc($results);
+				$imdb_plugin = $imdb_plugin['site_type'];
+				db_free_result($results);
+			}
+
+			$sitePlugin =& get_site_plugin_instance($imdb_plugin);
 			if($sitePlugin !== FALSE)
 			{
 				if($sitePlugin->queryItem(array('imdb_id'=>$this->getItemAttribute('imdb_id')), $s_item_type))

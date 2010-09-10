@@ -25,7 +25,7 @@ class OpenDbBrowserSniffer
 	
 	var $isSupported;
 	
-	var $browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf');
+	var $browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf', 'ip');
 	
 	function OpenDbBrowserSniffer()
 	{
@@ -43,16 +43,27 @@ class OpenDbBrowserSniffer
 		return $this->isSupported;
 	}
 	
-	/**
-	 */
 	function getSupportedBrowsers()
 	{
 		return $this->browsers_r;	
 	}
-	
+
+	/**
+	 * 
+	 * @param $b
+	 */
 	function isBrowser($b)
 	{
-		return $this->phpSniffer->browser_is($b);
+		if($b == 'ip') {
+			if($this->phpSniffer->property['platform'] == 'iphone') {
+				return $this->phpSniffer->browser_is('sf');
+			} else {
+				return false;
+			}
+		} else {
+			return $this->phpSniffer->browser_is('sf');
+		}
+		 
 	}
 	
 	function __initIsSupported()

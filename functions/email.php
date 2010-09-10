@@ -118,7 +118,7 @@ function opendb_user_email($to_userid, $from_userid, $subject, $message, &$error
 			$from_email_addr = trim($from_user_r['email_addr']);
 			$from_name = trim($from_user_r['fullname']);
 		}
-		else if($from_userid === NULL)
+		else if(strlen($from_userid))
 		{
 			$from_email_addr = trim(get_opendb_config_var('email', 'noreply_address'));
 			$from_name = trim(get_opendb_lang_var('noreply'));

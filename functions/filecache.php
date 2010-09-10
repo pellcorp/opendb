@@ -200,12 +200,21 @@ function file_cache_get_image_r($url, $type)
 
 	$file_r = array();
 
-	if(strlen($url)>0 && ( is_url_absolute($url) || ($uploadUrl = get_item_input_file_upload_url($url))!==FALSE ))
+	if(strlen($url)>0)
 	{
-		$file_r['thumbnail']['url'] = 'url.php?url='.urlencode($url).'&op=thumbnail';
+		if(is_url_absolute($url)) { 
+			$url_r = get_uri_and_protocol_for_url($url);
+			$fullUrl = 'url.php?scheme='.$url_r['scheme'].'&uri='.urlencode($url_r['uri']);
+		} else if(($uploadUrl = get_item_input_file_upload_url($url))!==FALSE) {
+			$fullUrl = 'url.php?uploadFile='.urlencode($url);
+		}
+	}
+		
+	if(strlen($fullUrl)>0) {
+		$file_r['thumbnail']['url'] = $fullUrl.'&op=thumbnail';
 
 		// TODO - decide whether to define this, if the fullsize image is the size of the thumbnail anyway.
-		$file_r['fullsize']['url'] = 'url.php?url='.urlencode($url);
+		$file_r['fullsize']['url'] = $fullUrl;
 
 		// kludge so that the item display can display the originating URL instead.
 		if($uploadUrl!==FALSE)

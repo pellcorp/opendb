@@ -120,6 +120,30 @@ function get_http_env($envname)
 	return $_SERVER[$envname];
 }
 
+function is_legal_url_scheme($protocol) {
+	if($protocol == 'http' || $protocol == 'https' || $protocol == 'ftp') {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function get_uri_and_protocol_for_url($url) {
+	$url_parts_r = parse_url($url);
+	
+	$uri = $url_parts_r['host'];
+	if(strlen($url_parts_r['port'])>0) {
+		$uri .= ":".$url_parts_r['port'];
+	}
+	
+	$uri .= $url_parts_r['port'].$url_parts_r['path'];
+	if(strlen($url_parts_r['query'])>0) {
+		$uri .= "?".$url_parts_r['query'];
+	}
+	
+	return array('scheme'=>$url_parts_r['scheme'],'uri'=>$uri);
+}
+
 /**
 	Check if $url has a protocol at the start. 
 */

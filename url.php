@@ -73,14 +73,20 @@ if(is_site_enabled())
 		if($HTTP_VARS['cache_type'] != 'ITEM' || is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
 		{
 			// The most basic required parameter for this script is the 'url' parameter
-			if(strlen($HTTP_VARS['url'])>0)
+			if(is_legal_url_scheme($HTTP_VARS['scheme']) && strlen($HTTP_VARS['uri'])>0 && !is_url_absolute($HTTP_VARS['uri'])) {
+				$fullUrl = $HTTP_VARS['scheme'] .'://'.$HTTP_VARS['uri'];
+			} else if(($uploadFileUrl = get_item_input_file_upload_url($HTTP_VARS['uploadFile']))!==FALSE) {
+				$fullUrl = $uploadFileUrl;
+			}
+			
+			if(strlen($fullUrl)>0) 
 			{
 				if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
 				{
 					// for simplicity sake, we do not ignore expired cached files when displaying, its assumed that
 					// some automated process will refresh them as required, and of course if the item is ever refreshed
 					// any cached items will be reviewed and recached as required.
-					$file_cache_r = fetch_url_file_cache_r($HTTP_VARS['url'], $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
+					$file_cache_r = fetch_url_file_cache_r($fullUrl, $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
 					if($file_cache_r!==FALSE)
 					{
 						if($HTTP_VARS['cache_type'] == 'ITEM')
@@ -114,17 +120,17 @@ if(is_site_enabled())
 						else
 						{
 							// final fallback
-							output_cache_file($HTTP_VARS['cache_type'], $HTTP_VARS['url']);
+							output_cache_file($HTTP_VARS['cache_type'], $fullUrl);
 						}
 					}//if($sequence_number!==FALSE)
 					else
 					{
-						output_cache_file($HTTP_VARS['cache_type'], $HTTP_VARS['url']);
+						output_cache_file($HTTP_VARS['cache_type'], $fullUrl);
 					}
 				}
 				else
 				{
-					http_redirect($HTTP_VARS['url']);
+					http_redirect($fullUrl);
 				}
 			} //if(strlen($HTTP_VARS['url'])>0)
 			else

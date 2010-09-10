@@ -182,13 +182,15 @@ if(is_site_enabled())
 					$catTypeSelect);
 			}
 			
-			$attribute_type_r = fetch_attribute_type_r("S_RATING");
-			$attribute_type_r['compulsory_ind'] = 'N';
-			echo get_item_input_field("rating",
-						$attribute_type_r,
-						NULL, // $item_r
-	   	  	        	NULL); //value
-				
+			if(get_opendb_config_var('item_review', 'enable')!==FALSE) {
+				$attribute_type_r = fetch_attribute_type_r("S_RATING");
+				$attribute_type_r['compulsory_ind'] = 'N';
+				echo get_item_input_field("rating",
+							$attribute_type_r,
+							NULL, // $item_r
+		   	  	        	NULL); //value
+			}
+							
 			if(@count($item_type_rs)>1)
 			{
 				$itemTypeSelect = "<select name=\"s_item_type\" id=\"search-itemtype\" onChange=\"populateList(this.options[this.options.selectedIndex].value, this.form.attribute_type, arrayOfAttributes, true, '------------- ".get_opendb_lang_var('all')." -------------', false);\">".

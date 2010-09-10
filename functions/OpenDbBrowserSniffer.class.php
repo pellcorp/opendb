@@ -25,7 +25,7 @@ class OpenDbBrowserSniffer
 	
 	var $isSupported;
 	
-	var $browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf', 'ip');
+	var $browsers_r = array('ie', 'ie6', 'ie7', 'fx', 'fx1.5', 'fx2', 'op', 'kq', 'sf');
 	
 	function OpenDbBrowserSniffer()
 	{
@@ -48,22 +48,19 @@ class OpenDbBrowserSniffer
 		return $this->browsers_r;	
 	}
 
-	/**
-	 * 
-	 * @param $b
-	 */
 	function isBrowser($b)
 	{
-		if($b == 'ip') {
-			if($this->phpSniffer->property['platform'] == 'iphone') {
-				return $this->phpSniffer->browser_is('sf');
-			} else {
-				return false;
-			}
-		} else {
-			return $this->phpSniffer->browser_is('sf');
-		}
-		 
+		return $this->phpSniffer->browser_is($b);
+	}
+
+	/**
+	 * For instance to determine iphone.
+	 * 
+	 * isPlatform('iphone')
+	 * @param $p
+	 */
+	function isPlatform($p) {
+		return $this->phpSniffer->property['platform'] == $p;
 	}
 	
 	function __initIsSupported()

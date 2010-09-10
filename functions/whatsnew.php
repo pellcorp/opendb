@@ -357,7 +357,8 @@ function get_whats_new_details($update_on, $user_id=NULL)
         }
 	}
 
-	if(get_opendb_config_var('welcome.whats_new', 'review_stats')!==FALSE)
+	if(get_opendb_config_var('item_review', 'enable')!==FALSE &&
+			get_opendb_config_var('welcome.whats_new', 'review_stats')!==FALSE)
 	{
 		$whats_new_r['heading'] = get_opendb_lang_var('review(s)');
 		

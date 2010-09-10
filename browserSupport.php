@@ -37,9 +37,8 @@ if(!$_OpendbBrowserSniffer->isBrowserSupported())
 }
 
 $supportedBrowsers = array(
-	array('name'=>'Firefox 1.5, 2.0, 3.0', 'url'=>'http://www.mozilla.com/firefox/', 'icon'=>'firefox.jpg'),
-	array('name'=>'Internet Explorer 7.0', 'url'=>'http://www.microsoft.com/windows/products/winfamily/ie/default.mspx', 'icon'=>'icon_ie7.gif'),
-	array('name'=>'Internet Explorer 6.0', 'url'=>'http://www.microsoft.com/windows/ie/ie6/default.mspx', 'icon'=>'ie6.gif'),
+	array('name'=>'Firefox', 'url'=>'http://www.mozilla.com/firefox/', 'icon'=>'firefox.jpg'),
+	array('name'=>'Internet Explorer', 'url'=>'http://www.microsoft.com/windows/products/winfamily/ie/default.mspx', 'icon'=>'icon_ie7.gif'),
 	array('name'=>'Safari', 'url'=>'http://www.apple.com/safari/', 'icon'=>'safari.png'),
 );
 

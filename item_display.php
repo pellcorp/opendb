@@ -133,28 +133,32 @@ if(is_site_enabled())
 				echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 				echo("<li id=\"menu-details\" class=\"first activeTab\" onclick=\"return activateTab('details')\">".get_opendb_lang_var('details')."</li>");
 				echo("<li id=\"menu-instance_info\" onclick=\"return activateTab('instance_info')\">".get_opendb_lang_var('instance_info')."</li>");
-				echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews')\">".get_opendb_lang_var('review(s)')."</li>");
+				if(get_opendb_config_var('item_review', 'enable')!==FALSE) {
+					echo("<li id=\"menu-reviews\" onclick=\"return activateTab('reviews')\">".get_opendb_lang_var('review(s)')."</li>");
+				}
 				echo("</ul>");
 								
 				echo("<div id=\"tab-content\">");
 				
 				echo("<div class=\"tabContent\" id=\"details\">");
 				
-				$average = fetch_review_rating($item_r['item_id']);
-				if($average!==FALSE)
-				{
-					echo("<p class=\"rating\">");
-					echo (get_opendb_lang_var('rating').": ");
-					$attribute_type_r = fetch_attribute_type_r('S_RATING');
-					echo get_display_field(
-							$attribute_type_r['s_attribute_type'],
-							NULL,
-							'review()',
-							$average,
-							FALSE);
-					echo("</p>");
+				if(get_opendb_config_var('item_review', 'enable')!==FALSE) {
+					$average = fetch_review_rating($item_r['item_id']);
+					if($average!==FALSE)
+					{
+						echo("<p class=\"rating\">");
+						echo (get_opendb_lang_var('rating').": ");
+						$attribute_type_r = fetch_attribute_type_r('S_RATING');
+						echo get_display_field(
+								$attribute_type_r['s_attribute_type'],
+								NULL,
+								'review()',
+								$average,
+								FALSE);
+						echo("</p>");
+					}
 				}
-				
+								
 				$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 				if($results)
 				{
@@ -217,9 +221,11 @@ if(is_site_enabled())
 				echo(format_footer_links($instance_info_links_r));
 				echo("</div>");
 			
-				echo("<div class=\"$otherTabsClass\" id=\"reviews\">");
-				echo(get_item_review_block($item_r));
-				echo("</div>"); // end of review
+				if(get_opendb_config_var('item_review', 'enable')!==FALSE) {
+					echo("<div class=\"$otherTabsClass\" id=\"reviews\">");
+					echo(get_item_review_block($item_r));
+					echo("</div>");
+				}
 				
 				echo("</div>"); // end of tab content
 				echo("</div>");  // end of tabContainer

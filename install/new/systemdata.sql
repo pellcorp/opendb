@@ -500,12 +500,13 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'height', 2, 'Item Image Height', '', 'number');
 INSERT INTO s_config_group_item ( group_id, id, keyid, order_no, prompt, description, type ) VALUES ('item_input.site', 'item_image_size', 'width', 3, 'Item Image Width', '', 'number');
 
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'update_support', 1, 'Update Support', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'delete_support', 2, 'Delete Support', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'include_other_title_reviews', 3, 'Include Other Titles', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'other_title_reviews_restrict_to_item_type_group', 4, 'Restrict Other Title Item Type Group', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'comment_compulsory', 5, 'Review Comment Compulsory', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'rating_compulsory', 6, 'Review Rating Compulsory', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'enable', 1, 'Enable', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'update_support', 2, 'Update Support', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'delete_support', 3, 'Delete Support', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'include_other_title_reviews', 4, 'Include Other Titles', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'other_title_reviews_restrict_to_item_type_group', 5, 'Restrict Other Title Item Type Group', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'comment_compulsory', 6, 'Review Comment Compulsory', '', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('item_review', 'rating_compulsory', 7, 'Review Rating Compulsory', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'show_item_image', 1, 'Show Item Images', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('listings', 'allow_override_show_item_image', 2, 'Allow Override Show Item Images', '', 'boolean');
@@ -677,6 +678,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input', 'title_articles', '2', 'An');
 INSERT INTO s_config_group_item_var ( group_id, id, keyid, value ) VALUES ('item_input.site', 'item_image_size', 'height', '50');
 
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'update_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'delete_support', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'include_other_title_reviews', 'TRUE');

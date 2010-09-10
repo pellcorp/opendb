@@ -575,6 +575,7 @@ class phpSniff
         $regex_linux    = '/x11|inux/i';
         $regex_bsd      = '/(free)?(bsd)/i';
         $regex_amiga    = '/amiga[os]?/i';
+        $regex_iphone    = '/iphone os ([0-9|_]*)/i';
 
         // look for Windows Box
         if(preg_match_all($regex_windows,$this->_browser_info['ua'],$match))
@@ -693,13 +694,19 @@ class phpSniff
         elseif(preg_match($regex_bsd,$this->_browser_info['ua'],$match))
         {   $this->_set_browser('platform','*nix');
             $this->_set_browser('os',$match[1].$match[2]);
+
+        // add basic iphone matching support
+        }elseif(preg_match($regex_iphone,$this->_browser_info['ua'],$match))
+        {   $this->_set_browser('platform','iphone');
+            $this->_set_browser('os','iOS '.str_replace("_", ".", $match[1]));
         }
+        
         //  last one to look for
         //  linux sets: platform = *nix ; os = linux
         elseif(preg_match($regex_linux,$this->_browser_info['ua'],$match))
         {   $this->_set_browser('platform','*nix');
             $this->_set_browser('os','linux');
-        }
+        }           
     }
 
     /**

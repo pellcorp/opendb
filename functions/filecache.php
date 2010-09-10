@@ -215,12 +215,7 @@ function file_cache_get_image_r($url, $type)
 
 		// TODO - decide whether to define this, if the fullsize image is the size of the thumbnail anyway.
 		$file_r['fullsize']['url'] = $fullUrl;
-
-		// kludge so that the item display can display the originating URL instead.
-		if($uploadUrl!==FALSE)
-			$file_r['url'] = $uploadUrl;
-		else
-			$file_r['url'] = $url;
+		$file_r['url'] = $url;
 			
 		$file_cache_r = fetch_url_file_cache_r($url, 'ITEM', INCLUDE_EXPIRED);
 		if(is_array($file_cache_r))
@@ -228,10 +223,11 @@ function file_cache_get_image_r($url, $type)
 			$file = file_cache_get_cache_file($file_cache_r);
 			$thumbnail_file = file_cache_get_cache_file_thumbnail($file_cache_r);
 		}
-		else if(!is_url_absolute($url)) // uploaded files only should match!
+		else if($uploadUrl!==FALSE)
 		{
-			$file = $url;
-			$thumbnail_file = $url;
+			$file_r['url'] = $uploadUrl;
+			$file = $uploadUrl;
+			$thumbnail_file = $uploadUrl;
 		}
 
 		if($file!==FALSE)

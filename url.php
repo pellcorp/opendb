@@ -64,87 +64,99 @@ function output_cache_file($cache_type, $url)
 	}
 }
 
-if(is_site_enabled())
-{
-	if(is_opendb_valid_session() || is_site_public_access())
+function handle_file_cache($file_cache_r, $isThumbnail = FALSE) {
+	if($file_cache_r!==FALSE)
 	{
-		$HTTP_VARS['cache_type'] = ifempty($HTTP_VARS['cache_type'], 'ITEM');
-		
-		if($HTTP_VARS['cache_type'] != 'ITEM' || is_user_granted_permission(PERM_VIEW_ITEM_COVERS))
+		if($file_cache_r['cache_type'] == 'ITEM')
 		{
-			// The most basic required parameter for this script is the 'url' parameter
-			if(is_legal_url_scheme($HTTP_VARS['scheme']) && strlen($HTTP_VARS['uri'])>0 && !is_url_absolute($HTTP_VARS['uri'])) {
-				$fullUrl = $HTTP_VARS['scheme'] .'://'.$HTTP_VARS['uri'];
-			} else if(($uploadFileUrl = get_item_input_file_upload_url($HTTP_VARS['uploadFile']))!==FALSE) {
-				$fullUrl = $uploadFileUrl;
+			if($isThumbnail)
+			{
+				$file = file_cache_open_thumbnail_file($file_cache_r);
 			}
 			
-			if(strlen($fullUrl)>0) 
+			// fallback on big image
+			if(!$file)
 			{
-				if($HTTP_VARS['cache_type'] == 'ITEM' || $HTTP_VARS['cache_type'] == 'HTTP')
+				if($file_cache_r['upload_file_ind'] != 'Y')
 				{
-					// for simplicity sake, we do not ignore expired cached files when displaying, its assumed that
-					// some automated process will refresh them as required, and of course if the item is ever refreshed
-					// any cached items will be reviewed and recached as required.
-					$file_cache_r = fetch_url_file_cache_r($fullUrl, $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
-					if($file_cache_r!==FALSE)
-					{
-						if($HTTP_VARS['cache_type'] == 'ITEM')
-						{
-							if(ifempty($HTTP_VARS['op'], 'fullsize') == 'thumbnail')
-							{
-								$file = file_cache_open_thumbnail_file($file_cache_r);
-							}
-							
-							// fallback on big image
-							if(!$file)
-							{
-								if($file_cache_r['upload_file_ind'] != 'Y')
-								{
-									$file = file_cache_open_file($file_cache_r);
-								}
-							}
-						}
-						else
-						{
-							$file = file_cache_open_file($file_cache_r);
-						}
-					
-						if($file)
-						{
-							header("Content-disposition: inline; filename=".$file_cache_r['cache_file']);
-							header("Content-type: ".$file_cache_r['content_type']);
-							fpassthru($file);
-							fclose($file);
-						}
-						else
-						{
-							// final fallback
-							output_cache_file($HTTP_VARS['cache_type'], $fullUrl);
-						}
-					}//if($sequence_number!==FALSE)
-					else
-					{
-						output_cache_file($HTTP_VARS['cache_type'], $fullUrl);
-					}
+					$file = file_cache_open_file($file_cache_r);
 				}
-				else
-				{
-					http_redirect($fullUrl);
-				}
-			} //if(strlen($HTTP_VARS['url'])>0)
-			else
-			{
-				echo _theme_header(get_opendb_lang_var('external_url_error'),FALSE);
-				echo("<p class=\"error\">".get_opendb_lang_var('external_url_error')."</p>");
-				echo _theme_footer();
 			}
 		}
 		else
 		{
-			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-			echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
-			echo _theme_footer();
+			$file = file_cache_open_file($file_cache_r);
+		}
+	
+		if($file)
+		{
+			header("Content-disposition: inline; filename=".$file_cache_r['cache_file']);
+			header("Content-type: ".$file_cache_r['content_type']);
+			fpassthru($file);
+			fclose($file);
+		}
+		else
+		{
+			// final fallback
+			output_cache_file($file_cache_r['cache_type'], $file_cache_r['url']);
+		}
+		
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+function opendb_external_url_error_page() {
+	echo _theme_header(get_opendb_lang_var('external_url_error'),FALSE);
+	echo("<p class=\"error\">".get_opendb_lang_var('external_url_error')."</p>");
+	echo _theme_footer();
+}
+
+if(is_site_enabled())
+{
+	if(is_opendb_valid_session() || is_site_public_access())
+	{
+		$isThumbnail = ifempty($HTTP_VARS['op'],'fullscreen') == 'thumbnail';
+		
+		if(is_numeric($HTTP_VARS['id'])) {
+			$file_cache_r = fetch_file_cache_r($HTTP_VARS['id']);
+			if($file_cache_r!==FALSE) {
+				if($file_cache_r['cache_type'] != 'ITEM' || is_user_granted_permission(PERM_VIEW_ITEM_COVERS)) {
+					handle_file_cache($file_cache_r, $isThumbnail);
+				} else {
+					opendb_not_authorised_page();	
+				}
+			} else {
+				opendb_external_url_error_page();
+			}
+		} else {
+			$HTTP_VARS['cache_type'] = ifempty($HTTP_VARS['cache_type'], 'ITEM');
+			if($file_cache_r['cache_type'] != 'ITEM' || is_user_granted_permission(PERM_VIEW_ITEM_COVERS)) {
+				if(is_legal_url_scheme($HTTP_VARS['scheme']) && strlen($HTTP_VARS['uri'])>0 && !is_url_absolute($HTTP_VARS['uri'])) {
+					$fullUrl = $HTTP_VARS['scheme'] .'://'.$HTTP_VARS['uri'];
+				} else if(($uploadFileUrl = get_item_input_file_upload_url($HTTP_VARS['uploadFile']))!==FALSE) {
+					$fullUrl = $uploadFileUrl;
+				}
+		
+				if(strlen($fullUrl)>0) {
+					// for simplicity sake, we do not ignore expired cached files when displaying, its assumed that
+					// some automated process will refresh them as required, and of course if the item is ever refreshed
+					// any cached items will be reviewed and recached as required.
+					$file_cache_r = fetch_url_file_cache_r($fullUrl, $HTTP_VARS['cache_type'], INCLUDE_EXPIRED);
+					if($file_cache_r!==FALSE) {
+						handle_file_cache($file_cache_r, $isThumbnail);
+					}//if($file_cache_r!==FALSE)
+					else
+					{
+						output_cache_file($HTTP_VARS['cache_type'], $fullUrl);
+					}
+				} else { //if(strlen($HTTP_VARS['url'])>0)
+					opendb_external_url_error_page();
+				}
+			} else {
+				opendb_not_authorised_page();
+			}
 		}
 	}
 	else

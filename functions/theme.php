@@ -461,4 +461,10 @@ function get_user_theme_r()
 	else // empty array as last resort.
 		return array();
 }
+
+function opendb_not_authorised_page() {
+	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+	echo("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page')."</p>");
+	echo _theme_footer();
+}
 ?>

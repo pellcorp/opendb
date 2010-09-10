@@ -101,7 +101,7 @@ if(strlen($HTTP_VARS['op'])==0)
 			$listingObject->startRow();
 			if(file_cache_get_cache_file($file_cache_r))
 			{
-				$popupUrl = "url.php?url=".urlencode($file_cache_r['url'])."&cache_type=${HTTP_VARS['cache_type']}";
+				$popupUrl = "url.php?id=".$file_cache_r['sequence_number'];
 				
 				$listingObject->addColumn(
 					"<a href=\"".$file_cache_r['url']."\" onclick=\"popup('$popupUrl'); return false;\" target=\"_new\">".

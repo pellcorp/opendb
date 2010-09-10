@@ -832,7 +832,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 
 		$field .= "\n<div class=\"fieldContent\" id=\"${name}_saveurl\">";
 		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
-		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){popup('url.php?url='+escape(this.form['$name'].value),'400','300');}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
+		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){popup(this.form['$name'].value,'400','300');}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
 		$field .= "</div>";
 
 		if(is_file_upload_enabled())

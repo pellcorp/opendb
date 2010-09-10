@@ -170,6 +170,11 @@ function save_uploaded_file($tmpFile, $name)
 	}
 }
 
+function get_file_cache_url($url) {
+	$url_r = get_uri_and_protocol_for_url($url);
+	return 'url.php?scheme='.$url_r['scheme'].'&uri='.urlencode($url_r['uri']);
+}
+
 /**
 	Returns an array which includes fullsize and cached image versions, complete
 	with dimensions.  Its quite possible that the dimensions for the fullsize image
@@ -203,8 +208,7 @@ function file_cache_get_image_r($url, $type)
 	if(strlen($url)>0)
 	{
 		if(is_url_absolute($url)) { 
-			$url_r = get_uri_and_protocol_for_url($url);
-			$fullUrl = 'url.php?scheme='.$url_r['scheme'].'&uri='.urlencode($url_r['uri']);
+			$fullUrl = get_file_cache_url($url);
 		} else if(($uploadUrl = get_item_input_file_upload_url($url))!==FALSE) {
 			$fullUrl = 'url.php?uploadFile='.urlencode($url);
 		}

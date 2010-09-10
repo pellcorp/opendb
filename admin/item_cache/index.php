@@ -130,8 +130,7 @@ if($HTTP_VARS['op'] == '')
 			
 			if(file_cache_get_cache_file($file_cache_r))
 			{
-				$popupUrl = "url.php?url=".urlencode($file_cache_r['url']);
-				$hrefUrl = $file_cache_r['url'];
+				$hrefUrl = "url.php?id=".$file_cache_r['sequence_number'];
 				
 				if(!is_url_absolute($file_cache_r['url']))
 				{
@@ -141,7 +140,7 @@ if($HTTP_VARS['op'] == '')
 				}
 				
 				$listingObject->addColumn(
-					"<a href=\"".$hrefUrl."\" onclick=\"popup('$popupUrl'); return false;\" target=\"_new\">".
+					"<a href=\"".$hrefUrl."\" target=\"_new\">".
 					get_overflow_tooltip_column($file_cache_r['url'], 100).
 					"</a>");
 			}

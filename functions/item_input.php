@@ -212,6 +212,8 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$err
 					$HTTP_VARS[$fieldname] = filter_item_input_field($item_attribute_type_r, $HTTP_VARS[$fieldname]);
 				}
 				
+				
+					
 				// Indicate at least one field failed validation.
 				if(!validate_item_input_field($item_attribute_type_r, $HTTP_VARS[$fieldname], $errors))
 				{

@@ -1374,7 +1374,7 @@ function fetch_item_duedate_timestamp($item_id, $instance_no)
 }
 
 function get_more_info_hist_update_stmt() {
-	return "CONCAT('<History><UpdateOn>', update_on, '</UpdateOn><Status>', status, '</Status><MoreInfo>', more_information, '</MoreInfo></History>', '\\n', IFNULL(more_info_hist,''))";
+	return "CONCAT('<History><UpdateOn>', update_on, '</UpdateOn><Status>', status, '</Status><MoreInfo>', IFNULL(more_information,''), '</MoreInfo></History>', '\\n', IFNULL(more_info_hist,''))";
 }
 
 /**

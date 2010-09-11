@@ -104,8 +104,9 @@ function get_item_display_field(
 					$value_format_mask = str_replace('%value%', $value, $value_format_mask);
 				}
 		
-				$fullUrl = get_file_cache_url($value);
-				$display_value_r[] = "<a href=\"".$value."\" onclick=\"fileviewer('$fullUrl' ,'".($width+20)."', '".($height+25)."', '".$target."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a>";
+				$file_r = file_cache_get_image_r($value, 'display');
+				$url = $file_r['fullsize']['url'];
+				$display_value_r[] = "<a href=\"".$value."\" onclick=\"fileviewer('$url' ,'".($width+20)."', '".($height+25)."', '".$target."'); return false;\" title=\"".$item_attribute_type_r['prompt']."\" class=\"popuplink\">$value_format_mask</a>";
 			}
 			
 			$field = format_multivalue_block($display_value_r, 'fileviewer');

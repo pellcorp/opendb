@@ -31,6 +31,23 @@ include_once("./functions/OpenDbSnoopy.class.inc");
 include_once('./functions/phpthumb/phpthumb.class.php');
 include_once("./functions/item_attribute.php");
 
+function add_url_to_temp_file_cache($url) {
+	$key = md5($url);
+	if(!is_array($_SESSION['_OPENDB_TEMP_FILE_CACHE_'])) {
+		$_SESSION['_OPENDB_TEMP_FILE_CACHE_'] = array();
+	}
+	$_SESSION['_OPENDB_TEMP_FILE_CACHE_'][$key] = $url;
+	return $key;
+}
+
+function get_url_from_temp_file_cache($key) {
+	if(isset($_SESSION['_OPENDB_TEMP_FILE_CACHE_'][$key])) {
+		return $_SESSION['_OPENDB_TEMP_FILE_CACHE_'][$key];
+	} else {
+		return FALSE;
+	}
+}
+
 function get_item_input_file_upload_directory()
 {
 	$uploadDir = OPENDB_ITEM_UPLOAD_DIRECTORY;
@@ -170,11 +187,6 @@ function save_uploaded_file($tmpFile, $name)
 	}
 }
 
-function get_file_cache_url($url) {
-	$url_r = get_uri_and_protocol_for_url($url);
-	return 'url.php?scheme='.$url_r['scheme'].'&uri='.urlencode($url_r['uri']);
-}
-
 /**
 	Returns an array which includes fullsize and cached image versions, complete
 	with dimensions.  Its quite possible that the dimensions for the fullsize image
@@ -205,50 +217,43 @@ function file_cache_get_image_r($url, $type)
 
 	$file_r = array();
 
-	if(strlen($url)>0)
-	{
-		if(is_url_absolute($url)) { 
-			$fullUrl = get_file_cache_url($url);
-		} else if(($uploadUrl = get_item_input_file_upload_url($url))!==FALSE) {
-			$fullUrl = 'url.php?uploadFile='.urlencode($url);
-		}
-	}
-		
-	if(strlen($fullUrl)>0) {
-		$file_r['thumbnail']['url'] = $fullUrl.'&op=thumbnail';
-
-		// TODO - decide whether to define this, if the fullsize image is the size of the thumbnail anyway.
-		$file_r['fullsize']['url'] = $fullUrl;
-		$file_r['url'] = $url;
-			
+	if(strlen($url)>0) {
 		$file_cache_r = fetch_url_file_cache_r($url, 'ITEM', INCLUDE_EXPIRED);
-		if(is_array($file_cache_r))
-		{
+		if($file_cache_r!==FALSE) {
+			$file_r['fullsize']['url'] = 'url.php?id='.$file_cache_r['sequence_number'];
+			$file_r['thumbnail']['url'] = $file_r['fullsize']['url'].'&op=thumbnail';
+			$file_r['url'] = $url;
+		} else if(is_url_absolute($url)) {
+			$tmpId = add_url_to_temp_file_cache($url);
+			$file_r['fullsize']['url'] = 'url.php?tmpId='.$tmpId;
+			$file_r['thumbnail']['url'] = $file_r['fullsize']['url'];
+			$file_r['url'] = $url;
+		} else if(($uploadUrl = get_item_input_file_upload_url($url))!==FALSE) {
+			$file_r['fullsize']['url'] = $uploadUrl;
+			$file_r['thumbnail']['url'] = $uploadUrl;
+			$file_r['url'] = $uploadUrl;
+		}
+		
+		if($file_cache_r!==FALSE) { 
 			$file = file_cache_get_cache_file($file_cache_r);
 			$thumbnail_file = file_cache_get_cache_file_thumbnail($file_cache_r);
-		}
-		else if($uploadUrl!==FALSE)
-		{
-			$file_r['url'] = $uploadUrl;
+		} else if($uploadUrl!==FALSE) {
 			$file = $uploadUrl;
 			$thumbnail_file = $uploadUrl;
 		}
 
+		// defaults
+		$file_r['fullsize']['width'] = '400';
+		$file_r['fullsize']['height'] = '300';
+		
 		if($file!==FALSE)
 		{
 			$size = @getimagesize($file);
-			if(is_array($size))
-			{
+			
+			if(is_array($size) && $size[0] > 0 && $size[1] > 0) {
 				$file_r['fullsize']['width'] = $size[0];
 				$file_r['fullsize']['height'] = $size[1];
 			}
-		}
-		
-		// assume these values are purely for generating correct popup
-		if(!is_numeric($file_r['fullsize']['width']) && !is_numeric($file_r['fullsize']['height'])) 
-		{
-			$file_r['fullsize']['width'] = '400';
-			$file_r['fullsize']['height'] = '300';
 		}
 		
 		if($thumbnail_file!==FALSE)
@@ -281,12 +286,12 @@ function file_cache_get_image_r($url, $type)
 			$file_r['thumbnail']['width'] = $thumbnail_size_r['width'];
 			$file_r['thumbnail']['height'] = $thumbnail_size_r['height'];
 		}
+		
+		return $file_r;
 	}
-	else
-	{
-		$file_r['thumbnail'] = file_cache_get_noimage_r($type);
-	}
-	
+
+	// else
+	$file_r['thumbnail'] = file_cache_get_noimage_r($type);
 	return $file_r;
 }
 

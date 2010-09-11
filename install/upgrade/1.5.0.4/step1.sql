@@ -24,3 +24,5 @@ CREATE TABLE borrowed_item_hist (
   update_on			TIMESTAMP(14) NOT NULL,
   PRIMARY KEY ( sequence_number )
 ) TYPE=MyISAM COMMENT='Borrowed Item History table';
+
+DELETE FROM s_language_var WHERE varname = 'external_url_error';

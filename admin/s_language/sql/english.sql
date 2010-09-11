@@ -159,7 +159,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'export
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'export_my_items', 'Export My Items'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'export_progress_message', 'Exporting... Please wait...'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'extension_not_supported', 'File extension {extension} not supported'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'external_url_error', 'No url specified.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'february', 'February'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'february_abbrev', 'Feb'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'file', 'File'); 

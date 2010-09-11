@@ -179,7 +179,7 @@ function is_opendb_valid_session()
 						if(is_user_active(get_opendb_session_var('user_id')))
 						{
                             // reset the time, as we are only interested in idle session tests.
-                            register_opendb_session_var('last_access_time', $current_time);
+                            $_SESSION['last_access_time'] = $current_time;
 							return TRUE;
 						}
 						else

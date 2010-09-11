@@ -33,19 +33,12 @@ include_once("./functions/item_attribute.php");
 
 function add_url_to_temp_file_cache($url) {
 	$key = md5($url);
-	if(!is_array($_SESSION['_OPENDB_TEMP_FILE_CACHE_'])) {
-		$_SESSION['_OPENDB_TEMP_FILE_CACHE_'] = array();
-	}
-	$_SESSION['_OPENDB_TEMP_FILE_CACHE_'][$key] = $url;
+	register_opendb_session_array_var('_OPENDB_TEMP_FILE_CACHE_', $key, $url);
 	return $key;
 }
 
 function get_url_from_temp_file_cache($key) {
-	if(isset($_SESSION['_OPENDB_TEMP_FILE_CACHE_'][$key])) {
-		return $_SESSION['_OPENDB_TEMP_FILE_CACHE_'][$key];
-	} else {
-		return FALSE;
-	}
+	return get_opendb_session_array_var('_OPENDB_TEMP_FILE_CACHE_', $key);
 }
 
 function get_item_input_file_upload_directory()

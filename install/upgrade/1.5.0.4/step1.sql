@@ -14,5 +14,13 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'enable', 'TRUE');
 
 ALTER TABLE borrowed_item ADD  more_information	TEXT;
-ALTER TABLE borrowed_item ADD  more_info_hist	TEXT;
 
+DROP TABLE IF EXISTS borrowed_item_hist;
+CREATE TABLE borrowed_item_hist (
+  sequence_number	INTEGER(10) UNSIGNED NOT NULL auto_increment,
+  bi_sequence_number	INTEGER(10) UNSIGNED NOT NULL,
+  more_information	TEXT,
+  status			VARCHAR(1) NOT NULL,
+  update_on			TIMESTAMP(14) NOT NULL,
+  PRIMARY KEY ( sequence_number )
+) TYPE=MyISAM COMMENT='Borrowed Item History table';

@@ -41,24 +41,6 @@ include_once("./functions/HTML_Listing.class.inc");
 include_once("./functions/TitleMask.class.php");
 
 /**
- * <History><UpdateOn>2010-09-11 18:31:37</UpdateOn><Status>R</Status><MoreInfo>this is a test of 
-
-stuff you
-
-all the time</MoreInfo>
-</History>
- * @param unknown_type $more_info_hist
- */
-function parse_more_info_hist($more_info_hist) {
-	if(preg_match_all('!<History><UpdateOn>([^<]+)</UpdateOn><Status>([^<]+)</Status><MoreInfo>([^<]+)</MoreInfo></History>!msi', $more_info_hist, $matches)) { 
-		for($i=0; $i<count($matches[0]); $i++) {
-			$more_info_entry_rs[] = array('updated'=>$matches[1][$i], 'status'=>$matches[2][$i], 'more_info'=>$matches[3][$i]);
-		}
-	}
-	return $more_info_entry_rs;
-}
-
-/**
 * @param $borrowed_item_rs Items that this action will be performed against.  It may actually
 * 						be an array of 'sequence_number' values, in which case the borrow
 * 						record for the sequence_number will be fetched.
@@ -130,8 +112,8 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 				$borrowed_item_r = fetch_borrowed_item_r($borrowed_item_r);
 			}
 			
-			// TODO - add this to be displayed as readonly.
-			$more_info_hist_rs = parse_more_info_hist($borrowed_item_r['more_info_hist']);
+			// TODO - add borrowed item history this to be displayed as readonly.
+			//$results = fetch_borrowed_item_hist_rs($borrowed_item_r['sequence_number']);
 			
 			$item_r = fetch_item_instance_r($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']);
 			

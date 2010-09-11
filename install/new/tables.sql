@@ -433,13 +433,22 @@ CREATE TABLE borrowed_item (
   borrow_duration	SMALLINT(3) UNSIGNED,
   total_duration	SMALLINT(3) UNSIGNED,
   more_information	TEXT,
-  more_info_hist	TEXT,
   status			VARCHAR(1) NOT NULL,
   update_on			TIMESTAMP(14) NOT NULL,
   PRIMARY KEY ( sequence_number ),
   KEY borrower_idx ( borrower_id ),
   KEY item_instance_idx ( item_id, instance_no )
 ) TYPE=MyISAM COMMENT='Borrowed Item table';
+
+DROP TABLE IF EXISTS borrowed_item_hist;
+CREATE TABLE borrowed_item_hist (
+  sequence_number	INTEGER(10) UNSIGNED NOT NULL auto_increment,
+  bi_sequence_number	INTEGER(10) UNSIGNED NOT NULL,
+  more_information	TEXT,
+  status			VARCHAR(1) NOT NULL,
+  update_on			TIMESTAMP(14) NOT NULL,
+  PRIMARY KEY ( sequence_number )
+) TYPE=MyISAM COMMENT='Borrowed Item History table';
 
 #
 # Review table

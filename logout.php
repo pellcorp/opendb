@@ -38,7 +38,7 @@ if(is_user_admin_changed_user())
 
     unregister_opendb_session_var('admin_user_id');
 	
- 	http_redirect('index.php');
+ 	opendb_redirect('index.php');
 }
 else
 {
@@ -58,7 +58,7 @@ else
 	// close session
 	@session_destroy();
 
-	http_redirect('index.php');
+	opendb_redirect('index.php');
 }
 
 // Cleanup after begin.inc.php

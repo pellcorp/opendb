@@ -48,17 +48,17 @@ function output_cache_file($url) {
 		}
 		else
 		{
-			http_redirect($url);
+			opendb_redirect($url);
 		}
 		unset($snoopy);
 	}
 	else if( ($file = get_item_input_file_upload_url($url))!==FALSE )  // file upload - that is not cached
 	{
-		http_redirect($file);
+		opendb_redirect($file);
 	}
 	else
 	{
-		http_redirect($url);
+		opendb_redirect($url);
 	}
 }
 

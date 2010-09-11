@@ -34,31 +34,31 @@ if($_OpendbBrowserSniffer->isBrowserSupported())
 			{
 				if(is_opendb_valid_session() || is_site_public_access())
 				{
-					http_redirect('welcome.php');
+					opendb_redirect('welcome.php');
 				}
 				else
 				{
-					http_redirect('login.php');
+					opendb_redirect('login.php');
 				}
 			}
 			else
 			{
-				http_redirect('install.php');
+				opendb_redirect('install.php');
 			}
 		}//if(is_opendb_configured())
 		else
 		{
-			http_redirect('install.php');
+			opendb_redirect('install.php');
 		}
 	}//if(is_db_connected())
 	else
 	{
-		http_redirect('install.php');
+		opendb_redirect('install.php');
 	}
 }
 else
 {
-	http_redirect('browserSupport.php');	
+	opendb_redirect('browserSupport.php');	
 }
 
 // Cleanup after begin.inc.php

@@ -100,7 +100,7 @@ if(strlen($logging_config_r['file'])>0)
 				}
 				
 				// return to log file without POST params so can do immediate refresh of log
-				http_redirect(basename($PHP_SELF)."?type=$ADMIN_TYPE");
+				opendb_redirect(basename($PHP_SELF)."?type=$ADMIN_TYPE");
 			}
 			else if($HTTP_VARS['confirmed'] != 'false')
 			{
@@ -119,7 +119,7 @@ if(strlen($logging_config_r['file'])>0)
 				$HTTP_VARS['op'] = '';
 				
 				// return to log file without POST params so can do immediate refresh of log
-				http_redirect(basename($PHP_SELF)."?type=$ADMIN_TYPE");
+				opendb_redirect(basename($PHP_SELF)."?type=$ADMIN_TYPE");
 			}
 		}
 		else if($HTTP_VARS['op'] == 'backup')

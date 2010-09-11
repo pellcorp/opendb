@@ -41,7 +41,7 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
 	if(strlen($url)>0)
  		$redirect .= '?'.$url;
 	
-	http_redirect("login.php?op=login&redirect=".urlencode($redirect));
+	opendb_redirect("login.php?op=login&redirect=".urlencode($redirect));
 }
 
 					
@@ -52,7 +52,7 @@ function redirect_login($PHP_SELF, $HTTP_VARS)
  *
  * @param string $link The URL to redirect the user's browser to
  */
-function http_redirect($link)
+function opendb_redirect($link)
 {
 	if(!is_url_absolute($link)) {
 		$protocol = 'http';

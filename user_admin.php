@@ -1199,7 +1199,7 @@ if(is_site_enabled())
 	            if(strlen($HTTP_VARS['uid'])>0 && is_user_active($HTTP_VARS['uid']))
 				{
 	                perform_changeuser($HTTP_VARS);
-					http_redirect('welcome.php');
+					opendb_redirect('welcome.php');
 					return;
 				}
 				else

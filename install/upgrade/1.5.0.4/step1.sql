@@ -13,3 +13,6 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('item_review', 'enable', 'TRUE');
 
+ALTER TABLE borrowed_item ADD  more_information	TEXT;
+ALTER TABLE borrowed_item ADD  more_info_hist	TEXT;
+

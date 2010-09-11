@@ -41,6 +41,24 @@ include_once("./functions/HTML_Listing.class.inc");
 include_once("./functions/TitleMask.class.php");
 
 /**
+ * <History><UpdateOn>2010-09-11 18:31:37</UpdateOn><Status>R</Status><MoreInfo>this is a test of 
+
+stuff you
+
+all the time</MoreInfo>
+</History>
+ * @param unknown_type $more_info_hist
+ */
+function parse_more_info_hist($more_info_hist) {
+	if(preg_match_all('!<History><UpdateOn>([^<]+)</UpdateOn><Status>([^<]+)</Status><MoreInfo>([^<]+)</MoreInfo></History>!msi', $more_info_hist, $matches)) { 
+		for($i=0; $i<count($matches[0]); $i++) {
+			$more_info_entry_rs[] = array('updated'=>$matches[1][$i], 'status'=>$matches[2][$i], 'more_info'=>$matches[3][$i]);
+		}
+	}
+	return $more_info_entry_rs;
+}
+
+/**
 * @param $borrowed_item_rs Items that this action will be performed against.  It may actually
 * 						be an array of 'sequence_number' values, in which case the borrow
 * 						record for the sequence_number will be fetched.
@@ -60,7 +78,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	// Pass all http variables onto next instance...
 	// Includes empty fields...
 	echo get_url_fields($HTTP_VARS, NULL, NULL);
-
+	
 	// Display the items to be operated on.
 	if(is_not_empty_array($borrowed_item_rs))
 	{
@@ -103,6 +121,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 		reset($borrowed_item_rs);
 		while(list(,$borrowed_item_r) = each($borrowed_item_rs))
 		{
+			
 			$listingObject->startRow();
 			
 			// If only a sequence_number, we need to fetch the borrow record.
@@ -110,6 +129,9 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 			{
 				$borrowed_item_r = fetch_borrowed_item_r($borrowed_item_r);
 			}
+			
+			// TODO - add this to be displayed as readonly.
+			$more_info_hist_rs = parse_more_info_hist($borrowed_item_r['more_info_hist']);
 			
 			$item_r = fetch_item_instance_r($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']);
 			
@@ -753,7 +775,7 @@ if(is_site_enabled())
 								// In case someone is trying to pass invalid item_id/instance_no combo's
 								if(is_exists_item_instance($reserve_item_r['item_id'],$reserve_item_r['instance_no']))
 								{
-									if(($new_borrowed_item_id = handle_reserve($reserve_item_r['item_id'], $reserve_item_r['instance_no'], get_opendb_session_var('user_id'), $errors)) !== FALSE)// This allows reserve to support calls from borrow.php, item_display.php or listings.php
+									if(($new_borrowed_item_id = handle_reserve($reserve_item_r['item_id'], $reserve_item_r['instance_no'], get_opendb_session_var('user_id'), $HTTP_VARS['more_information'], $errors)) !== FALSE)// This allows reserve to support calls from borrow.php, item_display.php or listings.php
 										$success_items_rs[] = array(item_id=>$reserve_item_r['item_id'],instance_no=>$reserve_item_r['instance_no'],borrower_id=>get_opendb_session_var('user_id'));	
 									else
 										$failure_items_rs[] = array(item_id=>$reserve_item_r['item_id'],instance_no=>$reserve_item_r['instance_no'],borrower_id=>get_opendb_session_var('user_id'),errors=>$errors);
@@ -816,7 +838,7 @@ if(is_site_enabled())
 							while ( list(,$sequence_number) = @each($sequence_number_r))
 							{
 								// This allows cancel-reserve to support calls from borrow.php, item_display.php or listings.php
-								if(handle_cancelreserve($sequence_number, $errors))
+								if(handle_cancelreserve($sequence_number, $HTTP_VARS['more_information'], $errors))
 									$success_items_rs[] = fetch_borrowed_item_r($sequence_number);
 								else
 									$failure_items_rs[] = add_errors_to_borrowed_item_r(fetch_borrowed_item_pk_r($sequence_number), $errors);
@@ -908,7 +930,7 @@ if(is_site_enabled())
 									}
 								}
 	
-								if(handle_checkout($sequence_number, $borrow_duration, $errors))
+								if(handle_checkout($sequence_number, $borrow_duration, $HTTP_VARS['more_information'], $errors))
 									$success_items_rs[] = fetch_borrowed_item_r($sequence_number,TRUE);
 								else
 									$failure_items_rs[] = add_errors_to_borrowed_item_r(fetch_borrowed_item_pk_r($sequence_number), $errors);
@@ -998,7 +1020,7 @@ if(is_site_enabled())
 										$borrow_duration = $HTTP_VARS['default_borrow_duration'];	
 									
 									// This allows reserve to support calls from borrow.php, item_display.php or listings.php
-									$new_borrowed_item_id = handle_quick_checkout($checkout_item_r['item_id'], $checkout_item_r['instance_no'], $HTTP_VARS['borrower_id'], $borrow_duration, $errors);
+									$new_borrowed_item_id = handle_quick_checkout($checkout_item_r['item_id'], $checkout_item_r['instance_no'], $HTTP_VARS['borrower_id'], $borrow_duration, $HTTP_VARS['more_information'], $errors);
 									if($new_borrowed_item_id!==FALSE)
 										$success_items_rs[] = fetch_borrowed_item_r($new_borrowed_item_id,TRUE);
 									else
@@ -1065,7 +1087,7 @@ if(is_site_enabled())
 						{
 							while ( list(,$sequence_number) = @each($sequence_number_r))
 							{
-								if(handle_checkin($sequence_number, $errors))
+								if(handle_checkin($sequence_number, $HTTP_VARS['more_information'], $errors))
 									$success_items_rs[] = fetch_borrowed_item_r($sequence_number);
 								else
 									$failure_items_rs[] = add_errors_to_borrowed_item_r(fetch_borrowed_item_pk_r($sequence_number), $errors);
@@ -1184,7 +1206,7 @@ if(is_site_enabled())
 							{
 								while ( list(,$sequence_number) = @each($sequence_number_r))
 								{
-									if(handle_extension($sequence_number, $HTTP_VARS['default_borrow_duration'], $errors))
+									if(handle_extension($sequence_number, $HTTP_VARS['default_borrow_duration'], $HTTP_VARS['more_information'], $errors))
 										$success_items_rs[] = fetch_borrowed_item_r($sequence_number,TRUE);
 									else
 										$failure_items_rs[] = add_errors_to_borrowed_item_r(fetch_borrowed_item_pk_r($sequence_number), $errors);

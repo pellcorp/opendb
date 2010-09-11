@@ -432,6 +432,8 @@ CREATE TABLE borrowed_item (
   borrower_id		VARCHAR(20) NOT NULL,
   borrow_duration	SMALLINT(3) UNSIGNED,
   total_duration	SMALLINT(3) UNSIGNED,
+  more_information	TEXT,
+  more_info_hist	TEXT,
   status			VARCHAR(1) NOT NULL,
   update_on			TIMESTAMP(14) NOT NULL,
   PRIMARY KEY ( sequence_number ),

@@ -492,6 +492,8 @@ if(is_site_enabled())
 							$listingObject->addHeaderColumn(get_opendb_lang_var('borrow_duration'));
 					}
 	
+					$listingObject->addHeaderColumn(get_opendb_lang_var('more_information'));
+					
 					// If mysql resultset or static $item_reservation_rs array defined, we can continue.
 					if($result)
 					{
@@ -746,6 +748,8 @@ if(is_site_enabled())
 									}
 								}
 							}
+							
+							$listingObject->addColumn(nl2br($borrowed_item_r['more_information']));
 							
 							$listingObject->endRow();
 						}// End of while

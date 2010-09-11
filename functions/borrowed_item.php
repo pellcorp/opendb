@@ -27,7 +27,7 @@ include_once("./functions/database.php");
 include_once("./functions/logging.php");
 include_once("./functions/datetime.php");
 
-function handle_reserve($item_id, $instance_no, $borrower_id, &$errors)
+function handle_reserve($item_id, $instance_no, $borrower_id, $more_information, &$errors)
 {
 	$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
 	if($status_type_r['borrow_ind'] != 'Y')
@@ -65,7 +65,7 @@ function handle_reserve($item_id, $instance_no, $borrower_id, &$errors)
 		// All but the actual reservation of item should occur, when this variable is set to TRUE.
 		if(get_opendb_config_var('borrow', 'reserve_email_only') !== TRUE)
 		{
-			$new_borrowed_item_id = reserve_item($item_id, $instance_no, $borrower_id);
+			$new_borrowed_item_id = reserve_item($item_id, $instance_no, $borrower_id, $more_information);
 			if($new_borrowed_item_id!==FALSE)
 			{
 				return new_borrowed_item_id;
@@ -88,7 +88,7 @@ function handle_reserve($item_id, $instance_no, $borrower_id, &$errors)
 * A handle_quick_checkout will only ever handle one request at a time, because
 * they are initiated from item_display & listings.php, but not borrow.php
 */
-function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_duration, &$errors)
+function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_duration, $more_information, &$errors)
 {
 	if(!is_user_valid($borrower_id))
 	{
@@ -121,7 +121,7 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 	{
 		if(get_opendb_config_var('borrow', 'quick_checkout_use_existing_reservation')!==FALSE)
 		{
-			if(check_out_item($sequence_number, $borrow_duration))
+			if(check_out_item($sequence_number, $borrow_duration, $more_information))
 			{
 				return $sequence_number;
 			}
@@ -141,7 +141,7 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 		$status_type_r = fetch_status_type_r(fetch_item_s_status_type($item_id, $instance_no));
 		if($status_type_r['borrow_ind'] == 'Y')
 		{
-			$new_borrowed_item_id = quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_duration);
+			$new_borrowed_item_id = quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_duration, $more_information);
 			if($new_borrowed_item_id!==FALSE)
 			{
 				return $new_borrowed_item_id;
@@ -161,7 +161,7 @@ function handle_quick_checkout($item_id, $instance_no, $borrower_id, $borrow_dur
 
 /**
 */
-function handle_cancelreserve($sequence_number, &$errors)
+function handle_cancelreserve($sequence_number, $more_information, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
 	if ($borrowed_item_r['borrower_id'] !== get_opendb_session_var('user_id') && 
@@ -183,7 +183,7 @@ function handle_cancelreserve($sequence_number, &$errors)
 	}
 	else
 	{
-		if(cancel_reserve_item($sequence_number))
+		if(cancel_reserve_item($sequence_number, $more_information))
 		{
 			return TRUE;
 		}
@@ -196,7 +196,7 @@ function handle_cancelreserve($sequence_number, &$errors)
 
 /**
 */
-function handle_checkout($sequence_number, $borrow_duration, &$errors)
+function handle_checkout($sequence_number, $borrow_duration, $more_information, &$errors)
 {
 	$item_r = fetch_borrowed_item_r($sequence_number);
 	
@@ -216,7 +216,7 @@ function handle_checkout($sequence_number, $borrow_duration, &$errors)
 		return FALSE;
 	}
 
-	if(check_out_item($sequence_number, $borrow_duration))
+	if(check_out_item($sequence_number, $borrow_duration, $more_information))
 	{
 		return TRUE;
 	}
@@ -254,7 +254,7 @@ function is_user_allowed_to_checkin_item($item_id, $instance_no)
  * @param unknown_type $errors
  * @return unknown
  */
-function handle_checkin($sequence_number, &$errors)
+function handle_checkin($sequence_number, $more_information, &$errors)
 {
 	$item_r = fetch_borrowed_item_r($sequence_number);
 	
@@ -275,7 +275,7 @@ function handle_checkin($sequence_number, &$errors)
 	}
 	else
 	{
-		if(check_in_item($sequence_number))
+		if(check_in_item($sequence_number, $more_information))
 		{
 			return TRUE;
 		}
@@ -312,7 +312,7 @@ function handle_reminder($sequence_number, &$errors)
 	}
 }
 
-function handle_extension($sequence_number, $borrow_extension, &$errors)
+function handle_extension($sequence_number, $borrow_extension, $more_information, &$errors)
 {
 	$borrowed_item_r = fetch_borrowed_item_r($sequence_number);
 	if(!is_user_owner_of_item($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']) &&
@@ -333,7 +333,7 @@ function handle_extension($sequence_number, $borrow_extension, &$errors)
 	}
 	else
 	{
-		if(item_borrow_duration_extension($sequence_number, $borrow_extension))
+		if(item_borrow_duration_extension($sequence_number, $borrow_extension, $more_information))
 			return TRUE;
 		else
 			return FALSE;
@@ -447,7 +447,7 @@ function fetch_all_borrowed_item_cnt()
 
 function fetch_all_borrowed_item_rs($order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, bi.borrower_id, i.s_item_type, i.title, ii.owner_id, ii.s_status_type ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, bi.more_information, bi.more_info_hist, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, bi.borrower_id, i.s_item_type, i.title, ii.owner_id, ii.s_status_type ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND ii.instance_no = bi.instance_no AND bi.item_id = ii.item_id AND ".
 				"bi.status = 'B' ".
@@ -491,7 +491,7 @@ function fetch_my_borrowed_item_cnt($borrower_id)
 */
 function fetch_my_borrowed_item_rs($borrower_id, $order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, i.s_item_type, i.title, ii.owner_id, ii.s_status_type ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, bi.more_information, bi.more_info_hist, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, i.s_item_type, i.title, ii.owner_id, ii.s_status_type ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND ii.instance_no = bi.instance_no AND bi.item_id = ii.item_id AND ".
 				"bi.status = 'B' and bi.borrower_id = '".$borrower_id."' ".
@@ -529,7 +529,7 @@ function fetch_all_reserved_item_cnt()
 
 function fetch_all_reserved_item_rs($order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, bi.borrower_id, i.s_item_type, i.title, ii.owner_id, ii.borrow_duration, ii.s_status_type, UNIX_TIMESTAMP(bi.update_on) as reserve_date ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, bi.borrower_id, bi.more_information, bi.more_info_hist, i.s_item_type, i.title, ii.owner_id, ii.borrow_duration, ii.s_status_type, UNIX_TIMESTAMP(bi.update_on) as reserve_date ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND ii.instance_no = bi.instance_no AND bi.item_id = ii.item_id AND ".
 				"bi.status = 'R' ".
@@ -571,7 +571,7 @@ function fetch_my_reserved_item_cnt($borrower_id)
 //
 function fetch_my_reserved_item_rs($borrower_id, $order_by=NULL, $sortorder=NULL, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, i.title, ii.owner_id, ii.borrow_duration, ii.s_status_type, UNIX_TIMESTAMP(bi.update_on) as reserve_date ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, i.title, ii.owner_id, bi.more_information, bi.more_info_hist, ii.borrow_duration, ii.s_status_type, UNIX_TIMESTAMP(bi.update_on) as reserve_date ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND ii.instance_no = bi.instance_no AND bi.item_id = ii.item_id AND ".
 				"bi.status = 'R' and bi.borrower_id = '".$borrower_id."' ";
@@ -615,6 +615,8 @@ function fetch_my_history_item_rs($borrower_id, $order_by, $sortorder, $start_in
 			ii.owner_id, 
 			bi.status, 
 			bi.borrow_duration, 
+			bi.more_information, 
+			bi.more_info_hist,
 			ii.borrow_duration AS ii_borrow_duration, 
 			bi.total_duration, bi.status, ii.s_status_type,
 			CASE WHEN bi.status = 'C' THEN TO_DAYS(now()) - TO_DAYS(bi.update_on) ELSE NULL END AS calc_total_duration, 
@@ -686,7 +688,7 @@ function fetch_borrowed_item_pk_rs($borrower_id, $status)
 
 function fetch_my_basket_item_rs($borrower_id, $order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, i.title, ii.owner_id, UNIX_TIMESTAMP(bi.update_on) as basket_date, bi.status, ii.s_status_type ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, bi.more_information, bi.more_info_hist, i.title, ii.owner_id, UNIX_TIMESTAMP(bi.update_on) as basket_date, bi.status, ii.s_status_type ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND bi.instance_no = ii.instance_no AND bi.item_id = ii.item_id AND ".
 				" bi.status  = 'T' AND bi.borrower_id = '".$borrower_id."' ".
@@ -753,6 +755,8 @@ function fetch_item_instance_history_rs($item_id, $instance_no, $order_by, $sort
 			CASE WHEN bi.status = 'B' THEN UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) ELSE NULL END AS due_date, 
 			bi.borrow_duration, 
 			bi.total_duration, 
+			bi.more_information, 
+			bi.more_info_hist,
 			CASE WHEN bi.status = 'C' THEN TO_DAYS(now()) - TO_DAYS(bi.update_on) ELSE NULL END AS calc_total_duration, 
 			bi.status, 
 			ii.borrow_duration AS ii_borrow_duration, 
@@ -801,7 +805,7 @@ function fetch_owner_reserved_item_cnt($owner_id)
 //
 function fetch_owner_reserved_item_rs($owner_id, $order_by=NULL, $sortorder=NULL, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, i.title, ii.borrow_duration, ii.s_status_type, bi.borrower_id, UNIX_TIMESTAMP(bi.update_on) as reserve_date ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, bi.more_information, bi.more_info_hist, i.title, ii.borrow_duration, ii.s_status_type, bi.borrower_id, UNIX_TIMESTAMP(bi.update_on) as reserve_date ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND ii.instance_no = bi.instance_no AND bi.item_id = ii.item_id AND ".
 				"ii.owner_id = '".$owner_id."' AND ".
@@ -846,7 +850,7 @@ function fetch_owner_borrowed_item_cnt($owner_id)
 //
 function fetch_owner_borrowed_item_rs($owner_id, $order_by, $sortorder, $start_index=NULL, $items_per_page=NULL)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, i.s_item_type, i.title, ii.s_status_type, bi.borrower_id  ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, bi.more_information, bi.more_info_hist, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, i.s_item_type, i.title, ii.s_status_type, bi.borrower_id  ".
 				"FROM item i, item_instance ii, borrowed_item bi ".
 				"WHERE i.id = ii.item_id AND ii.instance_no = bi.instance_no AND bi.item_id = ii.item_id and ".
 				"ii.owner_id = '".$owner_id."' and ".
@@ -873,7 +877,7 @@ function fetch_owner_borrowed_item_rs($owner_id, $order_by, $sortorder, $start_i
 */
 function fetch_reminder_borrowed_item_rs($duration_range)
 {
-	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, i.s_item_type, i.title, ii.s_status_type, bi.borrower_id, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, bi.borrow_duration, (TO_DAYS(now()) - TO_DAYS(bi.update_on)) as total_duration ".
+	$query = "SELECT bi.sequence_number, bi.item_id, bi.instance_no, bi.more_information, bi.more_info_hist, i.s_item_type, i.title, ii.s_status_type, bi.borrower_id, UNIX_TIMESTAMP(DATE_ADD(bi.update_on, INTERVAL bi.borrow_duration DAY)) as due_date, bi.borrow_duration, (TO_DAYS(now()) - TO_DAYS(bi.update_on)) as total_duration ".
 			"FROM item i, item_instance ii, borrowed_item bi ".
 			"WHERE i.id = ii.item_id AND ".
 			"ii.instance_no = bi.instance_no AND ".
@@ -919,7 +923,7 @@ function fetch_borrowed_item_status_atdate_cnt($status, $update_on)
 */
 function fetch_borrowed_item_r($sequence_number, $include_duedate = FALSE)
 {
-	$query = "SELECT item_id, instance_no, borrower_id, borrow_duration, IFNULL(total_duration, TO_DAYS(now()) - TO_DAYS(update_on)) as total_duration, status ";
+	$query = "SELECT sequence_number, item_id, instance_no, borrower_id, borrow_duration, more_information, more_info_hist, IFNULL(total_duration, TO_DAYS(now()) - TO_DAYS(update_on)) as total_duration, status ";
 	if($include_duedate){
 		$query .= ", IF(borrow_duration>0,UNIX_TIMESTAMP(DATE_ADD(update_on, INTERVAL borrow_duration DAY)),NULL) as due_date ";
 	}
@@ -1369,6 +1373,18 @@ function fetch_item_duedate_timestamp($item_id, $instance_no)
 	return FALSE;
 }
 
+function get_more_info_hist_update_stmt() {
+	return "CONCAT('<History><UpdateOn>', update_on, '</UpdateOn><Status>', status, '</Status><MoreInfo>', more_information, '</MoreInfo></History>', '\\n', IFNULL(more_info_hist,''))";
+}
+
+/**
+ * Remove | as a legal character so can use as delimeter
+ * @param unknown_type $value
+ */
+function clean_more_info_value($value) {
+	return addslashes(htmlspecialchars(replace_newlines($value)));	
+}
+
 //----------------------------------------------------------------------------------
 // Update functions
 //----------------------------------------------------------------------------------
@@ -1376,12 +1392,12 @@ function fetch_item_duedate_timestamp($item_id, $instance_no)
 	Assumes validation has been performed to ensure reservation does not already exist.
 		Will return new sequence number if successful.
 */
-function reserve_item($item_id, $instance_no, $borrower_id)
+function reserve_item($item_id, $instance_no, $borrower_id, $more_information)
 {
 	$sequence_number = fetch_borrowed_item_seq_no($item_id, $instance_no, 'T', $borrower_id);
 	if($sequence_number !== FALSE)
 	{
-		if(update_borrowed_item($sequence_number, 'R'))
+		if(update_borrowed_item($sequence_number, 'R', $more_information))
 		{
 			return $sequence_number;
 		}
@@ -1392,34 +1408,43 @@ function reserve_item($item_id, $instance_no, $borrower_id)
 	}
 	else
 	{
-		$query = "INSERT INTO borrowed_item(item_id, instance_no, borrower_id, status)".
-				"VALUES('$item_id', '$instance_no', '$borrower_id', 'R')";
+		$more_information = clean_more_info_value($more_information);
+		$query = "INSERT INTO borrowed_item(item_id, instance_no, borrower_id, status, more_information)".
+				"VALUES('$item_id', '$instance_no', '$borrower_id', 'R', '$more_information')";
+		
 		$insert = db_query($query);
 		if($insert && db_affected_rows()>0)
 		{
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $borrower_id));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $borrower_id, $more_information));
 			return db_insert_id();
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $borrower_id));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $borrower_id, $more_information));
 			return FALSE;
 		}
 	}
 }
 
-function update_borrowed_item($sequence_number, $status)
+function update_borrowed_item($sequence_number, $status, $more_information)
 {
-	$query = "UPDATE borrowed_item SET status ='$status' WHERE sequence_number = $sequence_number";
+	$more_information = clean_more_info_value($more_information);
+	
+	$query = "UPDATE borrowed_item 
+				SET more_info_hist = ".get_more_info_hist_update_stmt().",
+				status ='$status',		
+				more_information = '$more_information'
+				WHERE sequence_number = $sequence_number";
+	
 	$update = db_query($query);
 	if($update && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $more_information));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $more_information));
 		return FALSE;
 	}		
 }
@@ -1461,18 +1486,25 @@ function delete_cart_item($sequence_number)
 	Cancel Reservation.  It is assumed that borrow.php has performed validation to
 	ensure that only borrower or owner actually cancels reservation.
 */	
-function cancel_reserve_item($sequence_number)
+function cancel_reserve_item($sequence_number, $more_information)
 {
-	$query = "UPDATE borrowed_item SET status ='X' WHERE sequence_number = $sequence_number";
+	$more_information = clean_more_info_value($more_information);
+	
+	$query = "UPDATE borrowed_item 
+				SET more_info_hist = ".get_more_info_hist_update_stmt().", 
+				status ='X', 
+				more_information = '$more_information' 
+			WHERE sequence_number = $sequence_number";
+	
 	$update = db_query($query);
 	if($update && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $more_information));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $more_information));
 		return FALSE;
 	}
 }
@@ -1480,19 +1512,21 @@ function cancel_reserve_item($sequence_number)
 /**
 	This function expects that all validation has been performed already.
 */	
-function quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_duration)
+function quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_duration, $more_information)
 {
-	$query = "INSERT INTO borrowed_item(item_id, instance_no, borrower_id, borrow_duration, status)".
-			"VALUES('$item_id', '$instance_no', '$borrower_id', ".(is_numeric($borrow_duration) && $borrow_duration>0?"'$borrow_duration'":"NULL").", 'B')";
+	$more_information = clean_more_info_value($more_information);
+	
+	$query = "INSERT INTO borrowed_item(item_id, instance_no, borrower_id, borrow_duration, status, more_information)".
+			"VALUES('$item_id', '$instance_no', '$borrower_id', ".(is_numeric($borrow_duration) && $borrow_duration>0?"'$borrow_duration'":"NULL").", 'B', '$more_information')";
 	$insert = db_query($query);
 	if($insert && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $borrower_id, $borrow_duration));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($item_id, $instance_no, $borrower_id, $borrow_duration, $more_information));
 		return db_insert_id();
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $borrower_id, $borrow_duration));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($item_id, $instance_no, $borrower_id, $borrow_duration, $more_information));
 		return FALSE;
 	}
 }
@@ -1500,19 +1534,26 @@ function quick_check_out_item($item_id, $instance_no, $borrower_id, $borrow_dura
 /**
 	This function expects that all validation has been performed already.
 */	
-function check_out_item($sequence_number, $borrow_duration)
+function check_out_item($sequence_number, $borrow_duration, $more_information)
 {
-	$query = "UPDATE borrowed_item SET status ='B', borrow_duration = ".(is_numeric($borrow_duration) && $borrow_duration>0?"'$borrow_duration'":"NULL").
+	$more_information = clean_more_info_value($more_information);
+	
+	$query = "UPDATE borrowed_item 
+			SET more_info_hist = ".get_more_info_hist_update_stmt().", 
+			status ='B', 
+			more_information = '$more_information', 
+			borrow_duration = ".(is_numeric($borrow_duration) && $borrow_duration>0?"'$borrow_duration'":"NULL").
 		 " WHERE sequence_number = $sequence_number";
+	
 	$update = db_query($query);
 	if($update && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $borrow_duration));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $borrow_duration, $more_information));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $borrow_duration));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $borrow_duration, $more_information));
 		return FALSE;
 	}
 }
@@ -1520,42 +1561,55 @@ function check_out_item($sequence_number, $borrow_duration)
 /**
 	This function assumes only one checked out to borrower of item_id.  Set status to 'C' for Closed.
 */
-function check_in_item($sequence_number)
+function check_in_item($sequence_number, $more_information)
 {
-	$query = "UPDATE borrowed_item SET status ='C', total_duration = TO_DAYS(now()) - TO_DAYS(update_on)".
+	$more_information = clean_more_info_value($more_information);
+	
+	$query = "UPDATE borrowed_item 
+				SET more_info_hist = ".get_more_info_hist_update_stmt().", 
+				status ='C', 
+				more_information = '$more_information', 
+				total_duration = TO_DAYS(now()) - TO_DAYS(update_on)".
 			" WHERE sequence_number = $sequence_number";
+	
 	$update = db_query($query);
 	if($update && db_affected_rows()>0)
 	{
-		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number));
+		opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $more_information));
 		return TRUE;
 	}
 	else
 	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number));
+		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $more_information));
 		return FALSE;
 	}
 }
 
 /*
 */
-function item_borrow_duration_extension($sequence_number, $borrow_extension)
+function item_borrow_duration_extension($sequence_number, $borrow_extension, $more_information)
 {
 	if(is_numeric($borrow_extension))
 	{
+		$more_information = clean_more_info_value($more_information);
+		
 		// set update_on - to itself, to prevent timestamp auto-update.
-		$query = "UPDATE borrowed_item SET borrow_duration = IFNULL(borrow_duration,0) + $borrow_extension, update_on = update_on".
+		$query = "UPDATE borrowed_item 
+				SET more_info_hist = ".get_more_info_hist_update_stmt().", 
+				borrow_duration = IFNULL(borrow_duration,0) + $borrow_extension, 
+				more_information = '$more_information', 
+				update_on = update_on".
 				" WHERE sequence_number = $sequence_number";
 				
 		$update = db_query($query);
 		if($update && db_affected_rows()>0)
 		{
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $borrow_extension));
+			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($sequence_number, $borrow_extension, $more_information));
 			return TRUE;
 		}
 		else
 		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $borrow_extension));
+			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($sequence_number, $borrow_extension, $more_information));
 			return FALSE;
 		}
 	}

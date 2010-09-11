@@ -215,7 +215,12 @@ function file_cache_get_image_r($url, $type)
 		if($file_cache_r!==FALSE) {
 			$file_r['fullsize']['url'] = 'url.php?id='.$file_cache_r['sequence_number'];
 			$file_r['thumbnail']['url'] = $file_r['fullsize']['url'].'&op=thumbnail';
-			$file_r['url'] = $url;
+			
+			if($file_cache_r['upload_file_ind'] == 'Y') {
+				$file_r['url'] = get_item_input_file_upload_url($url);
+			} else { 
+				$file_r['url'] = $url;
+			}
 		} else if(is_url_absolute($url)) {
 			$tmpId = add_url_to_temp_file_cache($url);
 			$file_r['fullsize']['url'] = 'url.php?tmpId='.$tmpId;
@@ -714,10 +719,7 @@ function fetch_file_cache_r($sequence_number)
 /*
  * File Cache - create cache file
 
- @param $lock_tables - if TRUE, then the cache table will be locked before proceeding.  If FALSE, its assumed its
- been properly locked by the calling function.
-
- @param $overwrite_entry - if TRUE, any existing cache entry will be updated and existing cache file overwritten
+ @param $overwrite - if TRUE, any existing cache entry will be updated and existing cache file overwritten
  with new file / content
  */
 function file_cache_insert_file($url, $location, $content_type, $content, $cache_type='HTTP', $overwrite = FALSE)

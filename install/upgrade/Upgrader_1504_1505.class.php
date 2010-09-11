@@ -28,7 +28,7 @@ class Upgrader_1504_1505 extends OpenDbUpgrader
 						'1.5.0.4',
 						'1.5.0.5',
 						array(
-							array('description'=>'Support Global Category Stats Chart'),
+							array('description'=>'Support Global Category Stats Chart, More Info Borrow config, Disable reviews, Fix login stuff'),
 						)
 					);
 	}

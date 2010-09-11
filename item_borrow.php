@@ -103,7 +103,6 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 		reset($borrowed_item_rs);
 		while(list(,$borrowed_item_r) = each($borrowed_item_rs))
 		{
-			
 			$listingObject->startRow();
 			
 			// If only a sequence_number, we need to fetch the borrow record.
@@ -329,6 +328,8 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 	
 	echo("<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">");
 	echo("</form>");
+	
+	echo format_help_block(get_opendb_lang_var('more_information_help'));
 }
 
 function display_html_success_borrow_results($section_intro, $results_rs)

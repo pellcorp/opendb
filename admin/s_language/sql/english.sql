@@ -491,7 +491,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_i
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_is_owner_of_item', 'User is the owner of the item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_language', 'Language'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_list', 'User Listing'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_listing_column_header_sort_help', 'Click User to see their address details.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_must_be_borrower', 'User \'{user_id}\' must be at least Borrower type.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_name', '{fullname} ({user_id})'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_activated', 'User not activated.'); 
@@ -562,3 +561,11 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confir
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deleted', 'User not deleted');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_deleted', 'User deleted');
 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest', 'Interest'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest_mark', 'Click to mark your interest for this item'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest_remove', 'Click to remove your interest for this item'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest_remove_all', 'Remove all your interest marks'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest_help', 'You marked your interest in this item'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest_only_marked', 'Only items with marked interest'); 
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'more_information_help', 'Additional information can be entered into the More Info field');

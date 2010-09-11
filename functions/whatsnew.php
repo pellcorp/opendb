@@ -249,10 +249,9 @@ function get_last_item_list_table($blocks_r)
 
 function get_welcome_last_item_list($update_on, $user_id)
 {
-	if(get_opendb_config_var('welcome.last_items_list', 'enable')!==FALSE)
+	$last_items_list_conf_r = get_opendb_config_var('welcome.last_items_list');
+	if($last_items_list_conf_r['enable']!==FALSE)
 	{
-		$last_items_list_conf_r = get_opendb_config_var('welcome.last_items_list');
-		
 		if($last_items_list_conf_r['exclude_current_user']!==TRUE)
 			$user_id = NULL;
 	
@@ -276,111 +275,120 @@ function get_welcome_last_item_list($update_on, $user_id)
 	
 function get_whats_new_details($update_on, $user_id=NULL)
 {
-	$whats_new_rs = NULL;
-	
-	// Get the list of valid status_types, which we can display in this whatsnew page.
-	$results = fetch_status_type_rs();
-    if($results)
+	$whats_new_conf_r = get_opendb_config_var('welcome.whats_new');
+	if($whats_new_conf_r['enable']!==FALSE)
 	{
-		$search_vars_r['update_on'] = $update_on;
-
-		if(get_opendb_config_var('welcome.whats_new', 'exclude_current_user')!==FALSE)
-			$search_vars_r['not_owner_id'] = $user_id;
-
-		$whats_new_r['heading'] = get_opendb_lang_var('item_stats');
+		$whats_new_rs = NULL;
 		
-        while ($status_type_r = db_fetch_assoc($results))
+		// Get the list of valid status_types, which we can display in this whatsnew page.
+		$results = fetch_status_type_rs();
+	    if($results)
 		{
-			$search_vars_r['s_status_type'] = $status_type_r['s_status_type'];
-
-			$status_items_updated = fetch_item_listing_cnt($search_vars_r);
-			$status_title = get_opendb_lang_var('cnt_item(s)_added_updated', array('count'=>$status_items_updated,'s_status_type_desc'=>$status_type_r['description']));
+			if($whats_new_conf_r['restrict_last_login']!==TRUE)
+				$update_on = NULL;
+				
+			$search_vars_r['update_on'] = $update_on;
+	
+			if($whats_new_conf_r['exclude_current_user']!==FALSE)
+				$search_vars_r['not_owner_id'] = $user_id;
+	
+			$whats_new_r['heading'] = get_opendb_lang_var('item_stats');
 			
-			if($status_items_updated>0)
+	        while ($status_type_r = db_fetch_assoc($results))
 			{
+				$search_vars_r['s_status_type'] = $status_type_r['s_status_type'];
+	
+				$status_items_updated = fetch_item_listing_cnt($search_vars_r);
+				$status_title = get_opendb_lang_var('cnt_item(s)_added_updated', array('count'=>$status_items_updated,'s_status_type_desc'=>$status_type_r['description']));
+				
+				if($status_items_updated>0)
+				{
+					$item_r['class'] = 'tick';
+					$item_r['content'] = '<a href="listings.php?'.(strlen($search_vars_r['not_owner_id'])>0?'not_owner_id='.$search_vars_r['not_owner_id'].'&':'').'s_status_type='.$status_type_r['s_status_type'].'&update_on='.urlencode($update_on).'">'
+									.$status_title
+									.'</a>';
+				}
+				else
+				{
+					$item_r['class'] = 'cross';
+					$item_r['content'] = $status_title;
+				}
+				
+				$whats_new_r['items'][] = $item_r;
+			}
+	        db_free_result($results);
+	        
+	        if(is_array($whats_new_r))
+	        {
+	        	$whats_new_rs[] = $whats_new_r;
+	        }
+	    }
+	
+		if(get_opendb_config_var('borrow', 'enable')!==FALSE && $whats_new_conf_r['borrow_stats']!==FALSE)
+		{
+			$whats_new_r['heading'] = get_opendb_lang_var('borrow_stats');
+			
+			$whats_new_r['items'] = NULL;
+			
+			$returned_cnt = fetch_borrowed_item_status_atdate_cnt('C', $update_on);
+			if($returned_cnt > 0)
 				$item_r['class'] = 'tick';
-				$item_r['content'] = '<a href="listings.php?'.(strlen($search_vars_r['not_owner_id'])>0?'not_owner_id='.$search_vars_r['not_owner_id'].'&':'').'s_status_type='.$status_type_r['s_status_type'].'&update_on='.urlencode($update_on).'">'
-								.$status_title
-								.'</a>';
-			}
 			else
-			{
 				$item_r['class'] = 'cross';
-				$item_r['content'] = $status_title;
-			}
+				
+			$item_r['content'] = get_opendb_lang_var('cnt_item(s)_returned', 'count', $returned_cnt);
+			$whats_new_r['items'][] = $item_r;
+			
+			$borrowed_cnt = fetch_borrowed_item_status_atdate_cnt('B', $update_on);
+			if($borrowed_cnt > 0)
+				$item_r['class'] = 'tick';
+			else
+				$item_r['class'] = 'cross';
+			$item_r['content'] = get_opendb_lang_var('cnt_item(s)_borrowed', 'count', $borrowed_cnt);
+			$whats_new_r['items'][] = $item_r;
+			
+			$reserved_cnt = fetch_borrowed_item_status_atdate_cnt('R', $update_on);
+			if($reserved_cnt > 0)
+				$item_r['class'] = 'tick';
+			else
+				$item_r['class'] = 'cross';
+			$item_r['content'] = get_opendb_lang_var('cnt_item(s)_reserved', 'count', $reserved_cnt);
 			
 			$whats_new_r['items'][] = $item_r;
+			
+			if(is_array($whats_new_r))
+	        {
+	        	$whats_new_rs[] = $whats_new_r;
+	        }
 		}
-        db_free_result($results);
-        
-        if(is_array($whats_new_r))
-        {
-        	$whats_new_rs[] = $whats_new_r;
-        }
-    }
-
-	if(get_opendb_config_var('borrow', 'enable')!==FALSE && get_opendb_config_var('welcome.whats_new', 'borrow_stats')!==FALSE)
-	{
-		$whats_new_r['heading'] = get_opendb_lang_var('borrow_stats');
-		
-		$whats_new_r['items'] = NULL;
-		
-		$returned_cnt = fetch_borrowed_item_status_atdate_cnt('C', $update_on);
-		if($returned_cnt > 0)
-			$item_r['class'] = 'tick';
-		else
-			$item_r['class'] = 'cross';
+	
+		if(get_opendb_config_var('item_review', 'enable')!==FALSE &&
+				$whats_new_conf_r['review_stats']!==FALSE)
+		{
+			$whats_new_r['heading'] = get_opendb_lang_var('review(s)');
 			
-		$item_r['content'] = get_opendb_lang_var('cnt_item(s)_returned', 'count', $returned_cnt);
-		$whats_new_r['items'][] = $item_r;
-		
-		$borrowed_cnt = fetch_borrowed_item_status_atdate_cnt('B', $update_on);
-		if($borrowed_cnt > 0)
-			$item_r['class'] = 'tick';
-		else
-			$item_r['class'] = 'cross';
-		$item_r['content'] = get_opendb_lang_var('cnt_item(s)_borrowed', 'count', $borrowed_cnt);
-		$whats_new_r['items'][] = $item_r;
-		
-		$reserved_cnt = fetch_borrowed_item_status_atdate_cnt('R', $update_on);
-		if($reserved_cnt > 0)
-			$item_r['class'] = 'tick';
-		else
-			$item_r['class'] = 'cross';
-		$item_r['content'] = get_opendb_lang_var('cnt_item(s)_reserved', 'count', $reserved_cnt);
-		
-		$whats_new_r['items'][] = $item_r;
-		
-		if(is_array($whats_new_r))
-        {
-        	$whats_new_rs[] = $whats_new_r;
-        }
-	}
-
-	if(get_opendb_config_var('item_review', 'enable')!==FALSE &&
-			get_opendb_config_var('welcome.whats_new', 'review_stats')!==FALSE)
-	{
-		$whats_new_r['heading'] = get_opendb_lang_var('review(s)');
-		
-		$whats_new_r['items'] = NULL;
-		
-		$block = '';
-		$review_cnt = fetch_review_atdate_cnt($update_on);
-		if($review_cnt > 0)
-			$item_r['class'] = 'tick';
-		else
-			$item_r['class'] = 'cross';
+			$whats_new_r['items'] = NULL;
 			
-		$item_r['content'] = get_opendb_lang_var('cnt_review(s)', 'count', $review_cnt);
+			$block = '';
+			$review_cnt = fetch_review_atdate_cnt($update_on);
+			if($review_cnt > 0)
+				$item_r['class'] = 'tick';
+			else
+				$item_r['class'] = 'cross';
+				
+			$item_r['content'] = get_opendb_lang_var('cnt_review(s)', 'count', $review_cnt);
+	
+			$whats_new_r['items'][] = $item_r;
+			
+			if(is_array($whats_new_r))
+	        {
+	        	$whats_new_rs[] = $whats_new_r;
+	        }
+		}
 
-		$whats_new_r['items'][] = $item_r;
-		
-		if(is_array($whats_new_r))
-        {
-        	$whats_new_rs[] = $whats_new_r;
-        }
+		return $whats_new_rs;
+	} else {
+		return NULL;
 	}
-
-	return $whats_new_rs;
 }
 ?>

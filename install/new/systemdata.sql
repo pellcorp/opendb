@@ -449,15 +449,16 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('login.signup', 'disable_captcha', 2, 'Disable Captcha', '', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items from being listed', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'exclude_current_user', 2, 'Exclude Current User', 'Exclude current users items', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'restrict_last_login', 3, 'Restrict Last Login', 'Restrict whats new stats to items added since last login', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'borrow_stats', 4, 'Show Borrow Stats', 'Show Items Returned, Reserved, etc', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'review_stats', 5, 'Show Review Stats', 'Show number of reviews added.', 'boolean');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'enable', 1, 'Enable', '', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'exclude_current_user', 3, 'Exclude Current User', 'Exclude current users items', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'restrict_last_login', 4, 'Restrict Last Login', 'Restrict list to items added since last login', 'boolean');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'total_num_items', 5, 'Total Items to List', 'Number of items to list', 'number');
-INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'datetime_mask', 8, 'Datetime Mask', '', 'datemask');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'exclude_current_user', 2, 'Exclude Current User', 'Exclude current users items', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'restrict_last_login', 3, 'Restrict Last Login', 'Restrict list to items added since last login', 'boolean');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'total_num_items', 4, 'Total Items to List', 'Number of items to list', 'number');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.last_items_list', 'datetime_mask', 5, 'Datetime Mask', '', 'datemask');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.announcements', 'enable', 1, 'Enable', '', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.announcements', 'display_count', 2, 'Display Count', 'Number of Announcements to list', 'number');
@@ -633,6 +634,7 @@ INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('login.whats
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'borrow_stats', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'review_stats', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'exclude_current_user', 'TRUE');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'restrict_last_login', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'enable', 'TRUE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'show_heading', 'FALSE');
 INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.last_items_list', 'exclude_current_user', 'TRUE');

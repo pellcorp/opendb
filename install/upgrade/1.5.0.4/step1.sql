@@ -36,3 +36,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'intere
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'interest_only_marked', 'Only items with marked interest'); 
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'more_information_help', 'Additional information can be entered into the More Info field');
+
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('welcome.whats_new', 'restrict_last_login', 3, 'Restrict Last Login', 'Restrict whats new stats to items added since last login', 'boolean');
+INSERT INTO s_config_group_item_var ( group_id, id, value ) VALUES ('welcome.whats_new', 'restrict_last_login', 'TRUE');
+
+

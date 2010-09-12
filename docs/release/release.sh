@@ -24,8 +24,8 @@ rm -r $RELEASE_OPENDB_EXPORT_DIR/RELEASE_$2
 
 CurrentReleaseChangelog="ReleaseNotes-`echo $2 | tr _ . | tr [:upper:] [:lower:]`.txt"
 echo Generating Release Notes... $CurrentReleaseChangelog
-firstRevision=`svn info https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$1 | grep "Last Changed Rev:" | egrep -o "([0-9]+)"`
-secondRevision=`svn info https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$2 | grep "Last Changed Rev:" | egrep -o "([0-9]+)"`
+firstRevision=`svn info --xml https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$1 | grep -A1 "<commit" | egrep -o "([0-9]+)"`
+secondRevision=`svn info --xml https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/tags/RELEASE_$2 | grep -A1 "<commit" | egrep -o "([0-9]+)"`
 echo Generating log for $firstRevision ... $secondRevision;
 svn2cl.sh --output=$CurrentReleaseChangelog --revision $firstRevision:$secondRevision https://opendb.svn.sourceforge.net/svnroot/opendb/opendb/trunk
 

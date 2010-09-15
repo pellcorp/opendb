@@ -115,7 +115,7 @@ function build_langvar_page($language)
 	global $PHP_SELF;
 	global $ADMIN_TYPE;
 	
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 	
 	echo("<h3>Edit $language Language Variables</h3>");
 		
@@ -201,7 +201,7 @@ function build_table_page($language)
 	global $PHP_SELF;
 	global $ADMIN_TYPE;
 
-	$block = "<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>";
+	$block = "<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>";
 	
 	$block .= "<h3>Edit System Table $language Language Variables</h3>";
 		
@@ -509,7 +509,7 @@ else if($HTTP_VARS['op'] == '')
 			echo("<tr>
 				<td class=\"data\">".$language_r['language']."</td>
 				<td class=\"data\">".$language_r['description']."</td>
-				<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit-langvars&language=${language_r['language']}\">Language Vars</a>");
+				<td class=\"data\"><a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit-langvars&language=${language_r['language']}\">Language Vars</a>");
 				
 			// there should be no concept of system table lang vars for the default language, as it should
 			// always fall back to the system tables themselves.
@@ -519,8 +519,8 @@ else if($HTTP_VARS['op'] == '')
 				" / <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=delete&language=${language_r['language']}\">Delete</a>");
 			}
 
-			echo(" ]</td>
-				<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&language=${language_r['language']}&mode=job\">SQL</a> ]</td>
+			echo("</td>
+				<td class=\"data\"><a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&language=${language_r['language']}&mode=job\">SQL</a></td>
 				</tr>");
 		}
 		echo("</table>");

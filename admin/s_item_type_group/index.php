@@ -53,8 +53,8 @@ function display_s_item_type_group_row($item_type_group_r, $row)
 	echo("\n<td class=\"data\">");	
 	if(is_not_empty_array($item_type_group_r))
 	{
-		echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_item_type_group_rltshps&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Edit</a>".
-			" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete_item_type_group&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Delete</a> ]");
+		echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_item_type_group_rltshps&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Edit</a>".
+			" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete_item_type_group&s_item_type_group=".$item_type_group_r['s_item_type_group']."\">Delete</a>");
 	}
 	echo("\n</td>");
 	echo("</tr>");
@@ -214,7 +214,7 @@ else if($HTTP_VARS['op'] == 'edit_item_type_group_rltshps')
 	$item_type_group_r = fetch_item_type_group_r($HTTP_VARS['s_item_type_group']);
 	if(is_not_empty_array($item_type_group_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit_item_type_groups\">Back to Main</a>]</p>");
 
 		echo("\n<h3>Edit ".$HTTP_VARS['s_item_type_group']." Item Type Group Relationships</h3>");
 

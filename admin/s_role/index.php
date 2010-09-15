@@ -115,7 +115,7 @@ if($HTTP_VARS['op'] == 'update')
 
 if($HTTP_VARS['op'] == 'edit')
 {
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 	
 	echo("\n<h3>Edit ${HTTP_VARS['role_name']} Role Permissions</h3>");
 	
@@ -147,7 +147,7 @@ else if($HTTP_VARS['op'] == '')
 				<td class=\"data\">".$role_r['role_name']."</td>
 				<td class=\"data\">".$role_r['description']."</td>
 				<td class=\"data\">".$role_r['signup_avail_ind']."</td>
-				<td class=\"data\">[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit&role_name=${role_r['role_name']}\">Edit</a> ]");
+				<td class=\"data\"><a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=edit&role_name=${role_r['role_name']}\">Edit</a>");
 		}
 		echo("</table>");
 		

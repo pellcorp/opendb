@@ -369,14 +369,14 @@ function get_s_attribute_type_row($attribute_type_r, $row)
 	$block .= "\n<td class=\"data\">".$attribute_type_r['description']."</td>";
 	$block .= "\n<td class=\"data\">".$attribute_type_r['s_field_type']."</td>";
 
-	$block .= "\n<td class=\"data\">[";
+	$block .= "\n<td class=\"data\">";
 	$block .= " <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit</a>";
 	$block .= " / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Delete</a>";
 	
 	if($attribute_type_r['lookup_attribute_ind']=='Y')
 		$block .= " / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit-lookups&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit Lookup</a>";
 	
-	$block .= " ]</td></tr>";
+	$block .= "</td></tr>";
 	
 	return $block;
 }
@@ -977,7 +977,7 @@ if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
 	echo get_widget_tooltip_array();
 
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 		
 	if($HTTP_VARS['op'] == 'edit')
 	{
@@ -1023,7 +1023,7 @@ else if($HTTP_VARS['op'] == 'edit-lookups')
 	// Do for both 'update' and 'edit'
 	// ################################################################
 
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 
 	echo("<script language=\"JavaScript1.2\">
 		function toggleChecked(element, name)
@@ -1055,7 +1055,7 @@ else if($HTTP_VARS['op'] == '')
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);
 
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a> ]");
+	echo("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a>]</p>");
 		
 	display_attribute_type_form($HTTP_VARS);
 }

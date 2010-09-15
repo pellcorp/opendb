@@ -441,7 +441,7 @@ if($HTTP_VARS['op'] == 'edit')
 					.dataHighlight {background-color: #BDC7F7;font-size: x-small;font-weight: normal;font-family: Verdana, Arial, Helvetica, sans-serif; padding-left: 4px; padding-right: 4px;}
 			</style>');
 
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 
 		if($HTTP_VARS['s_item_type_group'] != '*')
 			echo("\n<h3>Edit Item Type Group ".$HTTP_VARS['s_item_type_group']." Item Listing Configuration</h3>");

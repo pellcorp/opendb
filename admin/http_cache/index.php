@@ -68,7 +68,7 @@ if(strlen($HTTP_VARS['op'])==0)
 	if(is_not_empty_array($success))
 		echo format_error_block($success, 'information');
 	
-	echo("<p>[<a href=\"admin.php?type=$ADMIN_TYPE&op=flushexpired\">Delete expired cache entries</a>]&nbsp;"
+	echo("<p>[<a href=\"admin.php?type=$ADMIN_TYPE&op=flushexpired\">Delete expired cache entries</a>] "
 			."[<a href=\"admin.php?type=$ADMIN_TYPE&op=flush\">Delete all cache entries</a>]</p>");
 	
 	if(strlen($HTTP_VARS['order_by'])==0)

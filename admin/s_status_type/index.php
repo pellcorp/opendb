@@ -91,8 +91,8 @@ function display_s_status_type_row($status_type_r, $row)
 	echo("\n<td class=\"data\">".ifempty($status_type_r['default_ind'], 'N')."</td>");
     echo("\n<td class=\"data\">".$status_type_r['closed_ind']."</td>");
 
-	echo("\n<td class=\"data\">[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
-		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a> ]</td>");
+	echo("\n<td class=\"data\"><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_status_type=".$status_type_r['s_status_type']."\">Edit</a>".
+		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_status_type=".$status_type_r['s_status_type']."\">Delete</a></td>");
 
 	echo("</tr>");
 }
@@ -291,7 +291,7 @@ else if($HTTP_VARS['op'] == 'installsql')
 
 if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 {
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 
 	if($HTTP_VARS['op'] == 'edit')
 	{
@@ -333,7 +333,7 @@ if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 }
 else if(strlen($HTTP_VARS['op'])==0)
 {
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a> ]");
+	echo("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a>]</p>");
 	
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);

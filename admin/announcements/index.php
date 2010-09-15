@@ -168,7 +168,7 @@ else if($HTTP_VARS['op'] == 'delete') //delete an existing announcement
 	
 if($HTTP_VARS['op'] == 'list')
 {
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Announcement</a> ]");
+	echo("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Announcement</a>]</p>");
 		
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);
@@ -177,29 +177,34 @@ if($HTTP_VARS['op'] == 'list')
 	if($result)
 	{	
 	    $submitted_datetime_mask = get_opendb_config_var('welcome.announcements', 'datetime_mask');
-	    echo("<ul class=\"announcement\">");
+	    echo("<table>");
+		echo("<tr class=\"navbar\">"
+		."<th>Title</th>"
+		."<th>Content</th>"
+		."<th>Submitted</th>"
+		."<th>Display Days</th>"
+		."<th>Closed</th>"
+		."<th></th>"
+		."</tr>");
+		
 		while ($announcement_r = db_fetch_assoc($result))
 		{
-			echo("<li>");
+			echo("<tr>");
 
-			echo("\n<h4>".$announcement_r['title']."</h4>");
-			echo("\n<p>".nl2br($announcement_r['content'])."</p>");
+			echo("\n<td class=\"data\">".$announcement_r['title']."");
+			echo("\n<td class=\"data\">".nl2br($announcement_r['content'])."</td>");
 				
-			echo("\n<ul class=\"metadata\">".
-				"<li>Submitted: ".get_localised_timestamp($submitted_datetime_mask, $announcement_r['submit_on']).'</li>'.
-				"<li>Display Days: ".$announcement_r['display_days'].'</li>'.
-				"<li>Closed: ".$announcement_r['closed_ind'].'</li>'.
-				"</ul>");
+			echo("<td class=\"data\">".get_localised_timestamp($submitted_datetime_mask, $announcement_r['submit_on']).'</td>'.
+				"<td class=\"data\">".$announcement_r['display_days'].'</td>'.
+				"<td class=\"data\">".$announcement_r['closed_ind'].'</td>');
 
-			$announcement_edit_links = NULL;
-			$announcement_edit_links[] = array(url=>"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&announcement_id=".$announcement_r['sequence_number'],text=>"Edit");
-			$announcement_edit_links[] = array(url=>"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&announcement_id=".$announcement_r['sequence_number'],text=>"Delete");
-			echo(format_footer_links($announcement_edit_links));
+			echo("<td class=\"data\"><a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&announcement_id=".$announcement_r['sequence_number']."\">Edit</a>");
+			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&announcement_id=".$announcement_r['sequence_number']."\">Delete</a></td>");
 				
-			echo("</li>");
+			echo("</tr>");
 		}
 		db_free_result($result);
-		echo("</ul>");
+		echo("</table>");
 	} //if($result)
 	else
 	{
@@ -208,7 +213,7 @@ if($HTTP_VARS['op'] == 'list')
 }
 else if($HTTP_VARS['op'] == 'new') //display new announcement form.
 {
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</p>");
             
 	echo("<h3>New Announcement</h3>");
 			
@@ -219,7 +224,7 @@ else if($HTTP_VARS['op'] == 'new') //display new announcement form.
 }
 else if($HTTP_VARS['op'] == 'edit') //Display edit announcement form.
 {
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list\">Back to Main</a>]</p>");
            
 	echo("<h3>Edit Announcement</h3>");
 			

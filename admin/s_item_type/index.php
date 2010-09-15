@@ -127,12 +127,12 @@ function display_s_item_type_row($item_type_r, $row)
 	echo("\n<td class=\"$class\">".get_input_field("image[$row]", NULL, NULL, "url(15,*,\"gif,jpg,png\",N)", "N", $item_type_r['image'], FALSE)."</td>");
 
     echo("\n<td class=\"$class\">");
-	echo("\n[&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type=".$item_type_r['s_item_type']."\">Edit</a>".
-		"&nbsp;/&nbsp;<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete_type&s_item_type=".$item_type_r['s_item_type']."\">Delete</a>".
-		"&nbsp;]</td>");
+	echo("\n<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_item_type=".$item_type_r['s_item_type']."\">Edit</a>".
+		" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete_type&s_item_type=".$item_type_r['s_item_type']."\">Delete</a>".
+		"</td>");
 
     echo("\n<td class=\"$class\">");
-	echo("\n[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&s_item_type=${item_type_r['s_item_type']}&mode=job\">SQL</a> ]");
+	echo("\n<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=sql&s_item_type=${item_type_r['s_item_type']}&mode=job\">SQL</a>");
     echo("\n</td>");
 
 	echo("</tr>");
@@ -250,9 +250,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	echo("\n<td class=\"$class\">");
 	if(is_not_empty_array($s_item_attribute_type_r))
 	{
-		echo("[");
 		echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_item_type=".$s_item_type."&s_attribute_type=".$s_item_attribute_type_r['s_attribute_type']."&order_no=".$s_item_attribute_type_r['order_no']."\">Delete</a>");
-		echo("]");
 	}
 	echo("</td>");
 	echo("</tr>");
@@ -793,7 +791,7 @@ if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
 {
 	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 		
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</p>");
 		
 	$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
 	if($item_type_r!==FALSE)
@@ -895,7 +893,7 @@ else if($HTTP_VARS['op'] == 'new_type' || $HTTP_VARS['op'] == 'insert_type')// I
 {
 	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 		
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=s_item_type&op=edit_types\">Back to Main</a>]</p>");
 
 	echo("\n<h3>New Item Type</h3>");
 		
@@ -926,7 +924,7 @@ if(strlen($HTTP_VARS['op'])==0 ||
 		$HTTP_VARS['op'] == 'edit_types' ||
 		$HTTP_VARS['op'] == 'update_types')
 {
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a> ]");
+	echo("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a>]</p>");
 		
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);

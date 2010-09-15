@@ -80,7 +80,7 @@ if($HTTP_VARS['op'] == 'edit')
 	if(($HTTP_VARS['s_item_type_group'] == '*' || is_exists_item_type_group($HTTP_VARS['s_item_type_group'])) &&
 			($HTTP_VARS['s_item_type'] == '*' || is_exists_item_type($HTTP_VARS['s_item_type'])))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 
 		if($HTTP_VARS['s_item_type_group'] != '*')
 			echo("\n<h3>Edit Item Type Group ".$HTTP_VARS['s_item_type_group']." Title Display Masks</h3>");

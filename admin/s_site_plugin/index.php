@@ -1194,7 +1194,7 @@ if($HTTP_VARS['op'] == 'edit_site_plugin_item_types')
 			
 		if(is_not_empty_array($site_attribute_type_r))
 		{
-			echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 			echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin System Item Types</h3>");
 			
 			if(is_not_empty_array($errors))
@@ -1295,7 +1295,7 @@ else if($HTTP_VARS['op'] == 'edit_site_plugin_links')
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 		echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Links</h3>");
 		
 		if(is_not_empty_array($errors))
@@ -1320,7 +1320,7 @@ else if($HTTP_VARS['op'] == 'edit_site_plugin_confs')
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 		echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Configuration</h3>");
 		
 		if(is_not_empty_array($errors))
@@ -1345,7 +1345,7 @@ else if($HTTP_VARS['op'] == 'edit_site_plugin_input_fields')
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 		echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Input Fields</h3>");
 		
 		if(is_not_empty_array($errors))
@@ -1370,7 +1370,7 @@ else if($HTTP_VARS['op'] == 'edit_site_plugin_s_attribute_type_maps')
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 		echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Attribute Type Map</h3>");
 		
 		if(is_not_empty_array($errors))
@@ -1395,7 +1395,7 @@ else if($HTTP_VARS['op'] == 'edit_site_plugin_s_attribute_type_lookup_maps')
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 		echo("\n<h3>Edit ".$site_plugin_r['title']." Site Plugin Lookup Attribute Type Map</h3>");
 		
 		if(is_not_empty_array($errors))
@@ -1423,7 +1423,7 @@ else if($HTTP_VARS['op'] == 'edit')
 	$site_plugin_r = fetch_site_plugin_r($HTTP_VARS['site_type']);
 	if(is_not_empty_array($site_plugin_r))
 	{
-		echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+		echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 	
 		echo("\n<h3>Edit Site Plugin</h3>");
 	
@@ -1456,7 +1456,7 @@ else if($HTTP_VARS['op'] == 'edit')
 }
 else if($HTTP_VARS['op'] == 'new_site_plugin')
 {
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 	
 	echo("\n<h3>New Site Plugin</h3>");
 	
@@ -1518,7 +1518,7 @@ else if($HTTP_VARS['op'] == 'maintain_site_plugin_install') // special function 
 		}//if(strlen($HTTP_VARS['import_file'])>0)
 		else
 		{
-			echo("\n<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</div>");
+			echo("\n<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=list_site_plugins\">Back to Main</a>]</p>");
 			echo("\n<h3>".$site_plugin_r['title']." Installation Maintenance</h3>");
 			
 			$classname = "Install_".$HTTP_VARS['site_type'];
@@ -1594,7 +1594,7 @@ else if($HTTP_VARS['op'] == 'installsql')
 
 if($HTTP_VARS['op'] == 'list_site_plugins')
 {
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a> ]");
+	echo("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a>]</p>");
 	
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);
@@ -1626,25 +1626,25 @@ if($HTTP_VARS['op'] == 'list_site_plugins')
 			echo("<td class=\"data\">".$site_plugin_r['title']."</td>");
 			
 			echo("<td class=\"data\">");
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&site_type=".$site_plugin_r['site_type']."\">Edit</a>");
+			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&site_type=".$site_plugin_r['site_type']."\">Edit</a>");
 			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&site_type=".$site_plugin_r['site_type']."\">Delete</a>");
-			echo(" ]</td>");
+			echo("</td>");
 			
-			echo("<td class=\"data\">[ ");
-			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_item_types&site_type=".$site_plugin_r['site_type']."\">Item&nbsp;Types</a>");
+			echo("<td class=\"data\">");
+			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_item_types&site_type=".$site_plugin_r['site_type']."\">Item Types</a>");
 			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_links&site_type=".$site_plugin_r['site_type']."\">Links</a>");
 			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_confs&site_type=".$site_plugin_r['site_type']."\">Configuration</a>");
-			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_input_fields&site_type=".$site_plugin_r['site_type']."\">Input&nbsp;Fields</a>");
-			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_maps&site_type=".$site_plugin_r['site_type']."\">Attribute&nbsp;Map</a>");
-			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_lookup_maps&site_type=".$site_plugin_r['site_type']."\">Lookup&nbsp;Attribute&nbsp;Map</a>");
+			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_input_fields&site_type=".$site_plugin_r['site_type']."\">Input Fields</a>");
+			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_maps&site_type=".$site_plugin_r['site_type']."\">Attribute Map</a>");
+			echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit_site_plugin_s_attribute_type_lookup_maps&site_type=".$site_plugin_r['site_type']."\">Lookup Attribute Map</a>");
 			if(file_exists('./admin/s_site_plugin/sql/'.$site_plugin_r['site_type'].'.install.class.php'))
 			{
 				echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=maintain_site_plugin_install&site_type=".$site_plugin_r['site_type']."\">Install&nbsp;Maintenance</a>");
 			}
-			echo(" ]</td>");
+			echo("</td>");
 			
 			echo("<td class=\"data\">");
-			echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=sql&site_type=".$site_plugin_r['site_type']."&mode=job\">SQL</a> ]");
+			echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=sql&site_type=".$site_plugin_r['site_type']."&mode=job\">SQL</a>");
 			echo("</td>");
 			echo("</tr>");
 			

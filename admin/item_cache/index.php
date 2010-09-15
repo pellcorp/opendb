@@ -35,7 +35,7 @@ $HTTP_VARS['cache_type'] = 'ITEM';
 
 if($HTTP_VARS['op'] == 'job')
 {
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main List</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
 	
 	if($HTTP_VARS['job'] == 'update')
 		echo("\n<h3>Update Item Cache</h3>");
@@ -75,24 +75,24 @@ if($HTTP_VARS['op'] == '')
 	
 	if(fetch_file_cache_new_item_attribute_cnt() > 0)
 	{
-		echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=update\">Update</a> ]");
+		echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=update\">Update</a>] ");
 	}
 	
 	if(fetch_file_cache_refresh_cnt('ITEM') > 0)
 	{
-		echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh\">Refresh</a> ] ");
+		echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh\">Refresh</a>] ");
 	}
 	
 	if(fetch_file_cache_missing_thumbs_cnt('ITEM') > 0)
 	{
-		echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh_thumbnails\">Refresh Thumbnails</a> ] ");
+		echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=job&job=refresh_thumbnails\">Refresh Thumbnails</a>] ");
 	}
 	
 	// the item attribute orphan count is really slow, so do not use it.
 	if(fetch_file_cache_missing_file_cnt('ITEM') > 0)// ||  
 					//fetch_file_cache_item_attribute_orphans_cnt() > 0)
 	{
-		echo("[ <a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a> ] ");
+		echo("[<a href=\"admin.php?type=$ADMIN_TYPE&op=delete\">Delete Orphans</a>] ");
 	}
 	
 	echo("</p>");

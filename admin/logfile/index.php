@@ -153,9 +153,9 @@ if(strlen($logging_config_r['file'])>0)
 			else if(is_array($success))
 				echo(format_error_block($success, 'information'));
 			
-			echo("<p>[ <a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=clear\">".get_opendb_lang_var('clear_usagelog')."</a> / "
-				."<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=backup\">".get_opendb_lang_var('backup_usagelog')."</a> / "
-				."<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=download&mode=job\">".get_opendb_lang_var('download_usagelog')."</a> ]</p>");
+			echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=clear\">".get_opendb_lang_var('clear_usagelog')."</a>] "
+				."[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=backup\">".get_opendb_lang_var('backup_usagelog')."</a>] "
+				."[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&op=download&mode=job\">".get_opendb_lang_var('download_usagelog')."</a>]</p>");
 			
 			$logfile = fopen($logging_config_r['file'], 'r');
 			if($logfile)

@@ -71,9 +71,9 @@ function display_s_address_type_row($address_type_r, $row)
 		echo ("\n<td class=\"data\">".get_input_field("closed_ind[$row]", NULL, NULL, "simple_checkbox(".($address_type_r['closed_ind']=='Y'?'CHECKED':'').")", "N", "Y" ,FALSE)."</td>");
 			
 	echo("\n<td class=\"data\">");
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_address_type=".$address_type_r['s_address_type']."\">Edit</a>");
+	echo("<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_address_type=".$address_type_r['s_address_type']."\">Edit</a>");
 	echo(" / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_address_type=".$address_type_r['s_address_type']."\">Delete</a>");
-	echo(" ]</td>");
+	echo("</td>");
 	
 	echo("</tr>");
 }
@@ -348,7 +348,7 @@ if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
 {
 	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 	
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</p>");
 	
 	$address_type_r = fetch_s_address_type_r($HTTP_VARS['s_address_type']);
 	if($address_type_r!==FALSE)
@@ -443,7 +443,7 @@ else if($HTTP_VARS['op'] == 'new_type' || $HTTP_VARS['op'] == 'insert_type')// I
 {
 	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
 	
-	echo("<div class=\"footer\">[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</div>");
+	echo("<p>[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</p>");
 		
 	echo("\n<h3>New Address Type</h3>");
 	
@@ -469,7 +469,7 @@ else if($HTTP_VARS['op'] == 'new_type' || $HTTP_VARS['op'] == 'insert_type')// I
 // There are specific operations where this form should be displayed.
 if(strlen($HTTP_VARS['op'])==0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types')
 {
-	echo("[ <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a> ]");
+	echo("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a>]</p>");
 	
 	if(is_not_empty_array($errors))
 		echo format_error_block($errors);

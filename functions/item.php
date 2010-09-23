@@ -743,11 +743,13 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 			if(strlen($fieldname)>0) {
 				if(strlen($order_by)==0) {
 					if($column_display_config_rs[$i]['orderby_default_ind'] === 'Y') { 
-						$column_order_by_rs[] = array('orderby'=>$fieldname, 'sortorder'=>strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC')));
+						$column_order_by_rs[] = array('orderby'=>$fieldname, 
+									'sortorder'=>strtoupper(ifempty($column_display_config_rs[$i]['orderby_sort_order'], 'ASC')));
 					}
 				} else if(strcasecmp($order_by, $fieldname) === 0) {
 					$column_order_by_rs[] = array('orderby'=>$fieldname, 
-						'sortorder'=>strtoupper(ifempty($sortorder, ifempty($column_config_r['orderby_sort_order'], 'ASC'))));
+						'sortorder'=>strtoupper(ifempty($sortorder, 
+							ifempty($column_display_config_rs[$i]['orderby_sort_order'], 'ASC'))));
 				}
 			}
 		}

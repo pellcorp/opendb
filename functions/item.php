@@ -715,6 +715,7 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 					else
 						$query .= ', ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val) AS '.$fieldname;
 				}
+
 			} else if($column_display_config_rs[$i]['column_type'] == 's_field_type') {
 				
 				// TODO - we need to be able to specify the order by which the default order by's are actioned.  At the
@@ -739,14 +740,21 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 				}
 			}
 			
-			if(strlen($fieldname)>0 && 
-						strlen($order_by)==0 && 
-						$column_display_config_rs[$i]['orderby_default_ind'] === 'Y') { 
-				$column_order_by_rs[] = array('orderby'=>$fieldname, 'sortorder'=>strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC')));
+			if(strlen($fieldname)>0) {
+				if(strlen($order_by)==0) {
+					if($column_display_config_rs[$i]['orderby_default_ind'] === 'Y') { 
+						$column_order_by_rs[] = array('orderby'=>$fieldname, 'sortorder'=>strtoupper(ifempty($column_config_r['orderby_sort_order'], 'ASC')));
+					}
+				} else if(strcasecmp($order_by, $fieldname) === 0) {
+					$column_order_by_rs[] = array('orderby'=>$fieldname, 
+						'sortorder'=>strtoupper(ifempty($sortorder, ifempty($column_config_r['orderby_sort_order'], 'ASC'))));
+				}
 			}
 		}
 	}
-		
+	
+	print_r($column_order_by_rs);
+	
 	$query .= " ".
 			from_and_where_clause($HTTP_VARS, $column_display_config_rs, 'LISTING');
 
@@ -762,29 +770,30 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		
 		$query .= ' ORDER BY '.$orderbyquery.', i.title, ii.instance_no ASC, i.s_item_type';
 		
-	} else if($order_by == 's_item_type')
+	} else if($order_by == 's_item_type') {
 		$query .= ' ORDER BY i.s_item_type '.$sortorder.', i.title, ii.instance_no ASC';	
-	else if($order_by == 'category')
+	} else if($order_by == 'category') {
 		$query .= ' ORDER BY catia_lookup_attribute_val '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
-	else if($order_by == 'owner_id')
+	} else if($order_by == 'owner_id') {
 		$query .= ' ORDER BY ii.owner_id '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
-	else if($order_by == 's_status_type')
+	} else if($order_by == 's_status_type') {
 		$query .= ' ORDER BY ii.s_status_type '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';	
-	else if($order_by == 'update_on')
+	} else if($order_by == 'update_on') {
 		$query .= ' ORDER BY ii.update_on '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
-	else if($order_by === 'item_id')
+	} else if($order_by === 'item_id') {
 		$query .= ' ORDER BY i.id '.$sortorder.', ii.instance_no ASC, i.s_item_type';
-	else if($order_by === 'interest')
+	} else if($order_by === 'interest') {
 		$query .= ' ORDER BY interest_level '.$sortorder.', i.title, ii.instance_no ASC, i.s_item_type';
-	else //if($order_by === 'title')
+	} else { //if($order_by === 'title')
 		$query .= ' ORDER BY i.title '.$sortorder.', ii.instance_no ASC, i.s_item_type';
+	}
 	
 	if(is_numeric($start_index) && is_numeric($items_per_page))
 	{
 		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
 	}
 	
-	//echo "\n<code>Listing Query: $query</code>";
+	echo "\n<code>Listing Query: $query</code>";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

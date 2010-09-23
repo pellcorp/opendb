@@ -753,8 +753,6 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		}
 	}
 	
-	print_r($column_order_by_rs);
-	
 	$query .= " ".
 			from_and_where_clause($HTTP_VARS, $column_display_config_rs, 'LISTING');
 
@@ -793,7 +791,7 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 		$query .= ' LIMIT ' .$start_index. ', ' .$items_per_page;
 	}
 	
-	echo "\n<code>Listing Query: $query</code>";
+	//echo "\n<code>Listing Query: $query</code>";
 
 	$result = db_query($query);
 	if($result && db_num_rows($result)>0)

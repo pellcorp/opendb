@@ -1,0 +1,62 @@
+Open Media Collectors Database (OpenDb) README
+----------------------------------------------
+
+1. Introduction
+
+The Open Media Collectors Database (OpenDb) is a PHP and MySQL based inventory 
+application that allows you to easily catalog and lend media-related information, 
+including DVD, VCD, CD, VHS, games, books, and laser discs.
+
+2. License
+
+See the LICENSE file for details.
+
+3. Bugs
+
+Post any bugs to sourceforge http://www.sourceforge.net/projects/opendb
+
+4. Credits
+
+- Open Media Collectors Database (OpenDb).  Copyright (c)2001-2008 Jason Pell
+
+- Snoopy, the PHP net client.  Copyright (c)1999-2000 ispi, All Rights Reserved
+
+- zip.lib.php - zip file class
+	Copyright phpMyAdmin team 
+
+- overlibmws - Copyright Foteos Macrides 2002-2005. All rights reserved.
+
+- phpCueCat - 2003 Blake Watters
+
+- phpSniff - Copyright 2002-2004 Roger Raymond <epsilon7@users.sourceforge.net>
+
+- phpThumb() - The PHP thumbnail creator.  by James Heinrich <info@silisoftware.com> 
+
+- adodb-time.inc.php - ADODb Date / Time functions.  
+  Copyright (c) 2000, 2001, 2002, 2003 John Lim
+
+- CSS Parser class 
+  Thomas Bjork <thomas@unidev.biz>
+
+- PHP-Nuke Copyright (c) 2004 by Francisco Burzi.  Secret image code based on
+	GFX check functionality in PHP-Nuke 7.7.
+
+- The DVD Database Project Copyright (c)2000 Flurin Capaul
+
+- Silk icon set 1.3 - used for action images  (c) Mark James
+  http://www.famfamfam.com/lab/icons/silk/
+
+- XAJAX PHP Ajax Library 
+  Copyright (c) 2005-2006 by Jared White & J. Max Wilson
+  
+- ISBN Class
+  John Blyberg <blybergj@aadl.org>
+
+- LibChart 1.1 & 1.2
+  <jm.tremeaux@gmail.com>
+  
+7. Disclaimer
+
+The standard GPL disclaimer applies.  See the LICENSE file for more
+information.
+

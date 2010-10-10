@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb.class.php 410 2010-10-09 23:44:27Z izzy $ */
+ /* $Id: imdb.class.php 411 2010-10-10 11:28:59Z izzy $ */
 
  require_once (dirname(__FILE__)."/movie_base.class.php");
 
@@ -23,7 +23,7 @@
   * @author Georgos Giagas
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 410 $ $Date: 2010-10-10 01:44:27 +0200 (So, 10. Okt 2010) $
+  * @version $Revision: 411 $ $Date: 2010-10-10 13:28:59 +0200 (So, 10. Okt 2010) $
   */
  class imdb extends movie_base {
 
@@ -35,7 +35,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 410 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 411 $');
     $this->setid($id);
   }
 
@@ -146,7 +146,7 @@
   private function runtime_all() {
     if ($this->main_runtime == "") {
       if ($this->page["Title"] == "") $this->openpage ("Title");
-      if (@preg_match('!Runtime:</h4>\s*(.*)\s*</div!m',$this->page["Title"],$match))
+      if (@preg_match('!Runtime:</h4>\s*(.*)\s*</div!ms',$this->page["Title"],$match))
         $this->main_runtime = $match[1];
     }
     return $this->main_runtime;
@@ -627,8 +627,8 @@
    */
   public function mpaa() {
    if (empty($this->mpaas)) {
-    if ($this->page["Title"] == "") $this->openpage ("Title");
-    if (preg_match_all("|/search/title\?certificates=.*?>\s*(.*?):(.*?)<|",$this->page["Title"],$matches)) {
+    if ($this->page["ParentalGuide"] == "") $this->openpage("ParentalGuide");
+    if (preg_match_all("|/search/title\?certificates=.*?>\s*(.*?):(.*?)<|",$this->page["ParentalGuide"],$matches)) {
       $cc = count($matches[0]);
       for ($i=0;$i<$cc;++$i) $this->mpaas[$matches[1][$i]] = $matches[2][$i];
     }
@@ -643,8 +643,8 @@
    */
   public function mpaa_hist() {
    if (empty($this->mpaas_hist)) {
-    if ($this->page["Title"] == "") $this->openpage ("Title");
-    if (preg_match_all("|/search/title\?certificates=.*?>\s*(.*?):(.*?)<|",$this->page["Title"],$matches)) {
+    if ($this->page["ParentalGuide"] == "") $this->openpage("ParentalGuide");
+    if (preg_match_all("|/search/title\?certificates=.*?>\s*(.*?):(.*?)<|",$this->page["ParentalGuide"],$matches)) {
       $cc = count($matches[0]);
       for ($i=0;$i<$cc;++$i) $this->mpaas_hist[$matches[1][$i]][] = $matches[2][$i];
     }
@@ -684,7 +684,7 @@
     if ( preg_match('!<b>More Info:\s*</b>\s*(.*)!ims',$match[1],$tmp) )
         $more = preg_replace('!\s*onclick=".*?"!ims','',trim($tmp[1]));
         $more = preg_replace('!href="/!ims','href="http://'.$this->imdbsite.'/',$more);
-    if ( preg_match('!<h5>Note:</h5>\s*<span class="note">\s*(.*?)</span!ims',$match[1],$tmp) )
+    if ( preg_match('!<b>Note:\s*</b>\s*(.*?)</!ims',$match[1],$tmp) )
         $note = trim($tmp[1]);
     $this->main_prodnotes = array("status"=>$status,"statnote"=>$statnote,"lastUpdate"=>$update,"more"=>$more,"note"=>$note);
    }

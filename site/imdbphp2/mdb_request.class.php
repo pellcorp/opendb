@@ -9,9 +9,9 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: mdb_request.class.php 384 2010-05-18 18:20:23Z izzy $ */
+ /* $Id: mdb_request.class.php 405 2010-10-03 18:24:34Z izzy $ */
 
-if ( $PEAR ) { // Use the HTTP_Request class from the PEAR project.
+if ( isset($PEAR) && $PEAR ) { // Use the HTTP_Request class from the PEAR project.
   require_once("HTTP/Request.php");
   class MDB_Request extends HTTP_Request{
     function __construct($url){
@@ -45,11 +45,14 @@ if ( $PEAR ) { // Use the HTTP_Request class from the PEAR project.
      * @constructor MDB_Request
      */
     function __construct($url){
-      if ($GLOBALS['PEAR']) parent::__construct();
+      if (isset($GLOBALS['PEAR']) && $GLOBALS['PEAR']) parent::__construct();
       else $this->BrowserEmulator();
       $this->urltoopen = $url;
-      if ( substr(get_class($this),0,4)=="imdb" ) $this->addHeaderLine('Referer','http://' . $this->imdbsite . '/');
-      elseif ( in_array('HTTP_REFERER',array_keys($_SERVER)) ) $this->addHeaderLine('Referer',$_SERVER['HTTP_REFERER']);
+      if ($this->trigger_referer) {
+        if ( substr(get_class($this),0,4)=="imdb" ) $this->addHeaderLine('Referer','http://' . $this->imdbsite . '/');
+        elseif ( in_array('HTTP_REFERER',array_keys($_SERVER)) ) $this->addHeaderLine('Referer',$_SERVER['HTTP_REFERER']);
+      }
+      if ($this->force_agent) $this->addHeaderLine('User-Agent', $this->force_agent);
     }
     /** Send a request to the movie site
      * @method sendRequest

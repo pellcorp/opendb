@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb_person.class.php 381 2010-05-05 23:46:47Z izzy $ */
+ /* $Id: imdb_person.class.php 402 2010-10-03 17:59:34Z izzy $ */
 
  require_once (dirname(__FILE__)."/person_base.class.php");
  require_once (dirname(__FILE__)."/imdbsearch.class.php");
@@ -21,7 +21,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 381 $ $Date: 2010-05-06 01:46:47 +0200 (Do, 06. Mai 2010) $
+  * @version $Revision: 402 $ $Date: 2010-10-03 19:59:34 +0200 (So, 03. Okt 2010) $
   */
  class imdb_person extends person_base {
 
@@ -52,7 +52,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 381 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 402 $');
     $this->setid($id);
   }
 
@@ -165,30 +165,36 @@
    */
   private function filmograf(&$res,$type) {
     if ($this->page["Name"] == "") $this->openpage ("Name","person");
-    if (preg_match("/<a name=\"$type\"(.*?)<\/div>/msi",$this->page["Name"],$match) || empty($type)) {
-      if (empty($type)) $match[1] = $this->page["Name"];
-      else $match[1] = str_replace("</li><li>","</li>\n<li>",$match[1]); // *!* ugly workaround for long lists, see Sly (mid=0000230)
-      if (preg_match_all('!<a(.*?)href="/title/tt(\d{7})/"[^>]*>(.*?)</a>(.*?)<(/li|br)>!ims',$match[1],$matches)) {
-        $mc = count($matches[0]);
-        for ($i=0;$i<$mc;++$i) {
-          preg_match('|^\s*\((\d{4})\)|',$matches[4][$i],$year);
-          $str = $matches[4][$i]; //preg_replace('|\(\d{4}\)|','',substr($matches[4][$i],0,strpos($matches[4][$i],"<br>")));
-	  if ( preg_match('|<a .*href\=\"/character/ch(\d{7})\/\">(.*?)<\/a>|i',$str,$char) ) {
-	    $chid   = $char[1];
-	    $chname = $char[2];
-	  } else {
-	    $chid   = '';
-	    if ( preg_match('|\.\.\.\. ([^>]+)|',$str,$char) ) $chname = $char[1];
-	    else $chname = '';
-	  }
-	  if ( empty($chname) ) {
-	    switch($type) {
-	      case 'director' : $chname = 'Director'; break;
-	      case 'producer' : $chname = 'Producer'; break;
-	    }
-	  }
-          $res[] = array("mid"=>$matches[2][$i],"name"=>$matches[3][$i],"year"=>$year[1],"chid"=>$chid,"chname"=>$chname,"addons"=>$addons[1]);
+    preg_match("/<a name=\"$type\"(.*?)<\/div>/msi",$this->page["Name"],$match);
+    if (empty($type)) $match[1] = $this->page["Name"];
+    elseif (empty($match[1])) {
+      $pos   = strpos($this->page['Name'],"<a name=\"$type\"");
+      if ($pos) {
+        $epos  = strpos($this->page['Name'],"</div>",$pos);
+        $match[1] = substr($this->page['Name'],$pos,$epos-$pos);
+      }
+    }
+    else $match[1] = str_replace("</li><li>","</li>\n<li>",$match[1]); // *!* ugly workaround for long lists, see Sly (mid=0000230)
+    if (preg_match_all('!<a(.*?)href="/title/tt(\d{7})/"[^>]*>(.*?)</a>(.*?)<(/li|br)>!ims',$match[1],$matches)) {
+      $mc = count($matches[0]);
+      for ($i=0;$i<$mc;++$i) {
+        preg_match('|^\s*\((\d{4})\)|',$matches[4][$i],$year);
+        $str = $matches[4][$i]; //preg_replace('|\(\d{4}\)|','',substr($matches[4][$i],0,strpos($matches[4][$i],"<br>")));
+        if ( preg_match('|<a .*href\=\"/character/ch(\d{7})\/\">(.*?)<\/a>|i',$str,$char) ) {
+          $chid   = $char[1];
+          $chname = $char[2];
+        } else {
+          $chid   = '';
+          if ( preg_match('|\.\.\.\. ([^>]+)|',$str,$char) ) $chname = $char[1];
+          else $chname = '';
         }
+        if ( empty($chname) ) {
+          switch($type) {
+            case 'director' : $chname = 'Director'; break;
+            case 'producer' : $chname = 'Producer'; break;
+          }
+        }
+        $res[] = array("mid"=>$matches[2][$i],"name"=>$matches[3][$i],"year"=>$year[1],"chid"=>$chid,"chname"=>$chname,"addons"=>$addons[1]);
       }
     }
   }
@@ -747,7 +753,7 @@
   * @extends imdbsearch
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 381 $ $Date: 2010-05-06 01:46:47 +0200 (Do, 06. Mai 2010) $
+  * @version $Revision: 402 $ $Date: 2010-10-03 19:59:34 +0200 (So, 03. Okt 2010) $
   */
  class imdbpsearch extends imdbsearch {
  #-----------------------------------------------------------[ Constructor ]---

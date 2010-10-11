@@ -1,9 +1,25 @@
+#loginFormDiv {
+	margin: 0 auto;
+	width: 600px;
+	font-size: 200%;
+	padding: 20px; 
+	margin-top: 25px;
+}
+
+h2 {
+	display: none;
+}
+
+#loginForm input.text, input.password, input.submit   {
+	font-size: 130%;
+}
+
 #loginForm ul
 {
+	text-align: left;
 	margin-left: 0px;
 	padding-left: 0px;
 	list-style-type: none;
-	width: 100%;
 }
 
 #loginForm ul li
@@ -20,5 +36,5 @@
 .redirectMessage {
 	color: #FF3333;
 	font-weight: bold;
-	font-size: x-small;
+	font-size: 80%;
 }

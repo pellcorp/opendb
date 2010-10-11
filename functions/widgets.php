@@ -255,17 +255,21 @@ function format_footer_links($links_rs)
 	{
 		$field = "<ul class=\"footer-links\">";
 		
-		$first = TRUE;
-		while(list(,$footer_links_r) = @each($footer_links_rs))
-		{
-			$field .= "<li";
-			if($first)
-			{
-				$first=FALSE;
-				$field .= " class=\"first\"";
+		$totalCount = count($footer_links_rs);
+		for($i=0; $i<$totalCount; $i++) {
+			$footer_links_r = $footer_links_rs[$i];
+			
+			$field .= "<li class=\"";
+			if($i==0) {
+				$field .= "first ";
 			}
 			
-			$field .= "><a";
+			if($i + 1 == $totalCount) {
+				$field .= "last";
+			}
+			
+			
+			$field .= "\"><a";
 			if(strlen($footer_links_r['url'])>0)
 			{
 				$field .= " href=\"".$footer_links_r['url']."\"";

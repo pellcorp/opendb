@@ -196,7 +196,12 @@ ul.footer-links li
 
 ul.footer-links li.first
 {
-	border-left: 1px solid gray;
+	border-left: none;
+}
+
+ul.footer-links li.last
+{
+	border-right: none;
 }
 
 ul.action-links, ul.actionButtons
@@ -349,6 +354,7 @@ ul.menu li a:hover, ul.menu li.active a
 	padding: 0px;
 	padding-left: 20px;
 	color: grey;
+	font-size: 120%;
 }
 
 form.quickSearch img

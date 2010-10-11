@@ -95,6 +95,8 @@ function show_login_form($HTTP_VARS, $errors = NULL)
     if(is_not_empty_array($errors))
 		echo format_error_block($errors);
 
+	echo("<div id=\"loginFormDiv\">");
+	
 	if(strlen($HTTP_VARS['redirect'])>0)
 	{
 		echo("<p class=\"redirectMessage\">".get_opendb_lang_var('login_redirect_message', array('pageid'=>get_page_id($HTTP_VARS['redirect'])))."</p>");
@@ -153,6 +155,8 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 	}
 	
 	echo format_footer_links($footer_links_r);
+	
+	echo("</div>");
 	
 	echo(_theme_footer());
 }

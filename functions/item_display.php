@@ -70,7 +70,7 @@ function get_site_plugin_links($page_title, $item_r)
 							$parse_url = trim($titleMaskCfg->expand_title($item_r, $parse_url, $site_plugin_conf_rs));
 							if(strlen($parse_url)>0) {
 								$pageContents .= "<li><a href=\"".$parse_url."\" target=\"_new\">$link_text";
-								$pageContents .= "<span class=\"sitePluginDescription\">[".$site_plugin_link_r['description']."]</span>";
+								$pageContents .= "<span class=\"sitePluginDescription\">".$site_plugin_link_r['description']."</span>";
 								$pageContents .= "</a></li>";
 							}
 						}

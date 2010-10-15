@@ -115,9 +115,9 @@ function show_login_form($HTTP_VARS, $errors = NULL)
 	echo("<input type=\"hidden\" name=\"op\" value=\"login\">");
 	
 	echo("\n<ul>".
-		"\n<li><label for=\"uid\">".get_opendb_lang_var('userid')."</label>".
+		"\n<li><label class=\"label\" for=\"uid\">".get_opendb_lang_var('userid')."</label>".
 		"<input type=\"text\" class=\"text\" id=\"uid\" name=\"uid\" value=\"".$HTTP_VARS['uid']."\"></li>".
-		"\n<li><label for=\"password\">".get_opendb_lang_var('password')."</label>".
+		"\n<li><label class=\"label\" for=\"password\">".get_opendb_lang_var('password')."</label>".
 		"<input type=\"password\" class=\"password\" id=\"passwd\" name=\"passwd\"></li>".
 		"</ul>".
 		"\n<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('login')."\">");

@@ -354,7 +354,7 @@ ul.menu li a:hover, ul.menu li.active a
 	padding: 0px;
 	padding-left: 20px;
 	color: grey;
-	font-size: 120%;
+	font-size: 130%;
 }
 
 form.quickSearch img
@@ -366,15 +366,6 @@ form.quickSearch img
 {
 	font-size: 90%;
 	color: #C8C8AA;
-}
-
-#loginBox
-{
-	text-align: right;
-	margin-top: 5px;
-	padding: 10px;
-	padding-right: 40px;
-	font-weight: bold;
 }
 
 #tab-content

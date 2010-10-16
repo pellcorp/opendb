@@ -274,7 +274,6 @@ else  // invalid session - go to login
 					url=>"email.php?op=send_to_site_admin&inc_menu=N&subject=".get_opendb_lang_var('lost_password'));
 			}
 			
-			$footer_links_r[] = array(url=>"login.php",text=>get_opendb_lang_var('return_to_login_page'));
 			echo format_footer_links($footer_links_r);
 		}
 		else

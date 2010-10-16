@@ -1518,7 +1518,7 @@ if(is_site_enabled())
             {
                 if($HTTP_VARS['op2'] == 'send_info')
                 {
-                    $page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
+                    $page_title = get_opendb_lang_var('new_account');
                     echo(_theme_header($page_title, is_show_login_menu_enabled()));
                     echo("<h2>".$page_title."</h2>");
 					
@@ -1552,13 +1552,11 @@ if(is_site_enabled())
                 }
                 else
                 {
-                    $page_title = get_opendb_lang_var('new_site_account', 'site', get_opendb_config_var('site', 'title'));
+                    $page_title = get_opendb_lang_var('new_account');
                     echo(_theme_header($page_title, is_show_login_menu_enabled()));
                     echo("\n<h2>".$page_title."</h2>");
                     echo(get_user_input_form(NULL, $HTTP_VARS));
                 }
-
-                $footer_links_r[] = array(url=>"login.php",text=>get_opendb_lang_var('return_to_login_page'));
             }
 			else //End of $HTTP_VARS['op'] checks
 			{

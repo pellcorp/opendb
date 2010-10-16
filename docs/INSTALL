@@ -10,8 +10,8 @@ will need the following:
 
 - PHP 4.3.0+, 5.X
   	* track_vars must be enabled.
-	* register_globals can be enabled/disabled.
-	* php-mysql module must be installed, so that PHP can access MySQL.
+	* register_globals should be enabled/disabled.
+	* php-mysql / php-mysqli module must be installed, so that PHP can access MySQL.
 		
 - MySQL Database 4.X, 5.X
 
@@ -21,7 +21,7 @@ set the email configuration Mailer to 'none'.
 2) Installation / Upgrade
 
 !!WARNING!! - Its extremely important to make a new directory for the 1.X installation
-files, do not extract 1.X files over the top of your existing 0.81 installation.
+files, do not extract 1.X files over the top of an existing 0.8X installation.
 
 The new installer can be activated by executing install.php.
 
@@ -33,7 +33,7 @@ the install / upgrade process is complete.
 
 2.1) Cover Image Cache (upload/ directory)
 
-When you upgrade from 0.81, if you have any locally saved cover images, you must copy the upload/
+When you upgrade from 0.8X, if you have any locally saved cover images, you must copy the upload/
 directory over to the new 1.X installation, so that cached images can continue to be served.
 
 3) Documentation

@@ -34,32 +34,25 @@ if(!$_OpendbBrowserSniffer->isBrowserSupported())
 	echo("<p class=\"error\">".
 		get_opendb_lang_var('browser_not_supported_text').
 		"</p>");
+	
+	$supportedBrowsers = array(
+		array('url'=>'http://www.mozilla.com/firefox/', 'icon'=>'firefox.jpg'),
+		array('url'=>'http://www.microsoft.com/windows/products/winfamily/ie/default.mspx', 'icon'=>'icon_ie7.gif'),
+		array('url'=>'http://www.apple.com/safari/', 'icon'=>'safari.png'),
+	);
+	
+	echo("<ul class=\"browsers\">");
+	while(list(,$browser_r) = each($supportedBrowsers))
+	{
+		if(file_exists('./images/browsers/'.$browser_r['icon']))
+			$browser_r['icon'] = './images/browsers/'.$browser_r['icon'];
+		else
+			$browser_r['icon'] = NULL;
+				
+		echo("<li><a href=\"".$browser_r['url']."\" title=\"".$browser_r['name']."\"><img src=\"".$browser_r['icon']."\"></a></li>");
+	}
+	echo("</ul>");
 }
-
-$supportedBrowsers = array(
-	array('name'=>'Firefox', 'url'=>'http://www.mozilla.com/firefox/', 'icon'=>'firefox.jpg'),
-	array('name'=>'Internet Explorer', 'url'=>'http://www.microsoft.com/windows/products/winfamily/ie/default.mspx', 'icon'=>'icon_ie7.gif'),
-	array('name'=>'Safari', 'url'=>'http://www.apple.com/safari/', 'icon'=>'safari.png'),
-);
-
-echo("<ul class=\"browsers\">");
-while(list(,$browser_r) = each($supportedBrowsers))
-{
-	if(file_exists('./images/browsers/'.$browser_r['icon']))
-		$browser_r['icon'] = './images/browsers/'.$browser_r['icon'];
-	else
-		$browser_r['icon'] = NULL;
-			
-	echo("<li><a href=\"".$browser_r['url']."\" title=\"".$browser_r['name']."\"><img src=\"".$browser_r['icon']."\"> ".$browser_r['name']."</a></li>");
-}
-echo("</ul>");
-
-if($_OpendbBrowserSniffer->isBrowserSupported())
-{
-	$footer_links_r[] = array(url=>"login.php?op=login",text=>get_opendb_lang_var('return_to_login_page'));
-	echo format_footer_links($footer_links_r);
-}
-
 echo _theme_footer();
 
 // Cleanup after begin.inc.php

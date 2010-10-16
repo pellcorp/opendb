@@ -1,6 +1,6 @@
 #loginFormDiv {
-	margin-top: 200px;
-	margin-left: 50px;
+	margin-top: 25px;
+	margin-left: 10px;
 	margin-bottom:300px;
 	font-size:150%;
 }
@@ -10,12 +10,11 @@ h2 {
 }
 
 #loginForm .label {
-		font-size: 150%;
-		color: #626C99;
+	color: #626C99;
 }
 
 #loginForm input.text, input.password, input.submit {
-	font-size: 120%;
+	font-size: 100%;
 }
 
 #loginForm ul

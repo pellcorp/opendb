@@ -67,7 +67,7 @@ class OpenDbBrowserSniffer
 	 * @param $p
 	 */
 	function isPlatform($p) {
-		return $this->phpSniffer->_browser_info['platform'] == $p;
+		return $this->phpSniffer->property('platform') == $p;
 	}
 	
 	function __initIsSupported()

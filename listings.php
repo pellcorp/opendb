@@ -1055,8 +1055,8 @@ if(is_site_enabled())
 			if($show_interest_column) {
 				echo($xajax->printJavascript());
 			}
-			
-			$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+
+			$listingObject = new HTML_Listing($PHP_SELF, $HTTP_VARS);
 			
 			$listingObject->startListing($page_title);
 			

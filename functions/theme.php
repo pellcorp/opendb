@@ -420,7 +420,7 @@ function _theme_graph_config()
 {
 	$theme = get_opendb_site_theme();
 
-	$cssParser =& new cssparser(FALSE);
+	$cssParser = new cssparser(FALSE);
 	if(strlen($theme)>0 && $cssParser->Parse("./theme/$theme/stats.css"))
 	{
 		$stats_graph_config_r = $cssParser->GetSection('.OpendbStatsGraphs');

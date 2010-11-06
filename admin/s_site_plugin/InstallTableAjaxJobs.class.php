@@ -46,7 +46,7 @@ class InstallTableAjaxJobs extends AdminAjaxJobs
 			$classname = "Install_".$this->_job;
 			
 			include_once("./admin/s_site_plugin/sql/".$this->_job.".install.class.php");
-			$installPlugin =& new $classname();
+			$installPlugin = new $classname();
 			
 			// this is currently the only type we support.
 			if($installPlugin->getInstallType() == 'Install_Table') {

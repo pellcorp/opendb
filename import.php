@@ -452,7 +452,7 @@ if(is_site_enabled())
 									$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
 									if($inFile)
 									{
-										$fileHandler =& new WrapperFileHandler($inFile);
+										$fileHandler = new WrapperFileHandler($inFile);
 										
 										echo(get_uploaded_form(
 													$importPlugin, 
@@ -560,7 +560,7 @@ if(is_site_enabled())
 							$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
 							if($inFile)
 							{
-								$fileHandler =& new WrapperFileHandler($inFile);
+								$fileHandler = new WrapperFileHandler($inFile);
 								
 								if(strcmp($HTTP_VARS['owner_id'], get_opendb_session_var('user_id')) === 0)
 									$page_title = get_opendb_lang_var('type_import', array('description'=>$importPlugin->get_display_name()));
@@ -616,12 +616,12 @@ if(is_site_enabled())
 							$inFile = import_cache_fetch_file($HTTP_VARS['ic_sequence_number']);
 							if($inFile)
 							{
-								$fileHandler =& new WrapperFileHandler($inFile);
+								$fileHandler = new WrapperFileHandler($inFile);
 
 								// we want to display all items - no pagination.
 								$HTTP_VARS['items_per_page'] = '';
 								
-								$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+								$listingObject = new HTML_Listing($PHP_SELF, $HTTP_VARS);
 							
 								$listingObject->setNoRowsMessage(get_opendb_lang_var('no_items_found'));
 								
@@ -640,7 +640,7 @@ if(is_site_enabled())
 								else
 									$cfg_default_status_type_r = fetch_status_type_r(fetch_default_status_type());
 
-								$itemImportHandler =& new ItemImportHandler(
+								$itemImportHandler = new ItemImportHandler(
 														$HTTP_VARS['owner_id'],
 														$cfg_is_trial_run,
 														$cfg_ignore_duplicate_title,

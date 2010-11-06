@@ -35,8 +35,8 @@ class DVDProfilerImportPluginTest extends PHPUnit_TestCase
 	}
 	
 	function testXMLParse() {
-		$plugin =& new DVDProfilerImportPlugin();
-		$importHandler =& new TestItemImportHandler();
+		$plugin = new DVDProfilerImportPlugin();
+		$importHandler = new TestItemImportHandler();
 		
 		$plugin->setItemImportHandler($importHandler);
 		

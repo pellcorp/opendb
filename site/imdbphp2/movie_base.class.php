@@ -8,7 +8,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: movie_base.class.php 391 2010-06-03 13:06:29Z izzy $ */
+ /* $Id: movie_base.class.php 419 2010-10-12 18:54:54Z izzy $ */
 
  require_once (dirname(__FILE__)."/browseremulator.class.php");
  require_once (dirname(__FILE__)."/mdb_base.class.php");
@@ -21,7 +21,7 @@
  * @extends mdb_base
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 391 $ $Date: 2010-06-03 15:06:29 +0200 (Do, 03. Jun 2010) $
+ * @version $Revision: 419 $ $Date: 2010-10-12 20:54:54 +0200 (Di, 12. Okt 2010) $
  */
 class movie_base extends mdb_base {
 
@@ -95,6 +95,7 @@ class movie_base extends mdb_base {
    $this->main_year = -1;
    $this->main_creator = array();
    $this->main_tagline = "";
+   $this->main_storyline = "";
    $this->main_prodnotes = array();
    $this->main_movietypes = array();
    $this->main_top250 = -1;

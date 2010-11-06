@@ -1523,7 +1523,7 @@ else if($HTTP_VARS['op'] == 'maintain_site_plugin_install') // special function 
 			
 			$classname = "Install_".$HTTP_VARS['site_type'];
 			include_once("./admin/s_site_plugin/sql/".$HTTP_VARS['site_type'].".install.class.php");
-			$installPlugin =& new $classname();
+			$installPlugin = new $classname();
 			
 			$recordCount = $installPlugin->getRecordCount();
 			if(is_numeric($recordCount)) {

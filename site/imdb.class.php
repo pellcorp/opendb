@@ -126,6 +126,7 @@ class imdb extends SitePlugin
 	function queryItem($search_attributes_r, $s_item_type)
 	{
 		$pageBuffer = $this->fetchURI("http://us.imdb.com/Title?".$search_attributes_r['imdb_id']);
+		//print_r($pageBuffer); // for debugging purposes output exactly what we are getting from imdb.
 
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
@@ -173,17 +174,17 @@ Planet Terror
 
 
 
-<a href="/media/rm3590755840/tt1077258"><img src="http://ia.media-imdb.com/images/M/MV5BMTI0NDQ5MTM2MV5BMl5BanBnXkFtZTcwOTIwMjk2MQ@@._V1._SY314_CR11,0,214,314_.jpg"
+<a    onclick="(new Image()).src='/rg/title-overview/primary/images/b.gif?link=%2Fmedia%2Frm3412696576%2Ftt0133093';"     href="/media/rm3412696576/tt0133093"       ><img src="http://ia.media-imdb.com/images/M/MV5BMjEzNjg1NTg2NV5BMl5BanBnXkFtZTYwNjY3MzQ5._V1._SY314_CR4,0,214,314_.jpg"
      height="314" width="214" 
-     alt="Planet Terror Poster"
-     title="Planet Terror Poster" /></a>
+     alt="Matrix Poster"
+     title="Matrix Poster" /></a>
 
 </td>
 */
 		$start = strpos($pageBuffer,">Own the rights?<br />Add a poster</a>", $end);
 		if($start === FALSE)
 		{
-			if(preg_match("!id=\"img_primary\".*?<a href=\"/media[^\"]+\".*?><img.*? src=\"([^\"]+)\"!ms", $pageBuffer, $matches))
+			if(preg_match("!id=\"img_primary\".*?<a.*?href=\"/media[^\"]+\".*?><img.*? src=\"([^\"]+)\"!ms", $pageBuffer, $matches))
 			{
 				if(starts_with($matches[1], 'http://'))
 					$this->addItemAttribute('imageurl', $matches[1]);

@@ -31,7 +31,7 @@ function output_cache_file($url) {
 			get_opendb_config_var('http.stream_external_images', 'enable')!==FALSE &&
 			is_uri_domain_in_list($url, get_opendb_config_var('http.stream_external_images', 'domain_list')))
 	{
-		$snoopy =& new OpenDbSnoopy();
+		$snoopy = new OpenDbSnoopy();
 		
 		$dataBuffer =& $snoopy->fetchURI($url, FALSE);
 		if($dataBuffer!==FALSE)

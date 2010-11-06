@@ -69,7 +69,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 		// no pagination.
 		$HTTP_VARS['items_per_page'] = '';
 
-		$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS); 
+		$listingObject = new HTML_Listing($PHP_SELF, $HTTP_VARS); 
 		
 		$listingObject->setIncludeHrefLinks(TRUE);
 		$listingObject->setIncludeFooter(FALSE);

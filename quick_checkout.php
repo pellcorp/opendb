@@ -396,7 +396,7 @@ if(is_site_enabled())
 						
 						unset($HTTP_VARS['alt_item_id']);
 						
-						$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+						$listingObject = new HTML_Listing($PHP_SELF, $HTTP_VARS);
 						$listingObject->setNoRowsMessage(get_opendb_lang_var('no_records_found'));
 							
 						if(is_numeric($listingObject->getItemsPerPage()))

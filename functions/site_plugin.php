@@ -124,7 +124,7 @@ function &get_site_plugin_instance($site_type)
 	if($site_plugin_classname !== FALSE)
 	{
 		include_once("./site/".$site_plugin_classname.".class.php");
-		$sitePlugin =& new $site_plugin_classname($site_type);
+		$sitePlugin = new $site_plugin_classname($site_type);
 				
 		return $sitePlugin;
 	}

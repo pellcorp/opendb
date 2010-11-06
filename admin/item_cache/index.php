@@ -100,7 +100,7 @@ if($HTTP_VARS['op'] == '')
 	if(strlen($HTTP_VARS['order_by'])==0)
 		$HTTP_VARS['order_by'] = 'cache_date';
 
-	$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+	$listingObject = new HTML_Listing($PHP_SELF, $HTTP_VARS);
 	$listingObject->setNoRowsMessage(get_opendb_lang_var('no_items_found'));
 	
 	$listingObject->startListing();

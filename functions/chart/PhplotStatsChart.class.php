@@ -32,7 +32,7 @@ class StatsChartImpl extends StatsChart
 	function StatsChartImpl($chartType, $graphCfg) {
 		parent::StatsChart($chartType, $graphCfg);
 		
-		$this->phplot =& new PHPlot($this->width, $this->height); 
+		$this->phplot = new PHPlot($this->width, $this->height); 
 
 		$this->phplot->SetImageBorderType('plain');
 		

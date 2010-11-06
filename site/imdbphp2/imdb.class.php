@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb.class.php 411 2010-10-10 11:28:59Z izzy $ */
+ /* $Id: imdb.class.php 426 2010-10-23 18:49:13Z izzy $ */
 
  require_once (dirname(__FILE__)."/movie_base.class.php");
 
@@ -23,7 +23,7 @@
   * @author Georgos Giagas
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 411 $ $Date: 2010-10-10 13:28:59 +0200 (So, 10. Okt 2010) $
+  * @version $Revision: 426 $ $Date: 2010-10-23 20:49:13 +0200 (Sa, 23. Okt 2010) $
   */
  class imdb extends movie_base {
 
@@ -35,7 +35,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 411 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 426 $');
     $this->setid($id);
   }
 
@@ -243,6 +243,9 @@
       if (@preg_match('!<strong>(.*?)</strong>.*<div class="comment-meta">\s*(.*?)\s*\|\s*by\s*(.*?)\s*&ndash;.*?<p>(.*?)</div!ims',$this->main_comment,$match)) {
         @preg_match('!href="(.*?)">(.*)</a!i',$match[3],$author);
         $this->split_comment = array("title"=>$match[1],"date"=>$match[2],"author"=>array("url"=>$author[1],"name"=>$author[2]),"comment"=>trim($match[4]));
+      } elseif (@preg_match('!<div class="comment-meta">\s*(.{10,20})\s*\|\s*by\s*(.*?)\s*&ndash;.*?<div>\s*(.*?)\s*</div>!ims',$this->main_comment,$match)) {
+        @preg_match('!href="(.*?)">(.*)</a!i',$match[2],$author);
+        $this->split_comment = array('title'=>'','date'=>$match[1],'author'=>array("url"=>$author[1],"name"=>$author[2]),"comment"=>trim($match[3]));
       }
     }
     return $this->split_comment;
@@ -320,7 +323,6 @@
   public function genres() {
     if (empty($this->moviegenres)) {
       if ($this->page["Title"] == "") $this->openpage ("Title");
-#      if (preg_match_all("/\<a href\=\"\/Sections\/Genres\/[\w\-]+\/\"\>(.*?)\<\/a\>/",$this->page["Title"],$matches))
       if (preg_match_all("@<a href\=\"/genre/[\w\-]+\"\>(.*?)\</a>@",$this->page["Title"],$matches))
         $this->moviegenres = $matches[1];
     }
@@ -413,17 +415,41 @@
  #--------------------------------------------------------[ Plot (Outline) ]---
   /** Get the main Plot outline for the movie
    * @method plotoutline
+   * @param optional boolean fallback Fallback to storyline if we could not catch plotoutline? Default: FALSE
    * @return string plotoutline
    * @see IMDB page / (TitlePage)
    */
-  public function plotoutline() {
+  public function plotoutline($fallback=FALSE) {
     if ($this->main_plotoutline == "") {
-      if ($this->page["Title"] == "") $this->openpage ("Title");
-      if (@preg_match('!Storyline</h2>\s*(.*?)<em class="nobr">Written by!ims',$this->page["Title"],$match)) {
+      if ($this->page["Title"] == "") $this->openpage("Title");
+      if (preg_match('!<span class="rating-rating">.*?(<p>.*?)\s*<div!ims',$this->page['Title'],$match)) {
         $this->main_plotoutline = trim($match[1]);
+      } elseif($fallback) {
+        $this->main_plotoutline = $this->storyline();
       }
     }
     return $this->main_plotoutline;
+  }
+
+  /** Get the Storyline for the movie
+   * @method storyline
+   * @return string storyline
+   * @see IMDB page / (TitlePage)
+   */
+  public function storyline() {
+    if ($this->main_storyline == "") {
+      if ($this->page["Title"] == "") $this->openpage ("Title");
+      if (@preg_match('!Storyline</h2>\s*(.*?)<h4!ims',$this->page["Title"],$match)) {
+        if (preg_match('!(.*?)<em class="nobr">Written by!ims',$match[1],$det))
+          $this->main_storyline = $det[1];
+        elseif (preg_match('!(.*)\s<span class="see-more inline">!ims',$match[1],$det))
+          $this->main_storyline = $det[1];
+        elseif (preg_match('!(.*)\s\|!ims',$match[1],$det))
+          $this->main_storyline = $det[1];
+        else $this->main_storyine = trim($match[1]);
+      }
+    }
+    return $this->main_storyline;
   }
 
  #--------------------------------------------------------[ Photo specific ]---
@@ -434,7 +460,7 @@
    */
   private function thumbphoto() {
     if ($this->page["Title"] == "") $this->openpage ("Title");
-    preg_match("!id\=\"img_primary\">[^<]*<a[\w\d\=/ >\"]+<img src\=\"(.+?)\"!i",$this->page["Title"],$match);
+    preg_match("!id\=\"img_primary\">[^<]*<a[^<]+<img src\=\"(.+?)\"!i",$this->page["Title"],$match);
     if (empty($match[1])) return FALSE;
     $this->main_thumb = $match[1];
     preg_match('|(.*\._V1).*|iUs',$match[1],$mo);
@@ -524,15 +550,16 @@
   public function mainPictures() {
     if ($this->page["Title"] == "") $this->openpage ("Title");
     if (empty($this->main_pictures)) {
-      if (@preg_match_all("/\<div class=\"media_strip_thumb\">\<a href=\"(.*?)\">\<img height=\"90\" width=\"90\" src\=\"(.*?)\"/",$this->page["Title"],$matches)) {
+      preg_match('!<div class="mediastrip">\s*(.*?)\s*</div>!ims',$this->page["Title"],$match);
+      if (@preg_match_all('!<a .*?href="(.*?)".*?<img.*?src="(.*?)"!ims',$match[1],$matches)) {
         for ($i=0;$i<count($matches[0]);++$i) {
-      $this->main_pictures[$i]["imgsrc"] = $matches[2][$i];
+          $this->main_pictures[$i]["imgsrc"] = $matches[2][$i];
           if (substr($matches[1][$i],0,4)!="http") $matches[1][$i] = "http://".$this->imdbsite.$matches[1][$i];
           $this->main_pictures[$i]["imglink"] = $matches[1][$i];
           preg_match('|(.*\._V1).*|iUs',$matches[2][$i],$big);
           $ext = substr($matches[2][$i],-3);
           $this->main_pictures[$i]["bigsrc"] = $big[1].".${ext}";
-    }
+        }
       }
     }
     return $this->main_pictures;

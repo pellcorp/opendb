@@ -503,7 +503,7 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode)
 	$results = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], $related_mode);
 	if($results)
 	{
-		$listingObject =& new HTML_Listing($PHP_SELF, $HTTP_VARS);
+		$listingObject = new HTML_Listing($PHP_SELF, $HTTP_VARS);
 		$listingObject->setBufferOutput(TRUE);
 		$listingObject->setNoRowsMessage(get_opendb_lang_var('no_items_found'));
 		$listingObject->setShowItemImages(TRUE);

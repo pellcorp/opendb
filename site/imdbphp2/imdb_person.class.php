@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb_person.class.php 413 2010-10-10 13:51:20Z izzy $ */
+ /* $Id: imdb_person.class.php 417 2010-10-11 18:39:38Z izzy $ */
 
  require_once (dirname(__FILE__)."/person_base.class.php");
  require_once (dirname(__FILE__)."/imdbsearch.class.php");
@@ -21,7 +21,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 413 $ $Date: 2010-10-10 15:51:20 +0200 (So, 10. Okt 2010) $
+  * @version $Revision: 417 $ $Date: 2010-10-11 20:39:38 +0200 (Mo, 11. Okt 2010) $
   */
  class imdb_person extends person_base {
 
@@ -52,7 +52,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 413 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 417 $');
     $this->setid($id);
   }
 
@@ -75,7 +75,7 @@
   public function name() {
     if (empty($this->fullname)) {
       if ($this->page["Name"] == "") $this->openpage ("Name","person");
-      if (preg_match("/<title>(.*?)<\/title>/i",$this->page["Name"],$match)) {
+      if (preg_match("/<title>(.*?) - IMDb<\/title>/i",$this->page["Name"],$match)) {
         $this->fullname = trim($match[1]);
       }
     }
@@ -757,7 +757,7 @@
   * @extends imdbsearch
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 413 $ $Date: 2010-10-10 15:51:20 +0200 (So, 10. Okt 2010) $
+  * @version $Revision: 417 $ $Date: 2010-10-11 20:39:38 +0200 (Mo, 11. Okt 2010) $
   */
  class imdbpsearch extends imdbsearch {
  #-----------------------------------------------------------[ Constructor ]---

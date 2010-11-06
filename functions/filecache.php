@@ -764,7 +764,7 @@ function file_cache_insert_file($url, $location, $content_type, $content, $cache
 
 		if($content == NULL && is_url_absolute($url))
 		{
-			$httpClient =& new OpenDbSnoopy();
+			$httpClient = new OpenDbSnoopy();
 			$content = $httpClient->fetchURI($url, FALSE);
 
 			if($content!==FALSE)

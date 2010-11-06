@@ -320,7 +320,7 @@ class ItemImportHandler
 		// reset instance indicator
 		$this->_is_item_instance = FALSE;
            
-		$this->_item_obj =& new Item();
+		$this->_item_obj = new Item();
 		$this->_item_obj->setItemType($s_item_type);
 		$this->_item_obj->setTitle($title);
 		return TRUE;

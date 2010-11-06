@@ -79,7 +79,7 @@ class SitePlugin
 		}
 
 		// Construct a single copy of this object for use within the site plugin
-		$this->_httpClient =& new OpenDbSnoopy(TRUE); //debugging always on
+		$this->_httpClient = new OpenDbSnoopy(TRUE); //debugging always on
 		
 		$this->_titleMaskCfg = new TitleMask();
 	}

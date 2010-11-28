@@ -46,6 +46,8 @@ class amazonde extends SitePlugin
 
 		if(strlen($pageBuffer)>0)
 		{
+			//print_r($pageBuffer); // for debugging purposes print exactly what we get from amazon.
+
 			$amazdeasin = FALSE;
 				
 			// check for an exact match, but not if this is second page of listings or more
@@ -79,9 +81,9 @@ class amazonde extends SitePlugin
 					
 				if(preg_match("/<(td|div) class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/(td|div)>/i", $pageBuffer, $regs) ||
 							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Ergebnisse<\/(td|div)>/i", $pageBuffer, $regs) ||
-							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Treffer<\/(td|div)>/i", $pageBuffer, $regs))
+							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Treffer<\/(td|div)>/i", $pageBuffer, $regs) ||
+							preg_match("/<h1 id=\"noResultsTitle\".*?(Beste Ergebnisse).*class=\"resultindex\">([0-9]+)/i", $pageBuffer, $regs))
 				{
-
 					// store total count here.
 					$this->setTotalCount($regs[2]);
 					
@@ -93,6 +95,9 @@ class amazonde extends SitePlugin
 									"<a href=\"([^\"]+)\">([^<]*)</a>!m", $pageBuffer, $matches) ||
 								//books 
 								preg_match_all("!<td class=\"imageColumn\"[^>]*>.*?".
+											"<img.*?src=\"([^\"]+)\"[^>]*>.*?<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches) ||
+								// best results
+								preg_match_all("!<td height=\"160\" width=\"160\" align=\"center\">.*?".
 											"<img.*?src=\"([^\"]+)\"[^>]*>.*?<a href=\"([^\"]+)\"[^>]*><span class=\"srTitle\">([^<]+)</span></a>!m", $pageBuffer, $matches))
 					{
 
@@ -122,6 +127,7 @@ class amazonde extends SitePlugin
 	function queryItem($search_attributes_r, $s_item_type)
 	{
 		$pageBuffer = $this->fetchURI("http://www.amazon.de/exec/obidos/ASIN/".$search_attributes_r['amazdeasin']);
+		//print_r($pageBuffer); // for debugging purposes print exactly what we get from amazon.
 
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
@@ -129,6 +135,7 @@ class amazonde extends SitePlugin
 
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
+		//print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
 
 		if(preg_match("/<span id=\"(btAsinTitle|sans)\"[^>]*>([^<]+)</s", $pageBuffer, $regs))
 		{
@@ -210,6 +217,27 @@ class amazonde extends SitePlugin
 		if(preg_match("!<span>([0-9\.]*) von 5 Sternen</span>!i", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('amznrating', $regs[1]) ;
+		}
+
+		if( ( $startIndex = strpos($pageBuffer, "<h2>Anhand des Sachgebietes nach ") ) !== FALSE &&
+				($endIndex = strpos($pageBuffer, "Titel/Artikel ALLER gew", $startIndex) ) !== FALSE )
+		{
+			$subjectform = substr($pageBuffer, $startIndex, $endIndex-$startIndex);
+			
+			if(preg_match_all("!<input type=\"checkbox\" name=\"field\+keywords\" value=\"([^\"]+)\"!", $subjectform, $matches))
+			{
+				$this->addItemAttribute('genre', $matches[1]);
+				$genres = array();
+				foreach($matches[1] as $value) {
+					$genres = array_merge($genres, explode(' / ' , $value));
+				}
+				$genres=array_map("unaccent", array_unique($genres));
+				sort($genres);
+/*				echo '<pre>';
+				print_r($genres);
+				echo '</pre>';
+*/				$this->addItemAttribute('genre', $genres);
+			}
 		}
 
 		// Get the mapped AMAZON index type
@@ -426,11 +454,28 @@ class amazonde extends SitePlugin
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
 		// Author(s) and/or Editor(s)
-		if (preg_match('|von <a href=".*?">(.*?) (.*?)</a>|si', $pageBuffer, $regs))
+		//<span id="btAsinTitle">Spark Notes the Diary of a Young Girl <span style='text-transform: capitalize; font-size: 16px;'>[Taschenbuch]</span></span></h1><a href="/s/ref=ntt_athr_dp_sr_1?_encoding=UTF8&amp;search-alias=books-de-intl-us&amp;field-author=Anne%20Frank">Anne Frank</a><span class="byLinePipe">(Autor)</span><br />
+		$start = strpos($pageBuffer,"<span id=\"btAsinTitle\">", $end);
+		if($start !== FALSE)
 		{
-			$this->addItemAttribute('authorln', $regs[2]);
-			$this->addItemAttribute('authorfn', $regs[1]);
-			$this->addItemAttribute('author', $regs[1]." ".$regs[2]);
+			$end = strpos($pageBuffer,"<br />", $start);
+			
+			$authors = trim(substr($pageBuffer,$start,$end-$start));
+			//print_r($authors);
+			if (preg_match_all("!<a href=\".*?\">(.*?)</a><span class=\"byLinePipe\">.Autor.</span>!", $authors, $regs))
+			{
+				//echo '<pre>';
+				//print_r($regs);
+				//echo '</pre>';
+				//where are the author first and last names used anyways? for now we just support the author full names to avoid confusion with middle initials etc.
+				//foreach($regs[1] as $author) {
+				//	preg_match("!(.*?) (.*?)!" $author, $matches
+				//	$this->addItemAttribute('authorln', $matches[2]);
+				//	$this->addItemAttribute('authorfn', $matches[1]);
+				//	$this->addItemAttribute('author', $matches[1]." ".$matches[2]);
+				//}
+				$this->addItemAttribute('author', $regs[1]);
+			}
 		}
 
 		// ISBN-10 (Note: there is also an ISBN-13; just change 10 to 13 to get it)
@@ -462,12 +507,23 @@ class amazonde extends SitePlugin
 		// Book type (edition?), Pages
 		if (preg_match("/<li><b>([Gebundene Ausgabe|Kalender|Taschenbuch|Broschiert|CD]+?):<\/b>(.*?)Seiten<\/li>/", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('binding', $regs[1]);
+			if (strpos($cover,"Gebundene") !== FALSE) {
+				$this->addItemAttribute('binding', 'Hardcover');
+			}
+			else {
+				$this->addItemAttribute('binding', 'Paperback');
+			}
 			$this->addItemAttribute('no_pages', $regs[2]);
 		}
 
+		//<li><b>Sprache:</b> Deutsch</li>
+		if (preg_match("/<b>Sprache:<\/b> ([^<]*)<\/li>/i", $pageBuffer, $regs))
+		{
+			$this->addItemAttribute('text_lang', preg_replace('/,/', '.', trim($regs[1])));
+		}
+
 		// Category -- hmmm, Amazon seems to have removed genre information from books thawn: but we can get them from the categories
-		if (preg_match("!<b>Amazon.de Verkaufsrang:</b>(.*?)</li>!i", $pageBuffer, $regs))
+/*		if (preg_match("!<b>Amazon.de Verkaufsrang:</b>(.*?)</li>!i", $pageBuffer, $regs))
 		{
 			//<a href="/gp/bestsellers/dvd-de/289099/ref=pd_zg_hrsr_d_1_3">Fantasy</a>
 			if (preg_match_all('!<a href=\".*?\">(.*?)</a>!i', $regs[1], $genres))
@@ -478,7 +534,7 @@ class amazonde extends SitePlugin
 				$this->addItemAttribute('genre', $moviegenres);
 			}
 		}
-
+*/
 		// Plot (Amazon blurb)
 		// no editorial reviews for amazon.de
 		// search for "Synopsis" or "Description"
@@ -712,7 +768,7 @@ class amazonde extends SitePlugin
 		{
 			$this->addItemAttribute('no_media', $regs[1]);
 		}
-		//get genres from categories
+/*		//get genres from categories
 		//<b>Amazon.de Verkaufsrang:</b>
 		if (preg_match("!<b>Amazon.de Verkaufsrang:</b>(.*?)</li>!i", $pageBuffer, $regs))
 		{
@@ -725,7 +781,7 @@ class amazonde extends SitePlugin
 				$this->addItemAttribute('genre', $moviegenres);
 			}
 		}
-	}
+*/	}
 
 	function parse_amazon_game_blurb($str)
 	{

@@ -130,13 +130,15 @@ class amazon extends SitePlugin
 
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
+		//print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
 		
-		//<span id="btAsinTitle" style="">First Blood (Mass Market Paperback)</span>
-		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/span>/s", $pageBuffer, $regs) ||
+		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
+		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
 				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
 				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
+		    //print_r($title);
 
 			// If extra year appended, remove it and just get the title.
 			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2))
@@ -217,15 +219,16 @@ class amazon extends SitePlugin
 		{
 			$this->addItemAttribute('listprice', $regs[1]);
 		}
-		else if(preg_match("/<b>List Price:<\/b>[^\\$]+\\$([0-9\.]+)/m", $pageBuffer, $regs))
+		else if(preg_match("/<b>List Price:<\/b>[^\\$]+\\\$([0-9\.]+)/m", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('listprice', $regs[1]);
 		}
 
-		// amazon price value
-		if(preg_match("/<td><b class=\"price\">\\\$([^<]*)<\/b>/i", $pageBuffer, $regs))
+		// amazon price value: <b class="priceLarge">$7.99</b>
+		if(preg_match("!<b class=\"(priceLarge|price)\">\\\$([^<]*)</b>!i", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('price', $regs[1]);
+			$this->addItemAttribute('listprice', $regs[2]);
+			$this->addItemAttribute('price', $regs[2]);
 		}
 		
 		//http://g-ec2.images-amazon.com/images/G/01/x-locale/common/customer-reviews/stars-4-0._V47081936_.gif 
@@ -235,6 +238,18 @@ class amazon extends SitePlugin
 			$this->addItemAttribute('amznrating', $amazonreview);
 			$this->addItemAttribute('amazon_review', $amazonreview);
 		}
+
+		if( ( $startIndex = strpos($pageBuffer, "<h2>Look for Similar Items by Subject</h2>") ) !== FALSE &&
+				($endIndex = strpos($pageBuffer, "matching ALL checked", $startIndex) ) !== FALSE )
+		{
+			$subjectform = substr($pageBuffer, $startIndex, $endIndex-$startIndex);
+			
+			if(preg_match_all("!<input type=\"checkbox\" name=\"field\+keywords\" value=\"([^\"]+)\"!", $subjectform, $matches))
+			{
+				$this->addItemAttribute('genre', $matches[1]);
+			}
+		}
+
 		
 		// Get the mapped AMAZON index type
 		$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
@@ -443,12 +458,26 @@ Some search URL examples:
 
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
-		//by <a href="/exec/obidos/search-handle-url/ref=ntt_athr_dp_sr_1?%5Fencoding=UTF8&amp;search-type=ss&amp;index=books&amp;field-author=J.%20K.%20Rowling">J. K. Rowling</a> (Author)
+		//an id="btAsinTitle" style="">Biochemistry <span style="text-transform:capitalize; font-size: 16px;">[Hardcover]</span></span></h1><span ><a href="/Donald-Voet/e/B000APBABS/ref=ntt_athr_dp_pel_1">Donald Voet</a> (Author) </span></div><div class="jumpBar">
 
-		if(preg_match_all("!\"btAsinTitle\" style=\"\">(.*?\(([^)]*)\))</span>.*?<a href=\"[^\>]+field-author=[^\"]*\">([^<]*)</a>!i", $pageBuffer, $regs))
+		$start = strpos($pageBuffer,"id=\"btAsinTitle\"", $end);
+		if($start !== FALSE)
 		{
-			$this->addItemAttribute('binding', $regs[2]);
-			$this->addItemAttribute('author', $regs[3]);
+			$end = strpos($pageBuffer,"<div class=\"jumpBar\">", $start);
+			
+			$authors = trim(substr($pageBuffer,$start,$end-$start));
+			//print_r($authors);
+			if (preg_match_all("!<a href=\".*?\">(.*?)</a> \(Author\)!i", $authors, $regs))
+			{
+				//where are the author first and last names used anyways? for now we just support the author full names to avoid confusion with middle initials etc.
+				//foreach($regs[1] as $author) {
+				//	preg_match("!(.*?) (.*?)!" $author, $matches
+				//	$this->addItemAttribute('authorln', $matches[2]);
+				//	$this->addItemAttribute('authorfn', $matches[1]);
+				//	$this->addItemAttribute('author', $matches[1]." ".$matches[2]);
+				//}
+				$this->addItemAttribute('author', $regs[1]);
+			}
 		}
 
 		//<span>4.5 out of 5 stars</span></span>&nbsp;</a>&nbsp;<span class="histogramButton"
@@ -474,66 +503,74 @@ Some search URL examples:
 			$this->addItemAttribute('readinglevel', $regs[1]);
 		}
 
-                //<li><b>Paperback:</b> 1500 pages</li>
-                if(preg_match("/([0-9]+) pages/", $pageBuffer, $regs))
-                {
-                        $this->addItemAttribute('no_pages', $regs[1]);
-                }
-
-                //<li><b>Publisher:</b> Prima Games (November 24, 1998)</li>
-                //<li><b>Publisher:</b> HarperCollins; New Ed edition (1 Mar 1999)</li>
-		//pages</li><li><b>Publisher:</b> VIZ Media LLC; 2 edition (June 23, 2004)</li><li><b>Language:</b> English</li><li><b>
-                if(preg_match("!<b>Publisher:</b>[\s]*([^;\(]+);!U", $pageBuffer, $regs) ||
-                                preg_match("!<b>Publisher:</b>[\s]*([^\(]+)\(!U", $pageBuffer, $regs) ||
-                                preg_match("!<b>Publisher:</b>[\s]*([^<]+)</li>!U", $pageBuffer, $regs))
-                {
-                        $this->addItemAttribute('publisher', $regs[1]);
-                }
-
-                if(preg_match("!<b>Publisher:</b>.*?\(([^\)]*[0-9]+)\)!", $pageBuffer, $regs))
-                {
-                        $timestamp = strtotime($regs[1]);
-                $date = date('d M Y', $timestamp);
-                $this->addItemAttribute('pub_date', $date);
-                }
-
-		if(preg_match("!<b>Language:</b>[\s]*([^<]+)</li!", $pageBuffer, $regs))
+		//<li><b>Paperback:</b> 1500 pages</li>
+		if(preg_match("/([0-9]+) pages/", $pageBuffer, $regs))
 		{
-			$this->addItemAttribute('language', $regs[1]);
-		}
-
-                if(preg_match("!<b>ISBN-10:</b>[\s]*([0-9X]+)!", $pageBuffer, $regs))
-                {
-                        $this->addItemAttribute('isbn', $regs[1]);
-                        $this->addItemAttribute('isbn10', $regs[1]);
-                }
-
-                if(preg_match("!<b>ISBN-13:</b>[\s]*([0-9\-]+)!", $pageBuffer, $regs))
-                {
-                        $this->addItemAttribute('isbn13', $regs[1]);
-                }
-
-		if(preg_match("!<b>[\s]*Product Dimensions:[\s]*</b>[\s]*([^<]+)</!", $pageBuffer, $regs))
-		{
-			$this->addItemAttribute('dimensions', $regs[1]);
-		}
-
-                if(preg_match("!<b>[\s]*Shipping Weight:[\s]*</b>[\s]*([^(]+)\(!", $pageBuffer, $regs))
-                {
-                        $this->addItemAttribute('weight', $regs[1]);
-                }
-
-		if( ( $startIndex = strpos($pageBuffer, "<h2>Look for Similar Items by Subject</h2>") ) !== FALSE &&
-				($endIndex = strpos($pageBuffer, "Find books matching ALL checked", $startIndex) ) !== FALSE )
-		{
-			$subjectform = substr($pageBuffer, $startIndex, $endIndex-$startIndex);
-			
-			if(preg_match_all("!<input type=\"checkbox\" name=\"field\+keywords\" value=\"([^\"]+)\"!", $subjectform, $matches))
-			{
-				$this->addItemAttribute('genre', $matches[1]);
-			}
+			$this->addItemAttribute('no_pages', $regs[1]);
 		}
 		
+		//<h2>Product Details</h2><div class="content"><ul><li><b>Reading level:</b> Young Adult<br /></li><li><b>Mass Market Paperback:</b> 352 pages
+		$start = strpos($pageBuffer,"<h2>Product Details</h2>", $end);
+		if($start !== FALSE)
+		{
+			$end = strpos($pageBuffer,"</div>", $start);
+			
+			$details = trim(substr($pageBuffer,$start,$end-$start));
+			
+			$end = strpos($details,"pages");
+			$cover = trim(substr($details,0,$end));
+			if (strpos($cover,"Hardcover") !== FALSE) {
+				$this->addItemAttribute('binding', 'Hardcover');
+			}
+			else {
+				$this->addItemAttribute('binding', 'Paperback');
+			}
+			
+			if(preg_match("!<b>Publisher:</b>[\s]*([^;\(]+);!U", $details, $regs) ||
+				preg_match("!<b>Publisher:</b>[\s]*([^\(]+)\(!U", $details, $regs) ||
+				preg_match("!<b>Publisher:</b>[\s]*([^<]+)</li>!U", $details, $regs))
+			{
+				$this->addItemAttribute('publisher', $regs[1]);
+			}
+	
+			if(preg_match("!<b>Publisher:</b>.*?\(([^\)]*[0-9]+)\)!", $details, $regs))
+			{
+				$timestamp = strtotime($regs[1]);
+				$date = date('d M Y', $timestamp);
+				$this->addItemAttribute('pub_date', $date);
+			}
+
+			//<li><b>Language:</b> English</li>
+			if(preg_match("!<b>Language:</b>[\s]*([^<]+)</li>!", $details, $regs))
+			{
+				$this->addItemAttribute('text_lang', $regs[1]);
+			}
+	
+			if(preg_match("!<b>ISBN-10:</b>[\s]*([0-9X]+)!", $details, $regs))
+			{
+				$this->addItemAttribute('isbn', $regs[1]);
+				$this->addItemAttribute('isbn10', $regs[1]);
+			}
+	
+			if(preg_match("!<b>ISBN-13:</b>[\s]*([0-9\-]+)!", $details, $regs))
+			{
+				$this->addItemAttribute('isbn13', $regs[1]);
+			}
+	
+			if(preg_match("!<b>[\s]*Product Dimensions:[\s]*</b>[\s]*([^<]+)</!", $details, $regs))
+			{
+				$this->addItemAttribute('dimensions', $regs[1]);
+			}
+
+			if(preg_match("!<b>[\s]*Shipping Weight:[\s]*</b>[\s]*([^(]+)\(!", $details, $regs))
+			{
+				$this->addItemAttribute('weight', $regs[1]);
+			}
+	
+		}
+	
+		//pages</li><li><b>Publisher:</b> VIZ Media LLC; 2 edition (June 23, 2004)</li><li><b>Language:</b> English</li><li><b>
+ 		
 	}
 
 	/**
@@ -555,7 +592,7 @@ Some search URL examples:
 	*/
 	function parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer)
 	{
-        // All Amazon.com (US) items should be NTSC!
+	// All Amazon.com (US) items should be NTSC!
 		$this->addItemAttribute('vid_format', 'NTSC');
 		
 		// genre extraction block.
@@ -586,7 +623,7 @@ Some search URL examples:
 
 				$this->addItemAttribute('genre', explode(",", $genre));
 			}
-        }
+		}
 
 		$this->addItemAttribute('actors', parse_amazon_video_people("Actors", $pageBuffer));
 		$this->addItemAttribute('director', parse_amazon_video_people("Directors", $pageBuffer));
@@ -608,7 +645,7 @@ Some search URL examples:
 			}
 		}
 
-        if(preg_match("/<li><b>Number of discs:[\s]*<\/b>[\s]*([0-9]+)/", $pageBuffer, $regs2))
+		if(preg_match("/<li><b>Number of discs:[\s]*<\/b>[\s]*([0-9]+)/", $pageBuffer, $regs2))
 		{
 			$this->addItemAttribute('no_discs', $regs2[1]);
    		}
@@ -638,20 +675,20 @@ Some search URL examples:
     		$this->addItemAttribute('dvd_rel_dt', date('d/m/Y', $timestamp));
 		}
 
-        // Duration extraction block
+		// Duration extraction block
 		//<li><b>Run Time:</b> 125 minutes </li>
 		if (preg_match("/<li><b>Run Time:<\/b>[\s]*([0-9]+) minutes/i", $pageBuffer, $regs))
 		{
    			$this->addItemAttribute('run_time', $regs[1]);
 		}
 
-        // Get the anamorphic format attribute - Thanks to André Monz <amonz@users.sourceforge.net
+		// Get the anamorphic format attribute - Thanks to André Monz <amonz@users.sourceforge.net
 		if(preg_match("/anamorphic/",$pageBuffer))
 		{
 			$this->addItemAttribute('anamorphic', 'Y');
    		}
 
-        if (preg_match("/THX Certified/i", $pageBuffer))
+		if (preg_match("/THX Certified/i", $pageBuffer))
 		{
 			$this->addItemAttribute('dvd_audio', 'THX');
 		}
@@ -706,7 +743,7 @@ Some search URL examples:
 			}
 		}
 
-        // Edition details block - 'dvd_extras' attribute
+		// Edition details block - 'dvd_extras' attribute
 		if(preg_match("!<b>DVD Features:<\/b><ul>(.*?)<\/ul>!", $pageBuffer, $regs))
 		{
 		    $dvdFeaturesBlock = $regs[1];

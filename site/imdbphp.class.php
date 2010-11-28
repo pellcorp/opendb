@@ -197,6 +197,7 @@ class imdbphp extends SitePlugin
 		$this->addItemAttribute('dvd_audio', $imdb->sound());
 		foreach($imdb->mpaa() as $country => $rating)
 		{
+				$country = strtolower($country);
 				$this->addItemAttribute($country.'_age_rating', $rating);				
 		}
 		$age_certification_codes_r = $this->getConfigValue('age_certification_codes');
@@ -210,6 +211,10 @@ class imdbphp extends SitePlugin
 				$country = strtolower($country);
 				
 				$ageRating = $this->getItemAttribute($country.'_age_rating');
+//				echo('<pre>');
+//				print_r($ageRating);
+//				echo('</pre>');
+				
 				if($ageRating!==FALSE) 
 				{
 					$this->addItemAttribute('age_rating', $ageRating);

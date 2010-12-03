@@ -409,7 +409,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 	$buffer .= get_input_field("host",
 		NULL, // s_attribute_type
 		"MySQL Database Host",
-        "text(32,32)", //input type.
+        "text(50,255)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['host'])>0
         	? $HTTP_VARS['host']
@@ -419,7 +419,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
     $buffer .= get_input_field("dbname",
 		NULL, // s_attribute_type
 		"MySQL Database Name",
-        "text(32,32)", //input type.
+        "text(50,255)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['dbname'])>0
         	? $HTTP_VARS['dbname']
@@ -429,7 +429,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
     $buffer .= get_input_field("username",
 		NULL, // s_attribute_type
 		"MySQL User Name",
-        "text(32,32)", //input type.
+        "text(50,255)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['username'])>0
         	? $HTTP_VARS['username']
@@ -439,7 +439,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 	$buffer .= get_input_field("passwd",
 		NULL, // s_attribute_type
 		"MySQL User Password",
-        "text(32,32)", //input type.
+        "text(50,255)", //input type.
         "Y", //compulsory!
         strlen($HTTP_VARS['passwd'])>0
         	? $HTTP_VARS['passwd']
@@ -449,7 +449,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
     $buffer .= get_input_field("table_prefix",
 		NULL, // s_attribute_type
 		"Table Prefix",
-        "text(32,32)", //input type.
+        "text(50,255)", //input type.
 		"N", //compulsory!
         strlen($HTTP_VARS['table_prefix'])>0
         	? $HTTP_VARS['table_prefix']
@@ -468,7 +468,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
 	$buffer .= get_input_field("db_username",
 		NULL, // s_attribute_type
 		"MySQL Root User Name",
-        "text(32,32)", //input type.
+        "text(50,255)", //input type.
         "N", //compulsory!
         $HTTP_VARS['db_username'],
 		TRUE);
@@ -476,7 +476,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors)
     $buffer .= get_input_field("db_passwd",
 		NULL, // s_attribute_type
 		"MySQL Root User Password",
-        "password(32,32)", //input type.
+        "password(50,255)", //input type.
         "N", //compulsory!
         $HTTP_VARS['db_passwd'],
 		TRUE);

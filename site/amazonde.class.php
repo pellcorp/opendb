@@ -61,12 +61,12 @@ class amazonde extends SitePlugin
 				{
 					$amazdeasin = trim($regs[1]);
 				}
-				else if (preg_match ("/ISBN: ([^;]+);/", strip_tags($pageBuffer), $regs)) // for books, ASIN is the same as ISBN
+				else if (preg_match ("/ISBN: (\w*)/", strip_tags($pageBuffer), $regs)) // for books, ASIN is the same as ISBN
 				{
 					$amazdeasin = trim ($regs[1]);
 				}
 			}
-				
+			//print_r($amazdeasin);	
 			// exact match
 			if($amazdeasin!==FALSE)
 			{
@@ -78,7 +78,8 @@ class amazonde extends SitePlugin
 			else
 			{
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
-					
+				//print_r($pageBuffer);
+				
 				if(preg_match("/<(td|div) class=\"resultCount\">[0-9]+[\s]*-[\s]*[0-9]+ von ([0-9,\.]+) Ergebnissen<\/(td|div)>/i", $pageBuffer, $regs) ||
 							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Ergebnisse<\/(td|div)>/i", $pageBuffer, $regs) ||
 							preg_match("/<(td|div) class=\"resultCount\">([0-9]+) Treffer<\/(td|div)>/i", $pageBuffer, $regs) ||
@@ -86,6 +87,7 @@ class amazonde extends SitePlugin
 				{
 					// store total count here.
 					$this->setTotalCount($regs[2]);
+					//print_r("no_results: ".$regs[2]);
 					
 					if(preg_match_all("!<div class=\"productImage\">[\s]*".
 									"<a href=\"[^\"]+\">[\s]*".

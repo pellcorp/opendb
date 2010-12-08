@@ -79,7 +79,7 @@ function handle_item_attributes($op, $item_r, $HTTP_VARS, $_FILES, &$errors)
 					else if($HTTP_VARS[$fieldname] == 'old')
 					{
 						// make sure this is a refresh value and not just a field with the value 'old'
-						if(isset($HTTP_VARS[$fieldname.'_new1']))
+						if(isset($HTTP_VARS[$fieldname.'_new0']))
 						{
 							$fieldname = $fieldname.'_old';
 						}
@@ -193,7 +193,7 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$err
 					else if($HTTP_VARS[$fieldname] == 'old')
 					{
 						// make sure this is a refresh value and not just a field with the value 'old'
-						if(isset($HTTP_VARS[$fieldname.'_new1']))
+						if(isset($HTTP_VARS[$fieldname.'_new0']))
 						{
 							$fieldname = $fieldname.'_old';
 						}
@@ -400,7 +400,7 @@ function handle_item_update(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 				else if($HTTP_VARS[$fieldname] == 'old')
 				{
 					// make sure this is a refresh value and not just a field with the value 'old'
-					if(isset($HTTP_VARS[$fieldname.'_new1']))
+					if(isset($HTTP_VARS[$fieldname.'_new0']))
 					{
 						$fieldname = $fieldname.'_old';
 					}

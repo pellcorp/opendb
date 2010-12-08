@@ -503,7 +503,7 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
 			else if($HTTP_VARS[$fieldname] == 'old')
 			{
 				// make sure this is a refresh value and not just a field with the value 'old'
-				if(isset($HTTP_VARS[$fieldname.'_new1']))
+				if(isset($HTTP_VARS[$fieldname.'_new0']))
 				{
 					// Using $item_r value instead.
 					unset($HTTP_VARS[$fieldname]);

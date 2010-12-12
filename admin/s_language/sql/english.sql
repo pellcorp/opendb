@@ -496,7 +496,6 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_n
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_activated', 'User not activated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_added', 'User \"{user_id}\" not added.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deactivated', 'User not deactivated.'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_deleted', 'User not deleted.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_found', 'User \"{user_id}\" not found.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_not_updated', 'User not updated.'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'user_profile', 'User Profile'); 

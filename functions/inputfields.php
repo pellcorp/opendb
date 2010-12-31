@@ -797,6 +797,12 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 */
 function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlength, $content_groups, $value, $onchange_event, $disabled = FALSE, $multi_value = FALSE)
 {
+	// Default size.
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0) {
+		$size = 50;
+	}
+	
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		if(strlen(trim($content_groups))>0) {
 			// might be an array of content groups
@@ -833,11 +839,6 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		$field .= "</div>";
 
 		if(is_file_upload_enabled()) {
-	       	// Default size.
-			$size = $length; 
-			if(!is_numeric($size) || $size <= 0)
-				$size = 50;
-	
 			$field .= "<div class=\"fieldContentHidden\" id=\"${name}_upload\">";
 			$field .= "<input type=\"file\" class=\"file\" name=\"${name}_upload\" $onchange size=\"".$size."\"".($disabled?' DISABLED':'').">";
 			$field .= "</div>";

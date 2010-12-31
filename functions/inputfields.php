@@ -97,16 +97,30 @@ function get_item_input_field(
 		$widget['args'][4] = $item_attribute_type_r['input_type_arg5'];
 	}
 
-	// an array will be a lookup value
-	if(!is_array($value))
-	{
-		// Escape all html entities so they are displayed correctly!
-		if(strlen($value)>0)
+	
+	if($item_attribute_type_r['multi_attribute_ind'] == 'Y') {
+		$multi_value = TRUE;
+		
+		if(!is_array($value))
 		{
-			$value = htmlspecialchars($value);
+			$old_value = ifempty($value, "");
+			unset($value);
+			$value[] = $old_value;
+		}
+	} else {
+		$multi_value = FALSE;
+	
+		// an array will be a lookup value
+		if(!is_array($value))
+		{
+			// Escape all html entities so they are displayed correctly!
+			if(strlen($value)>0)
+			{
+				$value = htmlspecialchars($value);
+			}
 		}
 	}
-
+	
 	$field = NULL;
 	$field_mask = NULL;
 
@@ -125,30 +139,27 @@ function get_item_input_field(
 	}
 	else if($item_attribute_type_r['input_type'] == 'text') // arg[0] = length of field, arg[1] = maxlength of field
 	{
-        if($item_attribute_type_r['multi_attribute_ind'] == 'Y')
-        	$field = multivalue_text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
-        else
-			$field = text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
+		$field = text_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value);
 	}
 	else if($item_attribute_type_r['input_type'] == 'password') // arg[0] = length of field, arg[1] = maxlength of field
 	{
-		$field = password_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
+		$field = password_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value);
 	}
 	else if($item_attribute_type_r['input_type'] == 'email') // arg[0] = length of field, arg[1] = maxlength of field
 	{
-		$field = email_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
+		$field = email_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value);
 	}
 	else if($item_attribute_type_r['input_type'] == 'filtered') // arg[0] = length of field, arg[1] = maxlength of field, arg[2] = legalChars
 	{
-		$field = filtered_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $compulsory_ind, $value, $onchange_event, $disabled);
+		$field = filtered_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value);
     }
 	else if($item_attribute_type_r['input_type'] == 'datetime') // arg[0] = datetime mask, arg[1] = auto_datetime
 	{
-		$field = datetime_field($fieldname, $prompt, ifempty($widget['args']['0'],'DD/MM/YYYY'), $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled);
+		$field = datetime_field($fieldname, $prompt, ifempty($widget['args']['0'],'DD/MM/YYYY'), $widget['args']['1'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value);
     }
 	else if($item_attribute_type_r['input_type'] == 'number') // arg[0] = length of field, arg[0] = maxlength of field
 	{
-		$field = number_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['0'], $compulsory_ind, $value, $onchange_event, $disabled);
+		$field = number_field($fieldname, $prompt, $widget['args']['0'], $widget['args']['0'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value);
 	}
 	else if($item_attribute_type_r['input_type'] == 'simple_checkbox') // arg[0] = checked
 	{
@@ -198,7 +209,7 @@ function get_item_input_field(
 	}
 	else if($item_attribute_type_r['input_type'] == 'url')//arg[0] = length of field, arg[1] = maxlength of field, arg[2] = extensions
 	{
-		$field = url($fieldname, $item_r, $item_attribute_type_r, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled);
+		$field = url($fieldname, $item_r, $item_attribute_type_r, $prompt, $widget['args']['0'], $widget['args']['1'], $widget['args']['2'], $value, $onchange_event, $disabled, $multi_value);
 	}
 	else
 	{
@@ -230,7 +241,7 @@ function validate_input_field($prompt, $input_type, $compulsory_ind = 'N', $valu
 }
 
 /*
-* Validate all input fields and return error(s) to caller, if failed.
+ * Validate all input fields and return error(s) to caller, if failed.
 *
 * This is a basic attempt to prevent users bypassing javascript validation, and causing integrity
 * problems in the database.  In future releases this function will be further augmented for other
@@ -556,133 +567,155 @@ function readonly_field($name, $value)
 			"\n<input type=\"hidden\" name=\"$name\" value=\"$value\">";
 }
 
-function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
-{
-	// Default size.
-	$size = $length; 
-	if(!is_numeric($size) || $size <= 0)
-		$size = 50;
-
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
-	}
-	else
-	{
-		$onchange = "onchange=\"$onchange_event\"";
-	}
-	
-	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
-}
-
-function multivalue_text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
-{
-	// Default size.
-	$size = $length; 
-	if(!is_numeric($size) || $size <= 0)
-		$size = 50;
-
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
-	}
-	else
-	{
-		$onchange = "onchange=\"$onchange_event\"";
-	}
+/**
+ * Generic function to be used by all 'text' fields
+ */
+function multivalue_text_field($class, $name, $size, $maxlength, $onchange, $value) {
 	$buffer .= "\n<div class=\"multiValue\">";
 	$buffer .= "<ul class=\"multiValue\" id=\"${name}-multi_value_list\">";
-	if(count($value)>0)
-	{
-		for($i=0; $i<count($value); $i++)
-		{
-			$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value[$i]."\"></li>";
-		}
+	for($i=0; $i<count($value); $i++) {
+		$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value[$i]."\"></li>";
 	}
-	else
-	{
-		$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"".$name."[]\" size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"\"></li>";
-	}
-	
 	$buffer .= "</ul>";
-	
 	$buffer .= "<a href=\"#\" onclick=\"addInputField('${name}-multi_value_list', '$name', '$size'".(is_numeric($maxlength)?", '$maxlength'":"")."); return false;\">".get_opendb_lang_var('add')."</a>";
-	
 	$buffer .= "</div>";
 	return $buffer;
 }
 
-function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
+function singlevalue_text_field($class, $name, $size, $maxlength, $onchange, $value, $disabled = FALSE) {
+	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
+}
+
+function text_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE, $multi_value = FALSE)
 {
 	// Default size.
 	$size = $length; 
 	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
+	} else {
+		$onchange = "onchange=\"$onchange_event\"";
 	}
-	else
-		$onchange = "onchange=\"$onchange_event\"";
-
-	return "\n<input type=\"password\" class=\"password\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"")." value=\"".$value."\"".($disabled?' DISABLED':'').">";
-}
-
-function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
-{
-	// Default size.
-	$size = $length; 
-	if(!is_numeric($size) || $size <= 0)
-		$size = 50;
-
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)."if(!checkEmail(this.value)){alert('".get_opendb_lang_var('email_is_not_valid', 'prompt', $prompt)."');return false;} $onchange_event return true;\"";
-	else
-		$onchange = "onchange=\"$onchange_event\"";
 	
-	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	if($multi_value) {
+		return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
+	} else {
+		return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
+	}
 }
 
-function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
+function password_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE, $multi_value = FALSE)
 {
 	// Default size.
 	$size = $length; 
 	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
+		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
+	} else {
+		$onchange = "onchange=\"$onchange_event\"";
+	}
+	
+	if($multi_value) {
+		return multivalue_text_field('password', $name, $size, $maxlength, $onchange, $value);
+	} else {
+		return singlevalue_text_field('password', $name, $size, $maxlength, $onchange, $value, $disabled);
+	}
+}
+
+function email_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE, $multi_value = FALSE)
+{
+	// Default size.
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
+		$size = 50;
+
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
+		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)."if(!checkEmail(this.value)){alert('".get_opendb_lang_var('email_is_not_valid', 'prompt', $prompt)."');return false;} $onchange_event return true;\"";
+	} else {
+		$onchange = "onchange=\"$onchange_event\"";
+	}
+	
+	if($multi_value) {
+		return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
+	} else {
+		return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
+	}
+}
+
+function filtered_field($name, $prompt, $length, $maxlength, $legalCharsExp, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE, $multi_value = FALSE)
+{
+	// Default size.
+	$size = $length; 
+	if(!is_numeric($size) || $size <= 0)
+		$size = 50;
+
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		// Get list of legal characters.
 		$legalChars = expand_chars_exp($legalCharsExp);
-		if(strlen($legalChars)==0)//Default if not defined.
-		{
+		if(strlen($legalChars)==0) { //Default if not defined.
 			$legalChars	= expand_chars_exp('a-zA-Z0-9_.');
 		}
 			
 		$onchange = "onchange=\"this.value=legalCharFilter(this.value, '".$legalChars."'); ".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
-	}
-	else
+	} else {
 		$onchange = "onchange=\"$onchange_event\"";
-		
-	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
+	}
+	
+	if($multi_value) {
+		return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
+	} else {
+		return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
+	}
 }
 
-function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
+function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE, $multi_value = FALSE)
 {
 	// Default size.
 	$size = $length; 
 	if(!is_numeric($size) || $size <= 0)
 		$size = 50;
 
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		$onchange = "onchange=\"this.value=numericFilter(this.value);".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
-	}
-	else
+	} else {
 		$onchange = "onchange=\"$onchange_event\"";
+	}
+	
+	if($multi_value) {
+		return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
+	} else {
+		return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
+	}
+}
 
-	return "\n<input type=\"text\" class=\"text\" name=\"".$name."\" $onchange size=\"".$size."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":""). " value=\"".$value."\"".($disabled?' DISABLED':'').">";
+function get_datetime_value($value) {
+	if(strlen($value)>0) {
+		// the timestamp is stored in the database with the format YYYYMMDDHH24MISS
+		$timestamp = get_timestamp_for_datetime($value, 'YYYYMMDDHH24MISS');
+		if($timestamp !== FALSE) {
+			if(strlen($format_mask)==0) {
+				$format_mask = 'DD/MM/YYYY';
+			}
+			
+			$datetime = get_localised_timestamp($format_mask, $timestamp);
+			if($datetime === FALSE) {
+				$datetime = $value; // as a last resort
+			}
+		} else {
+			$datetime = $value; // as a last resort
+		}
+	} else {
+		if($value === NULL && strcasecmp($auto_datetime, 'Y') === 0) {
+			$datetime = get_localised_timestamp($format_mask); // current date
+		} else {
+			$datetime = '';
+		}
+	}
+	return $datetime;
 }
 
 /**
@@ -697,58 +730,33 @@ function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $val
  *		MI - Minutes (00 - 59)
  *		SS - Seconds (00 - 59)
 */
-function datetime_field($fieldname, $prompt, $format_mask, $auto_datetime, $compulsory_ind, $value, $onchange_event, $disabled = FALSE)
+function datetime_field($fieldname, $prompt, $format_mask, $auto_datetime, $compulsory_ind, $value, $onchange_event, $disabled = FALSE, $multi_value = FALSE)
 {
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)."if(this.value.length > 0 && !is_datetime(this.value, '".$format_mask."')){alert('".get_opendb_lang_var('datetime_is_not_valid', array('prompt'=>$prompt,'format_mask'=>$format_mask))."');return false;} $onchange_event return true;\"";
-	}
-	else
+	} else {
 		$onchange = "onchange=\"$onchange_event\"";
-
-	if(strlen($value)>0)
-	{
-		// the timestamp is stored in the database with the format YYYYMMDDHH24MISS
-		$timestamp = get_timestamp_for_datetime($value, 'YYYYMMDDHH24MISS');
-		if($timestamp !== FALSE)
-		{
-			if(strlen($format_mask)==0)
-				$format_mask = 'DD/MM/YYYY';
-
-			$datetime = get_localised_timestamp($format_mask, $timestamp);
-			if($datetime === FALSE)
-			{
-				$datetime = $value; // as a last resort
-			}
-		}
-		else
-		{
-			$datetime = $value; // as a last resort
-		}
 	}
-	else
-	{
-		if($value === NULL && strcasecmp($auto_datetime, 'Y') === 0)
-		{
-			$datetime = get_localised_timestamp($format_mask); // current date
+	
+	if($multi_value) {
+		for($i=0; $i<count($value); $i++) {
+			$value[$i] = get_datetime_value($value[$i]);
 		}
-		else
-		{
-			$datetime = '';
-		}
+		return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
+	} else {
+		$value = get_datetime_value($value);
+		return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
 	}
-	return "\n<input type=\"text\" class=\"text\" name=\"".$fieldname."\" value=\"".$datetime."\" ".$onchange."".($disabled?' DISABLED':'').">";
 }
 
 function textarea_field($name, $prompt, $cols, $rows, $length, $compulsory_ind, $value, $onchange_event=NULL, $disabled = FALSE)
 {
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)." $onchange_event return true;\"";
-	}
-	else
+	} else {
 		$onchange = "onchange=\"$onchange_event\"";
-
+	}
+	
 	return "\n<textarea name=\"$name\" wrap=virtual $onchange cols=\"$cols\" rows=\"$rows\"".($disabled?' DISABLED':'').">".
 			$value.
 			"</textarea>";
@@ -756,13 +764,12 @@ function textarea_field($name, $prompt, $cols, $rows, $length, $compulsory_ind, 
 
 function checkbox_field($name, $prompt, $checked, $value, $onclick_event=NULL, $disabled = FALSE)
 {
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		$onclick = "onclick=\"$onclick_event return true;\"";
-	}
-	else
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
+		$onclick = "onclick=\"$onclick_event return true;\""; 
+	} else {
 		$onchange = "onchange=\"$onclick_event\"";
-
+	}
+	
 	return "\n<input type=\"checkbox\" class=\"checkbox\" name=\"$name\" value=\"$value\" $onclick ".($checked?"CHECKED":"")."".($disabled?' DISABLED':'').">";
 }
 
@@ -774,13 +781,12 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 	else
 		$is_checked = FALSE;
 
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		$onclick = "onclick=\"$onclick_event return true;\"";
-	}
-	else
+	} else {
 		$onchange = "onchange=\"$onclick_event\"";
-
+	}
+	
 	return "\n<input type=\"hidden\" name=\"$name\" value=\"".($is_checked?$checked_value:$unchecked_value)."\">"
 			."\n\t<input type=\"checkbox\" class=\"checkbox\" name=\"".$name."_cbox\" onclick=\"if (this.checked){this.form['$name'].value='$checked_value';}else{this.form['$name'].value='$unchecked_value';}\" $onclick ".($is_checked?"CHECKED":"")."".($disabled?' DISABLED':'').">";
 }
@@ -789,22 +795,17 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 	@param $item_r where provided will give the item_id / instance_no, where not provided is safe to assume that this
 	is a new item insert field and this information is not relevant.
 */
-function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlength, $content_groups, $value, $onchange_event, $disabled = FALSE)
+function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlength, $content_groups, $value, $onchange_event, $disabled = FALSE, $multi_value = FALSE)
 {
-	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE)
-	{
-		if(strlen(trim($content_groups))>0)
-		{
+	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
+		if(strlen(trim($content_groups))>0) {
 			// might be an array of content groups
 			$content_group_r = prc_args($content_groups);
 			
 			$extensions_r = fetch_file_type_extensions_r($content_group_r);
-			if(is_not_empty_array($extensions_r))
-			{
+			if(is_not_empty_array($extensions_r)) {
 				$extensions = implode(', ', $extensions_r);
-			}
-			else // else just list of extensions otherwise
-			{
+			} else { // else just list of extensions otherwise
 				$extensions = $content_groups;
 				$extensions_r = $content_group_r;
 			}
@@ -812,18 +813,14 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 			$url_is_not_valid_message = addslashes(get_opendb_lang_var('url_is_not_valid', array('prompt'=>$prompt,'extensions'=>$extensions)));
 			$onchange = "onchange=\"if(!isValidExtension(this.value, ".encode_javascript_array($extensions_r).")){alert('".$url_is_not_valid_message."'); this.focus(); return false;} $onchange_event return true;\"";
 		}
-	}
-	else
-	{
+	} else {
 		$onchange = "onchange=\"$onchange_event\"";
 	}
 	
-	if($item_attribute_type_r['file_attribute_ind'] == 'Y')
-	{
+	if($item_attribute_type_r['file_attribute_ind'] == 'Y') {
 		$field .= "\n<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
-		if(is_file_upload_enabled())
-		{
+		if(is_file_upload_enabled()) {
 			$field .= "<li id=\"menu-${name}_upload\" onclick=\"return activateTab('${name}_upload', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">Upload File</li>";
 		}
 		$field .= "</ul>";
@@ -835,8 +832,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		$field .= "<input type=\"button\" class=\"button\" onclick=\"if(this.form['$name'].value.length>0){popup(this.form['$name'].value,'400','300');}else{alert('".get_opendb_lang_var('prompt_must_be_specified', 'prompt', $prompt)."');}\" value=\"".get_opendb_lang_var('view')."\"".($disabled?' DISABLED':'').">";
 		$field .= "</div>";
 
-		if(is_file_upload_enabled())
-		{
+		if(is_file_upload_enabled()) {
 	       	// Default size.
 			$size = $length; 
 			if(!is_numeric($size) || $size <= 0)
@@ -848,10 +844,12 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		}
 	
 		$field .= '</div>';
-	}
-	else
-	{
-		$field .= "<input type=\"text\" class=\"text\" name=\"$name\" value=\"$value\" $onchange size=\"".$length."\" ".(is_numeric($maxlength)?"maxlength=\"".$maxlength."\"":"").">";
+	} else {
+		if($multi_value) {
+			return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
+		} else {
+			return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
+		}
 	}
 	return $field;
 }

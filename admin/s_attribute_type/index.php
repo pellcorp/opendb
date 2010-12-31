@@ -30,7 +30,7 @@ include_once("./functions/scripts.php");
 $input_type_functions_cats = array(
 			'file'=>array('url'),
 			'lookup'=>array('radio_grid', 'checkbox_grid', 'single_select', 'multi_select'),
-			'multi'=>array('text', 'url', 'password', 'filtered', 'number', 'datetime', 'email'),
+			'multi'=>array('datetime', 'email', 'filtered', 'number', 'password', 'text', 'url'),
 			'normal'=>array(),
 			'restricted'=>array('review_options'));
 

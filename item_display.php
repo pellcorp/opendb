@@ -70,13 +70,14 @@ if(is_site_enabled())
 						
 						while($image_attribute_type_r = db_fetch_assoc($results))
 						{
-							$imageurl = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $image_attribute_type_r['s_attribute_type'], $image_attribute_type_r['order_no']);
-
-							if(strlen($imageurl)>0)
+							$imageurl_r = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $image_attribute_type_r['s_attribute_type'], $image_attribute_type_r['order_no']);
+							if($imageurl_r !== FALSE)
 							{
-								$coverimages_rs[] = array(
-									'file'=>file_cache_get_image_r($imageurl, 'display'),
-									'prompt'=>$image_attribute_type_r['prompt']);
+								while(list(,$imageurl) = each($imageurl_r)) {
+									$coverimages_rs[] = array(
+										'file'=>file_cache_get_image_r($imageurl, 'display'),
+										'prompt'=>$image_attribute_type_r['prompt']);
+								}
 							}
 						}
 						db_free_result($results);

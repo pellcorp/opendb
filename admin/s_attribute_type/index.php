@@ -28,7 +28,6 @@ include_once("./functions/parseutils.php");
 include_once("./functions/scripts.php");
 
 $input_type_functions_cats = array(
-			'file'=>array('url'),
 			'lookup'=>array('radio_grid', 'checkbox_grid', 'single_select', 'multi_select'),
 			'multi'=>array('datetime', 'email', 'filtered', 'number', 'password', 'text', 'url'),
 			'normal'=>array(),
@@ -49,9 +48,7 @@ function get_attribute_ind_type($attribute_type_r, $HTTP_VARS)
 	
 	if(is_array($attribute_type_r))
 	{
-		if(strtoupper($attribute_type_r['file_attribute_ind']) == 'Y')
-			$attribute_ind_type = 'file';
-		else if(strtoupper($attribute_type_r['lookup_attribute_ind']) == 'Y')
+		if(strtoupper($attribute_type_r['lookup_attribute_ind']) == 'Y')
 			$attribute_ind_type = 'lookup';
 		else if(strtoupper($attribute_type_r['multi_attribute_ind']) == 'Y')
 			$attribute_ind_type = 'multi';
@@ -136,7 +133,7 @@ function get_function_spec($type, $func_args)
 	if(strlen($args)>0)
 		return $type."(".$args.")";
 	else
-		return $type;
+			return $type;
 }
 
 function get_widget_tooltip_array()
@@ -259,7 +256,7 @@ function display_attribute_type_form($HTTP_VARS)
 		{
 			echo(get_s_attribute_type_row($attribute_type_r, $row));	
 		}
-		
+
 		echo("</table></div>");
 		
 		$isFirst = false;
@@ -451,7 +448,7 @@ function display_edit_form($attribute_type_r, $HTTP_VARS=NULL)
 	{
 		edit_attribute_ind_type_js();
 		$attribute_ind_type = get_attribute_ind_type($attribute_type_r, $HTTP_VARS);
-		echo format_field('Attribute Type Indicator', build_attribute_ind_type_widget($attribute_ind_type));
+		echo format_field('Attribute Type Indicator', build_attribute_ind_type_widget($attribute_ind_type, $HTTP_VARS));
 	}			
    
 	if($is_reserved_attribute_type)
@@ -573,7 +570,6 @@ function edit_attribute_ind_type_js()
 var inputOptions = new Array();
 
 <?php
-echo build_options_array('file', $input_type_functions_cats);
 echo build_options_array('multi', $input_type_functions_cats);
 echo build_options_array('lookup', $input_type_functions_cats);
 echo build_options_array('normal', $input_type_functions_cats);
@@ -604,14 +600,13 @@ function populateInputSelect(selectObject, type)
 <?php
 }
 
-function build_attribute_ind_type_widget($attribute_ind_type)
+function build_attribute_ind_type_widget($attribute_ind_type, $HTTP_VARS)
 {
-	$options = array('normal'=>'Normal',
-					'file'=>'File Resource',
+	$options = array(
 					'lookup'=>'Lookup',
+					'normal'=>'Normal',
 					'multi'=>'Multi Value');
 	
-	$count = 0;
 	$field = '';
 	while(list($key,$value) = each($options))
 	{
@@ -620,10 +615,6 @@ function build_attribute_ind_type_widget($attribute_ind_type)
 			$field .= ' CHECKED';
 				
 		$field .= ">$value ";
-
-		$count++;		
-		if($count > 0 && $count % 2 == 0)
-			$field .= "<br />";
 	}
 	
 	return $field;
@@ -635,11 +626,7 @@ function set_attribute_ind_type(&$HTTP_VARS)
 	$HTTP_VARS['lookup_attribute_ind'] = 'N';
 	$HTTP_VARS['multi_attribute_ind'] = 'N';
 	
-	if($HTTP_VARS['attribute_ind_type'] == 'file')
-	{
-		$HTTP_VARS['file_attribute_ind'] = 'Y';	
-	}
-	else if($HTTP_VARS['attribute_ind_type'] == 'lookup')
+	if($HTTP_VARS['attribute_ind_type'] == 'lookup')
 	{
 		$HTTP_VARS['lookup_attribute_ind'] = 'Y';
 	}
@@ -647,6 +634,14 @@ function set_attribute_ind_type(&$HTTP_VARS)
 	{
 		$HTTP_VARS['multi_attribute_ind'] = 'Y';
 	}
+	
+	if($HTTP_VARS['attribute_ind_type'] != 'lookup') {
+		if($HTTP_VARS['input_type'] == 'url') {
+			$HTTP_VARS['file_attribute_ind'] = 'Y';
+		}
+	}
+	
+	return $HTTP_VARS;
 }
 
 if($HTTP_VARS['op'] == 'delete')
@@ -707,7 +702,7 @@ if($HTTP_VARS['op'] == 'delete')
 }
 else if($HTTP_VARS['op'] == 'update')
 {
-	set_attribute_ind_type($HTTP_VARS);
+	$HTTP_VARS = set_attribute_ind_type($HTTP_VARS);
 		
 	if(is_exists_attribute_type($HTTP_VARS['s_attribute_type']))
 	{
@@ -805,7 +800,7 @@ else if($HTTP_VARS['op'] == 'update')
 
 				$errors[] = array('error'=>'System Attribute type lookups exist', 'detail'=>'Lookup Attribute Indicator reset to Y');
 			}
-
+			
 			$update_result = update_s_attribute_type(
 					$HTTP_VARS['s_attribute_type'],
 					$HTTP_VARS['description'],

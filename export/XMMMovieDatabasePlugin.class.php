@@ -104,7 +104,7 @@ class XMMMovieDatabasePlugin {
 		}
 	}
 
-	var $item_type_map = array('DVD'=>'DVD-Rom', 
+	var $item_type_map = array('DVD'=>'DVD', 
 								'BD'=>'Blu-Ray', 
 								'VHS'=>'VHS',
 								'SVCD'=>'Digital Media',
@@ -115,40 +115,40 @@ class XMMMovieDatabasePlugin {
 	function start_item($item_id, $s_item_type, $title) {
 		$this->attribute_rs = array();
 		
-		$this->itemBuffer = "\n\t<Movie>";
+		$this->itemBuffer = "\n\t<Item>";
 		$this->itemBuffer .= "\n\t\t<MovieID>$item_id</MovieID>";
 		$this->itemBuffer .= "\n\t\t<Title>".$this->encode($title)."</Title>";
 		
 		$review = fetch_review_rating($item_id);
 		if($review!=FALSE) {
-			$this->buffer .= "\n\t\t<PersonalRating>$review</PersonalRating>";
+			$this->itemBuffer .= "\n\t\t<PersonalRating>$review</PersonalRating>";
+//			$this->itemBuffer .= "\n\t\t<Rating>$review</Rating>";
 		}
 		
 		if(isset($this->item_type_map[$s_item_type])) {
 			$mediaType = $this->item_type_map[$s_item_type];
 		} else {
-			$mediaType = 'DVD-Rom';// XMM default
+			$mediaType = 'DVD';// XMM default
 		}
 		
-		$this->itemBuffer .= "\n\t\t<Media>$mediaType</Media>";
+		$this->itemBuffer .= "\n\t\t<Media>\n\t\t\t<Medium>$mediaType</Medium>\n\t\t</Media>";
 
-		$this->itemBuffer .= "\n\t\t<Position>Default</Position>";
+		$this->itemBuffer .= "\n\t\t<Location>Default</Location>";
 		
 		return NULL;
 	}
 
 	function end_item() {
 		// fall back to last time instance was updated, its approximate but better than nothing.
-		if(!isset($this->attribute_rs['Purchase']) && isset($this->updated)) {
-			$this->attribute_rs['Purchase'] = get_localised_timestamp('YYYY-MM-DD', $this->updated);
+		if(!isset($this->attribute_rs['PurchaseDate']) && isset($this->updated)) {
+			$this->attribute_rs['PurchaseDate'] = get_localised_timestamp('YYYYMMDDT00:00:00', $this->updated);
 		}
 		
-		$actorsFound = FALSE;
+		//$actorsFound = FALSE;
 		
 		reset($this->attribute_rs);
 		while(list($type,$value) = each($this->attribute_rs)) {
 			if($type == 'Cover') {
-				//while(list(,$url) = each($value)) { 
 				$file = $this->get_cached_image($value);
 				
 				if($file!=FALSE) {
@@ -160,28 +160,18 @@ class XMMMovieDatabasePlugin {
 				
 					$this->itemBuffer .= "\n\t\t<Cover>".$filename."</Cover>";
 				}
-				//}
 			} else if($type == 'Genre') {
-				$this->itemBuffer .= "\n\t\t<Genre>".implode(", ", $value)."</Genre>";
+				$this->print_multi_attribute('Genres', 'Genre', $value);
 			} else if($type == 'Actor') {
-				$actorsFound = TRUE;
-				
-				$this->itemBuffer .= "\n\t\t<Actors>";
-				while(list(,$actor) = each($value)) {
-					$this->itemBuffer .= "\n\t\t\t<Actor>".$this->encode($actor)."</Actor>";
-				}
-				$this->itemBuffer .= "\n\t\t</Actors>";
+				$this->print_multi_attribute('Actors', 'Actor', $value);
+			} else if($type == 'Director') {
+				$this->print_multi_attribute('Directors', 'Director', $value);
 			} else if(strlen($value)>0) {
 				$this->itemBuffer .= "\n\t\t<$type>".$this->encode($value)."</$type>";
 			}
 		}
 		
-		// fix for buggy import!
-		if(!$actorsFound) {
-			$this->itemBuffer .= "\n\t\t<Actors />";
-		}
-		
-		$this->itemBuffer .= "\n\t</Movie>";
+		$this->itemBuffer .= "\n\t</Item>";
 		
 		if($this->includeParent || !$this->related) {
 			$this->buffer .= $this->itemBuffer;
@@ -203,6 +193,14 @@ class XMMMovieDatabasePlugin {
 		} 
 		//else
 		return NULL;
+	}
+	
+	function print_multi_attribute($plural, $singular, $values) {
+		$this->itemBuffer .= "\n\t\t<$plural>";
+		while(list(,$value) = each($values)) {
+			$this->itemBuffer .= "\n\t\t\t<$singular>".$this->encode($value)."</$singular>";
+		}
+		$this->itemBuffer .= "\n\t\t</$plural>";
 	}
 	
 	function start_item_instance($item_id, $instance_no, $owner_id, $borrow_duration, $s_status_type, $status_comment, $update_on) {
@@ -240,10 +238,9 @@ class XMMMovieDatabasePlugin {
 			'YEAR'=>'Year', 
 			'RUN_TIME'=>'Length',
 	 		'MOVIE_PLOT'=>'Plot',
-			'PUR_DATE'=>'Purchase',
+			'PUR_DATE'=>'PurchaseDate',
 			'UPC_ID'=>'UPC',
-			'DIRECTOR'=>'Director',
-			'AGE_RATING'=>'Rating',
+			'AGE_RATING'=>'MPAA',
 		);
 	
 	function item_attribute($s_attribute_type, $order_no, $attribute_val) {
@@ -255,11 +252,13 @@ class XMMMovieDatabasePlugin {
 			$this->attribute_rs['Genre'][] = $attribute_val;
 		} else if($s_attribute_type == 'ACTORS') {
 			$this->attribute_rs['Actor'][] = $attribute_val;
+		} else if($s_attribute_type == 'DIRECTOR') {
+			$this->attribute_rs['Director'][] = $attribute_val;
 		} else if($s_attribute_type == 'IMAGEURL') { //  || $s_attribute_type == 'IMAGEURLB'
 			$this->attribute_rs['Cover'] = $attribute_val;
 		} else if($s_attribute_type == 'PUR_DATE') {
 			$timestamp = get_timestamp_for_datetime($attribute_val, 'YYYYMMDDHH24MISS');
-			$this->attribute_rs['Purchase'] = get_localised_timestamp('YYYY-MM-DD', $timestamp);
+			$this->attribute_rs['PurchaseDate'] = get_localised_timestamp('YYYYMMDDTT00:00:00', $timestamp);
 		} else if($s_attribute_type == 'DVD_REGION') { // this is a giant hack!
 			switch($attribute_val) {
 				case '2':

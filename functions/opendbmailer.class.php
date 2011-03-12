@@ -62,10 +62,12 @@ class OpenDbMailer extends PHPMailer
 
 				if(strlen($email_smtp_r['port'])>0)
 					$this->Port = $email_smtp_r['port'];
-    	        if(strlen($email_smtp_r['username'])>0)
+					
+    	        if(strlen($email_smtp_r['username'])>0 && strlen($email_smtp_r['password'])>0) {
 					$this->Username = $email_smtp_r['username'];
-            	if(strlen($email_smtp_r['port'])>0)
 					$this->Password = $email_smtp_r['password'];
+					$this->SMTPAuth = TRUE;
+				}
 			}
 			else
 			{

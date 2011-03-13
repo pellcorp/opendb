@@ -26,7 +26,7 @@ class Upgrader_1504_1505 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'1.5.0.4',
-						'1.5.0.6RC1',
+						'1.5.0.7',
 						array(
 							array('description'=>'Support Global Category Stats Chart, More Info Borrow config, Disable reviews, Fix login stuff'),
 						)

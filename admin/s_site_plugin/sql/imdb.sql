@@ -1,15 +1,12 @@
 #########################################################
-# OpenDb 1.0 Imdb.com (imdb) Site Plugin
+# OpenDb 2.0 Imdb.com (imdb) Site Plugin
 #########################################################
 
 #
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'imdb', 'imdb', 'Imdb.com', 'imdb.gif', 'The source of movie information, but with nothing specific to distribution formats such as DVD and VHS.', 'http://www.imdb.com', 0, 'http://www.imdb.com/title/tt{imdb_id}' );
-
-#imdb and imdbphp are mutually exclusive
-DELETE FROM s_site_plugin WHERE site_type = 'imdbphp';
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'imdb', 'imdbphp', 'Imdb.com' , 'imdb.gif', 'The source of movie information, but with nothing specific to distribution formats such as DVD and VHS.', 'http://www.imdb.com', 0, 'http://www.imdb.com/title/tt{imdb_id}' );
 
 #
 # Site Plugin Configuration
@@ -20,6 +17,7 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '2', '', 'Germany' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_match_types', '0', '', 'exact' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_match_types', '1', '', 'partial' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_faster_alternate', '0', 'use our own fast alternate page search parser', 'TRUE' );
 
 #
 # Site Plugin Input Fields

@@ -6,7 +6,7 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'imdbphp', 'imdbphp', 'IMDBPHP2', 'imdb.gif', 'The source of movie information, but with nothing specific to distribution formats such as DVD and VHS.', 'http://www.imdb.com', 0, 'http://www.imdb.com/title/tt{imdb_id}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'imdbphp', 'imdbphp', 'Imdb.com' , 'imdb.gif', 'The source of movie information, but with nothing specific to distribution formats such as DVD and VHS.', 'http://www.imdb.com', 0, 'http://www.imdb.com/title/tt{imdb_id}' );
 
 #imdb and imdbphp are mutually exclusive
 DELETE FROM s_site_plugin WHERE site_type = 'imdb';

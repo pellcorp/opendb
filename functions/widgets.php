@@ -129,7 +129,7 @@ function custom_select(
 			$display = expand_display_mask($display_mask, $lookup_r, '%');
 			
 			// if all variables were replaced with nothing, then assume empty option
-			if(strlen($lookup_value) == 0 && $display == $empty_display_mask)
+			if(strlen(strval($lookup_value)) == 0 && $display == $empty_display_mask) //thawn: added strval() to fix variable type mismatch warning in php5.3
 			{			
 				$display = '';
 			}
@@ -147,7 +147,7 @@ function custom_select(
 					$var .= "\n<option value=\"".$lookup_value."\" SELECTED>$display";
 				else
 				{
-					if(strcasecmp(trim($value), $lookup_value) === 0)
+					if(strcasecmp(trim($value), strval($lookup_value)) === 0) //thawn: added strval() to fix variable type mismatch warning in php5.3
 					{
 						$value_found=TRUE;
 						$var .= "\n<option value=\"".$lookup_value."\" SELECTED>$display";

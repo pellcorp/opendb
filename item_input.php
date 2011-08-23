@@ -616,8 +616,9 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		$key = array_keys($new_value);
 		for($i=0; $i<=$count; $i++)
 		{
+			is_numeric($key[$i]) ? $label_description = "" : $label_description = " : ${key[$i]}";
 			$field .= "<li id=\"menu-${fieldname}_new${i}\"".($i==0?" class=\"first activeTab\"":"").">
-					<label for=\"menu-${fieldname}_new${i}-cbox\">".$item_attribute_type_r['prompt']."</label>".
+					<label for=\"menu-${fieldname}_new${i}-cbox\">".$item_attribute_type_r['prompt']."$label_description</label>".
 					"<input type=\"radio\" class=\"radio\" name=\"".$fieldname."\" id=\"menu-${fieldname}_new${i}-cbox\" value=\"new${i}\" onclick=\"return activateTab('${fieldname}_new${i}', '${fieldname}-tab-menu', '${fieldname}-tab-content');\"".($i==0?" CHECKED":"")."></li>";
 		}
 	

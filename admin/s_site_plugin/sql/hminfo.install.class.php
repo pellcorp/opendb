@@ -41,7 +41,7 @@ function site_hminfo_install()
 	"	timestamp	DATE,".
 	"	update_on	TIMESTAMP,".
 	"	PRIMARY KEY ( id )".
-	") TYPE=MyISAM COMMENT='Home Theatre Info Lookup Table';";
+	") ENGINE=MyISAM COMMENT='Home Theatre Info Lookup Table';";
 	
 	$create = db_query($query);
 	if ($create )

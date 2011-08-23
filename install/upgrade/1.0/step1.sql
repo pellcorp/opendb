@@ -10,7 +10,7 @@ CREATE TABLE item_instance_relationship (
     related_instance_no SMALLINT( 5 ) NOT NULL,
 PRIMARY KEY ( sequence_number ),
 UNIQUE KEY ( item_id, instance_no, related_item_id, related_instance_no )
-) TYPE=MyISAM COMMENT = 'item instance relationship table';
+) ENGINE=MyISAM COMMENT = 'item instance relationship table';
 
 # 1.0 RC phase removal of language vars
 DELETE FROM s_language_var WHERE varname IN (
@@ -254,14 +254,14 @@ ALTER TABLE user CHANGE pwd pwd VARCHAR(40);
 #
 CREATE TABLE mailbox (
     sequence_number INT( 10 ) NOT NULL AUTO_INCREMENT,
-    sent			TIMESTAMP(14) NOT NULL,
+    sent			TIMESTAMP NOT NULL,
     to_user_id	 	VARCHAR(20) NOT NULL,
     from_user_id 	VARCHAR(20),
     from_email_addr	VARCHAR(255),
     subject			VARCHAR(100),
     message			TEXT,
 PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT = 'mailbox';
+) ENGINE=MyISAM COMMENT = 'mailbox';
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'advanced_search', 'Advanced Search');
 
@@ -469,19 +469,19 @@ CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),
 PRIMARY KEY ( role_name )
-) TYPE=MyISAM COMMENT = 'System Role table';
+) ENGINE=MyISAM COMMENT = 'System Role table';
 
 CREATE TABLE s_permission (
     permission_name VARCHAR(30) NOT NULL,
     description VARCHAR(100),
 PRIMARY KEY ( permission_name )
-) TYPE=MyISAM COMMENT = 'System Permission table';
+) ENGINE=MyISAM COMMENT = 'System Permission table';
 
 CREATE TABLE s_role_permission (
     role_name VARCHAR(20) NOT NULL,
     permission_name VARCHAR(30) NOT NULL,
 PRIMARY KEY ( role_name, permission_name )
-) TYPE=MyISAM COMMENT = 'System Role Permission table';
+) ENGINE=MyISAM COMMENT = 'System Role Permission table';
 
 INSERT INTO s_role(role_name, description) VALUES('ADMINISTRATOR', 'Administrator');
 INSERT INTO s_role(role_name, description) VALUES('OWNER', 'Owner');

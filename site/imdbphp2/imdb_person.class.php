@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb_person.class.php 417 2010-10-11 18:39:38Z izzy $ */
+ /* $Id: imdb_person.class.php 459 2011-08-04 06:05:09Z izzy $ */
 
  require_once (dirname(__FILE__)."/person_base.class.php");
  require_once (dirname(__FILE__)."/imdbsearch.class.php");
@@ -21,7 +21,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 417 $ $Date: 2010-10-11 20:39:38 +0200 (Mo, 11. Okt 2010) $
+  * @version $Revision: 459 $ $Date: 2011-08-04 08:05:09 +0200 (Do, 04. Aug 2011) $
   */
  class imdb_person extends person_base {
 
@@ -52,7 +52,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 417 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 459 $');
     $this->setid($id);
   }
 
@@ -76,6 +76,8 @@
     if (empty($this->fullname)) {
       if ($this->page["Name"] == "") $this->openpage ("Name","person");
       if (preg_match("/<title>(.*?) - IMDb<\/title>/i",$this->page["Name"],$match)) {
+        $this->fullname = trim($match[1]);
+      } elseif (preg_match("/<title>IMDb - (.*?)<\/title>/i",$this->page["Name"],$match)) {
         $this->fullname = trim($match[1]);
       }
     }
@@ -112,8 +114,12 @@
    * @return boolean success
    * @see IMDB person page / (Main page)
    */
-  public function savephoto($path,$thumb=true) {
-    $req = new MDB_Request("");
+  public function savephoto($path,$thumb=TRUE,$rerun=FALSE) {
+    if ($rerun) {
+        $req = new MDB_Request('','',!$this->trigger_referer);
+    } else {
+        $req = new MDB_Request('','',$this->trigger_referer);
+    }
     $photo_url = $this->photo ($thumb);
     if (!$photo_url) return FALSE;
     $req->setURL($photo_url);
@@ -121,10 +127,15 @@
     if (strpos($req->getResponseHeader("Content-Type"),'image/jpeg') === 0
       || strpos($req->getResponseHeader("Content-Type"),'image/gif') === 0
       || strpos($req->getResponseHeader("Content-Type"), 'image/bmp') === 0 ){
-    $fp = $req->getResponseBody();
-    }else{
-    $this->debug_scalar("<BR>*photoerror* ".$photo_url.": Content Type is '".$req->getResponseHeader("Content-Type")."'<BR>");
-    return false;
+      $fp = $req->getResponseBody();
+    } else {
+        if ($rerun) {
+            $this->debug_scalar("<BR>*photoerror* at ".__FILE__." line ".__LINE__. ": ".$photo_url.": Content Type is '".$req->getResponseHeader("Content-Type")."'<BR>");
+            return FALSE;
+        } else {
+            $this->debug_scalar("<BR>Initiate second run for photo '$path'<BR>");
+            return $this->savephoto($path,$thumb,TRUE);
+        }
     }
     $fp2 = fopen ($path, "w");
     if ((!$fp) || (!$fp2)){
@@ -166,7 +177,7 @@
    */
   private function filmograf(&$res,$type) {
     if ($this->page["Name"] == "") $this->openpage ("Name","person");
-    preg_match("!<a name=\"$type\"(.*?)<div class=\"clear\">!msi",$this->page["Name"],$match);
+    preg_match("!<a name=\"$type\"(.*?)<div (id|class)=\">!msi",$this->page["Name"],$match);
     if (empty($type)) $match[1] = $this->page["Name"];
     elseif (empty($match[1])) {
       $pos   = strpos($this->page['Name'],'<a name="'.ucfirst($type).'"');
@@ -181,7 +192,7 @@
       $year = '';
       for ($i=0;$i<$mc;++$i) {
         $char = array();
-        if (preg_match('!<span class="year_column">(\d{4})</span>!ims',$matches[1][$i],$ty)) $year = $ty[1];
+        if (preg_match('!<span class="year_column">(\d{4})(.*?)</span>!ims',$matches[1][$i],$ty)) $year = $ty[1];
         preg_match('!href="/title/tt(\d{7})/">(.*?)</a>!ims',$matches[1][$i],$mov);
         $str = $matches[4][$i]; //preg_replace('|\(\d{4}\)|','',substr($matches[4][$i],0,strpos($matches[4][$i],"<br>")));
         if ( preg_match('!href="/character/ch(\d{7})">(.*?)</a>!ims',$matches[1][$i],$char) ) {
@@ -757,7 +768,7 @@
   * @extends imdbsearch
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 417 $ $Date: 2010-10-11 20:39:38 +0200 (Mo, 11. Okt 2010) $
+  * @version $Revision: 459 $ $Date: 2011-08-04 08:05:09 +0200 (Do, 04. Aug 2011) $
   */
  class imdbpsearch extends imdbsearch {
  #-----------------------------------------------------------[ Constructor ]---
@@ -789,9 +800,10 @@
   /** Setup search results
    * @method results
    * @param optional string URL Replace search URL by your own
+   * @param optional boolean series not used, just for inheritance compatibility issues with PHP5.3+
    * @return array results array of objects (instances of the imdb_person class)
    */
-  public function results($url="") {
+  public function results($url="",$series=TRUE) {
    if ($this->page == "") {
      if (empty($url)) $url = $this->mkurl();
      $be = new MDB_Request($url);

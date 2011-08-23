@@ -10,7 +10,7 @@
 # under the terms of the GNU General Public License (see doc/LICENSE)       #
 #############################################################################
 
-/* $Id: imdb_movielist.class.php 295 2009-11-30 22:35:38Z izzy $ */
+/* $Id: imdb_movielist.class.php 453 2011-07-05 18:09:31Z izzy $ */
 
 require_once (dirname(__FILE__)."/movie_base.class.php");
 
@@ -20,7 +20,7 @@ require_once (dirname(__FILE__)."/movie_base.class.php");
  * @extends movie_base
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 295 $ $Date: 2009-11-30 23:35:38 +0100 (Mo, 30. Nov 2009) $
+ * @version $Revision: 453 $ $Date: 2011-07-05 20:09:31 +0200 (Di, 05. Jul 2011) $
  */
 class imdb_movielist extends movie_base {
 
@@ -31,7 +31,7 @@ class imdb_movielist extends movie_base {
   */
  function __construct() {
    parent::__construct('0000001');
-   $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 295 $');
+   $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 453 $');
    $this->reset_vars();
  }
 
@@ -45,14 +45,15 @@ class imdb_movielist extends movie_base {
    switch ($wt){
      case "CountryYear" :
        $urlname="/List?year=%year&&countries=%countries&&tv=%tv";
+       $urlname="/search/title?year=%year&&countries=%countries&&tv=%tv";
        foreach ($replace as $var=>$val) $urlname = str_replace("%$var",$val,$urlname);
        break;
      case "LanguageYear" :
-       $urlname="/List?year=%year&&language=%language&&tv=%tv";
+       $urlname="/search/title?year=%year&&language=%countries&&tv=%tv";
        foreach ($replace as $var=>$val) $urlname = str_replace("%$var",$val,$urlname);
        break;
      case "MostpopYear" :
-       $urlname="/Sections/Years/%year/total-votes";
+       $urlname="/year/%year";
        foreach ($replace as $var=>$val) $urlname = str_replace("%$var",$val,$urlname);
        break;
      default            :
@@ -69,6 +70,8 @@ class imdb_movielist extends movie_base {
   */
  public function reset_vars() {
    $this->page["CountryYear"] = "";
+   $this->page["LanguageYear"] = "";
+   $this->page["MostpopYear"] = "";
    $this->enable_serials();
    $this->countryYear = array();
    $this->languageYear = array();
@@ -94,15 +97,31 @@ class imdb_movielist extends movie_base {
    $doc = new DOMDocument();
    @$doc->loadHTML($this->page[$pagename]);
    $xp = new DOMXPath($doc);
-   $titles = $xp->query("//td/ol/li/a");
+   $titles  = $xp->query("//div[@id='main']/table/tr/td[3]/a");
+   $details = $xp->query("//div[@id='main']/table/tr/td[3]/span[1]");
+   $serdet  = $xp->query("//div[@id='main']/table/tr/td[3]/span[2]");
+   $serref  = $xp->query("//div[@id='main']/table/tr/td[3]/span[2]/a");
    $nodecount = $titles->length;
    for ($i=0;$i<$nodecount;++$i) {
      preg_match('|(\d{7})/$|',$titles->item($i)->getAttribute('href'),$match);
      $id = $match[1];
-     preg_match('|(.*)\((\d{4})\)|',trim($titles->item($i)->nodeValue),$match);
-     $title = trim($match[1]);
-     $year = $match[2];
-     $ret[] = array('imdbid'=>$id,'title'=>$title,'year'=>year);
+     $title = trim($titles->item($i)->nodeValue);
+     preg_match('!\((\d+).*?\s+(.*?)\)!',$details->item($i)->nodeValue,$match);
+     $year  = $match[1];
+     $mtype = $match[2];
+     if ( strpos(strtolower($mtype),'series')!==FALSE ) $is_serial = 1;
+     else $is_serial = 0;
+     if ( $this->tv=='off' && $is_serial ) continue;
+     if ($is_serial) {
+       preg_match('!\((\d{4})\)!',$serdet->item($i)->nodeValue,$match);
+       $ep_year = $match[1];
+       preg_match('!(\d{7})!',$serref->item($i)->getAttribute('href'),$match);
+       $ep_id   = $match[1];
+       $ep_name = trim($serref->item($i)->nodeValue);
+     } else {
+       $ep_year = ''; $ep_id = 0; $ep_name = '';
+     }
+     $ret[] = array('imdbid'=>$id,'title'=>$title,'year'=>$year,'type'=>$mtype,'serial'=>$is_serial,'episode_imdbid'=>$ep_id,'episode_title'=>$ep_name,'episode_year'=>$ep_year);
    }
  }
 
@@ -140,21 +159,24 @@ class imdb_movielist extends movie_base {
  public function mostpop_by_year($year) {
    $url = 'http://'.$this->imdbsite.$this->set_pagename('MostpopYear',array("year"=>$year));
    $this->getWebPage('MostpopYear',$url);
+
    $doc = new DOMDocument();
    @$doc->loadHTML($this->page['MostpopYear']);
    $xp = new DOMXPath($doc);
-   $votes  = $xp->query("//table[@cellspacing='4']/tr/td[1]");
-   $rating = $xp->query("//table[@cellspacing='4']/tr/td[2]");
-   $titles = $xp->query("//table[@cellspacing='4']/tr/td[3]/a");
+   $rating = $xp->query("//table[@class='results']/tr/td[3]/div[@class='user_rating']/div");
+   $titles = $xp->query("//table[@class='results']/tr/td[3]/a");
+   $years  = $xp->query("//table[@class='results']/tr/td[3]/span[@class='year_type']");
    $nodecount = $titles->length;
+
    for ($i=0;$i<$nodecount;++$i) {
      preg_match('|(\d{7})/$|',$titles->item($i)->getAttribute('href'),$match);
      $id = $match[1];
-     preg_match('|(.*)\((\d{4})\)|',trim($titles->item($i)->nodeValue),$match);
-     $title = trim($match[1]);
-     $year = $match[2];
-     $rate = trim($rating->item($i)->nodeValue);
-     $vote = trim($votes->item($i)->nodeValue);
+     $title = trim($titles->item($i)->nodeValue);
+     $year = trim($years->item($i)->nodeValue);
+     if (!empty($year)) $year = substr($year,1,4);
+     preg_match('!Users rated this\s+(.+)/.+\((.+)\s+vote!',$rating->item($i)->getAttribute('title'),$match);
+     $rate = $match[1];
+     $vote = $match[2];
      $this->mostpopYear[] = array('imdbid'=>$id,'title'=>$title,'year'=>$year,'votes'=>$vote,'rating'=>$rate);
    }
    return $this->mostpopYear;

@@ -12,7 +12,7 @@ CREATE TABLE php_session(
 	expiration 	INT NOT NULL,
 	value 		TEXT NOT NULL,
 	PRIMARY KEY ( SID )
-) TYPE=MyISAM COMMENT='PHP Session table';
+) ENGINE=MyISAM COMMENT='PHP Session table';
 
 #
 # System Config Group
@@ -24,7 +24,7 @@ CREATE TABLE s_config_group (
 	order_no	TINYINT(2) NOT NULL DEFAULT 0,
 	description	VARCHAR(255) NOT NULL,
 	PRIMARY KEY ( id )
-) TYPE=MyISAM COMMENT='System Config Group';
+) ENGINE=MyISAM COMMENT='System Config Group';
 
 #
 # System Config Group Item
@@ -59,7 +59,7 @@ CREATE TABLE s_config_group_item (
 	type			VARCHAR(30) NOT NULL DEFAULT 'text',
     subtype			VARCHAR(255),
 	PRIMARY KEY ( group_id, id, keyid )
-) TYPE=MyISAM COMMENT='System Config Group Item';
+) ENGINE=MyISAM COMMENT='System Config Group Item';
 
 #
 # Override Config Group Item Value
@@ -71,7 +71,7 @@ CREATE TABLE s_config_group_item_var (
 	keyid		VARCHAR(50) NOT NULL DEFAULT '0',
 	value		TEXT NOT NULL,
 	PRIMARY KEY ( group_id, id, keyid )
-) TYPE=MyISAM COMMENT='Config Group Item Variable';
+) ENGINE=MyISAM COMMENT='Config Group Item Variable';
 
 #
 # System Item Type table
@@ -83,7 +83,7 @@ CREATE TABLE s_item_type (
   image				VARCHAR(255),
   order_no			TINYINT(2),
   PRIMARY KEY ( s_item_type )
-) TYPE=MyISAM COMMENT='System Item Type table';
+) ENGINE=MyISAM COMMENT='System Item Type table';
 
 #
 # System Item Type Group
@@ -93,7 +93,7 @@ CREATE TABLE s_item_type_group (
 	s_item_type_group	VARCHAR(10) NOT NULL,
 	description			VARCHAR(60) NOT NULL,
 	PRIMARY KEY ( s_item_type_group )
-) TYPE=MyISAM COMMENT='System Item Type Group';
+) ENGINE=MyISAM COMMENT='System Item Type Group';
 
 #
 # System Item Type Group Relationship
@@ -103,7 +103,7 @@ CREATE TABLE s_item_type_group_rltshp (
 	s_item_type_group	VARCHAR(10) NOT NULL,
 	s_item_type		VARCHAR(10) NOT NULL,
 	PRIMARY KEY ( s_item_type_group, s_item_type )
-) TYPE=MyISAM COMMENT='System Item Type Group Relationship';
+) ENGINE=MyISAM COMMENT='System Item Type Group Relationship';
 
 #
 # Title Display Mask configuration
@@ -113,7 +113,7 @@ CREATE TABLE s_title_display_mask (
 	id				VARCHAR(50) NOT NULL,
 	description     VARCHAR(100) NOT NULL,
 	PRIMARY KEY ( id )
-) TYPE=MyISAM COMMENT='System Title Display Mask Config';
+) ENGINE=MyISAM COMMENT='System Title Display Mask Config';
 
 DROP TABLE IF EXISTS s_title_display_mask_item;
 CREATE TABLE s_title_display_mask_item (
@@ -122,7 +122,7 @@ CREATE TABLE s_title_display_mask_item (
 	s_item_type			VARCHAR(10) NOT NULL DEFAULT '*',
 	display_mask		TEXT,
 	PRIMARY KEY ( stdm_id, s_item_type_group, s_item_type )
-) TYPE=MyISAM COMMENT='System Title Display Mask Config Item';
+) ENGINE=MyISAM COMMENT='System Title Display Mask Config Item';
 
 #
 # Item Listing config
@@ -134,7 +134,7 @@ CREATE TABLE s_item_listing_conf (
 	s_item_type					VARCHAR(10) NOT NULL DEFAULT '*',
 	PRIMARY KEY ( id ),
 	UNIQUE KEY ( s_item_type_group, s_item_type )
-) TYPE=MyISAM COMMENT='Item Listing Configuration';
+) ENGINE=MyISAM COMMENT='Item Listing Configuration';
 
 #
 # Item Listing Column Conf
@@ -168,7 +168,7 @@ CREATE TABLE s_item_listing_column_conf (
 	orderby_default_ind		VARCHAR(1) NOT NULL DEFAULT 'N',
 	orderby_sort_order		VARCHAR(4),
 	PRIMARY KEY ( silc_id, column_no )
-) TYPE=MyISAM COMMENT='Item Listing Column Configuration';
+) ENGINE=MyISAM COMMENT='Item Listing Column Configuration';
 
 #
 # System Attribute Type table
@@ -197,7 +197,7 @@ CREATE TABLE s_attribute_type (
   s_field_type			VARCHAR(10),
   site_type				VARCHAR(10),
   PRIMARY KEY ( s_attribute_type )
-) TYPE=MyISAM COMMENT='System Attribute table';
+) ENGINE=MyISAM COMMENT='System Attribute table';
 
 #
 # System Item Attribute Type relationship table
@@ -213,7 +213,7 @@ CREATE TABLE s_item_attribute_type (
   rss_ind			VARCHAR(1) NOT NULL DEFAULT 'N',
   printable_ind		VARCHAR(1) NOT NULL DEFAULT 'Y',
   PRIMARY KEY ( s_item_type, s_attribute_type, order_no )
-) TYPE=MyISAM COMMENT='System Item Attribute table';
+) ENGINE=MyISAM COMMENT='System Item Attribute table';
 
 #
 # System Attribute Type Lookup table
@@ -227,7 +227,7 @@ CREATE TABLE s_attribute_type_lookup (
   img					VARCHAR(255),
   checked_ind			VARCHAR(1),
   PRIMARY KEY ( s_attribute_type, value )
-) TYPE=MyISAM COMMENT='System Attribute Type Lookup table';
+) ENGINE=MyISAM COMMENT='System Attribute Type Lookup table';
 
 #
 # System Item Status table
@@ -245,7 +245,7 @@ CREATE table s_status_type (
   default_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
   closed_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( s_status_type )
-) TYPE=MyISAM COMMENT='System Item Status table';
+) ENGINE=MyISAM COMMENT='System Item Status table';
 
 #
 # System Address type table
@@ -257,7 +257,7 @@ CREATE TABLE s_address_type (
   display_order				TINYINT(2),
   closed_ind				VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( s_address_type )
-) TYPE=MyISAM COMMENT='System address type';
+) ENGINE=MyISAM COMMENT='System address type';
 
 #
 # System Address Type Attribute relationship table
@@ -271,26 +271,26 @@ CREATE TABLE s_addr_attribute_type_rltshp (
   prompt				VARCHAR(30),
   closed_ind			VARCHAR(1) NOT NULL default 'N',
   PRIMARY KEY ( s_address_type, s_attribute_type, order_no )
-) TYPE=MyISAM COMMENT='System address attribute type relationship';
+) ENGINE=MyISAM COMMENT='System address attribute type relationship';
 
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),
 	signup_avail_ind VARCHAR(1) NOT NULL DEFAULT 'Y',
 PRIMARY KEY ( role_name )
-) TYPE=MyISAM COMMENT = 'System Role table';
+) ENGINE=MyISAM COMMENT = 'System Role table';
 
 CREATE TABLE s_permission (
     permission_name VARCHAR(30) NOT NULL,
 	description VARCHAR(100),
 PRIMARY KEY ( permission_name )
-) TYPE=MyISAM COMMENT = 'System Permission table';
+) ENGINE=MyISAM COMMENT = 'System Permission table';
 
 CREATE TABLE s_role_permission (
 	role_name VARCHAR(20) NOT NULL,
     permission_name VARCHAR(30) NOT NULL,
 PRIMARY KEY ( role_name, permission_name )
-) TYPE=MyISAM COMMENT = 'System Role Permission table';
+) ENGINE=MyISAM COMMENT = 'System Role Permission table';
 
 #
 # User table
@@ -304,10 +304,10 @@ CREATE TABLE user (
   language		VARCHAR(20),
   theme			VARCHAR(20),
   email_addr	VARCHAR(255),
-  lastvisit		TIMESTAMP(14) NOT NULL,
+  lastvisit		TIMESTAMP NOT NULL,
   active_ind	VARCHAR(1) NOT NULL DEFAULT 'Y',
   PRIMARY KEY ( user_id )
-) TYPE=MyISAM COMMENT='User table';
+) ENGINE=MyISAM COMMENT='User table';
 
 #
 # User address
@@ -329,10 +329,10 @@ CREATE TABLE user_address (
   end_dt				DATE,
   public_address_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
   borrow_address_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
-  update_on				TIMESTAMP(14) NOT NULL,
+  update_on				TIMESTAMP NOT NULL,
   PRIMARY KEY ( sequence_number ),
   KEY user_address_idx ( user_id, s_address_type, start_dt )
-) TYPE=MyISAM COMMENT='User address';
+) ENGINE=MyISAM COMMENT='User address';
 
 #
 # User address attribute
@@ -345,9 +345,9 @@ CREATE TABLE user_address_attribute (
   attribute_no 			TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   lookup_attribute_val 	VARCHAR(50),
   attribute_val			TEXT,
-  update_on				TIMESTAMP(14) NOT NULL,
+  update_on				TIMESTAMP NOT NULL,
   PRIMARY KEY ( ua_sequence_number, s_attribute_type, order_no, attribute_no )
-) TYPE=MyISAM COMMENT='User address attribute';
+) ENGINE=MyISAM COMMENT='User address attribute';
 
 #
 # Item table
@@ -360,7 +360,7 @@ CREATE TABLE item (
   PRIMARY KEY ( id ),
   KEY title_idx ( title ),
   KEY s_item_type_idx ( s_item_type )
-) TYPE=MyISAM COMMENT='Item table';
+) ENGINE=MyISAM COMMENT='Item table';
 
 #
 # Item instance table
@@ -373,11 +373,11 @@ CREATE table item_instance (
   borrow_duration	SMALLINT(3) UNSIGNED,
   s_status_type		VARCHAR(1) NOT NULL DEFAULT 'Y',
   status_comment 	VARCHAR(255),
-  update_on			TIMESTAMP(14) NOT NULL,
+  update_on			TIMESTAMP NOT NULL,
   PRIMARY KEY ( item_id, instance_no ),
   KEY owner_id_idx ( owner_id ),
   KEY s_status_type_idx ( s_status_type )
-) TYPE=MyISAM COMMENT='Item Instance table';
+) ENGINE=MyISAM COMMENT='Item Instance table';
 
 CREATE TABLE item_instance_relationship (
     sequence_number INT( 10 ) NOT NULL AUTO_INCREMENT,
@@ -387,7 +387,7 @@ CREATE TABLE item_instance_relationship (
     related_instance_no SMALLINT( 5 ) NOT NULL,
 PRIMARY KEY ( sequence_number ),
 UNIQUE KEY ( item_id, instance_no, related_item_id, related_instance_no )
-) TYPE=MyISAM COMMENT = 'item instance relationship table';
+) ENGINE=MyISAM COMMENT = 'item instance relationship table';
 
 #
 # Item Attribute table
@@ -400,9 +400,9 @@ CREATE TABLE item_attribute (
   attribute_no 			TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   lookup_attribute_val	VARCHAR(50),
   attribute_val			TEXT,
-  update_on				TIMESTAMP(14) NOT NULL,
+  update_on				TIMESTAMP NOT NULL,
   PRIMARY KEY ( item_id, instance_no, s_attribute_type, order_no, attribute_no )
-) TYPE=MyISAM COMMENT='Item Attribute table';
+) ENGINE=MyISAM COMMENT='Item Attribute table';
 
 #
 # User item interest table
@@ -415,11 +415,11 @@ CREATE TABLE user_item_interest (
 	user_id			VARCHAR(20) NOT NULL,
 	level			VARCHAR(1) NOT NULL,
 	comment			text,
-	update_on		TIMESTAMP(14) NOT NULL,
+	update_on		TIMESTAMP NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	KEY user_idx ( user_id ),
 	KEY item_idx ( item_id)
-) TYPE=MyISAM COMMENT='user item interest table';
+) ENGINE=MyISAM COMMENT='user item interest table';
 
 #
 # Borrowed Item table
@@ -434,11 +434,11 @@ CREATE TABLE borrowed_item (
   total_duration	SMALLINT(3) UNSIGNED,
   more_information	TEXT,
   status			VARCHAR(1) NOT NULL,
-  update_on			TIMESTAMP(14) NOT NULL,
+  update_on			TIMESTAMP NOT NULL,
   PRIMARY KEY ( sequence_number ),
   KEY borrower_idx ( borrower_id ),
   KEY item_instance_idx ( item_id, instance_no )
-) TYPE=MyISAM COMMENT='Borrowed Item table';
+) ENGINE=MyISAM COMMENT='Borrowed Item table';
 
 DROP TABLE IF EXISTS borrowed_item_hist;
 CREATE TABLE borrowed_item_hist (
@@ -446,9 +446,9 @@ CREATE TABLE borrowed_item_hist (
   bi_sequence_number	INTEGER(10) UNSIGNED NOT NULL,
   more_information	TEXT,
   status			VARCHAR(1) NOT NULL,
-  update_on			TIMESTAMP(14) NOT NULL,
+  update_on			TIMESTAMP NOT NULL,
   PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT='Borrowed Item History table';
+) ENGINE=MyISAM COMMENT='Borrowed Item History table';
 
 #
 # Review table
@@ -460,25 +460,25 @@ CREATE TABLE review (
   item_id			INTEGER(10) UNSIGNED NOT NULL,
   comment			TEXT,
   rating			VARCHAR(1) NOT NULL,
-  update_on			TIMESTAMP(14) NOT NULL,
+  update_on			TIMESTAMP NOT NULL,
   PRIMARY KEY ( sequence_number ),
   KEY author_idx ( author_id ),
   KEY item_idx ( item_id )
-) TYPE=MyISAM COMMENT='Item Review table';
+) ENGINE=MyISAM COMMENT='Item Review table';
 
 #
 # Mailbox for audit of all email sent from within opendb.
 #
 CREATE TABLE mailbox (
     sequence_number INT( 10 ) NOT NULL AUTO_INCREMENT,
-    sent			TIMESTAMP(14) NOT NULL,
+    sent			TIMESTAMP NOT NULL,
     to_user_id	 	VARCHAR(20) NOT NULL,
     from_user_id 	VARCHAR(20),
     from_email_addr	VARCHAR(255),
     subject			VARCHAR(100),
     message			TEXT,
 PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT = 'mailbox';
+) ENGINE=MyISAM COMMENT = 'mailbox';
 
 #
 # Site Plugin Configuration
@@ -495,7 +495,7 @@ CREATE TABLE s_site_plugin (
 	items_per_page	TINYINT(3) UNSIGNED NOT NULL,
 	more_info_url	VARCHAR(255),
 	PRIMARY KEY ( site_type )
-) TYPE=MyISAM COMMENT='Site Plugin Configuration';
+) ENGINE=MyISAM COMMENT='Site Plugin Configuration';
 
 #
 # This table provides any site plugin specific variable configuration,
@@ -511,7 +511,7 @@ CREATE TABLE s_site_plugin_conf (
 	description	VARCHAR(255),
 	value		VARCHAR(255),
 	PRIMARY KEY ( site_type, name, keyid )
-) TYPE=MyISAM COMMENT='Site Plugin Configuration';
+) ENGINE=MyISAM COMMENT='Site Plugin Configuration';
 
 #
 # Site Plugin Input Field
@@ -530,7 +530,7 @@ CREATE TABLE s_site_plugin_input_field (
 	default_value		VARCHAR(50),
 	refresh_mask	VARCHAR(255),
 	PRIMARY KEY ( site_type, field )
-) TYPE=MyISAM COMMENT='Site Plugin Input Field';
+) ENGINE=MyISAM COMMENT='Site Plugin Input Field';
 
 #
 # Site Plugin Attribute Type Map
@@ -546,7 +546,7 @@ CREATE TABLE s_site_plugin_s_attribute_type_map (
 	lookup_attribute_val_restrict_ind 	VARCHAR(1) DEFAULT 'N',
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type )
-) TYPE=MyISAM COMMENT='Site Plugin Attribute Type Map';
+) ENGINE=MyISAM COMMENT='Site Plugin Attribute Type Map';
 
 #
 # Site Plugin Attribute Type Lookup Map
@@ -560,7 +560,7 @@ CREATE TABLE s_site_plugin_s_attribute_type_lookup_map (
 	lookup_attribute_val	VARCHAR(50) NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_attribute_type, value, lookup_attribute_val )
-) TYPE=MyISAM COMMENT='Site Plugin Attribute Type Lookup Map';
+) ENGINE=MyISAM COMMENT='Site Plugin Attribute Type Lookup Map';
 
 #
 # Site Plugin Link
@@ -577,7 +577,7 @@ CREATE TABLE s_site_plugin_link (
 	title_url		VARCHAR(255),
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_item_type_group, s_item_type, order_no )
-) TYPE=MyISAM COMMENT='Site Plugin Link';
+) ENGINE=MyISAM COMMENT='Site Plugin Link';
 
 #
 # Import Cache table
@@ -590,7 +590,7 @@ CREATE TABLE import_cache (
   content_length	INTEGER(10) UNSIGNED NOT NULL,
   cache_file		VARCHAR(255) NOT NULL,
   PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT='Import Cache table';
+) ENGINE=MyISAM COMMENT='Import Cache table';
 
 #
 # File Cache table
@@ -613,7 +613,7 @@ CREATE TABLE file_cache (
   cache_file			VARCHAR(255),
   cache_file_thumb		VARCHAR(255),
   PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT='File Cache table';
+) ENGINE=MyISAM COMMENT='File Cache table';
 
 #
 # Create announcement table
@@ -624,17 +624,17 @@ CREATE TABLE announcement (
   user_id           VARCHAR(20) NOT NULL,
   title             VARCHAR(255) NOT NULL,
   content	        TEXT,
-  submit_on         TIMESTAMP(14) NOT NULL,
+  submit_on         TIMESTAMP NOT NULL,
   display_days      INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
   closed_ind        VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( sequence_number ),
   KEY submit_idx ( submit_on )
-) TYPE=MyISAM COMMENT='Site Announcements table';
+) ENGINE=MyISAM COMMENT='Site Announcements table';
 
 CREATE TABLE s_file_type_content_group (
   content_group		VARCHAR(10) NOT NULL,
   PRIMARY KEY ( content_group )
-) TYPE=MyISAM COMMENT='System Supported File Content Groups';
+) ENGINE=MyISAM COMMENT='System Supported File Content Groups';
 
 # image is basename of image provided via theme_image call.
 CREATE TABLE s_file_type (
@@ -644,14 +644,14 @@ CREATE TABLE s_file_type (
   image					VARCHAR(255),
   thumbnail_support_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( content_type )
-) TYPE=MyISAM COMMENT='System Supported File Types';
+) ENGINE=MyISAM COMMENT='System Supported File Types';
 
 CREATE TABLE s_file_type_extension (
   content_type	VARCHAR(100) NOT NULL,
   extension		VARCHAR(10) NOT NULL,
   default_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( content_type, extension )
-) TYPE=MyISAM COMMENT='System File Type Alternate Extension';
+) ENGINE=MyISAM COMMENT='System File Type Alternate Extension';
 
 #
 # System Language table
@@ -662,7 +662,7 @@ CREATE TABLE s_language (
 	default_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
 	description	VARCHAR(50) NOT NULL,
 	PRIMARY KEY ( language )
-) TYPE=MyISAM COMMENT='System Language Table';
+) ENGINE=MyISAM COMMENT='System Language Table';
 
 #
 # System Language Variable Table
@@ -673,7 +673,7 @@ CREATE TABLE s_language_var (
 	varname		VARCHAR(50) NOT NULL,
 	value		TEXT,
 	PRIMARY KEY ( language, varname )
-) TYPE=MyISAM COMMENT='System Language Variable Table';
+) ENGINE=MyISAM COMMENT='System Language Variable Table';
 
 #
 # System Table Language Variable Table
@@ -698,5 +698,5 @@ CREATE TABLE s_table_language_var (
 	key3		VARCHAR(50) NOT NULL,
 	value		TEXT,
 	PRIMARY KEY ( language, tablename, columnname, key1, key2, key3 )
-) TYPE=MyISAM COMMENT='System Language Variable Table';
+) ENGINE=MyISAM COMMENT='System Language Variable Table';
 

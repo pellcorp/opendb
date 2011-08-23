@@ -8,7 +8,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: pilot.class.php 420 2010-10-12 18:59:06Z izzy $ */
+ /* $Id: pilot.class.php 456 2011-07-06 09:07:43Z izzy $ */
 
  require_once(dirname(__FILE__)."/movie_base.class.php");
  if (PILOT_IMDBFALLBACK) require_once(dirname(__FILE__)."/imdb.class.php");
@@ -22,7 +22,7 @@
   * @extends movie_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 420 $ $Date: 2010-10-12 20:59:06 +0200 (Di, 12. Okt 2010) $
+  * @version $Revision: 456 $ $Date: 2011-07-06 11:07:43 +0200 (Mi, 06. Jul 2011) $
   */
  class pilot extends movie_base {
 
@@ -36,7 +36,7 @@
     parent::__construct($id);
     if ( empty($this->pilot_apikey) )
       trigger_error('Please provide a valid api key or contact api@moviepilot.de.',E_USER_WARNING);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 420 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 456 $');
     if (PILOT_IMDBFALLBACK) $this->imdb = new imdb($id);
     $this->setid($id);
   }
@@ -136,6 +136,19 @@
     return $this->main_year;
   }
 
+  /** Get range of years for e.g. series spanning multiple years
+   *  This is just here for compatibility with the IMDB class - so for now start==end
+   * @method yearspan
+   * @return array yearspan [start,end] (if there was no range, start==end)
+   * @see MoviePilot page / (TitlePage)
+   */
+  function yearspan() {
+    if ( empty($this->main_yearspan) ) {
+      $this->main_yearspan = array('start'=>$this->year(),'end'=>$this->year());
+    }
+    return $this->main_yearspan;
+  }
+
   /** Get movie types (if any specified)
    * @method movieTypes
    * @return array [0..n] of strings (or empty array if no movie types specified)
@@ -177,6 +190,20 @@
       $this->movieruntimes[] = array("time"=>$runtime,"country"=>$country[0],"comment"=>"");
     }
     return $this->movieruntimes;
+  }
+
+  #----------------------------------------------------------[ Aspect Ratio ]---
+  /** Aspect Ratio of movie screen
+   * @method aspect_ratio
+   * @return string ratio
+   * @see IMDB page / (TitlePage)
+   * @brief If <code>pilot_imdbfill</code> is
+   *        set at least to BASIC_ACCESS, it will be retrieved from IMDB.
+   * @todo Check if this is available from pilot directly
+   */
+  public function aspect_ratio() {
+    if ($this->pilot_imdbfill) $this->aspectratio = $this->imdb->aspect_ratio();
+    return $this->aspectratio;
   }
 
  #----------------------------------------------------------[ Movie Rating ]---
@@ -279,6 +306,18 @@
   public function languages() {
     if ($this->pilot_imdbfill > BASIC_ACCESS) $this->langs = $this->imdb->languages();
     return $this->langs;
+  }
+
+  /** Get all languages this movie is available in, including details
+   * @method languages_detailed
+   * @return array languages (array[0..n] of array[string name, string code, string comment], code being the ISO-Code)
+   * @see IMDB page / (TitlePage)
+   * @brief No data available at MoviePilot. AutoRetrieval from IMDB with
+   *        <code>pilot_imdbfill</code> &gt; BASIC_ACCESS
+   */
+  public function languages_detailed() {
+    if ($this->pilot_imdbfill > BASIC_ACCESS) $this->lang_fulls = $this->imdb->languages_detailed();
+    return $this->langs_full;
   }
 
  #--------------------------------------------------------------[ Genre(s) ]---

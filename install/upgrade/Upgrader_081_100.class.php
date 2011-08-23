@@ -193,9 +193,9 @@ function create_new_item_attribute_table(&$errors)
 		  		attribute_no 			TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   				lookup_attribute_val		VARCHAR(50),
 		  		attribute_val			TEXT,
-  				update_on				TIMESTAMP(14) NOT NULL,
+  				update_on				TIMESTAMP NOT NULL,
 		  	PRIMARY KEY ( item_id, instance_no, s_attribute_type, order_no, attribute_no )
-			) TYPE=MyISAM COMMENT='Item Attribute table'"))
+			) ENGINE=MyISAM COMMENT='Item Attribute table'"))
 		{
 			return TRUE;
 		}
@@ -223,9 +223,9 @@ function create_new_user_address_attribute_table(&$errors)
 				  attribute_no 			TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
 				  lookup_attribute_val 	VARCHAR(50),
 				  attribute_val			TEXT,
-				  update_on				TIMESTAMP(14) NOT NULL,
+				  update_on				TIMESTAMP NOT NULL,
 				  PRIMARY KEY ( ua_sequence_number, s_attribute_type, order_no, attribute_no )
-				) TYPE=MyISAM COMMENT='User address attribute';"))
+				) ENGINE=MyISAM COMMENT='User address attribute';"))
 		{
 			return TRUE;
 		}

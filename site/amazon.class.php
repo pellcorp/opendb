@@ -78,20 +78,17 @@ class amazon extends SitePlugin
 			{
 				// this is a severe memory hog!!!
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
+				//print_r($pageBuffer); //uncomment for debugging
 			
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
-				if( (preg_match("/ class=\"resultCount\">Showing [0-9]+[\s]*-[\s]*[0-9]+ of ([0-9,]+) Results<\//i", $pageBuffer, $regs) || 
-						preg_match("/ class=\"resultCount\">Showing.([0-9]+).Result.*?<\//i", $pageBuffer, $regs) ) )
+				if( (preg_match("/ id=\"resultCount\">.*?<span>Showing.[0-9]+[\s]*-[\s]*[0-9]+.of.([0-9,]+) Results<\//", $pageBuffer, $regs) || 
+						preg_match("/ id=\"resultCount\">.*?<span>Showing.([0-9]+).Result.*?<\//", $pageBuffer, $regs) ) )
 				{
 					// store total count here.
 					$this->setTotalCount($regs[1]);
-
+					
 					// 2 = img, 1 = href, 3 = title		
-					if(preg_match_all("! class=\"imageColumn\".*?".
-									"href=\"(.*?)\">.*?".
-									"<img.*?src=\"([^\"]+)\".*?".
-									"\"srTitle\">([^<]*)<\/span!i", $pageBuffer, $matches))
-
+					if(preg_match_all("/id=\"result_.*?href=\"(.*?)\">.*?<img.*?src=\"([^\"]+)\".*?<a.class=\"title\".*?>(.*?)</i", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
@@ -123,14 +120,21 @@ class amazon extends SitePlugin
 	{
 		// assumes we have an exact match here
 		$pageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/".$search_attributes_r['amazonasin']);
+		//print_r($pageBuffer);
 		
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
+		
+		if(preg_match("!Also available on DVD.*?href=.*?/dp/(.*?)/!ms", $pageBuffer, $regs))
+		{
+			$search_attributes_r['amazonasin']=$regs[1];//hack to redirect the new amazon instant video page to the dvd page
+			$pageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/".$search_attributes_r['amazonasin']);
+		}
 
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
-		//print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
+		print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
 		
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
 		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
@@ -637,7 +641,7 @@ Some search URL examples:
 
 		// Ratio
 		//<li><b>Aspect Ratio:</b> 1.85:1</li>
-		if(preg_match("!<li><b>Aspect Ratio:</b>(.*)<\/li>!", $pageBuffer, $regs))
+		if(preg_match("!<li><b>Aspect Ratio:</b>(.*?)<\/li>!", $pageBuffer, $regs))
 		{
 			if(preg_match_all("/([0-9]{1}\.[0-9]+):1/", $regs[1], $matches))
 			{
@@ -651,7 +655,7 @@ Some search URL examples:
    		}
 
 		//<b>Rating</b>  <img src="http://ec1.images-amazon.com/images/G/01/detail/r._V46905301_.gif" alt="R" align="absmiddle" border="0" height="11" width="12"></li>
-		if (preg_match("/<b>Rating:*<\/b>[\s]*<img src=.*? alt=\"([^\"]+)\".*?>/mi", $pageBuffer, $regs))
+		if (preg_match("!Rated:</span>&nbsp;(.*?)&nbsp;!mis", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('age_rating', $regs[1]);
 		}

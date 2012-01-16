@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: pilot_person.class.php 372 2010-04-26 05:37:31Z izzy $ */
+ /* $Id: pilot_person.class.php 476 2011-10-11 15:19:25Z izzy $ */
 
  require_once (dirname(__FILE__)."/person_base.class.php");
  require_once (dirname(__FILE__)."/imdbsearch.class.php");
@@ -22,7 +22,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 372 $ $Date: 2010-04-26 07:37:31 +0200 (Mo, 26. Apr 2010) $
+  * @version $Revision: 476 $ $Date: 2011-10-11 17:19:25 +0200 (Di, 11. Okt 2011) $
   */
  class pilot_person extends person_base {
 
@@ -57,7 +57,7 @@
     parent::__construct($id);
     if ( empty($this->pilot_apikey) )
       trigger_error('Please provide a valid api key or contact api@moviepilot.de.',E_USER_WARNING);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 372 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 476 $');
     if (PILOT_IMDBFALLBACK) $this->imdb = new imdb_person($id);
     $this->setid($id);
   }
@@ -112,14 +112,14 @@
   public function photo_array() {
     if ( empty($this->photo_array) ) {
       if ($this->page["Images"] == "") $this->openpage ("Images");
-      $icount = $this->page["Images"]->total_entries;
+      $icount = count($this->page["Images"]);
       if (!$icount) return array();
-      foreach ($this->page["Images"]->images as $img) {
-	$this->photo_array[] = array(
-	  "width"=>$img->width,
-	  "size" =>$img->size,
-	  "url"  =>$img->base_url . $img->photo_id . '/' . $img->file_name_base . '.' . $img->extension
-	);
+      foreach ($this->page["Images"] as $img) {
+        $this->photo_array[] = array(
+          "width"=>$img->width,
+          "size" =>$img->size,
+          "url"  =>$img->base_url . $img->photo_id . '/' . $img->file_name_base . '.' . $img->extension
+        );
       }
     }
     return $this->photo_array;
@@ -135,18 +135,18 @@
   public function photo($thumb=true) {
     if (empty($this->main_photo)) {
       $imgs = $this->photo_array();
-      $icount = $this->page["Images"]->total_entries;
+      $icount = count($this->page["Images"]);
       if (!$icount) return FALSE;
       if ($thumb) $width = 9999999;
       else $width = 0;
       foreach ($imgs as $img) {
         if ($thumb && $img['width'] < $width) {
-	  $this->main_photo = $img['url'];
-	  $width = $img['width'];
-	} elseif (!$thumb && $img['width'] > $width) {
-	  $this->main_photo = $img['url'];
-	  $width = $img['width'];
-	}
+          $this->main_photo = $img['url'];
+          $width = $img['width'];
+        } elseif (!$thumb && $img['width'] > $width) {
+          $this->main_photo = $img['url'];
+          $width = $img['width'];
+        }
       }
     }
     return $this->main_photo;

@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb.class.php 460 2011-08-04 22:09:08Z izzy $ */
+ /* $Id: imdb.class.php 486 2011-12-17 23:28:20Z izzy $ */
 
  require_once (dirname(__FILE__)."/movie_base.class.php");
 
@@ -23,7 +23,7 @@
   * @author Georgos Giagas
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 460 $ $Date: 2011-08-05 00:09:08 +0200 (Fr, 05. Aug 2011) $
+  * @version $Revision: 486 $ $Date: 2011-12-18 00:28:20 +0100 (So, 18. Dez 2011) $
   */
  class imdb extends movie_base {
 
@@ -35,7 +35,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 460 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 486 $');
     $this->setid($id);
   }
 
@@ -94,13 +94,27 @@
    */
   private function title_year() {
     if ($this->page["Title"] == "") $this->openpage ("Title");
-    if (@preg_match("/\<title\>(.*) \((.*)(\d{4}|\?{4}).*\)(.*)\<\/title\>/",$this->page["Title"],$match)) {
-      $this->main_title = $match[1];
-      if ($match[2]=="????") $this->main_year = "";
-      else $this->main_year  = $match[3];
+    if (@preg_match('!<title>(IMDb\s*-\s*)?(.*) \((.*)(\d{4}|\?{4}).*\)(.*)(\s*-\s*IMDb)?</title>!',$this->page["Title"],$match)) {
+      $this->main_title = $match[2];
+      if (empty($match[3])) $this->main_movietype = 'Movie';
+      else $this->main_movietype  = $match[3];
+      if ($match[3]=="????") $this->main_year = "";
+      else $this->main_year  = $match[4];
     }
   }
 
+
+  /** Get movie type
+   * @method movietype
+   * @return string movietype (TV series, Movie, ...)
+   * @see IMDB page / (TitlePage)
+   * @brief This is faster than movietypes() as it is retrieved already together with the title.
+   *        If no movietype had been defined explicitly, it returns 'Movie' -- so this is always set.
+   */
+  public function movietype() {
+    if ( empty($this->main_movietype) ) $this->title_year();
+    return $this->main_movietype;
+  }
 
   /** Get movie title
    * @method title
@@ -220,7 +234,7 @@
    */
   private function rate_vote() {
     if ($this->page["Title"] == "") $this->openpage ("Title");
-    if (preg_match("@class\=\"star\-bar\-user\-rate\"><b>(\d{1,2}\.\d)@i",$this->page["Title"],$match)){
+    if (preg_match('!<span itemprop="ratingValue">(\d{1,2}\.\d)!i',$this->page["Title"],$match)){
       $this->main_rating = $match[1];
     } else {
       $this->main_rating = 0;
@@ -327,7 +341,7 @@
   public function languages() {
    if (empty($this->langs)) {
     if ($this->page["Title"] == "") $this->openpage ("Title");
-    if (preg_match_all('!<a href="/language/(.*?)">\s*(.*?)\s*</a>(\s+\((.*?)\)|)!m',$this->page["Title"],$matches))
+    if (preg_match_all('!<a href="/language/(.*?)"[^>]*>\s*(.*?)\s*</a>(\s+\((.*?)\)|)!m',$this->page["Title"],$matches))
       $this->langs = $matches[2];
       $mc = count($matches[2]);
       for ($i=0;$i<$mc;$i++) {
@@ -374,8 +388,8 @@
   public function genres() {
     if (empty($this->moviegenres)) {
       if ($this->page["Title"] == "") $this->openpage ("Title");
-      if (preg_match_all("@<a href\=\"/genre/[\w\-]+\"\>(.*?)\</a>@",$this->page["Title"],$matches)) {
-        $this->moviegenres = $matches[1];
+      if (preg_match_all("@<a href\=\"/genre/[\w\-]+\"[^>]*\>(.*?)\</a>@",$this->page["Title"],$matches)) {
+        $this->moviegenres = array_unique($matches[1]);
       } elseif (preg_match('!<div class="infobar">(.*?)</div>!ims',$this->page['Title'],$match)) {
         if (preg_match_all('!href="/genre/.*?"\s*>(.*?)<!ims',$match[1],$matches)) {
           $this->moviegenres = $matches[1];
@@ -465,7 +479,7 @@
    */
   public function is_serial() {
     if ( $this->page["Title"] == "" ) $this->openpage("Title");
-    return preg_match('|<h5>TV Series:</h5>|i',$this->page["Title"],$matches);
+    return preg_match('|<span class="tv-series-smaller">|i',$this->page["Title"],$matches);
   }
 
  #--------------------------------------------------------[ Plot (Outline) ]---
@@ -479,6 +493,8 @@
     if ($this->main_plotoutline == "") {
       if ($this->page["Title"] == "") $this->openpage("Title");
       if (preg_match('!<span class="rating-rating">.*?(<p>.*?)\s*<div!ims',$this->page['Title'],$match)) {
+        $this->main_plotoutline = trim($match[1]);
+      } elseif (preg_match('!<p itemprop="description">\s*(.*?)\s*</p>!ims',$this->page['Title'],$match)) {
         $this->main_plotoutline = trim($match[1]);
       } elseif($fallback) {
         $this->main_plotoutline = $this->storyline();
@@ -1155,9 +1171,16 @@
       if ( $this->page["Episodes"] == "cannot open page" ) return array(); // no such page
       if ( preg_match_all('!<h3>Season (\d+), Episode (\d+): <a href="/title/tt(\d{7})/">(.*)</a></h3><span.*>Original Air Date.*<strong>(.*)</strong></span><br>\s*(.*)(<h5>|</td>)!Ui',$this->page["Episodes"],$matches) ) {
         for ( $i = 0 ; $i < count($matches[0]); $i++ ) {
-          $this->season_episodes[$matches[1][$i]][$matches[2][$i]] = array(
+          $this->season_episodes[$matches[1][$i]][] = array(
               "imdbid" => $matches[3][$i],"title" => $matches[4][$i], "airdate" => $matches[5][$i],
               "plot" => $matches[6][$i], "season" => $matches[1][$i],"episode" => $matches[2][$i]);
+        }
+      }
+      if ( preg_match_all('!<h3><a href="/title/tt(\d{7})/">(.*)</a></h3><span.*>Original Air Date.*<strong>(.*)</strong></span><br>\s*(.*)(<h5>|</td>)!Ui',$this->page["Episodes"],$matches) ) {
+        for ( $i = 0 ; $i < count($matches[0]); $i++ ) {
+          $this->season_episodes[0][] = array(
+              "imdbid" => $matches[1][$i],"title" => $matches[2][$i], "airdate" => $matches[3][$i],
+              "plot" => $matches[4][$i], "season" => 0,"episode" => $i);
         }
       }
     }
@@ -1179,7 +1202,7 @@
       $tag_e = strrpos($this->page["Goofs"],'<ul class="trivia">'); // maybe more than one
       $tag_e = strrpos($this->page["Goofs"],"</ul>");
       $goofs = substr($this->page["Goofs"],$tag_s,$tag_e - $tag_s);
-      if (preg_match_all("/<li>.*?<b>(.*?)<\/b>(.*?)<br>\s*<br><\/li>/ims",$goofs,$matches)) {
+      if (preg_match_all("/<li>.*?<b>(.*?)<\/b>(.*?)<br>\s*(<br>)?<\/li>/ims",$goofs,$matches)) {
         $gc = count($matches[1]);
         for ($i=0;$i<$gc;++$i) $this->goofs[] = array("type"=>$matches[1][$i],"content"=>$matches[2][$i]);
       }

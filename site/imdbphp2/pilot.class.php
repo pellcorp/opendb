@@ -8,7 +8,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: pilot.class.php 456 2011-07-06 09:07:43Z izzy $ */
+ /* $Id: pilot.class.php 481 2011-10-12 10:45:48Z izzy $ */
 
  require_once(dirname(__FILE__)."/movie_base.class.php");
  if (PILOT_IMDBFALLBACK) require_once(dirname(__FILE__)."/imdb.class.php");
@@ -22,7 +22,7 @@
   * @extends movie_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 456 $ $Date: 2011-07-06 11:07:43 +0200 (Mi, 06. Jul 2011) $
+  * @version $Revision: 481 $ $Date: 2011-10-12 12:45:48 +0200 (Mi, 12. Okt 2011) $
   */
  class pilot extends movie_base {
 
@@ -36,7 +36,7 @@
     parent::__construct($id);
     if ( empty($this->pilot_apikey) )
       trigger_error('Please provide a valid api key or contact api@moviepilot.de.',E_USER_WARNING);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 456 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 481 $');
     if (PILOT_IMDBFALLBACK) $this->imdb = new imdb($id);
     $this->setid($id);
   }
@@ -98,7 +98,7 @@
    switch ($wt){
     case "Title"       : $urlname="/movies/imdb-id-".(int)$this->imdbid().".json"; break;
     case "Credits"     : $urlname="/movies/imdb-id-".(int)$this->imdbid()."/casts.json"; break;
-    case "Trailers"    : $urlname="/movies/imdb-id-".(int)$this->imdbid()."/trailers.json"; break;
+    case "Trailers"    : $urlname="/movies/imdb-id-".(int)$this->imdbid()."/trailer.json"; break;
     case "Images"      : $urlname="/movies/imdb-id-".(int)$this->imdbid()."/images.json"; break;
     default            :
       $this->page[$wt] = "unknown page identifier";
@@ -159,6 +159,18 @@
   public function movieTypes() {
     if ($this->pilot_imdbfill) $this->main_movietypes = $this->imdb->movieTypes();
     return $this->main_movietypes;
+  }
+
+  /** Get movie type
+   * @method movietype
+   * @return string movietype (TV series, Movie, ...)
+   * @see IMDB page / (TitlePage)
+   * @brief No data available at MoviePilot. If <code>pilot_imdbfill</code> is
+   *        set at least to BASIC_ACCESS, it will be retrieved from IMDB.
+   */
+  public function movietype() {
+    if ($this->pilot_imdbfill) $this->main_movietype = $this->imdb->movieType();
+    return $this->main_movietype;
   }
 
  #---------------------------------------------------------------[ Runtime ]---
@@ -537,11 +549,12 @@
   public function mainPictures() {
     if ( empty($this->main_pictures) ) {
       if ( $this->page['Images'] == '' ) $this->openpage('Images');
-      if ( $this->page['Images']->total_entries < 1 ) return array(); // no pics available
-      for ($i=0;$i<$this->page['Images']->total_entries;++$i) {
-        $baseurl = $this->page['Images']->images[$i]->base_url.$this->page['Images']->images[$i]->photo_id."/"
-             . $this->page['Images']->images[$i]->file_name_base;
-        $this->main_pictures[] = array('imgsrc'=>$baseurl."_poster.".$this->page['Images']->images[$i]->extension,'bigsrc'=>$baseurl.".".$this->page['Images']->images[$i]->extension,'imglink'=>'');
+      $total_entries = count($this->page['Images']);
+      if ( $total_entries < 1 ) return array(); // no pics available
+      for ($i=0;$i<$total_entries;++$i) {
+        $baseurl = $this->page['Images'][$i]->base_url.$this->page['Images'][$i]->photo_id."/"
+             . $this->page['Images'][$i]->file_name_base;
+        $this->main_pictures[] = array('imgsrc'=>$baseurl."_poster.".$this->page['Images'][$i]->extension,'bigsrc'=>$baseurl.".".$this->page['Images'][$i]->extension,'imglink'=>'');
       }
     }
     return $this->main_pictures;

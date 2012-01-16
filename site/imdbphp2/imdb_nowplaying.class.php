@@ -1,68 +1,81 @@
 <?php
- #############################################################################
- # IMDBPHP                              (c) Giorgos Giagas & Itzchak Rehberg #
- # written by Giorgos Giagas                                                 #
- # extended & maintained by Itzchak Rehberg <izzysoft AT qumran DOT org>     #
- # http://www.izzysoft.de/                                                   #
- # ------------------------------------------------------------------------- #
- # IMDBPHP NOW PLAYING                                     (c) Ricardo Silva #
- # written by Ricardo Silva (banzap) <banzap@gmail.com>                      #
- # http://www.ricardosilva.pt.tl/                                            #
- # ------------------------------------------------------------------------- #
- # This program is free software; you can redistribute and/or modify it      #
- # under the terms of the GNU General Public License (see doc/LICENSE)       #
- #############################################################################
- # $Id: imdb_nowplaying.class.php 241 2009-10-07 17:18:53Z izzy $
+#############################################################################
+# IMDBPHP                              (c) Giorgos Giagas & Itzchak Rehberg #
+# written by Giorgos Giagas                                                 #
+# extended & maintained by Itzchak Rehberg <izzysoft AT qumran DOT org>     #
+# http://www.izzysoft.de/                                                   #
+# ------------------------------------------------------------------------- #
+# IMDBPHP NOW PLAYING                   (c) Ricardo Silva & Itzchak Rehberg #
+# written by Ricardo Silva (banzap) <banzap@gmail.com>                      #
+# http://www.ricardosilva.pt.tl/                                            #
+# ------------------------------------------------------------------------- #
+# This program is free software; you can redistribute and/or modify it      #
+# under the terms of the GNU General Public License (see doc/LICENSE)       #
+#############################################################################
+# $Id: imdb_nowplaying.class.php 480 2011-10-12 09:24:03Z izzy $
 
- require_once (dirname(__FILE__)."/mdb_base.class.php");
+require_once (dirname(__FILE__)."/mdb_base.class.php");
 
- #=================================================[ The IMDB Person class ]===
- /** Obtain the Now Playing Movies in theaters of USA, from IMDB
-  * @package IMDB
-  * @class imdb_nowplaying
-  * @author Ricardo Silva (banzap) <banzap@gmail.com>
-  * @version $Revision: 241 $ $Date: 2009-10-07 19:18:53 +0200 (Mi, 07. Okt 2009) $
-  */
- class imdb_nowplaying {
- 	var $nowplayingpage = "http://www.imdb.com/nowplaying/";
-	var $page = "";
+#=================================================[ The IMDB Person class ]===
+/** Obtain the Now Playing Movies in theaters of USA, from IMDB
+ * @package IMDB
+ * @class imdb_nowplaying
+ * @author Ricardo Silva (banzap) <banzap@gmail.com>
+ * @author Itzchak Rehberg
+ * @version $Revision: 480 $ $Date: 2011-10-12 11:24:03 +0200 (Mi, 12. Okt 2011) $
+ */
+class imdb_nowplaying {
+  var $nowplayingpage = "http://www.imdb.com/movies-in-theaters/";
+  var $page = "";
 
-	/** Constructor: Obtain the raw data from IMDB site
-	 * @constructor imdb_nowplaying
-	 */
-	function imdb_nowplaying(){
-	   $req = new MDB_Request($this->nowplayingpage);
-	   $req->sendRequest();
-	   $this->page=$req->getResponseBody();
-	   $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 241 $');
-	}
+  /** Constructor: Obtain the raw data from IMDB site
+   * @constructor imdb_nowplaying
+   */
+  function __construct() {
+     $req = new MDB_Request($this->nowplayingpage);
+     $req->sendRequest();
+     $this->page=$req->getResponseBody();
+     $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 480 $');
+  }
 
-	/** Retrieve the Now Playing Movies
-	 * @method getNowPlayingMovies
-	 * @return array of IMDB IDs
-	 */
-	function getNowPlayingMovies(){
-	  $matchinit = "<!-- begin main body -->";
-	  $matchend = "<!-- begin box office top 10 -->";
-	  $init_pos = strpos($this->page,$matchinit);
-  	  $end_pos = strpos($this->page,$matchend);
-	  $init_pos += (strlen($matchinit)+1);
-	  $offset = $init_pos;
-	  $i=0;
-	  $res = array();
-	  while($offset<$end_pos){
-	    $pattern = "<a href=\"/title/tt(\d+)/\">";
-	    $matches = "";
-	    preg_match($pattern, $this->page , $matches,PREG_OFFSET_CAPTURE,$offset);
-	    if($end_pos<$matches[0][1]+1) break;
-	    $mid_i = strpos($this->page,"tt",$matches[0][1])+2;
-	    $mid = substr($matches[0][0],17,7);
-	    $contem = in_array($mid, $res);
-	    if(!$contem) $res[$i] = $mid;
-	    $offset = $matches[0][1]+1;
-	    $i++;
-	  }
-	  return $res;
-	}
- }
+  /** Retrieve the Now Playing Movies
+   * @method getNowPlayingMovies
+   * @return array of IMDB IDs
+   */
+  function getNowPlayingMovies() {
+    $matchinit = '<h1 class="header">';
+    $matchend = "<!-- begin TOP_RHS -->";
+    $init_pos = strpos($this->page,$matchinit);
+    $end_pos = strpos($this->page,$matchend);
+    //$pattern = '!href="/title/tt(\d{7})/!';
+    $pattern = '!rg/in-theaters/overview-title/images/b.gif\?link=/title/tt(\d+)!';
+    if ( preg_match_all($pattern, substr($this->page,$init_pos,$end_pos - $init_pos), $matches) ) {
+      $res = array_values(array_unique($matches[1]));
+    } else {
+      $res = array();
+    }
+    return $res;
+  }
+
+  /** Retrieve the Top 10 Box Office Movies
+   * @method getTop10BoxOfficeMovies
+   * @return array[0..n] of IMDB IDs
+   * @author almathie
+   * @author izzy
+   */
+  public function getTop10BoxOfficeMovies() {
+    $matchinit = "<h3>In Theaters Now - Box Office Top Ten";
+    $matchend = '<div class=" see-more">';
+    $init_pos = strpos($this->page,$matchinit);
+    $end_pos = strpos($this->page,$matchend,$init_pos);
+    $pattern = '!rg/in-theaters/overview-title/images/b.gif\?link=/title/tt(\d+)!';
+    if ( preg_match_all($pattern, substr($this->page,$init_pos,$end_pos - $init_pos), $matches) ) {
+      $res = array_values(array_unique($matches[1]));
+    } else {
+      $res = array();
+    }
+    return $res;
+  }
+
+} // endOfClass
 ?>

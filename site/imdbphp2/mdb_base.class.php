@@ -8,7 +8,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: mdb_base.class.php 458 2011-07-08 05:50:27Z izzy $ */
+ /* $Id: mdb_base.class.php 484 2011-12-17 23:03:01Z izzy $ */
 
 require_once (dirname(__FILE__)."/browseremulator.class.php");
 if (defined('IMDBPHP_CONFIG')) require_once (IMDBPHP_CONFIG);
@@ -45,10 +45,10 @@ define('FULL_ACCESS',9);
  * @author Georgos Giagas
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 458 $ $Date: 2011-07-08 07:50:27 +0200 (Fr, 08. Jul 2011) $
+ * @version $Revision: 484 $ $Date: 2011-12-18 00:03:01 +0100 (So, 18. Dez 2011) $
  */
 class mdb_base extends mdb_config {
-  var $version = '2.0.6';
+  var $version = '2.1.0';
 
   /** Last response from the IMDB server
    *  This is a 3-digit code according to RFC2616. This is e.g. a "200" for "OK",
@@ -101,14 +101,14 @@ class mdb_base extends mdb_config {
  #---------------------------------------------------------[ Other Helpers ]---
   protected $months = array("January"=>"01","February"=>"02","March"=>"03","April"=>"04",
            "May"=>"05","June"=>"06","July"=>"07","August"=>"08","September"=>"09",
-	   "October"=>"10","November"=>"11","December"=>"12");
+           "October"=>"10","November"=>"11","December"=>"12");
   /** Get numerical value for month name
    * @method monthNo
    * @param string name name of month
    * @return integer month number
    */
   function monthNo($mon) {
-    return $this->months[$mon];
+    return @$this->months[$mon];
   }
 
  #-------------------------------------------------------------[ Open Page ]---
@@ -143,7 +143,7 @@ class mdb_base extends mdb_config {
         $this->debug_scalar("cannot open page (error 404): $url");
         return false; break;
       case "HTTP/1.1 301":
-      case "HTTP/1.1 302":
+      case "HTTP/1.1 302": // echo "<pre>";print_r($head);echo "</pre>\n";
       case "HTTP/1.1 200": break;
       default: $this->debug_scalar("HTTP response code not handled explicitly: '".$head[0]."'"); break;
     }

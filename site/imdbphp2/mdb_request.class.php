@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: mdb_request.class.php 429 2010-12-01 16:20:49Z izzy $ */
+ /* $Id: mdb_request.class.php 468 2011-10-11 11:14:24Z izzy $ */
 
 if ( isset($PEAR) && $PEAR ) { // Use the HTTP_Request class from the PEAR project.
   require_once("HTTP/Request.php");
@@ -24,8 +24,8 @@ if ( isset($PEAR) && $PEAR ) { // Use the HTTP_Request class from the PEAR proje
       else $user_agent = 'Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3';
       $this->addHeader("User-Agent", $user_agent);
     }
-    function getLastResponseHeaders($url) {
-      $head = $this->head($url);
+    function getLastResponseHeaders($url='') {
+      $head = $this->getResponseHeader($url);
       return array($head["response"],$head["Date"],$head["Server"],"",$head["Connection"],$head["Content-Type"]);
     }
   }

@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb_person.class.php 459 2011-08-04 06:05:09Z izzy $ */
+ /* $Id: imdb_person.class.php 484 2011-12-17 23:03:01Z izzy $ */
 
  require_once (dirname(__FILE__)."/person_base.class.php");
  require_once (dirname(__FILE__)."/imdbsearch.class.php");
@@ -21,7 +21,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 459 $ $Date: 2011-08-04 08:05:09 +0200 (Do, 04. Aug 2011) $
+  * @version $Revision: 484 $ $Date: 2011-12-18 00:03:01 +0100 (So, 18. Dez 2011) $
   */
  class imdb_person extends person_base {
 
@@ -52,7 +52,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 459 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 484 $');
     $this->setid($id);
   }
 
@@ -193,14 +193,13 @@
       for ($i=0;$i<$mc;++$i) {
         $char = array();
         if (preg_match('!<span class="year_column">(\d{4})(.*?)</span>!ims',$matches[1][$i],$ty)) $year = $ty[1];
-        preg_match('!href="/title/tt(\d{7})/">(.*?)</a>!ims',$matches[1][$i],$mov);
-        $str = $matches[4][$i]; //preg_replace('|\(\d{4}\)|','',substr($matches[4][$i],0,strpos($matches[4][$i],"<br>")));
+        preg_match('!href="/title/tt(\d{7})/"\s*>(.*?)</a>!ims',$matches[1][$i],$mov);
         if ( preg_match('!href="/character/ch(\d{7})">(.*?)</a>!ims',$matches[1][$i],$char) ) {
           $chid   = $char[1];
           $chname = $char[2];
         } else {
           $chid   = '';
-          if ( preg_match('|\.\.\.\. ([^>]+)|',$str,$char) ) $chname = $char[1];
+          if ( preg_match('!<br/>\s*([^>]+)\s*<div!',$matches[0][$i],$char) ) $chname = $char[1];
           else $chname = '';
         }
         if ( empty($chname) ) {
@@ -593,7 +592,7 @@
    */
   public function pubprints() {
     if (empty($this->pub_prints)) {
-      if ( $this->page["Publicity"] == "" ) $this->openpage ("Publicity","person");
+      if ( empty($this->page["Publicity"]) ) $this->openpage ("Publicity","person");
       $pos_s = strpos($this->page["Publicity"],"<h5>Biography (print)</h5>");
       $pos_e = strpos($this->page["Publicity"],"<br",$pos_s);
       $block = substr($this->page["Publicity"],$pos_s,$pos_e - $pos_s);
@@ -672,16 +671,14 @@
     @preg_match_all("|<tr>(.*)</tr>|iU",$block,$matches); // get the rows
     $lc = count($matches[0]);
     for ($i=0;$i<$lc;++$i) {
-      //if (@preg_match('/href="(.*)">(.*)<\/a>.*valign="top">(.*),\s*(.*|)(,\s*by.*"author" href="(.*)">(.*)|)</iU',$matches[1][$i],$match)) {
-      // links have been removed from the site at 2010-02-22
       if (@preg_match('|<td.*?>(.*?)</td><td.*?>(.*?)</td>|ms',$matches[1][$i],$match)) {
         @preg_match('/(\d{1,2}|)\s*(\S+|)\s*(\d{4}|)/i',$match[2],$dat);
-        $datum = array("day"=>$dat[1],"month"=>trim($dat[2]),"mon"=>$this->monthNo(trim($dat[2])),"year"=>trim($dat[3]),"full"=>$match[3]);
+        $datum = array("day"=>$dat[1],"month"=>trim($dat[2]),"mon"=>$this->monthNo(trim($dat[2])),"year"=>trim($dat[3]),"full"=>$dat[0]);
         if (strlen($dat[0])) $match[2] = trim(substr($match[2],strlen($dat[0])+1));
         @preg_match('|<a name="author">(.*?)</a>|ims',$match[2],$author);
-        if (strlen($author[0])) $match[2] = trim(str_replace(', by: '.$author[0],'',$match[2]));
-        //$res[] = array("inturl"=>$match[1],"name"=>$match[2],"date"=>$datum,"details"=>trim($match[4]),"auturl"=>$match[6],"author"=>$match[7]);
-        $res[] = array("inturl"=>'',"name"=>$match[1],"date"=>$datum,"details"=>trim($match[2]),"auturl"=>'',"author"=>$author[1]);
+        if (!empty($author) && strlen($author[0])) $match[2] = trim(str_replace(', by: '.$author[0],'',$match[2]));
+        if (!empty($author)) $resauthor = $author[1]; else $resauthor = '';
+        $res[] = array("inturl"=>'',"name"=>$match[1],"date"=>$datum,"details"=>trim($match[2]),"auturl"=>'',"author"=>$resauthor);
       }
     }
   }
@@ -768,7 +765,7 @@
   * @extends imdbsearch
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 459 $ $Date: 2011-08-04 08:05:09 +0200 (Do, 04. Aug 2011) $
+  * @version $Revision: 484 $ $Date: 2011-12-18 00:03:01 +0100 (So, 18. Dez 2011) $
   */
  class imdbpsearch extends imdbsearch {
  #-----------------------------------------------------------[ Constructor ]---

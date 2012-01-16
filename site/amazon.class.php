@@ -134,7 +134,7 @@ class amazon extends SitePlugin
 
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
-		print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
+		//print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
 		
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
 		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||

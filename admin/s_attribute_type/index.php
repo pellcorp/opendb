@@ -232,8 +232,11 @@ function display_attribute_type_form($HTTP_VARS)
 	$isFirst = true;
 	echo("<ul class=\"tabMenu\" id=\"tab-menu\">");
 	while(list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs))
+	
 	{
-		echo("<li id=\"menu-pane$letter\"".($isFirst?" class=\"first activetab\" ":"")." onclick=\"return activateTab('pane$letter')\">&nbsp;$letter&nbsp;</li>");
+		$isFirst?$class="first":$class="";
+		if ($letter == $HTTP_VARS['active_tab']||($HTTP_VARS['active_tab']==""&&$isFirst)) $class.=" activeTab";
+		echo("<li id=\"menu-pane$letter\" class=\"$class\" onclick=\"return activateTab('pane$letter')\">&nbsp;$letter&nbsp;</li>");
 		$isFirst = false;
 	}
 	echo("</ul>");
@@ -243,7 +246,9 @@ function display_attribute_type_form($HTTP_VARS)
 	echo('<div id="tab-content">');
 	while(list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs))
 	{
-		echo("<div id=\"pane$letter\" class=\"".($isFirst?"tabContent":"tabContentHidden")."\">\n".
+		($isFirst&&$HTTP_VARS['active_tab']=="")?$class="tabContent":$class="tabContentHidden";
+		if ($letter == $HTTP_VARS['active_tab']) $class="tabContent";
+		echo("<div id=\"pane$letter\" class=\"$class\">\n".
 		    "\n<table>".
 			"<tr class=\"navbar\">".
 			"<th>Type</th>".
@@ -254,7 +259,7 @@ function display_attribute_type_form($HTTP_VARS)
 		
 		while(list(,$attribute_type_r) = each($attribute_type_rs))
 		{
-			echo(get_s_attribute_type_row($attribute_type_r, $row));	
+			echo(get_s_attribute_type_row($attribute_type_r, $row, $letter));	
 		}
 
 		echo("</table></div>");
@@ -274,7 +279,9 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	echo("<div class=\"tabContainer\"><form name=\"s_attribute_type_lookup\" action=\"$PHP_SELF\" method=\"POST\">".
 		"<input type=\"hidden\" name=\"type\" value=\"".$ADMIN_TYPE."\">".
 		"<input type=\"hidden\" name=\"op\" value=\"update-lookups\">".
-		"<input type=\"hidden\" name=\"s_attribute_type\" value=\"".$HTTP_VARS['s_attribute_type']."\">");
+		"<input type=\"hidden\" name=\"s_attribute_type\" value=\"".$HTTP_VARS['s_attribute_type']."\">".
+		"<input type=\"hidden\" name=\"active_tab\" value=\"".$HTTP_VARS['active_tab']."\">");
+
 		
 	$row = 0;
 	$attribute_type_rows = NULL;
@@ -355,7 +362,7 @@ function display_lookup_attribute_type_form($HTTP_VARS)
 	echo("</form></div>");
 }
 
-function get_s_attribute_type_row($attribute_type_r, $row)
+function get_s_attribute_type_row($attribute_type_r, $row, $letter = "A")
 {
 	global $ADMIN_TYPE;
 	global $PHP_SELF;
@@ -367,11 +374,11 @@ function get_s_attribute_type_row($attribute_type_r, $row)
 	$block .= "\n<td class=\"data\">".$attribute_type_r['s_field_type']."</td>";
 
 	$block .= "\n<td class=\"data\">";
-	$block .= " <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit</a>";
-	$block .= " / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Delete</a>";
+	$block .= " <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit&s_attribute_type=".$attribute_type_r['s_attribute_type']."&active_tab=".$letter."\">Edit</a>";
+	$block .= " / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=delete&s_attribute_type=".$attribute_type_r['s_attribute_type']."&active_tab=".$letter."\">Delete</a>";
 	
 	if($attribute_type_r['lookup_attribute_ind']=='Y')
-		$block .= " / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit-lookups&s_attribute_type=".$attribute_type_r['s_attribute_type']."\">Edit Lookup</a>";
+		$block .= " / <a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=edit-lookups&s_attribute_type=".$attribute_type_r['s_attribute_type']."&active_tab=".$letter."\">Edit Lookup</a>";
 	
 	$block .= "</td></tr>";
 	
@@ -681,7 +688,7 @@ if($HTTP_VARS['op'] == 'delete')
 				echo "\n<h3>Delete Attribute type</h3>";
 				echo(get_op_confirm_form($PHP_SELF,
 						"Are you sure you want to delete attribute type '".$HTTP_VARS['s_attribute_type']."'?",
-				array('type'=>$ADMIN_TYPE, 'op'=>'delete', 's_attribute_type'=>$HTTP_VARS['s_attribute_type'])));
+				array('type'=>$ADMIN_TYPE, 'op'=>'delete', 's_attribute_type'=>$HTTP_VARS['s_attribute_type'], 'active_tab'=>$HTTP_VARS['active_tab'])));
 			}
 			else
 			{
@@ -881,6 +888,7 @@ else if($HTTP_VARS['op'] == 'insert')
 			else
 			{
 				$HTTP_VARS['op'] = 'edit';
+				$HTTP_VARS['active_tab'] = strtoupper(substr(trim($HTTP_VARS['s_attribute_type']),0,1));
 			}
 		}
 		else
@@ -972,7 +980,7 @@ if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
 	echo get_widget_tooltip_array();
 
-	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&active_tab=".$HTTP_VARS['active_tab']."\">Back to Main</a>]</p>");
 		
 	if($HTTP_VARS['op'] == 'edit')
 	{
@@ -998,6 +1006,7 @@ if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 	echo("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
 	echo("\n<input type=\"hidden\" name=\"type\" value=\"".$HTTP_VARS['type']."\">");
 	echo("\n<input type=\"hidden\" name=\"op\" value=\"$save_op\">");
+	echo("\n<input type=\"hidden\" name=\"active_tab\" value=\"".$HTTP_VARS['active_tab']."\">");
 		
 	echo("\n<table>");
 	display_edit_form($attribute_type_r, $HTTP_VARS);
@@ -1018,7 +1027,7 @@ else if($HTTP_VARS['op'] == 'edit-lookups')
 	// Do for both 'update' and 'edit'
 	// ################################################################
 
-	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE\">Back to Main</a>]</p>");
+	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&active_tab=".$HTTP_VARS['active_tab']."\">Back to Main</a>]</p>");
 
 	echo("<script language=\"JavaScript1.2\">
 		function toggleChecked(element, name)

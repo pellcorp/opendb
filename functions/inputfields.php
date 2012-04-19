@@ -271,6 +271,10 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 			return FALSE;
 		}
 	}
+	//print_r("<pre>");
+	//print_r($item_attribute_type_r[s_attribute_type]);
+	//print_r($value);
+	//print_r("</pre>");
 	
 	if(is_not_empty_array($value) && $item_attribute_type_r['lookup_attribute_ind'] != 'Y')
 	{
@@ -333,7 +337,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 			case 'email':
 				for($i=0; $i<count($value); $i++)
 				{
-					if(!is_valid_email_addr($value[$i]))
+					if(!is_valid_email_addr($value[$i])&&($item_attribute_type_r['compulsory_ind'] == 'Y' && strlen(trim($value[$i]))>0))
 					{
 						$error = array('error'=>get_opendb_lang_var('email_is_not_valid', 'prompt', $item_attribute_type_r['prompt']),'detail'=>'');
 						if(is_array($errors))
@@ -350,19 +354,22 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 			case 'datetime':
 				for($i=0; $i<count($value); $i++)
 				{
-					$timestamp = get_timestamp_for_datetime($value[$i], $item_attribute_type_r['input_type_arg1']);
-					if($timestamp===FALSE)
+					if ($item_attribute_type_r['compulsory_ind'] == 'Y' || strlen(trim($value[$i]))>0)
 					{
-						//else perhaps it is a timestamp value already.
-						$timestamp = get_timestamp_for_datetime($value[$i], 'YYYYMMDDHH24MISS');
+						$timestamp = get_timestamp_for_datetime($value[$i], $item_attribute_type_r['input_type_arg1']);
 						if($timestamp===FALSE)
 						{
-							$error = array('error'=>get_opendb_lang_var('datetime_is_not_valid', array('prompt'=>$item_attribute_type_r['prompt'], 'format_mask'=>$item_attribute_type_r['input_type_arg1'])),'detail'=>'');
-							if(is_array($errors))
-								$errors[] = $error;
-							else
-								$errors = $error;
-							return FALSE;
+							//else perhaps it is a timestamp value already.
+							$timestamp = get_timestamp_for_datetime($value[$i], 'YYYYMMDDHH24MISS');
+							if($timestamp===FALSE)
+							{
+								$error = array('error'=>get_opendb_lang_var('datetime_is_not_valid', array('prompt'=>$item_attribute_type_r['prompt'], 'format_mask'=>$item_attribute_type_r['input_type_arg1'])),'detail'=>'');
+								if(is_array($errors))
+									$errors[] = $error;
+								else
+									$errors = $error;
+								return FALSE;
+							}
 						}
 					}
 				}
@@ -396,7 +403,7 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors)
 			case 'number':
 				for($i=0; $i<count($value); $i++)
 				{
-					if(!is_numeric($value[$i]))
+					if(!is_numeric($value[$i])&&($item_attribute_type_r['compulsory_ind'] == 'Y' && strlen(trim($value[$i]))>0))
 					{
 						$error = array('error'=>get_opendb_lang_var('prompt_must_be_format', array('prompt'=>$item_attribute_type_r['prompt'], 'format'=>'[0-9]')),'detail'=>'');
 						if(is_array($errors))
@@ -692,7 +699,7 @@ function number_field($name, $prompt, $length, $maxlength, $compulsory_ind, $val
 	}
 }
 
-function get_datetime_value($value) {
+function get_datetime_value($value, $format_mask = "", $auto_datetime = "") {
 	if(strlen($value)>0) {
 		// the timestamp is stored in the database with the format YYYYMMDDHH24MISS
 		$timestamp = get_timestamp_for_datetime($value, 'YYYYMMDDHH24MISS');
@@ -730,7 +737,7 @@ function get_datetime_value($value) {
  *		MI - Minutes (00 - 59)
  *		SS - Seconds (00 - 59)
 */
-function datetime_field($fieldname, $prompt, $format_mask, $auto_datetime, $compulsory_ind, $value, $onchange_event, $disabled = FALSE, $multi_value = FALSE)
+function datetime_field($name, $prompt, $format_mask, $auto_datetime, $compulsory_ind, $value, $onchange_event, $disabled = FALSE, $multi_value = FALSE)
 {
 	if(get_opendb_config_var('widgets', 'enable_javascript_validation')!==FALSE) {
 		$onchange = "onchange=\"".compulsory_ind_check($prompt, $compulsory_ind)."if(this.value.length > 0 && !is_datetime(this.value, '".$format_mask."')){alert('".get_opendb_lang_var('datetime_is_not_valid', array('prompt'=>$prompt,'format_mask'=>$format_mask))."');return false;} $onchange_event return true;\"";
@@ -740,11 +747,11 @@ function datetime_field($fieldname, $prompt, $format_mask, $auto_datetime, $comp
 	
 	if($multi_value) {
 		for($i=0; $i<count($value); $i++) {
-			$value[$i] = get_datetime_value($value[$i]);
+			$value[$i] = get_datetime_value($value[$i], $format_mask, $auto_datetime);
 		}
 		return multivalue_text_field('text', $name, $size, $maxlength, $onchange, $value);
 	} else {
-		$value = get_datetime_value($value);
+		$value = get_datetime_value($value, $format_mask, $auto_datetime);
 		return singlevalue_text_field('text', $name, $size, $maxlength, $onchange, $value, $disabled);
 	}
 }

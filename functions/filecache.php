@@ -28,7 +28,7 @@ include_once("./functions/utils.php");
 include_once("./functions/file_type.php");
 include_once("./functions/fileutils.php");
 include_once("./functions/OpenDbSnoopy.class.inc");
-include_once('./functions/phpthumb/phpthumb.class.php');
+include_once('./lib/phpthumb/phpthumb.class.php');
 include_once("./functions/item_attribute.php");
 
 function add_url_to_temp_file_cache($url) {

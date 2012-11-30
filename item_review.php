@@ -141,7 +141,7 @@ if(is_site_enabled())
 				{
 					$HTTP_VARS['comment'] = filter_input_field('htmlarea(55,10)', $HTTP_VARS['comment']);
 					
-					if(validate_review_input($HTTP_VARS, &$errors))
+					if(validate_review_input($HTTP_VARS, $errors))
 					{
 						if(insert_review($HTTP_VARS['item_id'], get_opendb_session_var('user_id'), $HTTP_VARS['comment'], $HTTP_VARS['rating']))
 							echo ("<p class=\"success\">".get_opendb_lang_var('review_added')."</p>");
@@ -162,7 +162,7 @@ if(is_site_enabled())
 						{
 							$HTTP_VARS['comment'] = filter_input_field('htmlarea(55,10)', $HTTP_VARS['comment']);
 							
-							if(validate_review_input($HTTP_VARS, &$errors))
+							if(validate_review_input($HTTP_VARS, $errors))
 							{
 								if(update_review($HTTP_VARS['sequence_number'], $HTTP_VARS['comment'], $HTTP_VARS['rating']))
 									echo ("<p class=\"success\">".get_opendb_lang_var('review_updated')."</p>");

@@ -134,7 +134,7 @@ class GDImage {
 	
 		$sendFunc = $this->_image_type_r['sendfunc'];
 		
-		$this->_image = $sendFunc($this->_image);
+		$sendFunc($this->_image);
 	
 		// destroy image when done
 		ImageDestroy($this->_image);

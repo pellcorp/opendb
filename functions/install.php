@@ -595,7 +595,6 @@ function check_opendb_database($hostname, $database, $username, $password, &$err
 	if($link !== FALSE)
 	{
 		db_close($link);
-		
 		return TRUE;
 	}
 	else

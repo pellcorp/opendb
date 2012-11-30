@@ -436,6 +436,7 @@ INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, t
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'noreply_address', 2, 'No Reply Address', 'Configure no-reply address for events such as password resets', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email', 'windows_smtp_server', 3, 'Windows SMTP Server', 'If smtp server either configured via php mail or smtp mailer is running on windows (for example if its an MS Exchange Server) and mail is not getting through, it may help to check this.', 'boolean');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('email', 'mailer', 4, 'Mailer', '', 'value_select', 'smtp,mail,none');
+INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type, subtype ) VALUES ('email.smtp', 'secure', 5, 'Email SMTP Secure Connection', 'Enables secure connections with the SMTP server (ssl or tls).', 'value_select', 'none,ssl,tls');
 
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email.smtp', 'host', 1, 'Email SMTP Host', '', 'text');
 INSERT INTO s_config_group_item ( group_id, id, order_no, prompt, description, type ) VALUES ('email.smtp', 'port', 2, 'Email SMTP Port', '', 'number');

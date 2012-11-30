@@ -487,7 +487,7 @@ function get_site_item_input_data($op, $item_r, $HTTP_VARS)
 
 // This function will calculate a field input_field value,
 // based on $HTTP_VARS, $op and $indexes (Used for site operations)
-function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_type, $attribute_val, &$HTTP_VARS, &$_FILES)
+function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_type, $attribute_val, &$HTTP_VARS)
 {
 	if(is_not_empty_array($HTTP_VARS))// Lets try to get field value, from HTTP
 	{
@@ -720,7 +720,7 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 	}
 }
 
-function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fields)
+function get_edit_item_form($op, $item_r, $HTTP_VARS, &$upload_file_fields)
 {
 	// is at least one field a compulsory field?
 	$compulsory_fields = FALSE;
@@ -754,7 +754,7 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 			if($op == 'refresh')
 			{
 				$old_value = get_old_field_value($item_r, $item_attribute_type_r['s_field_type'], $item_attribute_type_r['attribute_val']);
-				$new_value = get_field_value($op, $item_r, $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], $item_attribute_type_r['s_field_type'], $item_attribute_type_r['attribute_val'], $HTTP_VARS, $_FILES);
+				$new_value = get_field_value($op, $item_r, $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], $item_attribute_type_r['s_field_type'], $item_attribute_type_r['attribute_val'], $HTTP_VARS);
 	
 				// this represents multiple selections for a single value, lookup / multi value attributes will
 				// be dealt with together.
@@ -779,7 +779,7 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 			else //if($op == 'refresh')
 			{
 				$old_value = FALSE;
-				$new_value = get_field_value($op, $item_r, $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], $item_attribute_type_r['s_field_type'], $item_attribute_type_r['attribute_val'], $HTTP_VARS, $_FILES);
+				$new_value = get_field_value($op, $item_r, $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no'], $item_attribute_type_r['s_field_type'], $item_attribute_type_r['attribute_val'], $HTTP_VARS);
 	
 				if(is_not_empty_array($new_value) &&
 						!is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
@@ -858,7 +858,7 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 	}
 }
 
-function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
+function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS)
 {
 	$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'instance_field_types');
 	if($results)
@@ -974,7 +974,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 	}
 }
 
-function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
+function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS)
 {
 	global $PHP_SELF;
 	
@@ -986,7 +986,7 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 	else
 		$op2 = $op; // last resort!
 	
-	$formContents = get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, $upload_file_fields);
+	$formContents = get_edit_item_form($op, $item_r, $HTTP_VARS, $upload_file_fields);
 	if($formContents!==FALSE)
 	{
 		$pageContents = '';
@@ -1054,7 +1054,7 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 		$pageContents .= "<div class=\"tabContentHidden\" id=\"instance_info\">";
 		$pageContents .= "<h3>".get_opendb_lang_var('instance_info')."</h3>";
 	
-		$formContents = get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
+		$formContents = get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS);
 		if($formContents!==FALSE)
 		{
 			$pageContents .= $formContents;
@@ -1080,13 +1080,13 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 	}
 }
 
-function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
 				is_user_granted_permission(PERM_ITEM_ADMIN) )
 	{
-		$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
+		$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS);
 		if($formContents != FALSE)
 			return $formContents;
 		else
@@ -1104,7 +1104,7 @@ function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILE
 	}
 }
 
-function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
@@ -1112,7 +1112,7 @@ function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &
 	{
 		if(is_valid_item_type_structure($item_r['s_item_type']))
 		{
-			$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES);
+			$formContents = get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS);
 			if($formContents != FALSE)
 				return $formContents;
 			else
@@ -1314,7 +1314,7 @@ function do_op_title($item_r, $status_type_r, $op)
 	echo ("<h2>".$item_title." ".get_item_image($item_r['s_item_type'])."</h2>\n");
 }
 
-function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 			
@@ -1324,7 +1324,7 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 
 	$op = NULL;
 	
-	$return_val = handle_item_insert($item_r, $HTTP_VARS, $_FILES, $errors);
+	$return_val = handle_item_insert($item_r, $HTTP_VARS, $errors);
 	if($return_val === TRUE)
 	{
     	$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
@@ -1376,7 +1376,7 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 			echo format_error_block($errors);
 			
 			$HTTP_VARS['op'] = 'new';
-			$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);
+			$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $errors);
 			if($formContents !== FALSE)
 				echo $formContents;
 			else
@@ -1421,7 +1421,7 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	
@@ -1443,7 +1443,7 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	
     if($return_val === TRUE)
     {
-		$return_val = handle_item_update($item_r, $HTTP_VARS, $_FILES, $errors);
+		$return_val = handle_item_update($item_r, $HTTP_VARS, $errors);
     }
     
 	if($return_val === "__INVALID_DATA__")
@@ -1452,7 +1452,7 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 							
 		$HTTP_VARS['op'] = 'edit';
 								
-		$formContents = handle_edit_or_refresh($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);
+		$formContents = handle_edit_or_refresh($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $errors);
 		if($formContents !== FALSE)
 		{
 			echo $formContents;
@@ -1479,7 +1479,7 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	
@@ -1530,7 +1530,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 		$item_r['instance_no'] = NULL;
 		
 		$errors = NULL;						
-		$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);
+		$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $errors);
 		if($formContents !== FALSE)
 			echo $formContents;
 		else
@@ -1540,7 +1540,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 	}
 }
 
-function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	global $titleMaskCfg;
@@ -1580,14 +1580,14 @@ function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-function perform_new_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_new_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 			
 	do_op_title($item_r, $status_type_r, $HTTP_VARS['op'] == 'clone_item'?'clone_item':'new');
 	
 	$errors = NULL;						
-	$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);
+	$formContents = handle_new_or_site($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $errors);
 	if($formContents !== FALSE)
 		echo $formContents;
 	else
@@ -1596,14 +1596,14 @@ function perform_new_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &
 	}
 }
 
-function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	
 	do_op_title($item_r, $status_type_r, $HTTP_VARS['op'] == 'newinstance'?'newinstance':'edit');
 	
 	$errors = NULL;						
-	$formContents = handle_edit_or_refresh($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $_FILES, $errors);
+	$formContents = handle_edit_or_refresh($HTTP_VARS['op'], $item_r, $status_type_r, $HTTP_VARS, $errors);
 	if($formContents !== FALSE)
 	{
 		echo $formContents;
@@ -1614,7 +1614,7 @@ function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 	}
 }
 
-function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	$sitePlugin =& get_site_plugin_instance($HTTP_VARS['site_type']);
 	if($sitePlugin !== FALSE)
@@ -1698,11 +1698,11 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 					// expand $HTTP_VARS to bypass edit form.
 					$HTTP_VARS = get_site_item_input_data($HTTP_VARS['op'], $item_r, $HTTP_VARS);
 
-					perform_update_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+					perform_update_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 				}
 				else
 				{
-					perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+					perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 				}
 			}//if(is_exists_item($item_r['item_id']))
 			else
@@ -1716,11 +1716,11 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 					// expand $HTTP_VARS to bypass edit form.
 					$HTTP_VARS = get_site_item_input_data($HTTP_VARS['op'], $item_r, $HTTP_VARS);
 				
-					perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+					perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 				}
 				else
 				{
-					perform_new_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+					perform_new_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 				}
 			}
 			
@@ -1733,7 +1733,7 @@ function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 		{
 			// no info found - drop down to new operation.
 			$HTTP_VARS['op'] = 'new';
-			perform_new_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+			perform_new_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 		}
 	}//if($sitePlugin !== FALSE)
 	else
@@ -1824,31 +1824,31 @@ if(is_site_enabled())
 					switch($HTTP_VARS['op'])
 					{
 						case 'insert':
-							perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 							
 						case 'delete':
-							perform_delete_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_delete_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 						
 						case 'update':
-							perform_update_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_update_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 							
 						case 'newinstance':
-							perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 						
 						case 'clone_item':
-							perform_cloneitem_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_cloneitem_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 						
 						case 'new':
-							perform_new_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_new_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 							
 						case 'edit':
-							perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 
 						case 'site-add':
@@ -1861,7 +1861,7 @@ if(is_site_enabled())
 
 						case 'site-search':
 						case 'site':
-							perform_site_process($item_r, $status_type_r, $HTTP_VARS, $_FILES, $footer_links_r);
+							perform_site_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 							break;
 							
 						default:

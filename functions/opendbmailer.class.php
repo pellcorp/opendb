@@ -62,7 +62,11 @@ class OpenDbMailer extends PHPMailer
 
 				if(strlen($email_smtp_r['port'])>0)
 					$this->Port = $email_smtp_r['port'];
-					
+				
+				if($email_smtp_r['secure'] != 'none') {
+					$this->SMTPSecure = $email_smtp_r['secure'];// sets the prefix to the server
+				}
+				
     	        if(strlen($email_smtp_r['username'])>0 && strlen($email_smtp_r['password'])>0) {
 					$this->Username = $email_smtp_r['username'];
 					$this->Password = $email_smtp_r['password'];

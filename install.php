@@ -548,7 +548,8 @@ function install_create_opendb_user_and_database($HTTP_VARS, &$db_details_r, &$e
 		}
 		else
 		{
-			$errors[] = array('error'=>'Database '.$HTTP_VARS['dbname'].'@'.$HTTP_VARS['host'].' not found or accessible.', 'detail'=>'You must provide appropriate MySQL Username and MySQL Password credentials.');
+			$errors[] = array('error'=>'Database '.$HTTP_VARS['dbname'].'@'.$HTTP_VARS['host'].' not found or accessible.', 
+					'detail'=>$error);
 			return FALSE;
 		}
 	}

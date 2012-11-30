@@ -55,7 +55,8 @@ function get_group_block_input_field($config_group_item_r, $value)
 	switch($config_group_item_r['type'])
 	{
 	    case 'boolean':
-			return checkbox_field($fieldname, $config_group_item_r['prompt'], ($value!==NULL&$value===TRUE), 'TRUE');
+			return checkbox_field($fieldname, $config_group_item_r['prompt'], 
+				($value!==NULL && $value===TRUE), 'TRUE');
             break;
             
         case 'readonly':

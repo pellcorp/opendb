@@ -925,12 +925,13 @@ if(is_site_enabled())
 				
 				//@TODO This should be moved to HTML_listing class.
 				$xajax = new xajax();
+				$xajax->configure('responseType','XML');
 				$xajax->configure('javascript URI', 'lib/xajax/');
 				$xajax->configure('debug', false);
 				$xajax->configure('statusMessages', true);
 				$xajax->configure('waitCursor', true);
-				$xajax->registerFunction("ajax_update_interest_level");
-				$xajax->registerFunction("ajax_remove_all_interest_level");
+				$xajax->register(XAJAX_FUNCTION, "ajax_update_interest_level");
+				$xajax->register(XAJAX_FUNCTION, "ajax_remove_all_interest_level");
 				$xajax->processRequest();
 			}
 

@@ -44,7 +44,7 @@ include_once("./functions/status_type.php");
 *   that even then, you will have to call this twice to insert any item_instance specific
 *   attributes.
 */
-function handle_item_attributes($op, $item_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_item_attributes($op, $item_r, $HTTP_VARS, &$errors)
 {
 	// for these operations, no instance_no context is possible
 	// item instance attributes will be handled in a separate call to this function, as a updateinstance op
@@ -158,7 +158,7 @@ function handle_item_attributes($op, $item_r, $HTTP_VARS, $_FILES, &$errors)
 * Validate item_attributes will actually update the $HTTP_VARS variable
 * with the final filtered value
 */
-function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$errors)
+function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, &$errors)
 {
 	$errors = NULL;
 	$all_fields_validated=TRUE;
@@ -255,7 +255,7 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$err
  *  "__ABORTED__"		- Operation was aborted
  * "__INVALID_DATA__" 	- indicates that the data entered was not validated
  */
-function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_item_insert(&$item_r, $HTTP_VARS, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
@@ -265,7 +265,7 @@ function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 		if(is_valid_item_type_structure($item_r['s_item_type']))
 		{
 			// We need to get the title	
-			if(validate_item_attributes('insert', $item_r['s_item_type'], $HTTP_VARS, $_FILES, $errors))
+			if(validate_item_attributes('insert', $item_r['s_item_type'], $HTTP_VARS, $errors))
 			{
 				$fieldname = 'title';
 				if(!is_array($HTTP_VARS[$fieldname]))
@@ -310,7 +310,7 @@ function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 								$item_r['item_id'] = $new_item_id;
 	
 		                        // insert any item level attributes
-	    	                    handle_item_attributes('insert', $item_r, $HTTP_VARS, $_FILES, $errors);
+	    	                    handle_item_attributes('insert', $item_r, $HTTP_VARS, $errors);
 	                        
 								return TRUE;
 							}
@@ -384,11 +384,11 @@ function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
  *
  * Return "__INVALID_DATA__" - indicates that the data entered was not validated
  */
-function handle_item_update(&$item_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_item_update(&$item_r, $HTTP_VARS, &$errors)
 {
 	if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_ADMIN))
 	{
-		if(validate_item_attributes('update', $item_r['s_item_type'], $HTTP_VARS, $_FILES, $errors))
+		if(validate_item_attributes('update', $item_r['s_item_type'], $HTTP_VARS, $errors))
 		{
 			$fieldname = 'title';
 			if(!is_array($HTTP_VARS[$fieldname]))
@@ -412,7 +412,7 @@ function handle_item_update(&$item_r, $HTTP_VARS, $_FILES, &$errors)
 			
 			if(update_item($item_r['item_id'], $item_r['title']))
 			{
-				handle_item_attributes('update', $item_r, $HTTP_VARS, $_FILES, $errors);
+				handle_item_attributes('update', $item_r, $HTTP_VARS, $errors);
 				return TRUE;
 			}
 			else //if(update_item($item_r['item_id'], ifempty($title_val, $item_r['title'])))
@@ -471,7 +471,7 @@ function handle_item_instance_insert(&$item_r, $status_type_r, $HTTP_VARS, &$err
 
    					copy_related_item_instance_relationships($item_r['item_id'], $item_r['instance_no']);
     				
-				    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $_FILES, $errors);
+				    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $errors);
 
 					return TRUE;
 				}
@@ -572,7 +572,7 @@ function handle_item_instance_update($item_r, $status_type_r, $HTTP_VARS, &$erro
 				
 				if(update_item_instance($item_r['item_id'], $item_r['instance_no'], $update_status_type, $status_comment, $borrow_duration))
 				{
-				    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $_FILES, $errors);
+				    handle_item_attributes('updateinstance', $item_r, $HTTP_VARS, $errors);
 					return TRUE;
 				}
 				else

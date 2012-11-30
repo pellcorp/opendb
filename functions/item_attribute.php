@@ -768,9 +768,9 @@ function get_root_filename($filename)
 	$file_r = parse_file($filename);
 	$filename_r = parse_numeric_suffix($file_r['name']);
 	
-	if(strlen($filename_r['prefix'])>0 && is_numeric($filename['suffix'])) {
+	if(is_array($filename_r) && strlen($filename_r['prefix'])>0 && is_numeric($filename['prefix'])) {
 		$file_r['name'] = $filename_r['prefix'];
-	} else if(strlen($filename_r['suffix'])>0) { // filename is number only!
+	} else if(is_array($filename_r) && strlen($filename_r['suffix'])>0) { // filename is number only!
 		$file_r['name'] = $filename_r['suffix'].'_';
 	}
 	return $file_r;

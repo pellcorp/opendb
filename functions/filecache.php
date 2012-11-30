@@ -332,7 +332,7 @@ function file_cache_save_thumbnail_file($file_cache_r, &$errors)
 			$phpThumb = new phpThumb();
 			
 			// prevent issues with safe mode and /tmp directory
-			//$phpThumb->config_temp_directory = './itemcache';
+			$phpThumb->setParameter('config_cache_directory', realpath('./itemcache'));
 			
 			$phpThumb->setParameter('config_error_die_on_error', FALSE);
 			//$phpThumb->setParameter('config_prefer_imagemagick', FALSE);
@@ -359,9 +359,10 @@ function file_cache_save_thumbnail_file($file_cache_r, &$errors)
 			$phpThumb->setParameter('f', $file_type_r['extension']);
 			$phpThumb->setParameter('config_output_format', $file_type_r['extension']);
 
-			$phpThumb->setSourceFilename($sourceFile);
+			$phpThumb->setSourceFilename(realpath($sourceFile));
 
-			$directory = file_cache_get_cache_type_directory($file_cache_r['cache_type']);
+			$directory = realpath(file_cache_get_cache_type_directory($file_cache_r['cache_type']));
+			
 			$thumbnailFile = $directory.'/'.$file_cache_r['cache_file_thumb'];
 			if ($phpThumb->GenerateThumbnail() && $phpThumb->RenderToFile($thumbnailFile))
 			{

@@ -332,7 +332,7 @@ function file_cache_save_thumbnail_file($file_cache_r, &$errors)
 			$phpThumb = new phpThumb();
 			
 			// prevent issues with safe mode and /tmp directory
-			$phpThumb->setParameter('config_cache_directory', realpath('./itemcache'));
+			//$phpThumb->setParameter('config_cache_directory', realpath('./itemcache'));
 			
 			$phpThumb->setParameter('config_error_die_on_error', FALSE);
 			//$phpThumb->setParameter('config_prefer_imagemagick', FALSE);

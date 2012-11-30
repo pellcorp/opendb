@@ -1,7 +1,7 @@
 /*
- overlibmws_function.js plug-in module - Copyright Foteos Macrides 2002-2006
+ overlibmws_function.js plug-in module - Copyright Foteos Macrides 2002-2010. All rights reserved.
    For support of the FUNCTION feature.
-   Initial: August 18, 2002 - Last Revised: April 24, 2005
+   Initial: August 18, 2002 - Last Revised: January 26, 2008
  See the Change History and Command Reference for overlibmws via:
 
 	http://www.macridesweb.com/oltest/

@@ -77,7 +77,7 @@ function generate_language_sql($language, $options = NULL)
 				while(list(,$table) = each($table_r))
 				{
 					$tableconf_r = get_system_table_config($table); // key, column
-					if(is_array($tableconf_r['columns']))
+					if(is_array($tableconf_r) && is_array($tableconf_r['columns']))
 					{
 						reset($tableconf_r['columns']);
 						while(list(, $column) = each($tableconf_r['columns']))
@@ -221,7 +221,7 @@ function build_table_page($language)
 	while(list(,$table) = each($table_r))
 	{
 		$tableconf_r = get_system_table_config($table);
-		if(is_array($tableconf_r['columns']))
+		if(is_array($tableconf_r) && is_array($tableconf_r['columns']))
 		{
 			reset($tableconf_r['columns']);
 			while(list(, $column) = each($tableconf_r['columns']))

@@ -502,16 +502,16 @@ function build_boolean_clause($statement_rs, $column_name, $match_mode, $mode='A
 	{
 		if(strlen($query)>0)
 			$query .= " $mode ";
-			
-		if(is_array($statement['not']))
+		
+		if(is_array($statement) && is_array($statement['not']))
 		{
 			$query .= "NOT (".build_boolean_clause($statement['not'], $column_name, $match_mode, $mode, $case_sensitive).")";
 		}
-		else if(is_array($statement['and']))
+		else if(is_array($statement) && is_array($statement['and']))
 		{
 			$query .= "(".build_boolean_clause($statement['and'], $column_name, $match_mode, 'AND', $case_sensitive).")";
 		}
-		else if(is_array($statement['or']))
+		else if(is_array($statement) && is_array($statement['or']))
 		{
 			$query .= "(".build_boolean_clause($statement['or'], $column_name, $match_mode, 'OR', $case_sensitive).")";
 		}

@@ -106,7 +106,7 @@ function get_edit_form_tooltip($columnname)
 	if(isset($_COLUMN_HELP[$columnname]))
 	{
 	    $block = '';
-	    if(is_array($_COLUMN_HELP[$columnname]))
+	    if(is_array($_COLUMN_HELP) && is_array($_COLUMN_HELP[$columnname]))
 	    {
 	        for($i=0; $i<count($_COLUMN_HELP[$columnname]); $i++)
 	        {

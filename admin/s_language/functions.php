@@ -30,7 +30,7 @@ function fetch_system_table_column_langvar_rs($language, $table, $column, $optio
 	if($options == OPENDB_LANG_INCLUDE_DEFAULT)
 	{
 		$tableconf_r = get_system_table_config($table);
-		if(is_array($tableconf_r['key']))
+		if(is_array($tableconf_r) && is_array($tableconf_r['key']))
 		{
 			$query = "SELECT tablename, columnname";
 		
@@ -108,7 +108,7 @@ function fetch_language_langvar_rs($language, $options = NULL)
 function validate_s_table($table, $key1, $key2, $key3)
 {
 	$tableconf_r = get_system_table_config($table);
-	if(is_array($tableconf_r['key']))
+	if(is_array($tableconf_r) && is_array($tableconf_r['key']))
 	{
 		if(count($tableconf_r['key']) == 1 && strlen($key1)>0 && strlen($key2)==0 && strlen($key3)==0)
 			return TRUE;

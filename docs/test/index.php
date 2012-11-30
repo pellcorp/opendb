@@ -12,8 +12,8 @@
 		<li><a href="test_mysql.php">Test Database</a></li>
 		<li><a href="test_upload.php">Test File Upload</a></li>
 		<li><a href="test_xml_import.php">Test XML Processing</a></li>
+		<li><a href="test_phpthumb.php">Test phpThumb Config</a></li>
 		<li><a href="test_thumbnails.php">Test Thumbnail Generation</a></li>
-		<li><a href="test_phpthumb.php">Test Thumbnail 2</a></li>
 	</ul>
 </body>
 </html>

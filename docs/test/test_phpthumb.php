@@ -45,13 +45,11 @@ $gd_info                  = gd_info();
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>phpThumb configuration analyzer</title>
+	<title>phpThumb analyzer</title>
 	<link rel="stylesheet" type="text/css" href="/style.css" title="style sheet">
 </head>
 <body style="background-color: #CCCCCC;">
 
-This demo analyzes your settings (phpThumb.config.php and server/PHP) for <a href="http://phpthumb.sourceforge.net"><b>phpThumb()</b></a>.<br>
-<br>
 <table border="1">
 	<tr><th colspan="8">&lt;-- bad . . . . . good --&gt;</th></tr>
 	<tr>
@@ -122,68 +120,6 @@ if (!$versions['base']['latest']) {
 }
 echo ';">'.$phpThumb->phpthumb_version;
 echo '</th><td>'.$message.'.<br></td></tr>';
-
-
-echo '<tr><th>phpThumb.config.php:</th><th colspan="2" style="background-color: ';
-if (file_exists('../phpThumb.config.php') && !file_exists('../phpThumb.config.php.default')) {
-	echo 'lime;">"phpThumb.config.php" exists and "phpThumb.config.php.default" does not';
-} elseif (file_exists('../phpThumb.config.php') && file_exists('../phpThumb.config.php.default')) {
-	echo 'yellow;">"phpThumb.config.php" and "phpThumb.config.php.default" both exist';
-} elseif (!file_exists('../phpThumb.config.php') && file_exists('../phpThumb.config.php.default')) {
-	echo 'yellow;">rename "phpThumb.config.php.default" to "phpThumb.config.php"';
-} else {
-	echo 'yellow;">"phpThumb.config.php" not found (nor "phpThumb.config.php")';
-}
-echo '</th><td>"phpThumb.config.php.default" that comes in the distribution must be renamed to "phpThumb.config.php" before phpThumb.php can be used. Avoid having both files present to minimize confusion.</td></tr>';
-
-
-echo '<tr><th>cache directory:</th><th colspan="2">';
-$orig_config_cache_directory = $phpThumb->config_cache_directory;
-$phpThumb->setCacheDirectory();
-echo '<div style="background-color: '.(     is_dir($phpThumb->config_cache_directory) ? 'lime;">exists'   : 'red;">does NOT exist').'</div>';
-echo '<div style="background-color: '.(is_readable($phpThumb->config_cache_directory) ? 'lime;">readable' : 'red;">NOT readable'  ).'</div>';
-echo '<div style="background-color: '.(is_writable($phpThumb->config_cache_directory) ? 'lime;">writable' : 'red;">NOT writable'  ).'</div>';
-echo '</th><td>Original: "'.htmlentities($orig_config_cache_directory).'"<br>Resolved: "'.htmlentities($phpThumb->config_cache_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
-
-
-echo '<tr><th>cache write test:</th><th colspan="2">';
-$phpThumb->rawImageData = 'phpThumb.demo.check.php_cachetest';
-$phpThumb->SetCacheFilename();
-echo '<div>'.htmlentities($phpThumb->cache_filename ? implode(' / ', preg_split('#[/\\\\]#', $phpThumb->cache_filename)) : 'NO CACHE FILENAME RESOLVED').'</div>';
-echo '<div>directory '.(is_dir(dirname($phpThumb->cache_filename)) ? 'exists' : 'does NOT exist').' (before EnsureDirectoryExists())</div>';
-phpthumb_functions::EnsureDirectoryExists(dirname($phpThumb->cache_filename));
-echo '<div style="background-color: '.(is_dir(dirname($phpThumb->cache_filename)) ? 'lime;">directory exists' : 'red;">directory does NOT exist').' (after EnsureDirectoryExists())</div>';
-if ($fp = @fopen($phpThumb->cache_filename, 'wb')) {
-	fwrite($fp, 'this is a test from '.__FILE__);
-	fclose($fp);
-	echo '<div style="background-color: lime;">write test succeeded</div>';
-
-	$old_perms = substr(sprintf('%o', fileperms($phpThumb->cache_filename)), -4);
-	@chmod($phpThumb->cache_filename, 0644);
-	clearstatcache();
-	$new_perms = substr(sprintf('%o', fileperms($phpThumb->cache_filename)), -4);
-	echo '<div style="background-color: '.(($new_perms == '0644') ? 'lime' : (($new_perms > '0644') ? 'orange' : 'red')).';">chmod($phpThumb->cache_filename, 0644) from "'.htmlentities($old_perms).'" resulted in permissions "'.htmlentities($new_perms).'"</div>';
-
-	if (@unlink($phpThumb->cache_filename)) {
-		echo '<div style="background-color: lime;">delete test succeeded</div>';
-	} else {
-		echo '<div style="background-color: red;">delete test FAILED</div>';
-	}
-	$phpThumb->CleanUpCacheDirectory();
-} else {
-	echo '<div style="background-color: red;">write test FAILED</div>';
-}
-//echo '</th><td>Original: "'.htmlentities($orig_config_cache_directory).'"<br>Resolved: "'.htmlentities($phpThumb->config_cache_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
-echo '</th><td>Created and deletes a sample cache file to see if you actually have create/delete permission.<br>If <i>Safe Mode</i> is enabled this is often broken.</td></tr>';
-
-
-echo '<tr><th>temp directory:</th><th colspan="2">';
-$orig_config_temp_directory = $phpThumb->config_temp_directory;
-echo $phpThumb->phpThumb_tempnam();
-echo '<div style="background-color: '.(     is_dir($phpThumb->config_temp_directory) ? 'lime;">exists'   : 'red;">does NOT exist').'</div>';
-echo '<div style="background-color: '.(is_readable($phpThumb->config_temp_directory) ? 'lime;">readable' : 'red;">NOT readable'  ).'</div>';
-echo '<div style="background-color: '.(is_writable($phpThumb->config_temp_directory) ? 'lime;">writable' : 'red;">NOT writable'  ).'</div>';
-echo '</th><td>Original: "'.htmlentities($orig_config_temp_directory).'"<br>Resolved: "'.htmlentities($phpThumb->config_temp_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
 
 
 echo '<tr><th>PHP version:</th><th colspan="2" style="background-color: ';

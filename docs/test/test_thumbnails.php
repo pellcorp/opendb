@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once('../../functions/phpthumb/phpthumb.class.php');
+include_once('../../lib/phpthumb/phpthumb.class.php');
 ?>
 <html>
 <head>
@@ -29,7 +29,7 @@ include_once('../../functions/phpthumb/phpthumb.class.php');
 <img src="./itemcache/5.cache.jpeg">
 </td>
 <?php
-if($_GET['op'] == 'generate')
+if(@$_GET['op'] == 'generate')
 {
 	$phpThumb = new phpThumb();
 	$phpThumb->setParameter('config_error_die_on_error', FALSE);
@@ -40,7 +40,8 @@ if($_GET['op'] == 'generate')
 	// input and output format should match			
 	$phpThumb->setParameter('f', 'jpeg');
 	$phpThumb->setParameter('config_output_format', 'jpeg');
-				
+	$phpThumb->setParameter('config_cache_directory', '/tmp');
+	
 	$phpThumb->setSourceFilename('./itemcache/5.cache.jpeg');
 				
 	// generate & output thumbnail

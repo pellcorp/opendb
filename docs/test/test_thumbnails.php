@@ -41,11 +41,13 @@ if(@$_GET['op'] == 'generate')
 	$phpThumb->setParameter('f', 'jpeg');
 	$phpThumb->setParameter('config_output_format', 'jpeg');
 	$phpThumb->setParameter('config_cache_directory', '/tmp');
+	$phpThumb->setParameter('config_prefer_imagemagick', FALSE);
+	$phpThumb->setParameter('config_imagemagick_use_thumbnail', FALSE);
 	
-	$phpThumb->setSourceFilename('./itemcache/5.cache.jpeg');
-				
+	$phpThumb->setSourceFilename(realpath('./itemcache/5.cache.jpeg'));
+	
 	// generate & output thumbnail
-	if ($phpThumb->GenerateThumbnail() && $phpThumb->RenderToFile('./itemcache/5_THUMB.cache.jpeg')) 
+	if ($phpThumb->GenerateThumbnail() && $phpThumb->RenderToFile(realpath('./itemcache') . '/5_THUMB.cache.jpeg')) 
 	{
 		echo '<td>Thumbnail generated<br />';
 		echo('<img src="./itemcache/5_THUMB.cache.jpeg"></td>');

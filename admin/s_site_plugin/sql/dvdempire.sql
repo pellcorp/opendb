@@ -141,4 +141,5 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 #
 
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'DVDEMPR_ID',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'DVDEMPR_ID',  0, '', 'N' );
 

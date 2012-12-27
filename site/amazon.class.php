@@ -92,7 +92,6 @@ class amazon extends SitePlugin
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
-
 							$imageuri = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $matches[2][$i]);
 
 							if(preg_match("!/dp/([^/]+)/!", $matches[1][$i], $regs))
@@ -126,34 +125,35 @@ class amazon extends SitePlugin
 		if(strlen($pageBuffer)==0)
 			return FALSE;
 		
-		if(preg_match("!Also available on DVD.*?href=.*?/dp/(.*?)/!ms", $pageBuffer, $regs))
-		{
-			$search_attributes_r['amazonasin']=$regs[1];//hack to redirect the new amazon instant video page to the dvd page
-			$pageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/".$search_attributes_r['amazonasin']);
-		}
+// 		if(preg_match("!Also available on DVD.*?href=.*?/dp/(.*?)/!ms", $pageBuffer, $regs))
+// 		{
+// 			$search_attributes_r['amazonasin']=$regs[1];//hack to redirect the new amazon instant video page to the dvd page
+// 			$pageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/".$search_attributes_r['amazonasin']);
+// 		}
 
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 		//print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
-		
+
+		//<span id="btAsinTitle">Prometheus (Blu-ray/ DVD + Digital Copy) (2012)</span>
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
-		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
+		if(preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<\/span/s", $pageBuffer, $regs) ||
+				// FIXME - does this example still apply for books???
+				preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
 				preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || 
 				preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs))
 		{
 		    $title = trim($regs[1]);
-		    //print_r($title);
 
 			// If extra year appended, remove it and just get the title.
-			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2))
+			if(preg_match("/(.*)\([0-9]+\)$/", $title, $regs2)) {
 				$title = $regs2[1];
-				
+			}
+			
 			$title = trim(str_replace("\"", "", $title));
 
-			// get rid of Blu ray suffix as pointless
-			if(ends_with($title, '[Blu-ray]'))
-			{
-				$title = substr($title, 0, strlen($title)-strlen('[Blu-ray]'));
+			if (($idx = strpos($title, '(Blu-ray')) !== FALSE) {
+				$title = substr($title, 0, $idx);
 			}
 			
 			$this->addItemAttribute('title', $title);
@@ -173,9 +173,6 @@ class amazon extends SitePlugin
 			$this->addItemAttribute('upc_id', $upcId);
 		}
 
-		/*http://ecx.images-amazon.com/images/I/41CJBZZSQFL._AA240_.jpg
-		http://ecx.images-amazon.com/images/I/41CJBZZSQFL._SS500_.jpg
-		*/		
 		if(preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs))
 		{
 			// remove image extras _xxx_.

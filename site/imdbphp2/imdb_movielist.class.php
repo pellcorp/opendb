@@ -20,7 +20,7 @@ require_once (dirname(__FILE__)."/movie_base.class.php");
  * @extends movie_base
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 453 $ $Date: 2011-07-05 20:09:31 +0200 (Di, 05. Jul 2011) $
+ * @version $Revision: 453 $ $Date: 2011-07-06 04:09:31 +1000 (Wed, 06 Jul 2011) $
  */
 class imdb_movielist extends movie_base {
 

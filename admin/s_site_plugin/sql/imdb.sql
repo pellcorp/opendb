@@ -10,13 +10,11 @@ INSERT INTO s_site_plugin ( site_type, classname, title, image, description, ext
 
 #
 # Site Plugin Configuration
-#.
+#
 
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '0', '', 'USA' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '1', '', 'Australia' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'age_certification_codes', '2', '', 'Germany' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_match_types', '0', '', 'exact' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_match_types', '1', '', 'partial' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'imdb', 'title_search_faster_alternate', '0', 'use our own fast alternate page search parser', 'TRUE' );
 
 #
@@ -74,3 +72,4 @@ UPDATE s_attribute_type SET site_type='imdb' WHERE s_attribute_type="IMDB_ID";
 #
 
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'IMDB_ID',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'IMDB_ID',  0, '', 'N' );

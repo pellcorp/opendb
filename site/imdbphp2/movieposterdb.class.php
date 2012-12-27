@@ -21,7 +21,7 @@
  * @extends mdb_base
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 466 $ $Date: 2011-09-11 22:19:49 +0200 (So, 11. Sep 2011) $
+ * @version $Revision: 466 $ $Date: 2011-09-12 06:19:49 +1000 (Mon, 12 Sep 2011) $
  */
 class movieposterdb extends mdb_base {
 

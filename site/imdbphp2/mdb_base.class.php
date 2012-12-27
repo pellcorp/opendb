@@ -8,7 +8,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: mdb_base.class.php 484 2011-12-17 23:03:01Z izzy $ */
+ /* $Id: mdb_base.class.php 527 2012-12-06 21:10:16Z izzy $ */
 
 require_once (dirname(__FILE__)."/browseremulator.class.php");
 if (defined('IMDBPHP_CONFIG')) require_once (IMDBPHP_CONFIG);
@@ -45,10 +45,10 @@ define('FULL_ACCESS',9);
  * @author Georgos Giagas
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 484 $ $Date: 2011-12-18 00:03:01 +0100 (So, 18. Dez 2011) $
+ * @version $Revision: 527 $ $Date: 2012-12-07 08:10:16 +1100 (Fri, 07 Dec 2012) $
  */
 class mdb_base extends mdb_config {
-  var $version = '2.1.0';
+  var $version = '2.1.5';
 
   /** Last response from the IMDB server
    *  This is a 3-digit code according to RFC2616. This is e.g. a "200" for "OK",
@@ -141,9 +141,22 @@ class mdb_base extends mdb_config {
       case "HTTP/1.1 404":
         $this->page[$wt] = "cannot open page";
         $this->debug_scalar("cannot open page (error 404): $url");
+        $this->debug_object($response);
         return false; break;
-      case "HTTP/1.1 301":
-      case "HTTP/1.1 302": // echo "<pre>";print_r($head);echo "</pre>\n";
+      case "HTTP/1.1 301": // permanent redirect
+      case "HTTP/1.1 302": // found
+      case "HTTP/1.1 303": // see other
+      case "HTTP/1.1 307": // temporary redirect
+        // in all these cases, the correct URL is to be found in the 'Location:' header
+        foreach ($head as $headline) {
+          if (strpos(trim(strtolower($headline)),'location')!==0) continue;
+          $aline = explode(': ',$headline);
+          $target = trim($aline[1]);
+          $this->getWebPage($wt,$target);
+          return;
+        }
+        // echo "<pre>";print_r($head);echo "</pre>\n";
+        // $this->debug_object($response);
       case "HTTP/1.1 200": break;
       default: $this->debug_scalar("HTTP response code not handled explicitly: '".$head[0]."'"); break;
     }

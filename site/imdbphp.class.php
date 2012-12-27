@@ -44,7 +44,7 @@ class imdbphp extends SitePlugin
 		}
 		else
 		{
-			if($this->_site_plugin_conf_r['title_search_faster_alternate']!='TRUE')
+			if($this->_site_plugin_conf_r['title_search_faster_alternate']!= 'TRUE')
 			{
 				$imdbsearch = new imdbsearch();
 				$imdbsearch->setsearchname($search_vars_r['title']);
@@ -76,64 +76,36 @@ class imdbphp extends SitePlugin
 					}
 					else
 					{
-						//<b>Titles (Exact Matches)</b> (Displaying 1 Result) <table>
-						//<p><b>Titles (Exact Matches)</b> (Displaying 4 Results)
-						if( preg_match_all("/<b>([a-zA-Z]+) \(([a-zA-Z]+) Matches\)<\/b> \(Displaying ([0-9]+) Result[s]*\)[\s]*<table>/m", $pageBuffer, $gmatches) )
+						//<h1 class="findHeader">Results for <span class="findSearchTerm">"prometheus;more=tt"</span></h1>
+						if(strpos($pageBuffer, "<h1 class=\"findHeader\">Results for <span class=\"findSearchTerm\">") !== FALSE)
 						{
-						    // we need to know what match types to support (exact, partial, approx).
-							$match_type_r = $this->getConfigValue('title_search_match_types');
+							//<tr class="findResult odd"> 
+							//<td class="primary_photo"> <a href="/title/tt1446714/?ref_=fn_al_tt_1"><img src="http://ia.media-imdb.com/images/M/MV5BMTY3NzIyNTA2NV5BMl5BanBnXkFtZTcwNzE2NjI4Nw@@._V1_SX32_CR0,0,32,44_.jpg" height="44" width="32" /></a> </td> 
+							//<td class="result_text"> <a href="/title/tt1446714/?ref_=fn_al_tt_1">Prometheus</a> (I) (2012) </td>
+							//</tr>
 							
-						    for ($i = 0; $i < count($gmatches[0]); $i++)
-							{
-							    if(!is_array($match_type_r) || in_array(strtolower($gmatches[2][$i]), $match_type_r))
-								{
-									$start = strpos($pageBuffer, $gmatches[0][$i]);
-									if($start!==FALSE)
-									{
-									    $start += strlen($gmatches[0][$i]);
-									    $end = strpos($pageBuffer, "</table>", $start);
-		
-									    $search_block = substr($pageBuffer, $start, $end-$start);
+							if (($idx = strpos($pageBuffer, "<table class=\"findList\">")) !== FALSE) {
+								$pageBuffer = substr($pageBuffer, $idx);
+								$idx = strpos($pageBuffer, "</table>");
+								$pageBuffer = substr($pageBuffer, 0, $idx);
+								
+								if (preg_match_all("/<tr class=\"findResult[^\"]*\">.*?<\/tr>/m", $pageBuffer, $matches)) {
 									
-										if(preg_match_all("!<tr>[\s]*<td.*?>(.*?)</td>[\s]*<td.*?>(.*?)</td>[\s]*<td.*?>(.*?)</td>[\s]*</tr>!", $search_block, $matches))
-										{
-											for ($j = 0; $j < count($matches[1]); $j++)
-											{
-												$image = NULL;
-												$title = NULL;
-												$comments = NULL;
-												$imdb_id = NULL;
-												
-												if( preg_match("!<a href=\"/title/tt([^/]+)/\"[^>]*>([^>]+)</a>(.*)!", $matches[3][$j], $matches2))
-												{
-													$imdb_id = $matches2[1];
-													
-													$title = $matches2[2];
-													if(preg_match("/[\s]*\(([0-9]+)\)/", $matches2[3], $regs))
-												    {
-													$title .= " (".$regs[1].")";
-												    }
-													
-													//\"(new Image()).src=[^>]*><img src=\"([^\"]+)\"
-													//<tr> <td valign="top"><a href="/title/tt0083944/" onclick="(new Image()).src='/rg/photo-find/title-tiny/images/b.gif?link=/title/tt0083944/';"><img src="http://ia.imdb.com/media/imdb/01/M/==/QM/0Y/jN/0E/TO/wc/TZ/tF/kX/nB/na/B5/lM/B5/FN/5I/jN/1Y/TM/3U/TM/B5/VM._SX23_SY30_.jpg" border="0" height="32" width="23"></a>&nbsp;</td><td align="right" valign="top"><img src="/images/b.gif" height="6" width="1"><br>1.</td><td valign="top"><img src="/images/b.gif" height="6" width="1"><br><a href="/title/tt0083944/">First Blood</a> (1982)<br>&nbsp;aka <em>"Rambo"</em> - Austria, USA <em>(TV title)</em>, Japan <em>(English title)</em>, Argentina, Venezuela, Hungary, Italy, Portugal, Germany, France<br>&nbsp;aka <em>"Rambo: First Blood"</em></td></tr>
-													if(preg_match("!<a href=\"/title/tt([^/]+)/\" onclick=[^>]*><img src=\"([^\"]+)\"!i", $matches[1][$j], $regs))
-													{
-														$image = $regs[2];
-													}
-												    
-													if(preg_match("!<p class=\"find-aka\">aka (.*?)</p>!", $matches2[3], $regs))
-												    {
-													$comments = html_entity_decode(strip_tags($regs[1]), ENT_COMPAT, get_opendb_config_var('themes', 'charset')=='utf-8'?'UTF-8':'ISO-8859-1');
-												    }
-												    
-													$this->addListingRow($title, $image, $comments, array('imdb_id'=>$imdb_id));
-												}
-											}
+									for ($i = 0; $i < count($matches[0]); $i++) {
+										if (preg_match("/<td class=\"primary_photo\">[\s]*<a href=\"[^\"]*\">[\s]*<img src=\"([^\"]*)\"[^>]*>[\s]*<\/a>[\s]*<\/td>/m", $matches[0][$i], $lmatches)) {
+											$image = trim($lmatches[1]);
 										}
+										
+										if (preg_match("/<td class=\"result_text\">[\s]*<a href=\"\/title\/tt([0-9]+)[^\"]*\">([^<]+)<\/a>[\s]*([^<]+)<\/td>/m", $matches[0][$i], $lmatches)) {
+											$imdb_id = trim($lmatches[1]);
+											$title = trim($lmatches[2]) . " " . trim($lmatches[3]);
+										}
+										
+										$this->addListingRow($title, $image, NULL, array('imdb_id'=>$imdb_id));
 									}
-								}
+								}	
 							}
-							
+											
 							$pageBuffer = NULL;
 							return TRUE;
 						}
@@ -184,7 +156,7 @@ class imdbphp extends SitePlugin
 		}
 		foreach($imdb->composer() as $person)
 		{
-			$this->addItemAttribute('composer', $person['name']);				
+			$this->addItemAttribute('composer', $person['name']);
 		}
 		foreach($imdb->cast() as $person)
 		{

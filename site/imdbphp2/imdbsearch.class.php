@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdbsearch.class.php 388 2010-06-03 11:28:49Z izzy $ */
+ /* $Id: imdbsearch.class.php 525 2012-12-01 01:41:09Z izzy $ */
 
  require_once (dirname(__FILE__)."/browseremulator.class.php");
  if (defined('IMDBPHP_CONFIG')) require_once (IMDBPHP_CONFIG);
@@ -24,7 +24,7 @@
   * @extends mdb_config
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 388 $ $Date: 2010-06-03 13:28:49 +0200 (Do, 03. Jun 2010) $
+  * @version $Revision: 525 $ $Date: 2012-12-01 12:41:09 +1100 (Sat, 01 Dec 2012) $
   */
  class imdbsearch extends mdb_base {
   var $page = "";
@@ -77,13 +77,14 @@
     $url = $this->url;
    }else{
      if (!isset($this->maxresults)) $this->maxresults = 20;
-     if ($this->maxresults > 0) $query = ";mx=20";
+     if ($this->maxresults > 0) $query = "&mx=20";
      if ($this->episode_search) $url = "http://".$this->imdbsite."/find?q=".urlencode($this->name).$query.";s=ep";
      else {
        switch ($this->searchvariant) {
-         case "moonface" : $query .= ";more=tt;nr=1"; // @moonface variant (untested)
+         case "moonface" : $query .= "&more=tt&nr=1"; // @moonface variant (untested)
          case "sevec"    : $query .= "&restrict=Movies+only&GO.x=0&GO.y=0&GO=search;tt=1"; // Sevec ori
-         default         : $query .= ";tt=on"; // Izzy
+         case "old"      : $query .= "&tt=on"; // Izzy
+         default         : $query .= "&s=tt"; // Izzy
        }
        $url = "http://".$this->imdbsite."/find?q=".urlencode($this->name).$query;
      }
@@ -111,7 +112,6 @@
       if ($this->usecache && empty($url)) { // Try to read from cache
         $this->cache_read(urlencode(strtolower($this->name)).'.search',$this->page);
       } // end cache read
-
       if ($this->page=="") { // not found in cache - go and get it!
         if (empty($url)) $url = $this->mkurl();
         mdb_base::debug_scalar("imdbsearch::results() called. Using URL $url");
@@ -126,7 +126,7 @@
               break(4);
             }
             $url = explode("/",$header);
-            $id  = substr($url[count($url)-2],2);
+            $id  = substr($url[count($url)-1],2);
             $this->resu[0] = new imdb($id);
             return $this->resu;
           } else {
@@ -145,14 +145,19 @@
 
     // now we have the search content - go and parse it!
     if ($this->maxresults > 0) $maxresults = $this->maxresults; else $maxresults = 999999;
+/* before 2012-11-30 (just quick-fixing then)
     if ( preg_match_all('!href="/title/tt(\d{7})/"[^>]*>(.*?)</a>\s*(\((\d{4})(/.+?|)\)|)[^<]*(<small>(.*?)</small>|)!ims',$this->page,$matches) ) {
+*/
+    if ( preg_match_all('!href="/title/tt(\d{7})/.*?"[^>]*>(.*?)</a>\s*(\((\d{4})(.*?|)\)|)!ims',$this->page,$matches) ) { //[^<]*(<small>(.*?)</small>|)!ims',$this->page,$matches) ) {
+      // 1=imdbid, 2=title, 3=(year), 4=year
       $this->last_results = count($matches[0]);
       $mids_checked = array();
       for ($i=0;$i<$this->last_results;++$i) {
+        if (substr(trim($matches[2][$i]),0,4)=="<img") continue; // cover mini
         if (count($this->resu) == $maxresults) break; // limit result count
         if ( empty($matches[2][$i]) || substr(trim($matches[2][$i]),0,4)=='<img' || in_array($matches[1][$i],$mids_checked) ) continue; // empty titles just come from the images
         if ( !$series && (preg_match('!&#x22;.+&#x22;!',($matches[2][$i])) || strpos(strtoupper($matches[7][$i]),'TV SERIES')!==FALSE) ) continue; // skip series if commanded so
-        if ( !preg_match('!onclick!i',$matches[0][$i]) ) continue; // just mentioned something in the AKAs listing
+#        if ( !preg_match('!onclick!i',$matches[0][$i]) ) continue; // just mentioned something in the AKAs listing (breaks things as of 2012-11-30)
         $mids_checked[] = $matches[1][$i];
         $tmpres = new imdb($matches[1][$i]); // make a new imdb object by id
         $tmpres->main_title = $matches[2][$i];

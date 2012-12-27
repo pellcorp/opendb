@@ -22,7 +22,7 @@ require_once (dirname(__FILE__)."/mdb_base.class.php");
  * @class imdb_nowplaying
  * @author Ricardo Silva (banzap) <banzap@gmail.com>
  * @author Itzchak Rehberg
- * @version $Revision: 480 $ $Date: 2011-10-12 11:24:03 +0200 (Mi, 12. Okt 2011) $
+ * @version $Revision: 480 $ $Date: 2011-10-12 20:24:03 +1100 (Wed, 12 Oct 2011) $
  */
 class imdb_nowplaying {
   var $nowplayingpage = "http://www.imdb.com/movies-in-theaters/";

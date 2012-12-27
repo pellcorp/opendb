@@ -20,7 +20,7 @@
  * @extends mdb_base
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 325 $ $Date: 2010-02-21 22:21:24 +0100 (So, 21. Feb 2010) $
+ * @version $Revision: 325 $ $Date: 2010-02-22 08:21:24 +1100 (Mon, 22 Feb 2010) $
  */
 class person_base extends mdb_base {
 

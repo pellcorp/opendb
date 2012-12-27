@@ -22,7 +22,7 @@
   * @extends movie_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 481 $ $Date: 2011-10-12 12:45:48 +0200 (Mi, 12. Okt 2011) $
+  * @version $Revision: 481 $ $Date: 2011-10-12 21:45:48 +1100 (Wed, 12 Oct 2011) $
   */
  class pilot extends movie_base {
 

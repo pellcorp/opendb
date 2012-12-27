@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: pilotsearch.class.php 372 2010-04-26 05:37:31Z izzy $ */
+ /* $Id: pilotsearch.class.php 504 2012-03-12 15:39:33Z izzy $ */
 
  require_once (dirname(__FILE__)."/mdb_base.class.php");
 
@@ -20,7 +20,7 @@
   * @extends mdb_config
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 372 $ $Date: 2010-04-26 07:37:31 +0200 (Mo, 26. Apr 2010) $
+  * @version $Revision: 504 $ $Date: 2012-03-13 02:39:33 +1100 (Tue, 13 Mar 2012) $
   */
  class pilotsearch extends mdb_base {
   var $page = "";
@@ -120,12 +120,14 @@
    if (!empty($this->page->movies)) foreach ($this->page->movies as $movie) {
      if ( $this->maxresults && $i > $this->maxresults ) break;
      ++$i;
-     $mid = str_pad($movie->alternative_identifiers->imdb,7,0,STR_PAD_LEFT);
-     $item = new pilot($mid);
-     $item->page['Title'] = $movie;
-     $item->setid($mid);
-     $this->resu[] = $item;
-     if ($this->storecache) $this->cache_write($mid.'.'.'Title.pilot',json_encode($movie));
+     if ( property_exists($movie,'alternative_identifiers') && property_exists($movie->alternative_identifiers,'imdb') ) {
+       $mid = str_pad($movie->alternative_identifiers->imdb,7,0,STR_PAD_LEFT);
+       $item = new pilot($mid);
+       $item->page['Title'] = $movie;
+       $item->setid($mid);
+       $this->resu[] = $item;
+       if ($this->storecache) $this->cache_write($mid.'.'.'Title.pilot',json_encode($movie));
+     }
    }
 
    return $this->resu;

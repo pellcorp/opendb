@@ -16,6 +16,7 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'CD', '', 'music' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'DIVX', '', 'dvd' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'DVD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'BD', '', 'blu-ray' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'GAME', '', 'videogames' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'LD', '', 'dvd' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'MP3', '', 'music' );
@@ -103,4 +104,5 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'CD', 'AMAZONASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'AMAZONASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'GAME', 'AMAZONASIN',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'AMAZONASIN',  0, '', 'N' );
 

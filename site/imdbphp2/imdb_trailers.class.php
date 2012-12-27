@@ -22,7 +22,7 @@
   * @package IMDB
   * @class imdb_trailers
   * @author Ricardo Silva (banzap) <banzap@gmail.com>
-  * @version $Revision: 357 $ $Date: 2010-03-16 23:01:11 +0100 (Di, 16. Mär 2010) $
+  * @version $Revision: 357 $ $Date: 2010-03-17 09:01:11 +1100 (Wed, 17 Mar 2010) $
   */
  class imdb_trailers {
 	var $page = "";

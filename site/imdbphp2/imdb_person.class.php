@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdb_person.class.php 484 2011-12-17 23:03:01Z izzy $ */
+ /* $Id: imdb_person.class.php 526 2012-12-01 19:09:18Z izzy $ */
 
  require_once (dirname(__FILE__)."/person_base.class.php");
  require_once (dirname(__FILE__)."/imdbsearch.class.php");
@@ -21,7 +21,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 484 $ $Date: 2011-12-18 00:03:01 +0100 (So, 18. Dez 2011) $
+  * @version $Revision: 526 $ $Date: 2012-12-02 06:09:18 +1100 (Sun, 02 Dec 2012) $
   */
  class imdb_person extends person_base {
 
@@ -52,7 +52,7 @@
    */
   function __construct($id) {
     parent::__construct($id);
-    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 484 $');
+    $this->revision = preg_replace('|^.*?(\d+).*$|','$1','$Revision: 526 $');
     $this->setid($id);
   }
 
@@ -385,7 +385,7 @@
     if (empty($this->birthday)) {
       if ($this->page["Bio"] == "") $this->openpage ("Bio","person");
       if ( preg_match('|Date of Birth</h5>\s*(.*)<br|iUms',$this->page["Bio"],$match) ) {
-        preg_match('|/date/(\d+)-(\d+)/.*?>\d+\s+(.*?)<|',$match[1],$daymon);
+        preg_match('|/search/name\?birth_monthday=(\d+)-(\d+).*?>\d+\s+(.*?)<|',$match[1],$daymon);
         preg_match('|/search/name\?birth_year=(\d{4})|ims',$match[1],$dyear);
         preg_match('|/search/name\?birth_place=.*?">(.*)<|ims',$match[1],$dloc);
         $this->birthday = array("day"=>$daymon[2],"month"=>$daymon[3],"mon"=>$daymon[1],"year"=>$dyear[1],"place"=>$dloc[1]);
@@ -405,10 +405,10 @@
     if (empty($this->deathday)) {
       if ($this->page["Bio"] == "") $this->openpage ("Bio","person");
       if (preg_match('|Date of Death</h5>(.*)<br|iUms',$this->page["Bio"],$match)) {
-        preg_match('|/date/(\d+)-(\d+)/.*?>\d+\s+(.*?)<|',$match[1],$daymon);
-	preg_match('|/search/name\?death_date=(\d{4})|ims',$match[1],$dyear);
-	preg_match('/(\,\s*([^\(]+))/ims',$match[1],$dloc);
-	preg_match('/\(([^\)]+)\)/ims',$match[1],$dcause);
+        preg_match('|/search/name\?death_monthday=(\d+)-(\d+).*?>\d+\s+(.*?)<|',$match[1],$daymon);
+        preg_match('|/search/name\?death_date=(\d{4})|ims',$match[1],$dyear);
+        preg_match('/(\,\s*([^\(]+))/ims',$match[1],$dloc);
+        preg_match('/\(([^\)]+)\)/ims',$match[1],$dcause);
         $this->deathday = array("day"=>$daymon[2],"month"=>$daymon[3],"mon"=>$daymon[1],"year"=>$dyear[1],"place"=>$dloc[2],"cause"=>$dcause[1]);
       }
     }
@@ -765,7 +765,7 @@
   * @extends imdbsearch
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008-2009 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 484 $ $Date: 2011-12-18 00:03:01 +0100 (So, 18. Dez 2011) $
+  * @version $Revision: 526 $ $Date: 2012-12-02 06:09:18 +1100 (Sun, 02 Dec 2012) $
   */
  class imdbpsearch extends imdbsearch {
  #-----------------------------------------------------------[ Constructor ]---
@@ -785,11 +785,12 @@
    if ($this->url !== NULL) {
     $url = $this->url;
    } else {
-     $query = ";s=nm";
+     $query = "&s=nm";
      if (!isset($this->maxresults)) $this->maxresults = 20;
-     if ($this->maxresults > 0) $query .= ";mx=20";
+     if ($this->maxresults > 0) $query .= "&mx=20";
      $url = "http://".$this->imdbsite."/find?q=".urlencode($this->name).$query;
    }
+   mdb_base::debug_scalar("Using search URL '$url'");
    return $url;
   }
 
@@ -802,31 +803,42 @@
    */
   public function results($url="",$series=TRUE) {
    if ($this->page == "") {
+     if ($this->usecache && empty($url)) { // Try to read from cache
+       $this->cache_read(urlencode(strtolower($this->name)).'.search',$this->page);
+     } // end cache read
      if (empty($url)) $url = $this->mkurl();
      $be = new MDB_Request($url);
      $be->sendrequest();
      $fp = $be->getResponseBody();
      if ( !$fp ){
        if ($header = $be->getResponseHeader("Location")){
-        if (strpos($header,$this->imdbsite."/find?")) {
-          return $this->results($header);
-          break(4);
-        }
-        $url = explode("/",$header);
-        $id  = substr($url[count($url)-2],2);
-        $this->resu[0] = new imdb_person($id);
-        return $this->resu;
+         mdb_base::debug_scalar("No immediate response body - we are redirected.<br>New URL: $header");
+         if (strpos($header,$this->imdbsite."/find?")) {
+           return $this->results($header);
+           break(4);
+         }
+         $url = explode("/",$header);
+         $id  = substr($url[count($url)-2],2);
+         $this->resu[0] = new imdb_person($id);
+         return $this->resu;
        }else{
-        return NULL;
+         mdb_base::debug_scalar("No result, no redirection -- something's wrong here...");
+         return NULL;
        }
      }
      $this->page = $fp;
+
+     if ($this->storecache && $this->page != "cannot open page" && $this->page != "") { //store cache
+       $this->cache_write(urlencode(strtolower($this->name)).'.search',$this->page);
+     }
    } // end (page="")
 
    if ($this->maxresults > 0) $maxresults = $this->maxresults; else $maxresults = 999999;
    // make sure to catch col #3, not #1 (pic only)
-   preg_match_all('|<tr>\s*<td.*>.*</td>\s*<td.*>.*</td>\s*<td.*<a href="/name/nm(\d{7})[^>]*>([^<]+)</a>(.*)</td>|Uims',$this->page,$matches);
+   //                        photo           name                   1=id        2=name        3=details
+   preg_match_all('|<tr.*>\s*<td.*>.*</td>\s*<td.*<a href="/name/nm(\d{7})[^>]*>([^<]+)</a>\s*(.*)</td>|Uims',$this->page,$matches);
    $mc = count($matches[0]);
+   mdb_base::debug_scalar("$mc matches");
    $mids_checked = array();
    for ($i=0;$i<$mc;++$i) {
      if ($i == $maxresults) break; // limit result count
@@ -838,7 +850,7 @@
      $tmpres  = new imdb_person($pid);
      $tmpres->fullname = $name;
      if (!empty($info)) {
-       if (preg_match('|<small>\((.*),\s*<a href="/title/tt(\d{7})/">(.*)</a>\s*\((\d{4})\)\)|Ui',$info,$match)) {
+       if (preg_match('|<small>\((.*),\s*<a href="/title/tt(\d{7}).*"\s*>(.*)</a>\s*\((\d{4})\)\)|Ui',$info,$match)) {
          $role = $match[1];
          $mid  = $match[2];
          $movie= $match[3];

@@ -22,7 +22,7 @@
   * @extends mdb_base
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright 2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 476 $ $Date: 2011-10-11 17:19:25 +0200 (Di, 11. Okt 2011) $
+  * @version $Revision: 476 $ $Date: 2011-10-12 02:19:25 +1100 (Wed, 12 Oct 2011) $
   */
  class pilot_person extends person_base {
 

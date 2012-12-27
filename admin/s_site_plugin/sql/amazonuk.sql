@@ -22,7 +22,6 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'MP3', '', 'music' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'VCD', '', 'dvd' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'VHS', '', 'vhs' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'title_search_faster_alternate', '0', 'use our own fast alternate page search parser', 'TRUE' );
 
 #
 # Site Plugin Input Fields

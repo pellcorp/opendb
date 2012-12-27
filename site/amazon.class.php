@@ -39,7 +39,8 @@ class amazon extends SitePlugin
 			// Get the mapped AMAZON index type
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
 
-			$queryUrl = "http://www.amazon.com/exec/obidos/external-search?index=".$index_type."&keyword=".urlencode($search_vars_r['title'])."&sz=$items_per_page&pg=$page_no";
+			// amazon does not provide the ability to specify how many items per page, so $items_per_page is ignored!
+			$queryUrl = "http://www.amazon.com/exec/obidos/external-search?index=".$index_type."&keyword=".urlencode($search_vars_r['title'])."&page=$page_no";
 			
 			$pageBuffer = $this->fetchURI($queryUrl);
 		}
@@ -537,8 +538,8 @@ Some search URL examples:
 			if(preg_match("!<b>Publisher:</b>.*?\(([^\)]*[0-9]+)\)!", $details, $regs))
 			{
 				$timestamp = strtotime($regs[1]);
-				$date = date('d M Y', $timestamp);
-				$this->addItemAttribute('pub_date', $date);
+				$this->addItemAttribute('pub_date', date('d M Y', $timestamp));
+				$this->addItemAttribute('pub_year', date('Y', $timestamp));
 			}
 
 			//<li><b>Language:</b> English</li>

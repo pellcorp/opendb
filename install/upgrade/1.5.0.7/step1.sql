@@ -22,3 +22,7 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 # Adding blueray to dvdempire
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'DVDEMPR_ID',  0, '', 'N' );
 
+# Change the BOOK PUB_DATE to be a PUB_YEAR
+UPDATE s_attribute_type SET s_attribute_type = 'PUB_YEAR', description = 'Year Published' WHERE s_attribute_type = 'PUB_DATE';
+UPDATE s_item_attribute_type SET s_attribute_type = 'PUB_YEAR' WHERE s_attribute_type = 'PUB_DATE';
+UPDATE item_attribute SET s_attribute_type = 'PUB_YEAR' WHERE s_attribute_type = 'PUB_DATE';

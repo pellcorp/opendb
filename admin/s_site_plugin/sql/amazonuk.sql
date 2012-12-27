@@ -6,21 +6,23 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonuk', 'amazonuk', 'Amazon.co.uk', 'amazonuk.gif', 'A good source of CD, DVD (Region 2), VHS, Books, Games, etc.', 'http://www.amazon.co.uk', 25, 'http://www.amazon.co.uk/exec/obidos/ASIN/{amazukasin}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonuk', 'amazon', 'Amazon.co.uk', 'amazonuk.gif', 'A good source of CD, DVD (Region 2), VHS, Books, Games, etc.', 'http://www.amazon.co.uk', 25, 'http://www.amazon.co.uk/exec/obidos/ASIN/{amazukasin}' );
 
 #
 # Site Plugin Configuration
-#.
-
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'BOOK', '', 'books-uk' );
+#
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'BOOK', '', 'books' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'CD', '', 'music' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'DIVX', '', 'dvd-uk' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'DVD', '', 'dvd-uk' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'GAME', '', 'video-games-uk' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'LD', '', 'dvd-uk' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'DIVX', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'DVD', '', 'dvd' );
+# the dvd page has more info we can parse for blu-ray!
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'BD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'GAME', '', 'videogames' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'LD', '', 'dvd' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'MP3', '', 'music' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'VCD', '', 'dvd-uk' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'VHS', '', 'vhs-uk' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'VCD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'item_type_to_index_map', 'VHS', '', 'vhs' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonuk', 'title_search_faster_alternate', '0', 'use our own fast alternate page search parser', 'TRUE' );
 
 #
 # Site Plugin Input Fields
@@ -33,19 +35,18 @@ INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description,
 # Site Plugin Links
 #
 
-INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'amazonuk', '*', '*', 1, 'More Info', 'http://www.amazon.co.uk/exec/obidos/ASIN/{amazukasin}', 'http://www.amazon.co.uk/exec/obidos/external-search?url=index={config_var_value(item_type_to_index_map, {s_item_type})}&keyword={title}' );
+INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'amazonuk', '*', '*', 1, 'More Info', 'http://www.amazon.co.uk/exec/obidos/ASIN/{amazukasin}', 'http://www.amazon.co.uk/exec/obidos/external-search?tag=url=index={config_var_value(item_type_to_index_map, {s_item_type})}&keyword={title}' );
 INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, order_no, description, url, title_url ) VALUES ( 'amazonuk', '*', 'GAME', 2, 'Screenshots', 'http://www.amazon.co.uk/exec/obidos/tg/stores/detail/-/videogames/{amazukasin}/pictures#more-pictures', '' );
 
 #
 # Site Plugin System Attribute Type Map
 #
-
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', 'AUDIO', '*', 'blurb', 'COMMENTS', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', '*', 'BOOK', 'blurb', 'COMMENTS', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', 'DVD', '*', 'dvd_audio', 'DVD_AUDIO', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', '*', 'DVD', 'dvd_audio', 'DVD_AUDIO', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', '*', 'BOOK', 'genre', 'BOOKGENRE', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', '*', 'GAME', 'genre', 'GAMEGENRE', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonuk', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'Y' );
@@ -59,7 +60,6 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 #
 # Site Plugin System Attribute Type Lookup Map
 #
-
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'AGE_RATING', '12', 'M' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'AGE_RATING', '15', 'MA' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'AGE_RATING', '18', 'R' ); 
@@ -74,7 +74,7 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Heroes & Heroines', 'ADVENTURE' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Romantic', 'ROMANCE' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'MOVIEGENRE', 'Westerns', 'WESTERN' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'BOOKGENRE', 'Children\'s Books', 'Children' ); 
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'BOOKGENRE', 'Children''s Books', 'Children' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'BOOKGENRE', 'Cosmetics, make-up & skin care', 'Reference' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'BOOKGENRE', 'Health and Hygiene', 'Reference' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonuk', 'GAMESYSTEM', 'Game Boy', 'GAMEBOY' ); 

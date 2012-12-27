@@ -22,25 +22,35 @@ include_once("./site/amazonutils.php");
 
 class amazon extends SitePlugin
 {
+	private $url;
+	private $asinId;
+	
 	function amazon($site_type)
 	{
 		parent::SitePlugin($site_type);
+		
+		$this->asinId = 'amazonasin';
+		$this->url = "www.amazon.com";
+		if ($this->getType() == 'amazonuk') {
+			$this->url = "www.amazon.co.uk";
+			$this->asinId = "amazukasin";
+		}
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r)
 	{
-		if(strlen($search_vars_r['amazonasin'])>0)
+		if(strlen($search_vars_r[$this->asinId])>0)
 		{
-			$this->addListingRow(NULL, NULL, NULL, array('amazonasin'=>$search_vars_r['amazonasin']));
+			$this->addListingRow(NULL, NULL, NULL, array($this->asinId=>$search_vars_r[$asinid]));
 			return TRUE;
 		}
 		else
 		{
 			// Get the mapped AMAZON index type
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
-
+			
 			// amazon does not provide the ability to specify how many items per page, so $items_per_page is ignored!
-			$queryUrl = "http://www.amazon.com/exec/obidos/external-search?index=".$index_type."&keyword=".urlencode($search_vars_r['title'])."&page=$page_no";
+			$queryUrl = "http://".$this->url."/exec/obidos/external-search?index=".$index_type."&keyword=".urlencode($search_vars_r['title'])."&page=$page_no";
 			
 			$pageBuffer = $this->fetchURI($queryUrl);
 		}
@@ -71,7 +81,7 @@ class amazon extends SitePlugin
 			if($amazonasin!==FALSE)
 			{
 				// single record returned
-				$this->addListingRow(NULL, NULL, NULL, array('amazonasin'=>$amazonasin, 'search.title'=>$search_vars_r['title']));
+				$this->addListingRow(NULL, NULL, NULL, array($this->asinId=>$amazonasin, 'search.title'=>$search_vars_r['title']));
 
 				return TRUE;
 			}
@@ -79,14 +89,16 @@ class amazon extends SitePlugin
 			{
 				// this is a severe memory hog!!!
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
-				//print_r($pageBuffer); //uncomment for debugging
 			
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
 				if( (preg_match("/ id=\"resultCount\">.*?<span>Showing.[0-9]+[\s]*-[\s]*[0-9]+.of.([0-9,]+) Results<\//", $pageBuffer, $regs) || 
 						preg_match("/ id=\"resultCount\">.*?<span>Showing.([0-9]+).Result.*?<\//", $pageBuffer, $regs) ) )
 				{
+					// need to remove the commas from the total
+					$total = str_replace(",", "", $regs[1]);
+					
 					// store total count here.
-					$this->setTotalCount($regs[1]);
+					$this->setTotalCount($total);
 					
 					// 2 = img, 1 = href, 3 = title		
 					if(preg_match_all("/id=\"result_.*?href=\"(.*?)\">.*?<img.*?src=\"([^\"]+)\".*?<a.class=\"title\".*?>(.*?)</i", $pageBuffer, $matches))
@@ -100,7 +112,7 @@ class amazon extends SitePlugin
 								if(strpos($matches[2][$i], "no-img")!==FALSE)
 									$matches[2][$i] = NULL;
 
-								$this->addListingRow($matches[3][$i], $imageuri, NULL, array('amazonasin'=>$regs[1], 'search.title'=>$search_vars_r['title']));
+								$this->addListingRow($matches[3][$i], $imageuri, NULL, array($this->asinId=>$regs[1], 'search.title'=>$search_vars_r['title']));
 							}
 						}
 					}
@@ -119,22 +131,15 @@ class amazon extends SitePlugin
 	function queryItem($search_attributes_r, $s_item_type)
 	{
 		// assumes we have an exact match here
-		$pageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/".$search_attributes_r['amazonasin']);
+		$pageBuffer = $this->fetchURI("http://".$this->url."/gp/product/".$search_attributes_r[$this->asinId]);
 		//print_r($pageBuffer);
 		
 		// no sense going any further here.
 		if(strlen($pageBuffer)==0)
 			return FALSE;
 		
-// 		if(preg_match("!Also available on DVD.*?href=.*?/dp/(.*?)/!ms", $pageBuffer, $regs))
-// 		{
-// 			$search_attributes_r['amazonasin']=$regs[1];//hack to redirect the new amazon instant video page to the dvd page
-// 			$pageBuffer = $this->fetchURI("http://www.amazon.com/gp/product/".$search_attributes_r['amazonasin']);
-// 		}
-
 		$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
-		//print_r($pageBuffer); // for debugging purposes print exactly what we will parse later.
 
 		//<span id="btAsinTitle">Prometheus (Blu-ray/ DVD + Digital Copy) (2012)</span>
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
@@ -191,10 +196,10 @@ class amazon extends SitePlugin
 		}
 	    
 	    //http://www.amazon.com/gp/product/product-description/0007136587/ref=dp_proddesc_0/002-1041562-0884857?ie=UTF8&n=283155&s=books
-		if(preg_match("!<a href=\"http://www.amazon.com/gp/product/product-description/".$search_attributes_r['amazonasin']."/[^>]*>See all Editorial Reviews</a>!", $pageBuffer, $regs) ||
-				preg_match("!<a href=\"http://www.amazon.com/gp/product/product-description/".$search_attributes_r['amazonasin']."/[^>]*>See all Reviews</a>!", $pageBuffer, $regs))
+		if(preg_match("!<a href=\"http://".$this->url."/gp/product/product-description/".$search_attributes_r[$this->asinId]."/[^>]*>See all Editorial Reviews</a>!", $pageBuffer, $regs) ||
+				preg_match("!<a href=\"http://".$this->url."/gp/product/product-description/".$search_attributes_r[$this->asinId]."/[^>]*>See all Reviews</a>!", $pageBuffer, $regs))
 		{
-			$reviewPage = $this->fetchURI("http://www.amazon.com/gp/product/product-description/".$search_attributes_r['amazonasin']."/reviews/");
+			$reviewPage = $this->fetchURI("http://".$this->url."/gp/product/product-description/".$search_attributes_r[$this->asinId]."/reviews/");
 			if(strlen($reviewPage)>0)
 			{
 				$reviews = parse_amazon_reviews($reviewPage);
@@ -416,9 +421,9 @@ class amazon extends SitePlugin
 			$this->addItemAttribute('orig_release_dt', date('d/m/Y', $timestamp));
 		}
 		
-		if(preg_match("!http://www.amazon.com/.*/dp/samples/".$search_attributes_r['amazonasin']."/!", $pageBuffer, $regs))
+		if(preg_match("!http://".$this->url."/.*/dp/samples/".$search_attributes_r[$this->asinId]."/!", $pageBuffer, $regs))
 		{
-			$samplesPage = $this->fetchURI("http://www.amazon.com/dp/samples/".$search_attributes_r['amazonasin']."/");
+			$samplesPage = $this->fetchURI("http://".$this->url."/dp/samples/".$search_attributes_r[$this->asinId]."/");
 			if(strlen($samplesPage)>0)
 			{
 				$samplesPage = preg_replace('/[\r\n]+/', ' ', $samplesPage);

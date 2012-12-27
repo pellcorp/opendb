@@ -10,8 +10,7 @@ INSERT INTO s_site_plugin ( site_type, classname, title, image, description, ext
 
 #
 # Site Plugin Configuration
-#.
-
+#
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'BOOK', '', 'books' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'CD', '', 'music' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazon', 'item_type_to_index_map', 'DIVX', '', 'dvd' );
@@ -41,7 +40,6 @@ INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, orde
 #
 # Site Plugin System Attribute Type Map
 #
-
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazon', 'AUDIO', '*', 'blurb', 'COMMENTS', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazon', '*', 'BOOK', 'blurb', 'COMMENTS', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazon', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
@@ -61,7 +59,6 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 #
 # Site Plugin System Attribute Type Lookup Map
 #
-
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazon', 'AGE_RATING', 'Unrated', 'NR' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazon', 'GAMERATING', 'adults_only', 'AO' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazon', 'GAMERATING', 'early_childhood', 'EC' ); 

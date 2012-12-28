@@ -106,3 +106,4 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'CD', 'AMAZUKASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'AMAZUKASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'GAME', 'AMAZUKASIN',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'AMAZUKASIN',  0, '', 'N' );

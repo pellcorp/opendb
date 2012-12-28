@@ -52,7 +52,8 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'opera', 'Music' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'romantic comedy', 'Comedy' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'romantic comedy', 'Romance' ); 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'science fiction', 'ScienceFiction' ); 
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'science fiction', 'ScienceFiction' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'Sci-Fi', 'ScienceFiction' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'star trek', 'ScienceFiction' );
 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'DVD_AUDIO', 'ENGLISH5.1', 'DOLBY5.1' );

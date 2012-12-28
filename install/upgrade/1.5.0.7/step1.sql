@@ -26,3 +26,5 @@ INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, pro
 UPDATE s_attribute_type SET s_attribute_type = 'PUB_YEAR', description = 'Year Published' WHERE s_attribute_type = 'PUB_DATE';
 UPDATE s_item_attribute_type SET s_attribute_type = 'PUB_YEAR' WHERE s_attribute_type = 'PUB_DATE';
 UPDATE item_attribute SET s_attribute_type = 'PUB_YEAR' WHERE s_attribute_type = 'PUB_DATE';
+
+INSERT INTO s_item_type_group_rltshp ( s_item_type_group, s_item_type ) VALUES ( 'VIDEO', 'BD' );

@@ -72,6 +72,5 @@ INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type,
 #
 # Site Plugin Item Attribute Type Relationship(s)
 #
-
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'MICHAELDID',  0, '', 'N' );
-INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'MIKER4R1',  140, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'MICHAELDID',  0, '', 'N' );

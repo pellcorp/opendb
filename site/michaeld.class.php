@@ -141,13 +141,14 @@ class michaeld extends SitePlugin
 				
 			    if(preg_match("/(.*)\(([0-9]+)\)/", $title, $matches))
 				{
-					$this->addItemAttribute('title', $matches[1]);
+					$title = $matches[1];
 					$this->addItemAttribute('year', $matches[2]);
 				}
-				else
-				{
-					$this->addItemAttribute('title', $title);
+
+				if (($idx = strpos($title, "(Blu-ray)")) !== FALSE) {
+					$title = substr($title, 0, $idx);
 				}
+				$this->addItemAttribute('title', $title);
 			}
 	
 			if (preg_match('#best version.*?best version.*?<td.*?>(.+?)</td#is', $page, $matches))

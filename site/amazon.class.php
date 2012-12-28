@@ -24,17 +24,20 @@ class amazon extends SitePlugin
 {
 	private $url;
 	private $asinId;
+
+	private $sites = array(
+		'amazon'=>array('asinId'=>'amazonasin', 'url'=>'www.amazon.com'),
+		'amazonuk'=>array('asinId'=>'amazukasin', 'url'=>'www.amazon.co.uk'),
+		'amazonfr'=>array('asinId'=>'amazfrasin', 'url'=>'www.amazon.fr'),
+		'amazonde'=>array('asinId'=>'amazdeasin', 'url'=>'www.amazon.de'),
+	);
 	
 	function amazon($site_type)
 	{
 		parent::SitePlugin($site_type);
 		
-		$this->asinId = 'amazonasin';
-		$this->url = "www.amazon.com";
-		if ($this->getType() == 'amazonuk') {
-			$this->url = "www.amazon.co.uk";
-			$this->asinId = "amazukasin";
-		}
+		$this->asinId = $this->sites[$site_type]['asinId'];
+		$this->url = $this->sites[$site_type]['url'];
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r)

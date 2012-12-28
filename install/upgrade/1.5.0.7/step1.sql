@@ -28,3 +28,6 @@ UPDATE s_item_attribute_type SET s_attribute_type = 'PUB_YEAR' WHERE s_attribute
 UPDATE item_attribute SET s_attribute_type = 'PUB_YEAR' WHERE s_attribute_type = 'PUB_DATE';
 
 INSERT INTO s_item_type_group_rltshp ( s_item_type_group, s_item_type ) VALUES ( 'VIDEO', 'BD' );
+
+# Update all amazon plugins to use the amazon class
+UPDATE s_site_plugin SET classname = 'amazon' WHERE site_type IN ('amazonfr', 'amazonuk', 'amazonde');

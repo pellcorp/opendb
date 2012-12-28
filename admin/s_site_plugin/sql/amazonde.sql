@@ -6,7 +6,7 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonde', 'amazonde', 'Amazon.de', 'amazonde.gif', 'A good source of CD, DVD (Region 2), VHS, Books, Games, etc.', 'http://www.amazon.de', 25, 'http://www.amazon.de/exec/obidos/ASIN/{amazdeasin}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonde', 'amazon', 'Amazon.de', 'amazonde.gif', 'A good source of CD, DVD (Region 2), VHS, Books, Games, etc.', 'http://www.amazon.de', 25, 'http://www.amazon.de/exec/obidos/ASIN/{amazdeasin}' );
 
 #
 # Site Plugin Configuration
@@ -17,20 +17,21 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_input.title_articles', '2', '', 'Der' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_input.title_articles', '3', '', 'Die' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_input.title_articles', '4', '', 'Das' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'BOOK', '', 'books-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'CD', '', 'music-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'DIVX', '', 'dvd-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'DVD', '', 'dvd-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'GAME', '', 'video-games-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'LD', '', 'dvd-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'MP3', '', 'music-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'VCD', '', 'dvd-de' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'VHS', '', 'vhs-de' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'BOOK', '', 'books' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'CD', '', 'music' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'DIVX', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'DVD', '', 'dvd' );
+# the dvd page has more info we can parse for blu-ray!
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'BD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'GAME', '', 'videogames' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'LD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'MP3', '', 'music' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'VCD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonde', 'item_type_to_index_map', 'VHS', '', 'vhs' );
 
 #
 # Update the binding attribute
 #
-
 UPDATE s_attribute_type SET input_type_arg1='Hardcover,Paperback,Taschenbuch,Gebundene Ausgabe' WHERE s_attribute_type Like 'BINDING';
 
 #
@@ -214,4 +215,5 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BOOK', 'AMAZDEASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'CD', 'AMAZDEASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'DVD', 'AMAZDEASIN',  0, '', 'N' );
+INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'BD', 'AMAZDEASIN',  0, '', 'N' );
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, compulsory_ind ) VALUES ( 'GAME', 'AMAZDEASIN',  0, '', 'N' );

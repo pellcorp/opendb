@@ -6,7 +6,7 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonfr', 'amazonfr', 'Amazon.fr', 'amazonfr.gif', 'A good source of DVD (Region 2) and VHS.', 'http://www.amazon.fr', 25, 'http://www.amazon.fr/exec/obidos/ASIN/{amazfrasin}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonfr', 'amazon', 'Amazon.fr', 'amazonfr.gif', 'A good source of DVD (Region 2) and VHS.', 'http://www.amazon.fr', 25, 'http://www.amazon.fr/exec/obidos/ASIN/{amazfrasin}' );
 
 #
 # Site Plugin Configuration
@@ -17,23 +17,17 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_input.title_articles', '2', '', 'Le' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_input.title_articles', '3', '', 'La' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_input.title_articles', '4', '', 'L\'' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BOOK', '', 'books-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BOOK', '', 'books' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'CD', '', 'music-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'CD', '', 'music' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DIVX', '', 'dvd-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DIVX', '', 'dvd' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DVD', '', 'dvd-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'DVD', '', 'dvd' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'GAME', '', 'video-games-fr' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'LD', '', 'dvd-frs' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'MP3', '', 'music-fr' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VCD', '', 'dvd-fr' );
+# the dvd page has more info we can parse for blu-ray!
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'GAME', '', 'videogames' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'LD', '', 'dvd' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'MP3', '', 'music' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VCD', '', 'dvd' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VHS', '', 'vhs-fr' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'VHS', '', 'vhs' );
-INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'BD', '', 'blu-ray' );
-# INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonfr', 'item_type_to_index_map', 'HDDVD', '', 'hd-dvd' );
 
 #
 # Site Plugin Input Fields

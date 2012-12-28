@@ -25,8 +25,6 @@ include_once("./functions/SitePlugin.class.inc");
 include_once("./site/imdbphp2/imdb.class.php");
 include_once("./site/imdbphp2/imdbsearch.class.php");
 
-
-
 class imdbphp extends SitePlugin
 {
 	var $results;
@@ -48,8 +46,7 @@ class imdbphp extends SitePlugin
 			{
 				$imdbsearch = new imdbsearch();
 				$imdbsearch->setsearchname($search_vars_r['title']);
-					$this->results = $imdbsearch->results();
-				
+				$this->results = $imdbsearch->results();
 				
 				if(is_array($this->results))
 				{
@@ -133,7 +130,10 @@ class imdbphp extends SitePlugin
 		{
 			$imdb= new imdb($search_attributes_r['imdb_id']);
 		}
+		
+		// WTF?
 		$imdb->imdb_utf8recode = get_opendb_config_var('themes', 'charset')=='utf-8'?TRUE:FALSE;
+		
 		$this->addItemAttribute('title', $imdb->title());
 		$this->addItemAttribute('year', $imdb->year());
 		foreach($imdb->alsoknow() as $alt_title)

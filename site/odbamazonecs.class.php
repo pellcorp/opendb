@@ -90,18 +90,15 @@ class odbamazonecs extends SitePlugin {
 			$idType = "EAN";
 		}
 		
-		$response = $this->client->optionalParameters(array('IdType' => $idType))->responseGroup("Large,Images,EditorialReview")->lookup($search_attributes_r[$this->siteAttributeType]);
-		
+		$response = $this->client->optionalParameters(array('IdType' => $idType))->responseGroup("ItemAttributes,Images,EditorialReview")->lookup($search_attributes_r[$this->siteAttributeType]);
 		
 		if (is_array($response['Items']) && is_array($response['Items']['Request'])
 				&& $response['Items']['Request']['IsValid'] == 'True') {
-
 			
 			$response = $response['Items']['Item'];
-			//print_r($response);
 			
-			if (strlen($response['LargeImage']) > 0) {
-				$this->addItemAttribute('imageurl', $response['LargeImage']);
+			if (is_array($response['LargeImage']) > 0) {
+				$this->addItemAttribute('imageurl', $response['LargeImage']['URL']);
 			}
 			
 			if (is_array($response['EditorialReviews']) && is_array($response['EditorialReviews']['EditorialReview'])) {
@@ -114,20 +111,45 @@ class odbamazonecs extends SitePlugin {
 			}
 			
 			if (is_array($response['ItemAttributes'])) {
-				$title = $response['ItemAttributes']['Title'];
-				if (($idx = strpos($title, "[Blu-ray]")) !== FALSE) {
+				$attributes = $response['ItemAttributes'];
+				//print_r($attributes);
+				
+				$title = $attributes['Title'];
+				if (($idx = strpos($title, "[Blu-ray")) !== FALSE) {
+					$title = substr($title, 0, $idx);
+				} else if (($idx = strpos($title, "(Blu-ray")) !== FALSE) {
 					$title = substr($title, 0, $idx);
 				}
+				
 				$this->addItemAttribute('title', $title);
+				$this->addItemAttribute('upc_id', $attributes['UPC']);
 				
+				// TODO - figure out how to get Genre info???
 				
+				if (is_array($attributes['ListPrice'])) {
+					$price = $attributes['ListPrice']['FormattedPrice'];
+					if (starts_with($price, "$")) {
+						$price = substr($price, 1);
+					}
+					$this->addItemAttribute('listprice', $price);
+				}
+				
+				switch($s_item_type) {
+					case 'DVD':
+					case 'BD':
+						$this->parse_video_data($attributes);
+						break;
+				}
 			}
-			
 			
 			return TRUE;
 		} else {
 			return FALSE;
 		}
+	}
+	
+	function parse_video_data($attributes) {
+		
 	}
 }
 ?>

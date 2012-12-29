@@ -6,7 +6,7 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonecs', 'amazonecs', 'Amazon E-Commerce Service', 'amazonecs.gif', 'A good source of CD, DVD, VHS, Books, Games, etc.', 'http://www.amazon.{aecsdomain}', 10, 'http://www.amazon.{aecsdomain}/exec/obidos/ASIN/{aecsasin}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'amazonecs', 'odbamazonecs', 'Amazon E-Commerce Service', 'amazonecs.gif', 'A good source of CD, DVD, VHS, Books, Games, etc.', 'http://www.amazon.{aecsdomain}', 10, 'http://www.amazon.{aecsdomain}/exec/obidos/ASIN/{aecsasin}' );
 
 #
 # Site Plugin Configuration
@@ -19,6 +19,7 @@ INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VA
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'item_type_to_index_map', 'MP3', '', 'Music' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'item_type_to_index_map', 'VCD', '', 'DVD' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'amazon_access_key', 0, 'Need to register for using Amazon web services and enter your access key here', '' );
+INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'amazon_secret_key', 0, 'Need to register for using Amazon web services and enter your secret key here', '' );
 INSERT INTO s_site_plugin_conf ( site_type, name, keyid, description, value ) VALUES ( 'amazonecs', 'amazon_site_domain', 0, 'Restrict Plugin to Domain (Overrides domain input field)', '' );
 
 #

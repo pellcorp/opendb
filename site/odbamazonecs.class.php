@@ -57,9 +57,7 @@ class odbamazonecs extends SitePlugin {
 			return TRUE;
 		} else {
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
-
 			$response = $this->client->category($index_type)->responseGroup("Small,Images")->page($page_no)->search($search_vars_r['title']);
-			
 			
 			if (is_array($response['Items']) && is_array($response['Items']['Request']) 
 					&& $response['Items']['Request']['IsValid'] == 'True') {
@@ -85,9 +83,51 @@ class odbamazonecs extends SitePlugin {
 			return FALSE;
 		}
 		
-		$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
+		$idType = 'ASIN';
+		
+		// if search term is a 12 or 13 digits number then we assume it is an EAN number
+		if (preg_match('/[0-9]{12,13}/', $search_attributes_r[$this->siteAttributeType])) {
+			$idType = "EAN";
+		}
+		
+		$response = $this->client->optionalParameters(array('IdType' => $idType))->responseGroup("Large,Images,EditorialReview")->lookup($search_attributes_r[$this->siteAttributeType]);
 		
 		
+		if (is_array($response['Items']) && is_array($response['Items']['Request'])
+				&& $response['Items']['Request']['IsValid'] == 'True') {
+
+			
+			$response = $response['Items']['Item'];
+			//print_r($response);
+			
+			if (strlen($response['LargeImage']) > 0) {
+				$this->addItemAttribute('imageurl', $response['LargeImage']);
+			}
+			
+			if (is_array($response['EditorialReviews']) && is_array($response['EditorialReviews']['EditorialReview'])) {
+				while(list(,$review_r) = each($response['EditorialReviews']['EditorialReview'])) {
+					$review = $review_r['Content'];
+					$review = str_replace("<br />", "\n", $review);
+					$review = trim(html_entity_decode(strip_tags($review)));
+					$this->addItemAttribute('blurb', $review);
+				}
+			}
+			
+			if (is_array($response['ItemAttributes'])) {
+				$title = $response['ItemAttributes']['Title'];
+				if (($idx = strpos($title, "[Blu-ray]")) !== FALSE) {
+					$title = substr($title, 0, $idx);
+				}
+				$this->addItemAttribute('title', $title);
+				
+				
+			}
+			
+			
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 	}
 }
 ?>

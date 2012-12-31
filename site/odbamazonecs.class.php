@@ -151,7 +151,11 @@ class odbamazonecs extends SitePlugin {
 	function parse_video_data($attributes) {
 		if (is_array($attributes['Languages'])) {
 			while(list(,$lang_r) = each($attributes['Languages'])) {
-				$this->addItemAttribute('audio_lang', $lang_r['Name']);
+				if ($lang_r['Type'] == 'Subtitled') {
+					$this->addItemAttribute('subtitles', $lang_r['Name']);
+				} else {
+					$this->addItemAttribute('audio_lang', $lang_r['Name']);
+				} 
 			}
 		}
 		
@@ -180,6 +184,19 @@ class odbamazonecs extends SitePlugin {
 		}
 		
 		$this->addItemAttribute('studio', $attributes['Studio']);
+		$this->addItemAttribute('no_discs', $attributes['NumberOfDiscs']);
+		$this->addItemAttribute('dvd_rel_dt', $attributes['ReleaseDate']);
+		
+		if (is_array($attributes['RunningTime'])) {
+			$this->addItemAttribute('run_time', $attributes['RunningTime']['_']);
+		}
+		
+		if (is_array($attributes['Feature'])) {
+			while(list(,$feature) = each($attributes['Feature'])) {
+				$this->addItemAttribute('dvd_extras', $feature);
+			}
+		}
+		
 	}
 }
 ?>

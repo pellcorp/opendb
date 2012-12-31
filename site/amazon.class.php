@@ -456,16 +456,11 @@ class amazon extends SitePlugin
 		unitialised array.
 	*/
 
-
-/*
-Some search URL examples:
-- search by ISBN:
-  http://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-isbn=1591163056
-
-*/
-
-
-
+	/*
+	Some search URL examples:
+	- search by ISBN:
+	  http://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-isbn=1591163056
+	*/
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer)
 	{
 		//an id="btAsinTitle" style="">Biochemistry <span style="text-transform:capitalize; font-size: 16px;">[Hardcover]</span></span></h1><span ><a href="/Donald-Voet/e/B000APBABS/ref=ntt_athr_dp_pel_1">Donald Voet</a> (Author) </span></div><div class="jumpBar">
@@ -602,7 +597,7 @@ Some search URL examples:
 	*/
 	function parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer)
 	{
-	// All Amazon.com (US) items should be NTSC!
+		// FIXME - this is used for more than just US site now, so this is invalid
 		$this->addItemAttribute('vid_format', 'NTSC');
 		
 		// genre extraction block.

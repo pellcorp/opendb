@@ -134,12 +134,12 @@ class odbamazonecs extends SitePlugin {
 					$this->addItemAttribute('listprice', $price);
 				}
 				
-				switch($s_item_type) {
-					case 'DVD':
-					case 'BD':
-						$this->parse_video_data($attributes);
-						break;
-				}
+ 				switch($s_item_type) {
+ 					case 'DVD':
+ 					case 'BD':
+ 						$this->parse_video_data($attributes);
+ 						break;
+ 				}
 			}
 			
 			return TRUE;
@@ -149,7 +149,37 @@ class odbamazonecs extends SitePlugin {
 	}
 	
 	function parse_video_data($attributes) {
+		if (is_array($attributes['Languages'])) {
+			while(list(,$lang_r) = each($attributes['Languages'])) {
+				$this->addItemAttribute('audio_lang', $lang_r['Name']);
+			}
+		}
 		
+		if (is_array($attributes['Actor'])) {
+			while(list(,$actor) = each($attributes['Actor'])) {
+				$this->addItemAttribute('actors', $actor);
+			}
+		}
+		
+		if (is_array($attributes['Director'])) {
+			while(list(,$director) = each($attributes['Director'])) {
+				$this->addItemAttribute('director', $director);
+			}
+		} else {
+			$this->addItemAttribute('director', $attributes['Director']);
+		}
+		
+		$this->addItemAttribute('ratio', $attributes['AspectRatio']);
+		
+		if (strlen($attributes['AudienceRating']) > 0) {
+			$rating = $attributes['AudienceRating'];
+			if (($idx = strpos($rating, "(")) !== FALSE) {
+				$rating = substr($rating, 0, $idx);
+			}
+			$this->addItemAttribute('age_rating', $rating);
+		}
+		
+		$this->addItemAttribute('studio', $attributes['Studio']);
 	}
 }
 ?>

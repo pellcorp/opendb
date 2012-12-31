@@ -598,7 +598,7 @@ class amazon extends SitePlugin
 	function parse_amazon_video_data($search_attributes_r, $s_item_type, $pageBuffer)
 	{
 		// FIXME - this is used for more than just US site now, so this is invalid
-		$this->addItemAttribute('vid_format', 'NTSC');
+		//$this->addItemAttribute('vid_format', 'NTSC');
 		
 		// genre extraction block.
 		$startidx = strpos($pageBuffer, "<li><b>Genres:</b>");

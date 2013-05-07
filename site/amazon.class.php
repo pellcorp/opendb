@@ -94,8 +94,8 @@ class amazon extends SitePlugin
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
 			
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
-				if( (preg_match("/ id=\"resultCount\">.*?<span>Showing.[0-9]+[\s]*-[\s]*[0-9]+.of.([0-9,]+) Results<\//", $pageBuffer, $regs) || 
-						preg_match("/ id=\"resultCount\">.*?<span>Showing.([0-9]+).Result.*?<\//", $pageBuffer, $regs) ) )
+				if( (preg_match("/ id=\"resultCount\">.*?<span>.*.[0-9]+[\s]*-[\s]*[0-9]+.of.([0-9,]+) Results<\//", $pageBuffer, $regs) || 
+						preg_match("/ id=\"resultCount\">.*?<span>.*.([0-9]+).Result.*?<\//", $pageBuffer, $regs) ) )
 				{
 					// need to remove the commas from the total
 					$total = str_replace(",", "", $regs[1]);

@@ -56,7 +56,12 @@ class imdbphp extends SitePlugin
 				{
 					foreach($this->results as $res_id => $res)
 					{
-						$this->addListingRow($res->title(), $res->photo(), $res->year(), array('imdb_id'=>$res->imdbid(), 'res_id'=>$res_id));
+						if (starts_with($res->photo(), '/images/nopicture')) {
+							$image = NULL;
+						} else {
+							$image = $res->photo();
+						}
+						$this->addListingRow($res->title(), $image, $res->year(), array('imdb_id'=>$res->imdbid(), 'res_id'=>$res_id));
 					}
 					return TRUE;
 				}

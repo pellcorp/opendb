@@ -285,7 +285,7 @@ class SitePlugin
 			}
 
 			$opendb_link_url = get_url_string($this->_http_vars, $attributes_r);
-
+			
 			$this->_item_list_rs[] = array(
 					'title'=>$title,
 					'cover_image_url'=>trim($cover_image_url),

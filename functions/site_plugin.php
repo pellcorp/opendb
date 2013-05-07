@@ -25,8 +25,12 @@ include_once("./functions/item_attribute.php");
 include_once("./functions/item_type_group.php");
 include_once("./functions/parseutils.php");
 include_once("./functions/TitleMask.class.php");
+include_once("./functions/OpenDbSnoopy.class.inc");
 include_once("./functions/phpcuecat/PHPCueCat.class.php");
 include_once("./lib/ISBN/ISBN.class.php");
+
+// Construct a single copy of this object for use within the site plugin
+$SITE_PLUGIN_SNOOPY = new OpenDbSnoopy(TRUE); //debugging always on
 
 function get_month_num_for_name($monthname, $months) {
 	$key = array_search(strtolower($monthname), $months);

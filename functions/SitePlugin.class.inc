@@ -59,6 +59,8 @@ class SitePlugin
 
 	function SitePlugin($site_type)
 	{
+		global $SITE_PLUGIN_SNOOPY;
+		
 		$this->_type = $site_type;
 		$this->_site_plugin_r = fetch_site_plugin_r($this->_type);
 		$this->_site_plugin_conf_r = get_site_plugin_conf_r($this->_type);
@@ -79,7 +81,7 @@ class SitePlugin
 		}
 
 		// Construct a single copy of this object for use within the site plugin
-		$this->_httpClient = new OpenDbSnoopy(TRUE); //debugging always on
+		$this->_httpClient =& $SITE_PLUGIN_SNOOPY; //debugging always on
 		
 		$this->_titleMaskCfg = new TitleMask();
 	}

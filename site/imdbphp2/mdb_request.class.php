@@ -7,8 +7,10 @@ class MDB_Request {
 
 	function MDB_Request($url) {
 		$this->setURL($url);
-
-		$this->httpClient = new OpenDbSnoopy(TRUE);
+	
+		global $SITE_PLUGIN_SNOOPY;
+		
+		$this->httpClient =& $SITE_PLUGIN_SNOOPY;
 	}
 
 	function sendRequest() {

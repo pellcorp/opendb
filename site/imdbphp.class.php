@@ -21,6 +21,10 @@
 		Search for '12 Angry Men' to get an exact title match.
 		Search for 'faddsda' to trigger a search error.
 */
+
+// use local config file instead of the one included with imdb, so we can disable caching, etc.
+define(IMDBPHP_CONFIG, './site/imdb.config.php');
+
 include_once("./functions/SitePlugin.class.inc");
 include_once("./site/imdbphp2/imdb.class.php");
 include_once("./site/imdbphp2/imdbsearch.class.php");
@@ -77,8 +81,8 @@ class imdbphp extends SitePlugin
 						if(strpos($pageBuffer, "<h1 class=\"findHeader\">Results for <span class=\"findSearchTerm\">") !== FALSE)
 						{
 							//<tr class="findResult odd"> 
-							//<td class="primary_photo"> <a href="/title/tt1446714/?ref_=fn_al_tt_1"><img src="http://ia.media-imdb.com/images/M/MV5BMTY3NzIyNTA2NV5BMl5BanBnXkFtZTcwNzE2NjI4Nw@@._V1_SX32_CR0,0,32,44_.jpg" height="44" width="32" /></a> </td> 
-							//<td class="result_text"> <a href="/title/tt1446714/?ref_=fn_al_tt_1">Prometheus</a> (I) (2012) </td>
+							//<td class="primary_photo"> <a href="/title/tt1256632/?ref_=fn_al_tt_2" ><img src="http://ia.media-imdb.com/images/G/01/imdb/images/nopicture/32x44/film-3119741174._V397576370_.png" /></a> </td> 
+							//<td class="result_text"> <a href="/title/tt2411516/?ref_=fn_al_tt_6" >Prometheus Trap</a> (2012) </td>
 							//</tr>
 							
 							if (($idx = strpos($pageBuffer, "<table class=\"findList\">")) !== FALSE) {
@@ -87,13 +91,12 @@ class imdbphp extends SitePlugin
 								$pageBuffer = substr($pageBuffer, 0, $idx);
 								
 								if (preg_match_all("/<tr class=\"findResult[^\"]*\">.*?<\/tr>/m", $pageBuffer, $matches)) {
-									
 									for ($i = 0; $i < count($matches[0]); $i++) {
-										if (preg_match("/<td class=\"primary_photo\">[\s]*<a href=\"[^\"]*\">[\s]*<img src=\"([^\"]*)\"[^>]*>[\s]*<\/a>[\s]*<\/td>/m", $matches[0][$i], $lmatches)) {
+										if (preg_match("/<td class=\"primary_photo\">[\s]*<a href=\"[^\"]*\"[\s]*>[\s]*<img src=\"([^\"]*)\"[^>]*>[\s]*<\/a>[\s]*<\/td>/m", $matches[0][$i], $lmatches)) {
 											$image = trim($lmatches[1]);
 										}
 										
-										if (preg_match("/<td class=\"result_text\">[\s]*<a href=\"\/title\/tt([0-9]+)[^\"]*\">([^<]+)<\/a>[\s]*([^<]+)<\/td>/m", $matches[0][$i], $lmatches)) {
+										if (preg_match("/<td class=\"result_text\">[\s]*<a href=\"\/title\/tt([0-9]+)[^\"]*\"[\s]*>([^<]+)<\/a>[\s]*([^<]+)<\/td>/m", $matches[0][$i], $lmatches)) {
 											$imdb_id = trim($lmatches[1]);
 											$title = trim($lmatches[2]) . " " . trim($lmatches[3]);
 										}

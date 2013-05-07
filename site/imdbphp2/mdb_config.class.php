@@ -35,7 +35,7 @@ if ( !defined('PILOT_IMDBFALLBACK') ) define('PILOT_IMDBFALLBACK',FALSE);
  * @class mdb_config
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2008 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 415 $ $Date: 2010-10-10 22:21:44 +0200 (So, 10. Okt 2010) $
+ * @version $Revision: 415 $ $Date: 2010-10-11 07:21:44 +1100 (Mon, 11 Oct 2010) $
  */
 class mdb_config {
   var $imdbsite;

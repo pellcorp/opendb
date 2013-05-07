@@ -92,10 +92,12 @@ class amazon extends SitePlugin
 			{
 				// this is a severe memory hog!!!
 				$pageBuffer = preg_replace('/[\r\n]+/', ' ', $pageBuffer);
-			
+				
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
-				if( (preg_match("/ id=\"resultCount\">.*?<span>.*.[0-9]+[\s]*-[\s]*[0-9]+.of.([0-9,]+) Results<\//", $pageBuffer, $regs) || 
-						preg_match("/ id=\"resultCount\">.*?<span>.*.([0-9]+).Result.*?<\//", $pageBuffer, $regs) ) )
+				//<span>1-24 von 194 Ergebnissen</span>
+				if( (preg_match("/ id=\"resultCount\">.*?<span>.*.[0-9]+[\s]*-[\s]*[0-9]+.*([0-9,]+).*<\//", $pageBuffer, $regs)  
+						|| preg_match("/ id=\"resultCount\">.*?<span>.*.([0-9]+).*?<\//", $pageBuffer, $regs)
+						 ) )
 				{
 					// need to remove the commas from the total
 					$total = str_replace(",", "", $regs[1]);
@@ -104,7 +106,7 @@ class amazon extends SitePlugin
 					$this->setTotalCount($total);
 					
 					// 2 = img, 1 = href, 3 = title		
-					if(preg_match_all("/id=\"result_.*?href=\"(.*?)\">.*?<img.*?src=\"([^\"]+)\".*?<a.class=\"title\".*?>(.*?)</i", $pageBuffer, $matches))
+					if(preg_match_all("/id=\"result_.*?href=\"(.*?)\">.*?<img.*?src=\"([^\"]+)\".*?<a.*?>(.*?)<\/a/i", $pageBuffer, $matches))
 					{
 						for($i=0; $i<count($matches[0]); $i++)
 						{
@@ -115,7 +117,8 @@ class amazon extends SitePlugin
 								if(strpos($matches[2][$i], "no-img")!==FALSE)
 									$matches[2][$i] = NULL;
 
-								$this->addListingRow($matches[3][$i], $imageuri, NULL, array($this->asinId=>$regs[1], 'search.title'=>$search_vars_r['title']));
+								$this->addListingRow($matches[3][$i], $imageuri, NULL, array($this->asinId=>$regs[1], 
+										'search.title'=>$search_vars_r['title']));
 							}
 						}
 					}

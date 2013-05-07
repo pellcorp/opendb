@@ -185,6 +185,11 @@ class amazon extends SitePlugin
 			$this->addItemAttribute('upc_id', $upcId);
 		}
 
+		// <img id="main-image" src="http://ecx.images-amazon.com/images/I/51sU2iuuXUL._SY300_.jpg"
+		if(preg_match("!<img id=\"main-image\" src=\"([^\"]+)\"!s", $pageBuffer, $regs)) {
+			$this->addItemAttribute('imageurl', $regs[1]);
+		}
+		
 		if(preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs))
 		{
 			// remove image extras _xxx_.

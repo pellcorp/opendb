@@ -1,0 +1,209 @@
+#listing-filters 
+{
+	right: 125px;
+}
+
+#listing-filters-content
+{
+    width: 225px;
+}
+
+#listing-filters ul
+{
+	margin-top: 0px;
+	padding-top: 0px;
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+#listing-filters ul select
+{
+	display: block;
+}
+
+#listing-filters ul label
+{
+	color: #626C99;
+	display: block;
+	padding-top: 5px;
+	font-weight:bold;
+}
+
+div.search-query dl
+{
+	border:1px dashed #626C99;
+	float: left;
+	clear: both;
+	margin: 5px;
+	padding: 5px;
+}
+
+div.search-query dt
+{
+	clear: left;
+	float: left;
+	font-weight: bold;
+	padding: 5px;
+	margin: 0px;
+}
+
+div.search-query dd
+{
+	padding: 5px;
+	float: left;
+}
+
+table.listing-table
+{
+	clear: both;
+	width: 100%;
+}
+
+/* These two are for the listings, where the colors alternate. */
+.oddRow td, .evenRow td
+{
+	background-color: #BDC7F7;
+	font-size: x-small;
+	padding-left: 0px;
+	padding-right: 0px;
+	text-align: center;
+	border-spacing: 0;
+}
+
+.evenRow td
+{
+	background-color: #DCE6FB;
+}
+
+table.listing-table ul
+{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+table.listing-table a.orderby-desc
+{
+	background: url(../../images/desc_order.gif) no-repeat;
+	background-position: center right;
+	padding-right: 15px;
+}
+
+table.listing-table a.orderby-asc
+{
+	background: url(../../images/asc_order.gif) no-repeat;
+	background-position: center right;
+	padding-right: 15px;
+}
+
+ul.category li
+{
+	display: block;
+}
+
+ul.names
+{
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+ul.alphalist, ul.listingPager
+{
+	list-style-type: none;
+	clear: both;
+	text-align: center;
+	padding-top: 0px;
+}
+
+ul.alphalist li, ul.listingPager li
+{
+	display: inline;
+	padding: 5px;
+	margin-right: 5px;
+	/*border: 1px solid #CCE3F4;*/
+}
+
+ul.listingPager li.currentPage, ul.listingPager li:hover, ul.alphalist li:hover, ul.alphalist li.current
+{
+	background: #BDC7F7;
+}
+
+ul.listingPager li a
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+ul.listingPager, li.previousPage
+{
+	border-left: 0px;
+}
+
+.pageListingIndex
+{
+	color: #626C99;
+	font-size: 85%;
+}
+
+li.disabled.previousPage, li.disabled.nextPage
+{
+	display: none;
+}
+
+th#header-item_id_instance_no, th#header-s_item_type, th#header-item_id, #header-coverimage
+{
+	width: 5%;
+}
+
+th#header-category, th#header-action_links
+{
+	width: 10%;
+}
+
+.listingDate
+{
+	padding-top: 20px;
+	color: #626C99;
+	text-align: center;
+	font-size: 80%;
+}
+
+ul.listingControls
+{
+	list-style-type: none;
+	float: right;
+	font-size: 85%;
+	color: #626C99;
+	margin-right: 20px;
+}
+
+ul.checkbox-action-links
+{
+	clear: both;
+	padding: 5px;
+	float: left;
+	list-style-type: none;
+	padding-left: 0px;
+	display: block;
+	text-align: center;
+}
+
+ul.checkbox-action-links li
+{
+	float: left;
+	border-left: none;
+	border-right: 1px solid gray;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin: 0px;
+}
+
+ul.checkbox-action-links li.first
+{
+	border-left: 1px solid gray;
+}

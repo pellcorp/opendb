@@ -1,0 +1,47 @@
+#loginFormDiv {
+	margin-top: 25px;
+	margin-left: 10px;
+	margin-bottom:300px;
+	font-size:150%;
+}
+
+h2 {
+	display: none;
+}
+
+#loginForm .label {
+	color: #626C99;
+}
+
+#loginForm input.text, input.password, input.submit {
+	font-size: 100%;
+}
+
+#loginForm ul
+{
+	text-align: left;
+	margin-left: 0px;
+	padding-left: 0px;
+	list-style-type: none;
+}
+
+#loginForm ul li
+{
+	white-space: nowrap;
+}
+
+#loginForm ul li label
+{
+	margin: 5px;
+	display: block;
+}
+
+.redirectMessage {
+	color: #FF3333;
+	font-weight: bold;
+	font-size: 100%;
+}
+
+.footer-links a {
+	font-size: 90%;
+}

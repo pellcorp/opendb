@@ -1,0 +1,16 @@
+ul.browsers
+{
+	list-style-type: none;
+	padding: 50px;
+	text-align: center;
+}
+
+ul.browsers img
+{
+	vertical-align: middle;
+}
+
+ul.browsers li {
+	display: inline;
+	margin: 100px;
+}

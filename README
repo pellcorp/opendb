@@ -11,13 +11,18 @@ including DVD, VCD, CD, VHS, games, books, and laser discs.
 
 See the LICENSE file for details.
 
-3. Bugs
+3. Web sites
 
-Post any bugs to sourceforge http://www.sourceforge.net/projects/opendb
+http://opendb.iamvegan.net/
+https://github.com/pellcorp/opendb
 
-4. Credits
+4. Bugs
 
-- Open Media Collectors Database (OpenDb).  Copyright (c)2001-2008 Jason Pell
+Post any bugs to sourceforge https://github.com/pellcorp/opendb/issues
+
+5. Credits
+
+- Open Media Collectors Database (OpenDb).  Copyright (c)2001-2013 Jason Pell
 
 - Snoopy, the PHP net client.  Copyright (c)1999-2000 ispi, All Rights Reserved
 
@@ -55,7 +60,7 @@ Post any bugs to sourceforge http://www.sourceforge.net/projects/opendb
 - LibChart 1.1 & 1.2
   <jm.tremeaux@gmail.com>
   
-7. Disclaimer
+6. Disclaimer
 
 The standard GPL disclaimer applies.  See the LICENSE file for more
 information.

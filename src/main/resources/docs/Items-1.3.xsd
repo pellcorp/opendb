@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://opendb.iamvegan.net/xsd/Items-1.3.xsd" xmlns="http://opendb.iamvegan.net/xsd/Items-1.3.xsd">
+
+	<xsd:element name="Items" type="Items" />
+	<xsd:complexType name="Items">
+		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Item" type="Item" />
+	<xsd:complexType name="Item">
+		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="Title" minOccurs="1" maxOccurs="1" />
+			<xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="Instance" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+
+		<xsd:attribute name="ItemId" type="xsd:string" />
+		<xsd:attribute name="ItemType" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<xsd:element name="Title" type="Title" />
+	<xsd:complexType name="Title">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:element name="Instance" type="Instance" />
+	<xsd:complexType name="Instance">
+		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="StatusComment" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+
+		<xsd:attribute name="InstanceNo" type="xsd:string" />
+		<xsd:attribute name="OwnerId" type="xsd:string" />
+		<xsd:attribute name="BorrowDuration" type="xsd:string" />
+		<xsd:attribute name="StatusType" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:element name="StatusComment" type="StatusComment" />
+	<xsd:complexType name="StatusComment">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:element name="Attribute" type="Attribute" />
+	<xsd:complexType name="Attribute">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="AttributeType" type="xsd:string"
+					use="required" />
+				<xsd:attribute name="OrderNo" type="xsd:string" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+</xsd:schema>

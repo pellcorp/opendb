@@ -1,0 +1,13 @@
+ul.checkboxGridOptionsVertical li {
+	width: 200px;
+}
+
+li#include-header,li.submitButton {
+	clear: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+li#include-header {
+	padding-left: 10px;
+}

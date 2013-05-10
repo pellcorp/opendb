@@ -1,0 +1,1267 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!--DVD Profiler Collection Export -->
+<Collection>
+	<DVD>
+		<ProfileTimestamp>2007-05-19T23:03:06.000Z</ProfileTimestamp>
+		<ID>012236115007</ID>
+		<MediaTypes>
+			<DVD>True</DVD>
+			<HDDVD>False</HDDVD>
+			<BluRay>False</BluRay>
+		</MediaTypes>
+		<UPC>012236-115007</UPC>
+		<CollectionNumber>1</CollectionNumber>
+		<CollectionType>Owned</CollectionType>
+		<Title>First Blood</Title>
+		<DistTrait />
+		<OriginalTitle />
+		<CountryOfOrigin />
+		<ProductionYear>1982</ProductionYear>
+		<Released>1998-10-20</Released>
+		<RunningTime>96</RunningTime>
+		<Rating>PG-13</Rating>
+		<CaseType>Keep Case</CaseType>
+		<Genres>
+			<Genre>Action</Genre>
+		</Genres>
+		<Regions>
+			<Region>1</Region>
+		</Regions>
+		<Format>
+			<FormatAspectRatio>2.35</FormatAspectRatio>
+			<FormatVideoStandard>NTSC</FormatVideoStandard>
+			<FormatLetterBox>True</FormatLetterBox>
+			<FormatPanAndScan>False</FormatPanAndScan>
+			<FormatFullFrame>False</FormatFullFrame>
+			<Format16X9>True</Format16X9>
+			<FormatDualSided>False</FormatDualSided>
+			<FormatDualLayered>False</FormatDualLayered>
+		</Format>
+		<Features>
+			<FeatureSceneAccess>True</FeatureSceneAccess>
+			<FeatureCommentary>True</FeatureCommentary>
+			<FeatureTrailer>True</FeatureTrailer>
+			<FeaturePhotoGallery>False</FeaturePhotoGallery>
+			<FeatureDeletedScenes>False</FeatureDeletedScenes>
+			<FeatureMakingOf>True</FeatureMakingOf>
+			<FeatureProductionNotes>True</FeatureProductionNotes>
+			<FeatureGame>True</FeatureGame>
+			<FeatureDVDROMContent>False</FeatureDVDROMContent>
+			<FeatureMultiAngle>False</FeatureMultiAngle>
+			<FeatureMusicVideos>False</FeatureMusicVideos>
+			<FeatureInterviews>False</FeatureInterviews>
+			<FeatureStoryboardComparisons>False</FeatureStoryboardComparisons>
+			<FeatureOuttakes>False</FeatureOuttakes>
+			<FeatureClosedCaptioned>False</FeatureClosedCaptioned>
+			<FeatureTHXCertified>False</FeatureTHXCertified>
+			<OtherFeatures />
+		</Features>
+		<Studios>
+			<Studio>Tristar Pictures</Studio>
+			<Studio>Artisan</Studio>
+			<Studio>Canal+</Studio>
+		</Studios>
+		<Audio>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+		</Audio>
+		<BoxSet>
+			<Parent />
+			<Contents />
+		</BoxSet>
+		<Subtitles>
+			<Subtitle>English</Subtitle>
+			<Subtitle>Spanish</Subtitle>
+		</Subtitles>
+		<SRP DenominationType="USD" DenominationDesc="United States (Dollar)"
+			FormattedValue="$19.95">19.95</SRP>
+		<Actors>
+			<Actor FirstName="Sylvester" MiddleName="" LastName="Stallone"
+				BirthYear="0" Role="Rambo" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Richard" MiddleName="" LastName="Crenna"
+				BirthYear="0" Role="Trautman" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Brian" MiddleName="" LastName="Dennehy"
+				BirthYear="0" Role="Teasle" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bill" MiddleName="" LastName="McKinney"
+				BirthYear="0" Role="Kern" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Jack" MiddleName="" LastName="Starrett"
+				BirthYear="0" Role="Galt" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Michael" MiddleName="" LastName="Talbott"
+				BirthYear="0" Role="Balford" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Chris" MiddleName="" LastName="Mulkey"
+				BirthYear="0" Role="Ward" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="McLiam"
+				BirthYear="0" Role="Orval" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Alf" MiddleName="" LastName="Humphreys"
+				BirthYear="0" Role="Lester" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Caruso"
+				BirthYear="0" Role="Mitch" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Crowley"
+				BirthYear="0" Role="Shingleton" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Don" MiddleName="" LastName="MacKay"
+				BirthYear="0" Role="Preston" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Chuck" MiddleName="" LastName="Tamburro"
+				BirthYear="0" Role="Pilot" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Petersen"
+				BirthYear="0" Role="Trooper" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Craig" MiddleName="Wright" LastName="Huston"
+				BirthYear="0" Role="Radio Operator" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Patrick" MiddleName="" LastName="Stack"
+				BirthYear="0" Role="Lt. Morgan" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Stephen" MiddleName="E." LastName="Miller"
+				BirthYear="0" Role="Guardsman #1" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Raimund" MiddleName="" LastName="Stamm"
+				BirthYear="0" Role="Guardsman #2" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Robert" MiddleName="" LastName="Metcalfe"
+				BirthYear="0" Role="Guardsman #3" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Stephen" MiddleName="" LastName="Dimopoulos"
+				BirthYear="0" Role="Guardsman #4" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Greenwood"
+				BirthYear="0" Role="Guardsman #5" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Earl" MiddleName="" LastName="Klein"
+				BirthYear="0" Role="Guardsman #6" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Danny" MiddleName="" LastName="Wozna"
+				BirthYear="0" Role="Boy" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Peter" MiddleName="" LastName="Lonstrup"
+				BirthYear="0" Role="Attendant" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Mike" MiddleName="" LastName="Winlaw"
+				BirthYear="0" Role="TV Reporter" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Donald" MiddleName="" LastName="Adams"
+				BirthYear="0" Role="Guard C.O." CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Menzies"
+				BirthYear="0" Role="Miner" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Frank" MiddleName="" LastName="Richter"
+				BirthYear="0" Role="Man on Street #1" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Grahman" MiddleName="L." LastName="Galativk"
+				BirthYear="0" Role="Man on Street #2" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Ian" MiddleName="" LastName="Hutchinson"
+				BirthYear="0" Role="Man on Street #3" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Amy" MiddleName="" LastName="Alexander"
+				BirthYear="0" Role="Woman on Street" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Gary" MiddleName="" LastName="Hetherington"
+				BirthYear="0" Role="Hunter" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Alex" MiddleName="" LastName="Kliner"
+				BirthYear="0" Role="Hunter" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="R." MiddleName="G." LastName="Miller"
+				BirthYear="0" Role="Hunter" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Suzee" MiddleName="" LastName="Pai"
+				BirthYear="0" Role="" CreditedAs="" Voice="False" Uncredited="True" />
+			<Actor FirstName="John" MiddleName="" LastName="Rigg"
+				BirthYear="0" Role="Camp Radio Operator" CreditedAs="" Voice="False"
+				Uncredited="True" />
+		</Actors>
+		<Credits>
+			<Credit FirstName="Ted" MiddleName="" LastName="Kotcheff"
+				BirthYear="0" CreditType="Direction" CreditSubtype="Director"
+				CreditedAs="" />
+			<Credit FirstName="David" MiddleName="" LastName="Morrell"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Original Material By"
+				CreditedAs="" />
+			<Credit FirstName="Michael" MiddleName="" LastName="Kozoll"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="William" MiddleName="" LastName="Sackheim"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="Sylvester" MiddleName="" LastName="Stallone"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="Mario" MiddleName="" LastName="Kassar"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Andrew" MiddleName="" LastName="Vajna"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Buzz" MiddleName="" LastName="Feitshans"
+				BirthYear="0" CreditType="Production" CreditSubtype="Producer"
+				CreditedAs="" />
+			<Credit FirstName="Andrew" MiddleName="" LastName="Laszlo"
+				BirthYear="0" CreditType="Cinematography" CreditSubtype="Director of Photography"
+				CreditedAs="" />
+			<Credit FirstName="Joan" MiddleName="" LastName="Chapman"
+				BirthYear="0" CreditType="Film Editing" CreditSubtype="Film Editor"
+				CreditedAs="" />
+			<Credit FirstName="Jerry" MiddleName="" LastName="Goldsmith"
+				BirthYear="0" CreditType="Music" CreditSubtype="Composer"
+				CreditedAs="" />
+			<Credit FirstName="Jerry" MiddleName="" LastName="Goldsmith"
+				BirthYear="0" CreditType="Music" CreditSubtype="Song Writer"
+				CreditedAs="" />
+			<Credit FirstName="Hal" MiddleName="" LastName="Shaper"
+				BirthYear="0" CreditType="Music" CreditSubtype="Song Writer"
+				CreditedAs="" />
+			<Credit FirstName="Rob" MiddleName="" LastName="Young"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Production Sound Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Donald" MiddleName="O." LastName="Mitchell"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Re-Recording Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Rick" MiddleName="" LastName="Kline"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Re-Recording Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Gregg" MiddleName="" LastName="Landaker"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Re-Recording Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Fred" MiddleName="J." LastName="Brown"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Supervising Sound Editor"
+				CreditedAs="" />
+			<Credit FirstName="Fred" MiddleName="" LastName="Stafford"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Editor"
+				CreditedAs="" />
+			<Credit FirstName="Bub" MiddleName="" LastName="Asman"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Editor"
+				CreditedAs="" />
+			<Credit FirstName="Edward" MiddleName="L." LastName="Sandlin"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Editor"
+				CreditedAs="" />
+			<Credit FirstName="Wolf" MiddleName="" LastName="Kroeger"
+				BirthYear="0" CreditType="Art" CreditSubtype="Production Designer"
+				CreditedAs="" />
+		</Credits>
+		<Overview>He never fought a battle he couldn&apos;t win - except the
+			conflict raging within his own soul. Academy Award nominee Sylvester
+			Stallone stars as war hero John Tambo. An ex-Green Beret haunted by
+			memories of Vietnam, he was once the perfect killing machine. Now
+			he&apos;s searching for peace, but finds instead an over-zealous,
+			small- toen sheriff who&apos;s spoiling for a fight. All hell breaks
+			loose when an unjustly imprisoned Rambo excapes and becomes the
+			target of a massive manhunt. Now he must use all his cunning, combat
+			skills and weapons training to stay alive and outwit his pursuers.
+			Co-starring Brian Dennehy and Richard Crenna, FIRST BLOOD is an
+			explosive action-thriller that will keep you on teh edge of your seat
+			until the final, powerful frame. This pulse-pounding saga has been
+			digitally remastered and contains an exciting featurette, &quot;First
+			Blood: A Look Back&quot;.</Overview>
+		<EasterEggs>10 second clip from Animated Series - To see clip you must
+			answer the Trivia Game without any mistakes.</EasterEggs>
+		<Discs />
+		<SortTitle>First Blood</SortTitle>
+		<LastEdited>2007-10-13T10:33:58.000Z</LastEdited>
+		<WishPriority>0</WishPriority>
+		<PurchaseInfo>
+			<PurchasePrice DenominationType="USD"
+				DenominationDesc="United States (Dollar)" FormattedValue="$0.00">0</PurchasePrice>
+			<PurchasePlace>Target</PurchasePlace>
+			<PurchasePlaceType>L</PurchasePlaceType>
+			<PurchasePlaceWebsite />
+			<PurchaseDate>2007-10-13</PurchaseDate>
+		</PurchaseInfo>
+		<Review Film="0" Video="0" Audio="0" Extras="0" />
+		<Events />
+		<LoanInfo>
+			<Loaned>False</Loaned>
+		</LoanInfo>
+		<Notes />
+		<Tags />
+		<Locks>
+			<Entire>False</Entire>
+			<Covers>False</Covers>
+			<Title>False</Title>
+			<MediaType>False</MediaType>
+			<Overview>False</Overview>
+			<Regions>False</Regions>
+			<Genres>False</Genres>
+			<SRP>True</SRP>
+			<Studios>False</Studios>
+			<DiscInformation>False</DiscInformation>
+			<Cast>False</Cast>
+			<Crew>False</Crew>
+			<Features>False</Features>
+			<AudioTracks>False</AudioTracks>
+			<Subtitles>False</Subtitles>
+			<EasterEggs>False</EasterEggs>
+			<RunningTime>False</RunningTime>
+			<ReleaseDate>False</ReleaseDate>
+			<ProductionYear>False</ProductionYear>
+			<CaseType>False</CaseType>
+			<VideoFormats>False</VideoFormats>
+			<Rating>False</Rating>
+		</Locks>
+	</DVD>
+	<DVD>
+		<ProfileTimestamp>2007-05-19T22:43:54.000Z</ProfileTimestamp>
+		<ID>065935142065</ID>
+		<MediaTypes>
+			<DVD>True</DVD>
+			<HDDVD>False</HDDVD>
+			<BluRay>False</BluRay>
+		</MediaTypes>
+		<UPC>065935-142065</UPC>
+		<CollectionNumber>2</CollectionNumber>
+		<CollectionType>Owned</CollectionType>
+		<Title>The Lord of The Rings: Fellowship of The Ring</Title>
+		<DistTrait>Special Edition</DistTrait>
+		<OriginalTitle />
+		<CountryOfOrigin />
+		<ProductionYear>2001</ProductionYear>
+		<Released>2002-08-06</Released>
+		<RunningTime>178</RunningTime>
+		<Rating>PG-13</Rating>
+		<CaseType>Keep Case</CaseType>
+		<Genres>
+			<Genre>Fantasy</Genre>
+		</Genres>
+		<Regions>
+			<Region>1</Region>
+		</Regions>
+		<Format>
+			<FormatAspectRatio />
+			<FormatVideoStandard>NTSC</FormatVideoStandard>
+			<FormatLetterBox>False</FormatLetterBox>
+			<FormatPanAndScan>False</FormatPanAndScan>
+			<FormatFullFrame>True</FormatFullFrame>
+			<Format16X9>False</Format16X9>
+			<FormatDualSided>False</FormatDualSided>
+			<FormatDualLayered>False</FormatDualLayered>
+		</Format>
+		<Features>
+			<FeatureSceneAccess>True</FeatureSceneAccess>
+			<FeatureCommentary>True</FeatureCommentary>
+			<FeatureTrailer>True</FeatureTrailer>
+			<FeaturePhotoGallery>False</FeaturePhotoGallery>
+			<FeatureDeletedScenes>True</FeatureDeletedScenes>
+			<FeatureMakingOf>True</FeatureMakingOf>
+			<FeatureProductionNotes>True</FeatureProductionNotes>
+			<FeatureGame>False</FeatureGame>
+			<FeatureDVDROMContent>True</FeatureDVDROMContent>
+			<FeatureMultiAngle>False</FeatureMultiAngle>
+			<FeatureMusicVideos>True</FeatureMusicVideos>
+			<FeatureInterviews>False</FeatureInterviews>
+			<FeatureStoryboardComparisons>False</FeatureStoryboardComparisons>
+			<FeatureOuttakes>False</FeatureOuttakes>
+			<FeatureClosedCaptioned>False</FeatureClosedCaptioned>
+			<FeatureTHXCertified>False</FeatureTHXCertified>
+			<OtherFeatures>Preview of LoTR video game, sneak peak at four-disc
+				edition</OtherFeatures>
+		</Features>
+		<Studios>
+			<Studio>Alliance Atlantis</Studio>
+			<Studio>New Line Cinema</Studio>
+		</Studios>
+		<Audio>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>Dolby Digital 5.1</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>French</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+		</Audio>
+		<BoxSet>
+			<Parent />
+			<Contents />
+		</BoxSet>
+		<Subtitles>
+			<Subtitle>English</Subtitle>
+		</Subtitles>
+		<SRP DenominationType="USD" DenominationDesc="United States (Dollar)"
+			FormattedValue="$0.00">0</SRP>
+		<Actors>
+			<Actor FirstName="Elijah" MiddleName="" LastName="Wood"
+				BirthYear="0" Role="Frodo Baggins" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Ian" MiddleName="" LastName="McKellen"
+				BirthYear="0" Role="Gandalf the Grey" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Virgo" MiddleName="" LastName="Mortensen"
+				BirthYear="0" Role="Aragorn/Strider/The Heir of Gondor" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Sean" MiddleName="" LastName="Astin"
+				BirthYear="0" Role="Samwise &apos;Sam&apos; Gamgee" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Liv" MiddleName="" LastName="Tyler"
+				BirthYear="0" Role="Arwen &apos;Evenstar&apos; Undomiel" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Sean" MiddleName="" LastName="Bean"
+				BirthYear="0" Role="Boromir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Cate" MiddleName="" LastName="Blanchett"
+				BirthYear="0" Role="Galadriel, Lady of the Galadhrim" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Ian" MiddleName="" LastName="Holm" BirthYear="0"
+				Role="Bilbo Baggins" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Hugo" MiddleName="" LastName="Weaving"
+				BirthYear="0" Role="Elrond Peredhil, Lord of Rivendale" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Orlando" MiddleName="" LastName="Bloom"
+				BirthYear="0" Role="Legolas Greenleaf" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Christopher" MiddleName="" LastName="Lee"
+				BirthYear="0" Role="Saruman the White" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="John" MiddleName="Davies" LastName="Rhys"
+				BirthYear="0" Role="Gimli, Son of Gloin" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Billy" MiddleName="" LastName="Boyd"
+				BirthYear="0" Role="Peregrin &apos;Pippin&apos; Took" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Dominic" MiddleName="" LastName="Monaghan"
+				BirthYear="0" Role="Meriadoc &apos;Merry&apos; Brandybuck"
+				CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Andy" MiddleName="" LastName="Serkis"
+				BirthYear="0" Role="Gollum/Smeagol" CreditedAs="" Voice="True"
+				Uncredited="False" />
+			<Actor FirstName="Sala" MiddleName="" LastName="Baker"
+				BirthYear="0" Role="Sauron the Deceiver/The Dark Lord" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Noel" MiddleName="" LastName="Appleby"
+				BirthYear="0" Role="Everard Proudfoot" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Timothy" MiddleName="" LastName="Bartlett"
+				BirthYear="0" Role="Hobbit" CreditedAs="" Voice="False" Uncredited="True" />
+			<Actor FirstName="Victoria" MiddleName="Brenon" LastName="Cole"
+				BirthYear="0" Role="Orcs, Goblins, Uruk-Hai, Nazgul" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Paul" MiddleName="" LastName="Bryson"
+				BirthYear="0" Role="Orcs, Goblins, Uruk-Hai, Nazgul" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Marton" MiddleName="" LastName="Csokas"
+				BirthYear="0" Role="Celeborn, Lord of the Galadhrim" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Megan" MiddleName="" LastName="Edwards II"
+				BirthYear="0" Role="Mrs. Proudfoot" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Michael" MiddleName="" LastName="Elsworth"
+				BirthYear="0" Role="Gondorian Archivist" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Mark" MiddleName="" LastName="Ferguson"
+				BirthYear="0" Role="Gil-Galad, King of the Elves" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Taea" MiddleName="" LastName="Hartwell"
+				BirthYear="0" Role="Child Hobbit" CreditedAs="" Voice="False"
+				Uncredited="True" />
+			<Actor FirstName="Alan" MiddleName="" LastName="Howard"
+				BirthYear="0" Role="The One Ring" CreditedAs="" Voice="True"
+				Uncredited="False" />
+			<Actor FirstName="Billy" MiddleName="" LastName="Jackson III"
+				BirthYear="0" Role="Cute Child Hobbit" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Katie" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Cute Hobbit Child" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Drunk outside the Prancing Pony (un" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Lawrence" MiddleName="" LastName="Makoare"
+				BirthYear="0" Role="Lurtz" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Brent" MiddleName="" LastName="McIntyre"
+				BirthYear="0" Role="Witch-King" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Peter" MiddleName="" LastName="McKenzie"
+				BirthYear="0" Role="Elendil" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Sarah" MiddleName="" LastName="McLeod"
+				BirthYear="0" Role="Rosie Cotton" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Ian" MiddleName="" LastName="Mune" BirthYear="0"
+				Role="Bounder" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Craig" MiddleName="" LastName="Parker"
+				BirthYear="0" Role="Haldir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Cameron" MiddleName="" LastName="Rhodes"
+				BirthYear="0" Role="Farmer Maggot" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Martyn" MiddleName="" LastName="Sanderson"
+				BirthYear="0" Role="Gatekeeper" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Harry" MiddleName="" LastName="Sinclaire"
+				BirthYear="0" Role="Isildur" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Weatherley"
+				BirthYear="0" Role="Barliman Butterbur" CreditedAs="" Voice="False"
+				Uncredited="False" />
+		</Actors>
+		<Credits>
+			<Credit FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" CreditType="Direction" CreditSubtype="Director"
+				CreditedAs="" />
+		</Credits>
+		<Overview>With the help of a courageous fellowship of friends and
+			allies, Frodo embarks on a perilous mission to destroy the legendary
+			One Ring. Hunting Frodo are servants of the Dark Lord, Sauron, the
+			Ring&apos;s evil creator. If Sauron reclaims the Ring, Middle-Earth
+			is doomed. Winner of four Academy Awards, this epic tale of good
+			versus evil, friendship and sacrifice will transport you to a world
+			beyond imaginaiton.</Overview>
+		<EasterEggs>Easter Egg
+
+			DVD Credits
+
+
+			Access The Egg
+
+			Highlight Play Movie, then press up and you will have the New Line logo
+			highlighted. Press enter, and you&apos;ll have DVD credits.
+
+			Just pause the dvd for about 5 mintues and it has the Usual Suspects
+			cover picture appear.</EasterEggs>
+		<Discs />
+		<SortTitle>Lord of The Rings: Fellowship of The Ring</SortTitle>
+		<LastEdited>2007-10-13T10:37:43.000Z</LastEdited>
+		<WishPriority>0</WishPriority>
+		<PurchaseInfo>
+			<PurchasePrice DenominationType="USD"
+				DenominationDesc="United States (Dollar)" FormattedValue="$0.00">0</PurchasePrice>
+			<PurchasePlace />
+			<PurchasePlaceType />
+			<PurchasePlaceWebsite />
+			<PurchaseDate>2007-10-13</PurchaseDate>
+		</PurchaseInfo>
+		<Review Film="0" Video="0" Audio="0" Extras="0" />
+		<Events />
+		<LoanInfo>
+			<Loaned>False</Loaned>
+		</LoanInfo>
+		<Notes />
+		<Tags />
+		<Locks>
+			<Entire>False</Entire>
+			<Covers>False</Covers>
+			<Title>False</Title>
+			<MediaType>False</MediaType>
+			<Overview>False</Overview>
+			<Regions>False</Regions>
+			<Genres>False</Genres>
+			<SRP>True</SRP>
+			<Studios>False</Studios>
+			<DiscInformation>False</DiscInformation>
+			<Cast>False</Cast>
+			<Crew>False</Crew>
+			<Features>False</Features>
+			<AudioTracks>False</AudioTracks>
+			<Subtitles>False</Subtitles>
+			<EasterEggs>False</EasterEggs>
+			<RunningTime>False</RunningTime>
+			<ReleaseDate>False</ReleaseDate>
+			<ProductionYear>False</ProductionYear>
+			<CaseType>False</CaseType>
+			<VideoFormats>False</VideoFormats>
+			<Rating>False</Rating>
+		</Locks>
+	</DVD>
+	<DVD>
+		<ProfileTimestamp>2007-09-11T20:50:37.000Z</ProfileTimestamp>
+		<ID>794043650420</ID>
+		<MediaTypes>
+			<DVD>True</DVD>
+			<HDDVD>False</HDDVD>
+			<BluRay>False</BluRay>
+		</MediaTypes>
+		<UPC>794043-650420</UPC>
+		<CollectionNumber>4</CollectionNumber>
+		<CollectionType>Owned</CollectionType>
+		<Title>The Lord of the Rings: The Two Towers</Title>
+		<DistTrait>Special Extended DVD Edition</DistTrait>
+		<OriginalTitle />
+		<CountryOfOrigin>United States</CountryOfOrigin>
+		<ProductionYear>2002</ProductionYear>
+		<Released>2003-11-18</Released>
+		<RunningTime>222</RunningTime>
+		<Rating>PG-13</Rating>
+		<CaseType>Digipak</CaseType>
+		<CaseSlipCover>True</CaseSlipCover>
+		<Genres>
+			<Genre>Fantasy</Genre>
+			<Genre>Action</Genre>
+			<Genre>Adventure</Genre>
+		</Genres>
+		<Regions>
+			<Region>1</Region>
+		</Regions>
+		<Format>
+			<FormatAspectRatio>2.35</FormatAspectRatio>
+			<FormatVideoStandard>NTSC</FormatVideoStandard>
+			<FormatLetterBox>True</FormatLetterBox>
+			<FormatPanAndScan>False</FormatPanAndScan>
+			<FormatFullFrame>False</FormatFullFrame>
+			<Format16X9>True</Format16X9>
+			<FormatDualSided>False</FormatDualSided>
+			<FormatDualLayered>True</FormatDualLayered>
+		</Format>
+		<Features>
+			<FeatureSceneAccess>True</FeatureSceneAccess>
+			<FeatureCommentary>True</FeatureCommentary>
+			<FeatureTrailer>True</FeatureTrailer>
+			<FeaturePhotoGallery>True</FeaturePhotoGallery>
+			<FeatureDeletedScenes>True</FeatureDeletedScenes>
+			<FeatureMakingOf>True</FeatureMakingOf>
+			<FeatureProductionNotes>True</FeatureProductionNotes>
+			<FeatureGame>False</FeatureGame>
+			<FeatureDVDROMContent>True</FeatureDVDROMContent>
+			<FeatureMultiAngle>False</FeatureMultiAngle>
+			<FeatureMusicVideos>True</FeatureMusicVideos>
+			<FeatureInterviews>False</FeatureInterviews>
+			<FeatureStoryboardComparisons>False</FeatureStoryboardComparisons>
+			<FeatureOuttakes>False</FeatureOuttakes>
+			<FeatureClosedCaptioned>True</FeatureClosedCaptioned>
+			<FeatureTHXCertified>False</FeatureTHXCertified>
+			<OtherFeatures />
+		</Features>
+		<Studios>
+			<Studio>New Line Cinema</Studio>
+			<Studio>WingNut Films</Studio>
+			<Studio>New Line Home Entertainment</Studio>
+		</Studios>
+		<Audio>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>Dolby Digital Surround EX</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>DTS ES (Discrete)</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>Dolby Digital Surround</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+		</Audio>
+		<BoxSet>
+			<Parent />
+			<Contents />
+		</BoxSet>
+		<Subtitles>
+			<Subtitle>English</Subtitle>
+			<Subtitle>Spanish</Subtitle>
+		</Subtitles>
+		<SRP DenominationType="USD" DenominationDesc="United States (Dollar)"
+			FormattedValue="$39.99">39.99</SRP>
+		<Actors>
+			<Actor FirstName="John" MiddleName="" LastName="Rhys-Davies"
+				BirthYear="0" Role="Voice of Treebeard" CreditedAs="" Voice="True"
+				Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Allpress"
+				BirthYear="0" Role="Aldor" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Sean" MiddleName="" LastName="Astin"
+				BirthYear="0" Role="Sam" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Bach"
+				BirthYear="0" Role="Madril" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Sala" MiddleName="" LastName="Baker"
+				BirthYear="0" Role="Man Flesh Uruk" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Sean" MiddleName="" LastName="Bean"
+				BirthYear="0" Role="Boromir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Cate" MiddleName="" LastName="Blanchett"
+				BirthYear="0" Role="Galadriel" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Orlando" MiddleName="" LastName="Bloom"
+				BirthYear="0" Role="Legolas" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Billy" MiddleName="" LastName="Boyd"
+				BirthYear="0" Role="Pippin" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Jed" MiddleName="" LastName="Brophy"
+				BirthYear="0" Role="Sharku/Snaga" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Sam" MiddleName="" LastName="Comery"
+				BirthYear="0" Role="Eothain" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Brad" MiddleName="" LastName="Dourif"
+				BirthYear="0" Role="Wormtongue" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Calum" MiddleName="" LastName="Gittins"
+				BirthYear="0" Role="Haleth" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Philip" MiddleName="" LastName="Grieve"
+				BirthYear="0" Role="Hero Orc" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Bernard" MiddleName="" LastName="Hill"
+				BirthYear="0" Role="Theoden" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Hopkins"
+				BirthYear="0" Role="Gamling" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Paris" MiddleName="" LastName="Howe Strewe"
+				BirthYear="0" Role="Theodred" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Christopher" MiddleName="" LastName="Lee"
+				BirthYear="0" Role="Saruman" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Timothy" MiddleName="" LastName="Lee"
+				BirthYear="0" Role="Wildman" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Nathaniel" MiddleName="" LastName="Lees"
+				BirthYear="0" Role="Ugluk" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Leigh"
+				BirthYear="0" Role="Hama" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Robbie" MiddleName="" LastName="Magasiva"
+				BirthYear="0" Role="Mauhur" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Robyn" MiddleName="" LastName="Malcolm"
+				BirthYear="0" Role="Morwen" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Ian" MiddleName="" LastName="McKellen"
+				BirthYear="0" Role="Gandalf" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Dominic" MiddleName="" LastName="Monaghan"
+				BirthYear="0" Role="Merry" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Viggo" MiddleName="" LastName="Mortensen"
+				BirthYear="0" Role="Aragorn" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Noble"
+				BirthYear="0" Role="Denethor" CreditedAs="John Nogle" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Miranda" MiddleName="" LastName="Otto"
+				BirthYear="0" Role="Eowyn" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Craig" MiddleName="" LastName="Parker"
+				BirthYear="0" Role="Haldir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Phillips"
+				BirthYear="0" Role="Rohan Soldier" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Robert" MiddleName="" LastName="Pollock"
+				BirthYear="0" Role="Mordor Orc" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Rhys-Davies"
+				BirthYear="0" Role="Gimli" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Andy" MiddleName="" LastName="Serkis"
+				BirthYear="0" Role="Gollum" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Phillip" MiddleName="" LastName="Spencer-Harris"
+				BirthYear="0" Role="Ranger" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Olivia" MiddleName="" LastName="Tennet"
+				BirthYear="0" Role="Freda" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Ray" MiddleName="" LastName="Trickett"
+				BirthYear="0" Role="Bereg" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Liv" MiddleName="" LastName="Tyler"
+				BirthYear="0" Role="Arwen" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Karl" MiddleName="" LastName="Urban"
+				BirthYear="0" Role="Eomer" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Stephen" MiddleName="" LastName="Ure"
+				BirthYear="0" Role="Grishnakh" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Hugo" MiddleName="" LastName="Weaving"
+				BirthYear="0" Role="Elrond" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Wenham"
+				BirthYear="0" Role="Faramir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Elijah" MiddleName="" LastName="Wood"
+				BirthYear="0" Role="Frodo" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Victoria" MiddleName="" LastName="Beynon-Cole"
+				BirthYear="0" Role="Hero Orc" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Lee" MiddleName="" LastName="Hartley"
+				BirthYear="0" Role="Hero Orc" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Billy" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Cute Rohan Refugee Child" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Katie" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Cute Rohan Refugee Child" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Paul" MiddleName="" LastName="Holmes"
+				BirthYear="0" Role="Orc" CreditedAs="" Voice="False" Uncredited="True" />
+			<Actor FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Rohirrim Warrior" CreditedAs="" Voice="False"
+				Uncredited="True" />
+			<Actor FirstName="Henry" MiddleName="" LastName="Mortensen"
+				BirthYear="0" Role="Rohan child warrior" CreditedAs="" Voice="False"
+				Uncredited="True" />
+			<Actor FirstName="Piripi" MiddleName="" LastName="Waretini"
+				BirthYear="0" Role="Uruk-Hai soldier" CreditedAs="" Voice="False"
+				Uncredited="True" />
+		</Actors>
+		<Credits>
+			<Credit FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" CreditType="Direction" CreditSubtype="Director"
+				CreditedAs="" />
+			<Credit FirstName="Fran" MiddleName="" LastName="Walsh"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="Philippa" MiddleName="" LastName="Boyens"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="Stephen" MiddleName="" LastName="Sinclair"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Screenwriter"
+				CreditedAs="" />
+			<Credit FirstName="J." MiddleName="R. R." LastName="Tolkien"
+				BirthYear="0" CreditType="Writing" CreditSubtype="Original Material By"
+				CreditedAs="" />
+			<Credit FirstName="Barrie" MiddleName="M." LastName="Osborne"
+				BirthYear="0" CreditType="Production" CreditSubtype="Producer"
+				CreditedAs="" />
+			<Credit FirstName="Fran" MiddleName="" LastName="Walsh"
+				BirthYear="0" CreditType="Production" CreditSubtype="Producer"
+				CreditedAs="" />
+			<Credit FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" CreditType="Production" CreditSubtype="Producer"
+				CreditedAs="" />
+			<Credit FirstName="Mark" MiddleName="" LastName="Ordesky"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Bob" MiddleName="" LastName="Weinstein"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Harvey" MiddleName="" LastName="Weinstein"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Robert" MiddleName="" LastName="Shaye"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Michael" MiddleName="" LastName="Lynne"
+				BirthYear="0" CreditType="Production" CreditSubtype="Executive Producer"
+				CreditedAs="" />
+			<Credit FirstName="Andrew" MiddleName="" LastName="Lesnie"
+				BirthYear="0" CreditType="Cinematography" CreditSubtype="Director of Photography"
+				CreditedAs="" />
+			<Credit FirstName="Michael" MiddleName="" LastName="Horton"
+				BirthYear="0" CreditType="Film Editing" CreditSubtype="Film Editor"
+				CreditedAs="" />
+			<Credit FirstName="Jabez" MiddleName="" LastName="Olssen"
+				BirthYear="0" CreditType="Film Editing" CreditSubtype="Film Editor"
+				CreditedAs="" />
+			<Credit FirstName="Howard" MiddleName="" LastName="Shore"
+				BirthYear="0" CreditType="Music" CreditSubtype="Composer"
+				CreditedAs="" />
+			<Credit FirstName="Howard" MiddleName="" LastName="Shore"
+				BirthYear="0" CreditType="Music" CreditSubtype="Song Writer"
+				CreditedAs="" />
+			<Credit FirstName="Fran" MiddleName="" LastName="Walsh"
+				BirthYear="0" CreditType="Music" CreditSubtype="Song Writer"
+				CreditedAs="" />
+			<Credit FirstName="Ethan" MiddleName="" LastName="Van der Ryn"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Supervising Sound Editor"
+				CreditedAs="" />
+			<Credit FirstName="Michael" MiddleName="" LastName="Hopkins"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Supervising Sound Editor"
+				CreditedAs="" />
+			<Credit FirstName="David" MiddleName="" LastName="Farmer"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Designer"
+				CreditedAs="" />
+			<Credit FirstName="Christopher" MiddleName="" LastName="Boyes"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Re-Recording Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Michael" MiddleName="" LastName="Semanick"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Re-Recording Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Michael" MiddleName="" LastName="Hedges"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Sound Re-Recording Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Hammond" MiddleName="" LastName="Peek"
+				BirthYear="0" CreditType="Sound" CreditSubtype="Production Sound Mixer"
+				CreditedAs="" />
+			<Credit FirstName="Grant" MiddleName="" LastName="Major"
+				BirthYear="0" CreditType="Art" CreditSubtype="Production Designer"
+				CreditedAs="" />
+			<Credit FirstName="Dan" MiddleName="" LastName="Hennah"
+				BirthYear="0" CreditType="Art" CreditSubtype="Art Director"
+				CreditedAs="" />
+			<Credit FirstName="(Peter)" MiddleName="Joe" LastName="Bleakley"
+				BirthYear="0" CreditType="Art" CreditSubtype="Art Director"
+				CreditedAs="" />
+			<Credit FirstName="Phil" MiddleName="" LastName="Ivey"
+				BirthYear="0" CreditType="Art" CreditSubtype="Art Director"
+				CreditedAs="" />
+			<Credit FirstName="Mark" MiddleName="" LastName="Robins"
+				BirthYear="0" CreditType="Art" CreditSubtype="Art Director"
+				CreditedAs="" />
+		</Credits>
+		<Overview>Frodo Baggins and The Fellowship continue their quest to
+			destroy The One Ring and stand against the evil of the dark Lord
+			Sauron.
+
+			The Fellowship has divided and now find themselves taking different
+			paths to defeating Sauron and his allies. Their destinies now lie at
+			two towers - Orthanc Tower in Isengard, where the corrupted wizard
+			Saruman waits and Sauron&apos;s fortress at Barad-dûr, deep within
+			the dark lands of Mordor.</Overview>
+		<EasterEggs>Same location as in &quot;FOTR&quot;. On the First Disc,
+			go to Chapter selection, select the option for the last chapters.
+			There, press the DOWN arrow pass the last chapter. A ring will
+			appear. Press enter on the ring , and enjoy Gollum&apos;s MTV Awards
+			acceptance Speech.</EasterEggs>
+		<Discs>
+			<Disc>
+				<DescriptionSideA>Main Feature: Part 1</DescriptionSideA>
+				<DescriptionSideB />
+				<DiscIDSideA>3482D75624A7364D</DiscIDSideA>
+				<DiscIDSideB />
+				<LabelSideA>TWO_TOWERS_EXT_D1</LabelSideA>
+				<LabelSideB />
+				<DualLayeredSideA>True</DualLayeredSideA>
+				<DualLayeredSideB>False</DualLayeredSideB>
+				<DualSided>False</DualSided>
+				<Location />
+				<Slot />
+			</Disc>
+			<Disc>
+				<DescriptionSideA>Main Feature: Part 2</DescriptionSideA>
+				<DescriptionSideB />
+				<DiscIDSideA>90EAD374D2D93874</DiscIDSideA>
+				<DiscIDSideB />
+				<LabelSideA>TWO_TOWERS_EXT_D2</LabelSideA>
+				<LabelSideB />
+				<DualLayeredSideA>True</DualLayeredSideA>
+				<DualLayeredSideB>False</DualLayeredSideB>
+				<DualSided>False</DualSided>
+				<Location />
+				<Slot />
+			</Disc>
+			<Disc>
+				<DescriptionSideA>Appendices: Part 1</DescriptionSideA>
+				<DescriptionSideB />
+				<DiscIDSideA>42D7ED9D2C1CAFCF</DiscIDSideA>
+				<DiscIDSideB />
+				<LabelSideA>TWO_TOWERS_EXT_D3</LabelSideA>
+				<LabelSideB />
+				<DualLayeredSideA>True</DualLayeredSideA>
+				<DualLayeredSideB>False</DualLayeredSideB>
+				<DualSided>False</DualSided>
+				<Location />
+				<Slot />
+			</Disc>
+			<Disc>
+				<DescriptionSideA>Appendices: Part 2</DescriptionSideA>
+				<DescriptionSideB />
+				<DiscIDSideA>1D7BDFDE50A80756</DiscIDSideA>
+				<DiscIDSideB />
+				<LabelSideA>TWO_TOWERS_EXT_D4</LabelSideA>
+				<LabelSideB />
+				<DualLayeredSideA>True</DualLayeredSideA>
+				<DualLayeredSideB>False</DualLayeredSideB>
+				<DualSided>False</DualSided>
+				<Location />
+				<Slot />
+			</Disc>
+		</Discs>
+		<SortTitle>Lord of the Rings: The Two Towers</SortTitle>
+		<LastEdited>2007-10-13T10:37:46.000Z</LastEdited>
+		<WishPriority>0</WishPriority>
+		<PurchaseInfo>
+			<PurchasePrice DenominationType="USD"
+				DenominationDesc="United States (Dollar)" FormattedValue="$0.00">0</PurchasePrice>
+			<PurchasePlace />
+			<PurchasePlaceType />
+			<PurchasePlaceWebsite />
+			<PurchaseDate>2007-10-13</PurchaseDate>
+		</PurchaseInfo>
+		<Review Film="0" Video="0" Audio="0" Extras="0" />
+		<Events />
+		<LoanInfo>
+			<Loaned>False</Loaned>
+		</LoanInfo>
+		<Notes />
+		<Tags />
+		<Locks>
+			<Entire>False</Entire>
+			<Covers>False</Covers>
+			<Title>False</Title>
+			<MediaType>False</MediaType>
+			<Overview>False</Overview>
+			<Regions>False</Regions>
+			<Genres>False</Genres>
+			<SRP>True</SRP>
+			<Studios>False</Studios>
+			<DiscInformation>False</DiscInformation>
+			<Cast>False</Cast>
+			<Crew>False</Crew>
+			<Features>False</Features>
+			<AudioTracks>False</AudioTracks>
+			<Subtitles>False</Subtitles>
+			<EasterEggs>False</EasterEggs>
+			<RunningTime>False</RunningTime>
+			<ReleaseDate>False</ReleaseDate>
+			<ProductionYear>False</ProductionYear>
+			<CaseType>False</CaseType>
+			<VideoFormats>False</VideoFormats>
+			<Rating>False</Rating>
+		</Locks>
+	</DVD>
+	<DVD>
+		<ProfileTimestamp>2007-09-03T11:08:53.000Z</ProfileTimestamp>
+		<ID>794043782626</ID>
+		<MediaTypes>
+			<DVD>True</DVD>
+			<HDDVD>False</HDDVD>
+			<BluRay>False</BluRay>
+		</MediaTypes>
+		<UPC>794043-782626</UPC>
+		<CollectionNumber>3</CollectionNumber>
+		<CollectionType>Owned</CollectionType>
+		<Title>The Lord of the Rings: The Return of the King</Title>
+		<DistTrait>Special Extended Edition</DistTrait>
+		<OriginalTitle />
+		<CountryOfOrigin />
+		<ProductionYear>2003</ProductionYear>
+		<Released>2004-12-14</Released>
+		<RunningTime>250</RunningTime>
+		<Rating>PG-13</Rating>
+		<CaseType>Digipak</CaseType>
+		<CaseSlipCover>True</CaseSlipCover>
+		<Genres>
+			<Genre>Fantasy</Genre>
+			<Genre>Action</Genre>
+			<Genre>Adventure</Genre>
+		</Genres>
+		<Regions>
+			<Region>1</Region>
+		</Regions>
+		<Format>
+			<FormatAspectRatio>2.35</FormatAspectRatio>
+			<FormatVideoStandard>NTSC</FormatVideoStandard>
+			<FormatLetterBox>True</FormatLetterBox>
+			<FormatPanAndScan>False</FormatPanAndScan>
+			<FormatFullFrame>False</FormatFullFrame>
+			<Format16X9>True</Format16X9>
+			<FormatDualSided>False</FormatDualSided>
+			<FormatDualLayered>False</FormatDualLayered>
+		</Format>
+		<Features>
+			<FeatureSceneAccess>True</FeatureSceneAccess>
+			<FeatureCommentary>True</FeatureCommentary>
+			<FeatureTrailer>True</FeatureTrailer>
+			<FeaturePhotoGallery>False</FeaturePhotoGallery>
+			<FeatureDeletedScenes>True</FeatureDeletedScenes>
+			<FeatureMakingOf>True</FeatureMakingOf>
+			<FeatureProductionNotes>True</FeatureProductionNotes>
+			<FeatureGame>False</FeatureGame>
+			<FeatureDVDROMContent>True</FeatureDVDROMContent>
+			<FeatureMultiAngle>True</FeatureMultiAngle>
+			<FeatureMusicVideos>False</FeatureMusicVideos>
+			<FeatureInterviews>False</FeatureInterviews>
+			<FeatureStoryboardComparisons>False</FeatureStoryboardComparisons>
+			<FeatureOuttakes>False</FeatureOuttakes>
+			<FeatureClosedCaptioned>True</FeatureClosedCaptioned>
+			<FeatureTHXCertified>False</FeatureTHXCertified>
+			<OtherFeatures>4-Disc Set, Extended Cut, More...</OtherFeatures>
+		</Features>
+		<Studios>
+			<Studio>New Line Cinema</Studio>
+			<Studio>WingNut Films</Studio>
+			<Studio>New Line Home Entertainme</Studio>
+		</Studios>
+		<Audio>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>Dolby Digital Surround EX</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>DTS ES (Matrixed)</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>English</AudioContent>
+				<AudioFormat>Dolby Digital Surround</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+			<AudioTrack>
+				<AudioContent>Commentary</AudioContent>
+				<AudioFormat>Dolby Digital Stereo</AudioFormat>
+			</AudioTrack>
+		</Audio>
+		<BoxSet>
+			<Parent />
+			<Contents />
+		</BoxSet>
+		<Subtitles>
+			<Subtitle>English</Subtitle>
+			<Subtitle>Spanish</Subtitle>
+		</Subtitles>
+		<SRP DenominationType="USD" DenominationDesc="United States (Dollar)"
+			FormattedValue="$39.99">39.99</SRP>
+		<Actors>
+			<Actor FirstName="Elijah" MiddleName="" LastName="Wood"
+				BirthYear="0" Role="Frodo Baggins" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Ian" MiddleName="" LastName="McKellen"
+				BirthYear="0" Role="Gandalf" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Viggo" MiddleName="" LastName="Mortensen"
+				BirthYear="0" Role="Aragorn" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Liv" MiddleName="" LastName="Tyler"
+				BirthYear="0" Role="Arwen" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Sean" MiddleName="" LastName="Astin"
+				BirthYear="0" Role="Samwise Gamgee" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Cate" MiddleName="" LastName="Blanchett"
+				BirthYear="0" Role="Galadriel" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Billy" MiddleName="" LastName="Boyd"
+				BirthYear="0" Role="Peregrin &apos;Pippin&apos; Took" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Dominic" MiddleName="" LastName="Monaghan"
+				BirthYear="0" Role="Meriadoc &quot;Merry&quot; Brandybuck"
+				CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Orlando" MiddleName="" LastName="Bloom"
+				BirthYear="0" Role="Legolas Greenleaf" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Rhys-Davies"
+				BirthYear="0" Role="Gimli/Treebeard" CreditedAs="" Voice="True"
+				Uncredited="False" />
+			<Actor FirstName="Christopher" MiddleName="" LastName="Lee"
+				BirthYear="0" Role="Saruman" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Miranda" MiddleName="" LastName="Otto"
+				BirthYear="0" Role="Éowyn" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bernard" MiddleName="" LastName="Hill"
+				BirthYear="0" Role="Théoden" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Hopkins"
+				BirthYear="0" Role="Gamling" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Andy" MiddleName="" LastName="Serkis"
+				BirthYear="0" Role="Gollum/Sméagol" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Hugo" MiddleName="" LastName="Weaving"
+				BirthYear="0" Role="Elrond" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Brad" MiddleName="" LastName="Dourif"
+				BirthYear="0" Role="Gríma Wormtongue" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Leigh"
+				BirthYear="0" Role="Háma" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Robbie" MiddleName="" LastName="Magasiva"
+				BirthYear="0" Role="Mauhur" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Robyn" MiddleName="" LastName="Malcolm"
+				BirthYear="0" Role="Morwen" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Allpress"
+				BirthYear="0" Role="Aldor" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Sala" MiddleName="" LastName="Baker"
+				BirthYear="0" Role="Man Flesh Uruk" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Jed" MiddleName="" LastName="Brophy"
+				BirthYear="0" Role="Sharku/Snaga" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Sam" MiddleName="" LastName="Comery"
+				BirthYear="0" Role="Éothain" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Craig" MiddleName="" LastName="Parker"
+				BirthYear="0" Role="Haldir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Bruce" MiddleName="" LastName="Phillips"
+				BirthYear="0" Role="Rohan Soldier" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Robert" MiddleName="" LastName="Pollock"
+				BirthYear="0" Role="Mordor Orc" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Calum" MiddleName="" LastName="Gittins"
+				BirthYear="0" Role="Haleth" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="John" MiddleName="" LastName="Bach"
+				BirthYear="0" Role="Madril" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Karl" MiddleName="" LastName="Urban"
+				BirthYear="0" Role="Éomer" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Olivia" MiddleName="" LastName="Tennet"
+				BirthYear="0" Role="Freda" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Ray" MiddleName="" LastName="Trickett"
+				BirthYear="0" Role="Bereg" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Paris" MiddleName="Howe" LastName="Strewe"
+				BirthYear="0" Role="Théodred" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Nathaniel" MiddleName="" LastName="Lees"
+				BirthYear="0" Role="Uglúk" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="David" MiddleName="" LastName="Wenham"
+				BirthYear="0" Role="Faramir" CreditedAs="" Voice="False" Uncredited="False" />
+			<Actor FirstName="Stephen" MiddleName="" LastName="Ure"
+				BirthYear="0" Role="Grishnákh" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Katie" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Cute Rohan Refugee Child" CreditedAs="" Voice="False"
+				Uncredited="False" />
+			<Actor FirstName="Paul" MiddleName="" LastName="Holmes"
+				BirthYear="0" Role="Orc" CreditedAs="" Voice="False" Uncredited="True" />
+			<Actor FirstName="Billy" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Cute Rohan Refugee Child (uncr.)" CreditedAs=""
+				Voice="False" Uncredited="False" />
+			<Actor FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" Role="Rohirrim Warrior" CreditedAs="" Voice="False"
+				Uncredited="True" />
+			<Actor FirstName="Piripi" MiddleName="" LastName="Waretini"
+				BirthYear="0" Role="Uruk-Hai soldier" CreditedAs="" Voice="False"
+				Uncredited="True" />
+		</Actors>
+		<Credits>
+			<Credit FirstName="Peter" MiddleName="" LastName="Jackson"
+				BirthYear="0" CreditType="Direction" CreditSubtype="Director"
+				CreditedAs="" />
+		</Credits>
+		<Overview>The Fellowship&apos;s journey is coming to an end.
+			Sauron&apos;s forces have attacked Gondor&apos;s capital of Minas
+			Tirith in his final siege against mankind. Watched over by a fading
+			steward, the once great kingdom has never been in more desperate need
+			of its king. But will Aragorn find the strength to become what he was
+			born to be and rise to meet his destiny?
+			As Gandalf desperately tries to move the broken forces of Gondor to
+			act, Théoden unites the warriors of Rohan to join in the fight. Even
+			in their courage and passionate loyalty, the forces of men – with
+			Éowyn and Merry hidden among them – are no match against the swarming
+			legions of enemies raining down on the kingdom. With each victory
+			comes great sacrifice. Despite their great losses, The Fellowship
+			charges forward in the greatest battle of their lifetime, united in
+			their singular goal to give Frodo a chance to complete his quest.
+			Traveling across treacherous enemy lands, Frodo must rely
+			increasingly on Sam and Gollum as The Ring continues to test his
+			allegiance and, ultimately, his soul.</Overview>
+		<EasterEggs />
+		<Discs />
+		<SortTitle>Lord of the Rings: The Return of the King</SortTitle>
+		<LastEdited>2007-10-13T10:37:45.000Z</LastEdited>
+		<WishPriority>0</WishPriority>
+		<PurchaseInfo>
+			<PurchasePrice DenominationType="USD"
+				DenominationDesc="United States (Dollar)" FormattedValue="$0.00">0</PurchasePrice>
+			<PurchasePlace />
+			<PurchasePlaceType />
+			<PurchasePlaceWebsite />
+			<PurchaseDate>2007-10-13</PurchaseDate>
+		</PurchaseInfo>
+		<Review Film="0" Video="0" Audio="0" Extras="0" />
+		<Events />
+		<LoanInfo>
+			<Loaned>False</Loaned>
+		</LoanInfo>
+		<Notes />
+		<Tags />
+		<Locks>
+			<Entire>False</Entire>
+			<Covers>False</Covers>
+			<Title>False</Title>
+			<MediaType>False</MediaType>
+			<Overview>False</Overview>
+			<Regions>False</Regions>
+			<Genres>False</Genres>
+			<SRP>True</SRP>
+			<Studios>False</Studios>
+			<DiscInformation>False</DiscInformation>
+			<Cast>False</Cast>
+			<Crew>False</Crew>
+			<Features>False</Features>
+			<AudioTracks>False</AudioTracks>
+			<Subtitles>False</Subtitles>
+			<EasterEggs>False</EasterEggs>
+			<RunningTime>False</RunningTime>
+			<ReleaseDate>False</ReleaseDate>
+			<ProductionYear>False</ProductionYear>
+			<CaseType>False</CaseType>
+			<VideoFormats>False</VideoFormats>
+			<Rating>False</Rating>
+		</Locks>
+	</DVD>
+</Collection>

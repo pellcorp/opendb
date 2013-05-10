@@ -1,0 +1,407 @@
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-size: small;
+	margin: 0px;
+	padding: 0px;
+}
+
+/* General HTML tag formats */
+select,input,textarea,td {
+	font-size: small;
+}
+
+img {
+	border: none;
+}
+
+a:link,a:visited,a:active {
+	text-decoration: none;
+	color: #626C99;
+	font-size: small;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #626C99;
+	font-size: small;
+}
+
+h1 {
+	color: #C8C8C8;
+	font-weight: bold;
+	font-size: large;
+	white-space: nowrap;
+}
+
+h2 {
+	color: #626C99;
+	font-weight: bold;
+	font-size: medium;
+	padding-top: 10px;
+}
+
+h3 {
+	color: #626C99;
+	font-weight: bold;
+	font-size: small;
+	white-space: nowrap;
+}
+
+/* Various messages */
+.success {
+	color: #626C99;
+	font-weight: bold;
+	font-size: x-small;
+}
+
+/* Details of success ful completion */
+.smsuccess {
+	color: #123456;
+	font-size: x-small;
+}
+
+/* All error messages are displayed using this class */
+.error {
+	color: #FF0000;
+	font-weight: bold;
+	font-size: x-small;
+}
+
+p.error {
+	clear: both;
+}
+
+/* Details of errors are displayed with this class */
+.smerror {
+	color: #FF0000;
+	font-weight: bold;
+	font-size: x-small;
+}
+
+.warn {
+	color: #FF3333;
+	font-weight: bold;
+	font-size: x-small;
+}
+
+/* Details of errors are displayed with this class */
+.smwarn {
+	color: #FF3333;
+	font-weight: bold;
+	font-size: x-small;
+}
+
+/* Input field, prompt cell definition */
+.prompt {
+	background-color: transparent;
+	color: black;
+	font-weight: bold;
+	font-size: small;
+	text-align: right;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+/* Input field data cell definition */
+.data {
+	background-color: transparent;
+	font-size: small;
+	font-weight: normal;
+	padding: 2px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+/* For headers in pages, which might include order_by links, etc */
+.navbar th {
+	font-size: small;
+	font-weight: bold;
+	text-align: center;
+	background-color: #EEEEEE;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.navbar th a {
+	font-size: small;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+ul.help {
+	margin: 0px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/* All help text */
+.help {
+	color: #123456;
+	font-size: x-small;
+	clear: both;
+}
+
+ul.footer-links {
+	clear: left;
+	float: left;
+	list-style-type: none;
+	border: none;
+	padding-left: 0px;
+	margin: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	display: block;
+}
+
+ul.footer-links img {
+	height: 12px;
+}
+
+ul.footer-links li {
+	float: left;
+	border-left: none;
+	border-right: 1px solid gray;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin: 0px;
+}
+
+ul.footer-links li.first {
+	border-left: none;
+}
+
+ul.footer-links li.last {
+	border-right: none;
+}
+
+ul.action-links,ul.actionButtons {
+	list-style-type: none;
+	padding-left: 0px;
+	margin-left: 0px;
+	white-space: nowrap;
+	clear: both;
+}
+
+ul.action-links li,ul.actionButtons li {
+	float: left;
+	padding-right: 2px;
+	border: none;
+}
+
+ul.action-links img {
+	vertical-align: middle;
+}
+
+/* layout - ideas from http://bluerobot.com/web/layouts/ */
+#header {
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 0px;
+	line-height: 11px;
+	background-color: #DCE6FB;
+}
+
+.menuContainer {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin: 10px;
+	margin-top: 50px;
+}
+
+h2.menu {
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+}
+
+span.menuToggle {
+	position: absolute;
+	right: 0px;
+	white-space: nowrap;
+}
+
+div.menuContent {
+	width: 200px;
+	background-color: #FFFFFF;
+	margin-top: 25px;
+	padding: 10px;
+	border: 1px solid #626C99;
+}
+
+/* downloaded image from http://www.stylegala.com/features/bulletmadness/ */
+ul.menu {
+	list-style-type: disc;
+	list-style-image: url(./images/0085_blueAndPointy.png);
+	padding-left: 10px;
+	margin-left: 30px;
+}
+
+ul.menu li a {
+	white-space: nowrap;
+	padding: 2px;
+	display: block;
+	text-decoration: none;
+}
+
+ul.menu li.startList a {
+	border-top: 0px;
+}
+
+ul.menu li a:hover,ul.menu li.active a {
+	font-weight: bold;
+}
+
+#content {
+	margin: 0px 5px 5px 10px;
+}
+
+#footer {
+	padding: 10px;
+	clear: both;
+	text-align: center;
+}
+
+#header h1 {
+	margin: 10px;
+	padding: 5px;
+}
+
+#header h1 A {
+	color: #C8C8C8;
+	font-weight: bold;
+	font-size: large;
+}
+
+#header ul.headerLinks {
+	list-style-type: none;
+	margin: 0px;
+	padding: 10px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	white-space: nowrap;
+}
+
+#header ul.headerLinks li {
+	display: inline;
+	padding-right: 5px;
+}
+
+#header ul.headerLinks li.login {
+	padding-left: 10px;
+}
+
+#header form.quickSearch {
+	display: inline;
+}
+
+#header form.quickSearch input.text {
+	background-image: url(../../images/magnify.png);
+	background-repeat: no-repeat;
+	background-position: top left;
+	padding: 0px;
+	padding-left: 20px;
+	color: grey;
+	font-size: 130%;
+}
+
+form.quickSearch img {
+	padding-left: 2px;
+}
+
+#footer a {
+	font-size: 90%;
+	color: #C8C8AA;
+}
+
+#tab-content {
+	float: left;
+	clear: both;
+	border: 1px solid gray;
+	margin-top: -1px;
+	padding: 5px;
+	margin-bottom: 10px;
+	width: 99%;
+}
+
+ul.tabMenu {
+	clear: right;
+	margin: 0px;
+	list-style-type: none;
+	padding: 0px;
+	padding-left: 30px;
+	padding-top: 5px;
+}
+
+ul.tabMenu li {
+	float: left;
+	padding: 5px;
+	overflow: hidden;
+	margin: 0px;
+	margin-right: -3px;
+	border: 1px solid gray;
+	background: #dddddd;
+	cursor: pointer;
+}
+
+ul.tabMenu li.activeTab {
+	color: black;
+	background: white;
+	font-weight: bold;
+	cursor: default;
+	border-bottom: 1px solid white;
+}
+
+div.tabContent {
+	float: left;
+	width: 100%;
+}
+
+div.tabContentHidden {
+	display: none;
+}
+
+ul.single {
+	list-style-type: none;
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+ul.single li {
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+.toggleContainer {
+	cursor: pointer;
+}
+
+div.elementHidden {
+	display: none;
+}
+
+.toggleVisible,.toggleHidden {
+	background-image: url(../../images/expanded.gif);
+	background-repeat: no-repeat;
+	padding-right: 15px;
+	background-position: center right;
+	font-size: 100%;
+	color: #BDC7F7;
+}
+
+.toggleHidden {
+	background-image: url(../../images/collapsed.gif);
+}
+
+form.confirmForm fieldset {
+	border: none;
+}
+
+form.confirmForm submit {
+	clear: left;
+}

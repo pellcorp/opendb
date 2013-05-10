@@ -1,0 +1,51 @@
+<h3>Advanced Search</h3>
+
+<ul>
+	<li>Boolean support is not available for <strong>exact</strong>
+		matches
+	</li>
+	<li>Matches will be case INsensitive in all cases.</li>
+	<li>Use Boolean operators and nesting to search for combinations
+		of words or phrases.</li>
+	<li>For Example:
+		<ul>
+			<li>Rambo AND III</li>
+			<li>II OR III OR IV</li>
+			<li>Rambo AND (II OR III)</li>
+			<li>((2 OR II) AND (Rambo OR "First Blood")) NOT (III OR Box)</li>
+		</ul>
+	</li>
+	<li>Use <strong>_</strong> wildcard for matching only <i>one</i>
+		character and <strong>%</strong> wildcard for matching <em>any</em>
+		number of characters.
+	</li>
+	<li>For Example:
+		<ul>
+			<li>Searching for <strong>se_en</strong> could match, <strong>seven</strong>
+				or <strong>seben</strong> or <strong>sewen</strong></li>
+			<li>Searching for <strong>%ve%</strong> could match, <strong>seven</strong>
+				or <strong>fugitive</strong> or <strong>maverick</strong> or <strong>driver</strong></li>
+			<li>Searching for <strong>ve%</strong> could match, <strong>version</strong>
+				or <strong>vex</strong> or <strong>vehicle</strong> or <strong>driver</strong></li>
+		</ul>
+	</li>
+
+	<li>If you use <strong>word</strong> match, some titles may not
+		show up if the item has a '<strong>:</strong>' (colon) as part of the
+		title. Include the '<strong>:</strong>' or a wildcard to match such
+		titles.
+	</li>
+	<li>For Example:
+		<ul>
+			<li>The title <em>Rambo: First Blood Part II</em>, would not be
+				matched in <strong>word</strong> mode by the query: <em>Rambo
+					AND II</em>. You would need to specify <em>%Rambo% AND II</em> instead.
+			</li>
+		</ul>
+	</li>
+	<li>If you use wildcards with a <em>Title</em> or <em>Attribute</em>
+		word, the <strong>Word / Partial</strong> match options will be
+		ignored for that word.
+	</li>
+</ul>
+

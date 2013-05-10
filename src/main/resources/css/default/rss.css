@@ -1,0 +1,7 @@
+ul#rssfeeds {
+	list-style-type: none;
+}
+
+#rssfeeds li {
+	list-style-image: url(../../images/feed-icon16x16.png);
+}

@@ -1,0 +1,180 @@
+ul.itemTypeGroupList li.active {
+	font-weight: bold;
+}
+
+select.includeExcludeWidget {
+	width: 170px;
+}
+
+#admin-menu {
+	right: 125px;
+}
+
+#admin-menu-content {
+	width: 250px;
+}
+
+#content {
+	padding-left: 0px;
+	padding-top: 5px;
+	padding-right: 0px;
+}
+
+.tooltip {
+	background: rgb(255, 238, 170);
+	color: black;
+}
+
+.tooltip {
+	width: 350px;
+}
+
+.tooltip th {
+	font-size: 90%;
+}
+
+.tooltip dt {
+	font-weight: bold;
+}
+
+.tooltip-caption {
+	background: black;
+	color: rgb(255, 238, 170);
+}
+
+.tooltip h2 {
+	white-space: normal;
+}
+
+ul.checkboxGridOptionsVertical li {
+	/* prevent text on the Backup Database
+       page from being cut off on smaller screens */
+	width: 350px;
+}
+
+.prompt {
+	color: white;
+	background-color: #BDC7F7;
+}
+
+td.data {
+	background-color: #DCE6FB;
+}
+
+#header h2 {
+	margin-top: 0px;
+	margin-left: 10px;
+	padding-top: 0px;
+}
+
+A#admin-logout {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	margin: 0px;
+	margin-right: 10px;
+}
+
+#toolType select {
+	position: absolute;
+	right: 150px;
+	top: 0px;
+	margin-left: 10px;
+	margin-top: 50px;
+	margin-right: 10px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+
+ul.announcement {
+	width: 100%;
+	float: left;
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+ul.announcement>li {
+	border-bottom: 1px dashed gray;
+	padding-bottom: 10px;
+	width: 100%;
+	float: left;
+}
+
+ul.metadata li {
+	border: none;
+	padding-bottom: 0px;
+}
+
+ul.metadata {
+	font-size: 65%;
+}
+
+ul.footer-links {
+	width: 100%;
+	float: left;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+ul.footer-links li {
+	float: left;
+	border-top: none;
+	border-bottom: none;
+	padding-bottom: 0px;
+	margin-top: 5px;
+}
+
+.smlink {
+	color: #123456;
+	font-size: x-small;
+}
+
+table.sqlList {
+	width: 50%;
+	margin-top: 10px;
+}
+
+ul.itemTypes {
+	list-style-type: none;
+}
+
+div#message {
+	width: 100%;
+}
+
+img.hidden {
+	display: none;
+}
+
+img#progressSpinner {
+	vertical-align: middle;
+}
+
+ul#progressBar {
+	list-style-type: none;
+	padding: 5px;
+	margin: 5px;
+}
+
+ul#progressBar li {
+	float: left;
+	padding-right: 15px;
+	padding: 5px;
+}
+
+div#percentage {
+	clear: both;
+	padding-left: 100px;
+	width: 100%;
+	padding-bottom: 10px;
+}
+
+tr.logRow td {
+	text-align: center;
+}
+
+li.submitButton {
+	padding-top: 10px;
+	clear: left;
+}

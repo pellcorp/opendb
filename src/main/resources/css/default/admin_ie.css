@@ -1,0 +1,5 @@
+#admin-menu span {
+	position: absolute;
+	right: 25px;
+	white-space: nowrap;
+}

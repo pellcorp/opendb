@@ -25,7 +25,7 @@ include_once("./lib/item_attribute.php");
 include_once("./lib/item_type_group.php");
 include_once("./lib/parseutils.php");
 include_once("./lib/TitleMask.class.php");
-include_once("./lib/OpenDbSnoopy.class.inc");
+include_once("./lib/OpenDbSnoopy.class.php");
 include_once("./lib/phpcuecat/PHPCueCat.class.php");
 include_once("./lib/ISBN/ISBN.class.php");
 

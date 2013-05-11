@@ -37,7 +37,7 @@ include_once("./lib/widgets.php");
 include_once("./lib/review.php");
 include_once("./lib/listutils.php");
 include_once("./lib/status_type.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 include_once("./lib/TitleMask.class.php");
 
 function fetch_alt_item_id_attribute_type_r() {

@@ -33,8 +33,8 @@ include_once("./lib/user.php");
 include_once("./lib/import.php");
 include_once("./lib/importcache.php");
 include_once("./lib/parseutils.php");
-include_once("./lib/ItemImportHandler.class.inc");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/ItemImportHandler.class.php");
+include_once("./lib/HTML_Listing.class.php");
 
 function get_column_select_block($fieldname, $lookup_array, $selectedindex)
 {

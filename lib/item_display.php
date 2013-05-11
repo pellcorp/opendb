@@ -19,7 +19,7 @@
 */
 
 include_once("./lib/TitleMask.class.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 include_once("./lib/item.php");
 
 /**

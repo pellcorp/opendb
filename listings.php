@@ -41,7 +41,7 @@ include_once("./lib/parseutils.php");
 include_once("./lib/listutils.php");
 include_once("./lib/item_listing_conf.php");
 include_once("./lib/status_type.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 
 include_once("./lib/xajax/xajax_core/xajax.inc.php");
 

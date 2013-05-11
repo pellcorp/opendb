@@ -20,7 +20,7 @@
 include_once("./lib/database.php");
 include_once("./lib/fileutils.php");
 include_once("./lib/utils.php");
-include_once("./lib/OpenDbSnoopy.class.inc");
+include_once("./lib/OpenDbSnoopy.class.php");
 
 class SourceforgeVersionCheck
 {

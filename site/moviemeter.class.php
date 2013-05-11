@@ -21,7 +21,7 @@
 	9-9-08 : fixed search results (moviemeter site changed)
 
 */
-include_once("./lib/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.php");
 
 class moviemeter extends SitePlugin
 {

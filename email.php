@@ -27,7 +27,7 @@ include_once("./lib/logging.php");
 include_once("./lib/email.php");
 include_once("./lib/widgets.php");
 include_once("./lib/user.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 
 /*
 * This script supports several different operations

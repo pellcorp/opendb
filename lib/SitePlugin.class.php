@@ -22,7 +22,7 @@ include_once("./lib/logging.php");
 include_once("./lib/utils.php");
 include_once("./lib/site_plugin.php");
 include_once("./lib/item_type.php");
-include_once("./lib/OpenDbSnoopy.class.inc");
+include_once("./lib/OpenDbSnoopy.class.php");
 include_once("./lib/TitleMask.class.php");
 
 define('HTML_CONTENT_IS_LEGAL', 1);

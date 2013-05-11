@@ -26,7 +26,7 @@
 	0.81p7		Fix to support table prefixing on site_hminfo table.
 	0.81p8      Minor fix to include UPC_ID attribute into final results
 */
-include_once("./lib/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.php");
 
 include_once("./lib/datetime.php");
 

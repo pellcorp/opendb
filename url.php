@@ -23,7 +23,7 @@ require_once("./include/begin.inc.php");
 include_once("./lib/filecache.php");
 include_once("./lib/file_type.php");
 
-include_once("./lib/OpenDbSnoopy.class.inc");
+include_once("./lib/OpenDbSnoopy.class.php");
 
 function output_cache_file($url) {
 	// no point streaming a local URI

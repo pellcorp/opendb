@@ -4,7 +4,7 @@
 	By fans for fans
 */
 
-include_once("./lib/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.php");
 
 function html_to_utf8 ($data)
     {

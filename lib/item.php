@@ -26,7 +26,7 @@ include_once("./lib/theme.php");
 include_once("./lib/utils.php");
 include_once("./lib/datetime.php");
 include_once("./lib/status_type.php");
-include_once("./lib/BooleanParser.class.inc");
+include_once("./lib/BooleanParser.class.php");
 include_once("./lib/widgets.php");
 include_once("./lib/parseutils.php");
 include_once("./lib/item_type_group.php");

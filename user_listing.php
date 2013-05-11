@@ -29,7 +29,7 @@ include_once("./lib/user.php");
 include_once("./lib/datetime.php");
 include_once("./lib/borrowed_item.php");
 include_once("./lib/listutils.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 
 if(is_site_enabled())
 {

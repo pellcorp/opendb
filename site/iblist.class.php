@@ -24,7 +24,7 @@
 	0.81p1  Fixes thanks to Adam Wolf <wolf0436@umn.edu>
 
 */
-include_once("./lib/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.php");
 
 class iblist extends SitePlugin
 {

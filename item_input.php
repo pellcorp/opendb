@@ -40,7 +40,7 @@ include_once("./lib/site_plugin.php");
 include_once("./lib/item_input.php");
 include_once("./lib/status_type.php");
 include_once("./lib/TitleMask.class.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 
 /**
 * Will test the old against the new value.

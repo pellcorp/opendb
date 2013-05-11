@@ -25,7 +25,7 @@
 // use local config file instead of the one included with imdb, so we can disable caching, etc.
 define(IMDBPHP_CONFIG, './site/imdb.config.php');
 
-include_once("./lib/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.php");
 include_once("./site/imdbphp2/imdb.class.php");
 include_once("./site/imdbphp2/imdbsearch.class.php");
 

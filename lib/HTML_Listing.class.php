@@ -24,7 +24,7 @@ include_once("./lib/listutils.php");
 include_once("./lib/utils.php");
 include_once("./lib/theme.php");
 include_once("./lib/widgets.php");
-include_once("./lib/Listing.class.inc");
+include_once("./lib/Listing.class.php");
 
 class HTML_Listing extends Listing
 {

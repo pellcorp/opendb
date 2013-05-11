@@ -37,7 +37,7 @@
 
 */
 
-include_once("./lib/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.php");
 
 class emusic extends SitePlugin {
 

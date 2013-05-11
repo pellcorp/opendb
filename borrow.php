@@ -33,7 +33,7 @@ include_once("./lib/email.php");
 include_once("./lib/review.php");
 include_once("./lib/listutils.php");
 include_once("./lib/sortutils.php");
-include_once("./lib/HTML_Listing.class.inc");
+include_once("./lib/HTML_Listing.class.php");
 include_once("./lib/TitleMask.class.php");
 
 if(is_site_enabled())

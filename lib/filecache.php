@@ -27,7 +27,7 @@ include_once("./lib/logging.php");
 include_once("./lib/utils.php");
 include_once("./lib/file_type.php");
 include_once("./lib/fileutils.php");
-include_once("./lib/OpenDbSnoopy.class.inc");
+include_once("./lib/OpenDbSnoopy.class.php");
 include_once('./lib/phpthumb/phpthumb.class.php');
 include_once("./lib/item_attribute.php");
 

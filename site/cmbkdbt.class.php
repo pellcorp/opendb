@@ -1,7 +1,7 @@
 <?php
 /* 	
 	Open Media Collectors Database
-	Copyright (C) 2001,2006 by Jason Pell
+	Copyright (C) 2001,2013 by Jason Pell
 	comicbookdb.com Site Plugin for Open Media Collectors Database
 	Copyright (C) 2007 by Joe Miller
 

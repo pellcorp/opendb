@@ -20,7 +20,7 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./functions/item_attribute.php");
+include_once("./lib/item_attribute.php");
 include_once("./site/mobygames.class.php");
 
 class MobygamesTest extends PHPUnit_TestCase

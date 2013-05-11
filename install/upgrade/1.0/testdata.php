@@ -5,9 +5,9 @@ chdir('../../../');
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
+include_once("./lib/database.php");
 
-include_once("./functions/item_attribute.php");
+include_once("./lib/item_attribute.php");
 
 function insert_item_image_attrib_and_cache($item_attrib_r, $count)
 {

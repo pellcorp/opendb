@@ -18,8 +18,8 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once("./functions/Install_Table.class.php");
-include_once("./functions/install.php");
+include_once("./lib/Install_Table.class.php");
+include_once("./lib/install.php");
 
 function site_hminfo_install()
 {

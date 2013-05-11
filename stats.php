@@ -21,19 +21,19 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/chart.php");
-include_once("./functions/widgets.php");
-include_once("./functions/statsdata.php");
-include_once("./functions/user.php");
-include_once("./functions/item.php");
-include_once("./functions/review.php");
-include_once("./functions/item_type.php");
-include_once("./functions/item_attribute.php");
-include_once("./functions/item.php");
+include_once("./lib/chart.php");
+include_once("./lib/widgets.php");
+include_once("./lib/statsdata.php");
+include_once("./lib/user.php");
+include_once("./lib/item.php");
+include_once("./lib/review.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/item.php");
 
 function get_item_type_totals_rs()
 {

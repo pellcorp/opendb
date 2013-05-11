@@ -21,26 +21,26 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/utils.php");
-include_once("./functions/borrowed_item.php");
-include_once("./functions/item.php");
-include_once("./functions/http.php");
-include_once("./functions/fileutils.php");
-include_once("./functions/user.php");
-include_once("./functions/review.php");
-include_once("./functions/item_attribute.php");
-include_once("./functions/item_type.php");
-include_once("./functions/widgets.php");
-include_once("./functions/parseutils.php");
-include_once("./functions/site_plugin.php");
-include_once("./functions/item_input.php");
-include_once("./functions/status_type.php");
-include_once("./functions/TitleMask.class.php");
-include_once("./functions/HTML_Listing.class.inc");
+include_once("./lib/utils.php");
+include_once("./lib/borrowed_item.php");
+include_once("./lib/item.php");
+include_once("./lib/http.php");
+include_once("./lib/fileutils.php");
+include_once("./lib/user.php");
+include_once("./lib/review.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/item_type.php");
+include_once("./lib/widgets.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/site_plugin.php");
+include_once("./lib/item_input.php");
+include_once("./lib/status_type.php");
+include_once("./lib/TitleMask.class.php");
+include_once("./lib/HTML_Listing.class.inc");
 
 /**
 * Will test the old against the new value.

@@ -23,8 +23,8 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/item_type.php");
-include_once("./functions/item_type_group.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item_type_group.php");
 
 function display_s_item_type_group_row($item_type_group_r, $row)
 {

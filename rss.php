@@ -23,15 +23,15 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/datetime.php");
-include_once("./functions/item_attribute.php");
-include_once("./functions/rss.php");
-include_once("./functions/whatsnew.php");
-include_once("./functions/announcement.php");
+include_once("./lib/datetime.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/rss.php");
+include_once("./lib/whatsnew.php");
+include_once("./lib/announcement.php");
 
 function build_opendb_rss_feed($feed_config_r, $URL)
 {

@@ -19,7 +19,7 @@
 */
 
 require_once 'PHPUnit.php';
-require_once("./functions/DocTypeNameSpaceXMLParser.class.php");
+require_once("./lib/DocTypeNameSpaceXMLParser.class.php");
 
 class DocTypeNameSpaceXMLParserTest extends PHPUnit_TestCase
 {

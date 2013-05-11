@@ -20,7 +20,7 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./functions/parseutils.php");
+include_once("./lib/parseutils.php");
 
 class WidgetsTest extends PHPUnit_TestCase
 {

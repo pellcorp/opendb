@@ -21,11 +21,11 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
-include_once("./functions/borrowed_item.php");
-include_once("./functions/email.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
+include_once("./lib/borrowed_item.php");
+include_once("./lib/email.php");
 
 /**
  * Is current user able to see UID address 

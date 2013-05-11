@@ -23,10 +23,10 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once('./functions/config.php');
-include_once("./functions/item_type.php");
-include_once("./functions/item_type_group.php");
-include_once("./functions/item_listing_conf.php");
+include_once('./lib/config.php');
+include_once("./lib/item_type.php");
+include_once("./lib/item_type_group.php");
+include_once("./lib/item_listing_conf.php");
 include_once("./admin/s_item_type/functions.php");
 
 function get_attribute_type_rs($attribute_type_rs)

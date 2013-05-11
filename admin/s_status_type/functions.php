@@ -18,8 +18,8 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once("./functions/status_type.php");
-include_once("./functions/user.php");
+include_once("./lib/status_type.php");
+include_once("./lib/user.php");
 
 /*
 * If more than one default_ind=Y record, then the one being updated,can be updated

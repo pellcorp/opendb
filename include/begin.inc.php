@@ -33,11 +33,11 @@ define('__OPENDB_TITLE__', 'OpenDb');
 
 if(extension_loaded('mysqli'))
 {
-	include_once('./functions/database/mysqli.inc.php');
+	include_once('./lib/database/mysqli.inc.php');
 }
 else if(extension_loaded('mysql'))
 {
-	include_once('./functions/database/mysql.inc.php');
+	include_once('./lib/database/mysql.inc.php');
 }
 
 if(file_exists("./include/local.config.php"))
@@ -45,18 +45,18 @@ if(file_exists("./include/local.config.php"))
 	include_once("./include/local.config.php");
 }		
 
-include_once("./functions/config.php");
+include_once("./lib/config.php");
 
-include_once("./functions/http.php");
-include_once("./functions/utils.php");
-include_once("./functions/auth.php");
-include_once("./functions/session.php");
-include_once("./functions/database.php");
-include_once("./functions/theme.php");
-include_once("./functions/language.php");
-include_once("./functions/menu.php");
+include_once("./lib/http.php");
+include_once("./lib/utils.php");
+include_once("./lib/auth.php");
+include_once("./lib/session.php");
+include_once("./lib/database.php");
+include_once("./lib/theme.php");
+include_once("./lib/language.php");
+include_once("./lib/menu.php");
 
-include_once("./functions/OpenDbBrowserSniffer.class.php");
+include_once("./lib/OpenDbBrowserSniffer.class.php");
 
 // OpenDb will not work with this on!!!
 if(get_magic_quotes_runtime())
@@ -125,7 +125,7 @@ if(function_exists('db_connect'))
 	
 			if(get_opendb_config_var('session_handler', 'enable') === TRUE)
 			{
-				require_once("./functions/dbsession.php");
+				require_once("./lib/dbsession.php");
 	
 				if(strtolower(ini_get('session.save_handler')) == 'user' || ini_set('session.save_handler', 'user'))
 				{

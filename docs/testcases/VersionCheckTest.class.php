@@ -20,7 +20,7 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./functions/install.php");
+include_once("./lib/install.php");
 
 class VersionCheckTest extends PHPUnit_TestCase
 {

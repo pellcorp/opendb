@@ -23,7 +23,7 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once('./functions/file_type.php');
+include_once('./lib/file_type.php');
 
 function display_s_file_type_row($file_type_r, $row)
 {

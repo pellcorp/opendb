@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once("./functions/OpenDbUpgrader.class.php");
+include_once("./lib/OpenDbUpgrader.class.php");
 
 function get_rebuilt_function($function_name, $arguments_r)
 {

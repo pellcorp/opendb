@@ -23,14 +23,14 @@ $_OVRD_OPENDB_LANGUAGE = 'english';
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/utils.php");
-include_once("./functions/parseutils.php");
-include_once("./functions/widgets.php");
-include_once("./functions/admin.php");
+include_once("./lib/utils.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/widgets.php");
+include_once("./lib/admin.php");
 
 define('OPENDB_ADMIN_TOOLS', 'true');
 

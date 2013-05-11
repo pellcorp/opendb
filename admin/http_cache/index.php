@@ -23,10 +23,10 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/datetime.php");
-include_once("./functions/filecache.php");
-include_once("./functions/listutils.php");
-include_once("./functions/HTML_Listing.class.inc");
+include_once("./lib/datetime.php");
+include_once("./lib/filecache.php");
+include_once("./lib/listutils.php");
+include_once("./lib/HTML_Listing.class.inc");
 
 @set_time_limit(600);
 

@@ -17,9 +17,9 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once("./functions/item_type_group.php");
-include_once("./functions/item_type.php");
-include_once("./functions/item_attribute.php");
+include_once("./lib/item_type_group.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item_attribute.php");
 
 function get_ilcc_derived_prompt($item_listing_column_conf_r)
 {

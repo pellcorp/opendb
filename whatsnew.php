@@ -20,10 +20,10 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/whatsnew.php");
-include_once("./functions/scripts.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/whatsnew.php");
+include_once("./lib/scripts.php");
 
 /**
  * This class is designed to execute under a public access enabled site if you want to embed it in

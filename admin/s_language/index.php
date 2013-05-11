@@ -23,7 +23,7 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/install.php");
+include_once("./lib/install.php");
 
 function generate_language_sql($language, $options = NULL)
 {

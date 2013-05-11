@@ -23,7 +23,7 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/install.php");
+include_once("./lib/install.php");
 
 /**
 	Will display queries as they appear in the script, will

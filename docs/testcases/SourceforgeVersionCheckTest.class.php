@@ -19,7 +19,7 @@
 */
 
 require_once 'PHPUnit.php';
-include_once("./functions/SourceforgeVersionCheck.class.php");
+include_once("./lib/SourceforgeVersionCheck.class.php");
 
 class SourceforgeVersionCheckTest extends PHPUnit_TestCase
 {

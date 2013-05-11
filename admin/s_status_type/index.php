@@ -23,9 +23,9 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/user.php");
-include_once("./functions/status_type.php");
-include_once("./functions/install.php");
+include_once("./lib/user.php");
+include_once("./lib/status_type.php");
+include_once("./lib/install.php");
 
 $_COLUMN_DESC = array(
 			's_status_type'=>'Status Type',

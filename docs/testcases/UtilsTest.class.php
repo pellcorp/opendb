@@ -20,8 +20,8 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./functions/item_attribute.php");
-include_once("./functions/utils.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/utils.php");
 
 class UtilsTest extends PHPUnit_TestCase {
 	function UtilsTest($name) {

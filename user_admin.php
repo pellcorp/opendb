@@ -21,21 +21,21 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/user.php");
-include_once("./functions/widgets.php");
-include_once("./functions/http.php");
-include_once("./functions/email.php");
-include_once("./functions/datetime.php");
-include_once("./functions/borrowed_item.php");
-include_once("./functions/item.php");
-include_once("./functions/review.php");
-include_once("./functions/item_input.php");
-include_once("./functions/address_type.php");
-include_once("./functions/secretimage.php");
+include_once("./lib/user.php");
+include_once("./lib/widgets.php");
+include_once("./lib/http.php");
+include_once("./lib/email.php");
+include_once("./lib/datetime.php");
+include_once("./lib/borrowed_item.php");
+include_once("./lib/item.php");
+include_once("./lib/review.php");
+include_once("./lib/item_input.php");
+include_once("./lib/address_type.php");
+include_once("./lib/secretimage.php");
 
 function is_user_granted_update_permission($HTTP_VARS)
 {

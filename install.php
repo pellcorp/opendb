@@ -24,13 +24,13 @@ $_OVRD_OPENDB_LANGUAGE = 'english';
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/http.php");
-include_once("./functions/install.php");
-include_once("./functions/widgets.php");
+include_once("./lib/http.php");
+include_once("./lib/install.php");
+include_once("./lib/widgets.php");
 
 $_opendb_install_required_writedirs = array(
 		'./log', './include', OPENDB_IMPORT_CACHE_DIRECTORY, OPENDB_ITEM_CACHE_DIRECTORY, OPENDB_ITEM_UPLOAD_DIRECTORY, OPENDB_HTTP_CACHE_DIRECTORY);

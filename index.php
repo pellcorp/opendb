@@ -21,8 +21,8 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 			
-include_once("./functions/install.php");
-include_once("./functions/database.php");
+include_once("./lib/install.php");
+include_once("./lib/database.php");
 
 if($_OpendbBrowserSniffer->isBrowserSupported())
 {

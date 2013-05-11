@@ -21,7 +21,7 @@
 		Search for '12 Angry Men' to get an exact title match.
 		Search for 'faddsda' to trigger a search error.
 */
-include_once("./functions/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.inc");
 
 function get_hello_param()
 {

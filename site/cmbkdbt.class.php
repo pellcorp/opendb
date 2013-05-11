@@ -37,7 +37,7 @@ NOTES FROM THE AUTHOR:
 	-Joe Miller
 */
 
-include_once("./functions/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.inc");
 
 class cmbkdbt extends SitePlugin
 {

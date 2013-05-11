@@ -1,6 +1,6 @@
 <?php
 
-include_once("./functions/AdminAjaxJobs.class.php");
+include_once("./lib/AdminAjaxJobs.class.php");
 
 class ItemCacheAjaxJobs extends AdminAjaxJobs
 {

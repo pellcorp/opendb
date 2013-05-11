@@ -19,11 +19,11 @@
 */
 
 include_once("./lib/zip.lib.php");
-include_once("./functions/review.php");
-include_once("./functions/filecache.php");
-include_once("./functions/item_attribute.php");
-include_once("./functions/datetime.php");
-include_once("./functions/site_plugin.php");
+include_once("./lib/review.php");
+include_once("./lib/filecache.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/datetime.php");
+include_once("./lib/site_plugin.php");
 
 class XMMMovieDatabasePlugin {
 	var $purchasedateformatmask;

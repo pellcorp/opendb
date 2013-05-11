@@ -26,9 +26,9 @@
 	0.81p7		Fix to support table prefixing on site_hminfo table.
 	0.81p8      Minor fix to include UPC_ID attribute into final results
 */
-include_once("./functions/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.inc");
 
-include_once("./functions/datetime.php");
+include_once("./lib/datetime.php");
 
 function fetch_hometheaterinfo_r($hmi_id)
 {

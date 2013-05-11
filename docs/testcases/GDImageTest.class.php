@@ -19,7 +19,7 @@
 */
 
 require_once 'PHPUnit.php';
-require_once("./functions/GDImage.class.php");
+require_once("./lib/GDImage.class.php");
 
 class GDImageTest extends PHPUnit_TestCase
 {

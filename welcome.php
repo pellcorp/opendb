@@ -21,24 +21,24 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once("./functions/admin.php");
-include_once("./functions/http.php");
-include_once("./functions/user.php");
-include_once("./functions/email.php");
-include_once("./functions/language.php");
-include_once("./functions/item.php");
-include_once("./functions/theme.php");
-include_once("./functions/status_type.php");
-include_once("./functions/borrowed_item.php");
-include_once("./functions/whatsnew.php");
-include_once("./functions/announcement.php");
-include_once("./functions/SourceforgeVersionCheck.class.php");
-include_once("./functions/statsdata.php");
-include_once("./functions/welcome.php");
+include_once("./lib/admin.php");
+include_once("./lib/http.php");
+include_once("./lib/user.php");
+include_once("./lib/email.php");
+include_once("./lib/language.php");
+include_once("./lib/item.php");
+include_once("./lib/theme.php");
+include_once("./lib/status_type.php");
+include_once("./lib/borrowed_item.php");
+include_once("./lib/whatsnew.php");
+include_once("./lib/announcement.php");
+include_once("./lib/SourceforgeVersionCheck.class.php");
+include_once("./lib/statsdata.php");
+include_once("./lib/welcome.php");
 
 function get_admin_announcements_rs()
 {

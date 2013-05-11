@@ -20,10 +20,10 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/filecache.php");
-include_once("./functions/file_type.php");
+include_once("./lib/filecache.php");
+include_once("./lib/file_type.php");
 
-include_once("./functions/OpenDbSnoopy.class.inc");
+include_once("./lib/OpenDbSnoopy.class.inc");
 
 function output_cache_file($url) {
 	// no point streaming a local URI

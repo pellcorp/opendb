@@ -36,7 +36,7 @@
 			- fix queryitemlisting to handle 'userid=-1' - listing now works again
 
 */
-include_once("./functions/SitePlugin.class.inc");
+include_once("./lib/SitePlugin.class.inc");
 
 function get_page_block($blockid, $buffer)
 {

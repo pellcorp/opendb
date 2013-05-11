@@ -23,11 +23,11 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/config.php");
-include_once("./functions/export.php");
-include_once("./functions/user.php");
-include_once("./functions/theme.php");
-include_once("./functions/language.php");
+include_once("./lib/config.php");
+include_once("./lib/export.php");
+include_once("./lib/user.php");
+include_once("./lib/theme.php");
+include_once("./lib/language.php");
 
 /**
  	boolean - TRUE or FALSE only

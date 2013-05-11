@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once("./functions/XMLImportPlugin.class.php");
+include_once("./lib/XMLImportPlugin.class.php");
 
 class OpenDbImportPlugin extends XMLImportPlugin
 {

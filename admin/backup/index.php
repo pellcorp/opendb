@@ -26,11 +26,11 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/user.php");
-include_once("./functions/widgets.php");
-include_once("./functions/http.php");
-include_once("./functions/utils.php");
-include_once("./functions/datetime.php");
+include_once("./lib/user.php");
+include_once("./lib/widgets.php");
+include_once("./lib/http.php");
+include_once("./lib/utils.php");
+include_once("./lib/datetime.php");
 
 /**
 	Get the content of $table as a series of INSERT statements.

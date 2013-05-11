@@ -23,13 +23,13 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/datetime.php");
-include_once("./functions/item_type.php");
-include_once("./functions/item_type_group.php");
-include_once("./functions/import.php");
+include_once("./lib/datetime.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item_type_group.php");
+include_once("./lib/import.php");
 include_once("./admin/s_item_type/functions.php");
 include_once("./admin/s_attribute_type/functions.php");
-include_once("./functions/install.php");
+include_once("./lib/install.php");
 
 $cfg_date_mask = 'DD/MM/YYYY HH24:MI:SS';
 

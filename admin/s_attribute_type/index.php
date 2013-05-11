@@ -23,9 +23,9 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 	die('Admin tools not accessible directly');
 }
 
-include_once("./functions/site_plugin.php");
-include_once("./functions/parseutils.php");
-include_once("./functions/scripts.php");
+include_once("./lib/site_plugin.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/scripts.php");
 
 $input_type_functions_cats = array(
 			'lookup'=>array('radio_grid', 'checkbox_grid', 'single_select', 'multi_select'),

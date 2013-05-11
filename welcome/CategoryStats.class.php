@@ -18,9 +18,9 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once("./functions/WelcomeBlock.class.php");
-include_once("./functions/statsdata.php");
-include_once("./functions/whatsnew.php");
+include_once("./lib/WelcomeBlock.class.php");
+include_once("./lib/statsdata.php");
+include_once("./lib/whatsnew.php");
 
 /**
  * To enable this plugin do the following:

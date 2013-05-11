@@ -22,8 +22,8 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./functions/WrapperFileHandler.class.php");
-include_once("./functions/XMLImportPluginHandler.class.php");
+include_once("./lib/WrapperFileHandler.class.php");
+include_once("./lib/XMLImportPluginHandler.class.php");
 include_once("./import/DVDProfilerImportPlugin.class.php");
 
 

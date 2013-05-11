@@ -1,8 +1,8 @@
 <?php
 
-include_once("./functions/AdminAjaxJobs.class.php");
-include_once("./functions/WrapperFileHandler.class.php");
-include_once("./functions/import.php");
+include_once("./lib/AdminAjaxJobs.class.php");
+include_once("./lib/WrapperFileHandler.class.php");
+include_once("./lib/import.php");
 
 class InstallTableAjaxJobs extends AdminAjaxJobs
 {

@@ -4,7 +4,7 @@ chdir('../../');
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-require_once("./functions/GDImage.class.php");
+require_once("./lib/GDImage.class.php");
 
 $gdImage = new GDImage('gif');
 $gdImage->createImage('code_bg');

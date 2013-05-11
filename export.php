@@ -21,17 +21,17 @@
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
 
-include_once("./functions/database.php");
-include_once("./functions/auth.php");
-include_once("./functions/logging.php");
-include_once("./functions/item_type.php");
-include_once("./functions/item.php");
-include_once("./functions/item_attribute.php");
-include_once("./functions/user.php");
-include_once("./functions/widgets.php");
-include_once("./functions/utils.php");
-include_once("./functions/export.php");
-include_once("./functions/TitleMask.class.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/user.php");
+include_once("./lib/widgets.php");
+include_once("./lib/utils.php");
+include_once("./lib/export.php");
+include_once("./lib/TitleMask.class.php");
 
 /*
 * Export Type 

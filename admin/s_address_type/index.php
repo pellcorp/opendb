@@ -346,7 +346,7 @@ else if($HTTP_VARS['op'] == 'update') // This is initiated from the lower s_item
 // Reload edit page after an update.
 if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
 {
-	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
+	echo get_javascript("admin/s_item_type/sattooltips.js");
 	
 	echo("<p>[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</p>");
 	
@@ -441,7 +441,7 @@ if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
 }
 else if($HTTP_VARS['op'] == 'new_type' || $HTTP_VARS['op'] == 'insert_type')// Insert type form!
 {
-	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_item_type/sattooltips.js\"></script>");
+	echo get_javascript("admin/s_item_type/sattooltips.js");
 	
 	echo("<p>[<a href=\"$PHP_SELF?type=s_address_type&op=edit_types\">Back to Main</a>]</p>");
 		

@@ -19,10 +19,7 @@
 */
 function get_javascript($filename)
 {
-	if(basename($filename) == $filename)
-	{
-		$filename = "./scripts/$filename";
-	}
+	$filename = "./javascript/$filename";
 	return "<script src=\"${filename}\" language=\"JavaScript\" type=\"text/javascript\"></script>\n";
 }
 

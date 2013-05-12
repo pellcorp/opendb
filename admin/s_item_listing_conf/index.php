@@ -436,7 +436,7 @@ if($HTTP_VARS['op'] == 'edit')
 	if(($HTTP_VARS['s_item_type_group'] == '*' || is_exists_item_type_group($HTTP_VARS['s_item_type_group'])) &&
 			($HTTP_VARS['s_item_type'] == '*' || is_exists_item_type($HTTP_VARS['s_item_type'])))
 	{
-		echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"$ADMIN_DIR/rowutils.js\"></script>");
+		echo get_javascript("admin/s_item_listing_conf/rowutils.js");
 		echo('<style>
 					.dataHighlight {background-color: #BDC7F7;font-size: x-small;font-weight: normal;font-family: Verdana, Arial, Helvetica, sans-serif; padding-left: 4px; padding-right: 4px;}
 			</style>');

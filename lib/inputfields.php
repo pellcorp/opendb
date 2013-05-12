@@ -31,7 +31,7 @@ include_once("./lib/status_type.php");
 include_once("./lib/theme.php");
 include_once("./lib/file_type.php");
 include_once("./lib/widgets.php");
-include_once("./lib/scripts.php");
+include_once("./lib/javascript.php");
 
 /**
 stub for non item specific functionality

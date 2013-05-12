@@ -24,7 +24,7 @@ include_once("./lib/fileutils.php");
 include_once("./lib/language.php");
 include_once("./lib/cssparser/cssparser.php");
 include_once("./lib/rss.php");
-include_once("./lib/scripts.php");
+include_once("./lib/javascript.php");
 
 function get_opendb_site_theme() {
 	global $_OPENDB_THEME;
@@ -112,11 +112,11 @@ function get_theme_javascript($pageid)
 
 	if($pageid == 'admin')
 	{
-		$scripts[] = './scripts/overlibmws/overlibmws.js';
-		$scripts[] = './scripts/overlibmws/overlibmws_function.js';
-		$scripts[] = './scripts/overlibmws/overlibmws_iframe.js';
-		$scripts[] = './scripts/overlibmws/overlibmws_hide.js';
-		$scripts[] = './admin/tooltips.js';
+		$scripts[] = 'overlibmws/overlibmws.js';
+		$scripts[] = 'overlibmws/overlibmws_function.js';
+		$scripts[] = 'overlibmws/overlibmws_iframe.js';
+		$scripts[] = 'overlibmws/overlibmws_hide.js';
+		$scripts[] = 'admin/tooltips.js';
 	}
 	
 	$buffer = '';

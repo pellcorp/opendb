@@ -386,8 +386,7 @@ if($HTTP_VARS['op'] == 'save')
 
 if(is_not_empty_array($errors))
 echo format_error_block($errors);
-
-echo('<script src="./admin/config/select.js" language="JavaScript" type="text/javascript"></script>');
+echo get_javascript("admin/config/select.js");
 
 echo("<div class=\"tabContainer\">");
 

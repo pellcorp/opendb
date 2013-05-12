@@ -25,7 +25,7 @@ if(!defined('OPENDB_ADMIN_TOOLS'))
 
 include_once("./lib/site_plugin.php");
 include_once("./lib/parseutils.php");
-include_once("./lib/scripts.php");
+include_once("./lib/javascript.php");
 
 $input_type_functions_cats = array(
 			'lookup'=>array('radio_grid', 'checkbox_grid', 'single_select', 'multi_select'),
@@ -977,7 +977,7 @@ else if($HTTP_VARS['op'] == 'update-lookups')
 
 if($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit')
 {
-	echo("<script language=\"JavaScript\" type=\"text/javascript\" src=\"./admin/s_attribute_type/widgettooltips.js\"></script>");
+	echo get_javascript("admin/s_attribute_type/widgettooltips.js");
 	echo get_widget_tooltip_array();
 
 	echo("<p>[<a href=\"$PHP_SELF?type=$ADMIN_TYPE&active_tab=".$HTTP_VARS['active_tab']."\">Back to Main</a>]</p>");

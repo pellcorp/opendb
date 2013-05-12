@@ -23,7 +23,7 @@ require_once("./include/begin.inc.php");
 include_once("./lib/database.php");
 include_once("./lib/auth.php");
 include_once("./lib/whatsnew.php");
-include_once("./lib/scripts.php");
+include_once("./lib/javascript.php");
 
 /**
  * This class is designed to execute under a public access enabled site if you want to embed it in

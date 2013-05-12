@@ -22,7 +22,7 @@ include_once("./lib/fileutils.php");
 
 function get_welcome_block_plugin_r()
 {
-	$handle=opendir('./welcome');
+	$handle=opendir('./lib/welcome');
 	while ($file = readdir($handle))
     {
 		// Ensure valid plugin name.
@@ -40,7 +40,7 @@ function get_welcome_block_plugin_r()
 }
 
 function renderWelcomeBlockPlugin($pluginName, $userid, $lastvisit) {
-	include('./welcome/'.$pluginName.'.class.php');
+	include('./lib/welcome/'.$pluginName.'.class.php');
 	$plugin = new $pluginName;
 	return $plugin->render($userid, $lastvisit);
 }

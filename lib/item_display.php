@@ -47,7 +47,7 @@ function get_site_plugin_links($page_title, $item_r)
 				$site_plugin_conf_rs = get_site_plugin_conf_r($site_plugin_type_r['site_type']);
 				
 				if(strlen($site_plugin_type_r['image'])>0)
-					$link_text = _theme_image("images/site/".$site_plugin_type_r['image'], htmlspecialchars($site_plugin_type_r['title']));
+					$link_text = theme_image("images/site/".$site_plugin_type_r['image'], htmlspecialchars($site_plugin_type_r['title']));
 				else
 					$link_text = $site_plugin_type_r['title'];
 							
@@ -379,7 +379,7 @@ function get_item_status_row($class, $item_r, $selected)
 	
 	// Item Status Image.
 	$rowcontents .= "\n<td>";
-	$rowcontents .= _theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type");
+	$rowcontents .= theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type");
 	$rowcontents .= "</td>";
 	
 	// If a comment is allowed and defined, add it in.
@@ -412,11 +412,11 @@ function get_item_status_row($class, $item_r, $selected)
 		$rowcontents .= "\n<td>";
 		if(is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 		{
-			$rowcontents .= _theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), "borrowed_item");
+			$rowcontents .= theme_image("borrowed.gif", get_opendb_lang_var('borrowed'), "borrowed_item");
 		}
 		else if(is_item_reserved($item_r['item_id'], $item_r['instance_no']))
 		{
-			$rowcontents .= _theme_image("reserved.gif", get_opendb_lang_var('reserved'), "borrowed_item");
+			$rowcontents .= theme_image("reserved.gif", get_opendb_lang_var('reserved'), "borrowed_item");
 		}
 		else
 		{

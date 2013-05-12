@@ -275,17 +275,10 @@ function get_theme_img_search_site_dir_list()
 	return $dirPath;
 }
 
-function _theme_image_src($src, $PermitOtherExtension = TRUE)
+function theme_image_src($src)
 {
 	if(strlen($src)>0)
 	{
-		if(function_exists('theme_image_src'))
-		{
-			$theme_image_src = theme_image_src($src);
-			if(strlen($theme_image_src)>0 && file_exists($theme_image_src))
-				return $theme_image_src;
-		}
-		
 		if(starts_with($src, 'images/site/'))
 			$dirPaths = get_theme_img_search_site_dir_list();
 		else
@@ -295,12 +288,7 @@ function _theme_image_src($src, $PermitOtherExtension = TRUE)
 		$file_r = parse_file($src);
 		$src = $file_r['name'];
 		
-		// this might seem a little weird, but its simpler code to write
-		if($PermitOtherExtension) {
-			$extension_r = array('gif', 'png', 'jpg');
-		} else {
-			$extension_r = array($file_r['extension']);
-		}
+		$extension_r = array($file_r['extension']);
 		
 		while(list(,$dir) = each($dirPaths)) {
 			reset($extension_r);
@@ -371,27 +359,16 @@ function safe_filename($src)
 								
 	These are the steps it uses to work out which image to display:
 
-	1)  Checks if 'theme_image' function is defined.  This function
-		should return a fully formed <img src="" ...> or a textual 
-		equivalent.
+	1)	Calls theme_image_src 
 
-		If the theme specific 'theme_image' returns FALSE, this indicates
-		that the local function is not taking responsibility for displaying
-		the image in this case.  We should continue as though the theme
-		specific 'theme_image' function did not exist.
-			
-	2)	Calls _theme_image_src 
-
-	4)	If _theme_image_src returns FALSE, then return the $src, without extension, in initcap format.
+	2)	If theme_image_src returns FALSE, then return the $src, without extension, in initcap format.
 */
-function _theme_image($src, $title=NULL, $type=NULL)
+function theme_image($src, $title=NULL, $type=NULL)
 {
 	$file_r = parse_file(basename($src));
 	$alt = ucfirst($file_r['name']);
 		
-	if(function_exists('theme_image') && ($value = theme_image($src, $title, $type))!==FALSE)
-		return $value;
-	else if ( ($src = _theme_image_src($src)) !== FALSE)
+	if ( ($src = theme_image_src($src)) !== FALSE)
 	{
 		return "<img src=\"$src\""
 			.(strlen($alt)>0?" alt=\"".$alt."\"":"")

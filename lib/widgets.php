@@ -203,7 +203,7 @@ function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL)
 		if(strlen($prompt_mask)==0)
 			$prompt_mask = '%prompt%';
 			
-		$prompt .=	_theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'), 'compulsory');
+		$prompt .=	theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'), 'compulsory');
 	}
 	
 	$fieldid = strtolower(str_replace('_', '-', $attribute_type_r['s_attribute_type']).'-'.$attribute_type_r['order_no']);
@@ -318,7 +318,7 @@ function _format_help_entry($help_entry_r)
 	if(is_array($help_entry_r))
 	{
 		if(isset($help_entry_r['img']))
-			$entry .= _theme_image($help_entry_r['img'], $help_entry_r['text'])." ";
+			$entry .= theme_image($help_entry_r['img'], $help_entry_r['text'])." ";
 		$entry .= $help_entry_r['text'];
 		
 		return $entry;
@@ -376,7 +376,7 @@ function format_action_links($action_links_rs)
 	while(list(,$action_link_r) = @each($action_links_rs))
 	{
 		if(strlen($action_link_r['img'])>0)
-			$action_image = _theme_image('action_'.$action_link_r['img'], $action_link_r['text'], "action");
+			$action_image = theme_image('action_'.$action_link_r['img'], $action_link_r['text'], "action");
 		else
 			$action_image = FALSE;
 		
@@ -540,7 +540,7 @@ function get_item_image($s_item_type, $item_id = NULL)
 				else
 					$title_text = NULL;
 
-				$imagetext = _theme_image($item_type_r['image'], $title_text, 's_item_type');
+				$imagetext = theme_image($item_type_r['image'], $title_text, 's_item_type');
 			}
 
 			return $imagetext;

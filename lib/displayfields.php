@@ -91,7 +91,7 @@ function get_item_display_field(
 				{
 					$file_type_r = fetch_file_type_r(fetch_file_type_for_extension(get_file_ext($value)));
 					
-					if(strlen($file_type_r['image'])>0 && ($image_src = _theme_image_src($file_type_r['image']))!==FALSE)
+					if(strlen($file_type_r['image'])>0 && ($image_src = theme_image_src($file_type_r['image']))!==FALSE)
 						$img = '<img src="'.$image_src.'" title="'.$value.'">';
 					else
 						$img = '';				
@@ -276,11 +276,11 @@ function get_item_display_field(
 						for($i=0;$i<$total_count;++$i)
 						{
 							if($j >= 0.75)
-								$display_value .= _theme_image('rs.gif');
+								$display_value .= theme_image('rs.gif');
 							else if ($j >=0.25)
-								$display_value .= _theme_image('rgs.gif');
+								$display_value .= theme_image('rgs.gif');
 							else
-								$display_value .= _theme_image('gs.gif');
+								$display_value .= theme_image('gs.gif');
 							$j = $j - 1;
 						}
 		
@@ -437,11 +437,11 @@ function get_item_display_field(
 			for($i=0;$i<$total_count;++$i)
 			{
 				if($j >= 0.75)
-					$field .= _theme_image('rs.gif');
+					$field .= theme_image('rs.gif');
 				else if ($j >=0.25)
-					$field .= _theme_image('rgs.gif');
+					$field .= theme_image('rgs.gif');
 				else
-					$field .= _theme_image('gs.gif');
+					$field .= theme_image('gs.gif');
 				$j = $j - 1;
 			}
 			
@@ -648,7 +648,7 @@ function format_display_value($mask, $img, $value, $display, $theme_image_type=N
 	// Note: We are only modifying local copy of $mask for return.
 	if(strlen(trim($img))>0 && $img!=="none")
 	{
-		$image = _theme_image($img, $display, $theme_image_type);
+		$image = theme_image($img, $display, $theme_image_type);
 		if(strlen($image)>0)
 			$mask = str_replace("%img%", $image, $mask);
 		else if(strlen($display)>0)

@@ -272,7 +272,7 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 			
 			echo("<h3>".$site_plugin_r['title']."</h3>");
 			
-			echo _theme_image("images/site/".$site_plugin_r['image'], strip_tags($site_plugin_r['description']), "siteLogo");
+			echo theme_image("images/site/".$site_plugin_r['image'], strip_tags($site_plugin_r['description']), "siteLogo");
 			
 			echo("<h4>".$site_plugin_r['description']."</h4>");
 			
@@ -667,7 +667,7 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 		$prompt_mask = NULL;
 		if($refresh_field)
 		{
-			$prompt_mask = _theme_image('rs.gif', get_opendb_lang_var('refreshed'))."%prompt%";
+			$prompt_mask = theme_image('rs.gif', get_opendb_lang_var('refreshed'))."%prompt%";
 		}
 		
 		return format_item_data_field(

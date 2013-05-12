@@ -35,8 +35,8 @@ include_once("./lib/widgets.php");
 $_opendb_install_required_writedirs = array(
 		'./log', './include', OPENDB_IMPORT_CACHE_DIRECTORY, OPENDB_ITEM_CACHE_DIRECTORY, OPENDB_ITEM_UPLOAD_DIRECTORY, OPENDB_HTTP_CACHE_DIRECTORY);
 
-$TICK_IMAGE = _theme_image('tick.gif');
-$CROSS_IMAGE = _theme_image('cross.gif');
+$TICK_IMAGE = theme_image('tick.gif');
+$CROSS_IMAGE = theme_image('cross.gif');
 	
 function install_check_missing_081_upload_item_attributes()
 {

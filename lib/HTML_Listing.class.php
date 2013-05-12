@@ -182,7 +182,7 @@ class HTML_Listing extends Listing
 			else if($this->_header_column_rs[$i]['type'] == 'interest')
 			{
 				$level_header_display .= "<img". 
-					" src=\"" . _theme_image_src('interest_remove.gif'). "\"" .
+					" src=\"" . theme_image_src('interest_remove.gif'). "\"" .
 					" alt=\"".get_opendb_lang_var('interest_remove_all')."\"" . 
 					" title=\"".get_opendb_lang_var('interest_remove_all')."\"" . 
 					" onclick=\"xajax_ajax_remove_all_interest_level()\"".
@@ -323,7 +323,7 @@ class HTML_Listing extends Listing
 						$new_level_value = 0;
 						$level_display .= "<img". 
 							" id=\"interest_level_$item_id"."_$instance_no\"" .
-							" src=\"" . _theme_image_src('interest_1.gif'). "\"" .
+							" src=\"" . theme_image_src('interest_1.gif'). "\"" .
 							" alt=\"".get_opendb_lang_var('interest_remove')."\"" .
 							" title=\"".get_opendb_lang_var('interest_remove')."\"" .
 							" onclick=\"xajax_ajax_update_interest_level('$item_id', '$instance_no', document.getElementById('new_level_value_$item_id\_$instance_no').value);\"".
@@ -334,7 +334,7 @@ class HTML_Listing extends Listing
 						$new_level_value = 1;
 						$level_display .= "<img". 
 							" id=\"interest_level_$item_id"."_$instance_no\"" .
-							" src=\"" . _theme_image_src('interest_0.gif'). "\"" .
+							" src=\"" . theme_image_src('interest_0.gif'). "\"" .
 							" alt=\"".get_opendb_lang_var('interest_mark')."\"" . 
 							" title=\"".get_opendb_lang_var('interest_mark')."\"" .
 							" onclick=\"xajax_ajax_update_interest_level('$item_id','$instance_no', document.getElementById('new_level_value_$item_id\_$instance_no').value);\"".
@@ -358,7 +358,7 @@ class HTML_Listing extends Listing
 
 						// expand to the actual location once only.
 						if(strlen($this->_item_type_rs[$s_item_type]['image'])>0)
-							$this->_item_type_rs[$s_item_type]['image'] = _theme_image_src($this->_item_type_rs[$s_item_type]['image']);
+							$this->_item_type_rs[$s_item_type]['image'] = theme_image_src($this->_item_type_rs[$s_item_type]['image']);
 						else
 							$this->_item_type_rs[$s_item_type]['image'] = 'none';
 						
@@ -371,7 +371,7 @@ class HTML_Listing extends Listing
 					if(strlen($this->_item_type_rs[$s_item_type]['image'])>0 && $this->_item_type_rs[$s_item_type]['image'] != 'none')
 					{
 						$this->_write(
-							_theme_image(
+							theme_image(
 								$this->_item_type_rs[$s_item_type]['image'],
 								$this->_item_type_rs[$s_item_type]['description'],
 								's_item_type'));
@@ -388,7 +388,7 @@ class HTML_Listing extends Listing
 				case 'theme_image':
 					$this->_write('<td class="'.$columnClass.'">');
 					$this->_write(
-						_theme_image(
+						theme_image(
 							$row_column_rs[$i]['src'], 
 							htmlspecialchars($row_column_rs[$i]['title']),
 							$row_column_rs[$i]['type']));
@@ -411,13 +411,13 @@ class HTML_Listing extends Listing
 					{
 						// show star if rated - Add it to the actual title, so we can do a bit more with title masks
 						$this->addHelpEntry(get_opendb_lang_var('item_reviewed'), 'rs.gif', 'item_reviewed');
-						$item_title .= _theme_image('rs.gif', get_opendb_lang_var('item_reviewed'), 'item_reviewed');
+						$item_title .= theme_image('rs.gif', get_opendb_lang_var('item_reviewed'), 'item_reviewed');
 					}
 			
 					if($is_borrowed_or_returned)
 					{
 						$this->addHelpEntry(get_opendb_lang_var('youve_borrow_or_return'), 'tick.gif', 'borrow_or_return');
-						$item_title .= _theme_image("tick.gif", get_opendb_lang_var('youve_borrow_or_return'), 'borrow_or_return'); // show tick if previously borrowed or returned.
+						$item_title .= theme_image("tick.gif", get_opendb_lang_var('youve_borrow_or_return'), 'borrow_or_return'); // show tick if previously borrowed or returned.
 					}
 					
 					$this->_write('<td class="title '.$columnClass.'">');

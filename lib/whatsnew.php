@@ -74,7 +74,7 @@ function get_last_num_items_rs(
 			}
 		
 			$item_type_r = fetch_item_type_r($item_r['s_item_type']); 
-			$itemtypeimagesrc = _theme_image_src($item_type_r['image']);
+			$itemtypeimagesrc = theme_image_src($item_type_r['image']);
 			
 			$size = @getimagesize($itemtypeimagesrc); 
 			if(is_array($size)) 
@@ -172,7 +172,7 @@ function get_last_item_list(
 		
 		if(is_array($list_item_r['itemtypeimage']))
 		{
-			$itemimageblock = _theme_image(
+			$itemimageblock = theme_image(
 					$list_item_r['itemtypeimage']['url'],
 					$list_item_r['itemtypeimage']['title'],
 					's_item_type');

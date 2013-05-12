@@ -80,7 +80,7 @@ function display_s_status_type_row($status_type_r, $row)
 	// Get the theme specific source of the image.
 	if(strlen($status_type_r['img'])>0)
 	{
-		$src = _theme_image_src($status_type_r['img']);
+		$src = theme_image_src($status_type_r['img']);
 	}
 	if($src!==FALSE && strlen($src)>0)
 		echo("<img src=\"$src\">");
@@ -155,7 +155,7 @@ function display_edit_form($status_type_r, $HTTP_VARS=NULL)
 	echo get_input_field("description", NULL, $_COLUMN_DESC['description'], "text(30,60)", "Y", ifempty($status_type_r['description'],$HTTP_VARS['description']), TRUE, "%prompt% <a class=\"smlink\" href=\"#\" onmouseover=\"".get_edit_form_tooltip('description')."\" onmouseout=\"return hide_tooltip();\">(?)</a>");
 
 	$field = get_input_field("img", NULL, $_COLUMN_DESC['img'], "url(15,*,\"gif,jpg,png\",N)", "N", ifempty($status_type_r['img'],$HTTP_VARS['img']), FALSE);
-	$image_src = _theme_image_src(ifempty($status_type_r['img'],$HTTP_VARS['img']));
+	$image_src = theme_image_src(ifempty($status_type_r['img'],$HTTP_VARS['img']));
 	if($image_src!==FALSE && strlen($image_src)>0)
 		$field .= " <img src=\"$image_src\">";
 	

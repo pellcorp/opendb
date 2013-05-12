@@ -116,7 +116,7 @@ function display_s_item_type_row($item_type_r, $row)
 	// Get the theme specific source of the image.
 	if(strlen($item_type_r['image'])>0)
 	{
-		$src = _theme_image_src($item_type_r['image']);
+		$src = theme_image_src($item_type_r['image']);
 	}
 	if($src!==FALSE && strlen($src)>0)
 		echo("<img src=\"$src\">");
@@ -191,7 +191,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 	{
 		// order_no
 		echo("<td class=\"$class\">".
-			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
+			($exists_error_ind?theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_item_attribute_type_r['order_no'], FALSE)."</td>");
 		
 		echo("<td class=\"$class\">".
@@ -470,7 +470,7 @@ else if($HTTP_VARS['op'] == 'delete_type') // This is initiated from the main s_
 			echo("\n<h3>");
 			if(strlen($item_type_r['image'])>0)
 			{
-				$src = _theme_image_src($item_type_r['image']);
+				$src = theme_image_src($item_type_r['image']);
 				if($src!==FALSE && strlen($src)>0)
 				echo("<img src=\"$src\">&nbsp;");
 			}
@@ -627,7 +627,7 @@ else if($HTTP_VARS['op'] == 'delete')
 					echo("\n<h3>");
 					if(strlen($item_type_r['image'])>0)
 					{
-						$src = _theme_image_src($item_type_r['image']);
+						$src = theme_image_src($item_type_r['image']);
 						if($src!==FALSE && strlen($src)>0)
 						echo("<img src=\"$src\">&nbsp;");
 					}
@@ -799,7 +799,7 @@ if($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update')
 		echo("\n<h3>");
 		if(strlen($item_type_r['image'])>0)
 		{
-			$src = _theme_image_src($item_type_r['image']);
+			$src = theme_image_src($item_type_r['image']);
 			if($src!==FALSE && strlen($src)>0)
 			echo("<img src=\"$src\">&nbsp;");
 		}

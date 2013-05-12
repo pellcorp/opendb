@@ -117,7 +117,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 	{
 		// order_no
 		echo("<td class=\"$class\">".
-			($exists_error_ind?_theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
+			($exists_error_ind?theme_image("rs.gif", "Duplicate Attribute Type & Order No"):"").
 			get_input_field("order_no[$row]", NULL, NULL, "number(3)", "N", $s_addr_attribute_type_rltshp_r['order_no'], FALSE)."</td>");
 
   		echo("<td class=\"$class\">".

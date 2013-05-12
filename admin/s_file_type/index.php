@@ -79,7 +79,7 @@ function display_s_file_type_row($file_type_r, $row)
 	// Get the theme specific source of the image.
 	if(strlen($file_type_r['image'])>0)
 	{
-		$src = _theme_image_src($file_type_r['image']);
+		$src = theme_image_src($file_type_r['image']);
 	}
 	if($src!==FALSE && strlen($src)>0)
 		echo("<img src=\"$src\">");

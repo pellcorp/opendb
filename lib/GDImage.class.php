@@ -146,7 +146,7 @@ class GDImage {
 		if(strpos($name, '.')===FALSE) {
 			$filename = $name.'.'.$this->getImageExtension();
 			
-			$src = _theme_image_src($filename, FALSE);
+			$src = theme_image_src($filename);
 			if($src!==FALSE) {
 				return $src;
 			} else {

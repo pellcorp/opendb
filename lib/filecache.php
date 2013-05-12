@@ -303,11 +303,11 @@ function file_cache_get_noimage_r($type)
 {
 	if($type == 'display')
 	{
-		$src = _theme_image_src(get_opendb_config_var('item_display', 'no_image'));
+		$src = theme_image_src(get_opendb_config_var('item_display', 'no_image'));
 	}
 	else //if($type == 'listing')
 	{
-		$src = _theme_image_src(get_opendb_config_var('listings', 'no_image'));
+		$src = theme_image_src(get_opendb_config_var('listings', 'no_image'));
 	}
 
 	if(is_file($src))

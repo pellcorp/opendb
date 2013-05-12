@@ -51,7 +51,7 @@ function display_edit_site_plugin($record_r, $HTTP_VARS=NULL)
 
 	if($image_src!==FALSE && strlen($image_src)>0 && file_exists($image_src))
 	{
-		$field .= _theme_image("images/site/".$image_src, NULL, NULL);
+		$field .= theme_image("images/site/".$image_src, NULL, NULL);
 	}
 	
 	echo format_field('Image', $field);

@@ -71,7 +71,7 @@ class AdminAjaxJobs
 				}
 				
 				if( $level > 0 ) {
-					$rsimage = _theme_image_src('rs.gif');
+					$rsimage = theme_image_src('rs.gif');
 					
 					for($i=0; $i<=$level; $i++) {
 						$objResponse->assign("status$i", "src", $rsimage);
@@ -104,7 +104,7 @@ class AdminAjaxJobs
 	}
 	
 	function printJobProgressBar($arg1 = NULL) {
-		$gsimage = _theme_image_src('gs.gif');
+		$gsimage = theme_image_src('gs.gif');
 	
 		$divContents = '
 		<div id="status" style="{width:300; margin: 4px}">

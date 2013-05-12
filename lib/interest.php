@@ -132,13 +132,13 @@ function ajax_update_interest_level($item_id, $instance_no, $level)
 	$user_id = get_opendb_session_var('user_id');
 	
 	if($level == 0){
-		$objResponse->assign("interest_level_$item_id"."_$instance_no", "src", _theme_image_src('interest_0.gif'));
+		$objResponse->assign("interest_level_$item_id"."_$instance_no", "src", theme_image_src('interest_0.gif'));
 		$objResponse->assign("interest_level_$item_id"."_$instance_no", "alt", get_opendb_lang_var('interest_mark'));
 		$objResponse->assign("interest_level_$item_id"."_$instance_no", "title", get_opendb_lang_var('interest_mark'));
 		$objResponse->assign("new_level_value_$item_id"."_$instance_no", "value", "1");
 	}
 	else{
-		$objResponse->assign("interest_level_$item_id"."_$instance_no", "src", _theme_image_src('interest_1.gif'));
+		$objResponse->assign("interest_level_$item_id"."_$instance_no", "src", theme_image_src('interest_1.gif'));
 		$objResponse->assign("interest_level_$item_id"."_$instance_no", "alt", get_opendb_lang_var('interest_remove'));
 		$objResponse->assign("interest_level_$item_id"."_$instance_no", "title", get_opendb_lang_var('interest_remove'));
 		$objResponse->assign("new_level_value_$item_id"."_$instance_no", "value", "0");
@@ -157,7 +157,7 @@ function ajax_remove_all_interest_level()
 	
 	if(db_remove_all_interest_level($user_id)){
 		// We update all the images
-		$objResponse->call(doRemoveInterestAllInterestLevel, _theme_image_src('interest_0.gif'), get_opendb_lang_var('interest_mark'));
+		$objResponse->call(doRemoveInterestAllInterestLevel, theme_image_src('interest_0.gif'), get_opendb_lang_var('interest_mark'));
 	}
 	return $objResponse;
 }

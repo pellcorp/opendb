@@ -414,7 +414,7 @@ function get_s_attribute_type_lookup_row($lookup_r, $row)
 	$block .= "<td class=\"data\">".get_input_field("display[$row]", NULL, NULL, "text(20,255)", "N", $lookup_r['display'], FALSE)."</td>";
 
 	if($lookup_r['img'] != 'none')
-		$src = _theme_image_src($lookup_r['img']);
+		$src = theme_image_src($lookup_r['img']);
 
 	$block .= "<td class=\"data\">";
 	if($src!==FALSE && strlen($src)>0)
@@ -927,7 +927,7 @@ else if($HTTP_VARS['op'] == 'update-lookups')
 						}
 						else //update
 						{
-							if(_theme_image_src($HTTP_VARS['img'][$i])==FALSE)
+							if(theme_image_src($HTTP_VARS['img'][$i])==FALSE)
 								$HTTP_VARS['img'][$i] = '';
 
 							if(strlen($HTTP_VARS['img'][$i])==0 && $HTTP_VARS['none_img'][$i] == 'Y')
@@ -951,7 +951,7 @@ else if($HTTP_VARS['op'] == 'update-lookups')
 
 					if(!is_exists_s_atribute_type_lookup($HTTP_VARS['s_attribute_type'], $HTTP_VARS['value'][$i]))
 					{
-						if(_theme_image_src($HTTP_VARS['img'][$i])==FALSE)
+						if(theme_image_src($HTTP_VARS['img'][$i])==FALSE)
 							$HTTP_VARS['img'][$i] = '';
 
 						if(strlen($HTTP_VARS['img'][$i])==0 && $HTTP_VARS['none_img'][$i] == 'Y')

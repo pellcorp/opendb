@@ -257,16 +257,16 @@ function get_import_choices_table(&$importPlugin, $cfg_include_header_row, $cfg_
 	if($importPlugin->get_plugin_type() == 'row' && $importPlugin->is_header_row())
 	{
 		$buffer .= "<dt>".get_opendb_lang_var('include_first_line')."</dt>".
-				"<dd>".($cfg_include_header_row?_theme_image('tick.gif'):_theme_image('cross.gif'))."</dd>";
+				"<dd>".($cfg_include_header_row?theme_image('tick.gif'):theme_image('cross.gif'))."</dd>";
 	}
 
 	$buffer .= 	"<dt>".get_opendb_lang_var('ignore_duplicate_title')."</dt>".
-				"<dd>".($cfg_ignore_duplicate_title?_theme_image('tick.gif'):_theme_image('cross.gif'))."</dd>";
+				"<dd>".($cfg_ignore_duplicate_title?theme_image('tick.gif'):theme_image('cross.gif'))."</dd>";
 				
 	if(strcasecmp(get_class($importPlugin),'PreviewImportPlugin')!==0)
 	{
 		$buffer .= "<dt>".get_opendb_lang_var('trial_run')."</dt>".
-			"<dd>".($cfg_is_trial_run?_theme_image('tick.gif'):_theme_image('cross.gif'))."</dd>";
+			"<dd>".($cfg_is_trial_run?theme_image('tick.gif'):theme_image('cross.gif'))."</dd>";
 	}
 
 	if($cfg_override_status_type)

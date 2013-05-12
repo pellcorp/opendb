@@ -100,10 +100,10 @@ function isXpathStartsWith($xpath, $startsWith) {
  */
 function &get_import_plugin_for_extension($extension, $doctype = NULL, $namespace = NULL)
 {
-	$handle=opendir('./import');
+	$handle=opendir('./lib/import');
 	while ($file = readdir($handle)) {
 		if ( !preg_match("/^\./",$file) && preg_match("/(.*).class.php$/",$file,$regs)) {
-			include('./import/'.$regs[1].'.class.php');
+			include('./lib/import/'.$regs[1].'.class.php');
 			$importPlugin = new $regs[1];
 
 			if(strcasecmp(get_class($importPlugin), $regs[1])===0) {
@@ -130,11 +130,11 @@ function &get_import_plugin_for_extension($extension, $doctype = NULL, $namespac
 }
 
 function &get_import_plugin($pluginName) {
-	$handle=opendir('./import');
+	$handle=opendir('./lib/import');
 	while ($file = readdir($handle)) {
 		// Ensure valid plugin name.
 		if ( !preg_match("/^\./",$file) && preg_match("/(.*).class.php$/",$file,$regs)) {
-			include('./import/'.$regs[1].'.class.php');
+			include('./lib/import/'.$regs[1].'.class.php');
 			$importPlugin = new $regs[1];
 			
 			if(strcasecmp(get_class($importPlugin), $pluginName)===0) {

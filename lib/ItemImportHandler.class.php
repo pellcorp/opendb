@@ -229,7 +229,7 @@ class ItemImportHandler
 		$this->_cfg_override_status_type = $cfg_override_status_type;
 		$this->_cfg_default_status_type_r = $cfg_default_status_type_r;
 		
-		$this->_listingsObject =& $listingsObject;
+		$this->_listingsObject = $listingsObject;
 		
 		$this->clear();
 	}
@@ -371,7 +371,7 @@ class ItemImportHandler
 
 	function setInstanceStatusType($statusType)
 	{
-		$itemInstance =& $this->__getCurrentItemInstance();
+		$itemInstance = $this->__getCurrentItemInstance();
 		if(is_object($itemInstance)) {
 			$itemInstance->setStatusType($statusType);
 		}
@@ -379,7 +379,7 @@ class ItemImportHandler
 	
 	function setInstanceStatusComment($statusComment)
 	{
-		$itemInstance =& $this->__getCurrentItemInstance();
+		$itemInstance = $this->__getCurrentItemInstance();
 		if(is_object($itemInstance)) {
 			$itemInstance->setStatusComment($statusComment);
 		}
@@ -387,7 +387,7 @@ class ItemImportHandler
 	
 	function setInstanceBorrowDuration($borrowDuration)
 	{
-		$itemInstance =& $this->__getCurrentItemInstance();
+		$itemInstance = $this->__getCurrentItemInstance();
 		if(is_object($itemInstance)) {
 			$itemInstance->setBorrowDuration($borrowDuration);
 		}
@@ -412,9 +412,9 @@ class ItemImportHandler
 			if($this->getItem() != NULL)
 			{
 				if($this->_is_item_instance)
-                    $tmpItem =& $this->_instance_item_obj_rs[count($this->_instance_item_obj_rs) - 1];
+                    $tmpItem = $this->_instance_item_obj_rs[count($this->_instance_item_obj_rs) - 1];
 				else
-					$tmpItem =& $this->_item_obj;
+					$tmpItem = $this->_item_obj;
 				
                 $tmpItem->addAttribute($s_attribute_type, $order_no, $attribute_val);
 			}//if($this->_item_obj != NULL)
@@ -478,7 +478,7 @@ class ItemImportHandler
 					
 					for($i=0; $i<count($this->_instance_item_obj_rs); $i++)
 					{
-					    $instanceObj =& $this->_instance_item_obj_rs[$i];
+					    $instanceObj = $this->_instance_item_obj_rs[$i];
 						
                            // if status type is to be overriden, do it here!
 						if($this->_cfg_override_status_type)
@@ -562,7 +562,7 @@ class ItemImportHandler
 	{
 		$this->_listingsObject->startRow();
 
-		if(is_not_empty_array($errorMsg) || strlen($errorMsg) > 0)
+		if(is_not_empty_array($errorMsg) || (!is_array($errorMsg) && strlen($errorMsg) > 0))
 		{
 			$this->_listingsObject->addThemeImageColumn("cross.gif");
 			$this_failure_row_count++;
@@ -584,7 +584,7 @@ class ItemImportHandler
 		$title = $item_r['title'].(is_numeric($instance_no) && $instance_no>1?'&nbsp;#'.$instance_no:'');
 		$this->_listingsObject->addColumn($title);
 
-		if(is_not_empty_array($errorMsg) || strlen($errorMsg) > 0)
+		if(is_not_empty_array($errorMsg) || (!is_array($errorMsg) && strlen($errorMsg) > 0))
 		{
 			$this->_listingsObject->addColumn(format_error_block($errorMsg, 'smerror'));
 			$this->_listingsObject->addColumn();
@@ -617,7 +617,7 @@ class ItemImportHandler
 				{
 					$attribute_type_r = NULL;
 					
-					$attribute_type_rs =& $this->__getItemTypeAttribs($item_r['s_item_type']);
+					$attribute_type_rs = $this->__getItemTypeAttribs($item_r['s_item_type']);
         			if(is_array($attribute_type_rs))
         			{
         				reset($attribute_type_rs);
@@ -654,7 +654,7 @@ class ItemImportHandler
 	*/
 	function __getItemHTTPVars(&$itemObj)
 	{
-		$attribute_type_rs =& $this->__getItemTypeAttribs($itemObj->getItemType());
+		$attribute_type_rs = $this->__getItemTypeAttribs($itemObj->getItemType());
         if(is_array($attribute_type_rs))
         {
 			// this will be set if array encountered, but not lookup value.

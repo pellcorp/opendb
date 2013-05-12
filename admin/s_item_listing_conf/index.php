@@ -117,8 +117,8 @@ function get_column_details($record_r, $row)
 	$columns_r = NULL;
 	
 	$columns_r[] = array('column'=>'button',
-				'field'=>'<a style="{cursor: pointer;}" onClick="moveRowUp(document.forms[\'s_item_listing_conf\'], document.forms[\'s_item_listing_conf\'][\'column_no['.$row.']\']); return false;"><img src="./admin/config/up.gif" border=0></a><br />'.
-				'<a style="{cursor: pointer;}" onClick="moveRowDown(document.forms[\'s_item_listing_conf\'], document.forms[\'s_item_listing_conf\'][\'column_no['.$row.']\']); return false;"><img src="./admin/config/down.gif" border=0></a>');
+				'field'=>'<a style="{cursor: pointer;}" onClick="moveRowUp(document.forms[\'s_item_listing_conf\'], document.forms[\'s_item_listing_conf\'][\'column_no['.$row.']\']); return false;"><img src="./images/admin/up.gif" border=0></a><br />'.
+				'<a style="{cursor: pointer;}" onClick="moveRowDown(document.forms[\'s_item_listing_conf\'], document.forms[\'s_item_listing_conf\'][\'column_no['.$row.']\']); return false;"><img src="./images/admin/down.gif" border=0></a>');
 	
 	$column_types_r = array(
 		array('value'=>'', 'display'=>''),

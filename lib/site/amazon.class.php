@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 include_once("./lib/SitePlugin.class.php");
-include_once("./site/amazonutils.php");
+include_once("./lib/site/amazonutils.php");
 
 class amazon extends SitePlugin
 {

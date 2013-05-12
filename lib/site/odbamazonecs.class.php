@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 include_once("./lib/SitePlugin.class.php");
-include_once("./site/AmazonECS.class.php");
+include_once("./lib/site/AmazonECS.class.php");
 
 // avoid class with the included amazonecs class.
 class odbamazonecs extends SitePlugin {

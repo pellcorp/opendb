@@ -268,11 +268,11 @@ function display_site_plugin_blocks($HTTP_VARS, $item_r=NULL)
 		{
 			echo("\n<div class=\"sitePlugin".($site_plugin_r['checked_ind']!='Y'?"Hidden":"")."\" id=\"".$site_plugin_r['site_type']."\">");
 
-			$title = "<img src=\"./site/images/".$site_plugin_r['image']."\" title=\"".strip_tags($site_plugin_r['description'])."\" alt=\"".strip_tags($site_plugin_r['description'])."\">";
+			$title = "<img src=\"./images/site/".$site_plugin_r['image']."\" title=\"".strip_tags($site_plugin_r['description'])."\" alt=\"".strip_tags($site_plugin_r['description'])."\">";
 			
 			echo("<h3>".$site_plugin_r['title']."</h3>");
 			
-			echo _theme_image("site/images/".$site_plugin_r['image'], strip_tags($site_plugin_r['description']), "siteLogo");
+			echo _theme_image("images/site/".$site_plugin_r['image'], strip_tags($site_plugin_r['description']), "siteLogo");
 			
 			echo("<h4>".$site_plugin_r['description']."</h4>");
 			

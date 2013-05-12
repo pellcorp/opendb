@@ -272,7 +272,7 @@ function get_theme_search_site_dir_list()
 		$dirPath[] = "theme/$theme/images/site";
 	}
 	
-	$dirPath[] = "site/images";
+	$dirPath[] = "images/site";
 	
 	return $dirPath;
 }
@@ -288,7 +288,7 @@ function _theme_image_src($src, $PermitOtherExtension = TRUE)
 				return $theme_image_src;
 		}
 		
-		if(starts_with($src, 'site/images/'))
+		if(starts_with($src, 'images/site/'))
 			$dirPaths = get_theme_search_site_dir_list();
 		else
 			$dirPaths = get_theme_search_dir_list();

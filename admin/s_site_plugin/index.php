@@ -47,11 +47,11 @@ function display_edit_site_plugin($record_r, $HTTP_VARS=NULL)
 	$field = get_input_field('image', NULL, 'Image', 'url(25,*,"gif,jpg,png",N)', 'N', $record_r['image'], FALSE);
 	
 	if(strlen($record_r['image'])>0)
-		$image_src = "site/images/".$record_r['image'];
+		$image_src = "images/site/".$record_r['image'];
 
 	if($image_src!==FALSE && strlen($image_src)>0 && file_exists($image_src))
 	{
-		$field .= _theme_image("site/images/".$image_src, NULL, NULL);
+		$field .= _theme_image("images/site/".$image_src, NULL, NULL);
 	}
 	
 	echo format_field('Image', $field);

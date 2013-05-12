@@ -91,7 +91,7 @@ function fetch_export_item_instance_rs($s_item_type, $owner_id)
 
 function is_export_plugin($plugin)
 {
-	if(strlen($plugin)>0 && file_exists('./export/'.$plugin.'.class.php'))
+	if(strlen($plugin)>0 && file_exists('./lib/export/'.$plugin.'.class.php'))
 		return TRUE;
 	else
 		return FALSE;
@@ -104,7 +104,7 @@ function is_export_plugin($plugin)
 */
 function get_export_r()
 {
-	$handle=opendir('./export');
+	$handle=opendir('./lib/export');
 	while ($file = readdir($handle))
     {
 		// Ensure valid plugin name.
@@ -123,7 +123,7 @@ function get_export_r()
 
 function &get_export_plugin($pluginName) {
 	if(is_export_plugin($pluginName)) {
-		include_once("./export/".$pluginName.".class.php");
+		include_once("./lib/export/".$pluginName.".class.php");
 		$exportPlugin = new $pluginName();
 		return $exportPlugin;
 	} else {
@@ -139,7 +139,7 @@ function get_export_plugin_list_r() {
 	{
 		while(list(,$pluginRef) = @each($export_type_r))
 		{
-			include_once("./export/".$pluginRef.".class.php");
+			include_once("./lib/export/".$pluginRef.".class.php");
 			$exportPlugin = new $pluginRef();
 			if($exportPlugin !== NULL)
 			{

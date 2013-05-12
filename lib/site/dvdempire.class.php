@@ -32,7 +32,7 @@
 			- added attributes for STUDIO, DIRECTOR, CREATORS, WRITERS, ARTISTS
 			  into s_item_types DVD, BD (dvd.sql, bd.sql)
 			- changed genre type to accept and automatically add, and print new genre values if %display% is blank
-			  ( line 679 of functions/displayfields.php )
+			  ( line 679 of lib/displayfields.php )
 			- fix queryitemlisting to handle 'userid=-1' - listing now works again
 
 */

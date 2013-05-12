@@ -35,7 +35,7 @@ function is_valid_opendb_mailer()
 	routine in this script, which allows calling programs to test their
 	email addresses with the same test.
 	
-	Also used in functions/widgets.php 
+	Also used in lib/widgets.php 
 */
 function is_valid_email_addr($email_addr)
 {

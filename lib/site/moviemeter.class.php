@@ -44,7 +44,7 @@ class moviemeter extends SitePlugin
 		else
 		{
 			$FirstSearch = $this->fetchURI("http://www.moviemeter.nl/film/search/".rawurlencode($search_vars_r['title']));
-			//this will display a page with some ajax functions/javascript redirects and a secret hash code.
+			//this will display a page with some ajax lib/javascript redirects and a secret hash code.
 			//first get the hash code
 			$regx = "/search.php\?hash=((.*))\&qs=1/";
 			$matchCount = preg_match($regx,$FirstSearch,$matches);

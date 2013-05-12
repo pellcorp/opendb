@@ -39,8 +39,8 @@ define('OPENDB_LOG_INFO', 'I');
 function get_relative_opendb_filename($filename)
 {
 	// make all unix for ease of reference
-	$dir = trim(str_replace('\\', '/', __FILE__)); // Should end in functions/logging.php
-	$index = strpos($dir, 'functions/logging.php');
+	$dir = trim(str_replace('\\', '/', __FILE__)); // Should end in lib/logging.php
+	$index = strpos($dir, 'lib/logging.php');
 	if($index!==FALSE)
 	{
 		$dir = substr($dir, 0, $index);

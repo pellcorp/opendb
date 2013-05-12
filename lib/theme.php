@@ -231,7 +231,7 @@ function add_css_files($pageid, $mode, &$css_file_list)
 	}
 }
 
-function get_theme_search_dir_list()
+function get_theme_img_search_dir_list()
 {
 	$theme = get_opendb_site_theme();
 	$language = strtolower(get_opendb_site_language());
@@ -240,28 +240,26 @@ function get_theme_search_dir_list()
 			
 	if(strlen($theme)>0 && strlen($language)>0)
 	{
-		$dirPath[] = "theme/$theme/images/$language";
+		$dirPath[] = "images/$theme/$language";
 	}
 	
 	if(strlen($theme)>0)
 	{
-		$dirPath[] = "theme/$theme/images";
-		$dirPath[] = "theme/$theme";
+		$dirPath[] = "images/$theme";
 	}			
 	
 	if(strlen($language)>0)
 	{
-		$dirPath[] = "theme/default/images/$language";
+		$dirPath[] = "images/default/$language";
 	}
 	
-	$dirPath[] = "theme/default/images";
-	$dirPath[] = "theme/default";
+	$dirPath[] = "images/default/images";
 	$dirPath[] = "images";
 
 	return $dirPath;
 }
 
-function get_theme_search_site_dir_list()
+function get_theme_img_search_site_dir_list()
 {
 	$theme = get_opendb_site_theme();
 	
@@ -269,7 +267,7 @@ function get_theme_search_site_dir_list()
 	
 	if(strlen($theme)>0)
 	{
-		$dirPath[] = "theme/$theme/images/site";
+		$dirPath[] = "images/$theme/site";
 	}
 	
 	$dirPath[] = "images/site";
@@ -289,9 +287,9 @@ function _theme_image_src($src, $PermitOtherExtension = TRUE)
 		}
 		
 		if(starts_with($src, 'images/site/'))
-			$dirPaths = get_theme_search_site_dir_list();
+			$dirPaths = get_theme_img_search_site_dir_list();
 		else
-			$dirPaths = get_theme_search_dir_list();
+			$dirPaths = get_theme_img_search_dir_list();
 		
 		$src = safe_filename($src);
 		$file_r = parse_file($src);

@@ -4,6 +4,10 @@
 	<artifactId>opendb-test</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1-SNAPSHOT</version>
+	
+	<name>Open Media Database Selenium Test Suite</name>
+	<url>http://opendb.iamvegan.net</url>
+	<description>Selenium test suite for the PHP Open Media Lending Database.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

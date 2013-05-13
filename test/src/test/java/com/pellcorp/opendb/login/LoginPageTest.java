@@ -24,10 +24,9 @@ public class LoginPageTest extends Assert {
 
     @Test
     public void doLogin() throws Exception {
-        String result = page.doLogin("admin", "password");
-        assertEquals("Login failure", result);
+        LoginPage result = page.loginWithFailure("admin", "password");
+        assertEquals("Login failure", result.getError());
         
-        result = page.doLogin("admin", "admin");
-        assertNull(result);
+        WelcomePage welcome = page.login("admin", "admin");
     }
 }

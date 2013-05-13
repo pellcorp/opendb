@@ -4,10 +4,25 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
 public class LoginPage {
     private WebDriver driver;
 
+    @FindBy(name = "uid")
+    WebElement userIdField;
+
+    @FindBy(name = "passwd")
+    WebElement passwordField;
+
+    @FindBy(how = How.XPATH, using = "//input[@type='submit']")
+    WebElement loginButton;
+    
+    @FindBy(how = How.XPATH, using = "//p[@class='error']")
+    WebElement errorText;
+    
     public LoginPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -17,34 +32,32 @@ public class LoginPage {
     }
 
     public void close() {
-        driver.quit();
+        driver.close();
+    }
+
+    public LoginPage loginWithFailure(String userId, String password) {
+        doLogin(userId, password);
+        return PageFactory.initElements(driver, LoginPage.class);
+    }
+
+    public WelcomePage login(String userId, String password) {
+        doLogin(userId, password);
+        return PageFactory.initElements(driver, WelcomePage.class);
+    }
+
+    public String getError() {
+        return errorText.getText();
     }
     
-    /**
-     * Return error string if it is found
-     * @param userId
-     * @param password
-     * @return
-     */
-    public String doLogin(String userId, String password) {
-        WebElement userIdField = driver.findElement(By.id("uid"));
+    private void doLogin(String userId, String password) {
         userIdField.click();
         userIdField.clear();
         userIdField.sendKeys(userId);
-        
-        WebElement passwordField = driver.findElement(By.id("passwd"));
+
         passwordField.click();
         passwordField.clear();
         passwordField.sendKeys(password);
-        
-        WebElement loginButton = driver.findElement(By.xpath("//input[@type='submit']"));
-        loginButton.click();
 
-        try {
-            WebElement errorText = driver.findElement(By.xpath("//p[@class='error']"));
-            return errorText.getText();
-        } catch (NoSuchElementException nse) {
-            return null;
-        }
+        loginButton.click();
     }
 }

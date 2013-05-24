@@ -1,26 +1,26 @@
 <?php
 /* 	
-	Open Media Collectors Database
-	Copyright (C) 2001,2013 by Jason Pell
+    Open Media Collectors Database
+    Copyright (C) 2001,2013 by Jason Pell
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-	Reference for creating the plugin:
-		http://developer.mozilla.org/en/docs/Creating_OpenSearch_plugins_for_Firefox
-		http://software.hixie.ch/utilities/cgi/data/data
-*/
+    Reference for creating the plugin:
+        http://developer.mozilla.org/en/docs/Creating_OpenSearch_plugins_for_Firefox
+        http://software.hixie.ch/utilities/cgi/data/data
+ */
 
 // This must be first - includes config.php
 require_once("./include/begin.inc.php");
@@ -32,15 +32,15 @@ include_once("./lib/http.php");
 
 $siteUrl = get_site_url();
 $siteTitle = get_opendb_title();
-if($_GET['type']=="title") {
+if ($_GET['type'] == "title") {
 	$shortName = "$siteTitle Title";
-	$description = "OpenDb title search on ".$siteUrl;
-	$searchUrl = $siteUrl."listings.php?search_list=y&amp;linked_items=include&amp;title_match=partial&amp;title={searchTerms}";
+	$description = "OpenDb title search on " . $siteUrl;
+	$searchUrl = $siteUrl . "listings.php?search_list=y&amp;linked_items=include&amp;title_match=partial&amp;title={searchTerms}";
 	$searchtags = "opendb title search";
-} else if($_GET['type']=="upc") {
+} else if ($_GET['type'] == "upc") {
 	$shortName = "$siteTitle UPC";
-	$description = "OpenDb UPC search on ".$siteUrl;
-	$searchUrl = $siteUrl."listings.php?search_list=y&amp;attribute_type=UPC_ID&amp;attr_match=partial&amp;attribute_val={searchTerms}";
+	$description = "OpenDb UPC search on " . $siteUrl;
+	$searchUrl = $siteUrl . "listings.php?search_list=y&amp;attribute_type=UPC_ID&amp;attr_match=partial&amp;attribute_val={searchTerms}";
 	$searchtags = "opendb upc search";
 }
 header("Content-Type: text/xml");
@@ -56,7 +56,6 @@ header("Content-Type: text/xml");
 <InputEncoding>UTF-8</InputEncoding>
 <AdultContent>false</AdultContent>
 </OpenSearchDescription>
-
 <?php
 // Cleanup after begin.inc.php
 require_once("./include/end.inc.php");

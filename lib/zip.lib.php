@@ -26,8 +26,7 @@
  * @access  public
  * @package phpMyAdmin
  */
-class zipfile
-{
+class zipfile {
     /**
      * Array to store compressed data
      *
@@ -93,8 +92,7 @@ class zipfile
      *
      * @access public
      */
-    function addFile($data, $name, $time = 0)
-    {
+    function addFile($data, $name, $time = 0) {
         $name     = str_replace('\\', '/', $name);
 
         $dtime    = dechex($this->unix2DosTime($time));
@@ -172,8 +170,7 @@ class zipfile
      *
      * @access public
      */
-    function file()
-    {
+    function file() {
         $data    = implode('', $this -> datasec);
         $ctrldir = implode('', $this -> ctrl_dir);
 

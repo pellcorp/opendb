@@ -1,41 +1,41 @@
 <?php
 /*
-	eMusic SitePlugin for Open Media Collectors Database
-	Copyright (C) 2008 Jeroen Budts
-	http://gluefish.net/opendb/
+    eMusic SitePlugin for Open Media Collectors Database
+    Copyright (C) 2008 Jeroen Budts
+    http://gluefish.net/opendb/
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 3
-	of the License, or (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General Public License
+    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-	Using
-	-------
-	You have two ways to add music
-	1. use the album title: this will search eMusic for albums with the given title
-	2. use the album url: either paste the complete url, or the part after /album/
-	   in the url, of the page on eMusic. By example to import Live At Tonic by Chritian
-	   McBride, simply paste
-	   http://www.emusic.com/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html
-	   in the 'eMusic Link'-field.
-	
-	
-	Version History
-	-------
-	* 1.1 (2008-03-02)
-		- adapted changes to the eMusic site which broke the plugin
-	* 1.0 (2008-02-25)
-		- initial version
+    Using
+    -------
+    You have two ways to add music
+    1. use the album title: this will search eMusic for albums with the given title
+    2. use the album url: either paste the complete url, or the part after /album/
+       in the url, of the page on eMusic. By example to import Live At Tonic by Chritian
+       McBride, simply paste
+       http://www.emusic.com/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html
+       in the 'eMusic Link'-field.
+    
+    
+    Version History
+    -------
+ * 1.1 (2008-03-02)
+        - adapted changes to the eMusic site which broke the plugin
+ * 1.0 (2008-02-25)
+        - initial version
 
-*/
+ */
 
 include_once("./lib/SitePlugin.class.php");
 
@@ -46,18 +46,16 @@ class emusic extends SitePlugin {
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
-		if (strlen($search_vars_r['emusic_lnk'])>0) {
+		if (strlen($search_vars_r['emusic_lnk']) > 0) {
 			if ($emusicLink = $this->_parseEmusicLink($search_vars_r['emusic_lnk'])) {
-				$this->addListingRow(NULL, NULL, NULL, array('emusic_lnk'=>$emusicLink));
+				$this->addListingRow(NULL, NULL, NULL, array('emusic_lnk' => $emusicLink));
 				return TRUE;
 			} else {
-				$this->setError('The eMusic Link is invalid: '.$search_vars_r['emusic_lnk'],
-								 'The eMusic Link should either be a complete url of an album\'s page on eMusic.com'.
-								 ' or everything that follows \'/album/\' in the url.');
+				$this->setError('The eMusic Link is invalid: ' . $search_vars_r['emusic_lnk'], 'The eMusic Link should either be a complete url of an album\'s page on eMusic.com' . ' or everything that follows \'/album/\' in the url.');
 			}
 		}
 
-		if (strlen($search_vars_r['title'])>0) {
+		if (strlen($search_vars_r['title']) > 0) {
 			$this->searchOnAlbum($search_vars_r['title'], $offset);
 			return TRUE;
 		}
@@ -67,7 +65,7 @@ class emusic extends SitePlugin {
 
 	function searchOnAlbum($album, $offset) {
 		// http://www.emusic.com/search.html?mode=b&off=0&QT=Live%20At%20Tonic
-		$page = $this->fetchURI("http://www.emusic.com/search.html?mode=b&off=".intval($offset)."&QT=".urlencode($album));
+		$page = $this->fetchURI("http://www.emusic.com/search.html?mode=b&off=" . intval($offset) . "&QT=" . urlencode($album));
 
 		if (strlen($page) <= 0) {
 			return FALSE;
@@ -75,23 +73,23 @@ class emusic extends SitePlugin {
 
 		/*
 		<tr class="rowOdd">
-			<td class="column1">
-				<div class="shadow1"><a href="/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html"><img src="/img/album/109/157/10915705_60_60.jpeg" title="Live At Tonic" alt="Live At Tonic"></a></div>
-				<div class="mediaTitle">
-					<a href='/samples/m3u/album/10915705/0.m3u'><img src="/images/ctlg/listen.gif?v=20050520,1,1" alt="Listen" title="Listen" class="listenBrowse"></a>
-					<p><a href="/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html">Live At Tonic</a></p>
-				</div>
-			</td>
-			<td><a href="/artist/Christian-McBride-MP3-Download/11487301.html">Christian McBride</a></td>
-			<td><a href="/genre/291.html">Jazz</a></td>
-			<td class="column4"><a href="/label/Ropeadope-Records-IODA-MP3-Download/121252.html">Ropeadope Records / IODA</a>&nbsp;</td>
+		    <td class="column1">
+		        <div class="shadow1"><a href="/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html"><img src="/img/album/109/157/10915705_60_60.jpeg" title="Live At Tonic" alt="Live At Tonic"></a></div>
+		        <div class="mediaTitle">
+		            <a href='/samples/m3u/album/10915705/0.m3u'><img src="/images/ctlg/listen.gif?v=20050520,1,1" alt="Listen" title="Listen" class="listenBrowse"></a>
+		            <p><a href="/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html">Live At Tonic</a></p>
+		        </div>
+		    </td>
+		    <td><a href="/artist/Christian-McBride-MP3-Download/11487301.html">Christian McBride</a></td>
+		    <td><a href="/genre/291.html">Jazz</a></td>
+		    <td class="column4"><a href="/label/Ropeadope-Records-IODA-MP3-Download/121252.html">Ropeadope Records / IODA</a>&nbsp;</td>
 		</tr>
 		 */
 		$RESULT_ROW_REGEX = "!<img src=\"(/img/album/[\d_/]+\.jpe?g)\" title=\".*\" alt=\".*\">.*<p><a href=\"/album/(.+\.html)\">(.+)</a></p>.+<a href=\"/artist/[\w-_]+/\d+\.html\">(.+)</a>.*<a href=\"/genre/\d+\.html\">(.+)</a>!sU";
 
 		if (preg_match_all($RESULT_ROW_REGEX, $page, $matches)) {
 			for ($i = 0; $i < count($matches[1]); $i++) {
-				$this->addListingRow($matches[3][$i], "http://www.emusic.com".$matches[1][$i], $matches[4][$i]." (".$matches[5][$i].")", array('emusic_lnk'=>$matches[2][$i]));
+				$this->addListingRow($matches[3][$i], "http://www.emusic.com" . $matches[1][$i], $matches[4][$i] . " (" . $matches[5][$i] . ")", array('emusic_lnk' => $matches[2][$i]));
 			}
 		}
 		return TRUE;
@@ -99,7 +97,7 @@ class emusic extends SitePlugin {
 
 	function queryItem($search_attributes_r, $s_item_type) {
 		// http://www.emusic.com/album/Christian-McBride-Live-At-Tonic-MP3-Download/10915705.html
-		$page = $this->fetchURI("http://www.emusic.com/album/".$search_attributes_r['emusic_lnk']);
+		$page = $this->fetchURI("http://www.emusic.com/album/" . $search_attributes_r['emusic_lnk']);
 
 		if (strlen($page) <= 0) {
 			return FALSE;
@@ -179,7 +177,7 @@ class emusic extends SitePlugin {
 
 	function addArtist($page) {
 		// <span class="artist"><a href="/artist/Christian-McBride-MP3-Download/11487301.html">Christian McBride</a></span>
-		if (preg_match("!Artist: <a href=\"/artist/[\w-\d]+/\d+\.html\">(.+)</a></h3>!", $page, $matches))	{
+		if (preg_match("!Artist: <a href=\"/artist/[\w-\d]+/\d+\.html\">(.+)</a></h3>!", $page, $matches)) {
 			$this->addItemAttribute('artist', $matches[1]);
 		}
 	}
@@ -208,8 +206,11 @@ class emusic extends SitePlugin {
 		}
 
 		$strSeconds = $seconds;
-		if (0 == $seconds) {$strSeconds = "00";}
-		else if ($seconds < 10) {$strSeconds = "0" . $seconds;}
+		if (0 == $seconds) {
+			$strSeconds = "00";
+		} else if ($seconds < 10) {
+			$strSeconds = "0" . $seconds;
+		}
 
 		return ((0 == $minutes) ? '0' : $minutes) . ':' . $strSeconds;
 	}

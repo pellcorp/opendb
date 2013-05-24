@@ -1,14 +1,14 @@
 <?php
 /*
-* @Version 1.0
-* @Author John F. Blyberg <blybergj@aadl.org> - http://www.blyberg.net
-* @Desc ISBN Class, adapted from ISBN.pm - http://www.manasystems.co.uk/isbnpm.html
-* 
-* Downloaded from:
-* 	http://www.blyberg.net/2006/04/05/php-port-of-isbn-1013-tool/
-* 
-* Modified slightly for PHP 4.3.X compatibility
-*/
+ * @Version 1.0
+ * @Author John F. Blyberg <blybergj@aadl.org> - http://www.blyberg.net
+ * @Desc ISBN Class, adapted from ISBN.pm - http://www.manasystems.co.uk/isbnpm.html
+ * 
+ * Downloaded from:
+ * 	http://www.blyberg.net/2006/04/05/php-port-of-isbn-1013-tool/
+ * 
+ * Modified slightly for PHP 4.3.X compatibility
+ */
 
 class ISBN {
 	function convert($isbn) {
@@ -33,11 +33,13 @@ class ISBN {
 		$isbn = trim($isbn);
 		$chksum = substr($isbn, -1, 1);
 		$isbn = substr($isbn, 0, -1);
-		if (preg_match('/X/i', $chksum)) { $chksum="10"; }
+		if (preg_match('/X/i', $chksum)) {
+			$chksum = "10";
+		}
 		$sum = $this->genchksum10($isbn);
-		if ($chksum == $sum){
+		if ($chksum == $sum) {
 			return 1;
-		}else{
+		} else {
 			return 0;
 		}
 	}
@@ -46,11 +48,13 @@ class ISBN {
 		$isbn = trim($isbn);
 		$chksum = substr($isbn, -1, 1);
 		$isbn = substr($isbn, 0, -1);
-		if (preg_match('/X/i', $chksum)) { $chksum="10"; }
+		if (preg_match('/X/i', $chksum)) {
+			$chksum = "10";
+		}
 		$sum = $this->genchksum13($isbn);
-		if ($chksum == $sum){
+		if ($chksum == $sum) {
 			return 1;
-		}else{
+		} else {
 			return 0;
 		}
 	}
@@ -60,14 +64,16 @@ class ISBN {
 		for ($i = 0; $i <= 12; $i++) {
 			$tc = substr($isbn, -1, 1);
 			$isbn = substr($isbn, 0, -1);
-			$ta = ($tc*3);
+			$ta = ($tc * 3);
 			$tci = substr($isbn, -1, 1);
 			$isbn = substr($isbn, 0, -1);
 			$tb = $tb + $ta + $tci;
 		}
 		$tg = ($tb / 10);
 		$tint = intval($tg);
-		if ($tint == $tg) { return 0; }
+		if ($tint == $tg) {
+			return 0;
+		}
 		$ts = substr($tg, -1, 1);
 		$tsum = (10 - $ts);
 		return $tsum;
@@ -76,7 +82,7 @@ class ISBN {
 	function genchksum10($isbn) {
 		$t = 2;
 		$isbn = trim($isbn);
-		for($i = 0; $i <= 9; $i++){
+		for ($i = 0; $i <= 9; $i++) {
 			$b = $b + $a;
 			$c = substr($isbn, -1, 1);
 			$isbn = substr($isbn, 0, -1);
@@ -87,7 +93,7 @@ class ISBN {
 		$s = intval($s);
 		$s++;
 		$g = ($s * 11);
-		$sum = ($g - $b); 
+		$sum = ($g - $b);
 		return $sum;
 	}
 

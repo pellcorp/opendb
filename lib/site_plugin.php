@@ -32,6 +32,30 @@ include_once("./lib/ISBN/ISBN.class.php");
 // Construct a single copy of this object for use within the site plugin
 $SITE_PLUGIN_SNOOPY = new OpenDbSnoopy(TRUE); //debugging always on
 
+// the default curl path for snoopy is /usr/local/bin/curl - often however, it will reside in another path
+if((!$SITE_PLUGIN_SNOOPY->curl_path) | (function_exists("is_executable") &&  (!is_executable($SITE_PLUGIN_SNOOPY->curl_path)))) {
+	$curlpaths = array(); // variable for test-paths
+	// let's do something depending on whether we're using windows or linux (windows lookup not tested)
+	if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
+		// This is a server using Windows!
+		$curlpaths[] = 'C:\Windows\System32\curl.exe';
+	} else {
+		// assuming a unix system, first try detection and then some other paths
+		$curlpaths[] = system("which curl");
+		$curlpaths[] = '/usr/bin/curl';
+		$curlpaths[] = '/usr/local/sbin/curl';
+		$curlpaths[] = '/usr/sbin/curl';
+	}
+	foreach($curlpaths as $curlpath){
+		if(function_exists("is_executable")) {
+			if(is_executable($curlpath)) {
+				$SITE_PLUGIN_SNOOPY->curl_path=$curlpath;
+				break; // once found, break out of the loop
+			}
+		}
+	}
+}
+
 function get_month_num_for_name($monthname, $months) {
 	$key = array_search(strtolower($monthname), $months);
 	if($key !== FALSE)

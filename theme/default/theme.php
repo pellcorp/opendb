@@ -29,7 +29,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id) {
 	}
 
 	echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" . "\n<html>" . "\n<head>" . "\n<title>" . $pageTitle . (!empty($title) ? " - $title" : "") . "</title>" . "\n<meta http-equiv=\"Content-Type\" content=\"" . get_content_type_charset() . "\">"
-			. "\n<link rel=\"icon\" href=\"" . theme_image_src("icon-16x16.gif") . "\" type=\"image/gif\" />" . "\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"" . get_opendb_title() . " Title Search\" href=\"./searchplugins.php?type=title\">"
+			. "\n<link rel=\"icon\" href=\"" . theme_image_src("icon-16x16.png") . "\" type=\"image/png\" />" . "\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"" . get_opendb_title() . " Title Search\" href=\"./searchplugins.php?type=title\">"
 			. "\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"" . get_opendb_title() . " UPC Search\" href=\"./searchplugins.php?type=upc\">" 
 				. get_theme_css($pageid, $mode) 
 				. get_opendb_rss_feeds_links() 

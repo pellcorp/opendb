@@ -111,12 +111,13 @@ class gbooks extends SitePlugin {
 			isset($vol['subtitle'])	&& $title .= '- '. $vol['subtitle'] . ' ';
 		$this->addItemAttribute('title', $title);	
 		
-		isset($vol['publishedDate']) && $this->addItemAttribute('pub_date', $vol['publishedDate']);
+		// only year is allowd in the DB - google sometimes knows the exact date in the format YYYY-MM-DD
+		isset($vol['publishedDate']) && $this->addItemAttribute('pub_year', substr($vol['publishedDate'],0,4));
 		
 		isset($vol['authors']) && $this->addItemAttribute('author', $vol['authors']);
 		
-		
-		isset($vol['imageLinks']) &&  $this->addItemAttribute('imageurl', $vol['imageLinks']['thumbnail']) ;
+		// dummy file name ending appended to the image since opendb requires ending
+		isset($vol['imageLinks']) &&  $this->addItemAttribute('imageurl', $vol['imageLinks']['thumbnail'].'.jpg') ;
 		
 		
 		if(isset($vol['industryIdentifiers'])){
@@ -133,6 +134,12 @@ class gbooks extends SitePlugin {
 		isset($vol['publisher']) && $this->addItemAttribute('publisher', $vol['publisher']);
 
 		isset($vol['pageCount']) && $this->addItemAttribute('no_pages', $vol['pageCount']);
+		
+		$lang_replace=array('!en!i' => 'english',
+						    '!da!i' => 'danish'
+							);  
+		isset($vol['language']) && $this->addItemAttribute('text_lang', preg_replace(array_keys($lang_replace),array_values($lang_replace),$vol['language']));
+
 				
 		return TRUE;
 	}

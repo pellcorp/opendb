@@ -202,6 +202,7 @@ class Snoopy
 				    if (!is_executable($this->curl_path))
 				        return false;
 				$this->host = $URI_PARTS["host"];
+				$this->port=NULL; // don't force port unless non-default - otherwise we get weird -H "Host: www.site.com:80" parameter to curl which REPLACES host in returned data...
 				if(!empty($URI_PARTS["port"]))
 					$this->port = $URI_PARTS["port"];
 				if($this->_isproxy)
@@ -1006,7 +1007,7 @@ class Snoopy
 		
 		$headerfile = tempnam($temp_dir, "sno");
 
-		exec($this->curl_path." -k -D \"$headerfile\"".$cmdline_params." \"".escapeshellcmd($URI)."\"",$results,$return);
+		exec($this->curl_path." -k -D \"$headerfile\"".$cmdline_params." ".escapeshellcmd($URI),$results,$return);
 		
 		if($return)
 		{
@@ -1046,7 +1047,13 @@ class Snoopy
 			}
 		
 			if(preg_match("|^HTTP/|",$result_headers[$currentHeader]))
+			{
+				if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$result_headers[$currentHeader], $status))
+				{
+					$this->status= $status[1];
+				}				
 				$this->response_code = $result_headers[$currentHeader];
+			}
 
 			$this->headers[] = $result_headers[$currentHeader];
 		}

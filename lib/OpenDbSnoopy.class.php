@@ -205,7 +205,7 @@ class OpenDbSnoopy extends Snoopy
 	/**
 	Get content of last URL retrieved
 	*/
-	function &getContent()
+	function getContent()
 	{
 		if(is_not_empty_array($this->_file_cache_r))
 		    return $this->_file_cache_r['content'];

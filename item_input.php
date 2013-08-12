@@ -432,7 +432,22 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
 				// normal field
 				return $HTTP_VARS[$fieldname];
 		} else if ($op == 'new') {
-			return NULL;
+            $attribute_type_r = fetch_attribute_type_r($s_attribute_type);
+            $value = NULL;
+
+            switch ($attribute_type_r['input_type']) {
+                case 'text':
+                    $value = $attribute_type_r['input_type_arg3'];
+                    break;
+                case 'number':
+                    $value = $attribute_type_r['input_type_arg2'];
+                    break;
+                case 'filtered':
+                    $value = $attribute_type_r['input_type_arg4'];
+                    break;
+            }
+
+            return $value;
 		}
 	}
 

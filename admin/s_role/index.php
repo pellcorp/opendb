@@ -37,7 +37,7 @@ function display_role_permissions_editor($HTTP_VARS) {
 		db_free_result($results);
 	}
 
-	echo ('<script src="./admin/select.js" language="JavaScript" type="text/javascript"></script>');
+    echo get_javascript('admin/select.js');
 
 	echo ("\n<form name=\"edit_role_permissions\" action=\"$PHP_SELF\" method=\"POST\">");
 	echo ("\n<input type=\"hidden\" name=\"op\" value=\"" . $HTTP_VARS['op'] . "\">");

@@ -65,15 +65,17 @@ $argument_types = array('width' => array('prompt' => 'Width', 'description' => '
 						. '</ul></p>', 'input_type' => 'value_select("plain,nl2br,ordered,unordered,ticks", 1)'),
 		'time_mask' => array('prompt' => 'Time Mask',
 				'description' => 'Specify time format mask.' . '<p>The mask components supported are: ' . '<ul>' . '<li>%h - hour value only</li>' . '<li>%H - text &quot;hour&quot; or &quot;hours&quot;</li>' . '<li>%m - minute value only</li>'
-						. '<li>%M - text &quot;minute&quot; or &quot;minutes&quot;</li>' . '</ul></p>', 'input_type' => 'text(50,100)'),);
+						. '<li>%M - text &quot;minute&quot; or &quot;minutes&quot;</li>' . '</ul></p>', 'input_type' => 'text(50,100)'),
+        'default_val' => array('prompt' => 'Default Value',
+                'description' => 'The default value for this field.', 'input_type' => 'text(50,100)'),);
 
 // input type functions
 $input_type_functions = array('hidden' => array('args' => array(), 'description' => 'A hidden input field.  Hidden fields are often used for site plugin link attributes.'), 'readonly' => array('args' => array(), 'description' => 'A readonly field'),
-		'text' => array('args' => array('length[Y]', 'maxlength'), 'description' => 'A text field'), 'textarea' => array('args' => array('cols[Y]', 'rows[Y]'), 'description' => 'A textarea field'),
+		'text' => array('args' => array('length[Y]', 'maxlength', 'default_val'), 'description' => 'A text field'), 'textarea' => array('args' => array('cols[Y]', 'rows[Y]'), 'description' => 'A textarea field'),
 		'htmlarea' => array('args' => array('cols[Y]', 'rows[Y]'), 'description' => 'A HTML textarea field'), 'email' => array('args' => array('length[Y]', 'maxlength'), 'description' => 'A text field with email format validation'),
-		'filtered' => array('args' => array('length[Y]', 'maxlength', 'legalchars[Y]'), 'description' => 'A text field with validation controlled by legalchars parameter.'),
+		'filtered' => array('args' => array('length[Y]', 'maxlength', 'legalchars[Y]', 'default_val'), 'description' => 'A text field with validation controlled by legalchars parameter.'),
 		'datetime' => array('args' => array('input_datetime_mask[Y]', 'auto_datetime'), 'description' => 'A datetime field, which much match the Datetime Mask exactly.' . 'Must be used with the matching \'datetime\' display type widget.'),
-		'number' => array('args' => array('length[Y]'), 'description' => 'A text field with numeric validation'),
+		'number' => array('args' => array('length[Y]', 'default_val'), 'description' => 'A text field with numeric validation'),
 		'checkbox' => array('args' => array('checked-val[Y]', 'unchecked-val'), 'description' => 'A two state checkbox.  This differs from normal check boxes, ' . 'because this one can send a value to OpenDb whether checked ' . 'or not.'),
 		'review_options' => array('args' => array('display_mask', 'orientation'), 'description' => 'Item Review / Search specific widget.'),
 		'url' => array('args' => array('length[Y]', 'maxlength', 'content_group'), 'description' => 'External URL or file upload (file upload configuration permitting), with popup file viewer'),

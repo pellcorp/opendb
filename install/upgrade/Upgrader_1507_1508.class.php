@@ -26,7 +26,7 @@ class Upgrader_1507_1508 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'1.5.0.7',
-						'1.5.0.8dev2',
+						'1.5.0.8rc3',
 						array(
 							array('description'=>'Update imdb site plugin to use new implementation'),
 						)

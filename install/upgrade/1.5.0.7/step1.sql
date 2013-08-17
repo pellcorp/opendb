@@ -31,3 +31,7 @@ INSERT INTO s_item_type_group_rltshp ( s_item_type_group, s_item_type ) VALUES (
 
 # Update all amazon plugins to use the amazon class
 UPDATE s_site_plugin SET classname = 'amazon' WHERE site_type IN ('amazonfr', 'amazonuk', 'amazonde');
+
+# iblist no longer supports isbn
+DELETE FROM s_site_plugin_input_field
+WHERE site_type = 'iblist' AND field = 'isbn';

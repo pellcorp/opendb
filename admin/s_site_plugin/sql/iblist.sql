@@ -6,7 +6,7 @@
 # Site Plugin.
 #
 
-INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )VALUES ( 'iblist', 'iblist', 'Internet Book List', 'iblist.jpg', 'Internet Book List provide a comprehensive and easily accessible database of books.', 'http://www.iblist.com', 50, 'http://www.iblist.com/book.php?id={iblist_id}' );
+INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url ) VALUES ( 'iblist', 'iblist', 'Internet Book List', 'iblist.jpg', 'Internet Book List provide a comprehensive and easily accessible database of books.', 'http://www.iblist.com', 50, 'http://www.iblist.com/book.php?id={iblist_id}' );
 
 #
 # Site Plugin Input Fields
@@ -14,8 +14,7 @@ INSERT INTO s_site_plugin ( site_type, classname, title, image, description, ext
 
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'iblist', 'title', 1, '', 'Title Search', 'text', '', '{title}' );
 INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'iblist', 'author', 2, '', 'Author', 'text', '', '{author}' );
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'iblist', 'isbn', 3, '', 'ISBN', 'text', '', '{isbn}' );
-INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'iblist', 'iblist_id', 4, '', 'ID Number', 'hidden', '', '{iblist_id}' );
+INSERT INTO s_site_plugin_input_field ( site_type, field, order_no, description, prompt, field_type, default_value, refresh_mask ) VALUES ( 'iblist', 'iblist_id', 3, '', 'ID Number', 'hidden', '', '{iblist_id}' );
 
 #
 # Site Plugin Links

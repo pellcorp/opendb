@@ -76,7 +76,7 @@ $input_type_functions = array('hidden' => array('args' => array(), 'description'
 		'filtered' => array('args' => array('length[Y]', 'maxlength', 'legalchars[Y]', 'default_val'), 'description' => 'A text field with validation controlled by legalchars parameter.'),
 		'datetime' => array('args' => array('input_datetime_mask[Y]', 'auto_datetime'), 'description' => 'A datetime field, which much match the Datetime Mask exactly.' . 'Must be used with the matching \'datetime\' display type widget.'),
 		'number' => array('args' => array('length[Y]', 'default_val'), 'description' => 'A text field with numeric validation'),
-		'checkbox' => array('args' => array('checked-val[Y]', 'unchecked-val'), 'description' => 'A two state checkbox.  This differs from normal check boxes, ' . 'because this one can send a value to OpenDb whether checked ' . 'or not.'),
+		'checkbox' => array('args' => array('checked-val[Y]', 'unchecked-val', 'default_val'), 'description' => 'A two state checkbox.  This differs from normal check boxes, ' . 'because this one can send a value to OpenDb whether checked ' . 'or not.'),
 		'review_options' => array('args' => array('display_mask', 'orientation'), 'description' => 'Item Review / Search specific widget.'),
 		'url' => array('args' => array('length[Y]', 'maxlength', 'content_group'), 'description' => 'External URL or file upload (file upload configuration permitting), with popup file viewer'),
 		'radio_grid' => array('args' => array('display_mask', 'orientation'), 'description' => 'A formatted list of radio buttons, one for each matching (according to the item_attribute s_attribute_type) lookup record.'),

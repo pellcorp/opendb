@@ -18,6 +18,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 class JsonRpcServer {
+	private $errorMessages = array(
+			'-32700' => 'Parse error',
+			'-32600' => 'Invalid request',
+			'-32601' => 'Method not found',
+			'-32602' => 'Invalid parameters',
+			'-32603' => 'Internal error',
+			'-32604' => 'Authentication error'
+	);
+	
+	private $errorCodes = array(
+			'parseError' 			=> '-32700',
+			'invalidRequest'		=> '-32600',
+			'methodNotFound'		=> '-32601',
+			'invalidParameters'		=> '-32602',
+			'internalError'			=> '-32603',
+			'authenticationError'	=> '-32604'
+	);
+	
 	private $classes = array ();
 
 	public function registerClass($obj) {
@@ -42,10 +60,7 @@ class JsonRpcServer {
 				$request['params'] = json_decode($_GET['params'], true);
 			}
 			
-			// the default response
-			$response = array (
-					'id' => $request ['id'],
-					'error' => 'unknown method or incorrect parameters' );
+			$errorCode = NULL;
 			
 			if (! empty ( $request ['method'] )) {
 				$requestMethod = explode (".", strtolower($request['method']));
@@ -56,18 +71,35 @@ class JsonRpcServer {
 				if (is_object($object)) {
 					if ($result = $object->{$methodName} ( $request ['params'] )) {
 						$response = array (
+								'jsonrpc' => '2.0',
 								'id' => $request ['id'],
 								'result' => $result );
+					} else {
+						$errorCode = 'invalidParameters'; // invalid request
 					}
+				} else {
+					$errorCode = 'methodNotFound'; // method not found
 				}
+			} else {
+				$errorCode = 'methodNotFound'; // 
 			}
 		} catch ( Exception $e ) {
-			$response = array (
-					'id' => $request ['id'],
-					'error' => $e->getMessage () );
+			$errorCode = 'invalidRequest';
 		}
 		
-		header ( 'content-type: text/javascript' );
+		if ($errorCode != NULL) {
+			$code = $this->errorCodes[$errorCode];
+			$msg = $this->errorMessages[$code];
+			
+			$response = array (
+					'jsonrpc' => '2.0',
+					'id' => $request ['id'],
+					'error' => array('code'=>(int) $code, 'message'=>$msg));
+		}
+		
+		if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
+			header ("content-type: application/json-rpc");
+		}
 		echo json_encode ( $response );
 
 		// finish

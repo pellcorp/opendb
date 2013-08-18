@@ -764,8 +764,12 @@ if (is_site_enabled()) {
 			}
 
 			// -------------------------------------- Process the Query here -----------------------------------------------------------------
-			if (($result = fetch_item_listing_rs($HTTP_VARS, $v_column_display_config_rs, // calculated above
-			$listingObject->getCurrentOrderBy(), $listingObject->getCurrentSortOrder(), $listingObject->getStartIndex(), $listingObject->getItemsPerPage()))) {
+			if (($result = fetch_item_listing_rs($HTTP_VARS, 
+						$v_column_display_config_rs, // calculated above
+						$listingObject->getCurrentOrderBy(), 
+						$listingObject->getCurrentSortOrder(), 
+						$listingObject->getStartIndex(), 
+						$listingObject->getItemsPerPage()))) {
 				// ----------------------------------------------------------------------------
 				// Save current url string, so we can return to last listings page if required.
 				// ----------------------------------------------------------------------------

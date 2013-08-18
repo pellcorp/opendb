@@ -592,7 +592,7 @@ function fetch_item_listing_cnt($HTTP_VARS, $column_display_config_rs = NULL) {
 	@param	$sortorder will be either "asc" or "desc"  if not defined it will default to "asc"
 	@param	$index is the LIMIT value to apply.
 */
-function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by, $sortorder, $start_index = NULL, $items_per_page = NULL) {
+function fetch_item_listing_rs($HTTP_VARS, $column_display_config_rs, $order_by, $sortorder, $start_index = NULL, $items_per_page = NULL) {
 	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
 	
 	$column_order_by_rs = array ();
@@ -763,8 +763,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// User and Status type restriction
 	//
-	if (strcmp ( $HTTP_VARS ['owner_id'], get_opendb_session_var ( 'user_id' ) ) !== 0) 	// not current user
-{
+	if (strcmp ( $HTTP_VARS ['owner_id'], get_opendb_session_var ( 'user_id' ) ) !== 0) {	// not current user
 		$from_r [] = 'user u';
 		$where_r [] = 'u.user_id = ii.owner_id';
 		$where_r [] = 'u.active_ind = \'Y\'';

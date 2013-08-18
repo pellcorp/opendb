@@ -745,7 +745,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
             $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
             $child_relation = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']));
 
-            $items_rs = fetch_item_listing_rs($HTTP_VARS, null, 'title', 'asc');
+            $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
 
             $parent_item_list = '<select name="parent_item_id">';
             $parent_item_list .= '<option value="0">None</option>';

@@ -17,42 +17,39 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-
-include_once('./lib/auth.php');
-include_once("./lib/database.php");
-include_once("./lib/user.php");
+include_once ('./lib/auth.php');
+include_once ("./lib/database.php");
+include_once ("./lib/user.php");
 
 function is_exists_opendb_rss_feeds() {
-	return is_not_empty_array(get_opendb_rss_feeds());
+	return is_not_empty_array ( get_opendb_rss_feeds () );
 }
 
-function get_opendb_rss_feeds()
-{
-	$feeds_r = array();
+function get_opendb_rss_feeds() {
+	$feeds_r = array ();
 	
-	if(is_user_granted_permission(PERM_VIEW_ANNOUNCEMENTS))
-	{
-		$feeds_r[] = array(feed=>'announcements', title=>get_opendb_lang_var('announcements'));
+	if (is_user_granted_permission ( PERM_VIEW_ANNOUNCEMENTS )) {
+		$feeds_r [] = array (
+				feed => 'announcements',
+				title => get_opendb_lang_var ( 'announcements' ) );
 	}
 	
-	if(is_user_granted_permission(PERM_VIEW_LISTINGS))
-	{
-		$feeds_r[] = array(feed=>'new_items', title=>get_opendb_lang_var('new_items_added'));
+	if (is_user_granted_permission ( PERM_VIEW_LISTINGS )) {
+		$feeds_r [] = array (
+				feed => 'new_items',
+				title => get_opendb_lang_var ( 'new_items_added' ) );
 	}
 	
-	return $feeds_r;	
+	return $feeds_r;
 }
 
-function get_opendb_rss_feed_config($feed)
-{
-	$feeds_r = get_opendb_rss_feeds();
-	reset($feeds_r);
-
+function get_opendb_rss_feed_config($feed) {
+	$feeds_r = get_opendb_rss_feeds ();
+	reset ( $feeds_r );
+	
 	$buffer = '';
-	while(list(,$feed_r) = each($feeds_r))
-	{
-		if($feed_r['feed'] == $feed)
-		{
+	while ( list ( , $feed_r ) = each ( $feeds_r ) ) {
+		if ($feed_r ['feed'] == $feed) {
 			return $feed_r;
 		}
 	}
@@ -60,16 +57,14 @@ function get_opendb_rss_feed_config($feed)
 	return FALSE;
 }
 
-function get_opendb_rss_feeds_links($browser = 'firefox')
-{
-	$feeds_r = get_opendb_rss_feeds();
-	reset($feeds_r);
-
+function get_opendb_rss_feeds_links($browser = 'firefox') {
+	$feeds_r = get_opendb_rss_feeds ();
+	reset ( $feeds_r );
+	
 	$buffer = "\n";
 	
-	while(list(,$feed_r) = each($feeds_r))
-	{
-		$buffer .= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"".$feed_r['title']."\" href=\"./rss.php?feed=".$feed_r['feed']."\">\n";
+	while ( list ( , $feed_r ) = each ( $feeds_r ) ) {
+		$buffer .= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"" . $feed_r ['title'] . "\" href=\"./rss.php?feed=" . $feed_r ['feed'] . "\">\n";
 	}
 	return $buffer;
 }

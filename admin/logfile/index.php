@@ -75,8 +75,12 @@ if (strlen($logging_config_r['file']) > 0) {
 			header("Content-type: application/octetstream");
 			header("Content-Length: " . filesize($logging_config_r['file']));
 
-			fpassthru2($logging_config_r['file']);
-
+			$fp = fopen ($logging_config_r['file'], 'rb' );
+			if ($fp) {
+				fpassthru($fp);
+			}
+			fclose($fp);
+			
 			//no theme here!
 			return;
 		} else if ($HTTP_VARS['op'] == 'clear') { // confirm with user to delete log

@@ -17,38 +17,38 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once('./lib/http.php');
+include_once ('./lib/http.php');
 
 function register_opendb_session_var($name, $value) {
-    $_SESSION[$name] = $value;
+	$_SESSION [$name] = $value;
 }
 
 function register_opendb_session_array_var($name, $key, $value) {
-	if(!is_array($_SESSION[$name])) {
-		$_SESSION[$name] = array();
+	if (! is_array ( $_SESSION [$name] )) {
+		$_SESSION [$name] = array ();
 	}
-    $_SESSION[$name][$key] = $value;
+	$_SESSION [$name] [$key] = $value;
 }
 
 function get_opendb_session_array_var($name, $key) {
-	if(isset($_SESSION[$name][$key])) {
-		return $_SESSION[$name][$key];
+	if (isset ( $_SESSION [$name] [$key] )) {
+		return $_SESSION [$name] [$key];
 	} else {
 		return FALSE;
 	}
 }
 
 function unregister_opendb_session_var($name) {
-    $_SESSION[$name] = NULL;
+	$_SESSION [$name] = NULL;
 }
 
 function is_opendb_session_var($name) {
-	return get_opendb_session_var($name)!==NULL;
+	return get_opendb_session_var ( $name ) !== NULL;
 }
 
 function get_opendb_session_var($name) {
-	if(isset($_SESSION[$name])) {
-		return $_SESSION[$name];
+	if (isset ( $_SESSION [$name] )) {
+		return $_SESSION [$name];
 	} else {
 		return NULL;
 	}

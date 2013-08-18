@@ -16,32 +16,28 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+include_once ("./lib/utils.php");
+include_once ("./lib/fileutils.php");
 
-include_once("./lib/utils.php");
-include_once("./lib/fileutils.php");
-
-function get_welcome_block_plugin_r()
-{
-	$handle=opendir('./lib/welcome');
-	while ($file = readdir($handle))
-    {
+function get_welcome_block_plugin_r() {
+	$handle = opendir ( './lib/welcome' );
+	while ( $file = readdir ( $handle ) ) {
 		// Ensure valid plugin name.
-		if ( !preg_match("/^\./",$file) && preg_match("/(.*).class.php$/",$file,$regs))
-		{
-			$welcome[] = $regs[1];
+		if (! preg_match ( "/^\./", $file ) && preg_match ( "/(.*).class.php$/", $file, $regs )) {
+			$welcome [] = $regs [1];
 		}
 	}
-	closedir($handle);
-    
-    if(is_array($welcome) && count($welcome)>0)
+	closedir ( $handle );
+	
+	if (is_array ( $welcome ) && count ( $welcome ) > 0)
 		return $welcome;
 	else // empty array as last resort.
-		return array();
+		return array ();
 }
 
 function renderWelcomeBlockPlugin($pluginName, $userid, $lastvisit) {
-	include('./lib/welcome/'.$pluginName.'.class.php');
-	$plugin = new $pluginName;
-	return $plugin->render($userid, $lastvisit);
+	include ('./lib/welcome/' . $pluginName . '.class.php');
+	$plugin = new $pluginName ();
+	return $plugin->render ( $userid, $lastvisit );
 }
 ?>

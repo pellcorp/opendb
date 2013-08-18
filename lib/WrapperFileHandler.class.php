@@ -17,28 +17,21 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-class WrapperFileHandler
-{
+class WrapperFileHandler {
 	var $_fileHandle;
 
-	function WrapperFileHandler($fileHandle)
-	{
+	function WrapperFileHandler($fileHandle) {
 		$this->_fileHandle = $fileHandle;
 	}
 
-	function isEof()
-	{
-		return feof($this->_fileHandle);
+	function isEof() {
+		return feof ( $this->_fileHandle );
 	}
 
-	function readLine()
-	{
-		if(!$this->isEof())
-		{
-			return fgets($this->_fileHandle, 4096);
-		}
-		else
-		{
+	function readLine() {
+		if (! $this->isEof ()) {
+			return fgets ( $this->_fileHandle, 4096 );
+		} else {
 			return FALSE;
 		}
 	}

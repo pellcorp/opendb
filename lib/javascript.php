@@ -17,23 +17,20 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-function get_javascript($filename)
-{
+function get_javascript($filename) {
 	$filename = "./javascript/$filename";
 	return "<script src=\"${filename}\" language=\"JavaScript\" type=\"text/javascript\"></script>\n";
 }
 
-function encode_javascript_array($args)
-{
-	$buf="";
-	for ($i=0; $i<count($args); $i++)
-	{
-		if(strlen($buf)>0)
-			$buf .= ", '".addslashes($args[$i])."'";
+function encode_javascript_array($args) {
+	$buf = "";
+	for($i = 0; $i < count ( $args ); $i ++) {
+		if (strlen ( $buf ) > 0)
+			$buf .= ", '" . addslashes ( $args [$i] ) . "'";
 		else
-			$buf = "'".addslashes($args[$i])."'";
+			$buf = "'" . addslashes ( $args [$i] ) . "'";
 	}
 	
-	return "new Array($buf)";			
+	return "new Array($buf)";
 }
 ?>

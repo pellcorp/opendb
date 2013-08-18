@@ -17,8 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-
-include_once("./lib/logging.php");
+include_once ("./lib/logging.php");
 
 /**
 * This will always return an array, no
@@ -30,41 +29,33 @@ include_once("./lib/logging.php");
 * 
 * @param $ext IS CASE SENSITIVE and can be an array
 */
-function get_file_list($dir, $ext=NULL)
-{
-	$filelist = array();
+function get_file_list($dir, $ext = NULL) {
+	$filelist = array ();
 	
-	$handle=@opendir($dir);
-	if($handle)
-	{
-		while ($file = readdir($handle))
-	    {
-			if($file != "." && $file != ".." && !is_dir($dir.'/'.$file))
-			{
-			    // get the extension first.
-			    $fileext = get_file_ext($file);
-	
-				if($ext==NULL ||
-						(!is_array($ext) && $fileext == $ext) ||
-						(is_array($ext) && in_array($fileext, $ext)))
-				{
-	                   $filelist[] = $file;
+	$handle = @opendir ( $dir );
+	if ($handle) {
+		while ( $file = readdir ( $handle ) ) {
+			if ($file != "." && $file != ".." && ! is_dir ( $dir . '/' . $file )) {
+				// get the extension first.
+				$fileext = get_file_ext ( $file );
+				
+				if ($ext == NULL || (! is_array ( $ext ) && $fileext == $ext) || (is_array ( $ext ) && in_array ( $fileext, $ext ))) {
+					$filelist [] = $file;
 				}
 			}
 		}
-		closedir($handle);
+		closedir ( $handle );
 	}
 	
-    return $filelist;
+	return $filelist;
 }
 
 /**
 	Create a temporary file using configured temporary directory
 */
-function opendb_tempnam($prefix)
-{
-	$temp_dir = get_opendb_config_var('site', 'tmpdir');
-	return tempnam($temp_dir, $prefix);
+function opendb_tempnam($prefix) {
+	$temp_dir = get_opendb_config_var ( 'site', 'tmpdir' );
+	return tempnam ( $temp_dir, $prefix );
 }
 
 /**
@@ -74,76 +65,47 @@ function opendb_tempnam($prefix)
  * @param unknown_type $prefix
  * @return unknown
  */
-function dir_tempnam($dir, $prefix)
-{
+function dir_tempnam($dir, $prefix) {
 	// ensure relative directory does not have last slash
-	if(ends_with($dir, '/'))
-		$dir = substr($dir, 0, -1);
-		
-	$real_dir_path = realpath($dir);
-	if (substr($real_dir_path, -1) != '/')
+	if (ends_with ( $dir, '/' ))
+		$dir = substr ( $dir, 0, - 1 );
+	
+	$real_dir_path = realpath ( $dir );
+	if (substr ( $real_dir_path, - 1 ) != '/')
 		$real_dir_path .= '/';
 	
-	$tempfile = tempnam($real_dir_path, $prefix);
-	$name = basename($tempfile);
+	$tempfile = tempnam ( $real_dir_path, $prefix );
+	$name = basename ( $tempfile );
 	
-	if(is_file($real_dir_path.$name))
-	{
-		return $dir.'/'.$name;
-	}
-	else
-	{
-		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Temporary file could not be created', array($dir, $prefix, $real_dir_path));
+	if (is_file ( $real_dir_path . $name )) {
+		return $dir . '/' . $name;
+	} else {
+		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Temporary file could not be created', array (
+				$dir,
+				$prefix,
+				$real_dir_path ) );
 		
-		@unlink($name);
+		@unlink ( $name );
 		return FALSE;
 	}
 }
 
-/**
-	Alternative fpassthru which opens file for us, and streams out the
-	contents, 4096 bytes at a time
-*/
-function fpassthru2($filename)
-{
-	$fp = fopen($filename, 'rb');
-	if($fp)
-	{
-    	while(!feof($fp))
-		{
-    	   $buf = fread($fp, 4096);
-    	   echo $buf;
-		}
-	}
+function get_file_ext($filename) {
+	$lastindex = strrpos ( $filename, "." );
+	if ($lastindex !== FALSE && $lastindex > 0)
+		return substr ( $filename, $lastindex + 1 ); //+1 for the "."
 	else
-	{
-	    return FALSE;
-	}
+		return FALSE; // What else can I do!
 }
 
-/**
-	Get file extension.
-*/
-function get_file_ext($filename)
-{
-	$lastindex = strrpos($filename, ".");
-	if($lastindex!==FALSE && $lastindex>0)
-		return substr($filename,$lastindex+1);//+1 for the "."
-	else
-		return FALSE;// What else can I do!
-}
-
-function parse_file($filename)
-{
-	$lastindex = strrpos($filename, ".");
-	if($lastindex!==FALSE && $lastindex>0)
-	{
-		return array('name'=>substr($filename,0, $lastindex), 
-					'extension'=>substr($filename,$lastindex+1));//+1 for the "."
-	}
-	else
-	{
-		return FALSE;// What else can I do!
+function parse_file($filename) {
+	$lastindex = strrpos ( $filename, "." );
+	if ($lastindex !== FALSE && $lastindex > 0) {
+		return array (
+				'name' => substr ( $filename, 0, $lastindex ),
+				'extension' => substr ( $filename, $lastindex + 1 ) ); //+1 for the "."
+	} else {
+		return FALSE; // What else can I do!
 	}
 }
 
@@ -151,28 +113,22 @@ function parse_file($filename)
 	Will return the filename extension if it is legal. Or false
 	otherwise.
 */
-function get_valid_extension($filename, $extensions)
-{
-	$ext = strtolower(get_file_ext($filename));
-	if($ext!==FALSE)
-	{
+function get_valid_extension($filename, $extensions) {
+	$ext = strtolower ( get_file_ext ( $filename ) );
+	if ($ext !== FALSE) {
 		// If no extension specified this indicates that all are legal.
-		if(strlen($extensions)==0)
-		{
+		if (strlen ( $extensions ) == 0) {
 			return $ext;
-		}
-		else
-		{
+		} else {
 			// As $extensions is not empty, $extensions_r will have
 			// at least one element.
-			$extensions_r = explode(",", strtolower($extensions));
-			if(in_array($ext, $extensions_r))
-			{
+			$extensions_r = explode ( ",", strtolower ( $extensions ) );
+			if (in_array ( $ext, $extensions_r )) {
 				return $ext;
 			}
 		}
 	}
-
+	
 	//else
 	return FALSE;
 }
@@ -186,10 +142,8 @@ function get_valid_extension($filename, $extensions)
  *
  * @param unknown_type $filename
  */
-function is_exists_opendb_file($fileLocation)
-{
-	if(strlen($fileLocation)>0 && $fileLocation!='.' && $fileLocation != '..')
-	{
+function is_exists_opendb_file($fileLocation) {
+	if (strlen ( $fileLocation ) > 0 && $fileLocation != '.' && $fileLocation != '..') {
 		return TRUE;
 	}
 	
@@ -197,53 +151,19 @@ function is_exists_opendb_file($fileLocation)
 	return FALSE;
 }
 
-function delete_file($filename)
-{
-	if(@is_file($filename))
-	{
-		if(@unlink($filename))
-		{
-			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($filename));
+function delete_file($filename) {
+	if (@is_file ( $filename )) {
+		if (@unlink ( $filename )) {
+			opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array (
+					$filename ) );
 			return TRUE;
-		}
-		else
-		{
-			opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, NULL, array($filename));
+		} else {
+			opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, NULL, array (
+					$filename ) );
 			return FALSE;
 		}
-	}
-	else
-	{
+	} else {
 		return FALSE;
-	}
-}
-
-/**
- * pre php 5 compatible definition of file_put_contents
-*/
-if(!function_exists('file_put_contents'))
-{
-	function file_put_contents($filename, $buffer)
-	{
-		$file = @fopen($filename, 'wb');
-		if($file !== FALSE)
-		{
-			$written = fwrite($file, $buffer);
-			if($written != -1)
-			{
-				fclose($file);
-				return $written;
-			}
-			else
-			{
-				fclose($file);
-				return FALSE;
-			}
-		}
-		else
-		{
-			return FALSE;
-		}
 	}
 }
 ?>

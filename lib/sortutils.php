@@ -39,44 +39,37 @@
 	The order_by_clause should look something like this:
 		'item_id ASC, owner_id DESC, title ASC'
 */
-function get_usort_function($order_by_clause)
-{
+function get_usort_function($order_by_clause) {
 	// We get the options in reverse order, so we can properly nest them.
-	$order_by_options_r = array_reverse(explode(",", $order_by_clause));
-
+	$order_by_options_r = array_reverse ( explode ( ",", $order_by_clause ) );
+	
 	$first_element = TRUE;
 	$retval = NULL;
-	while(list(,$order_by) = each($order_by_options_r))
-	{
-		if(strlen($retval)>0)
-		{
+	while ( list ( , $order_by ) = each ( $order_by_options_r ) ) {
+		if (strlen ( $retval ) > 0) {
 			$inner_val = $retval;
 		}
-
-		$order_by = trim($order_by);
-		$indexOfSpace = strpos($order_by, ' ');
-		if($indexOfSpace !== FALSE)
-		{
-			$column = trim(substr($order_by,0,$indexOfSpace));
-			$sortorder = trim(substr($order_by,$indexOfSpace));
-
-			if(strcasecmp($sortorder,"DESC")===0)
-				$comp = 'strcmp($b[\''.$column.'\'], $a[\''.$column.'\'])';
+		
+		$order_by = trim ( $order_by );
+		$indexOfSpace = strpos ( $order_by, ' ' );
+		if ($indexOfSpace !== FALSE) {
+			$column = trim ( substr ( $order_by, 0, $indexOfSpace ) );
+			$sortorder = trim ( substr ( $order_by, $indexOfSpace ) );
+			
+			if (strcasecmp ( $sortorder, "DESC" ) === 0)
+				$comp = 'strcmp($b[\'' . $column . '\'], $a[\'' . $column . '\'])';
 			else
-				$comp = 'strcmp($a[\''.$column.'\'], $b[\''.$column.'\'])';
-
-			if($first_element)
-			{
-				$retval = 'return '.$comp.';';
+				$comp = 'strcmp($a[\'' . $column . '\'], $b[\'' . $column . '\'])';
+			
+			if ($first_element) {
+				$retval = 'return ' . $comp . ';';
 				$first_element = FALSE;
-			}
-			else
-			{
-				$retval = '$'.$column.'='.$comp.'; if($'.$column.'==0){'.$inner_val.'}else{return $'.$column.';}';
+			} else {
+				$retval = '$' . $column . '=' . $comp . '; if($' . $column . '==0){' . $inner_val . '}else{return $' . $column . ';}';
 			}
 		}
 	}
-
+	
 	return $retval;
 }
 ?>

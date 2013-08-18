@@ -21,63 +21,56 @@
 /*
 * Work out the DocType and namespace of the Document,
 */
-class DocTypeNameSpaceXMLParser
-{
+class DocTypeNameSpaceXMLParser {
 	var $_docType;
 	var $_nameSpace;
 	var $_errors;
 
-	function DocTypeNameSpaceXMLParser()
-	{
+	function DocTypeNameSpaceXMLParser() {
 	}
-	
+
 	function parseFile($fileLocation) {
 		// reset it.
 		$this->_docType = NULL;
 		$this->_nameSpace = NULL;
 		$this->_errors = NULL;
+		
+		$fp = @fopen ( $fileLocation, 'r' );
+		if ($fp) {
+			$parser = xml_parser_create ( 'ISO-8859-1' );
+			xml_set_object ( $parser, $this );
+			xml_parser_set_option ( $parser, XML_OPTION_CASE_FOLDING, FALSE );
+			xml_set_element_handler ( $parser, "_startElement", "_endElement" );
 			
-		$fp = @fopen($fileLocation, 'r');
-		if($fp) {
-			$parser = xml_parser_create('ISO-8859-1');
-		    xml_set_object($parser, $this);
-		    xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
-		    xml_set_element_handler($parser, "_startElement", "_endElement");
-	
-			while ($data = fread($fp, 1024))
-			{
-				if(strlen($this->_docType) > 0)
-				{
+			while ( $data = fread ( $fp, 1024 ) ) {
+				if (strlen ( $this->_docType ) > 0) {
 					break;
 				}
-	
-				if(!xml_parse($parser, $data, feof($fp)))
-				{
-					$error = xml_error_string(xml_get_error_code($parser));
+				
+				if (! xml_parse ( $parser, $data, feof ( $fp ) )) {
+					$error = xml_error_string ( xml_get_error_code ( $parser ) );
 					break;
 				}
 			}
-			xml_parser_free($parser);
+			xml_parser_free ( $parser );
 			
-			@fclose(fp);
+			@fclose ( fp );
 			return TRUE;
 		} else {
-			$this->_errors[] = 'File '.$fileLocation.' could not be opened.';
+			$this->_errors [] = 'File ' . $fileLocation . ' could not be opened.';
 			return FALSE;
 		}
 	}
-	
+
 	function getErrors() {
 		return $this->_errors;
 	}
-	
-	function getDocType()
-	{
+
+	function getDocType() {
 		return $this->_docType;
 	}
-	
-	function getNameSpace()
-	{
+
+	function getNameSpace() {
 		return $this->_nameSpace;
 	}
 
@@ -89,27 +82,25 @@ class DocTypeNameSpaceXMLParser
 	 * @param unknown_type $name
 	 * @param unknown_type $attributes
 	 */
-	function _startElement($parser, $name, $attributes)
-	{
-		if(strlen($this->_docType) == 0) {
+	function _startElement($parser, $name, $attributes) {
+		if (strlen ( $this->_docType ) == 0) {
 			$this->_docType = $name;
-		
-			if(is_array($attributes)) {
-				reset($attributes);
-				while(list($name,$value) = each($attributes)) {
+			
+			if (is_array ( $attributes )) {
+				reset ( $attributes );
+				while ( list ( $name, $value ) = each ( $attributes ) ) {
 					
-					if(ends_with($name, ":schemaLocation")) {
+					if (ends_with ( $name, ":schemaLocation" )) {
 						$this->_nameSpace = $value;
 						break;
 					}
 				}
-			}						
+			}
 		}
 	}
 
-	function _endElement($parser,$name)
-	{
-    	// not used
+	function _endElement($parser, $name) {
+		// not used
 	}
 }
 ?>

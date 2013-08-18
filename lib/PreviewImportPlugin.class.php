@@ -17,28 +17,22 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-
-class PreviewImportPlugin
-{
+class PreviewImportPlugin {
 	var $classname = NULL;
 
-	function get_display_name()
-	{
-		return get_opendb_lang_var('preview');
+	function get_display_name() {
+		return get_opendb_lang_var ( 'preview' );
 	}
 
-	function get_plugin_type()
-	{
+	function get_plugin_type() {
 		return 'row';
 	}
 
-	function is_header_row()
-	{
+	function is_header_row() {
 		return TRUE;
 	}
 
-	function read_header($file_handle, &$error)
-	{
+	function read_header($file_handle, &$error) {
 		return NULL;
 	}
 }

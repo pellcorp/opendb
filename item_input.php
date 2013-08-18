@@ -741,6 +741,30 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		}//while
 		db_free_result($results);
 
+        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+            $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
+            $child_relation = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']));
+
+            $items_rs = fetch_item_listing_rs($HTTP_VARS, null, 'title', 'asc');
+
+            $parent_item_list = '<select name="parent_item_id">';
+            $parent_item_list .= '<option value="0">None</option>';
+
+            // We do this hear because we need to exclude the current item and any child relationship.
+            while ($item = db_fetch_assoc($items_rs)) {
+                if ($item['item_id'] != $item_r['item_id'] && $item['item_id'] != $child_relation['item_id']) {
+                    $selected = $item['item_id'] == ($HTTP_VARS['parent_item_id'] ? $HTTP_VARS['parent_item_id'] : $relationship['item_id']) ? ' selected' : '';
+
+                    $parent_item_list .= '<option value="' . $item['item_id'] . "\"$selected>" . $item['title'] . '</option>';
+                }
+            }
+            $parent_item_list .= '</select>';
+
+            $formContents .= format_field('Parent Item ID', $parent_item_list);
+            $formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
+                ($HTTP_VARS['parent_instance_no'] ? $HTTP_VARS['parent_instance_no'] : ($relationship['instance_no'] ? $relationship['instance_no'] : 1)) . '">');
+        }
+
 		$formContents .= "\n</table>";
 
 		return $formContents;
@@ -794,8 +818,9 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		$pageContents .= "\n<input type=\"hidden\" name=\"start-op\" value=\"$op\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"" . $item_r['s_item_type'] . "\">";
 
-		$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
-		$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
+        // Parent items are visible in the 'instance information' tab.
+		//$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
+		//$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
 
 		if ($op == 'clone_item' || is_not_empty_array($item_r)) {
 			if (is_numeric($item_r['item_id']))
@@ -1125,6 +1150,25 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 
 	if ($return_val === TRUE) {
 		$return_val = handle_item_update($item_r, $HTTP_VARS, $errors);
+
+        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+            if ($HTTP_VARS['parent_item_id'] == 0) {
+                // Remove parent relationship.
+                $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
+
+                delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
+            }
+
+            if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
+                $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
+
+                if ($HTTP_VARS['parent_item_id'] != $relationship['item_id'] || $HTTP_VARS['parent_instance_no'] != $relationship['instance_no']) {
+                    // Update parent relationship.
+                    delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
+                    insert_item_instance_relationship($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'], $item_r['item_id'], $item_r['instance_no']);
+                }
+            }
+        }
 	}
 
 	if ($return_val === "__INVALID_DATA__") {

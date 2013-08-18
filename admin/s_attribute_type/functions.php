@@ -67,7 +67,7 @@ $argument_types = array('width' => array('prompt' => 'Width', 'description' => '
 				'description' => 'Specify time format mask.' . '<p>The mask components supported are: ' . '<ul>' . '<li>%h - hour value only</li>' . '<li>%H - text &quot;hour&quot; or &quot;hours&quot;</li>' . '<li>%m - minute value only</li>'
 						. '<li>%M - text &quot;minute&quot; or &quot;minutes&quot;</li>' . '</ul></p>', 'input_type' => 'text(50,100)'),
         'default_val' => array('prompt' => 'Default Value',
-                'description' => 'The default value for this field. Set value to "checked" to have checkboxes ticked by default.', 'input_type' => 'text(50,100)'),);
+                'description' => 'The default value for this field.', 'input_type' => 'text(50,100)'),);
 
 // input type functions
 $input_type_functions = array('hidden' => array('args' => array(), 'description' => 'A hidden input field.  Hidden fields are often used for site plugin link attributes.'), 'readonly' => array('args' => array(), 'description' => 'A readonly field'),

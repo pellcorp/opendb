@@ -446,7 +446,7 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
                     $value = $attribute_type_r['input_type_arg4'];
                     break;
                 case 'checkbox':
-                    if ($attribute_type_r['input_type_arg3'] == 'checked') {
+                    if ($attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg1']) {
                         $value = $attribute_type_r['input_type_arg1'];
                     }
                     break;

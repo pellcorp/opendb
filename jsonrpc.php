@@ -22,10 +22,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 require_once("./include/begin.inc.php");
 
 include_once("./lib/JsonRpcServer.class.php");
-include_once("./lib/api/ItemSearch.class.php");
+
+// TODO - enable a plugin layer
+include_once("./lib/jsonrpc/ItemSearch.class.php");
 
 function request_http_basic_auth() {
-	header('WWW-Authenticate: Basic realm="' . get_opendb_title() . '"');
+	header('WWW-Authenticate: Basic realm="' . htmlspecialchars(get_opendb_title()) . '"');
 	header('HTTP/1.0 401 Unauthorized');
 }
 
@@ -38,7 +40,10 @@ if (is_site_enabled()) {
 		
 		if (is_user_active($userId) && validate_user_passwd($userId, $password)) {
 			$server = new JsonRpcServer();
+			
+			// TODO - currently no role based permissions are being performed for these services.
 			$server->registerClass(new ItemSearch());
+			
 			$server->handle($object);
 		} else {
 			request_http_basic_auth();
@@ -46,9 +51,8 @@ if (is_site_enabled()) {
 	}
 } else {
 	header('HTTP/1.0 503 Service Unavailable');
-    echo "<h1>503 Service Unavailable</h1>";
-    echo "This site is currently disabled";
-    exit();
+    echo "<h1>" . get_opendb_lang_var('site_is_disabled') . "</h1>";
+    echo get_opendb_lang_var('site_is_disabled');
 }
 
 // Cleanup after begin.inc.php

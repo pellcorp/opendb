@@ -41,15 +41,8 @@ class JsonRpcServer {
 	public function registerClass($obj) {
 		$className = strtolower(get_class($obj));
 		$this->classes[$className] = $obj;
-		return true;
 	}
 
-	/**
-	 * This function handle a request binding it to a given object
-	 *
-	 * @param object $object
-	 * @return boolean
-	 */
 	public function handle() {
 		try {
 			if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
@@ -75,13 +68,13 @@ class JsonRpcServer {
 								'id' => $request ['id'],
 								'result' => $result );
 					} else {
-						$errorCode = 'invalidParameters'; // invalid request
+						$errorCode = 'invalidParameters';
 					}
 				} else {
-					$errorCode = 'methodNotFound'; // method not found
+					$errorCode = 'methodNotFound';
 				}
 			} else {
-				$errorCode = 'methodNotFound'; // 
+				$errorCode = 'methodNotFound';
 			}
 		} catch ( Exception $e ) {
 			$errorCode = 'invalidRequest';
@@ -101,9 +94,6 @@ class JsonRpcServer {
 			header ("content-type: application/json-rpc");
 		}
 		echo json_encode ( $response );
-
-		// finish
-		return true;
 	}
 }
 ?>

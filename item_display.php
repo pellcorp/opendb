@@ -142,9 +142,9 @@ if (is_site_enabled()) {
 				$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 				if ($results) {
 					echo ("<table>");
-                    $user_role = fetch_user_r(get_opendb_session_var('user_id'))['user_role'];
+
 					while ($item_attribute_type_r = db_fetch_assoc($results)) {
-                        if (fetch_role_r($item_attribute_type_r['view_perm'])['priority'] <= fetch_role_r($user_role)['priority']) {
+                        if (has_role_permission($item_attribute_type_r['view_perm'])) {
                             $display_type = trim($item_attribute_type_r['display_type']);
 
                             if (($HTTP_VARS['mode'] == 'printable' && $item_attribute_type_r['printable_ind'] != 'Y') || (strlen($display_type) == 0 && $item_attribute_type_r['input_type'] == 'hidden')) {

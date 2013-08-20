@@ -206,7 +206,8 @@ function fetch_role_r($role_name) {
 	
 	$query = "SELECT sr.role_name, 
 	IFNULL(stlv.value, sr.description) AS description,
-	signup_avail_ind
+	signup_avail_ind,
+	priority
 	FROM s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '" . get_opendb_site_language () . "' AND
@@ -228,7 +229,8 @@ function fetch_role_r($role_name) {
 function fetch_user_role_rs($signup_avail_mode = INCLUDE_SIGNUP_UNAVAILABLE_USER) {
 	$query = "SELECT sr.role_name, 
 	IFNULL(stlv.value, sr.description) AS description,
-	signup_avail_ind
+	signup_avail_ind,
+	priority
 	FROM s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '" . get_opendb_site_language () . "' AND

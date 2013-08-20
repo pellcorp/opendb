@@ -618,4 +618,14 @@ function generate_password($length) {
 	// now returns our random password
 	return $randomPass;
 }
+
+function has_role_permission($role_name) {
+    $user_role = fetch_user_r(get_opendb_session_var('user_id'))['user_role'];
+
+    if (fetch_role_r($role_name)['priority'] <= fetch_role_r($user_role)['priority']) {
+        return true;
+    } else {
+        return false;
+    }
+}
 ?>

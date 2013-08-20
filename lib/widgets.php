@@ -451,4 +451,22 @@ function get_item_image($s_item_type, $item_id = NULL) {
 	
 	return FALSE;
 }
+
+function format_item_parents_select($HTTP_VARS, $item_r) {
+    $possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r);
+    $parent_instance_no = $HTTP_VARS['parent_instance_no'];
+
+    $parent_item_list = '<select name="parent_item_id">';
+    $parent_item_list .= '<option value="0">None</option>';
+
+    foreach ($possible_parents as $parent) {
+        $selected = $parent['current_parent'] ? ' selected' : '';
+        $parent_instance_no = $parent['current_parent'] ? $parent['instance_no'] : $parent_instance_no;
+
+        $parent_item_list .= '<option value="' . $parent['item_id'] . "\"$selected>" . $parent['title'] . '</option>';
+    }
+    $parent_item_list .= '</select>';
+
+    return $parent_item_list;
+}
 ?>

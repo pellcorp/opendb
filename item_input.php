@@ -742,27 +742,11 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		db_free_result($results);
 
         if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-            $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
-            $child_relation = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']));
+            $formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r));
 
-            $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
-
-            $parent_item_list = '<select name="parent_item_id">';
-            $parent_item_list .= '<option value="0">None</option>';
-
-            // We do this hear because we need to exclude the current item and any child relationship.
-            while ($item = db_fetch_assoc($items_rs)) {
-                if ($item['item_id'] != $item_r['item_id'] && $item['item_id'] != $child_relation['item_id']) {
-                    $selected = $item['item_id'] == ($HTTP_VARS['parent_item_id'] ? $HTTP_VARS['parent_item_id'] : $relationship['item_id']) ? ' selected' : '';
-
-                    $parent_item_list .= '<option value="' . $item['item_id'] . "\"$selected>" . $item['title'] . '</option>';
-                }
-            }
-            $parent_item_list .= '</select>';
-
-            $formContents .= format_field('Parent Item ID', $parent_item_list);
+            $parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
             $formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
-                ($HTTP_VARS['parent_instance_no'] ? $HTTP_VARS['parent_instance_no'] : ($relationship['instance_no'] ? $relationship['instance_no'] : 1)) . '">');
+                ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
         }
 
 		$formContents .= "\n</table>";
@@ -1154,13 +1138,13 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
         if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
             if ($HTTP_VARS['parent_item_id'] == 0) {
                 // Remove parent relationship.
-                $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
+                $relationship = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
 
                 delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
             }
 
             if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
-                $relationship = db_fetch_assoc(fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE));
+                $relationship = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
 
                 if ($HTTP_VARS['parent_item_id'] != $relationship['item_id'] || $HTTP_VARS['parent_instance_no'] != $relationship['instance_no']) {
                     // Update parent relationship.

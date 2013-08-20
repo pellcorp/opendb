@@ -95,7 +95,6 @@ function custom_select($name, $lookup_results, $display_mask, $size = 1, $value 
 	
 	$lookup_results = fetch_results_array ( $lookup_results );
 	reset ( $lookup_results );
-	
 	$empty_display_mask = expand_display_mask ( $display_mask, NULL, '%' );
 	
 	$value_found = FALSE;

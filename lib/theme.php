@@ -88,6 +88,7 @@ function _theme_footer() {
 }
 
 function get_theme_javascript($pageid) {
+    $scripts [] = 'jquery.js';
 	$scripts [] = 'common.js';
 	$scripts [] = 'date.js';
 	$scripts [] = 'forms.js';

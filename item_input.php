@@ -747,6 +747,15 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		}//while
 		db_free_result($results);
 
+        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+            $formContents .= format_field('Parent Item Filter', '<input type="text" name="parent_item_filter" id="parent_item_filter">');
+            $formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r));
+
+            $parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+            $formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
+                ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
+        }
+
 		$formContents .= "\n</table>";
 
 		return $formContents;
@@ -800,8 +809,9 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		$pageContents .= "\n<input type=\"hidden\" name=\"start-op\" value=\"$op\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"" . $item_r['s_item_type'] . "\">";
 
-		$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
-		$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
+        // Parent items are visible in the 'instance information' tab.
+		//$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
+		//$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
 
 		if ($op == 'clone_item' || is_not_empty_array($item_r)) {
 			if (is_numeric($item_r['item_id']))
@@ -1131,6 +1141,25 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 
 	if ($return_val === TRUE) {
 		$return_val = handle_item_update($item_r, $HTTP_VARS, $errors);
+
+        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+            if ($HTTP_VARS['parent_item_id'] == 0) {
+                // Remove parent relationship.
+                $relationship = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+
+                delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
+            }
+
+            if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
+                $relationship = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+
+                if ($HTTP_VARS['parent_item_id'] != $relationship['item_id'] || $HTTP_VARS['parent_instance_no'] != $relationship['instance_no']) {
+                    // Update parent relationship.
+                    delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
+                    insert_item_instance_relationship($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'], $item_r['item_id'], $item_r['instance_no']);
+                }
+            }
+        }
 	}
 
 	if ($return_val === "__INVALID_DATA__") {

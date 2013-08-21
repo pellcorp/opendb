@@ -299,6 +299,50 @@ function fetch_item_instance_relationship_rs($item_id, $instance_no = NULL, $rel
 		return FALSE;
 }
 
+function fetch_item_instance_relationship_r($item_id, $instance_no = NULL, $related_mode = RELATED_CHILDREN_MODE) {
+    $result = fetch_item_instance_relationship_rs($item_id, $instance_no, $related_mode);
+    $item_instance = db_fetch_assoc($result);
+    db_free_result($result);
+
+    return $item_instance;
+}
+
+function fetch_available_item_parents($HTTP_VARS, $item_r) {
+    $parent_instance = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+    $current_parent = $HTTP_VARS['parent_item_id'] > 0 ? $HTTP_VARS['parent_item_id'] : $parent_instance['item_id'];
+
+    $children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']);
+    $children = array();
+    while ($child = db_fetch_assoc($children_rs)) {
+        $children[] = $child;
+    }
+    db_free_result($children_rs);
+
+    $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
+
+    $items = array();
+
+    while ($item = db_fetch_assoc($items_rs)) {
+        if ($item['item_id'] != $item_r['item_id']) {
+            $is_child = false;
+            foreach ($children as $child) {
+                if ($item['item_id'] == $child['item_id']) {
+                    $is_child = true;
+                }
+            }
+
+            if (!$is_child) {
+                $item['current_parent'] = $item['item_id'] == $current_parent ? true : false;
+                $items[] = $item;
+            }
+        }
+    }
+
+    db_free_result($items_rs);
+
+    return $items;
+}
+
 /**
  * Does current item have any related items
  *

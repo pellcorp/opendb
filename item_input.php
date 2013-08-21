@@ -454,7 +454,30 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
             }
 
             return $value;
-		}
+		} else if ($op == 'site' && !isset($HTTP_VARS[$fieldname])) {
+            $attribute_type_r = fetch_attribute_type_r($s_attribute_type);
+            $value = NULL;
+
+            switch ($attribute_type_r['input_type']) {
+                case 'text':
+                    $value = $attribute_type_r['input_type_arg3'];
+                    break;
+                case 'number':
+                    $value = $attribute_type_r['input_type_arg2'];
+                    break;
+                case 'filtered':
+                    $value = $attribute_type_r['input_type_arg4'];
+                    break;
+                case 'checkbox':
+                    if ($attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg1']
+                        || $attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg2']) {
+                        $value = $attribute_type_r['input_type_arg3'];
+                    }
+                    break;
+            }
+
+            return $value;
+        }
 	}
 
 	return get_old_field_value($item_r, $s_field_type, $attribute_val);

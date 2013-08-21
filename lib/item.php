@@ -312,6 +312,12 @@ function fetch_available_item_parents($HTTP_VARS, $item_r) {
     $current_parent = $HTTP_VARS['parent_item_id'] > 0 ? $HTTP_VARS['parent_item_id'] : $parent_instance['item_id'];
 
     $children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']);
+    $children = array();
+    while ($child = db_fetch_assoc($children_rs)) {
+        $children[] = $child;
+    }
+    db_free_result($children_rs);
+
     $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
 
     $items = array();
@@ -319,7 +325,7 @@ function fetch_available_item_parents($HTTP_VARS, $item_r) {
     while ($item = db_fetch_assoc($items_rs)) {
         if ($item['item_id'] != $item_r['item_id']) {
             $is_child = false;
-            while ($child = db_fetch_assoc($children_rs)) {
+            foreach ($children as $child) {
                 if ($item['item_id'] == $child['item_id']) {
                     $is_child = true;
                 }
@@ -332,7 +338,6 @@ function fetch_available_item_parents($HTTP_VARS, $item_r) {
         }
     }
 
-    db_free_result($children_rs);
     db_free_result($items_rs);
 
     return $items;

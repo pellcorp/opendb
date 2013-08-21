@@ -432,29 +432,10 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
 				// normal field
 				return $HTTP_VARS[$fieldname];
 		} else if ($op == 'new') {
-            $attribute_type_r = fetch_attribute_type_r($s_attribute_type);
-            $value = NULL;
-
-            switch ($attribute_type_r['input_type']) {
-                case 'text':
-                    $value = $attribute_type_r['input_type_arg3'];
-                    break;
-                case 'number':
-                    $value = $attribute_type_r['input_type_arg2'];
-                    break;
-                case 'filtered':
-                    $value = $attribute_type_r['input_type_arg4'];
-                    break;
-				case 'checkbox':
-					if ($attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg1']
-							|| $attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg2']) {
-               			$value = $attribute_type_r['input_type_arg3'];
-					}
-                   	break;
-            }
-
-            return $value;
-		}
+            return get_field_default_value($s_attribute_type);
+		} else if ($op == 'site' && !isset($HTTP_VARS[$fieldname])) {
+            return get_field_default_value($s_attribute_type);
+        }
 	}
 
 	return get_old_field_value($item_r, $s_field_type, $attribute_val);
@@ -472,6 +453,31 @@ function get_old_field_value($item_r, $s_field_type, $attribute_val) {
 	} else {
 		return $attribute_val;
 	}
+}
+
+function get_field_default_value($s_attribute_type) {
+    $attribute_type_r = fetch_attribute_type_r($s_attribute_type);
+    $value = NULL;
+
+    switch ($attribute_type_r['input_type']) {
+        case 'text':
+            $value = $attribute_type_r['input_type_arg3'];
+            break;
+        case 'number':
+            $value = $attribute_type_r['input_type_arg2'];
+            break;
+        case 'filtered':
+            $value = $attribute_type_r['input_type_arg4'];
+            break;
+        case 'checkbox':
+            if ($attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg1']
+                || $attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg2']) {
+                $value = $attribute_type_r['input_type_arg3'];
+            }
+            break;
+    }
+
+    return $value;
 }
 
 // If $old_value !== FALSE, then we will assume a refresh operation and display a

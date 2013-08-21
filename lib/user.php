@@ -621,8 +621,18 @@ function generate_password($length) {
 
 function has_role_permission($role_name) {
     $user_role = fetch_user_r(get_opendb_session_var('user_id'))['user_role'];
+    if ($user_role == null) {
+        // Explicitly set role name to public access by default.
+        $user_role = get_public_access_rolename();
+    }
 
-    if (fetch_role_r($role_name)['priority'] <= fetch_role_r($user_role)['priority']) {
+    $role_prio = fetch_role_r($role_name)['priority'];
+    if ($role_prio == null || $role_prio == '') {
+        // Explicitly set permission to lowest value by default.
+        $role_prio = 0;
+    }
+
+    if ($role_prio <= fetch_role_r($user_role)['priority']) {
         return true;
     } else {
         return false;

@@ -742,6 +742,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		db_free_result($results);
 
         if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+            $formContents .= format_field('Parent Item Filter', '<input type="text" name="parent_item_filter" id="parent_item_filter">');
             $formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r));
 
             $parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);

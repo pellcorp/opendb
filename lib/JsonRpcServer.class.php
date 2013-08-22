@@ -64,10 +64,16 @@ class JsonRpcServer {
 				if (is_object($object)) {
 					$result = $object->{$methodName} ( $request ['params'] );
 					if ($result !== FALSE) {
-						$response = array (
+						if (is_array($result)) {
+							$response = array (
 								'jsonrpc' => '2.0',
 								'id' => $request ['id'],
 								'result' => $result);
+						} else {
+							$response = array (
+								'jsonrpc' => '2.0',
+								'id' => $request ['id']);
+						}
 					} else {
 						$errorCode = 'invalidParameters';
 					}

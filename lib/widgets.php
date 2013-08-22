@@ -453,7 +453,7 @@ function get_item_image($s_item_type, $item_id = NULL) {
 }
 
 function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
-    $possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r);
+    $possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter);
 
     $parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
     $parent_item_list .= '<option value="0">None</option>';

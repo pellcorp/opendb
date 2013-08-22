@@ -451,4 +451,27 @@ function get_item_image($s_item_type, $item_id = NULL) {
 	
 	return FALSE;
 }
+
+function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
+    $possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r);
+
+    $parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
+    $parent_item_list .= '<option value="0">None</option>';
+
+    foreach ($possible_parents as $parent) {
+        if ($parent['current_parent']) {
+            $parent_item_list .= '<option value="' . $parent['item_id'] . '" selected>' . $parent['title'] . '</option>';
+        } else {
+            if (stripos($parent['title'], $filter) === false) {
+                continue;
+            }
+
+            $parent_item_list .= '<option value="' . $parent['item_id'] . '">' . $parent['title'] . '</option>';
+        }
+    }
+
+    $parent_item_list .= '</select> <span id="parent_item_id_loading">Loading...</span>';
+
+    return $parent_item_list;
+}
 ?>

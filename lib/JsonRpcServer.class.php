@@ -17,6 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+
+function encode_items(&$item, $key) {
+	$item = utf8_encode($item);
+}
+
 class JsonRpcServer {
 	private $errorMessages = array(
 			'-32700' => 'Parse error',
@@ -62,9 +67,11 @@ class JsonRpcServer {
 				
 				$object = $this->classes [$className];
 				if (is_object($object)) {
-					$result = $object->{$methodName} ( $request ['params'] );
+					$result = $object->{$methodName} ($request ['params']);
 					if ($result !== FALSE) {
 						if (is_array($result)) {
+							array_walk_recursive($result, 'encode_items');
+							
 							$response = array (
 								'jsonrpc' => '2.0',
 								'id' => $request ['id'],
@@ -72,7 +79,8 @@ class JsonRpcServer {
 						} else {
 							$response = array (
 								'jsonrpc' => '2.0',
-								'id' => $request ['id']);
+								'id' => $request ['id'],
+								'result' => array());
 						}
 					} else {
 						$errorCode = 'invalidParameters';

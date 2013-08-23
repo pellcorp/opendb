@@ -206,7 +206,8 @@ function fetch_role_r($role_name) {
 	
 	$query = "SELECT sr.role_name, 
 	IFNULL(stlv.value, sr.description) AS description,
-	signup_avail_ind
+	signup_avail_ind,
+	priority
 	FROM s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '" . get_opendb_site_language () . "' AND
@@ -228,7 +229,8 @@ function fetch_role_r($role_name) {
 function fetch_user_role_rs($signup_avail_mode = INCLUDE_SIGNUP_UNAVAILABLE_USER) {
 	$query = "SELECT sr.role_name, 
 	IFNULL(stlv.value, sr.description) AS description,
-	signup_avail_ind
+	signup_avail_ind,
+	priority
 	FROM s_role sr
 	LEFT JOIN s_table_language_var stlv
 	ON stlv.language = '" . get_opendb_site_language () . "' AND
@@ -615,5 +617,26 @@ function generate_password($length) {
 	
 	// now returns our random password
 	return $randomPass;
+}
+
+function has_role_permission($role_name) {
+    $user_r = fetch_user_r(get_opendb_session_var('user_id'));
+    if ($user_r['user_role'] == null) {
+        // Explicitly set role name to public access by default.
+        $user_r['user_role'] = get_public_access_rolename();
+    }
+
+    $role_r = fetch_role_r($role_name);
+    if ($role_r['priority'] == null || $role_r['priority'] == '') {
+        // Explicitly set permission to lowest value by default.
+        $role_r['priority'] = 0;
+    }
+
+    $user_role_r = fetch_role_r($user_r['user_role']);
+    if ($role_r['priority'] <= $user_role_r['priority']) {
+        return true;
+    } else {
+        return false;
+    }
 }
 ?>

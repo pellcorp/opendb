@@ -176,7 +176,9 @@ if (is_site_enabled()) {
 
 			@reset($item_attribute_type_rs);
 			while (list(, $item_attribute_type_r) = @each($item_attribute_type_rs)) {
-				$attrTypeSelect .= "\n<option value=\"" . $item_attribute_type_r['s_attribute_type'] . "\">" . $item_attribute_type_r['s_attribute_type'] . " - " . $item_attribute_type_r['description'];
+                if (has_role_permission($item_attribute_type_r['view_perm'])) {
+				    $attrTypeSelect .= "\n<option value=\"" . $item_attribute_type_r['s_attribute_type'] . "\">" . $item_attribute_type_r['s_attribute_type'] . " - " . $item_attribute_type_r['description'];
+                }
 			}
 			$itemTypeBlock .= "</select>";
 

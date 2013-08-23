@@ -52,6 +52,8 @@ class JsonRpcServer {
 		try {
 			if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
 				$request = json_decode ( file_get_contents ( 'php://input' ), true );
+				
+				header ("Content-Type: application/json-rpc");
 			} else {
 				$request['method'] = $_GET['method'];
 				$request['id'] = $_GET['id'];
@@ -105,9 +107,6 @@ class JsonRpcServer {
 					'error' => array('code'=>(int) $code, 'message'=>$msg));
 		}
 		
-		if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
-			header ("content-type: application/json-rpc");
-		}
 		echo json_encode ( $response );
 	}
 }

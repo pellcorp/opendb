@@ -691,9 +691,36 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, &$upload_file_fields) {
 	}
 }
 
+function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
+	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter);
+
+	$parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
+	$parent_item_list .= '<option value="0">None</option>';
+
+	foreach ($possible_parents as $parent) {
+		if ($parent['current_parent']) {
+			$parent_item_list .= '<option value="' . $parent['item_id'] . '" selected>' . $parent['title'] . '</option>';
+		} else {
+			if (stripos($parent['title'], $filter) === false) {
+				continue;
+			}
+
+			$parent_item_list .= '<option value="' . $parent['item_id'] . '">' . $parent['title'] . '</option>';
+		}
+	}
+
+	$parent_item_list .= '</select> <span id="parent_item_id_loading">Loading...</span>';
+
+	return $parent_item_list;
+}
+
 function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
+	$formContents = "<div class=\"tabContentHidden\" id=\"instance_info\">";
+	
 	$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'instance_field_types');
 	if ($results) {
+		$formContents .= "<h3>" . get_opendb_lang_var('instance_info') . "</h3>";
+
 		$formContents .= "\n<table>";
 
 		if (($op == 'edit' || $op == 'refresh') && $status_type_r['change_owner_ind'] == 'Y') {
@@ -746,22 +773,27 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 			}
 		}//while
 		db_free_result($results);
-
-        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-            $formContents .= format_field('Parent Item Filter', '<input type="text" name="parent_item_filter" id="parent_item_filter">');
-            $formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
-
-            $parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
-            $formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
-                ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
-        }
-
+	
 		$formContents .= "\n</table>";
-
-		return $formContents;
-	} else {
-		return FALSE;
 	}
+		
+	if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+       	$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
+       	$formContents .= "\n<table>";
+        	
+		$formContents .= format_field('Parent Item Filter', '<input type="text" name="parent_item_filter" id="parent_item_filter">');
+		$formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
+
+		$parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+		$formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
+                ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
+            
+		$formContents .= "\n</table>";
+	}
+	
+	$formContents .= "</div>";
+
+	return $formContents;
 }
 
 function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
@@ -834,17 +866,7 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 
 		$pageContents .= "</div>";
 
-		$pageContents .= "<div class=\"tabContentHidden\" id=\"instance_info\">";
-		$pageContents .= "<h3>" . get_opendb_lang_var('instance_info') . "</h3>";
-
-		$formContents = get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS);
-		if ($formContents !== FALSE) {
-			$pageContents .= $formContents;
-		} else {
-			$pageContents .= get_opendb_lang_var('no_records_found');
-		}
-
-		$pageContents .= "</div>";
+		$pageContents .= get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS);
 
 		$pageContents .= "</div>";
 

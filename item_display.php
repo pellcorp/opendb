@@ -142,34 +142,37 @@ if (is_site_enabled()) {
 				$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 				if ($results) {
 					echo ("<table>");
+
 					while ($item_attribute_type_r = db_fetch_assoc($results)) {
-						$display_type = trim($item_attribute_type_r['display_type']);
+                        if (has_role_permission($item_attribute_type_r['view_perm'])) {
+                            $display_type = trim($item_attribute_type_r['display_type']);
 
-						if (($HTTP_VARS['mode'] == 'printable' && $item_attribute_type_r['printable_ind'] != 'Y') || (strlen($display_type) == 0 && $item_attribute_type_r['input_type'] == 'hidden')) {
-							// We allow the get_display_field to handle hidden variable, in case at some stage
-							// we might want to change the functionality of 'hidden' to something other than ignore.
-							$display_type = 'hidden';
-						}
+                            if (($HTTP_VARS['mode'] == 'printable' && $item_attribute_type_r['printable_ind'] != 'Y') || (strlen($display_type) == 0 && $item_attribute_type_r['input_type'] == 'hidden')) {
+                                // We allow the get_display_field to handle hidden variable, in case at some stage
+                                // we might want to change the functionality of 'hidden' to something other than ignore.
+                                $display_type = 'hidden';
+                            }
 
-						if ($item_attribute_type_r['s_field_type'] == 'ITEM_ID')
-							$value = $item_r['item_id'];
-						else if ($item_attribute_type_r['s_field_type'] == 'UPDATE_ON')
-							$value = $item_r['update_on'];
-						else if (is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
-							$value = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
-						else
-							$value = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
+                            if ($item_attribute_type_r['s_field_type'] == 'ITEM_ID')
+                                $value = $item_r['item_id'];
+                            else if ($item_attribute_type_r['s_field_type'] == 'UPDATE_ON')
+                                $value = $item_r['update_on'];
+                            else if (is_multivalue_attribute_type($item_attribute_type_r['s_attribute_type']))
+                                $value = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
+                            else
+                                $value = fetch_attribute_val($item_r['item_id'], $item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
 
-						if (is_not_empty_array($value) || (!is_array($value) && strlen($value) > 0)) {
-							$item_attribute_type_r['display_type'] = $display_type;
-							$item_attribute_type_r['compulsory_ind'] = 'N';
+                            if (is_not_empty_array($value) || (!is_array($value) && strlen($value) > 0)) {
+                                $item_attribute_type_r['display_type'] = $display_type;
+                                $item_attribute_type_r['compulsory_ind'] = 'N';
 
-							$field = get_item_display_field($item_r, $item_attribute_type_r, $value, FALSE);
+                                $field = get_item_display_field($item_r, $item_attribute_type_r, $value, FALSE);
 
-							if (strlen($field) > 0) {
-								echo format_item_data_field($item_attribute_type_r, $field, $prompt_mask, NULL); // field mask
-							}
-						}
+                                if (strlen($field) > 0) {
+                                    echo format_item_data_field($item_attribute_type_r, $field, $prompt_mask, NULL); // field mask
+                                }
+                            }
+                        }
 					}
 					db_free_result($results);
 

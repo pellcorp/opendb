@@ -335,6 +335,7 @@ function fetch_item_attribute_type_rs($s_item_type, $restrict_type = NULL, $orde
                 sat.lookup_attribute_ind,
                 sat.multi_attribute_ind,
                 sat.file_attribute_ind,
+                sat.view_perm,
                 siat.instance_attribute_ind,
 				siat.compulsory_ind,
 				siat.rss_ind,

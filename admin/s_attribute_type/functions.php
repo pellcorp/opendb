@@ -255,7 +255,8 @@ function fetch_s_attribute_type_r($s_attribute_type) {
 					site_type, 
 					file_attribute_ind, 
 					lookup_attribute_ind, 
-					multi_attribute_ind
+					multi_attribute_ind,
+					view_perm
 			FROM s_attribute_type 
 			WHERE s_attribute_type = '$s_attribute_type'";
 
@@ -322,7 +323,7 @@ function is_exists_s_atribute_type_lookup($s_attribute_type, $value) {
 }
 
 function validate_s_attribute_type($s_attribute_type, &$description, &$prompt, &$input_type, &$input_type_arg1, &$input_type_arg2, &$input_type_arg3, &$input_type_arg4, &$input_type_arg5, &$display_type, &$display_type_arg1, &$display_type_arg2, &$display_type_arg3, &$display_type_arg4,
-		&$display_type_arg5, &$s_field_type, &$site_type, &$listing_link_ind, &$file_attribute_ind, &$lookup_attribute_ind, &$multi_attribute_ind) {
+		&$display_type_arg5, &$s_field_type, &$site_type, &$listing_link_ind, &$file_attribute_ind, &$lookup_attribute_ind, &$multi_attribute_ind, &$view_perm) {
 	$description = addslashes(trim(strip_tags($description)));
 	$prompt = addslashes(trim(strip_tags($prompt)));
 
@@ -389,15 +390,18 @@ function validate_s_attribute_type($s_attribute_type, &$description, &$prompt, &
 		$file_attribute_ind = 'N'; // cannot have a lookup type that is also a file_resources
 		$lookup_attribute_ind = 'N';
 	}
+
+    if ($view_perm !== FALSE)
+        $view_perm = strtoupper(trim($view_perm));
 }
 
 function insert_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind) {
+		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm) {
 	validate_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind);
+			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm);
 
-	$query = "INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, s_field_type, site_type, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind) "
-			. "VALUES ('$s_attribute_type', '$description', '$prompt', '$input_type', '$input_type_arg1', '$input_type_arg2', '$input_type_arg3', '$input_type_arg4', '$input_type_arg5', '$display_type', '$display_type_arg1', '$display_type_arg2', '$display_type_arg3', '$display_type_arg4', '$display_type_arg5', '$s_field_type', '$site_type', '$listing_link_ind', '$file_attribute_ind', '$lookup_attribute_ind', '$multi_attribute_ind')";
+	$query = "INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, s_field_type, site_type, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, view_perm) "
+			. "VALUES ('$s_attribute_type', '$description', '$prompt', '$input_type', '$input_type_arg1', '$input_type_arg2', '$input_type_arg3', '$input_type_arg4', '$input_type_arg5', '$display_type', '$display_type_arg1', '$display_type_arg2', '$display_type_arg3', '$display_type_arg4', '$display_type_arg5', '$s_field_type', '$site_type', '$listing_link_ind', '$file_attribute_ind', '$lookup_attribute_ind', '$multi_attribute_ind', '$view_perm')";
 	$update = db_query($query);
 
 	// We should not treat updates that were not actually updated because value did not change as failures.
@@ -406,13 +410,13 @@ function insert_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 		if ($rows_affected > 0) {
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL,
 					array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		}
 		return TRUE;
 	} else {
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(),
 				array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		return FALSE;
 	}
 }
@@ -420,9 +424,9 @@ function insert_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 /*
  */
 function update_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind) {
+		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm) {
 	validate_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind);
+			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm);
 
 	$query = "UPDATE s_attribute_type " . "SET description = '" . $description . "'" . ", prompt = '" . $prompt . "'" . ($input_type !== FALSE ? ", input_type = '" . $input_type . "'" : "") . ($input_type_arg1 !== FALSE ? ", input_type_arg1 = '" . $input_type_arg1 . "'" : "")
 			. ($input_type_arg2 !== FALSE ? ", input_type_arg2 = '" . $input_type_arg2 . "'" : "") . ($input_type_arg3 !== FALSE ? ", input_type_arg3 = '" . $input_type_arg3 . "'" : "") . ($input_type_arg4 !== FALSE ? ", input_type_arg4 = '" . $input_type_arg4 . "'" : "")
@@ -430,7 +434,7 @@ function update_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 			. ($display_type_arg2 !== FALSE ? ", display_type_arg2 = '" . $display_type_arg2 . "'" : "") . ($display_type_arg3 !== FALSE ? ", display_type_arg3 = '" . $display_type_arg3 . "'" : "") . ($display_type_arg4 !== FALSE ? ", display_type_arg4 = '" . $display_type_arg4 . "'" : "")
 			. ($display_type_arg5 !== FALSE ? ", display_type_arg5 = '" . $display_type_arg5 . "'" : "") . ($s_field_type !== FALSE ? ", s_field_type = '" . $s_field_type . "'" : "") . ($site_type !== FALSE ? ", site_type = '" . $site_type . "'" : "")
 			. ($listing_link_ind !== FALSE ? ", listing_link_ind = '" . $listing_link_ind . "'" : "") . ($file_attribute_ind !== FALSE ? ", file_attribute_ind = '" . $file_attribute_ind . "'" : "") . ($lookup_attribute_ind !== FALSE ? ", lookup_attribute_ind = '" . $lookup_attribute_ind . "'" : "")
-			. ($multi_attribute_ind !== FALSE ? ", multi_attribute_ind = '" . $multi_attribute_ind . "'" : "") . " WHERE s_attribute_type = '$s_attribute_type'";
+			. ($multi_attribute_ind !== FALSE ? ", multi_attribute_ind = '" . $multi_attribute_ind . "'" : "") . ($view_perm !== FALSE ? ", view_perm = '" . $view_perm . "'" : "") . " WHERE s_attribute_type = '$s_attribute_type'";
 
 	$update = db_query($query);
 
@@ -440,13 +444,13 @@ function update_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 		if ($rows_affected > 0) {
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL,
 					array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		}
 		return TRUE;
 	} else {
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(),
 				array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		return FALSE;
 	}
 }

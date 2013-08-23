@@ -71,21 +71,23 @@ function build_new_items_feed($URL, $datemask) {
 			if ($results) {
 				$attribute_block = '';
 				while ($item_attribute_type_r = db_fetch_assoc($results)) {
-					if (strlen($attribute_block) > 0) {
-						$attribute_block .= "\n";
-					}
+                    if (has_role_permission($item_attribute_type_r['view_perm'])) {
+                        if (strlen($attribute_block) > 0) {
+                            $attribute_block .= "\n";
+                        }
 
-					$attributes_r = fetch_attribute_val_r($list_item_r['item_id'], $list_item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
-					if (is_array($attributes_r)) {
-						$attribute = "";
-						while (list(, $value) = each($attributes_r)) {
-							if (strlen($attribute) > 0)
-								$attribute .= ", ";
+                        $attributes_r = fetch_attribute_val_r($list_item_r['item_id'], $list_item_r['instance_no'], $item_attribute_type_r['s_attribute_type'], $item_attribute_type_r['order_no']);
+                        if (is_array($attributes_r)) {
+                            $attribute = "";
+                            while (list(, $value) = each($attributes_r)) {
+                                if (strlen($attribute) > 0)
+                                    $attribute .= ", ";
 
-							$attribute .= rss_encoded($value);
-						}
-						$attribute_block .= $attribute;
-					}
+                                $attribute .= rss_encoded($value);
+                            }
+                            $attribute_block .= $attribute;
+                        }
+                    }
 				}//while
 				db_free_result($results);
 

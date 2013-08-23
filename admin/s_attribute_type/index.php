@@ -462,6 +462,24 @@ function display_edit_form($attribute_type_r, $HTTP_VARS = NULL) {
 	} else {
 		echo format_field("Field type", $attribute_type_r['s_field_type']);
 	}
+
+    echo build_roles_select($attribute_type_r);
+}
+
+function build_roles_select($attribute_type_r) {
+    $user_roles = array();
+    $result = fetch_user_role_rs();
+
+    $public = fetch_role_r(get_public_access_rolename());
+    $user_roles[] = array('role_name' => $public['role_name'], 'description' => $public['description']);
+
+    while ($role = db_fetch_assoc($result)) {
+        $user_roles[] = $role;
+    }
+    $select = format_field("View Permission", custom_select('view_perm', $user_roles, '%description%', 1, $attribute_type_r['view_perm'], 'role_name'));
+    db_free_result($result);
+
+    return $select;
 }
 
 function build_options_array($type, $input_type_functions_cats) {
@@ -613,7 +631,8 @@ if ($HTTP_VARS['op'] == 'delete') {
 					FALSE, //$HTTP_VARS['listing_link_ind'],
 					FALSE, //$HTTP_VARS['file_attribute_ind'],
 					FALSE, //$HTTP_VARS['lookup_attribute_ind'],
-					FALSE); //$HTTP_VARS['multi_attribute_ind']
+					FALSE, //$HTTP_VARS['multi_attribute_ind'],
+                    FALSE); //$HTTP_VARS['view_perm']
 		} else if ($s_field_type == 'RATING' || is_reserved_s_attribute_type($HTTP_VARS['s_attribute_type'])) { // For reserved types, only allow update of prompt.
 			$update_result = update_s_attribute_type($HTTP_VARS['s_attribute_type'], $HTTP_VARS['description'], $HTTP_VARS['prompt'], FALSE, //$HTTP_VARS['input_type'],
 					FALSE, //$HTTP_VARS['input_type_arg1'],
@@ -632,7 +651,8 @@ if ($HTTP_VARS['op'] == 'delete') {
 					FALSE, //$HTTP_VARS['listing_link_ind'],
 					FALSE, //$HTTP_VARS['file_attribute_ind'],
 					FALSE, //$HTTP_VARS['lookup_attribute_ind'],
-					FALSE); //$HTTP_VARS['multi_attribute_ind']
+					FALSE, //$HTTP_VARS['multi_attribute_ind'],
+                    FALSE); //$HTTP_VARS['view_perm']
 		} else if ($s_field_type == 'ADDRESS') { // for non S_ attributes, but those with an s_field_type of 'ADDRESS' the s_field_type should not be updateable, and the site_type should remain NULL
 			$update_result = update_s_attribute_type($HTTP_VARS['s_attribute_type'], $HTTP_VARS['description'], $HTTP_VARS['prompt'], $HTTP_VARS['input_type'], $HTTP_VARS['input_type_arg1'], $HTTP_VARS['input_type_arg2'], $HTTP_VARS['input_type_arg3'], $HTTP_VARS['input_type_arg4'],
 					$HTTP_VARS['input_type_arg5'], $HTTP_VARS['display_type'], $HTTP_VARS['display_type_arg1'], $HTTP_VARS['display_type_arg2'], $HTTP_VARS['display_type_arg3'], $HTTP_VARS['display_type_arg4'], $HTTP_VARS['display_type_arg5'], FALSE, //$HTTP_VARS['s_field_type'],
@@ -640,7 +660,8 @@ if ($HTTP_VARS['op'] == 'delete') {
 					FALSE, //$HTTP_VARS['listing_link_ind'],
 					FALSE, //$HTTP_VARS['file_attribute_ind'],
 					FALSE, //$HTTP_VARS['lookup_attribute_ind'],
-					FALSE); //$HTTP_VARS['multi_attribute_ind']
+					FALSE, //$HTTP_VARS['multi_attribute_ind'],
+                    FALSE); //$HTTP_VARS['view_perm']
 		} else {
 			if (strtoupper($HTTP_VARS['lookup_attribute_ind']) != 'Y' && fetch_s_attribute_type_lookup_cnt($HTTP_VARS['s_attribute_type']) > 0) {
 				$HTTP_VARS['lookup_attribute_ind'] = 'Y';
@@ -650,7 +671,7 @@ if ($HTTP_VARS['op'] == 'delete') {
 
 			$update_result = update_s_attribute_type($HTTP_VARS['s_attribute_type'], $HTTP_VARS['description'], $HTTP_VARS['prompt'], $HTTP_VARS['input_type'], $HTTP_VARS['input_type_arg1'], $HTTP_VARS['input_type_arg2'], $HTTP_VARS['input_type_arg3'], $HTTP_VARS['input_type_arg4'],
 					$HTTP_VARS['input_type_arg5'], $HTTP_VARS['display_type'], $HTTP_VARS['display_type_arg1'], $HTTP_VARS['display_type_arg2'], $HTTP_VARS['display_type_arg3'], $HTTP_VARS['display_type_arg4'], $HTTP_VARS['display_type_arg5'], $HTTP_VARS['s_field_type'], $HTTP_VARS['site_type'],
-					$HTTP_VARS['listing_link_ind'], $HTTP_VARS['file_attribute_ind'], $HTTP_VARS['lookup_attribute_ind'], $HTTP_VARS['multi_attribute_ind']);
+					$HTTP_VARS['listing_link_ind'], $HTTP_VARS['file_attribute_ind'], $HTTP_VARS['lookup_attribute_ind'], $HTTP_VARS['multi_attribute_ind'], $HTTP_VARS['view_perm']);
 		}
 
 		if (!$update_result) {
@@ -674,7 +695,7 @@ if ($HTTP_VARS['op'] == 'delete') {
 
 			if (!insert_s_attribute_type($HTTP_VARS['s_attribute_type'], $HTTP_VARS['description'], $HTTP_VARS['prompt'], $HTTP_VARS['input_type'], $HTTP_VARS['input_type_arg1'], $HTTP_VARS['input_type_arg2'], $HTTP_VARS['input_type_arg3'], $HTTP_VARS['input_type_arg4'],
 					$HTTP_VARS['input_type_arg5'], $HTTP_VARS['display_type'], $HTTP_VARS['display_type_arg1'], $HTTP_VARS['display_type_arg2'], $HTTP_VARS['display_type_arg3'], $HTTP_VARS['display_type_arg4'], $HTTP_VARS['display_type_arg5'], $HTTP_VARS['s_field_type'], $HTTP_VARS['site_type'],
-					$HTTP_VARS['listing_link_ind'], $HTTP_VARS['file_attribute_ind'], $HTTP_VARS['lookup_attribute_ind'], $HTTP_VARS['multi_attribute_ind'])) {
+					$HTTP_VARS['listing_link_ind'], $HTTP_VARS['file_attribute_ind'], $HTTP_VARS['lookup_attribute_ind'], $HTTP_VARS['multi_attribute_ind'], $HTTP_VARS['view_perm'])) {
 				$errors[] = array('error' => 'Attribute type (' . $HTTP_VARS['s_attribute_type'] . ') not inserted', 'detail' => db_error());
 				$HTTP_VARS['op'] = 'new';
 			} else {

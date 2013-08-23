@@ -39,6 +39,7 @@ WHERE site_type = 'iblist' AND field = 'isbn';
 # Add attribute permission support.
 ALTER TABLE s_attribute_type ADD view_perm VARCHAR(50);
 ALTER TABLE s_role ADD priority TINYINT(3) unsigned NOT NULL;
+
 UPDATE s_role SET priority = 255 WHERE role_name = 'ADMINISTRATOR';
 UPDATE s_role SET priority = 150 WHERE role_name = 'OWNER';
 UPDATE s_role SET priority = 100 WHERE role_name = 'BORROWER';

@@ -11,16 +11,20 @@ including DVD, VCD, CD, VHS, games, books, and laser discs.
 
 See the LICENSE file for details.
 
-3. Web sites
+3. Android Client 
+
+https://github.com/pellcorp/OpenDbClient
+
+4. Web sites
 
 http://opendb.iamvegan.net/
 https://github.com/pellcorp/opendb
 
-4. Bugs
+5. Bugs
 
 Post any bugs to https://github.com/pellcorp/opendb/issues
 
-5. Credits
+6. Credits
 
 - Open Media Collectors Database (OpenDb).  Copyright (c)2001-2013 Jason Pell
 
@@ -60,7 +64,7 @@ Post any bugs to https://github.com/pellcorp/opendb/issues
 - LibChart 1.1 & 1.2
   <jm.tremeaux@gmail.com>
   
-6. Disclaimer
+7. Disclaimer
 
 The standard GPL disclaimer applies.  See the LICENSE file for more
 information.

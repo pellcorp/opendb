@@ -307,7 +307,7 @@ function fetch_item_instance_relationship_r($item_id, $instance_no = NULL, $rela
     return $item_instance;
 }
 
-function fetch_available_item_parents($HTTP_VARS, $item_r) {
+function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null) {
     $parent_instance = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
     $current_parent = $HTTP_VARS['parent_item_id'] > 0 ? $HTTP_VARS['parent_item_id'] : $parent_instance['item_id'];
 
@@ -317,10 +317,23 @@ function fetch_available_item_parents($HTTP_VARS, $item_r) {
         $children[] = $child;
     }
     db_free_result($children_rs);
-
-    $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
-
+    
     $items = array();
+
+    if (is_null($filter)) {
+        // Fetch every item.
+        $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
+    } elseif ($filter == '%parent_only%' && $current_parent > 0) {
+        // Fetch parent item only.
+        $item = fetch_item_r($current_parent);
+        $item['current_parent'] = true;
+        $items[] = $item;
+        
+        return $items;
+    } else {
+        // Filter items.
+        $items_rs = fetch_item_listing_rs(array('title' => $filter, 'title_match' => 'partial'), null, 'title', 'asc');
+    }
 
     while ($item = db_fetch_assoc($items_rs)) {
         if ($item['item_id'] != $item_r['item_id']) {

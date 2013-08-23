@@ -37,8 +37,10 @@ DELETE FROM s_site_plugin_input_field
 WHERE site_type = 'iblist' AND field = 'isbn';
 
 # Add attribute permission support.
-ALTER TABLE s_attribute_type ADD view_perm VARCHAR(50);
+ALTER TABLE s_attribute_type ADD view_perm VARCHAR(50) NOT NULL DEFAULT 'PUBLICACCESS';
 ALTER TABLE s_role ADD priority TINYINT(3) unsigned NOT NULL;
+
+UPDATE s_attribute_type SET view_perm = 'PUBLICACCESS';
 
 UPDATE s_role SET priority = 255 WHERE role_name = 'ADMINISTRATOR';
 UPDATE s_role SET priority = 150 WHERE role_name = 'OWNER';

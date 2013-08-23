@@ -196,8 +196,8 @@ CREATE TABLE s_attribute_type (
   display_type_arg5		VARCHAR(50),
   s_field_type			VARCHAR(10),
   site_type				VARCHAR(10),
-  view_perm       VARCHAR(50),
-  PRIMARY KEY ( s_attribute_type )
+  view_perm       		VARCHAR(50) NOT NULL DEFAULT 'PUBLICACCESS',
+  PRIMARY KEY ( s_attribute_type ) 
 ) ENGINE=MyISAM COMMENT='System Attribute table';
 
 #
@@ -278,7 +278,7 @@ CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),
 	signup_avail_ind VARCHAR(1) NOT NULL DEFAULT 'Y',
-	  priority TINYINT(3) unsigned NOT NULL,
+	priority TINYINT(3) unsigned NOT NULL,
 PRIMARY KEY ( role_name )
 ) ENGINE=MyISAM COMMENT = 'System Role table';
 

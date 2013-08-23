@@ -20,13 +20,13 @@
 
 include_once("./lib/OpenDbUpgrader.class.php");
 
-class Upgrader_1507_1508 extends OpenDbUpgrader
+class Upgrader_1507_1600 extends OpenDbUpgrader
 {
-	function Upgrader_1507_1508()
+	function Upgrader_1507_1600()
 	{
 		parent::OpenDbUpgrader(
 						'1.5.0.7',
-						'1.6.0.0dev3',
+						'1.6.0.0dev2',
 						array(
 							array('description'=>'Various updates from 1.5.0.7 to 1.6.0.0'),
 						)

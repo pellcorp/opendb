@@ -747,15 +747,14 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		}//while
 		db_free_result($results);
 
-		// disable this code until issue #19 is fixed.
-        /*if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
             $formContents .= format_field('Parent Item Filter', '<input type="text" name="parent_item_filter" id="parent_item_filter">');
-            $formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r));
+            $formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
 
             $parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
             $formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
                 ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
-        }*/
+        }
 
 		$formContents .= "\n</table>";
 

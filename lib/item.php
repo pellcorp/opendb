@@ -848,6 +848,8 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		}
 	}
 	
+	print_r($HTTP_VARS);
+	
 	//
 	// Title restriction
 	//
@@ -859,6 +861,8 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 			$parser = new BooleanParser ();
 			$statements = $parser->parseBooleanStatement ( $HTTP_VARS ['title'] );
 			if (is_array ( $statements )) {
+				print_r($statements);
+				
 				$where_r [] = build_boolean_clause ( $statements, 'i.title', $HTTP_VARS ['title_match'], 'AND', $HTTP_VARS ['title_case'] );
 			}
 		} else {
@@ -891,8 +895,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		} else {
 			$where_r [] = 'ii.update_on >= \'' . $HTTP_VARS ['update_on'] . '\'';
 		}
-	} else if (is_numeric ( $HTTP_VARS ['update_on_days'] )) 	// GIve us all records updated in the last however many days.
-{
+	} else if (is_numeric ( $HTTP_VARS ['update_on_days'] )) {	// GIve us all records updated in the last however many days.
 		$where_r [] = 'TO_DAYS(ii.update_on) >= (TO_DAYS(now())-' . $HTTP_VARS ['update_on_days'] . ')';
 	}
 	
@@ -913,8 +916,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 						}
 						$left_join_from_r [] = $left_join;
 					}
-				} else 				// search attribute
-{
+				} else {// search attribute
 					$from_r [] = 'item_attribute ia' . $i;
 					
 					// now do the where clause.
@@ -956,8 +958,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 						} else {
 							$where_r [] = 'ia' . $i . '.update_on >= \'' . $HTTP_VARS ['attr_update_on'] . '\'';
 						}
-					} else if (is_numeric ( $HTTP_VARS ['attr_update_on_days'] )) 					// GIve us all records updated in the last however many days.
-{
+					} else if (is_numeric ( $HTTP_VARS ['attr_update_on_days'] )) {	// GIve us all records updated in the last however many days.
 						$where_r [] = 'TO_DAYS(ia' . $i . '.update_on) >= (TO_DAYS(now())-' . $HTTP_VARS ['attr_update_on_days'] . ')';
 					}
 				}
@@ -969,8 +970,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 					
 					$left_join_clause = 'LEFT JOIN item_attribute catia ON ' . 'catia.item_id = i.id AND (catia.instance_no = 0 OR catia.instance_no = ii.instance_no) AND catia.s_attribute_type = catsiat.s_attribute_type AND catia.order_no = catsiat.order_no';
 					
-					if (strlen ( $HTTP_VARS ['category'] ) > 0 || (strcasecmp ( $HTTP_VARS ['attr_match'], 'category' ) === 0 && strlen ( $HTTP_VARS ['attribute_val'] ) > 0)) 					// Support specifying $attribute_val for $category where $attr_match=="category"!
-{
+					if (strlen ( $HTTP_VARS ['category'] ) > 0 || (strcasecmp ( $HTTP_VARS ['attr_match'], 'category' ) === 0 && strlen ( $HTTP_VARS ['attribute_val'] ) > 0)) {// Support specifying $attribute_val for $category where $attr_match=="category"!
 						// If item_type && item_type_group are not set!
 						if (strlen ( $HTTP_VARS ['attribute_type'] ) > 0 && ! is_array ( $HTTP_VARS ['s_item_type'] ) && strlen ( $HTTP_VARS ['s_item_type'] ) == 0 && strlen ( $HTTP_VARS ['s_item_type_group'] ) == 0) {
 							$where_r [] = 'catsat.s_attribute_type = \'' . $HTTP_VARS ['attribute_type'] . '\'';
@@ -1017,8 +1017,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 					$where_r [] = build_boolean_clause ( $statements, 'ia.attribute_val', $HTTP_VARS ['attr_match'], 'AND', $HTTP_VARS ['attr_case'] );
 				}
 			}
-		} else 		// attr_match = 'exact'
-{
+		} else {		// attr_match = 'exact'
 			if (is_lookup_attribute_type ( $HTTP_VARS ['attribute_type'] )) {
 				$value = str_replace ( "'", "\\'", $HTTP_VARS ['attribute_val'] );
 				
@@ -1046,8 +1045,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 			} else {
 				$where_r [] = 'ia.update_on >= \'' . $HTTP_VARS ['attr_update_on'] . '\'';
 			}
-		} else if (is_numeric ( $HTTP_VARS ['attr_update_on_days'] )) 		// GIve us all records updated in the last however many days.
-{
+		} else if (is_numeric ( $HTTP_VARS ['attr_update_on_days'] )) {		// GIve us all records updated in the last however many days.
 			$where_r [] = 'TO_DAYS(ia.update_on) >= (TO_DAYS(now())-' . $HTTP_VARS ['attr_update_on_days'] . ')';
 		}
 	}
@@ -1220,11 +1218,9 @@ function validate_item_instance_fields($s_status_type, &$status_comment, &$borro
 	if (is_not_empty_array ( $status_type_r )) {
 		// A $borrow_duration explicitly set to FALSE, is
 		// an indication that nothing should be done with it.
-		if ($borrow_duration !== FALSE && $borrow_duration !== NULL) 		//if already null, no need to check again.
-{
+		if ($borrow_duration !== FALSE && $borrow_duration !== NULL) {		//if already null, no need to check again.
 			// Ensure we have a valid $borrow_duration
-			if (is_numeric ( $borrow_duration )) 			//column cannot handle more than 999
-{
+			if (is_numeric ( $borrow_duration )) {			//column cannot handle more than 999
 				if ($borrow_duration > 999)
 					$borrow_duration = '999';
 			} else {
@@ -1314,8 +1310,7 @@ function insert_item_instance($item_id, $instance_no, $s_status_type, $status_co
 					$owner_id ) );
 			return FALSE;
 		}
-	} else 	//if(validate_item_instance_fields($s_status_type, $borrow_duration))
-{
+	} else {	//if(validate_item_instance_fields($s_status_type, $borrow_duration))
 		return FALSE;
 	}
 }
@@ -1363,8 +1358,7 @@ function update_item_instance($item_id, $instance_no, $s_status_type, $status_co
 					$borrow_duration ) );
 			return FALSE;
 		}
-	} else 	//if(validate_item_instance_fields($s_status_type, $borrow_duration))
-{
+	} else {	//if(validate_item_instance_fields($s_status_type, $borrow_duration))
 		return FALSE;
 	}
 }

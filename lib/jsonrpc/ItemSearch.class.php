@@ -11,6 +11,10 @@ class ItemSearch {
 			$params_r['limit'] = 10;
 		}
 		
+		if (empty($params_r['title_match'])) {
+			$params_r['title_match'] = 'partial';
+		}
+		
 		$results = fetch_item_listing_rs ( $params_r, array (), 'title', 'ASC', 0, $params_r['limit']);
 		while ( $item_r = db_fetch_assoc ( $results ) ) {
 			$item_r ['title'] = $titleMaskCfg->expand_item_title ( $item_r );

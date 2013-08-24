@@ -848,8 +848,6 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		}
 	}
 	
-	print_r($HTTP_VARS);
-	
 	//
 	// Title restriction
 	//

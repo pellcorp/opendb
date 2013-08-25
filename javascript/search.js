@@ -132,17 +132,16 @@ $(document).ready(function() {
         $('#parent_item_id').prop('disabled', true);
         $('#parent_item_id_loading').show();
 
-        var serializedData = $("form").serialize();
+        var requestData = 'ajax_op=possible-parents&item_id=' + $('form [name="item_id"]').val() + '&parent_item_filter=' + $('#parent_item_filter').val();
 
         $.ajax({
             type: 'post',
             url: 'ajax.php',
             dataType: 'json',
-            data: serializedData + '&ajax_op=possible-parents'
+            data: requestData
         })
         .done(function(data) {
             $('#parent_item_id').html(data.select);
-            console.log(data);
         })
         .always(function() {
             $('#parent_item_id').prop('disabled', false);

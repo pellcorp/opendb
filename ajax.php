@@ -9,7 +9,7 @@ include_once("./lib/logging.php");
 include_once("./lib/utils.php");
 include_once("./lib/item.php");
 include_once("./lib/user.php");
-include_once("./lib/widgets.php");
+include_once("./lib/item_input.php");
 
 // *****************************************************************************
 // MAIN PROCESS

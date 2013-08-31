@@ -1148,17 +1148,18 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
             if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
                 $relationship_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
 
-                foreach ($relationship_rs as $relationship) {
-                    if ($HTTP_VARS['parent_item_id'] == $relationship['item_id']) {
-                        if ($HTTP_VARS['parent_instance_no'] == $relationship['instance_no']) {
-                            $new_parent = false;
-                            break;
-                        }
-                    }
-
-                    $new_parent = true;
+                $new_parent = true;
+                if ($relationship_rs !== false) {
+					foreach ($relationship_rs as $relationship) {
+	                    if ($HTTP_VARS['parent_item_id'] == $relationship['item_id']) {
+	                        if ($HTTP_VARS['parent_instance_no'] == $relationship['instance_no']) {
+	                            $new_parent = false;
+	                            break;
+	                        }
+	                    }
+	                }
                 }
-
+                
                 // Update parent relationship.
                 if ($new_parent) {
                     insert_item_instance_relationship($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'], $item_r['item_id'], $item_r['instance_no']);

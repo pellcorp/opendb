@@ -307,9 +307,21 @@ function fetch_item_instance_relationship_r($item_id, $instance_no = NULL, $rela
     return $item_instance;
 }
 
-function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null) {
-    $parent_instance = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
-    $current_parent = $HTTP_VARS['parent_item_id'] > 0 ? $HTTP_VARS['parent_item_id'] : $parent_instance['item_id'];
+function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $include_parents = true) {
+    $current_parents = array();
+    if ($HTTP_VARS['parent_item_id'] > 0) {
+        $current_parents[] = $HTTP_VARS['parent_item_id'];
+    } else {
+        $parent_instance_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+
+        if ($parent_instance_rs !== false) {
+            foreach ($parent_instance_rs as $parent_instance_r) {
+                $current_parents[] = $parent_instance_r['item_id'];
+            }
+        }
+
+        db_free_result($parent_instance_rs);
+    }
 
     $children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']);
     $children = array();
@@ -323,11 +335,13 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null) {
     if (is_null($filter)) {
         // Fetch every item.
         $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
-    } elseif ($filter == '%parent_only%' && $current_parent > 0) {
-        // Fetch parent item only.
-        $item = fetch_item_r($current_parent);
-        $item['current_parent'] = true;
-        $items[] = $item;
+    } elseif ($filter == '%parent_only%') {
+        // Fetch parent items only.
+        foreach ($current_parents as $parent) {
+            $item = fetch_item_r($parent);
+            $item['current_parent'] = true;
+            $items[] = $item;
+        }
         
         return $items;
     } else {
@@ -345,7 +359,14 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null) {
             }
 
             if (!$is_child) {
-                $item['current_parent'] = $item['item_id'] == $current_parent ? true : false;
+                foreach ($current_parents as $parent) {
+                    if ($item['item_id'] == $parent) {
+                        $item['current_parent'] = true;
+                    }
+                }
+            }
+
+            if (!$item['current_parent'] || ($item['current_parent'] && $include_parents)) {
                 $items[] = $item;
             }
         }

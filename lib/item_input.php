@@ -693,26 +693,96 @@ function handle_item_delete($item_r, $status_type_r, $HTTP_VARS, &$errors, $dele
 	}
 }
 
+function handle_item_relation_delete($item_r, $status_type_r, $HTTP_VARS, &$errors) {
+    if ($item_r ['owner_id'] != get_opendb_session_var ( 'user_id' ) && ! is_user_granted_permission ( PERM_ITEM_ADMIN )) {
+        $errors = array (
+            'error' => get_opendb_lang_var ( 'cannot_delete_relation_item_not_owned' ),
+            'detail' => '' );
+        opendb_logger ( OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User to delete item relationship they do not own', $item_r );
+        return FALSE;
+    }
+
+    if ($HTTP_VARS ['confirmed'] == 'true' ) {
+        delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no']);
+    } else if ($HTTP_VARS ['confirmed'] != 'false') {
+            return "__CONFIRM__";
+    } else {	// confirmation required.
+        return "__ABORTED__";
+    }
+}
+
 function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
-	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter);
+	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter, false);
 
 	$parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
-	$parent_item_list .= '<option value="0">None</option>';
+
+    if (!is_null($filter) && $filter != '%parent_only%') {
+        if (count($possible_parents) > 0) {
+            $parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
+        } else {
+            $parent_item_list .= '<option value="0">' . get_opendb_lang_var('nothing_found') . '</option>';
+        }
+    } else {
+        $parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
+    }
 
 	foreach ($possible_parents as $parent) {
-		if ($parent['current_parent']) {
-			$parent_item_list .= '<option value="' . $parent['item_id'] . '" selected>' . $parent['title'] . '</option>';
-		} else {
-			if (stripos($parent['title'], $filter) === false) {
-				continue;
-			}
-
+		if (!$parent['current_parent']) {
 			$parent_item_list .= '<option value="' . $parent['item_id'] . '">' . $parent['title'] . '</option>';
 		}
 	}
 
-	$parent_item_list .= '</select> <span id="parent_item_id_loading">Loading...</span>';
+	$parent_item_list .= '</select> <span id="parent_item_id_loading">' . get_opendb_lang_var('loading') . '...</span>';
 
 	return $parent_item_list;
+}
+
+function format_item_parents_list($HTTP_VARS, $item_r) {
+    global $PHP_SELF;
+
+    $results = fetch_item_instance_relationship_rs ( $item_r ['item_id'], $item_r ['instance_no'], RELATED_PARENTS_MODE );
+    if ($results) {
+        $listingObject = new HTML_Listing ( $PHP_SELF, $HTTP_VARS );
+        $listingObject->setBufferOutput ( TRUE );
+        $listingObject->setNoRowsMessage ( get_opendb_lang_var ( 'no_items_found' ) );
+        $listingObject->setShowItemImages ( TRUE );
+        $listingObject->setIncludeFooter ( FALSE );
+
+        $listingObject->addHeaderColumn ( get_opendb_lang_var ( 'type' ), 'type', FALSE );
+        $listingObject->addHeaderColumn ( get_opendb_lang_var ( 'title' ), 'title', FALSE );
+        $listingObject->addHeaderColumn ( get_opendb_lang_var ( 'action' ), 'action', FALSE );
+
+        $listingObject->startListing ( NULL );
+
+        while ( $related_item_r = db_fetch_assoc ( $results ) ) {
+            $listingObject->startRow ();
+
+            $listingObject->addItemTypeImageColumn ( $related_item_r ['s_item_type'] );
+
+            $listingObject->addTitleColumn ( $related_item_r );
+
+            $action_links_rs = NULL;
+
+            if ((is_user_granted_permission ( PERM_ITEM_OWNER ) && get_opendb_session_var ( 'user_id' ) === $item_r ['owner_id']) || is_user_granted_permission ( PERM_ITEM_ADMIN )) {
+                $action_links_rs [] = array (
+                    url => 'item_input.php?op=delete-relation&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'] . '&parent_item_id=' . $related_item_r ['item_id'] . '&parent_instance_no=' . $related_item_r ['instance_no'],
+                    img => 'delete.gif',
+                    text => get_opendb_lang_var('delete_relationship') );
+            }
+            $listingObject->addActionColumn ( $action_links_rs );
+
+            $listingObject->endRow ();
+        }
+
+        $listingObject->endListing ();
+
+        $return = $listingObject->getContents ();
+
+        unset ( $listingObject );
+
+        return $return;
+    }
+
+    return null;
 }
 ?>

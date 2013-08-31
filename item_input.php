@@ -38,6 +38,7 @@ include_once("./lib/widgets.php");
 include_once("./lib/parseutils.php");
 include_once("./lib/site_plugin.php");
 include_once("./lib/item_input.php");
+include_once("./lib/item_display.php");
 include_once("./lib/status_type.php");
 include_once("./lib/TitleMask.class.php");
 include_once("./lib/HTML_Listing.class.php");
@@ -755,20 +756,19 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 	}
 		
 	if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-       	$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
-
-        $formContents .= format_item_parents_list($HTTP_VARS, $item_r);
-
+		$formContents .= "<h3>" . get_opendb_lang_var ( 'add_related_parent' ) . "</h3>";
+		
        	$formContents .= "\n<table>";
-        	
 		$formContents .= format_field(get_opendb_lang_var('parent_item_filter'), '<input type="text" name="parent_item_filter" id="parent_item_filter">');
 		$formContents .= format_field(get_opendb_lang_var('parent_item'), format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
 
 		$parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
 		$formContents .= format_field(get_opendb_lang_var('parent_instance_number'), '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
                 ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
-            
 		$formContents .= "\n</table>";
+		
+		$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
+		$formContents .= get_related_items_listing ( $item_r, $HTTP_VARS, RELATED_PARENTS_MODE );
 	}
 	
 	$formContents .= "</div>";

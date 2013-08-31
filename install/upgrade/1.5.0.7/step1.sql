@@ -57,4 +57,4 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_item_filter', 'Parent Item Filter');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_instance_number', 'Parent Instance Number');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_relationship', 'Delete Relationship');
-
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_parent', 'Add Related Parent');

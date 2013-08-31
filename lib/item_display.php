@@ -463,17 +463,25 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode) {
 						url => 'item_input.php?op=edit&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'],
 						img => 'edit.gif',
 						text => get_opendb_lang_var ( 'edit' ) );
+				
 				if (get_opendb_config_var ( 'listings', 'show_refresh_actions' ) && is_item_legal_site_type ( $related_item_r ['s_item_type'] )) {
 					$action_links_rs [] = array (
 							url => 'item_input.php?op=site-refresh&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'],
 							img => 'refresh.gif',
 							text => get_opendb_lang_var ( 'refresh' ) );
 				}
+				
 				$action_links_rs [] = array (
 						url => 'item_input.php?op=delete&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'] . '&parent_item_id=' . $item_r ['item_id'] . '&parent_instance_no=' . $item_r ['instance_no'],
 						img => 'delete.gif',
 						text => get_opendb_lang_var ( 'delete' ) );
+				
+				$action_links_rs [] =  array (
+						url => 'item_input.php?op=delete-relation&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'] . '&parent_item_id=' . $related_item_r ['item_id'] . '&parent_instance_no=' . $related_item_r ['instance_no'],
+						img => 'delete.gif',
+						text => get_opendb_lang_var('delete_relationship') );
 			}
+			
 			$listingObject->addActionColumn ( $action_links_rs );
 			
 			$status_type_r = fetch_status_type_r ( $related_item_r ['s_status_type'] );
@@ -481,7 +489,6 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode) {
 			$listingObject->addThemeImageColumn ( $status_type_r ['img'], $status_type_r ['description'], $status_type_r ['description'], 			//title
 					's_status_type' ); //type
 			
-
 			// If a comment is allowed and defined, add it in.
 			if ($status_type_r ['status_comment_ind'] == 'Y' || get_opendb_session_var ( 'user_id' ) === $related_item_r ['owner_id'] || is_user_granted_permission ( PERM_ITEM_ADMIN )) {
 				// support newlines in this field

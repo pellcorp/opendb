@@ -756,13 +756,16 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		
 	if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
        	$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
+
+        $formContents .= format_item_parents_list($HTTP_VARS, $item_r);
+
        	$formContents .= "\n<table>";
         	
-		$formContents .= format_field('Parent Item Filter', '<input type="text" name="parent_item_filter" id="parent_item_filter">');
-		$formContents .= format_field('Parent Item', format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
+		$formContents .= format_field(get_opendb_lang_var('parent_item_filter'), '<input type="text" name="parent_item_filter" id="parent_item_filter">');
+		$formContents .= format_field(get_opendb_lang_var('parent_item'), format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
 
 		$parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
-		$formContents .= format_field('Parent Instance Number', '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
+		$formContents .= format_field(get_opendb_lang_var('parent_instance_number'), '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
                 ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
             
 		$formContents .= "\n</table>";
@@ -1029,7 +1032,7 @@ function do_op_title($item_r, $status_type_r, $op) {
 			$item_title = get_opendb_lang_var('add_new_item_for_name', array('user_id' => $item_r['owner_id'], 'fullname' => fetch_user_name($item_r['owner_id'])));
 		else
 			$item_title = get_opendb_lang_var('add_new_item');
-	} else if ($op == 'update' || $op == 'delete') {
+	} else if ($op == 'update' || $op == 'delete' || $op == 'delete_related') {
 		$item_title = get_opendb_lang_var($op . '_item');
 	} else if ($op == 'refresh' || $op == 'edit' || $op == 'clone_item') {
 		if ($op == 'clone_item')
@@ -1142,19 +1145,22 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 		$return_val = handle_item_update($item_r, $HTTP_VARS, $errors);
 
         if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-            if ($HTTP_VARS['parent_item_id'] == 0) {
-                // Remove parent relationship.
-                $relationship = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
-
-                delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
-            }
-
             if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
-                $relationship = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+                $relationship_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
 
-                if ($HTTP_VARS['parent_item_id'] != $relationship['item_id'] || $HTTP_VARS['parent_instance_no'] != $relationship['instance_no']) {
-                    // Update parent relationship.
-                    delete_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], $relationship['item_id'], $relationship['instance_no']);
+                foreach ($relationship_rs as $relationship) {
+                    if ($HTTP_VARS['parent_item_id'] == $relationship['item_id']) {
+                        if ($HTTP_VARS['parent_instance_no'] == $relationship['instance_no']) {
+                            $new_parent = false;
+                            break;
+                        }
+                    }
+
+                    $new_parent = true;
+                }
+
+                // Update parent relationship.
+                if ($new_parent) {
                     insert_item_instance_relationship($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'], $item_r['item_id'], $item_r['instance_no']);
                 }
             }
@@ -1285,6 +1291,31 @@ function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_l
 	} else {
 		echo format_error_block($errors);
 	}
+}
+
+function perform_delete_relation_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r) {
+    global $PHP_SELF;
+    global $titleMaskCfg;
+
+    $parent_item_r = fetch_item_r($HTTP_VARS['parent_item_id']);
+    do_op_title($parent_item_r, $status_type_r, 'delete_related');
+
+    $errors = null;
+    $return_val = handle_item_relation_delete($item_r, $status_type_r, $HTTP_VARS, $errors);
+    if ($return_val === "__CONFIRM__") {
+        echo (get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_delete_relation_title', 'display_title', $titleMaskCfg->expand_item_title($parent_item_r)), $HTTP_VARS));
+    } else {
+        if ($return_val == "__ABORTED__") {
+            echo ("<p class=\"success\">" . get_opendb_lang_var('item_relation_not_deleted') . "</p>");
+            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+        } else if ($return_val === FALSE) {
+            echo format_error_block($errors);
+            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+        } else {
+            echo ("<p class=\"success\">" . get_opendb_lang_var('item_relation_deleted') . "</p>");
+            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+        }
+    }
 }
 
 function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r) {
@@ -1473,6 +1504,10 @@ if (is_site_enabled()) {
 					case 'edit':
 						perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
 						break;
+
+                    case 'delete-relation':
+                        perform_delete_relation_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+                        break;
 
 					case 'site-add':
 						handle_site_add_or_refresh(NULL, $status_type_r, $HTTP_VARS, $footer_links_r);

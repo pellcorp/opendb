@@ -93,7 +93,8 @@ function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
 	foreach ($possible_parents as $parent) {
 		if (!$parent['current_parent']) {
 			$parent ['title'] = $titleMaskCfg->expand_item_title ( $parent );
-			$parent_item_list .= '<option value="' . $parent['item_id'] . '">' . utf8_encode($parent['title']) . '</option>';
+			$parent_item_list .= '<option value="' . $parent['item_id'] . '">'
+					. utf8_encode($parent['title']) . '</option>';
 		}
 	}
 

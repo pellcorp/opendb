@@ -31,6 +31,30 @@ include_once ("./lib/parseutils.php");
 include_once ("./lib/item_type_group.php");
 
 /**
+ Will split up a 'item_id_instance_no' value into
+ its component item_id / instance_no or return FALSE.
+
+ Format of input parameter:
+ {item_id}_{instance_no}
+ */
+function get_item_id_and_instance_no($item_id_instance_no) {
+	if (strlen ( $item_id_instance_no ) > 0) {
+		$splitidx = strpos ( $item_id_instance_no, '_' );
+		if ($splitidx !== FALSE) {
+			$item_id = substr ( $item_id_instance_no, 0, $splitidx );
+			$instance_no = substr ( $item_id_instance_no, $splitidx + 1 );
+			if (is_numeric ( $item_id ) && is_numeric ( $instance_no ))
+				return array (
+						'item_id' => $item_id,
+						'instance_no' => $instance_no );
+		}
+	}
+
+	//else
+	return FALSE;
+}
+
+/**
 	Will check that the $uid has an item_instance for item_id.  If instance_no specified,
 	will check that the user owns the specified instance, otherwise this function is
 	only checking that the $uid owns at least one instance of the item.
@@ -414,7 +438,7 @@ function is_exists_related_item_instance_relationship($item_id, $instance_no, $p
 				related_instance_no = $instance_no";
 	
 	if (is_numeric ( $parent_item_id ) && is_numeric ( $parent_instance_no )) {
-		$query .= " AND item_id <> $parent_item_id AND instance_no <> $parent_instance_no ";
+		$query .= " AND item_id = $parent_item_id AND instance_no = $parent_instance_no ";
 	}
 	
 	$result = db_query ( $query );

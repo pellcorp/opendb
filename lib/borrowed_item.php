@@ -246,30 +246,6 @@ function handle_extension($sequence_number, $borrow_extension, $more_information
 }
 
 /**
-	Will split up a 'item_id_instance_no' value into
-	its component item_id / instance_no or return FALSE.
-
-	Format of input parameter:
-		{item_id}_{instance_no}
-*/
-function get_item_id_and_instance_no($item_id_instance_no) {
-	if (strlen ( $item_id_instance_no ) > 0) {
-		$splitidx = strpos ( $item_id_instance_no, '_' );
-		if ($splitidx !== FALSE) {
-			$item_id = substr ( $item_id_instance_no, 0, $splitidx );
-			$instance_no = substr ( $item_id_instance_no, $splitidx + 1 );
-			if (is_numeric ( $item_id ) && is_numeric ( $instance_no ))
-				return array (
-						'item_id' => $item_id,
-						'instance_no' => $instance_no );
-		}
-	}
-	
-	//else
-	return FALSE;
-}
-
-/**
 	The only status's that are valid for allowing a user access to the borrowed item
 	or auxiliary details, such as the address of the other party are B and R.  
 	

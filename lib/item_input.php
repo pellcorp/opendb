@@ -635,7 +635,7 @@ function handle_item_delete($item_r, $status_type_r, $HTTP_VARS, &$errors, $dele
 		if (! is_exists_item_instance_borrowed_item ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 			delete_related_item_instance_relationship ( $item_r ['item_id'], $item_r ['instance_no'], $HTTP_VARS ['parent_item_id'], $HTTP_VARS ['parent_instance_no'] );
 			
-			if (! is_exists_related_item_instance_relationship ( $item_r ['item_id'], $item_r ['instance_no'], $HTTP_VARS ['parent_item_id'], $HTTP_VARS ['parent_instance_no'] )) {
+			if (!is_exists_related_item_instance_relationship ( $item_r ['item_id'], $item_r ['instance_no'])) {
 				if (! delete_item_instance ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 					$db_error = db_error ();
 					$errors = array (

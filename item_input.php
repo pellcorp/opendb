@@ -45,11 +45,11 @@ include_once("./lib/HTML_Listing.class.php");
 
 function get_related_item_search_script() {
 	$script = "$(document).ready(function() {
-    $('#parent_item_id_loading').hide();
+    $('#parent_item_oading').hide();
 
     $('#parent_item_filter').change(function() {
-        $('#parent_item_id').prop('disabled', true);
-        $('#parent_item_id_loading').show();
+        $('#parent_item').prop('disabled', true);
+        $('#parent_item_loading').show();
 
         var requestData = 'ajax_op=possible-parents&item_id=' + $('form [name=\"item_id\"]').val() + '&parent_item_filter=' + $('#parent_item_filter').val();
 
@@ -60,11 +60,11 @@ function get_related_item_search_script() {
             data: requestData
         })
         .done(function(data) {
-            $('#parent_item_id').html(data.select);
+            $('#parent_item').html(data.select);
         })
         .always(function() {
-            $('#parent_item_id').prop('disabled', false);
-            $('#parent_item_id_loading').hide();
+            $('#parent_item').prop('disabled', false);
+            $('#parent_item_loading').hide();
         });
     });
 });
@@ -77,7 +77,8 @@ function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
 	
 	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter, false);
 	
-	$parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
+	// options will be in format ITEM_ID.INSTANCE_NO, so do not clash with existing parent_item_id / parent_instance_no stuff.
+	$parent_item_list = '<select name="parent_item" id="parent_item">';
 
 	if (!is_null($filter) && $filter != '%parent_only%') {
 		if (count($possible_parents) > 0) {
@@ -89,16 +90,18 @@ function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
 		$parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
 	}
 
-	@reset($possible_parents);
+	// FIXME - because this is going to return all instances, we should actually encode the item_id.instance_no into
+	// the option value, perhaps instead of reusing the parent_item_id stuff, have a separate field name, called parent_item,
+	// that we know is ITEM_ID.INSTANCE_NO encoded.  This might allow the pre-existing functionality to work again.
 	foreach ($possible_parents as $parent) {
 		if (!$parent['current_parent']) {
 			$parent ['title'] = $titleMaskCfg->expand_item_title ( $parent );
-			$parent_item_list .= '<option value="' . $parent['item_id'] . '">'
+			$parent_item_list .= '<option value="' . $parent['item_id'] . '_' . $parent['instance_no'] . '">'
 					. utf8_encode($parent['title']) . '</option>';
 		}
 	}
 
-	$parent_item_list .= '</select> <span id="parent_item_id_loading">' . get_opendb_lang_var('loading') . '...</span>';
+	$parent_item_list .= '</select> <span id="parent_item_loading">' . get_opendb_lang_var('loading') . '...</span>';
 
 	return $parent_item_list;
 }
@@ -823,14 +826,13 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
        	$formContents .= "\n<table>";
 		$formContents .= format_field(get_opendb_lang_var('parent_item_filter'), '<input type="text" name="parent_item_filter" id="parent_item_filter">');
 		$formContents .= format_field(get_opendb_lang_var('parent_item'), format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
-
-		$parent = fetch_item_instance_relationship_r($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
-		$formContents .= format_field(get_opendb_lang_var('parent_instance_number'), '<input type="text" name="parent_instance_no" onchange="this.value=numericFilter(this.value); return true;" value="' .
-                ($parent['instance_no'] ? $parent['instance_no'] : 1) . '">');
 		$formContents .= "\n</table>";
 		
-		$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
-		$formContents .= get_related_items_listing ( $item_r, $HTTP_VARS, RELATED_PARENTS_MODE );
+		$relatedItems = get_related_items_listing ( $item_r, $HTTP_VARS, RELATED_PARENTS_MODE );
+		if ($relatedItems != NULL) {
+			$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
+			$formContents .= $relatedItems;
+		}
 	}
 	
 	$formContents .= "</div>";
@@ -883,9 +885,8 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		$pageContents .= "\n<input type=\"hidden\" name=\"start-op\" value=\"$op\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"" . $item_r['s_item_type'] . "\">";
 
-        // Parent items are visible in the 'instance information' tab.
-		//$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
-		//$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
+		$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
+		$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
 
 		if ($op == 'clone_item' || is_not_empty_array($item_r)) {
 			if (is_numeric($item_r['item_id']))
@@ -1126,8 +1127,8 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 		$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
 		if ($return_val !== FALSE) {
 			if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-				// is this a add related item action - parent_item_id is the key here! 
 				if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
+					// fixme, this creates a relationship for all item instances, is that what we want?
 					insert_item_instance_relationships($HTTP_VARS['parent_item_id'], $item_r['item_id'], $item_r['instance_no']);
 				}
 			}
@@ -1207,26 +1208,17 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 		$return_val = handle_item_update($item_r, $HTTP_VARS, $errors);
 
         if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-            if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
-                $relationship_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+        	if (!empty($HTTP_VARS['parent_item'])) {
+        		$parent_item_r = get_item_id_and_instance_no($HTTP_VARS['parent_item']);
+        		
+        		if (is_exists_item_instance($parent_item_r['item_id'], $parent_item_r['instance_no'])
+						&& !is_exists_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], 
+								$parent_item_r['item_id'], $parent_item_r['instance_no'])) {
 
-                $new_parent = true;
-                if ($relationship_rs !== false) {
-					foreach ($relationship_rs as $relationship) {
-	                    if ($HTTP_VARS['parent_item_id'] == $relationship['item_id']) {
-	                        if ($HTTP_VARS['parent_instance_no'] == $relationship['instance_no']) {
-	                            $new_parent = false;
-	                            break;
-	                        }
-	                    }
-	                }
-                }
-                
-                // Update parent relationship.
-                if ($new_parent) {
-                    insert_item_instance_relationship($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'], $item_r['item_id'], $item_r['instance_no']);
-                }
-            }
+        			insert_item_instance_relationship($parent_item_r['item_id'], $parent_item_r['instance_no'], 
+        								$item_r['item_id'], $item_r['instance_no']);
+        		}
+        	}
         }
 	}
 

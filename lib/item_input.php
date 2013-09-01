@@ -710,30 +710,4 @@ function handle_item_relation_delete($item_r, $status_type_r, $HTTP_VARS, &$erro
         return "__ABORTED__";
     }
 }
-
-function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
-	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter, false);
-
-	$parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
-
-    if (!is_null($filter) && $filter != '%parent_only%') {
-        if (count($possible_parents) > 0) {
-            $parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
-        } else {
-            $parent_item_list .= '<option value="0">' . get_opendb_lang_var('nothing_found') . '</option>';
-        }
-    } else {
-        $parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
-    }
-
-	foreach ($possible_parents as $parent) {
-		if (!$parent['current_parent']) {
-			$parent_item_list .= '<option value="' . $parent['item_id'] . '">' . $parent['title'] . '</option>';
-		}
-	}
-
-	$parent_item_list .= '</select> <span id="parent_item_id_loading">' . get_opendb_lang_var('loading') . '...</span>';
-
-	return $parent_item_list;
-}
 ?>

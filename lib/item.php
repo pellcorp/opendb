@@ -346,13 +346,13 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $incl
         return $items;
     } else {
         // Filter items.
-        $items_rs = fetch_item_listing_rs(array('title' => $filter, 'title_match' => 'partial'), null, 'title', 'asc');
+        $items_rs = fetch_item_listing_rs(array('title' => $filter, 'title_match' => 'partial'), array(), 'title', 'asc');
     }
-
+    
     while ($item = db_fetch_assoc($items_rs)) {
         if ($item['item_id'] != $item_r['item_id']) {
             $is_child = false;
-            foreach ($children as $child) {
+			foreach ($children as $child) {
                 if ($item['item_id'] == $child['item_id']) {
                     $is_child = true;
                 }

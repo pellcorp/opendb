@@ -72,6 +72,35 @@ function get_related_item_search_script() {
 	return "\n<script language=\"JavaScript\">\n<!-- // hide from stupid browsers\n" . $script . "\n// -->\n</script>\n";
 }
 
+function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
+	$titleMaskCfg = new TitleMask ( 'item_listing' );
+	
+	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter, false);
+	
+	$parent_item_list = '<select name="parent_item_id" id="parent_item_id">';
+
+	if (!is_null($filter) && $filter != '%parent_only%') {
+		if (count($possible_parents) > 0) {
+			$parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
+		} else {
+			$parent_item_list .= '<option value="0">' . get_opendb_lang_var('nothing_found') . '</option>';
+		}
+	} else {
+		$parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
+	}
+
+	@reset($possible_parents);
+	foreach ($possible_parents as $parent) {
+		if (!$parent['current_parent']) {
+			$parent ['title'] = $titleMaskCfg->expand_item_title ( $parent );
+			$parent_item_list .= '<option value="' . $parent['item_id'] . '">' . utf8_encode($parent['title']) . '</option>';
+		}
+	}
+
+	$parent_item_list .= '</select> <span id="parent_item_id_loading">' . get_opendb_lang_var('loading') . '...</span>';
+
+	return $parent_item_list;
+}
 
 /**
  * Will test the old against the new value.
@@ -1585,12 +1614,14 @@ if (is_site_enabled()) {
 					case 'possible-parents':
 						// Get HTML select list of possible item parents.
 						if (is_user_granted_permission(PERM_ITEM_OWNER) || is_user_granted_permission(PERM_ITEM_ADMIN)) {
-							echo json_encode(array('select' => format_item_parents_select($HTTP_VARS, fetch_item_r($HTTP_VARS['item_id']), $HTTP_VARS['parent_item_filter'])));
+							echo json_encode(
+									array('select' => format_item_parents_select(
+											$HTTP_VARS, fetch_item_r($HTTP_VARS['item_id']), $HTTP_VARS['parent_item_filter'])));
 						}
 						break;
 					default:
 						// invalid operation.
-						echo json_encode(array('error' => 'invalid-op'));
+						echo json_encode(array('error' => get_opendb_lang_var('operation_not_available')));
 						break;
 				}
 			}

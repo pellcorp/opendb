@@ -248,9 +248,9 @@ function theme_image_src($src) {
 		$src = safe_filename ( $src );
 		$file_r = parse_file ( $src );
 		$src = $file_r ['name'];
-		
-		$extension_r = array (
-				$file_r ['extension'] );
+
+		// temporary until we fix up the theme image calls to use the actual images that exist.
+		$extension_r = array($file_r['extension'], 'png', 'jpg', 'gif');
 		
 		while ( list ( , $dir ) = each ( $dirPaths ) ) {
 			reset ( $extension_r );

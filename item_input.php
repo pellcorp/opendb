@@ -90,9 +90,6 @@ function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
 		$parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
 	}
 
-	// FIXME - because this is going to return all instances, we should actually encode the item_id.instance_no into
-	// the option value, perhaps instead of reusing the parent_item_id stuff, have a separate field name, called parent_item,
-	// that we know is ITEM_ID.INSTANCE_NO encoded.  This might allow the pre-existing functionality to work again.
 	foreach ($possible_parents as $parent) {
 		if (!$parent['current_parent']) {
 			$parent ['title'] = $titleMaskCfg->expand_item_title ( $parent );

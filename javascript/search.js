@@ -124,28 +124,3 @@ function indexOfLookupValue(SelectOptions, value)
 	}
 	return -1;
 }
-
-$(document).ready(function() {
-    $('#parent_item_id_loading').hide();
-
-    $('#parent_item_filter').change(function() {
-        $('#parent_item_id').prop('disabled', true);
-        $('#parent_item_id_loading').show();
-
-        var requestData = 'ajax_op=possible-parents&item_id=' + $('form [name="item_id"]').val() + '&parent_item_filter=' + $('#parent_item_filter').val();
-
-        $.ajax({
-            type: 'post',
-            url: 'ajax.php',
-            dataType: 'json',
-            data: requestData
-        })
-        .done(function(data) {
-            $('#parent_item_id').html(data.select);
-        })
-        .always(function() {
-            $('#parent_item_id').prop('disabled', false);
-            $('#parent_item_id_loading').hide();
-        });
-    });
-});

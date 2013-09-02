@@ -45,7 +45,7 @@ include_once("./lib/HTML_Listing.class.php");
 
 function get_related_item_search_script() {
 	$script = "$(document).ready(function() {
-    $('#parent_item_oading').hide();
+    $('#parent_item_loading').hide();
 
     $('#parent_item_filter').change(function() {
         $('#parent_item').prop('disabled', true);

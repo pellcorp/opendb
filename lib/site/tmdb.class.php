@@ -91,10 +91,10 @@ class tmdb extends SitePlugin {
         $jsonData = json_decode($this->fetchURI($this->baseURL . 'movie/' . $search_attributes_r['tmdb_id'] . '?api_key=' . $this->apikey . '&append_to_response=casts'), true);
 
         if (!is_null($jsonData)) {
-            $this->addItemAttribute('title', $jsonData['title']);
-            $this->addItemAttribute('orig_title', $jsonData['original_title']);
-            $this->addItemAttribute('tagline', $jsonData['tagline']);
-            $this->addItemAttribute('plot', $jsonData['overview']);
+            $this->addItemAttribute('title', utf8_decode($jsonData['title']));
+            $this->addItemAttribute('orig_title', utf8_decode($jsonData['original_title']));
+            $this->addItemAttribute('tagline', utf8_decode($jsonData['tagline']));
+            $this->addItemAttribute('plot', utf8_decode($jsonData['overview']));
             $this->addItemAttribute('runtime', $jsonData['runtime']);
             $this->addItemAttribute('cover', $this->imgBase . $this->_site_plugin_conf_r['cover_width'] . $jsonData['poster_path']);
             $this->addItemAttribute('imdb_id', $jsonData['imdb_id']);
@@ -104,19 +104,19 @@ class tmdb extends SitePlugin {
 
             $genres = array();
             foreach ($jsonData['genres'] as $genre) {
-                $genres[] = $genre['name'];
+                $genres[] = utf8_decode($genre['name']);
             }
             $this->addItemAttribute('genre', $genres);
 
             $prod_companies = array();
             foreach ($jsonData['production_companies'] as $prod_company) {
-                $prod_companies[] = $prod_company['name'];
+                $prod_companies[] = utf8_decode($prod_company['name']);
             }
             $this->addItemAttribute('prod_companies', $prod_companies);
 
             $actors = array();
             foreach ($jsonData['casts']['cast'] as $actor) {
-                $actors[] = $actor['name'];
+                $actors[] = utf8_decode($actor['name']);
             }
             $this->addItemAttribute('actors', $actors);
 
@@ -128,24 +128,24 @@ class tmdb extends SitePlugin {
             foreach ($jsonData['casts']['crew'] as $crew) {
                 switch ($crew['job']) {
                     case 'Director':
-                        $directors[] = $crew['name'];
+                        $directors[] = utf8_decode($crew['name']);
                         break;
                     case 'Producer':
                     case 'Executive Producer':
-                        $producers[] = $crew['name'];
+                        $producers[] = utf8_decode($crew['name']);
                         break;
                     case 'Music':
                     case 'Musical':
                     case 'Original Music Composer':
-                        $music[] = $crew['name'];
+                        $music[] = utf8_decode($crew['name']);
                         break;
                     case 'Writer':
                     case 'Screenplay':
                     case 'Novel':
-                        $writers[] = $crew['name'];
+                        $writers[] = utf8_decode($crew['name']);
                         break;
                     default:
-                        $others[] = $crew['job'];
+                        $others[] = utf8_decode($crew['job']);
                         break;
                 }
             }

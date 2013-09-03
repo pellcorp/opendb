@@ -88,7 +88,7 @@ class tmdb extends SitePlugin {
     function queryItem($search_attributes_r, $s_item_type) {
         if ($this->apikey == '') return false;
 
-        $jsonData = json_decode($this->fetchURI($this->baseURL . 'movie/' . $search_attributes_r['tmdb_id'] . '?api_key=' . $this->apikey . '&append_to_response=casts'), true);
+        $jsonData = json_decode($this->fetchURI($this->baseURL . 'movie/' . $search_attributes_r['tmdb_id'] . '?api_key=' . $this->apikey . '&append_to_response=casts', true), true);
 
         if (!is_null($jsonData)) {
             $this->addItemAttribute('title', $jsonData['title']);

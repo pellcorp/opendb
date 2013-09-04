@@ -1127,7 +1127,14 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 				if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
 					// fixme, this creates a relationship for all item instances, is that what we want?
 					insert_item_instance_relationships($HTTP_VARS['parent_item_id'], $item_r['item_id'], $item_r['instance_no']);
-				}
+				} elseif (!empty($HTTP_VARS['parent_item'])) {
+                    $parent_item_r = get_item_id_and_instance_no($HTTP_VARS['parent_item']);
+
+                    if (is_exists_item_instance($parent_item_r['item_id'], $parent_item_r['instance_no'])) {
+                        insert_item_instance_relationship($parent_item_r['item_id'], $parent_item_r['instance_no'],
+                            $item_r['item_id'], $item_r['instance_no']);
+                    }
+                }
 			}
 		}
 	}

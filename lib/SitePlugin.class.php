@@ -599,10 +599,14 @@ else {
 	/**
 	* local stub to make it easier to access
 	*/
-	function fetchURI($uri) {
+	function fetchURI($uri, $utf8 = false) {
 		$page = $this->_httpClient->fetchURI ( $uri );
 		if ($page !== FALSE)
-			return get_opendb_config_var ( 'themes', 'charset' ) == 'utf-8' ? utf8_encode ( $page ) : $page;
+            if (get_opendb_config_var ( 'themes', 'charset' ) == 'utf-8') {
+                return $utf8 === true ? $page : utf8_encode($page);
+            } else {
+                return $utf8 === true ? utf8_decode($page) : $page;
+            }
 		else
 			$this->setError ( $this->_httpClient->error );
 	}

@@ -17,13 +17,12 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-
-require_once('./lib/phpmailer/class.phpmailer.php');
+require_once ('./lib/phpmailer/class.phpmailer.php');
 // hardcoded to english messages for now
-include_once("./lib/phpmailer/language/phpmailer.lang-en.php");
+include_once ("./lib/phpmailer/language/phpmailer.lang-en.php");
 
-include_once("./lib/config.php");
-include_once("./lib/logging.php");
+include_once ("./lib/config.php");
+include_once ("./lib/logging.php");
 
 /**
 	If set to email.mailer = 'mail', then must provide extra details:
@@ -32,69 +31,61 @@ include_once("./lib/logging.php");
 		email.smtp.username
 		email.smtp.password
 */
-class OpenDbMailer extends PHPMailer
-{
-	function OpenDbMailer($mailer)
-	{
+class OpenDbMailer extends PHPMailer {
+
+	function OpenDbMailer($mailer) {
 		$this->PluginDir = './lib/phpmailer/';
 		
-		if(get_opendb_config_var('email', 'windows_smtp_server')===TRUE)
-		{
-        	$this->LE = "\r\n";
-		}
-		else
-		{
+		if (get_opendb_config_var ( 'email', 'windows_smtp_server' ) === TRUE) {
+			$this->LE = "\r\n";
+		} else {
 			$this->LE = "\n";
 		}
 		
-        $this->Mailer = $mailer;
-        $this->Priority = "3"; // in case we want to change it
-        $this->Sender = get_opendb_config_var('email', 'noreply_address');
-
-		if($this->Mailer == 'smtp')
-		{
-    		$email_smtp_r = get_opendb_config_var('email.smtp');
-
-    		// at least host should be defined.
-			if(is_not_empty_array($email_smtp_r) && strlen($email_smtp_r['host'])>0)
-			{
-            	$this->Host = $email_smtp_r['host'];
-
-				if(strlen($email_smtp_r['port'])>0)
-					$this->Port = $email_smtp_r['port'];
+		$this->Mailer = $mailer;
+		$this->Priority = "3"; // in case we want to change it
+		$this->Sender = get_opendb_config_var ( 'email', 'noreply_address' );
+		
+		if ($this->Mailer == 'smtp') {
+			$email_smtp_r = get_opendb_config_var ( 'email.smtp' );
+			
+			// at least host should be defined.
+			if (is_not_empty_array ( $email_smtp_r ) && strlen ( $email_smtp_r ['host'] ) > 0) {
+				$this->Host = $email_smtp_r ['host'];
 				
-				if($email_smtp_r['secure'] != 'none') {
-					$this->SMTPSecure = $email_smtp_r['secure'];// sets the prefix to the server
+				if (strlen ( $email_smtp_r ['port'] ) > 0)
+					$this->Port = $email_smtp_r ['port'];
+				
+				if ($email_smtp_r ['secure'] != 'none') {
+					$this->SMTPSecure = $email_smtp_r ['secure']; // sets the prefix to the server
 				}
 				
-    	        if(strlen($email_smtp_r['username'])>0 && strlen($email_smtp_r['password'])>0) {
-					$this->Username = $email_smtp_r['username'];
-					$this->Password = $email_smtp_r['password'];
+				if (strlen ( $email_smtp_r ['username'] ) > 0 && strlen ( $email_smtp_r ['password'] ) > 0) {
+					$this->Username = $email_smtp_r ['username'];
+					$this->Password = $email_smtp_r ['password'];
 					$this->SMTPAuth = TRUE;
 				}
-			}
-			else
-			{
-			    // set to 'mail' mailer as default, and log configuration error.
-			    opendb_logger(OPENDB_LOG_ERROR,  __FILE__, __FUNCTION__, 'Email SMTP Configuration missing', array($mailer));
-
+			} else {
+				// set to 'mail' mailer as default, and log configuration error.
+				opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Email SMTP Configuration missing', array (
+						$mailer ) );
+				
 				// override, because mailer smtp is misconfigured.
-			    $this->Mailer = 'mail';
+				$this->Mailer = 'mail';
 			}
 		}
 	}
-	
+
 	/**
 	    Language variables are hardcoded to english at the moment.
 	*/
-	function Lang($key)
-	{
+	function Lang($key) {
 		global $PHPMAILER_LANG;
 		
-		if(isset($PHPMAILER_LANG[$key]))
-            return $PHPMAILER_LANG[$key];
-        else
-            return "Language string failed to load: " . $key;
+		if (isset ( $PHPMAILER_LANG [$key] ))
+			return $PHPMAILER_LANG [$key];
+		else
+			return "Language string failed to load: " . $key;
 	}
 }
 ?>

@@ -31,3 +31,30 @@ INSERT INTO s_item_type_group_rltshp ( s_item_type_group, s_item_type ) VALUES (
 
 # Update all amazon plugins to use the amazon class
 UPDATE s_site_plugin SET classname = 'amazon' WHERE site_type IN ('amazonfr', 'amazonuk', 'amazonde');
+
+# iblist no longer supports isbn
+DELETE FROM s_site_plugin_input_field
+WHERE site_type = 'iblist' AND field = 'isbn';
+
+# Add attribute permission support.
+ALTER TABLE s_attribute_type ADD view_perm VARCHAR(50) NOT NULL DEFAULT 'PUBLICACCESS';
+ALTER TABLE s_role ADD priority TINYINT(3) unsigned NOT NULL;
+
+UPDATE s_attribute_type SET view_perm = 'PUBLICACCESS';
+
+UPDATE s_role SET priority = 255 WHERE role_name = 'ADMINISTRATOR';
+UPDATE s_role SET priority = 150 WHERE role_name = 'OWNER';
+UPDATE s_role SET priority = 100 WHERE role_name = 'BORROWER';
+UPDATE s_role SET priority = 50 WHERE role_name = 'GUEST';
+UPDATE s_role SET priority = 0 WHERE role_name = 'PUBLICACCESS';
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'cannot_delete_relation_item_not_owned', 'You cannot delete an item relationship you do not own');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'confirm_delete_relation_title', 'Are you sure you want remove {display_title} as a parent item?');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_related_item', 'Delete Item Relationship');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_relation_not_deleted', 'Relationship not deleted.');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'item_relation_deleted', 'Relationship deleted.');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_item', 'Parent Item');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_item_filter', 'Parent Item Filter');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_instance_number', 'Parent Instance Number');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_relationship', 'Delete Relationship');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_parent', 'Add Related Parent');

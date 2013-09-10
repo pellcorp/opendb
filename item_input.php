@@ -38,9 +38,70 @@ include_once("./lib/widgets.php");
 include_once("./lib/parseutils.php");
 include_once("./lib/site_plugin.php");
 include_once("./lib/item_input.php");
+include_once("./lib/item_display.php");
 include_once("./lib/status_type.php");
 include_once("./lib/TitleMask.class.php");
 include_once("./lib/HTML_Listing.class.php");
+
+function get_related_item_search_script() {
+	$script = "$(document).ready(function() {
+    $('#parent_item_loading').hide();
+
+    $('#parent_item_filter').change(function() {
+        $('#parent_item').prop('disabled', true);
+        $('#parent_item_loading').show();
+
+        var requestData = 'ajax_op=possible-parents&item_id=' + $('form [name=\"item_id\"]').val() + '&parent_item_filter=' + $('#parent_item_filter').val();
+
+        $.ajax({
+            type: 'post',
+            url: 'item_input.php',
+            dataType: 'json',
+            data: requestData
+        })
+        .done(function(data) {
+            $('#parent_item').html(data.select);
+        })
+        .always(function() {
+            $('#parent_item').prop('disabled', false);
+            $('#parent_item_loading').hide();
+        });
+    });
+});
+";
+	return "\n<script language=\"JavaScript\">\n<!-- // hide from stupid browsers\n" . $script . "\n// -->\n</script>\n";
+}
+
+function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
+	$titleMaskCfg = new TitleMask ( 'item_listing' );
+	
+	$possible_parents = fetch_available_item_parents($HTTP_VARS, $item_r, $filter, false);
+	
+	// options will be in format ITEM_ID.INSTANCE_NO, so do not clash with existing parent_item_id / parent_instance_no stuff.
+	$parent_item_list = '<select name="parent_item" id="parent_item">';
+
+	if (!is_null($filter) && $filter != '%parent_only%') {
+		if (count($possible_parents) > 0) {
+			$parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
+		} else {
+			$parent_item_list .= '<option value="0">' . get_opendb_lang_var('nothing_found') . '</option>';
+		}
+	} else {
+		$parent_item_list .= '<option value="0">' . get_opendb_lang_var('none') . '</option>';
+	}
+
+	foreach ($possible_parents as $parent) {
+		if (!$parent['current_parent']) {
+			$parent ['title'] = $titleMaskCfg->expand_item_title ( $parent );
+			$parent_item_list .= '<option value="' . $parent['item_id'] . '_' . $parent['instance_no'] . '">'
+					. utf8_encode($parent['title']) . '</option>';
+		}
+	}
+
+	$parent_item_list .= '</select> <span id="parent_item_loading">' . get_opendb_lang_var('loading') . '...</span>';
+
+	return $parent_item_list;
+}
 
 /**
  * Will test the old against the new value.
@@ -432,8 +493,10 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
 				// normal field
 				return $HTTP_VARS[$fieldname];
 		} else if ($op == 'new') {
-			return NULL;
-		}
+            return get_field_default_value($s_attribute_type);
+		} else if ($op == 'site' && !isset($HTTP_VARS[$fieldname])) {
+            return get_field_default_value($s_attribute_type);
+        }
 	}
 
 	return get_old_field_value($item_r, $s_field_type, $attribute_val);
@@ -451,6 +514,31 @@ function get_old_field_value($item_r, $s_field_type, $attribute_val) {
 	} else {
 		return $attribute_val;
 	}
+}
+
+function get_field_default_value($s_attribute_type) {
+    $attribute_type_r = fetch_attribute_type_r($s_attribute_type);
+    $value = NULL;
+
+    switch ($attribute_type_r['input_type']) {
+        case 'text':
+            $value = $attribute_type_r['input_type_arg3'];
+            break;
+        case 'number':
+            $value = $attribute_type_r['input_type_arg2'];
+            break;
+        case 'filtered':
+            $value = $attribute_type_r['input_type_arg4'];
+            break;
+        case 'checkbox':
+            if ($attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg1']
+                || $attribute_type_r['input_type_arg3'] == $attribute_type_r['input_type_arg2']) {
+                $value = $attribute_type_r['input_type_arg3'];
+            }
+            break;
+    }
+
+    return $value;
 }
 
 // If $old_value !== FALSE, then we will assume a refresh operation and display a
@@ -665,8 +753,14 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, &$upload_file_fields) {
 }
 
 function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
+	$formContents = "<div class=\"tabContentHidden\" id=\"instance_info\">";
+	
+	$formContents .= get_related_item_search_script();
+	
 	$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'instance_field_types');
 	if ($results) {
+		$formContents .= "<h3>" . get_opendb_lang_var('instance_info') . "</h3>";
+
 		$formContents .= "\n<table>";
 
 		if (($op == 'edit' || $op == 'refresh') && $status_type_r['change_owner_ind'] == 'Y') {
@@ -719,13 +813,28 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 			}
 		}//while
 		db_free_result($results);
-
+	
 		$formContents .= "\n</table>";
-
-		return $formContents;
-	} else {
-		return FALSE;
 	}
+		
+	if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+		$formContents .= "<h3>" . get_opendb_lang_var ( 'add_related_parent' ) . "</h3>";
+		
+       	$formContents .= "\n<table>";
+		$formContents .= format_field(get_opendb_lang_var('parent_item_filter'), '<input type="text" name="parent_item_filter" id="parent_item_filter">');
+		$formContents .= format_field(get_opendb_lang_var('parent_item'), format_item_parents_select($HTTP_VARS, $item_r, '%parent_only%'));
+		$formContents .= "\n</table>";
+		
+		$relatedItems = get_related_items_listing ( $item_r, $HTTP_VARS, RELATED_PARENTS_MODE );
+		if ($relatedItems != NULL) {
+			$formContents .= "<h3>" . get_opendb_lang_var('related_parent_item(s)') . "</h3>";
+			$formContents .= $relatedItems;
+		}
+	}
+	
+	$formContents .= "</div>";
+
+	return $formContents;
 }
 
 function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
@@ -797,17 +906,7 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 
 		$pageContents .= "</div>";
 
-		$pageContents .= "<div class=\"tabContentHidden\" id=\"instance_info\">";
-		$pageContents .= "<h3>" . get_opendb_lang_var('instance_info') . "</h3>";
-
-		$formContents = get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS);
-		if ($formContents !== FALSE) {
-			$pageContents .= $formContents;
-		} else {
-			$pageContents .= get_opendb_lang_var('no_records_found');
-		}
-
-		$pageContents .= "</div>";
+		$pageContents .= get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS);
 
 		$pageContents .= "</div>";
 
@@ -993,7 +1092,7 @@ function do_op_title($item_r, $status_type_r, $op) {
 			$item_title = get_opendb_lang_var('add_new_item_for_name', array('user_id' => $item_r['owner_id'], 'fullname' => fetch_user_name($item_r['owner_id'])));
 		else
 			$item_title = get_opendb_lang_var('add_new_item');
-	} else if ($op == 'update' || $op == 'delete') {
+	} else if ($op == 'update' || $op == 'delete' || $op == 'delete_related') {
 		$item_title = get_opendb_lang_var($op . '_item');
 	} else if ($op == 'refresh' || $op == 'edit' || $op == 'clone_item') {
 		if ($op == 'clone_item')
@@ -1025,10 +1124,17 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 		$return_val = handle_item_instance_insert($item_r, $status_type_r, $HTTP_VARS, $errors);
 		if ($return_val !== FALSE) {
 			if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
-				// is this a add related item action - parent_item_id is the key here! 
 				if (is_numeric($HTTP_VARS['parent_item_id']) && is_numeric($HTTP_VARS['parent_instance_no']) && is_exists_item_instance($HTTP_VARS['parent_item_id'], $HTTP_VARS['parent_instance_no'])) {
+					// fixme, this creates a relationship for all item instances, is that what we want?
 					insert_item_instance_relationships($HTTP_VARS['parent_item_id'], $item_r['item_id'], $item_r['instance_no']);
-				}
+				} elseif (!empty($HTTP_VARS['parent_item'])) {
+                    $parent_item_r = get_item_id_and_instance_no($HTTP_VARS['parent_item']);
+
+                    if (is_exists_item_instance($parent_item_r['item_id'], $parent_item_r['instance_no'])) {
+                        insert_item_instance_relationship($parent_item_r['item_id'], $parent_item_r['instance_no'],
+                            $item_r['item_id'], $item_r['instance_no']);
+                    }
+                }
 			}
 		}
 	}
@@ -1104,6 +1210,20 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 
 	if ($return_val === TRUE) {
 		$return_val = handle_item_update($item_r, $HTTP_VARS, $errors);
+
+        if (get_opendb_config_var('item_input', 'related_item_support') !== FALSE) {
+        	if (!empty($HTTP_VARS['parent_item'])) {
+        		$parent_item_r = get_item_id_and_instance_no($HTTP_VARS['parent_item']);
+        		
+        		if (is_exists_item_instance($parent_item_r['item_id'], $parent_item_r['instance_no'])
+						&& !is_exists_related_item_instance_relationship($item_r['item_id'], $item_r['instance_no'], 
+								$parent_item_r['item_id'], $parent_item_r['instance_no'])) {
+
+        			insert_item_instance_relationship($parent_item_r['item_id'], $parent_item_r['instance_no'], 
+        								$item_r['item_id'], $item_r['instance_no']);
+        		}
+        	}
+        }
 	}
 
 	if ($return_val === "__INVALID_DATA__") {
@@ -1232,6 +1352,31 @@ function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_l
 	}
 }
 
+function perform_delete_relation_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r) {
+    global $PHP_SELF;
+    global $titleMaskCfg;
+
+    $parent_item_r = fetch_item_r($HTTP_VARS['parent_item_id']);
+    do_op_title($parent_item_r, $status_type_r, 'delete_related');
+
+    $errors = null;
+    $return_val = handle_item_relation_delete($item_r, $status_type_r, $HTTP_VARS, $errors);
+    if ($return_val === "__CONFIRM__") {
+        echo (get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_delete_relation_title', 'display_title', $titleMaskCfg->expand_item_title($parent_item_r)), $HTTP_VARS));
+    } else {
+        if ($return_val == "__ABORTED__") {
+            echo ("<p class=\"success\">" . get_opendb_lang_var('item_relation_not_deleted') . "</p>");
+            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+        } else if ($return_val === FALSE) {
+            echo format_error_block($errors);
+            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+        } else {
+            echo ("<p class=\"success\">" . get_opendb_lang_var('item_relation_deleted') . "</p>");
+            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+        }
+    }
+}
+
 function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r) {
 	$sitePlugin = &get_site_plugin_instance($HTTP_VARS['site_type']);
 	if ($sitePlugin !== FALSE) {
@@ -1343,128 +1488,165 @@ if (is_site_enabled()) {
 
 	if (is_opendb_valid_session()) {
 		if (is_user_granted_permission(PERM_ITEM_OWNER) || is_user_granted_permission(PERM_ITEM_ADMIN)) {
-			if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'insert'
-					|| 
-					// For a $op == ('site' OR 'site-search' OR 'site-add') where an item is actually defined,
-					// it is really a 'refresh' site operation.
-					(($HTTP_VARS['op'] == 'site-search' || $HTTP_VARS['op'] == 'site-add' || $HTTP_VARS['op'] == 'site-refresh' || $HTTP_VARS['op'] == 'site') && !is_exists_item($HTTP_VARS['item_id']))) {
-				if (strlen($HTTP_VARS['s_status_type']) == 0) {
-					$status_attr_type_r = fetch_sfieldtype_item_attribute_type_r($HTTP_VARS['s_item_type'], 'STATUSTYPE');
-					$HTTP_VARS['s_status_type'] = $HTTP_VARS[get_field_name($status_attr_type_r['s_attribute_type'], $status_attr_type_r['order_no'])];
-				}
-
-				if (strlen($HTTP_VARS['s_status_type']) > 0) {
-					$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
-				} else {
-					// Dummy array entry, as the s_status_type will be chosen in the edit form.
-					$status_type_r = array('borrow_ind' => 'Y');
-				}
-
-				// where we are making a copy of an existing item
-				if (is_exists_item($HTTP_VARS['item_id'])) {
-					$item_r = fetch_item_r($HTTP_VARS['item_id']);
-				} else {
-					$item_r = array(item_id => NULL, title => NULL, s_item_type => trim($HTTP_VARS['s_item_type']));
-				}
-
-				$item_r['instance_no'] = NULL; // if a new copy / clone let insert process work out next instance no
-				$item_r['owner_id'] = ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'));
-				$item_r['s_status_type'] = $status_type_r['s_status_type'];
-				$item_r['status_comment'] = NULL;
-			} else { //otherwise either a site refresh operation or an edit/update/delete
- 				$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
-
-				// a new copy should be for the current user
-				if ($HTTP_VARS['op'] == 'newinstance')
-					$item_r['owner_id'] = get_opendb_session_var('user_id');
-
-				$status_type_r = fetch_status_type_r($item_r['s_status_type']);
-			}
-
-			// Includes 'new' because we artificially construct an $item_r array.
-			if (is_not_empty_array($item_r)) {
-				// We need a valid $status_type_r as well at this point, and should not continue without it.
-				if (is_not_empty_array($status_type_r)) {
-					$footer_links_r = NULL;
-
-					// construct single instance of this object to use throughout the script.
-					$titleMaskCfg = new TitleMask('item_display');
-
-					switch ($HTTP_VARS['op']) {
-					case 'insert':
-						perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'delete':
-						perform_delete_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'update':
-						perform_update_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'newinstance':
-						perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'clone_item':
-						perform_cloneitem_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'new':
-						perform_new_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'edit':
-						perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'site-add':
-						handle_site_add_or_refresh(NULL, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'site-refresh':
-						handle_site_add_or_refresh($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					case 'site-search':
-					case 'site':
-						perform_site_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
-						break;
-
-					default:
-						echo _theme_header(get_opendb_lang_var('operation_not_available'));
-						echo format_error_block(get_opendb_lang_var('operation_not_available'));
+			if (empty($HTTP_VARS['ajax_op'])) {
+				// For a $op == ('site' OR 'site-search' OR 'site-add') where an item is actually defined,
+				// it is really a 'refresh' site operation.
+				if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'insert'
+						|| (($HTTP_VARS['op'] == 'site-search' 
+						|| $HTTP_VARS['op'] == 'site-add' 
+						|| $HTTP_VARS['op'] == 'site-refresh' 
+						|| $HTTP_VARS['op'] == 'site') 
+						&& !is_exists_item($HTTP_VARS['item_id']))) {
+					
+					if (strlen($HTTP_VARS['s_status_type']) == 0) {
+						$status_attr_type_r = fetch_sfieldtype_item_attribute_type_r($HTTP_VARS['s_item_type'], 'STATUSTYPE');
+						$HTTP_VARS['s_status_type'] = $HTTP_VARS[get_field_name($status_attr_type_r['s_attribute_type'], $status_attr_type_r['order_no'])];
 					}
-				} else { //if(is_not_empty_array($status_type_r))
- 					$page_title = get_opendb_lang_var('invalid_s_status_type', 's_status_type', ifempty($item_r['s_status_type'], $HTTP_VARS['s_status_type']));
-					echo _theme_header($page_title);
-					echo format_error_block($page_title);
+	
+					if (strlen($HTTP_VARS['s_status_type']) > 0) {
+						$status_type_r = fetch_status_type_r($HTTP_VARS['s_status_type']);
+					} else {
+						// Dummy array entry, as the s_status_type will be chosen in the edit form.
+						$status_type_r = array('borrow_ind' => 'Y');
+					}
+	
+					// where we are making a copy of an existing item
+					if (is_exists_item($HTTP_VARS['item_id'])) {
+						$item_r = fetch_item_r($HTTP_VARS['item_id']);
+					} else {
+						$item_r = array(item_id => NULL, title => NULL, s_item_type => trim($HTTP_VARS['s_item_type']));
+					}
+	
+					$item_r['instance_no'] = NULL; // if a new copy / clone let insert process work out next instance no
+					$item_r['owner_id'] = ifempty($HTTP_VARS['owner_id'], get_opendb_session_var('user_id'));
+					$item_r['s_status_type'] = $status_type_r['s_status_type'];
+					$item_r['status_comment'] = NULL;
+				} else { //otherwise either a site refresh operation or an edit/update/delete
+	 				$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
+	
+					// a new copy should be for the current user
+					if ($HTTP_VARS['op'] == 'newinstance')
+						$item_r['owner_id'] = get_opendb_session_var('user_id');
+	
+					$status_type_r = fetch_status_type_r($item_r['s_status_type']);
 				}
-			} else { //if(is_not_empty_array($item_r))
- 				echo _theme_header(get_opendb_lang_var('item_not_found'));
-				echo format_error_block(get_opendb_lang_var('item_not_found'));
+	
+				// Includes 'new' because we artificially construct an $item_r array.
+				if (is_not_empty_array($item_r)) {
+					// We need a valid $status_type_r as well at this point, and should not continue without it.
+					if (is_not_empty_array($status_type_r)) {
+						$footer_links_r = NULL;
+	
+						// construct single instance of this object to use throughout the script.
+						$titleMaskCfg = new TitleMask('item_display');
+	
+						switch ($HTTP_VARS['op']) {
+						case 'insert':
+							perform_insert_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'delete':
+							perform_delete_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'update':
+							perform_update_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'newinstance':
+							perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'clone_item':
+							perform_cloneitem_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'new':
+							perform_new_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'edit':
+							perform_edit_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+	                    case 'delete-relation':
+	                        perform_delete_relation_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+	                        break;
+	
+						case 'site-add':
+							handle_site_add_or_refresh(NULL, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'site-refresh':
+							handle_site_add_or_refresh($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						case 'site-search':
+						case 'site':
+							perform_site_process($item_r, $status_type_r, $HTTP_VARS, $footer_links_r);
+							break;
+	
+						default:
+							echo _theme_header(get_opendb_lang_var('operation_not_available'));
+							echo format_error_block(get_opendb_lang_var('operation_not_available'));
+						}
+					} else { //if(is_not_empty_array($status_type_r))
+	 					$page_title = get_opendb_lang_var('invalid_s_status_type', 's_status_type', ifempty($item_r['s_status_type'], $HTTP_VARS['s_status_type']));
+						echo _theme_header($page_title);
+						echo format_error_block($page_title);
+					}
+				} else { //if(is_not_empty_array($item_r))
+	 				echo _theme_header(get_opendb_lang_var('item_not_found'));
+					echo format_error_block(get_opendb_lang_var('item_not_found'));
+				}
+	
+				if (is_opendb_session_var('listing_url_vars')) {
+					$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+				}
+	
+				echo format_footer_links($footer_links_r);
+				echo _theme_footer();
+			} else {
+				switch ($HTTP_VARS['ajax_op']) {
+					case 'possible-parents':
+						// Get HTML select list of possible item parents.
+						if (is_user_granted_permission(PERM_ITEM_OWNER) || is_user_granted_permission(PERM_ITEM_ADMIN)) {
+							echo json_encode(
+									array('select' => format_item_parents_select(
+											$HTTP_VARS, fetch_item_r($HTTP_VARS['item_id']), $HTTP_VARS['parent_item_filter'])));
+						}
+						break;
+					default:
+						// invalid operation.
+						echo json_encode(array('error' => get_opendb_lang_var('operation_not_available')));
+						break;
+				}
 			}
-
-			if (is_opendb_session_var('listing_url_vars')) {
-				$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
-			}
-
-			echo format_footer_links($footer_links_r);
-			echo _theme_footer();
 		} else {
-			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-			echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-			echo _theme_footer();
+			if (empty($HTTP_VARS['ajax_op'])) {
+				echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
+				echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
+				echo _theme_footer();
+			} else {
+				echo json_encode(array('error' => get_opendb_lang_var('not_authorized_to_page')));
+			}
 		}
 	} else {
-		// invalid login, so login instead.
-		redirect_login($PHP_SELF, $HTTP_VARS);
+		if (empty($HTTP_VARS['ajax_op'])) {
+			// invalid login, so login instead.
+			redirect_login($PHP_SELF, $HTTP_VARS);
+		} else {
+			echo json_encode(array('error' => get_opendb_lang_var('login_failure')));
+		}
 	}
 } else { //if(is_site_enabled())
-	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+	if (empty($HTTP_VARS['ajax_op'])) {
+		echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
+		echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
+		echo _theme_footer();
+	} else {
+		echo json_encode(array('error' => get_opendb_lang_var('site_is_disabled')));
+	}
 }
 
 // Cleanup after begin.inc.php

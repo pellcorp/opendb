@@ -1067,11 +1067,11 @@ VALUES ('text/plain', 'DOCUMENT', 'Plain Text', NULL, 'N');
 INSERT INTO s_file_type_extension (content_type, extension, default_ind)
 VALUES ('text/plain', 'txt', 'Y');
 
-INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('ADMINISTRATOR', 'Administrator', 'N');
-INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('OWNER', 'Owner', 'Y');
-INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('BORROWER', 'Borrower', 'Y');
-INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('GUEST', 'Guest', 'Y');
-INSERT INTO s_role(role_name, description, signup_avail_ind) VALUES('PUBLICACCESS', 'Public Access', 'N');
+INSERT INTO s_role(role_name, description, signup_avail_ind, priority) VALUES('ADMINISTRATOR', 'Administrator', 'N', 255);
+INSERT INTO s_role(role_name, description, signup_avail_ind, priority) VALUES('OWNER', 'Owner', 'Y', 150);
+INSERT INTO s_role(role_name, description, signup_avail_ind, priority) VALUES('BORROWER', 'Borrower', 'Y', 100);
+INSERT INTO s_role(role_name, description, signup_avail_ind, priority) VALUES('GUEST', 'Guest', 'Y', 50);
+INSERT INTO s_role(role_name, description, signup_avail_ind, priority) VALUES('PUBLICACCESS', 'Public Access', 'N', 0);
 
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_ANNOUNCEMENTS', 'View Announcements');
 INSERT INTO s_permission(permission_name, description) values('PERM_VIEW_WHATSNEW', 'View Whats New');

@@ -110,7 +110,7 @@ function theme_footer($pageid, $user_id) {
 	echo ("</div>");
 
 	if ($pageid != 'install')
-		echo ("<div id=\"footer\"><a href=\"http://opendb.iamvegan.net/\">" . get_opendb_lang_var('powered_by_site', 'site', get_opendb_title_and_version()) . "</a></div>");
+		echo ("<div id=\"footer\"><a href=\"http://github.com/pellcorp/opendb\">" . get_opendb_lang_var('powered_by_site', 'site', get_opendb_title_and_version()) . "</a></div>");
 
 	echo ("</body></html>");
 }

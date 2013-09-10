@@ -17,39 +17,35 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-
-include_once("./lib/http.php");
-include_once("./lib/fileutils.php");
-include_once("./lib/utils.php");
-include_once("./lib/parseutils.php");
-include_once("./lib/datetime.php");
-include_once("./lib/email.php");
-include_once("./lib/status_type.php");
-include_once("./lib/theme.php");
+include_once ("./lib/http.php");
+include_once ("./lib/fileutils.php");
+include_once ("./lib/utils.php");
+include_once ("./lib/parseutils.php");
+include_once ("./lib/datetime.php");
+include_once ("./lib/email.php");
+include_once ("./lib/status_type.php");
+include_once ("./lib/theme.php");
 
 // todo - work out which scripts need input fields and which need display fields
-include_once("./lib/inputfields.php");
-include_once("./lib/displayfields.php");
-
+include_once ("./lib/inputfields.php");
+include_once ("./lib/displayfields.php");
 
 /*
 * A display mask consists of %value%, %display% and %img% mask variables, the
 * first of %value% or %display% encountered will effect the order by chosen.
 */
-function get_lookup_order_by($display_mask)
-{
+function get_lookup_order_by($display_mask) {
 	// if display mask is empty return default of 'value'
-	if(strlen($display_mask)==0)
+	if (strlen ( $display_mask ) == 0)
 		return 'value'; //default orderby is 'value'
-	else
-	{
-		$displayPos = strpos($display_mask, '%display%');
-		$valuePos = strpos($display_mask, '%value%');
-		if($displayPos!==FALSE && ($valuePos===FALSE || $valuePos > $displayPos))
+	else {
+		$displayPos = strpos ( $display_mask, '%display%' );
+		$valuePos = strpos ( $display_mask, '%value%' );
+		if ($displayPos !== FALSE && ($valuePos === FALSE || $valuePos > $displayPos))
 			return 'display';
 		else
 			return 'value';
-	} 
+	}
 }
 
 /**
@@ -82,229 +78,175 @@ function get_lookup_order_by($display_mask)
 	You can however set the $value_column to a value indicating a column name to
 	be used instead of 'value'
 */
-function custom_select(
-			$name, 
-			$lookup_results, 
-			$display_mask, 
-			$size=1, 
-			$value=NULL, 
-			$value_column='value', 
-			$include_ind_func=NULL, 
-			$checked_ind='', 
-			$onchange_event='', 
-			$disabled = FALSE,
-			$id = NULL)
-{
+function custom_select($name, $lookup_results, $display_mask, $size = 1, $value = NULL, $value_column = 'value', $include_ind_func = NULL, $checked_ind = '', $onchange_event = '', $disabled = FALSE, $id = NULL) {
 	// allows function to be called with an array of args, instead of individual arguments.
-	if(is_array($name))
-	{
-		extract($name);
+	if (is_array ( $name )) {
+		extract ( $name );
 	}
 	
-	if($size !== 'NA')
-	{
-		if(is_numeric($size) && $size>1)
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"".$name."[]\" size=\"$size\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'')." MULTIPLE>";
+	if ($size !== 'NA') {
+		if (is_numeric ( $size ) && $size > 1)
+			$var = "\n<select " . ($id != NULL ? "id=\"$id\"" : "") . " name=\"" . $name . "[]\" size=\"$size\" onchange=\"$onchange_event\"" . ($disabled ? ' DISABLED' : '') . " MULTIPLE>";
 		else
-			$var = "\n<select ".($id!=NULL?"id=\"$id\"":"")." name=\"$name\" onchange=\"$onchange_event\"".($disabled?' DISABLED':'').">";
-	}
-	else
-	{
+			$var = "\n<select " . ($id != NULL ? "id=\"$id\"" : "") . " name=\"$name\" onchange=\"$onchange_event\"" . ($disabled ? ' DISABLED' : '') . ">";
+	} else {
 		$var = '';
 	}
 	
-	$lookup_results = fetch_results_array($lookup_results);
-	reset($lookup_results);
-
-	$empty_display_mask = expand_display_mask($display_mask, NULL, '%');
+	$lookup_results = fetch_results_array ( $lookup_results );
+	reset ( $lookup_results );
+	$empty_display_mask = expand_display_mask ( $display_mask, NULL, '%' );
 	
-	$value_found=FALSE;
-	while($lookup_r = each($lookup_results))
-	{
+	$value_found = FALSE;
+	while ( $lookup_r = each ( $lookup_results ) ) {
 		// Check if this record should be included in list of values.
-		if(!function_exists($include_ind_func) || $include_ind_func($lookup_r))
-		{
-			$lookup_value = get_array_variable_value($lookup_r, $value_column);
+		if (! function_exists ( $include_ind_func ) || $include_ind_func ( $lookup_r )) {
+			$lookup_value = get_array_variable_value ( $lookup_r, $value_column );
 			
-			$display = expand_display_mask($display_mask, $lookup_r, '%');
+			$display = expand_display_mask ( $display_mask, $lookup_r, '%' );
 			
 			// if all variables were replaced with nothing, then assume empty option
-			if(strlen(strval($lookup_value)) == 0 && $display == $empty_display_mask) //thawn: added strval() to fix variable type mismatch warning in php5.3
-			{			
+			if (strlen ( strval ( $lookup_value ) ) == 0 && $display == $empty_display_mask) 			//thawn: added strval() to fix variable type mismatch warning in php5.3
+{
 				$display = '';
 			}
-
-            if(is_array($value))
-			{
-				if(in_array($lookup_value, $value)!==FALSE)
-					$var .= "\n<option value=\"".$lookup_value."\" SELECTED>$display";
+			
+			if (is_array ( $value )) {
+				if (in_array ( $lookup_value, $value ) !== FALSE)
+					$var .= "\n<option value=\"" . $lookup_value . "\" SELECTED>$display";
 				else
-                    $var .= "\n<option value=\"".$lookup_value."\">$display";
-			}
-			else
-			{
-				if(!$value_found && $value==NULL && $lookup_r[$checked_ind]=='Y')
-					$var .= "\n<option value=\"".$lookup_value."\" SELECTED>$display";
-				else
-				{
-					if(strcasecmp(trim($value), strval($lookup_value)) === 0) //thawn: added strval() to fix variable type mismatch warning in php5.3
-					{
-						$value_found=TRUE;
-						$var .= "\n<option value=\"".$lookup_value."\" SELECTED>$display";
-					}
-					else
-					{
-						$var .= "\n<option value=\"".$lookup_value."\">$display";
+					$var .= "\n<option value=\"" . $lookup_value . "\">$display";
+			} else {
+				if (! $value_found && $value == NULL && $lookup_r [$checked_ind] == 'Y')
+					$var .= "\n<option value=\"" . $lookup_value . "\" SELECTED>$display";
+				else {
+					if (strcasecmp ( trim ( $value ), strval ( $lookup_value ) ) === 0) 					//thawn: added strval() to fix variable type mismatch warning in php5.3
+{
+						$value_found = TRUE;
+						$var .= "\n<option value=\"" . $lookup_value . "\" SELECTED>$display";
+					} else {
+						$var .= "\n<option value=\"" . $lookup_value . "\">$display";
 					}
 				}
 			}
 		}
 	}
-
-	if($size !== 'NA')
-	{
-		$var.="\n</select>";
+	
+	if ($size !== 'NA') {
+		$var .= "\n</select>";
 	}
-	return $var;	
+	return $var;
 }
 
-function format_data($field, $field_mask = NULL)
-{
-	if(strlen($field_mask)>0 && strpos($field_mask,"%field%")!==FALSE)
-		$field = str_replace("%field%", $field, $field_mask);
+function format_data($field, $field_mask = NULL) {
+	if (strlen ( $field_mask ) > 0 && strpos ( $field_mask, "%field%" ) !== FALSE)
+		$field = str_replace ( "%field%", $field, $field_mask );
 	
-	if(strlen($field)==0)
+	if (strlen ( $field ) == 0)
 		$field = "&nbsp;";
-
+	
 	return "<td class=\"data\">$field</td>";
 }
 
-function format_prompt($prompt, $prompt_mask = NULL)
-{
-	if(strlen($prompt_mask)>0 && strpos($prompt_mask,"%prompt%")!==FALSE)
-		$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
-
+function format_prompt($prompt, $prompt_mask = NULL) {
+	if (strlen ( $prompt_mask ) > 0 && strpos ( $prompt_mask, "%prompt%" ) !== FALSE)
+		$prompt = str_replace ( "%prompt%", $prompt, $prompt_mask );
+	
 	return "<th class=\"prompt\" scope=\"row\">$prompt:</th>";
 }
 
-function format_field($prompt, $field, $prompt_mask=NULL, $field_mask = NULL)
-{
-	return "\n<tr>".format_prompt($prompt, $prompt_mask).format_data($field, $field_mask)."</tr>";
+function format_field($prompt, $field, $prompt_mask = NULL, $field_mask = NULL) {
+	return "\n<tr>" . format_prompt ( $prompt, $prompt_mask ) . format_data ( $field, $field_mask ) . "</tr>";
 }
 
-function format_item_data_field($attribute_type_r, $field, $prompt_mask=NULL)
-{
-	$prompt = $attribute_type_r['prompt'];
-	if(strlen($prompt_mask)>0 && strpos($prompt_mask, "%prompt%")!==FALSE)
-		$prompt = str_replace("%prompt%", $prompt, $prompt_mask);
-		
-	if($attribute_type_r['compulsory_ind'] == 'Y')
-	{
-		if(strlen($prompt_mask)==0)
+function format_item_data_field($attribute_type_r, $field, $prompt_mask = NULL) {
+	$prompt = $attribute_type_r ['prompt'];
+	if (strlen ( $prompt_mask ) > 0 && strpos ( $prompt_mask, "%prompt%" ) !== FALSE)
+		$prompt = str_replace ( "%prompt%", $prompt, $prompt_mask );
+	
+	if ($attribute_type_r ['compulsory_ind'] == 'Y') {
+		if (strlen ( $prompt_mask ) == 0)
 			$prompt_mask = '%prompt%';
-			
-		$prompt .=	theme_image("compulsory.gif", get_opendb_lang_var('compulsory_field'), 'compulsory');
+		
+		$prompt .= theme_image ( "compulsory.gif", get_opendb_lang_var ( 'compulsory_field' ), 'compulsory' );
 	}
 	
-	$fieldid = strtolower(str_replace('_', '-', $attribute_type_r['s_attribute_type']).'-'.$attribute_type_r['order_no']);
-	$fieldclass = strtolower(str_replace('_', NULL, $attribute_type_r['s_attribute_type']));
+	$fieldid = strtolower ( str_replace ( '_', '-', $attribute_type_r ['s_attribute_type'] ) . '-' . $attribute_type_r ['order_no'] );
+	$fieldclass = strtolower ( str_replace ( '_', NULL, $attribute_type_r ['s_attribute_type'] ) );
 	
-	return "\n<tr id=\"$fieldid\">".
-				"<th class=\"prompt\" scope=\"row\">$prompt:</th>".
-				"<td class=\"data $fieldclass\">".ifempty($field,'&nbsp;')."</td>".
-			"</tr>";
+	return "\n<tr id=\"$fieldid\">" . "<th class=\"prompt\" scope=\"row\">$prompt:</th>" . "<td class=\"data $fieldclass\">" . ifempty ( $field, '&nbsp;' ) . "</td>" . "</tr>";
 }
 
-function get_field_name($s_attribute_type, $order_no=NULL)
-{
-	if(is_numeric($order_no))
-		return strtolower($s_attribute_type)."_".$order_no;
+function get_field_name($s_attribute_type, $order_no = NULL) {
+	if (is_numeric ( $order_no ))
+		return strtolower ( $s_attribute_type ) . "_" . $order_no;
 	else
-		return strtolower($s_attribute_type);
+		return strtolower ( $s_attribute_type );
 }
 
-function get_op_confirm_form($PHP_SELF, $confirm_message, $HTTP_VARS)
-{
+function get_op_confirm_form($PHP_SELF, $confirm_message, $HTTP_VARS) {
 	$formContents = "\n<form class=\"confirmForm\" action=\"$PHP_SELF\" method=\"POST\">";
-		
-	$formContents .= 
-		"<p>".$confirm_message."</p>".
-		get_url_fields($HTTP_VARS, NULL, array('confirmed')). // Pass all http variables
-		"<fieldset>".
-		"<label for=\"confirm_yes\">".get_opendb_lang_var('yes')."</label>".
-		"<input type=\"radio\" class=\"radio\" name=\"confirmed\" id=\"confirm_yes\" value=\"true\">".
-		"<label for=\"confirm_no\">".get_opendb_lang_var('no')."</label>".
-		"<input type=\"radio\" class=\"radio\" name=\"confirmed\" id=\"confirm_no\" value=\"false\" CHECKED>".
-		"</fieldset>".
-		"<input type=\"submit\" class=\"submit\" value=\"".get_opendb_lang_var('submit')."\">".
-	"</form>\n";
-
+	
+	$formContents .= "<p>" . $confirm_message . "</p>" . get_url_fields ( $HTTP_VARS, NULL, array (
+			'confirmed' ) ) . 	// Pass all http variables
+"<fieldset>" . "<label for=\"confirm_yes\">" . get_opendb_lang_var ( 'yes' ) . "</label>" . "<input type=\"radio\" class=\"radio\" name=\"confirmed\" id=\"confirm_yes\" value=\"true\">" . "<label for=\"confirm_no\">" . get_opendb_lang_var ( 'no' ) . "</label>" . "<input type=\"radio\" class=\"radio\" name=\"confirmed\" id=\"confirm_no\" value=\"false\" CHECKED>" . "</fieldset>" . "<input type=\"submit\" class=\"submit\" value=\"" . get_opendb_lang_var ( 'submit' ) . "\">" . "</form>\n";
+	
 	return $formContents;
 }
 
-function format_footer_links($links_rs)
-{
+function format_footer_links($links_rs) {
 	$field = NULL;
 	
-	if(is_array($links_rs) && isset($links_rs['url']))
-		$footer_links_rs[] = $links_rs;
+	if (is_array ( $links_rs ) && isset ( $links_rs ['url'] ))
+		$footer_links_rs [] = $links_rs;
 	else
-		$footer_links_rs =& $links_rs;
-		
-	if(is_array($footer_links_rs))
-	{
+		$footer_links_rs = & $links_rs;
+	
+	if (is_array ( $footer_links_rs )) {
 		$field = "<ul class=\"footer-links\">";
 		
-		$totalCount = count($footer_links_rs);
-		for($i=0; $i<$totalCount; $i++) {
-			$footer_links_r = $footer_links_rs[$i];
+		$totalCount = count ( $footer_links_rs );
+		for($i = 0; $i < $totalCount; $i ++) {
+			$footer_links_r = $footer_links_rs [$i];
 			
 			$field .= "<li class=\"";
-			if($i==0) {
+			if ($i == 0) {
 				$field .= "first ";
 			}
 			
-			if($i + 1 == $totalCount) {
+			if ($i + 1 == $totalCount) {
 				$field .= "last";
 			}
 			
-			
 			$field .= "\"><a";
-			if(strlen($footer_links_r['url'])>0)
-			{
-				$field .= " href=\"".$footer_links_r['url']."\"";
+			if (strlen ( $footer_links_r ['url'] ) > 0) {
+				$field .= " href=\"" . $footer_links_r ['url'] . "\"";
 			}
 			
-			if(strlen($footer_links_r['onclick'])>0)
-			{
-				$field .= " onclick=\"".$footer_links_r['onclick']."\" ";	
+			if (strlen ( $footer_links_r ['onclick'] ) > 0) {
+				$field .= " onclick=\"" . $footer_links_r ['onclick'] . "\" ";
 			}
 			
-			if(starts_with($footer_links_r['target'], 'popup'))
-			{
-				$spec = prc_function_spec($footer_links_r['target']);
-	
-				if(!is_array($spec['args']))
-				{
-					$spec['args'][0] = '800';
-					$spec['args'][1] = '600';
+			if (starts_with ( $footer_links_r ['target'], 'popup' )) {
+				$spec = prc_function_spec ( $footer_links_r ['target'] );
+				
+				if (! is_array ( $spec ['args'] )) {
+					$spec ['args'] [0] = '800';
+					$spec ['args'] [1] = '600';
 				}
-	
-				$field .= " onclick=\"popup('".$footer_links_r['url']."','".$spec['args'][0]."','".$spec['args'][1]."'); return false;\">";
-			}
-			else 
-			{
-				$field .= (strlen($footer_links_r['target'])>0?"target=\"".$footer_links_r['target']."\"":"").">";
+				
+				$field .= " onclick=\"popup('" . $footer_links_r ['url'] . "','" . $spec ['args'] [0] . "','" . $spec ['args'] [1] . "'); return false;\">";
+			} else {
+				$field .= (strlen ( $footer_links_r ['target'] ) > 0 ? "target=\"" . $footer_links_r ['target'] . "\"" : "") . ">";
 			}
 			
-			if(strlen($footer_links_r['img'])>0)
-			{
-				$field .= '<img src="'.$footer_links_r['img'].'" title="'.$footer_links_r['text'].'">';
+			if (strlen ( $footer_links_r ['img'] ) > 0) {
+				$field .= '<img src="' . $footer_links_r ['img'] . '" title="' . $footer_links_r ['text'] . '">';
 			}
-	
+			
 			// don't allow wrapping of link
-			$field .= $footer_links_r['text']."</a>";
-	
+			$field .= $footer_links_r ['text'] . "</a>";
+			
 			$field .= "</li>";
 		}
 		
@@ -313,236 +255,195 @@ function format_footer_links($links_rs)
 	return $field;
 }
 
-function _format_help_entry($help_entry_r)
-{
-	if(is_array($help_entry_r))
-	{
-		if(isset($help_entry_r['img']))
-			$entry .= theme_image($help_entry_r['img'], $help_entry_r['text'])." ";
-		$entry .= $help_entry_r['text'];
+function _format_help_entry($help_entry_r) {
+	if (is_array ( $help_entry_r )) {
+		if (isset ( $help_entry_r ['img'] ))
+			$entry .= theme_image ( $help_entry_r ['img'], $help_entry_r ['text'] ) . " ";
+		$entry .= $help_entry_r ['text'];
 		
 		return $entry;
-	}
-	else
-	{
+	} else {
 		return $help_entry_r;
 	}
 }
 
-function _format_help_list($help_entry)
-{
+function _format_help_list($help_entry) {
 	$field = '';
 	
-	if(is_array($help_entry) && !isset($help_entry['text']))
-	{
-		while(list($key,$entry) = each($help_entry))
-		{
-			$field .= _format_help_list($entry);
+	if (is_array ( $help_entry ) && ! isset ( $help_entry ['text'] )) {
+		while ( list ( $key, $entry ) = each ( $help_entry ) ) {
+			$field .= _format_help_list ( $entry );
 		}
-	}
-	else
-	{
-		$field .= "\n<li class=\"help_entry_".$help_entry['type']."\">"._format_help_entry($help_entry)."</li>";
+	} else {
+		$field .= "\n<li class=\"help_entry_" . $help_entry ['type'] . "\">" . _format_help_entry ( $help_entry ) . "</li>";
 	}
 	
 	return $field;
 }
 
-function format_help_block($help_entries_rs)
-{
-	if(!is_array($help_entries_rs) && strlen($help_entries_rs)>0)
-		$entries[] = array( array('text'=>$help_entries_rs) );
-	else if(is_array($help_entries_rs) && isset( $help_entries_rs['text'] ))
-		$entries[] = array($help_entries_rs);
-	else if(is_array($help_entries_rs))
-		$entries[] =& $help_entries_rs;
-		
-	if(is_array($entries))
-	{
-		return "\n<ul class=\"help\">".
-			_format_help_list($entries).
-			"</ul>\n";
-	}
-	else
-	{
+function format_help_block($help_entries_rs) {
+	if (! is_array ( $help_entries_rs ) && strlen ( $help_entries_rs ) > 0)
+		$entries [] = array (
+				array (
+						'text' => $help_entries_rs ) );
+	else if (is_array ( $help_entries_rs ) && isset ( $help_entries_rs ['text'] ))
+		$entries [] = array (
+				$help_entries_rs );
+	else if (is_array ( $help_entries_rs ))
+		$entries [] = & $help_entries_rs;
+	
+	if (is_array ( $entries )) {
+		return "\n<ul class=\"help\">" . _format_help_list ( $entries ) . "</ul>\n";
+	} else {
 		return NULL;
 	}
 }
 
-function format_action_links($action_links_rs)
-{
+function format_action_links($action_links_rs) {
 	$field = '';
 	$first = TRUE;
-	while(list(,$action_link_r) = @each($action_links_rs))
-	{
-		if(strlen($action_link_r['img'])>0)
-			$action_image = theme_image('action_'.$action_link_r['img'], $action_link_r['text'], "action");
+	while ( list ( , $action_link_r ) = @each ( $action_links_rs ) ) {
+		if (strlen ( $action_link_r ['img'] ) > 0)
+			$action_image = theme_image ( 'action_' . $action_link_r ['img'], $action_link_r ['text'], "action" );
 		else
 			$action_image = FALSE;
 		
-		$field .= "<li class=\"".($first?'first':'')."\"><a href=\"".$action_link_r['url']."\">";
-		if($first)$first = FALSE;
-		
-		// Either strlen($action_link_r['img'])==0 or theme specific theme_image does not want images for actions, and
-		// returned NULL as a result.
-		if($action_image!==FALSE && strlen($action_image)>0)
-		{
+		$field .= "<li class=\"" . ($first ? 'first' : '') . "\"><a href=\"" . $action_link_r ['url'] . "\">";
+		if ($first)
+			$first = FALSE;
+			
+			// Either strlen($action_link_r['img'])==0 or theme specific theme_image does not want images for actions, and
+			// returned NULL as a result.
+		if ($action_image !== FALSE && strlen ( $action_image ) > 0) {
 			$field .= $action_image;
-		}
-		else
-		{
-			$field .= $action_link_r['text'];
+		} else {
+			$field .= $action_link_r ['text'];
 		}
 		
 		$field .= '</a></li>';
 	}
 	
-	if(strlen($field)>0)
-	{
-		return "<ul class=\"action-links\">".$field."</ul>";
-	}
-	else
-	{
+	if (strlen ( $field ) > 0) {
+		return "<ul class=\"action-links\">" . $field . "</ul>";
+	} else {
 		return NULL;
 	}
 }
 
-function format_checkbox_action_links($cbname, $not_checked_message, $action_links_rs)
-{
+function format_checkbox_action_links($cbname, $not_checked_message, $action_links_rs) {
 	$field = "<ul class=\"checkbox-action-links\">";
 	
 	$first = TRUE;
 	
-	@reset($action_links_rs);
-	while(list(,$action_links_r) = @each($action_links_rs))
-	{
-		$field .= "<li class=\"".($first?'first':'')."\">";
+	@reset ( $action_links_rs );
+	while ( list ( , $action_links_r ) = @each ( $action_links_rs ) ) {
+		$field .= "<li class=\"" . ($first ? 'first' : '') . "\">";
 		
-		if($action_links_r['checked']!==FALSE)
-		{
-			$field .= "<a href=\"#\" onclick=\"if(isChecked(document.forms['".$cbname."'], '".$cbname."[]')){doFormSubmit(document.forms['".$cbname."'], '".$action_links_r['action']."', '".$action_links_r['op']."');}else{alert('".$not_checked_message."');} return false;\">".$action_links_r['link']."</a>";
-		}
-		else
-		{
-			$field .= "<a href=\"".$action_links_r['action']."?op=".$action_links_r['op']."\">".$action_links_r['link']."</a>";
+		if ($action_links_r ['checked'] !== FALSE) {
+			$field .= "<a href=\"#\" onclick=\"if(isChecked(document.forms['" . $cbname . "'], '" . $cbname . "[]')){doFormSubmit(document.forms['" . $cbname . "'], '" . $action_links_r ['action'] . "', '" . $action_links_r ['op'] . "');}else{alert('" . $not_checked_message . "');} return false;\">" . $action_links_r ['link'] . "</a>";
+		} else {
+			$field .= "<a href=\"" . $action_links_r ['action'] . "?op=" . $action_links_r ['op'] . "\">" . $action_links_r ['link'] . "</a>";
 		}
 		$field .= "</li>";
 		
-		if($first)$first = FALSE;
+		if ($first)
+			$first = FALSE;
 	}
 	
 	$field .= "</ul>";
-
+	
 	return $field;
 }
 
-function format_error_block($errors, $err_type = 'error')
-{
-	switch($err_type)
-	{
-		case 'error':
+function format_error_block($errors, $err_type = 'error') {
+	switch ($err_type) {
+		case 'error' :
 			$class = 'error';
 			$smclass = 'smerror';
 			break;
 		
-		case 'smerror':
+		case 'smerror' :
 			$class = 'smerror';
 			$smclass = 'smerror';
 			break;
-			
-		case 'warning': // If it becomes necessary, new CSS style classes will be introduced.
-		case 'information':
-		default:
+		
+		case 'warning' : // If it becomes necessary, new CSS style classes will be introduced.
+		case 'information' :
+		default :
 			$class = 'smsuccess';
 			$smclass = 'footer';
 	}
 	
-	if(!is_array($errors))
-	{
-		if(strlen(trim($errors))==0)
+	if (! is_array ( $errors )) {
+		if (strlen ( trim ( $errors ) ) == 0)
 			return NULL;
-		else				
-			$error_rs[] = array('error'=>$errors,'detail'=>'');
-	}
-	else if(isset($errors['error']))
-		$error_rs[] = $errors;
+		else
+			$error_rs [] = array (
+					'error' => $errors,
+					'detail' => '' );
+	} else if (isset ( $errors ['error'] ))
+		$error_rs [] = $errors;
 	else
 		$error_rs = $errors;
 	
 	$error_entries = NULL;
-	while(list(,$error) = each($error_rs))
-	{
-		if(is_not_empty_array($error))
-		{
-			$error_entry = $error['error'];
-		
-			if(!is_array($error['detail']) && strlen($error['detail'])>0)
-				$detail_rs[] = $error['detail'];
-			else if(is_array($error['detail']))
-				$detail_rs = $error['detail'];
-		
-			if(is_not_empty_array($detail_rs))
-			{
-				$details = "";
-				while(list(,$detail) = each($detail_rs))
-				{
-					$details .= "\n<li class=\"$smclass\">".$detail."</li>";
-				}
+	while ( list ( , $error ) = each ( $error_rs ) ) {
+		if (is_not_empty_array ( $error )) {
+			$error_entry = $error ['error'];
 			
-				if(strlen($details)>0)
-					$error_entry .= "\n<ul>".$details."</ul>";
+			if (! is_array ( $error ['detail'] ) && strlen ( $error ['detail'] ) > 0)
+				$detail_rs [] = $error ['detail'];
+			else if (is_array ( $error ['detail'] ))
+				$detail_rs = $error ['detail'];
+			
+			if (is_not_empty_array ( $detail_rs )) {
+				$details = "";
+				while ( list ( , $detail ) = each ( $detail_rs ) ) {
+					$details .= "\n<li class=\"$smclass\">" . $detail . "</li>";
+				}
+				
+				if (strlen ( $details ) > 0)
+					$error_entry .= "\n<ul>" . $details . "</ul>";
 			}
-		}
-		else
-		{
+		} else {
 			$error_entry = $error;
 		}
 		
-		$error_entries[] = $error_entry;
+		$error_entries [] = $error_entry;
 	}
 	
-	if(count($error_entries)>1)
-	{
+	if (count ( $error_entries ) > 1) {
 		$error_block = "\n<ul>";
-		while(list(,$error_entry) = each($error_entries))
-		{
+		while ( list ( , $error_entry ) = each ( $error_entries ) ) {
 			$error_block .= "\n<li class=\"$class\">$error_entry</li>";
 		}
 		$error_block .= "</ul>";
 		
 		return $error_block;
-	}
-	else if(count($error_entries)==1)
-	{
-		return "\n<p class=\"$class\">".$error_entries[0]."</p>";
-	}
-	else
-	{
+	} else if (count ( $error_entries ) == 1) {
+		return "\n<p class=\"$class\">" . $error_entries [0] . "</p>";
+	} else {
 		return NULL;
 	}
 }
 
-function get_item_image($s_item_type, $item_id = NULL)
-{
-	if(strlen($s_item_type)>0 || ($s_item_type = fetch_item_type($item_id)))
-	{
-		$item_type_r = fetch_item_type_r($s_item_type);
-		if(is_array($item_type_r))
-		{
+function get_item_image($s_item_type, $item_id = NULL) {
+	if (strlen ( $s_item_type ) > 0 || ($s_item_type = fetch_item_type ( $item_id ))) {
+		$item_type_r = fetch_item_type_r ( $s_item_type );
+		if (is_array ( $item_type_r )) {
 			// default
 			$imagetext = $s_item_type;
-
+			
 			// Get image block.
-			if(strlen($item_type_r['image'])>0)
-			{
-				if(strlen($item_type_r['description'])>0)
-					$title_text = htmlspecialchars($item_type_r['description']);
+			if (strlen ( $item_type_r ['image'] ) > 0) {
+				if (strlen ( $item_type_r ['description'] ) > 0)
+					$title_text = htmlspecialchars ( $item_type_r ['description'] );
 				else
 					$title_text = NULL;
-
-				$imagetext = theme_image($item_type_r['image'], $title_text, 's_item_type');
+				
+				$imagetext = theme_image ( $item_type_r ['image'], $title_text, 's_item_type' );
 			}
-
+			
 			return $imagetext;
 		}
 	}

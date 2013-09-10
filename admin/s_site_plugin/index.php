@@ -878,7 +878,7 @@ if ($HTTP_VARS['op'] == 'edit_site_plugin_item_types') {
 			if (is_not_empty_array($errors))
 				echo format_error_block($errors);
 
-			echo ('<script src="./admin/select.js" language="JavaScript" type="text/javascript"></script>');
+            echo get_javascript('admin/select.js');
 
 			echo ("\n<form name=\"edit_site_plugin_item_types\" action=\"$PHP_SELF\" method=\"POST\">");
 			echo ("\n<input type=\"hidden\" name=\"op\" value=\"" . $HTTP_VARS['op'] . "\">");

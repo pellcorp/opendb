@@ -65,16 +65,18 @@ $argument_types = array('width' => array('prompt' => 'Width', 'description' => '
 						. '</ul></p>', 'input_type' => 'value_select("plain,nl2br,ordered,unordered,ticks", 1)'),
 		'time_mask' => array('prompt' => 'Time Mask',
 				'description' => 'Specify time format mask.' . '<p>The mask components supported are: ' . '<ul>' . '<li>%h - hour value only</li>' . '<li>%H - text &quot;hour&quot; or &quot;hours&quot;</li>' . '<li>%m - minute value only</li>'
-						. '<li>%M - text &quot;minute&quot; or &quot;minutes&quot;</li>' . '</ul></p>', 'input_type' => 'text(50,100)'),);
+						. '<li>%M - text &quot;minute&quot; or &quot;minutes&quot;</li>' . '</ul></p>', 'input_type' => 'text(50,100)'),
+        'default_val' => array('prompt' => 'Default Value',
+                'description' => 'The default value for this field.', 'input_type' => 'text(50,100)'),);
 
 // input type functions
 $input_type_functions = array('hidden' => array('args' => array(), 'description' => 'A hidden input field.  Hidden fields are often used for site plugin link attributes.'), 'readonly' => array('args' => array(), 'description' => 'A readonly field'),
-		'text' => array('args' => array('length[Y]', 'maxlength'), 'description' => 'A text field'), 'textarea' => array('args' => array('cols[Y]', 'rows[Y]'), 'description' => 'A textarea field'),
+		'text' => array('args' => array('length[Y]', 'maxlength', 'default_val'), 'description' => 'A text field'), 'textarea' => array('args' => array('cols[Y]', 'rows[Y]'), 'description' => 'A textarea field'),
 		'htmlarea' => array('args' => array('cols[Y]', 'rows[Y]'), 'description' => 'A HTML textarea field'), 'email' => array('args' => array('length[Y]', 'maxlength'), 'description' => 'A text field with email format validation'),
-		'filtered' => array('args' => array('length[Y]', 'maxlength', 'legalchars[Y]'), 'description' => 'A text field with validation controlled by legalchars parameter.'),
+		'filtered' => array('args' => array('length[Y]', 'maxlength', 'legalchars[Y]', 'default_val'), 'description' => 'A text field with validation controlled by legalchars parameter.'),
 		'datetime' => array('args' => array('input_datetime_mask[Y]', 'auto_datetime'), 'description' => 'A datetime field, which much match the Datetime Mask exactly.' . 'Must be used with the matching \'datetime\' display type widget.'),
-		'number' => array('args' => array('length[Y]'), 'description' => 'A text field with numeric validation'),
-		'checkbox' => array('args' => array('checked-val[Y]', 'unchecked-val'), 'description' => 'A two state checkbox.  This differs from normal check boxes, ' . 'because this one can send a value to OpenDb whether checked ' . 'or not.'),
+		'number' => array('args' => array('length[Y]', 'default_val'), 'description' => 'A text field with numeric validation'),
+		'checkbox' => array('args' => array('checked-val[Y]', 'unchecked-val', 'default_val'), 'description' => 'A two state checkbox.  This differs from normal check boxes, ' . 'because this one can send a value to OpenDb whether checked ' . 'or not.'),
 		'review_options' => array('args' => array('display_mask', 'orientation'), 'description' => 'Item Review / Search specific widget.'),
 		'url' => array('args' => array('length[Y]', 'maxlength', 'content_group'), 'description' => 'External URL or file upload (file upload configuration permitting), with popup file viewer'),
 		'radio_grid' => array('args' => array('display_mask', 'orientation'), 'description' => 'A formatted list of radio buttons, one for each matching (according to the item_attribute s_attribute_type) lookup record.'),
@@ -253,7 +255,8 @@ function fetch_s_attribute_type_r($s_attribute_type) {
 					site_type, 
 					file_attribute_ind, 
 					lookup_attribute_ind, 
-					multi_attribute_ind
+					multi_attribute_ind,
+					view_perm
 			FROM s_attribute_type 
 			WHERE s_attribute_type = '$s_attribute_type'";
 
@@ -320,7 +323,7 @@ function is_exists_s_atribute_type_lookup($s_attribute_type, $value) {
 }
 
 function validate_s_attribute_type($s_attribute_type, &$description, &$prompt, &$input_type, &$input_type_arg1, &$input_type_arg2, &$input_type_arg3, &$input_type_arg4, &$input_type_arg5, &$display_type, &$display_type_arg1, &$display_type_arg2, &$display_type_arg3, &$display_type_arg4,
-		&$display_type_arg5, &$s_field_type, &$site_type, &$listing_link_ind, &$file_attribute_ind, &$lookup_attribute_ind, &$multi_attribute_ind) {
+		&$display_type_arg5, &$s_field_type, &$site_type, &$listing_link_ind, &$file_attribute_ind, &$lookup_attribute_ind, &$multi_attribute_ind, &$view_perm) {
 	$description = addslashes(trim(strip_tags($description)));
 	$prompt = addslashes(trim(strip_tags($prompt)));
 
@@ -387,15 +390,18 @@ function validate_s_attribute_type($s_attribute_type, &$description, &$prompt, &
 		$file_attribute_ind = 'N'; // cannot have a lookup type that is also a file_resources
 		$lookup_attribute_ind = 'N';
 	}
+
+    if ($view_perm !== FALSE)
+        $view_perm = strtoupper(trim($view_perm));
 }
 
 function insert_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind) {
+		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm) {
 	validate_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind);
+			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm);
 
-	$query = "INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, s_field_type, site_type, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind) "
-			. "VALUES ('$s_attribute_type', '$description', '$prompt', '$input_type', '$input_type_arg1', '$input_type_arg2', '$input_type_arg3', '$input_type_arg4', '$input_type_arg5', '$display_type', '$display_type_arg1', '$display_type_arg2', '$display_type_arg3', '$display_type_arg4', '$display_type_arg5', '$s_field_type', '$site_type', '$listing_link_ind', '$file_attribute_ind', '$lookup_attribute_ind', '$multi_attribute_ind')";
+	$query = "INSERT INTO s_attribute_type (s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, s_field_type, site_type, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, view_perm) "
+			. "VALUES ('$s_attribute_type', '$description', '$prompt', '$input_type', '$input_type_arg1', '$input_type_arg2', '$input_type_arg3', '$input_type_arg4', '$input_type_arg5', '$display_type', '$display_type_arg1', '$display_type_arg2', '$display_type_arg3', '$display_type_arg4', '$display_type_arg5', '$s_field_type', '$site_type', '$listing_link_ind', '$file_attribute_ind', '$lookup_attribute_ind', '$multi_attribute_ind', '$view_perm')";
 	$update = db_query($query);
 
 	// We should not treat updates that were not actually updated because value did not change as failures.
@@ -404,13 +410,13 @@ function insert_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 		if ($rows_affected > 0) {
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL,
 					array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		}
 		return TRUE;
 	} else {
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(),
 				array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		return FALSE;
 	}
 }
@@ -418,9 +424,9 @@ function insert_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 /*
  */
 function update_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind) {
+		$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm) {
 	validate_s_attribute_type($s_attribute_type, $description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5,
-			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind);
+			$s_field_type, $site_type, $listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm);
 
 	$query = "UPDATE s_attribute_type " . "SET description = '" . $description . "'" . ", prompt = '" . $prompt . "'" . ($input_type !== FALSE ? ", input_type = '" . $input_type . "'" : "") . ($input_type_arg1 !== FALSE ? ", input_type_arg1 = '" . $input_type_arg1 . "'" : "")
 			. ($input_type_arg2 !== FALSE ? ", input_type_arg2 = '" . $input_type_arg2 . "'" : "") . ($input_type_arg3 !== FALSE ? ", input_type_arg3 = '" . $input_type_arg3 . "'" : "") . ($input_type_arg4 !== FALSE ? ", input_type_arg4 = '" . $input_type_arg4 . "'" : "")
@@ -428,7 +434,7 @@ function update_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 			. ($display_type_arg2 !== FALSE ? ", display_type_arg2 = '" . $display_type_arg2 . "'" : "") . ($display_type_arg3 !== FALSE ? ", display_type_arg3 = '" . $display_type_arg3 . "'" : "") . ($display_type_arg4 !== FALSE ? ", display_type_arg4 = '" . $display_type_arg4 . "'" : "")
 			. ($display_type_arg5 !== FALSE ? ", display_type_arg5 = '" . $display_type_arg5 . "'" : "") . ($s_field_type !== FALSE ? ", s_field_type = '" . $s_field_type . "'" : "") . ($site_type !== FALSE ? ", site_type = '" . $site_type . "'" : "")
 			. ($listing_link_ind !== FALSE ? ", listing_link_ind = '" . $listing_link_ind . "'" : "") . ($file_attribute_ind !== FALSE ? ", file_attribute_ind = '" . $file_attribute_ind . "'" : "") . ($lookup_attribute_ind !== FALSE ? ", lookup_attribute_ind = '" . $lookup_attribute_ind . "'" : "")
-			. ($multi_attribute_ind !== FALSE ? ", multi_attribute_ind = '" . $multi_attribute_ind . "'" : "") . " WHERE s_attribute_type = '$s_attribute_type'";
+			. ($multi_attribute_ind !== FALSE ? ", multi_attribute_ind = '" . $multi_attribute_ind . "'" : "") . ($view_perm !== FALSE ? ", view_perm = '" . $view_perm . "'" : "") . " WHERE s_attribute_type = '$s_attribute_type'";
 
 	$update = db_query($query);
 
@@ -438,13 +444,13 @@ function update_s_attribute_type($s_attribute_type, $description, $prompt, $inpu
 		if ($rows_affected > 0) {
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL,
 					array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+							$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		}
 		return TRUE;
 	} else {
 		opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(),
 				array($description, $prompt, $input_type, $input_type_arg1, $input_type_arg2, $input_type_arg3, $input_type_arg4, $input_type_arg5, $display_type, $display_type_arg1, $display_type_arg2, $display_type_arg3, $display_type_arg4, $display_type_arg5, $s_field_type, $site_type,
-						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind));
+						$listing_link_ind, $file_attribute_ind, $lookup_attribute_ind, $multi_attribute_ind, $view_perm));
 		return FALSE;
 	}
 }

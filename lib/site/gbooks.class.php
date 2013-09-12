@@ -63,9 +63,7 @@ class gbooks extends SitePlugin {
 		if (strlen($search_vars_r['isbn']) > 0)
 			$search_query[] = 'isbn:'.urlencode($search_vars_r['isbn']);
 		
-		// utf8decode because sitePlugin.class.php wrongly encodes what is already utf8 from google
-		$result_json = utf8_decode($this->fetchURI($this->base_url . '?q=' . join('+',$search_query)));
-		$result = json_decode($result_json,true);		
+		$result = json_decode($this->fetchURI($this->base_url . '?q=' . join('+',$search_query),true),true);		
 
 // Get number of matches
 		if(isset($result['totalItems'])&& ($result['totalItems'] > 0) ) {
@@ -93,10 +91,8 @@ class gbooks extends SitePlugin {
 	}
 
 	function queryItem($search_attributes_r, $s_item_type) {
-		// utf8decode because sitePlugin.class.php wrongly encodes what is already utf8 from google
-		$result_json = utf8_decode($this->fetchURI($this->base_url . '/' . $search_attributes_r['gbooks_id']));
-		$result = json_decode($result_json,true);		
-//echo('GBOOKS: '.print_r($result,true).'<br/>');
+		$result = json_decode($this->fetchURI($this->base_url . '/' . $search_attributes_r['gbooks_id'],true),true);		
+//echo('GBOOKS debug: '.print_r($result,true).'<br/>');
 
 		// make sure we actually got data
 		if(!isset($result['id'])) {

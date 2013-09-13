@@ -53,6 +53,28 @@ class OpenDbSnoopy extends Snoopy {
 			$this->proxy_user = $proxy_server_config_r ['userid'];
 			$this->proxy_pass = $proxy_server_config_r ['password'];
 		}
+		
+		// the default curl path for snoopy is /usr/local/bin/curl - often however, it will reside in another path
+		if(!empty($this->curl_path) || !@is_executable($this->curl_path)) {
+			$curlpaths = array(); // variable for test-paths
+			// let's do something depending on whether we're using windows or linux (windows lookup not tested)
+			if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
+				// This is a server using Windows!
+				$curlpaths[] = 'C:\Windows\System32\curl.exe';
+			} else {
+				// assuming a unix system, first try detection and then some other standard paths
+				$curlpaths[] = exec("which curl");
+				$curlpaths[] = '/usr/bin/curl';
+				$curlpaths[] = '/usr/local/sbin/curl';
+				$curlpaths[] = '/usr/sbin/curl';
+			}
+			foreach($curlpaths as $curlpath){
+				if(@is_executable($curlpath)) {
+					$this->curl_path = $curlpath;
+					break; // once found, break out of the loop
+				}
+			}
+		}
 	}
 
 	function getDebugMessagesAsHtml() {

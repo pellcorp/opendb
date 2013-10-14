@@ -75,7 +75,7 @@ class amazon extends SitePlugin {
 
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
 				//<span>1-24 von 194 Ergebnissen</span>
-				if ((preg_match("/ id=\"resultCount\">.*?<span>.*?.([0-9]+)[\s]+?-[\s]+?([0-9]+).*?([0-9,]+).*?<\//", $pageBuffer, $regs) || preg_match("/ id=\"resultCount\">.*?<span>.*?.([0-9]+).*?<\//", $pageBuffer, $regs))) {
+				if ((preg_match("/ id=\"resultCount\">.*?<span>.*?.[0-9]+[\s]+?-[\s]+?[0-9]+.*?([0-9,]+).*?<\//", $pageBuffer, $regs) || preg_match("/ id=\"resultCount\">.*?<span>.*?.([0-9]+).*?<\//", $pageBuffer, $regs))) {
 					// need to remove the commas from the total
 					$total = str_replace(",", "", $regs[1]);
 

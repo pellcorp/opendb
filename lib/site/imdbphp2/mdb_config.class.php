@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: mdb_config.class.php 415 2010-10-10 20:21:44Z izzy $ */
+ /* $Id: mdb_config.class.php 609 2013-10-06 12:23:54Z izzy $ */
 
 // the proxy to use for connections to imdb (leave it empty for no proxy).
 // this is only supported with PEAR. 
@@ -20,7 +20,7 @@ define ('PROXY_PORT', "");
 // browseremulator. Be warned that there's no support for problems ;)
 $PEAR = false;
 
-/** Enable IMDB-Fallback for the Pilot classes?
+/** Enable IMDB-Fallback for non-IMDB classes?
  *  If this is not set to TRUE, changing of the <code>pilot_imdbfill</code>
  *  setting will have no effect, it will always be set to <code>NO_ACCESS</code>.
  *  The imdb classes will be included based on this setting.
@@ -35,12 +35,11 @@ if ( !defined('PILOT_IMDBFALLBACK') ) define('PILOT_IMDBFALLBACK',FALSE);
  * @class mdb_config
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2008 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 415 $ $Date: 2010-10-11 07:21:44 +1100 (Mon, 11 Oct 2010) $
+ * @version $Revision: 609 $ $Date: 2013-10-06 14:23:54 +0200 (Sun, 06 Oct 2013) $
  */
 class mdb_config {
   var $imdbsite;
-  var $pilotsite;
-  var $pilot_apikey;
+  var $language;
   protected $pilot_imdbfill;
   var $cachedir;
   var $usecache;
@@ -72,20 +71,12 @@ class mdb_config {
      * @attribute string imdbsite
      */
     $this->imdbsite = "akas.imdb.com";
-    /** MoviePilot server to use.
-     *  choices are &lt;lang&gt;.moviepilot.com - where &lt;lang&gt; is one
-     *  of es|fr|pl|uk - , and www.moviepilot.de for German. More may follow
-     *  sometimes in the future. So it is really intended for chosing the
-     *  language of the desired content.
-     * @attribute string pilotsite
+    /** Tell IMDB which is the preferred language.
+     *  Any valid language code can be used here (e.g. en-US, de, pt-BR).
+     *  If this option is specified, the Accept-Language header with this value
+     *  will be included in the requests.
      */
-    $this->pilotsite = "www.moviepilot.de";
-    /** The MoviePilot API requires an API key. We initialize it empty here, so
-     *  it is left to you to set it from your own script files (or in your own
-     *  configuration defined by the constant IMDBPHP_CONFIG)
-     * @attribute string pilot_apikey
-     */
-    $this->pilot_apikey = "50714a0681af531bc7cbb7355521b2";
+    $this->language = "";
     /* If the Pilot classes miss certain data (i.e. it does not provide that datatype
      *  at all, as it is e.g. with MPAA/FSK), should the API try to substitute them
      *  via the IMDB class? To define this, you should use the following constants:
@@ -184,7 +175,12 @@ class mdb_config {
     // see PHP documentation for details)
     # error_reporting(E_ALL);
     # error_reporting(E_ALL ^ E_NOTICE);
+    #----------------------------------------------=[ User specific values ]=--
+    $ini_files = glob(dirname(__FILE__).'/conf/*.ini');
+    foreach ($ini_files as $file) {
+      $ini = parse_ini_file($file);
+      foreach($ini as $var=>$val) $this->$var = $val;
+    }
   }
-
 }
 ?>

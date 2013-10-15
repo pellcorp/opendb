@@ -83,7 +83,7 @@ class imdbphp extends SitePlugin {
 											$image = trim($lmatches[1]);
 										}
 
-										if (preg_match("/<td class=\"result_text\">[\s]*<a href=\"\/title\/tt([0-9]+)[^\"]*\"[\s]*>([^<]+)<\/a>[\s]*([^<]+)<\/td>/m", $matches[0][$i], $lmatches)) {
+										if (preg_match("/<td class=\"result_text\">[\s]*<a href=\"\/title\/tt([0-9]+)[^\"]*\"[\s]*>([^<]+)<\/a>[\s]*([^<]+)</m", $matches[0][$i], $lmatches)) {
 											$imdb_id = trim($lmatches[1]);
 											$title = trim($lmatches[2]) . " " . trim($lmatches[3]);
 										}

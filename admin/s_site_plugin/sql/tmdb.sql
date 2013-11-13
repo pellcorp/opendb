@@ -72,6 +72,8 @@ INSERT INTO s_site_plugin_s_attribute_type_map (site_type, s_item_type_group, s_
     VALUES ('tmdb', '*', '*', 'music', '', 'N');
 INSERT INTO s_site_plugin_s_attribute_type_map (site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind)
     VALUES ('tmdb', '*', '*', 'writers', '', 'N');
+INSERT INTO s_site_plugin_s_attribute_type_map (site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind)
+    VALUES ('tmdb', '*', '*', 'collection', '', 'N');
 
 #
 # Site Plugin Attribute Type(s)

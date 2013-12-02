@@ -39,6 +39,7 @@ class tmdb extends SitePlugin {
         if (!is_null($jsonData)) {
             $this->imgBase = $jsonData['images']['base_url'];
             $this->imgResultsSize = $jsonData['images']['poster_sizes'][0];
+            if (is_numeric($this->_site_plugin_conf_r['cover_width'])) $this->_site_plugin_conf_r['cover_width'] = 'w'.$this->_site_plugin_conf_r['cover_width'];
         }
     }
 
@@ -76,6 +77,7 @@ class tmdb extends SitePlugin {
      * pub_year         = Movie release year.
      * budget           = Movie budget.
      * revenue          = Movie revenue.
+     * collection       = Movie series name.
      *
      * genre            = Array of movie genres.
      * prod_companies   = Array of production companies.
@@ -101,6 +103,7 @@ class tmdb extends SitePlugin {
             $this->addItemAttribute('year', substr($jsonData['release_date'], 0, 4));
             $this->addItemAttribute('budget', $jsonData['budget']);
             $this->addItemAttribute('revenue', $jsonData['revenue']);
+            $this->addItemAttribute('collection', $jsonData['belongs_to_collection']['name']);
 
             $genres = array();
             foreach ($jsonData['genres'] as $genre) {

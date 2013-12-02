@@ -146,3 +146,4 @@ function xajaxCompressFile($sFile)
 	
 	return $sFile;
 }
+?>

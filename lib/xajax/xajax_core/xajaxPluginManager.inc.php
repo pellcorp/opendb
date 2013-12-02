@@ -368,3 +368,4 @@ final class xajaxPluginManager
 		return $bFailure;
 	}
 }
+?>

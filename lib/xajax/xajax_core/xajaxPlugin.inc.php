@@ -189,3 +189,4 @@ class xajaxResponsePlugin extends xajaxPlugin
 //EndSkipDebug
 	}
 }
+?>

@@ -357,3 +357,4 @@ class xajaxCustomRequest extends xajaxRequest
 		echo $sScript;
 	}
 }
+?>

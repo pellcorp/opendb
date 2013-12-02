@@ -620,6 +620,7 @@ class xajaxControlContainer extends xajaxControl
 		Function: addChild
 		
 		Adds a control to the array of child controls.  Child controls
+
 		must be derived from <xajaxControl>.
 	*/
 	public function addChild($objControl)
@@ -793,3 +794,4 @@ class xajaxControlContainer extends xajaxControl
 		}
 	}
 }
+?>

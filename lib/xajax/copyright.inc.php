@@ -52,3 +52,4 @@
 	Online documentation for this class is available on the xajax wiki at:
 	http://xajaxproject.org/en/docs-tutorials/
 */
+?>

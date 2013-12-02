@@ -25,3 +25,4 @@ class ItemSearch {
 		return $jsonResults;
 	}
 }
+?>

@@ -333,3 +333,4 @@ final class xajaxArgumentManager
 		return $this->aArgs;
 	}
 }
+?>

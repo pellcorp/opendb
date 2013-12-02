@@ -375,3 +375,4 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 */
 $objPluginManager = xajaxPluginManager::getInstance();
 $objPluginManager->registerPlugin(new xajaxIncludeClientScriptPlugin(), 99);
+?>

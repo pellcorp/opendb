@@ -186,3 +186,4 @@ final class xajaxLanguageManager
 			. $sMessage;
 	}
 }
+?>

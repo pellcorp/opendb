@@ -1093,4 +1093,4 @@ function xajaxErrorHandler($errno, $errstr, $errfile, $errline)
 	echo $errfile;
 	$GLOBALS['xajaxErrorHandlerText'] = ob_get_clean();
 }
-
+?>

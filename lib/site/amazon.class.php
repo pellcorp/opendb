@@ -36,7 +36,7 @@ class amazon extends SitePlugin {
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
 		if (strlen($search_vars_r[$this->asinId]) > 0) {
-			$this->addListingRow(NULL, NULL, NULL, array($this->asinId => $search_vars_r[$asinid]));
+			$this->addListingRow(NULL, NULL, NULL, array($this->asinId => $search_vars_r[$this->asinId]));
 			return TRUE;
 		} else {
 			// Get the mapped AMAZON index type
@@ -108,7 +108,6 @@ class amazon extends SitePlugin {
 	function queryItem($search_attributes_r, $s_item_type) {
 		// assumes we have an exact match here
 		$pageBuffer = $this->fetchURI("http://" . $this->url . "/gp/product/" . $search_attributes_r[$this->asinId]);
-		//print_r($pageBuffer);
 
 		// no sense going any further here.
 		if (strlen($pageBuffer) == 0)

@@ -602,7 +602,7 @@ class MARCExportPlugin {
 			      "PRODUCER"   => array( array( '511', '0#', 'a', 'Producer: %s' ) ),
 			      "PROGRAMMER" => array( array( '511', '0#', 'a', '%s, prg' ) ),
 			      "PUBLISHER"  => array( array( '260', '',   'b' ) ),
-			      "PUB_DATE"   => array( array( '260', '',   'c' ),
+			      "PUB_YEAR"   => array( array( '260', '',   'c' ),
 						     array( '008/06-14', 's%Y####' ) ),
 			      "RATIO"      => array( array( '538', '##', 'a', 'Aspect Ratio: %s' ) ),
 			      "RUN_TIME"   => array( array( '008/18-20' ), ),

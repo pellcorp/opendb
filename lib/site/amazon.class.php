@@ -118,9 +118,14 @@ class amazon extends SitePlugin {
 
 		//<span id="btAsinTitle">Prometheus (Blu-ray/ DVD + Digital Copy) (2012)</span>
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
+		//<h1 class="a-size-large a-spacing-none" id="title"> Illustration School: Let's Draw Happy People <span class="a-size-medium a-color-secondary a-text-normal">Hardcover</span></h1>
 		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<\/span/s", $pageBuffer, $regs) || 
-				// FIXME - does this example still apply for books???
-				preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) || preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) || preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs)) {
+		    // FIXME - does this example still apply for books???
+		    preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
+		    // <h1 id="title">...
+		    preg_match("/<h[^>]*?id=\"title\"[^>]*>([^<]*)</", $pageBuffer, $regs) ||
+		    preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) ||
+		    preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs)) {
 			$title = trim($regs[1]);
 
 			// If extra year appended, remove it and just get the title.
@@ -167,6 +172,11 @@ class amazon extends SitePlugin {
 			}
 		}
 
+		if (preg_match("!<img id=\"imgBlkFront\".*?src=\"([^\"]+)\"!", $pageBuffer, $regs)) {
+			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
+			$this->addItemAttribute('imageurl', $image);
+		}
+
 		//http://www.amazon.com/gp/product/product-description/0007136587/ref=dp_proddesc_0/002-1041562-0884857?ie=UTF8&n=283155&s=books
 		if (preg_match("!<a href=\"http://" . $this->url . "/gp/product/product-description/" . $search_attributes_r[$this->asinId] . "/[^>]*>See all Editorial Reviews</a>!", $pageBuffer, $regs)
 				|| preg_match("!<a href=\"http://" . $this->url . "/gp/product/product-description/" . $search_attributes_r[$this->asinId] . "/[^>]*>See all Reviews</a>!", $pageBuffer, $regs)) {
@@ -186,9 +196,11 @@ class amazon extends SitePlugin {
 
 		if (preg_match("/<span class=listprice>\\\$([^<]*)<\/span>/i", $pageBuffer, $regs)) {
 			$this->addItemAttribute('listprice', $regs[1]);
+
 		} else if (preg_match("/<td class=\"listprice\">\\\$([^<]*)<\/td>/i", $pageBuffer, $regs)) {
 			$this->addItemAttribute('listprice', $regs[1]);
-		} else if (preg_match("/<b>List Price:<\/b>[^\\$]+\\\$([0-9\.]+)/m", $pageBuffer, $regs)) {
+
+		} else if (preg_match("!>List Price:</[^\\$]+\\\$([0-9\.]+)!m", $pageBuffer, $regs)) {
 			$this->addItemAttribute('listprice', $regs[1]);
 		}
 
@@ -392,14 +404,23 @@ class amazon extends SitePlugin {
 	 */
 	function parse_amazon_books_data($search_attributes_r, $pageBuffer) {
 		//an id="btAsinTitle" style="">Biochemistry <span style="text-transform:capitalize; font-size: 16px;">[Hardcover]</span></span></h1><span ><a href="/Donald-Voet/e/B000APBABS/ref=ntt_athr_dp_pel_1">Donald Voet</a> (Author) </span></div><div class="jumpBar">
+		$authors = "";
 
 		$start = strpos($pageBuffer, "id=\"btAsinTitle\"", $end);
 		if ($start !== FALSE) {
 			$end = strpos($pageBuffer, "<div class=\"jumpBar\">", $start);
 
 			$authors = trim(substr($pageBuffer, $start, $end - $start));
+
+		} else if (preg_match("!<div id=\"byline\"[^>]*>(.*?)</div!", $pageBuffer, $regs)) {
+			$authors = $regs[1];
+		}
+
+		if ($authors != "") {
 			//print_r($authors);
-			if (preg_match_all("!<a href=\".*?\">(.*?)</a> \(Author\)!i", $authors, $regs)) {
+			if (preg_match_all("!<a href=\".*?\">(.*?)</a> \(Author!i", $authors, $regs) ||
+			    preg_match_all("!<span[^>]*>([^<]*)<span[^>]*>\(Author!", $authors, $regs) ||
+			    preg_match_all("!<a[^>]*>([^<]*)</a><a[^<]*<i[^<]*</i></a></span><span[^<]*<span[^>]*>\(Author!i", $authors, $regs)) {
 				//where are the author first and last names used anyways? for now we just support the author full names to avoid confusion with middle initials etc.
 				//foreach($regs[1] as $author) {
 				//	preg_match("!(.*?) (.*?)!" $author, $matches

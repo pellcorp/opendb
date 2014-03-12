@@ -44,7 +44,7 @@ if (is_site_enabled()) {
 			// TODO - currently no role based permissions are being performed for these services.
 			$server->registerClass(new ItemSearch());
 			
-			$server->handle($object);
+			$server->handle();
 		} else {
 			request_http_basic_auth();
 		}

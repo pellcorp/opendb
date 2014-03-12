@@ -45,15 +45,14 @@ if (is_user_admin_changed_user()) {
 		import_cache_delete_for_user(get_opendb_session_var('user_id'));
 	}
 
-	unregister_opendb_session_var('user_id');
-	unregister_opendb_session_var('hash_check');
-	unregister_opendb_session_var('login_time');
-	unregister_opendb_session_var('last_access_time');
-	unregister_opendb_session_var('login_lastvisit');
-
 	// close session
-	@session_destroy();
+	if (isset($_SESSION)) {
+		@session_destroy();
+	}
 
+	$params = session_get_cookie_params();
+	setcookie(session_name(), '', 0, $params['path'], $params['domain'], $params['secure'], isset($params['httponly']));
+	
 	opendb_redirect('index.php');
 }
 

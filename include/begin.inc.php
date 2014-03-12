@@ -28,7 +28,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 //ini_set('session.save_handler', 'files'); 
 
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
-define('__OPENDB_RELEASE__', '1.6.0.0dev4');
+define('__OPENDB_RELEASE__', '1.6.0.0dev5');
 define('__OPENDB_TITLE__', 'OpenDb');
 
 if (extension_loaded('mysqli')) {
@@ -116,8 +116,19 @@ if (function_exists('db_connect')) {
 			}
 
 			// We want to start the session here, so we can get access to the $_SESSION properly.
+			session_name(__OPENDB_TITLE__);
 			session_start();
-
+			
+			if (get_opendb_session_var('remember_me') == 'true') {
+				$site_r = get_opendb_config_var ('site');
+				$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
+				
+				$parms_r = session_get_cookie_params();
+				
+				session_set_cookie_params($login_timeout, $parms_r['path'], $parms_r['domain']);
+				session_regenerate_id(true);
+			}
+			
 			//allows specific pages to overide themes
 			if (is_exists_theme($_OVRD_OPENDB_THEME)) {
 				$_OPENDB_THEME = $_OVRD_OPENDB_THEME;

@@ -19,6 +19,13 @@
 */
 include_once ('./lib/http.php');
 
+// function startSession($time = 0, $ses = 'OpenDbSession') {
+// 	// Reset the expiration time upon page load
+// 	if (isset($_COOKIE[$ses])) {
+// 		setcookie($ses, $_COOKIE[$ses], time() + $time, "/");
+// 	}
+// }
+
 function register_opendb_session_var($name, $value) {
 	$_SESSION [$name] = $value;
 }

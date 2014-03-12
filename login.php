@@ -44,7 +44,11 @@ function perform_login($HTTP_VARS) {
 			$time = time();
 			register_opendb_session_var('login_time', $time);
 			register_opendb_session_var('last_access_time', $time);
-
+			
+			if ($HTTP_VARS['remember'] == 'true') {
+				register_opendb_session_var('remember_me', 'true');
+			}
+			
 			$user_r = fetch_user_r($HTTP_VARS['uid']);
 
 			register_opendb_session_var('user_id', $HTTP_VARS['uid']);
@@ -100,8 +104,24 @@ function show_login_form($HTTP_VARS, $errors = NULL) {
 
 	echo ("<input type=\"hidden\" name=\"op\" value=\"login\">");
 
-	echo ("\n<ul>" . "\n<li><label class=\"label\" for=\"uid\">" . get_opendb_lang_var('userid') . "</label>" . "<input type=\"text\" class=\"text\" id=\"uid\" name=\"uid\" value=\"" . $HTTP_VARS['uid'] . "\"></li>" . "\n<li><label class=\"label\" for=\"password\">"
-			. get_opendb_lang_var('password') . "</label>" . "<input type=\"password\" class=\"password\" id=\"passwd\" name=\"passwd\"></li>" . "</ul>" . "\n<input type=\"submit\" class=\"submit\" value=\"" . get_opendb_lang_var('login') . "\">");
+	echo ("\n<ul>" . 
+			"\n<li><label class=\"label\" for=\"uid\">" . get_opendb_lang_var('userid') . "</label>" . 
+			"<input type=\"text\" class=\"text\" id=\"uid\" name=\"uid\" value=\"" . $HTTP_VARS['uid'] . "\"></li>" . 
+			
+			"\n<li><label class=\"label\" for=\"password\">"
+			. get_opendb_lang_var('password') . "</label>" . 
+			"<input type=\"password\" class=\"password\" id=\"passwd\" name=\"passwd\"></li>");
+
+	if (get_opendb_config_var('session_handler', 'enable') === TRUE) {
+		echo("\n<li><label class=\"label\" for=\"remember\">"
+					. get_opendb_lang_var('remember_me') . "</label>" .
+					"<input type=\"checkbox\" class=\"remember\" id=\"remember\" name=\"remember\" value=\"true\"></li>"
+		);
+	}
+	
+	echo (		"</ul>" . 
+			
+			"\n<input type=\"submit\" class=\"submit\" value=\"" . get_opendb_lang_var('login') . "\">");
 
 	echo ("</form>");
 

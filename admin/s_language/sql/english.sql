@@ -375,7 +375,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'quick_
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'rating', 'Rating'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refresh', 'Refresh'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refreshed', 'Refreshed'); 
-INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refresh_title', 'Refresh {display_title}'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'refresh_title', 'Refresh {display_title}');
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'remember_me', 'Remember me'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'required', 'Required'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'reserve', 'Reserve'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'reserved', 'Reserved'); 

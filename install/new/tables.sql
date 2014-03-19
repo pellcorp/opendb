@@ -274,6 +274,7 @@ CREATE TABLE s_addr_attribute_type_rltshp (
   PRIMARY KEY ( s_address_type, s_attribute_type, order_no )
 ) ENGINE=MyISAM COMMENT='System address attribute type relationship';
 
+DROP TABLE IF EXISTS s_role;
 CREATE TABLE s_role (
     role_name VARCHAR(20) NOT NULL,
     description VARCHAR(100),
@@ -282,12 +283,14 @@ CREATE TABLE s_role (
 PRIMARY KEY ( role_name )
 ) ENGINE=MyISAM COMMENT = 'System Role table';
 
+DROP TABLE IF EXISTS s_permission;
 CREATE TABLE s_permission (
     permission_name VARCHAR(30) NOT NULL,
 	description VARCHAR(100),
 PRIMARY KEY ( permission_name )
 ) ENGINE=MyISAM COMMENT = 'System Permission table';
 
+DROP TABLE IF EXISTS s_role_permission;
 CREATE TABLE s_role_permission (
 	role_name VARCHAR(20) NOT NULL,
     permission_name VARCHAR(30) NOT NULL,
@@ -702,3 +705,11 @@ CREATE TABLE s_table_language_var (
 	PRIMARY KEY ( language, tablename, columnname, key1, key2, key3 )
 ) ENGINE=MyISAM COMMENT='System Language Variable Table';
 
+DROP TABLE IF EXISTS remember_me;
+CREATE TABLE remember_me (
+  sequence_number		INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  cookie				VARCHAR(50) NOT NULL,
+  user_id				VARCHAR(20) NOT NULL,
+  created_on			TIMESTAMP NOT NULL
+  PRIMARY KEY ( sequence_number ),
+) ENGINE=MyISAM COMMENT='Remember Me Cookie';

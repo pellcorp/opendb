@@ -164,4 +164,72 @@ function is_opendb_valid_session() {
 	//else
 	return FALSE;
 }
+
+function get_remember_me_cookie_r($cookie) {
+	$site_r = get_opendb_config_var ('site');
+	$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
+	
+	$cookie = addslashes($cookie);
+	
+	$query = "SELECT user_id, UNIX_TIMESTAMP() AS current_time, UNIX_TIMESTAMP(DATE_ADD(created_on, INTERVAL $login_timeout SECONDS) AS expiry_time FROM remember_me WHERE cookie = '$cookie' ";
+	$result = db_query ( $query );
+	if ($result && db_num_rows ( $result ) > 0) {
+		$found = db_fetch_assoc ( $result );
+		db_free_result ( $result );
+
+		$found['valid'] = $found['current_time'] < $found['expiry_time'];
+		return $found;
+	}
+	
+	//else
+	return FALSE;
+}
+
+function register_user_login($user_id) {
+	$time = time();
+	register_opendb_session_var('login_time', $time);
+	register_opendb_session_var('last_access_time', $time);
+		
+	$user_r = fetch_user_r($HTTP_VARS['uid']);
+	
+	register_opendb_session_var('user_id', $HTTP_VARS['uid']);
+	
+	// Now register security hash, so we can compare.
+	register_opendb_session_var('hash_check', get_opendb_config_var('site', 'security_hash'));
+	
+	// Get the previous last visit so we can use in whats new page.
+	register_opendb_session_var('login_lastvisit', fetch_user_lastvisit($HTTP_VARS['uid']));
+	
+	// Not much we can do if it does not update.
+	update_user_lastvisit($HTTP_VARS['uid']);
+}
+
+function delete_remember_me($cookie) {
+	$cookie = addslashes($cookie);
+	$query = "DELETE FROM remember_me WHERE cookie = '$cookie'";
+
+	$delete = db_query ( $query );
+	if (db_affected_rows () > 0) {
+		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cookie));
+		return TRUE;
+	} else {
+		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), array($cookie));
+		return FALSE;
+	}
+}
+
+function insert_remember_me($user_id) {
+	$cookie = addslashes(rand(50, 50));
+	$query = "INSERT INTO remember_me(user_id, cookie)" . "VALUES ('$user_id', '$cookie')";
+	
+	$insert = db_query ( $query );
+	if ($insert && db_affected_rows () > 0) {
+		$sequence_number = db_insert_id();
+		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($user_id, $cookie));
+		return $cookie;
+	} else {
+		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), array($user_id, $cookie));
+		return FALSE;
+	}
+}
 ?>

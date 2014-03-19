@@ -331,7 +331,8 @@ function fetch_opendb_table_list_r() {
 			'mailbox',
 			's_role',
 			's_permission',
-			's_role_permission' );
+			's_role_permission',
+			'remember_me' );
 	
 	return $tables;
 }

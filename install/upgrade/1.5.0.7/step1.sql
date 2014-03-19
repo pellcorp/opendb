@@ -60,3 +60,12 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'parent_instance_number', 'Parent Instance Number');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'delete_relationship', 'Delete Relationship');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_related_parent', 'Add Related Parent');
+
+DROP TABLE IF EXISTS remember_me;
+CREATE TABLE remember_me (
+  id			INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  cookie		VARCHAR(50) NOT NULL,
+  user_id		VARCHAR(20) NOT NULL,
+  created_on	TIMESTAMP NOT NULL
+  PRIMARY KEY ( sequence_number ),
+) ENGINE=MyISAM COMMENT='Remember Me Cookie';

@@ -24,9 +24,6 @@ if (!defined('E_DEPRECATED')) {
 }
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-// In case session handler error
-//ini_set('session.save_handler', 'files'); 
-
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
 define('__OPENDB_RELEASE__', '1.6.0.0dev5');
 define('__OPENDB_TITLE__', 'OpenDb');
@@ -119,14 +116,27 @@ if (function_exists('db_connect')) {
 			session_name(__OPENDB_TITLE__);
 			session_start();
 			
-			if (get_opendb_session_var('remember_me') == 'true') {
+			$doRememberMe = false;
+			$cookieId = getcookie(__OPENDB_TITLE__ . "RememberMe");
+			if (!empty($cookieId)) {
+				$remember_me_r = get_remember_me_cookie($cookieId);
+				if ($remember_me_r['valid'] === TRUE) {
+					register_user_login($remember_me_r['user_id']);
+					$doRememberMe = TRUE;
+				}
+				delete_remember_me($cookieId);
+			} else if (get_opendb_session_var('remember_me') == 'true') {
+				$doRememberMe = TRUE;
+			}
+			
+			if ($doRememberMe) {
 				$site_r = get_opendb_config_var ('site');
 				$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
 				
-				$parms_r = session_get_cookie_params();
+				$cookie = insert_remember_me(get_opendb_session_var('user_id'));
+				setcookie(__OPENDB_TITLE__ . "RememberMe", $cookie, time() + $login_timeout);
 				
-				session_set_cookie_params($login_timeout, $parms_r['path'], $parms_r['domain']);
-				session_regenerate_id(true);
+				register_user_login($HTTP_VARS['uid']);
 			}
 			
 			//allows specific pages to overide themes

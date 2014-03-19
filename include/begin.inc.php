@@ -116,27 +116,21 @@ if (function_exists('db_connect')) {
 			session_name(__OPENDB_TITLE__);
 			session_start();
 			
-			$doRememberMe = false;
+			// FIXME - how do we create the remember me cookie to begin with!
 			$cookieId = getcookie(__OPENDB_TITLE__ . "RememberMe");
 			if (!empty($cookieId)) {
-				$remember_me_r = get_remember_me_cookie($cookieId);
+				$remember_me_r = get_remember_me_r($cookieId);
 				if ($remember_me_r['valid'] === TRUE) {
 					register_user_login($remember_me_r['user_id']);
 					$doRememberMe = TRUE;
 				}
 				delete_remember_me($cookieId);
-			} else if (get_opendb_session_var('remember_me') == 'true') {
-				$doRememberMe = TRUE;
-			}
-			
-			if ($doRememberMe) {
+
 				$site_r = get_opendb_config_var ('site');
 				$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
 				
 				$cookie = insert_remember_me(get_opendb_session_var('user_id'));
 				setcookie(__OPENDB_TITLE__ . "RememberMe", $cookie, time() + $login_timeout);
-				
-				register_user_login($HTTP_VARS['uid']);
 			}
 			
 			//allows specific pages to overide themes

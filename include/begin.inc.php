@@ -116,8 +116,13 @@ if (function_exists('db_connect')) {
 			session_name(__OPENDB_TITLE__);
 			session_start();
 			
-			// FIXME - how do we create the remember me cookie to begin with!
+			// so either we have a session variable that flags that the logged in user wants to
+			// be remembered
+			$doRememberMe = !empty(get_opendb_session_var('remember_me'));
+			
 			$cookieId = getcookie(__OPENDB_TITLE__ . "RememberMe");
+			
+			// else there is an existing remember me cookie
 			if (!empty($cookieId)) {
 				$remember_me_r = get_remember_me_r($cookieId);
 				if ($remember_me_r['valid'] === TRUE) {
@@ -125,7 +130,9 @@ if (function_exists('db_connect')) {
 					$doRememberMe = TRUE;
 				}
 				delete_remember_me($cookieId);
-
+			}
+				
+			if ($doRememberMe) {
 				$site_r = get_opendb_config_var ('site');
 				$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
 				

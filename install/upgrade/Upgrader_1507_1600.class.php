@@ -26,7 +26,7 @@ class Upgrader_1507_1600 extends OpenDbUpgrader
 	{
 		parent::OpenDbUpgrader(
 						'1.5.0.7',
-						'1.6.0.0dev5',
+						'1.6.0.0dev6',
 						array(
 							array('description'=>'Updates from 1.5.0.7 to 1.6.0.0'),
 						)

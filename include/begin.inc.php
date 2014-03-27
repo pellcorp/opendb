@@ -78,6 +78,9 @@ if (get_magic_quotes_gpc()) {
 	$HTTP_VARS = stripslashes_array($HTTP_VARS);
 }
 
+// set to empty array by default so that array push works
+$PERM_MATRIX = NULL;
+
 //define a global browser sniffer object for use by theme and elsewhere
 $_OpendbBrowserSniffer = new OpenDbBrowserSniffer();
 

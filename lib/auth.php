@@ -66,42 +66,82 @@ function get_public_access_rolename() {
 	return "PUBLICACCESS";
 }
 
-// todo - cache user_role and permissions list after first call
-function is_user_granted_permission($permission, $user_id = NULL) {
-	$user_permissions_clause = format_sql_in_clause ( $permission );
+// for public access, remember me is contradicatory
+function get_public_access_permission_r() {
+	$query = "SELECT srp.permission_name
+	FROM 	s_role_permission srp
+	WHERE 	srp.role_name = '".get_public_access_rolename()."'";
+
+	$children = array();
 	
-	if (strlen ( $user_id ) == 0 && is_site_public_access ()) {
-		$query = "SELECT 'X' 
-			FROM 	s_role_permission
-			WHERE 	role_name = '" . get_public_access_rolename () . "' AND
-				  	permission_name IN ($user_permissions_clause)";
+	$result = db_query ( $query );
+	if ($result && db_num_rows ( $result ) > 0) {
+		while ($perm_r = db_fetch_assoc($result)) {
+			array_push($children, array($perm_r['permission_name'] => 'Y'));
+		}
+		db_free_result($result);
+	}
+	
+	return $children;
+}
+
+function get_user_granted_permissions_r($user_id) {
+	$query = "SELECT srp.permission_name, srp.remember_me_ind
+		FROM 	s_role_permission srp,
+		user u
+		WHERE 	u.user_role = srp.role_name AND
+		u.user_id = '$user_id'";
+
+	$children = array();
+	
+	$result = db_query ( $query );
+	if ($result && db_num_rows ( $result ) > 0) {
+		while ($perm_r = db_fetch_assoc($result)) {
+			array_push($children, array($perm_r['permission_name'] => $perm_r['remember_me_ind']));
+		}
+		db_free_result($result);
+	}
+	return $children;
+}
+
+function is_user_granted_permission($permission, $user_id = NULL) {
+	if (strlen ( $user_id ) == 0 && is_site_public_access()) {
+		$perms_r = get_public_access_permission_r();
 	} else {
 		if (strlen ( $user_id ) == 0) {
 			$user_id = $_SESSION['user_id'];
 			$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
-		}
-		
-		$query = "SELECT 'X' 
-			FROM 	s_role_permission srp, 
-				 	user u 
-			WHERE 	u.user_role = srp.role_name AND
-				  	srp.permission_name IN ($user_permissions_clause) AND
-				  	u.user_id = '$user_id'";
-		
-		if ($is_remember_me) {
-			$query .= " AND srp.remember_me_ind = 'Y'";
+			
+			global $PERM_MATRIX;
+			if (!is_array($PERM_MATRIX)) {
+				$perms_r = get_user_granted_permissions_r($user_id);
+				$PERM_MATRIX = $perms_r;
+			}
+		} else { // won't cache explicit request for perms
+			$perms_r = get_user_granted_permissions_r($user_id);
 		}
 	}
 	
-	//echo $query;
-	$result = db_query ( $query );
-	if ($result && db_num_rows ( $result ) > 0) {
-		db_free_result ( $result );
-		return TRUE;
+	if (is_array($permission)) {
+		reset($permission);
+		while(list(,$perm) = each($permission)) {
+			if (isset($perms_r[$perm])) {
+				$rememberMe = $perms_r[$perm];
+				if (!$is_remember_me || $rememberMe == 'Y') {
+					return TRUE;
+				}
+			}
+		}
 	}
-	
-	//else
 	return FALSE;
+}
+
+function is_user_granted_remember_me_permission($permission, $user_id) {
+	global $PERM_MATRIX;
+	
+	if (!is_array($PERM_MATRIX)) {
+		return FALSE;
+	}
 }
 
 function is_site_public_access() {

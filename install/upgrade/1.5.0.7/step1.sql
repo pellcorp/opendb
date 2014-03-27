@@ -64,8 +64,8 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'add_re
 DROP TABLE IF EXISTS remember_me;
 CREATE TABLE remember_me (
   id			INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  cookie		VARCHAR(50) NOT NULL,
+  cookie		VARCHAR(40) NOT NULL, 
   user_id		VARCHAR(20) NOT NULL,
-  created_on	TIMESTAMP NOT NULL
-  PRIMARY KEY ( sequence_number ),
+  created_on	TIMESTAMP NOT NULL,
+  PRIMARY KEY ( id )
 ) ENGINE=MyISAM COMMENT='Remember Me Cookie';

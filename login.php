@@ -41,12 +41,8 @@ function perform_login($HTTP_VARS) {
 	$HTTP_VARS['uid'] = strtolower($HTTP_VARS['uid']);// make lowercase
 	if (is_user_active($HTTP_VARS['uid']) && validate_user_passwd($HTTP_VARS['uid'], $HTTP_VARS['passwd'])) {
 		if (get_opendb_config_var('site', 'enable') !== FALSE || is_user_granted_permission(PERM_ADMIN_LOGIN)) {
-			register_user_login($HTTP_VARS['uid']);
-			
-			if ($HTTP_VARS['remember'] == 'true') {
-				register_opendb_session_var('remember_me', 'true');
-			}
-					
+			register_user_login($HTTP_VARS['uid'], $HTTP_VARS['remember'] == 'true');
+
 			opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, 'User logged in', array($HTTP_VARS['uid']));
 
 			return TRUE;
@@ -179,6 +175,7 @@ function perform_newpassword($HTTP_VARS, &$errors) {
 		}
 	}
 }
+
 
 if (is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] != 'newpassword') {
 	if (strlen($HTTP_VARS['redirect']) > 0) { // Redirect to requested page, as already logged in.

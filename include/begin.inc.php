@@ -113,32 +113,10 @@ if (function_exists('db_connect')) {
 			}
 
 			// We want to start the session here, so we can get access to the $_SESSION properly.
-			session_name(__OPENDB_TITLE__);
+			session_name(get_opendb_session_cookie_name());
 			session_start();
 			
-			// so either we have a session variable that flags that the logged in user wants to
-			// be remembered
-			$doRememberMe = !empty(get_opendb_session_var('remember_me'));
-			
-			$cookieId = getcookie(__OPENDB_TITLE__ . "RememberMe");
-			
-			// else there is an existing remember me cookie
-			if (!empty($cookieId)) {
-				$remember_me_r = get_remember_me_r($cookieId);
-				if ($remember_me_r['valid'] === TRUE) {
-					register_user_login($remember_me_r['user_id']);
-					$doRememberMe = TRUE;
-				}
-				delete_remember_me($cookieId);
-			}
-				
-			if ($doRememberMe) {
-				$site_r = get_opendb_config_var ('site');
-				$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
-				
-				$cookie = insert_remember_me(get_opendb_session_var('user_id'));
-				setcookie(__OPENDB_TITLE__ . "RememberMe", $cookie, time() + $login_timeout);
-			}
+			handle_opendb_remember_me();
 			
 			//allows specific pages to overide themes
 			if (is_exists_theme($_OVRD_OPENDB_THEME)) {

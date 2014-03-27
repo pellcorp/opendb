@@ -98,7 +98,7 @@ function is_user_granted_permission($permission, $user_id = NULL) {
 }
 
 function is_site_public_access() {
-	if (is_opendb_configured () && ! is_opendb_valid_session () && get_opendb_config_var ( 'site.public_access', 'enable' ) === TRUE) {
+	if (is_opendb_configured () && !is_opendb_valid_session () && get_opendb_config_var ( 'site.public_access', 'enable' ) === TRUE) {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -165,33 +165,85 @@ function is_opendb_valid_session() {
 	return FALSE;
 }
 
-function register_user_login($user_id) {
+function register_user_login($user_id, $rememberMe = FALSE) {
 	$time = time();
 	register_opendb_session_var('login_time', $time);
 	register_opendb_session_var('last_access_time', $time);
 
-	$user_r = fetch_user_r($HTTP_VARS['uid']);
+	$user_r = fetch_user_r($user_id);
 
-	register_opendb_session_var('user_id', $HTTP_VARS['uid']);
-
+	register_opendb_session_var('user_id', $user_id);
+	
+	if ($rememberMe) {
+		register_opendb_session_var('remember_me', 'true');
+	}
+	
 	// Now register security hash, so we can compare.
 	register_opendb_session_var('hash_check', get_opendb_config_var('site', 'security_hash'));
 
 	// Get the previous last visit so we can use in whats new page.
-	register_opendb_session_var('login_lastvisit', fetch_user_lastvisit($HTTP_VARS['uid']));
+	register_opendb_session_var('login_lastvisit', fetch_user_lastvisit($user_id));
 
 	// Not much we can do if it does not update.
 	update_user_lastvisit($HTTP_VARS['uid']);
 }
 
+function get_opendb_remember_me_cookie_name() {
+	return __OPENDB_TITLE__ . "_RememberMe";
+}
+
+function get_opendb_session_cookie_name() {
+	return __OPENDB_TITLE__ . "_Session";
+}
+
+function remove_opendb_remember_me() {
+	$oldCookie = $_COOKIE[get_opendb_remember_me_cookie_name()];
+	setcookie(get_opendb_remember_me_cookie_name(), "", time() - 3600);
+	
+	$remember_me_r = get_remember_me_r($oldCookie);
+	if ($remember_me_r !== FALSE) {
+		delete_remember_me($remember_me_r['id']);
+	}
+}
+
+function handle_opendb_remember_me() {
+	if (isset($_SESSION['remember_me']) && isset($_SESSION['user_id'])) {
+		$doRememberMe = TRUE;
+	} else {
+		$doRememberMe = FALSE;
+	}
+
+	$oldCookie = $_COOKIE[get_opendb_remember_me_cookie_name()];
+	if (!empty($oldCookie)) {
+		$remember_me_r = get_remember_me_r($oldCookie);
+		if ($remember_me_r !== FALSE) {
+			// no need to register if already logged in
+			if ($remember_me_r['valid'] === TRUE && !$doRememberMe) { 
+				register_user_login($remember_me_r['user_id'], TRUE);
+				$doRememberMe = TRUE;
+			}
+		}
+	}
+	
+	delete_all_remember_me_for_user($_SESSION['user_id']);
+	
+	if ($doRememberMe) {
+		$cookie = sha1(openssl_random_pseudo_bytes(1024));
+		$site_r = get_opendb_config_var('site');
+		$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
+	
+		$cookie = insert_remember_me($_SESSION['user_id'], $cookie);
+		setcookie(get_opendb_remember_me_cookie_name(), $cookie, time() + $login_timeout);
+	}
+}
 
 function get_remember_me_r($cookie) {
+	$cookie = addslashes($cookie);
+	
 	$site_r = get_opendb_config_var ('site');
 	$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
 	
-	$cookie = addslashes($cookie);
-	
-	$query = "SELECT user_id, UNIX_TIMESTAMP() AS current_time, UNIX_TIMESTAMP(DATE_ADD(created_on, INTERVAL $login_timeout SECONDS) AS expiry_time FROM remember_me WHERE cookie = '$cookie' ";
+	$query = "SELECT id, user_id, UNIX_TIMESTAMP() AS 'current_time', UNIX_TIMESTAMP(DATE_ADD(created_on, INTERVAL $login_timeout SECOND)) AS expiry_time FROM remember_me WHERE cookie = '$cookie' ";
 	$result = db_query ( $query );
 	if ($result && db_num_rows ( $result ) > 0) {
 		$found = db_fetch_assoc ( $result );
@@ -205,10 +257,13 @@ function get_remember_me_r($cookie) {
 	return FALSE;
 }
 
-function delete_remember_me($cookie) {
-	$cookie = addslashes($cookie);
-	$query = "DELETE FROM remember_me WHERE cookie = '$cookie'";
+function delete_remember_me($id) {
+	$id = addslashes($id);
+	$query = "DELETE FROM remember_me WHERE id = '$id'";
 
+	//echo $query;
+	//exit;
+	
 	$delete = db_query ( $query );
 	if (db_affected_rows () > 0) {
 		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cookie));
@@ -219,8 +274,21 @@ function delete_remember_me($cookie) {
 	}
 }
 
-function insert_remember_me($user_id) {
-	$cookie = addslashes(rand(50, 50));
+function delete_all_remember_me_for_user($user_id) {
+	$user_id = addslashes($user_id);
+	$query = "DELETE FROM remember_me WHERE user_id = '$user_id'";
+	$delete = db_query ( $query );
+	if (db_affected_rows () > 0) {
+		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cookie));
+		return TRUE;
+	} else {
+		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), array($cookie));
+		return FALSE;
+	}
+}
+
+function insert_remember_me($user_id, $cookie) {
+	$cookie = addslashes($cookie);	
 	$query = "INSERT INTO remember_me(user_id, cookie)" . "VALUES ('$user_id', '$cookie')";
 	
 	$insert = db_query ( $query );

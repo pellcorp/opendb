@@ -45,13 +45,11 @@ if (is_user_admin_changed_user()) {
 		import_cache_delete_for_user(get_opendb_session_var('user_id'));
 	}
 
-	// close session
-	if (isset($_SESSION)) {
-		@session_destroy();
-	}
+	@session_destroy();
 
 	$params = session_get_cookie_params();
 	setcookie(session_name(), '', 0, $params['path'], $params['domain'], $params['secure'], isset($params['httponly']));
+	remove_opendb_remember_me();
 	
 	opendb_redirect('index.php');
 }

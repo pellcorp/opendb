@@ -42,9 +42,15 @@ function get_content_type_charset() {
 	return $contentType;
 }
 
-function not_authorised() {
+function not_authorised($permission = NULL) {
 	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
+	
+	if ($permission != NULL && is_permission_disabled_for_remember_me($permission)) {
+		// TODO add a language var
+		echo ("<p class=\"error\">You need to login to access this page</p>");
+	} else {
+		echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
+	}
 	echo _theme_footer();
 }
 

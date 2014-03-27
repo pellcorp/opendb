@@ -59,14 +59,11 @@ define ( 'PERM_RECEIVE_EMAIL', 'PERM_RECEIVE_EMAIL' );
 
 /**
  * reduce hardcoding of this value - ideally should be a flag in the s_role table.
- *
- * @return unknown
  */
 function get_public_access_rolename() {
 	return "PUBLICACCESS";
 }
 
-// for public access, remember me is contradicatory
 function get_public_access_permission_r() {
 	$query = "SELECT srp.permission_name
 	FROM 	s_role_permission srp
@@ -77,7 +74,8 @@ function get_public_access_permission_r() {
 	$result = db_query ( $query );
 	if ($result && db_num_rows ( $result ) > 0) {
 		while ($perm_r = db_fetch_assoc($result)) {
-			array_push($children, array($perm_r['permission_name'] => 'Y'));
+			// for public access, remember me is not applicable
+			$children[$perm_r['permission_name']] = 'Y';
 		}
 		db_free_result($result);
 	}
@@ -97,7 +95,7 @@ function get_user_granted_permissions_r($user_id) {
 	$result = db_query ( $query );
 	if ($result && db_num_rows ( $result ) > 0) {
 		while ($perm_r = db_fetch_assoc($result)) {
-			array_push($children, array($perm_r['permission_name'] => $perm_r['remember_me_ind']));
+			$children[$perm_r['permission_name']] =$perm_r['remember_me_ind'];
 		}
 		db_free_result($result);
 	}
@@ -116,6 +114,8 @@ function is_user_granted_permission($permission, $user_id = NULL) {
 			if (!is_array($PERM_MATRIX)) {
 				$perms_r = get_user_granted_permissions_r($user_id);
 				$PERM_MATRIX = $perms_r;
+			} else {
+				$perms_r = $PERM_MATRIX;
 			}
 		} else { // won't cache explicit request for perms
 			$perms_r = get_user_granted_permissions_r($user_id);
@@ -132,16 +132,29 @@ function is_user_granted_permission($permission, $user_id = NULL) {
 				}
 			}
 		}
+	} else {
+		if (isset($perms_r[$permission])) {
+			$rememberMe = $perms_r[$permission];
+			if (!$is_remember_me || $rememberMe == 'Y') {
+				return TRUE;
+			}
+		}
 	}
 	return FALSE;
 }
 
-function is_user_granted_remember_me_permission($permission, $user_id) {
+/**
+ return TRUE if permission exists for the user but has remember_me set to N
+ */
+function is_permission_disabled_for_remember_me($permission) {
 	global $PERM_MATRIX;
 	
-	if (!is_array($PERM_MATRIX)) {
-		return FALSE;
+	if (is_array($PERM_MATRIX)) {
+		if (isset($PERM_MATRIX[$permission])) {
+			return $PERM_MATRIX[$permission] == 'N';
+		}
 	}
+	return FALSE;
 }
 
 function is_site_public_access() {

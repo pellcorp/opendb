@@ -80,9 +80,7 @@ if (is_site_enabled()) {
 				echo _theme_footer();
 			}
 		} else { //not an administrator or own user.
- 			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'), FALSE);
-			echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-			echo _theme_footer();
+ 			not_authorised(PERM_ADMIN_TOOLS);
 		}
 	} else { //not a valid session.
  		// invalid login, so login instead.

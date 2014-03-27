@@ -185,7 +185,7 @@ function register_user_login($user_id, $rememberMe = FALSE) {
 	register_opendb_session_var('login_lastvisit', fetch_user_lastvisit($user_id));
 
 	// Not much we can do if it does not update.
-	update_user_lastvisit($HTTP_VARS['uid']);
+	update_user_lastvisit($user_id);
 }
 
 function get_opendb_remember_me_cookie_name() {

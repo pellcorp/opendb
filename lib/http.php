@@ -32,14 +32,15 @@ function get_page_id($url) {
 	this script is included by include/begin.inc.php, so available
 	to all user executable scripts.
 */
-function redirect_login($PHP_SELF, $HTTP_VARS) {
+function redirect_login($PHP_SELF, $HTTP_VARS, $rememberMeLogin = FALSE) {
 	$redirect = basename ( $PHP_SELF );
 	
 	$url = get_url_string ( $HTTP_VARS );
 	if (strlen ( $url ) > 0)
 		$redirect .= '?' . $url;
 	
-	opendb_redirect ( "login.php?op=login&redirect=" . urlencode ( $redirect ) );
+	
+	opendb_redirect ( "login.php?op=login&rememberMeLogin=".($rememberMeLogin ? "true" : "false")."&redirect=" . urlencode ( $redirect ) );
 }
 
 /**

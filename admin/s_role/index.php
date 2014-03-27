@@ -41,8 +41,9 @@ function display_role_permissions_editor($HTTP_VARS) {
 	$results = fetch_role_permission_rs($HTTP_VARS['role_name']);
 	if ($results) {
 		while ($permission_r = db_fetch_assoc($results)) {
-			echo ("<tr><td>");
-			echo($permission_r['permission_name']);
+			echo("<tr>");
+			echo("<td>");
+			echo($permission_r['description']);
 			echo ("</td>");
 		
 			$is_enabled = strlen($permission_r['role_name']) > 0;
@@ -51,7 +52,7 @@ function display_role_permissions_editor($HTTP_VARS) {
 			echo ("<td><input type=\"checkbox\" class=\"checkbox\" name=\"".$permission_r['permission_name']."[enabled_ind]\" value=\"Y\"" .($is_enabled ? " CHECKED" : "")."></td>");
 			echo ("<td><input type=\"checkbox\" class=\"checkbox\" name=\"".$permission_r['permission_name']."[remember_me_ind]\" value=\"Y\"" .($remember_me_enabled ? " CHECKED" : "")."></td>");
 			
-			echo ("</td></tr>");
+			echo ("</tr>");
 		}
 	}
 	echo ("</table>");

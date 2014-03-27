@@ -211,9 +211,9 @@ function get_user_ids_tovalue($user_id_rs) {
 }
 
 if (is_site_enabled()) {
-	if (is_opendb_valid_session() || ($HTTP_VARS['op'] == 'send_to_site_admin' && get_opendb_config_var('email', 'send_to_site_admin') !== FALSE)) {
-		echo _theme_header(get_opendb_lang_var('send_email'), $HTTP_VARS['inc_menu']);
-		echo ("<h2 class=\"sendEmail\">" . get_opendb_lang_var('send_email') . "</h2>");
+	if (is_opendb_valid_session() || 
+			($HTTP_VARS['op'] == 'send_to_site_admin' 
+					&& get_opendb_config_var('email', 'send_to_site_admin') !== FALSE)) {
 
 		// no email functionality is available unless a valid mailer is configured.
 		if (is_valid_opendb_mailer()) {
@@ -226,59 +226,78 @@ if (is_site_enabled()) {
 				$HTTP_VARS['from'] = trim(strip_tags($HTTP_VARS['from']));
 
 				if ($HTTP_VARS['op2'] == 'send' && send_email_to_site_admins(PERM_ADMIN_SEND_EMAIL, $HTTP_VARS['from'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
-
+					echo _theme_header(get_opendb_lang_var('send_email'), $HTTP_VARS['inc_menu']);
+					echo ("<h2>" . get_opendb_lang_var('send_email') . "</h2>");
+					
 					echo ("<p class=\"success\">" . get_opendb_lang_var('message_sent_to') . " " . get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')) . "</p>");
-
+					echo _theme_footer();
 				} else {
+					echo _theme_header(get_opendb_lang_var('send_email'), $HTTP_VARS['inc_menu']);
+					echo ("<h2>" . get_opendb_lang_var('send_email') . "</h2>");
+					
 					show_email_form(NULL, // email 
 					get_opendb_lang_var('site_administrator', 'site', get_opendb_config_var('site', 'title')), $HTTP_VARS['from'], // from_userid
 					NULL, // from_fullname
 					$HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
+					echo _theme_footer();
 				}
-			} else if (($HTTP_VARS['op'] == 'send_to_all' || $HTTP_VARS['op'] == 'send_to_uids') && is_user_granted_permission(PERM_ADMIN_SEND_EMAIL)) {
-				$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
-				$HTTP_VARS['toname'] = trim(strip_tags($HTTP_VARS['toname']));
-
-				if ($HTTP_VARS['op'] == 'send_to_all') {
-					// Default toname for bulk email.
-					if (strlen($HTTP_VARS['toname']) == 0) {
-						$HTTP_VARS['toname'] = get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title'));
-					}
-
-					$user_id_r = get_user_id_rs();
-					if (is_not_empty_array($user_id_r)) {
-						if ($HTTP_VARS['op2'] == 'send' && send_email_to_userids($user_id_r, $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
-							// do nothing 
-						} else {
-							show_email_form(get_user_ids_tovalue($user_id_r), $HTTP_VARS['toname'], $from_user_r['user_id'], $from_user_r['fullname'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
+			} else if (($HTTP_VARS['op'] == 'send_to_all' || $HTTP_VARS['op'] == 'send_to_uids')) {
+				if (is_user_granted_permission(PERM_ADMIN_SEND_EMAIL)) {
+					echo _theme_header(get_opendb_lang_var('send_email'), $HTTP_VARS['inc_menu']);
+					echo ("<h2>" . get_opendb_lang_var('send_email') . "</h2>");
+					
+					$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
+					$HTTP_VARS['toname'] = trim(strip_tags($HTTP_VARS['toname']));
+	
+					if ($HTTP_VARS['op'] == 'send_to_all') {
+						// Default toname for bulk email.
+						if (strlen($HTTP_VARS['toname']) == 0) {
+							$HTTP_VARS['toname'] = get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title'));
 						}
-					} else {
-						echo ("<p class=\"error\">" . get_opendb_lang_var('no_users_found') . "</p>");
+	
+						$user_id_r = get_user_id_rs();
+						if (is_not_empty_array($user_id_r)) {
+							if ($HTTP_VARS['op2'] == 'send' && send_email_to_userids($user_id_r, $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
+								// do nothing 
+							} else {
+								show_email_form(get_user_ids_tovalue($user_id_r), $HTTP_VARS['toname'], $from_user_r['user_id'], $from_user_r['fullname'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
+							}
+						} else {
+							echo ("<p class=\"error\">" . get_opendb_lang_var('no_users_found') . "</p>");
+						}
+					} else if ($HTTP_VARS['op'] == 'send_to_uids' && (is_not_empty_array($HTTP_VARS['user_id_rs']) || strlen(trim($HTTP_VARS['checked_user_id_rs_list'])) > 0)) {
+						if ($HTTP_VARS['op2'] == 'send' && send_email_to_userids($HTTP_VARS['user_id_rs'], $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
+							// do nothing
+						} else {
+							show_email_form(get_user_ids_tovalue($HTTP_VARS['user_id_rs']), get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title')), $from_user_r['user_id'], $from_user_r['fullname'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
+						}
 					}
-				} else if ($HTTP_VARS['op'] == 'send_to_uids' && (is_not_empty_array($HTTP_VARS['user_id_rs']) || strlen(trim($HTTP_VARS['checked_user_id_rs_list'])) > 0)) {
-					if ($HTTP_VARS['op2'] == 'send' && send_email_to_userids($HTTP_VARS['user_id_rs'], $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
+					echo _theme_footer();
+				} else {
+					opendb_not_authorised_page(PERM_ADMIN_SEND_EMAIL, $HTTP_VARS);
+				}
+			} else if ($HTTP_VARS['op'] == 'send_to_uid' && is_user_permitted_to_receive_email($HTTP_VARS['uid'])) {
+				if (is_user_granted_permission(PERM_SEND_EMAIL)) {
+					echo _theme_header(get_opendb_lang_var('send_email'), $HTTP_VARS['inc_menu']);
+					echo ("<h2>" . get_opendb_lang_var('send_email') . "</h2>");
+					$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
+					$HTTP_VARS['toname'] = trim(strip_tags($HTTP_VARS['toname']));
+	
+					if ($HTTP_VARS['op2'] == 'send' && send_email_to_userids(array($HTTP_VARS['uid']), $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
 						// do nothing
 					} else {
-						show_email_form(get_user_ids_tovalue($HTTP_VARS['user_id_rs']), get_opendb_lang_var('site_users', 'user_desc', get_opendb_config_var('site', 'title')), $from_user_r['user_id'], $from_user_r['fullname'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
+						show_email_form($HTTP_VARS['uid'], fetch_user_name($HTTP_VARS['uid']), $from_user_r['user_id'], $from_user_r['fullname'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
 					}
-				}
-			} else if ($HTTP_VARS['op'] == 'send_to_uid' && is_user_permitted_to_receive_email($HTTP_VARS['uid']) && is_user_granted_permission(PERM_SEND_EMAIL)) {
-				$from_user_r = fetch_user_r(get_opendb_session_var('user_id'));
-				$HTTP_VARS['toname'] = trim(strip_tags($HTTP_VARS['toname']));
-
-				if ($HTTP_VARS['op2'] == 'send' && send_email_to_userids(array($HTTP_VARS['uid']), $from_user_r['user_id'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $errors)) {
-					// do nothing
+					echo _theme_footer();
 				} else {
-					show_email_form($HTTP_VARS['uid'], fetch_user_name($HTTP_VARS['uid']), $from_user_r['user_id'], $from_user_r['fullname'], $HTTP_VARS['subject'], $HTTP_VARS['message'], $HTTP_VARS, $errors);
+					opendb_not_authorised_page(PERM_SEND_EMAIL, $HTTP_VARS);
 				}
 			} else {
-				echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
+				opendb_operation_not_available();
 			}
 		} else {
-			echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
+			opendb_operation_not_available();
 		}
-
-		echo _theme_footer();
 	} else {
 		// invalid login, so login instead.
 		redirect_login($PHP_SELF, $HTTP_VARS);

@@ -794,7 +794,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_CREATE_USER);
+					opendb_not_authorised_page(PERM_ADMIN_CREATE_USER, $HTTP_VARS, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'edit') {
 				if (is_user_granted_update_permission($HTTP_VARS)) {
@@ -815,7 +815,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_USER_PROFILE);
+					opendb_not_authorised_page(PERM_ADMIN_USER_PROFILE, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'change_password') {
 				if (is_user_granted_change_password($HTTP_VARS)) {
@@ -836,7 +836,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_CHANGE_PASSWORD);
+					opendb_not_authorised_page(PERM_ADMIN_CHANGE_PASSWORD, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'update_password') {
 				if (is_user_granted_change_password($HTTP_VARS)) {
@@ -864,7 +864,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_CHANGE_PASSWORD);
+					opendb_not_authorised_page(PERM_ADMIN_CHANGE_PASSWORD, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'change_user' && get_opendb_config_var('user_admin.change_user', 'enable') !== FALSE) {
 				if(is_user_granted_permission(PERM_ADMIN_CHANGE_USER)) {
@@ -879,7 +879,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_CHANGE_USER);
+					opendb_not_authorised_page(PERM_ADMIN_CHANGE_USER, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'insert') {
 				if (is_user_granted_permission(PERM_ADMIN_CREATE_USER)) {
@@ -911,7 +911,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_CREATE_USER);
+					opendb_not_authorised_page(PERM_ADMIN_CREATE_USER, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'update') {
 				if (is_user_granted_update_permission($HTTP_VARS)) {
@@ -941,7 +941,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_USER_PROFILE);
+					opendb_not_authorised_page(PERM_ADMIN_USER_PROFILE, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'deactivate') {
 				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
@@ -972,7 +972,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_USER_PROFILE);
+					opendb_not_authorised_page(PERM_ADMIN_USER_PROFILE, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'activate') {
 				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
@@ -1025,7 +1025,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_USER_PROFILE);
+					opendb_not_authorised_page(PERM_ADMIN_USER_PROFILE, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'activate_users') {
 				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
@@ -1107,7 +1107,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_USER_PROFILE);
+					opendb_not_authorised_page(PERM_ADMIN_USER_PROFILE, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'delete') {
 				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
@@ -1128,7 +1128,7 @@ if (is_site_enabled()) {
 					echo format_footer_links($footer_links_r);
 					echo _theme_footer();
 				} else {
-					not_authorised(PERM_ADMIN_USER_PROFILE);
+					opendb_not_authorised_page(PERM_ADMIN_USER_PROFILE, $HTTP_VARS);
 				}
 			} else if ($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'enable') !== FALSE) {
 				if ($HTTP_VARS['op2'] == 'send_info') {

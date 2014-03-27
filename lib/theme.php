@@ -42,16 +42,6 @@ function get_content_type_charset() {
 	return $contentType;
 }
 
-function not_authorised($permission = NULL) {
-	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'), FALSE);
-	
-	if ($permission != NULL && is_permission_disabled_for_remember_me($permission)) {
-		echo ("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page_login')."</p>");
-	} else {
-		echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-	}
-	echo _theme_footer();
-}
 
 function _theme_header($title = NULL, $inc_menu = TRUE) {
 	global $PHP_SELF;
@@ -390,9 +380,27 @@ function get_user_theme_r() {
 		return array ();
 }
 
-function opendb_not_authorised_page() {
+function opendb_operation_not_available() {
 	echo _theme_header ( get_opendb_lang_var ( 'not_authorized_to_page' ) );
-	echo ("<p class=\"error\">" . get_opendb_lang_var ( 'not_authorized_to_page' ) . "</p>");
+	echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
 	echo _theme_footer ();
+}
+
+function opendb_site_disabled() {
+	echo _theme_header ( get_opendb_lang_var ( 'site_is_disabled' ) );
+	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
+	echo _theme_footer ();
+}
+
+function opendb_not_authorised_page($permission = NULL, $HTTP_VARS = NULL) {
+	global $PHP_SELF;
+	
+	if ($permission != NULL && is_permission_disabled_for_remember_me($permission)) {
+		redirect_login($PHP_SELF, $HTTP_VARS, TRUE);
+	} else {
+		echo _theme_header ( get_opendb_lang_var ( 'not_authorized_to_page' ) );
+		echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
+		echo _theme_footer ();
+	}
 }
 ?>

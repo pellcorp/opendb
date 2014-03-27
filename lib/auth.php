@@ -102,13 +102,17 @@ function get_user_granted_permissions_r($user_id) {
 	return $children;
 }
 
-function is_user_granted_permission($permission, $user_id = NULL) {
+function is_user_granted_permission($permission, $user_id = NULL, $ignoreRememberMe = FALSE) {
 	if (strlen ( $user_id ) == 0 && is_site_public_access()) {
 		$perms_r = get_public_access_permission_r();
 	} else {
 		if (strlen ( $user_id ) == 0) {
 			$user_id = $_SESSION['user_id'];
-			$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
+			if (!$ignoreRememberMe) {
+				$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
+			} else {
+				$is_remember_me = FALSE;
+			}
 			
 			global $PERM_MATRIX;
 			if (!is_array($PERM_MATRIX)) {
@@ -150,6 +154,16 @@ function is_permission_disabled_for_remember_me($permission) {
 	global $PERM_MATRIX;
 	
 	if (is_array($PERM_MATRIX)) {
+		if (is_array($permission)) {
+			reset($permission);
+			while(list(,$perm) = each($permission)) {
+				if(isset($PERM_MATRIX[$perm])) {
+					if ($PERM_MATRIX[$perm] == 'N') {
+						return TRUE;
+					}
+				}
+			}
+		}
 		if (isset($PERM_MATRIX[$permission])) {
 			return $PERM_MATRIX[$permission] == 'N';
 		}
@@ -192,7 +206,8 @@ function is_user_admin_changed_user() {
 
 function is_opendb_valid_session() {
 	if (is_opendb_configured ()) {
-		if (get_opendb_session_var ( 'login_time' ) != NULL && get_opendb_session_var ( 'last_access_time' ) != NULL && get_opendb_session_var ( 'user_id' ) != NULL && get_opendb_session_var ( 'hash_check' ) != NULL) {
+		if (get_opendb_session_var ( 'login_time' ) != NULL && get_opendb_session_var ( 'last_access_time' ) != NULL 
+					&& get_opendb_session_var ( 'user_id' ) != NULL && get_opendb_session_var ( 'hash_check' ) != NULL) {
 			$site_r = get_opendb_config_var ( 'site' );
 			
 			// A valid session as far as the variables go at least.
@@ -283,6 +298,7 @@ function handle_opendb_remember_me() {
 	if (!empty($oldCookie)) {
 		$remember_me_r = get_remember_me_r($oldCookie);
 		if ($remember_me_r !== FALSE) {
+			
 			// no need to register if already logged in
 			if ($remember_me_r['valid'] === TRUE && !$doRememberMe) { 
 				// the second TRUE, flags the current user login as being enabled by a remember me cookie

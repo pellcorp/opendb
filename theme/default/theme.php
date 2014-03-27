@@ -57,7 +57,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id) {
 			echo ("<li><a href=\"borrow.php?op=my_reserve_basket\">" . theme_image("basket.png", get_opendb_lang_var('item_reserve_list')) . "</a></li>");
 		}
 
-		if (is_user_granted_permission(PERM_VIEW_LISTINGS)) {
+		if (is_user_granted_permission(PERM_VIEW_LISTINGS, NULL, TRUE)) {
 			echo ("<li><form class=\"quickSearch\" action=\"listings.php\">" . "<input type=\"hidden\" name=\"search_list\" value=\"y\">" . 
 					//"<input type=\"hidden\" name=\"attribute_type\" value=\"UPC_ID\">".
 					//"<input type=\"hidden\" name=\"attr_match\" value=\"partial\">".
@@ -66,7 +66,7 @@ function theme_header($pageid, $title, $include_menu, $mode, $user_id) {
 					. "<input type=\"text\" class=\"text\" name=\"title\" size=\"10\" value=\"Title Search\" onfocus=\"if(this.value=='Title Search'){this.value='';this.style.color='black';}\" onblur=\"if(this.value==''){this.value='Title Search';this.style.color='gray';}\">" . "</form></li>");
 		}
 
-		if (is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH)) {
+		if (is_user_granted_permission(PERM_VIEW_ADVANCED_SEARCH, NULL, TRUE)) {
 			echo ("<li><a href=\"search.php\" title=\"" . get_opendb_lang_var('advanced_search') . "\">" . get_opendb_lang_var('advanced') . "</a></li>");
 		}
 

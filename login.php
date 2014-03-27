@@ -70,10 +70,14 @@ function show_login_form($HTTP_VARS, $errors = NULL) {
 
 	echo ("<div id=\"loginFormDiv\">");
 
+	if ($HTTP_VARS['rememberMeLogin'] == 'true') {
+		echo ("<p class=\"rememberMeLoginMessage\">" . get_opendb_lang_var('not_authorized_to_page_login') . "</p>");
+	}
+	
 	if (strlen($HTTP_VARS['redirect']) > 0) {
 		echo ("<p class=\"redirectMessage\">" . get_opendb_lang_var('login_redirect_message', array('pageid' => get_page_id($HTTP_VARS['redirect']))) . "</p>");
 	}
-
+	
 	echo ("<form id=\"loginForm\" action=\"$PHP_SELF\" method=\"POST\" name=\"login\">");
 
 	// The user tried to go straight to a menu item with an invalid session.
@@ -175,7 +179,6 @@ function perform_newpassword($HTTP_VARS, &$errors) {
 		}
 	}
 }
-
 
 if (is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op'] != 'newpassword') {
 	if (strlen($HTTP_VARS['redirect']) > 0) { // Redirect to requested page, as already logged in.

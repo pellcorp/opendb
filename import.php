@@ -588,9 +588,7 @@ if (is_site_enabled()) {
 				}
 			}
 		} else { //not an administrator or own user.
- 			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-			echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-			echo _theme_footer();
+ 			opendb_not_authorised_page(array(PERM_USER_IMPORT, PERM_ADMIN_IMPORT));
 		}
 	} else { //invalid session
  		// invalid login, so login instead.

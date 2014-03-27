@@ -539,9 +539,7 @@ if (is_site_enabled()) {
 				echo _theme_footer();
 			}
 		} else { //no guests or borrowers allowed!
- 			echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-			echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-			echo _theme_footer();
+ 			opendb_not_authorised_page(array(PERM_USER_EXPORT, PERM_ADMIN_EXPORT));
 		}
 	} else {
 		// invalid login, so login instead.
@@ -549,9 +547,7 @@ if (is_site_enabled()) {
 	}
 }//if(is_site_enabled())
  else {
-	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+	opendb_site_disabled();
 }
 
 // Cleanup after begin.inc.php

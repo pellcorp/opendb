@@ -874,9 +874,7 @@ if (is_site_enabled()) {
 				echo format_footer_links($footer_links_r);
 				echo _theme_footer();
 			} else {
-				echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-				echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-				echo _theme_footer();
+				opendb_not_authorised_page(array(PERM_ADMIN_BORROWER, PERM_USER_BORROWER));
 			}
 		} else { //borrow functionality disabled.
  			echo _theme_header(get_opendb_lang_var('borrow_not_supported'));
@@ -888,9 +886,7 @@ if (is_site_enabled()) {
 		redirect_login($PHP_SELF, $HTTP_VARS);
 	}
 } else { //if(is_site_enabled())
- 	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+ 	opendb_site_disabled();
 }
 
 // Cleanup after begin.inc.php

@@ -143,11 +143,7 @@ if (is_site_enabled()) {
 								$result = fetch_item_instance_history_rs($item_r['item_id'], $item_r['instance_no'], $listingObject->getCurrentOrderBy(), $listingObject->getCurrentSortOrder());
 							}
 						} else {
-							echo (_theme_header(get_opendb_lang_var('not_authorized_to_page')));
-							echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-
-							echo (format_footer_links($footer_links_r));
-							echo (_theme_footer());
+							opendb_not_authorised_page();
 						}
 					} else {
 						echo _theme_header(get_opendb_lang_var('item_not_found'));
@@ -508,9 +504,7 @@ if (is_site_enabled()) {
 
 				}//end if($show_listings)		
 			} else { //no guests allowed!
- 				echo (_theme_header(get_opendb_lang_var('not_authorized_to_page')));
-				echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-				echo (_theme_footer());
+ 				opendb_not_authorised_page(PERM_USER_BORROWER, $HTTP_VARS);
 			}
 		} else { //borrow functionality disabled.
  			echo (_theme_header(get_opendb_lang_var('borrow_not_supported')));

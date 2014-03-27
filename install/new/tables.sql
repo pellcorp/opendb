@@ -280,21 +280,22 @@ CREATE TABLE s_role (
     description VARCHAR(100),
 	signup_avail_ind VARCHAR(1) NOT NULL DEFAULT 'Y',
 	priority TINYINT(3) unsigned NOT NULL,
-PRIMARY KEY ( role_name )
+	PRIMARY KEY ( role_name )
 ) ENGINE=MyISAM COMMENT = 'System Role table';
 
 DROP TABLE IF EXISTS s_permission;
 CREATE TABLE s_permission (
     permission_name VARCHAR(30) NOT NULL,
 	description VARCHAR(100),
-PRIMARY KEY ( permission_name )
+	PRIMARY KEY ( permission_name )
 ) ENGINE=MyISAM COMMENT = 'System Permission table';
 
 DROP TABLE IF EXISTS s_role_permission;
 CREATE TABLE s_role_permission (
 	role_name VARCHAR(20) NOT NULL,
     permission_name VARCHAR(30) NOT NULL,
-PRIMARY KEY ( role_name, permission_name )
+    remember_me_ind VARCHAR(1) NOT NULL DEFAULT 'Y',
+	PRIMARY KEY ( role_name, permission_name )
 ) ENGINE=MyISAM COMMENT = 'System Role Permission table';
 
 #

@@ -42,6 +42,12 @@ function get_content_type_charset() {
 	return $contentType;
 }
 
+function not_authorised() {
+	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'), FALSE);
+	echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
+	echo _theme_footer();
+}
+
 function _theme_header($title = NULL, $inc_menu = TRUE) {
 	global $PHP_SELF;
 	global $HTTP_VARS;

@@ -19,7 +19,7 @@
  */
 
 function fetch_role_rs() {
-	$query = "SELECT DISTINCT role_name, description, signup_avail_ind FROM s_role ORDER BY 1";
+	$query = "SELECT DISTINCT role_name, description, signup_avail_ind FROM s_role ORDER BY priority desc";
 
 	$result = db_query($query);
 	if ($result && db_num_rows($result) > 0)
@@ -29,10 +29,10 @@ function fetch_role_rs() {
 }
 
 function fetch_role_permission_rs($role_name) {
-	$query = "SELECT p.permission_name, p.description, s.role_name
+	$query = "SELECT p.permission_name, s.remember_me_ind, p.description, s.role_name
 			FROM s_permission p
 			LEFT JOIN s_role_permission s ON s.permission_name = p.permission_name AND
-			s.role_name = '$role_name'";
+			s.role_name = '$role_name' ";
 
 	$result = db_query($query);
 	if ($result && db_num_rows($result) > 0)
@@ -41,14 +41,36 @@ function fetch_role_permission_rs($role_name) {
 		return FALSE;
 }
 
-function update_role_permissions($role_name, $permission_r) {
+function update_role_permissions($role_name, $permissions_r) {
+	$role_name = addslashes($role_name);
+	
 	db_query("DELETE FROM s_role_permission WHERE role_name = '$role_name'");
 
-	if (strlen($role_name) > 0 && is_array($permission_r)) {
-		reset($permission_r);
-		while (list(, $permission_name) = each($permission_r)) {
-			db_query("INSERT INTO s_role_permission(role_name, permission_name) 
-				VALUES('$role_name', '$permission_name');");
+	if (strlen($role_name) > 0 && is_array($permissions_r)) {
+		reset($permissions_r);
+		while (list($permission_name, $permission_r) = each($permissions_r)) {
+			$enabled_ind = validate_ind_column($permission_r['enabled_ind']);
+			$remember_me_ind = validate_ind_column($permission_r['remember_me_ind']);
+			
+			if ($enabled_ind == 'Y') {
+				$query = "INSERT INTO s_role_permission(role_name, permission_name, remember_me_ind) 
+					VALUES('$role_name', '$permission_name', '".$remember_me_ind."')";
+				
+				$insert = db_query($query);
+				if ($insert && db_affected_rows () > 0) {
+					opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, NULL, array (
+					$role_name,
+					$permission_name,
+					$remember_me_ind ) );
+					
+				} else {
+					opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), 
+					array (
+					$role_name,
+					$permission_name,
+					$remember_me_ind ) );
+				}
+			}
 		}
 	}
 }

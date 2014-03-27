@@ -1565,7 +1565,7 @@ function delete_related_item_instance_relationship($item_id, $instance_no, $pare
 	
 	$delete = db_query ( $query );
 	if (db_affected_rows () > 0) {
-		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), array (
+		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array (
 				$item_id,
 				$instance_no,
 				$parent_item_id,

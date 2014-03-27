@@ -784,284 +784,351 @@ if (is_site_enabled()) {
 		if ($HTTP_VARS['op'] == 'gfx_code_check' && is_numeric($HTTP_VARS['gfx_random_number'])) {
 			secretimage($HTTP_VARS['gfx_random_number']);
 		} else {
-			if ($HTTP_VARS['op'] == 'new_user' && is_user_granted_permission(PERM_ADMIN_CREATE_USER)) {
-				echo _theme_header(get_opendb_lang_var('add_new_user'));
-				echo ("<h2>" . get_opendb_lang_var('add_new_user') . "</h2>");
-
-				echo (get_user_input_form(NULL, $HTTP_VARS));
-			} else if ($HTTP_VARS['op'] == 'edit' && is_user_granted_update_permission($HTTP_VARS)) {
-				if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
-					$page_title = get_opendb_lang_var('my_info');
-				else
-					$page_title = get_opendb_lang_var('user_info');
-
-				echo _theme_header($page_title);
-				echo ("<h2>" . $page_title . "</h2>");
-
-				$user_r = fetch_user_r($HTTP_VARS['user_id']);
-				if (is_not_empty_array($user_r)) {
-					echo (get_user_input_form($user_r, $HTTP_VARS));
-				} else { //user not found.
- 					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
-				}
-			} else if ($HTTP_VARS['op'] == 'change_password' && is_user_granted_change_password($HTTP_VARS)) {
-				if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
-					$page_title = get_opendb_lang_var('change_my_password');
-				else
-					$page_title = get_opendb_lang_var('change_user_password');
-
-				echo _theme_header($page_title);
-				echo ("<h2>" . $page_title . "</h2>");
-
-				$user_r = fetch_user_r($HTTP_VARS['user_id']);
-				if (is_not_empty_array($user_r)) {
-					echo (get_user_password_change_form($user_r, $HTTP_VARS));
-				} else { //user not found.
- 					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
-				}
-			} else if ($HTTP_VARS['op'] == 'update_password' && is_user_granted_change_password($HTTP_VARS)) {
-				if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
-					$page_title = get_opendb_lang_var('change_my_password');
-				else
-					$page_title = get_opendb_lang_var('change_user_password');
-
-				echo _theme_header($page_title);
-				echo ("<h2>" . $page_title . "</h2>");
-
-				if (handle_user_password_change($HTTP_VARS['user_id'], $HTTP_VARS, $error)) {
-					echo ("<p class=\"success\">" . get_opendb_lang_var('passwd_changed') . "</p>");
+			if ($HTTP_VARS['op'] == 'new_user') {
+				if(is_user_granted_permission(PERM_ADMIN_CREATE_USER)) {
+					echo _theme_header(get_opendb_lang_var('add_new_user'));
+					echo ("<h2>" . get_opendb_lang_var('add_new_user') . "</h2>");
+	
+					echo (get_user_input_form(NULL, $HTTP_VARS));
+					
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
 				} else {
-					echo (format_error_block(array('error' => get_opendb_lang_var('passwd_not_changed'), 'details' => $error)));
-
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'edit') {
+				if (is_user_granted_update_permission($HTTP_VARS)) {
+					if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
+						$page_title = get_opendb_lang_var('my_info');
+					else
+						$page_title = get_opendb_lang_var('user_info');
+	
+					echo _theme_header($page_title);
+					echo ("<h2>" . $page_title . "</h2>");
+	
 					$user_r = fetch_user_r($HTTP_VARS['user_id']);
 					if (is_not_empty_array($user_r)) {
-						$HTTP_VARS['op'] = 'change_password';
-						echo get_user_password_change_form($user_r, $HTTP_VARS);
+						echo (get_user_input_form($user_r, $HTTP_VARS));
 					} else { //user not found.
- 						echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+	 					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
 					}
-				}
-			} else if ($HTTP_VARS['op'] == 'change_user' && get_opendb_config_var('user_admin.change_user', 'enable') !== FALSE && is_user_granted_permission(PERM_ADMIN_CHANGE_USER)) {
-				if (strlen($HTTP_VARS['uid']) > 0 && is_user_active($HTTP_VARS['uid'])) {
-					perform_changeuser($HTTP_VARS);
-					opendb_redirect('welcome.php');
-					return;
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
 				} else {
-					echo _theme_header(get_opendb_lang_var('change_user'));
-					show_changeuser_form();
+					not_authorised();
 				}
-			} else if ($HTTP_VARS['op'] == 'insert' && is_user_granted_permission(PERM_ADMIN_CREATE_USER)) {
-				echo _theme_header(get_opendb_lang_var('add_new_user'));
-				echo ("<h2>" . get_opendb_lang_var('add_new_user') . "</h2>");
-
-				$return_val = handle_user_insert($HTTP_VARS, $errors);
-				if ($return_val !== FALSE) {
-					echo ("\n<p class=\"success\">" . get_opendb_lang_var('user_added', 'user_id', $HTTP_VARS['user_id']) . "</p>");
-
-					if ($HTTP_VARS['email_user'] == 'Y') {
+			} else if ($HTTP_VARS['op'] == 'change_password') {
+				if (is_user_granted_change_password($HTTP_VARS)) {
+					if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
+						$page_title = get_opendb_lang_var('change_my_password');
+					else
+						$page_title = get_opendb_lang_var('change_user_password');
+	
+					echo _theme_header($page_title);
+					echo ("<h2>" . $page_title . "</h2>");
+	
+					$user_r = fetch_user_r($HTTP_VARS['user_id']);
+					if (is_not_empty_array($user_r)) {
+						echo (get_user_password_change_form($user_r, $HTTP_VARS));
+					} else { //user not found.
+	 					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'update_password') {
+				if (is_user_granted_change_password($HTTP_VARS)) {
+					if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
+						$page_title = get_opendb_lang_var('change_my_password');
+					else
+						$page_title = get_opendb_lang_var('change_user_password');
+	
+					echo _theme_header($page_title);
+					echo ("<h2>" . $page_title . "</h2>");
+	
+					if (handle_user_password_change($HTTP_VARS['user_id'], $HTTP_VARS, $error)) {
+						echo ("<p class=\"success\">" . get_opendb_lang_var('passwd_changed') . "</p>");
+					} else {
+						echo (format_error_block(array('error' => get_opendb_lang_var('passwd_not_changed'), 'details' => $error)));
+	
 						$user_r = fetch_user_r($HTTP_VARS['user_id']);
-						if (is_valid_opendb_mailer()) {
-							if (send_newuser_email($user_r, $HTTP_VARS['pwd'], $errors)) {
-								echo ("<p class=\"success\">" . get_opendb_lang_var('welcome_email_sent', $user_r) . "</p>");
-							} else {
-								echo ("<p class=\"error\">" . get_opendb_lang_var('welcome_email_error', $user_r) . "</p>");
-								echo format_error_block($errors);
+						if (is_not_empty_array($user_r)) {
+							$HTTP_VARS['op'] = 'change_password';
+							echo get_user_password_change_form($user_r, $HTTP_VARS);
+						} else { //user not found.
+	 						echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+						}
+					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'change_user' && get_opendb_config_var('user_admin.change_user', 'enable') !== FALSE) {
+				if(is_user_granted_permission(PERM_ADMIN_CHANGE_USER)) {
+					if (strlen($HTTP_VARS['uid']) > 0 && is_user_active($HTTP_VARS['uid'])) {
+						perform_changeuser($HTTP_VARS);
+						opendb_redirect('welcome.php');
+						return;
+					} else {
+						echo _theme_header(get_opendb_lang_var('change_user'));
+						show_changeuser_form();
+					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'insert') {
+				if (is_user_granted_permission(PERM_ADMIN_CREATE_USER)) {
+					echo _theme_header(get_opendb_lang_var('add_new_user'));
+					echo ("<h2>" . get_opendb_lang_var('add_new_user') . "</h2>");
+	
+					$return_val = handle_user_insert($HTTP_VARS, $errors);
+					if ($return_val !== FALSE) {
+						echo ("\n<p class=\"success\">" . get_opendb_lang_var('user_added', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+	
+						if ($HTTP_VARS['email_user'] == 'Y') {
+							$user_r = fetch_user_r($HTTP_VARS['user_id']);
+							if (is_valid_opendb_mailer()) {
+								if (send_newuser_email($user_r, $HTTP_VARS['pwd'], $errors)) {
+									echo ("<p class=\"success\">" . get_opendb_lang_var('welcome_email_sent', $user_r) . "</p>");
+								} else {
+									echo ("<p class=\"error\">" . get_opendb_lang_var('welcome_email_error', $user_r) . "</p>");
+									echo format_error_block($errors);
+								}
 							}
 						}
+	
+						$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+					} else { // $return_val === FALSE
+	 					echo format_error_block($errors);
+						$HTTP_VARS['op'] = 'new_user';
+						echo (get_user_input_form(NULL, $HTTP_VARS));
 					}
-
-					$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
-				} else { // $return_val === FALSE
- 					echo format_error_block($errors);
-					$HTTP_VARS['op'] = 'new_user';
-					echo (get_user_input_form(NULL, $HTTP_VARS));
-				}
-			} else if ($HTTP_VARS['op'] == 'update' && is_user_granted_update_permission($HTTP_VARS)) {
-				if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
-					$page_title = get_opendb_lang_var('my_info');
-				else
-					$page_title = get_opendb_lang_var('user_info');
-
-				echo _theme_header($page_title);
-				echo ("<h2>" . $page_title . "</h2>");
-
-				if (handle_user_update($HTTP_VARS, $errors)) {
-					// Any warnings that should be displayed.
-					if ($errors !== NULL)
-						echo format_error_block($errors);
-				}
-
-				echo format_error_block($errors);
-
-				$user_r = fetch_user_r($HTTP_VARS['user_id']);
-				if (is_not_empty_array($user_r)) {
-					$HTTP_VARS['op'] = 'edit';
-					echo get_user_input_form($user_r, $HTTP_VARS);
-				} else { //user not found.
- 					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
-				}
-			} else if ($HTTP_VARS['op'] == 'deactivate' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
-				echo _theme_header(get_opendb_lang_var('deactivate_user'));
-				echo ("<h2>" . get_opendb_lang_var('deactivate_user') . "</h2>");
-
-				if (is_user_valid($HTTP_VARS['user_id'])) {
-					// user has to be currently active for a deactivation process to succeed
-					if (is_user_active($HTTP_VARS['user_id'])) {
-						$return_val = handle_user_deactivate($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
-						if ($return_val === "__CONFIRM__") {
-							echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_deactivate', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
-						} else if ($return_val === "__ABORTED__") {
-							echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_deactivated') . "</p>");
-							$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
-						} else if ($return_val === TRUE) {
-							echo ("<p class=\"success\">" . get_opendb_lang_var('user_deactivated') . "</p>");
-						} else { //if($return_val === FALSE)
- 							echo format_error_block($errors);
-							$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
-						}
-					} else { //if(is_user_active($HTTP_VARS['user_id']))
- 						echo format_error_block(get_opendb_lang_var('operation_not_available'));
-					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
 				} else {
-					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+					not_authorised();
 				}
-			} else if ($HTTP_VARS['op'] == 'activate' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
-				echo _theme_header(get_opendb_lang_var('activate_user'));
-				echo ("<h2>" . get_opendb_lang_var('activate_user') . "</h2>");
-
-				if (is_user_valid($HTTP_VARS['user_id'])) {
-					// user must be deactivated in order for this process to continue.
-					if (!is_user_active($HTTP_VARS['user_id'])) {
-						// if newly activated user, then we want to reset password and
-						// send notification email.
-						$new_activated_user = is_user_not_activated($HTTP_VARS['user_id']);
-
-						$return_val = handle_user_activate($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
-						if ($return_val === '__CONFIRM__') {
-							echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_activate', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
-						} else if ($return_val === '__ABORTED__') {
-							echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_activated') . "</p>");
-						} else if ($return_val === TRUE) {
-							echo ("<p class=\"success\">" . get_opendb_lang_var('user_activated') . "</p>");
-
-							// reset password and send email
-							if ($new_activated_user) {
-								$user_passwd = generate_password(8);
-								$pass_result = update_user_passwd($HTTP_VARS['user_id'], $user_passwd);
-								if ($pass_result === TRUE) {
-									$user_r = fetch_user_r($HTTP_VARS['user_id']);
-									if (is_valid_opendb_mailer()) {
-										if (send_newuser_email($user_r, $user_passwd, $errors)) {
-											echo ("\n<p class=\"success\">" . get_opendb_lang_var('welcome_email_sent', $user_r) . "</p>");
-										} else {
-											echo ("<p class=\"error\">" . get_opendb_lang_var('welcome_email_error', $user_r) . "</p>");
-											echo format_error_block($errors);
+			} else if ($HTTP_VARS['op'] == 'update') {
+				if (is_user_granted_update_permission($HTTP_VARS)) {
+					if ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id'))
+						$page_title = get_opendb_lang_var('my_info');
+					else
+						$page_title = get_opendb_lang_var('user_info');
+	
+					echo _theme_header($page_title);
+					echo ("<h2>" . $page_title . "</h2>");
+	
+					if (handle_user_update($HTTP_VARS, $errors)) {
+						// Any warnings that should be displayed.
+						if ($errors !== NULL)
+							echo format_error_block($errors);
+					}
+	
+					echo format_error_block($errors);
+	
+					$user_r = fetch_user_r($HTTP_VARS['user_id']);
+					if (is_not_empty_array($user_r)) {
+						$HTTP_VARS['op'] = 'edit';
+						echo get_user_input_form($user_r, $HTTP_VARS);
+					} else { //user not found.
+	 					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'deactivate') {
+				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
+					echo _theme_header(get_opendb_lang_var('deactivate_user'));
+					echo ("<h2>" . get_opendb_lang_var('deactivate_user') . "</h2>");
+	
+					if (is_user_valid($HTTP_VARS['user_id'])) {
+						// user has to be currently active for a deactivation process to succeed
+						if (is_user_active($HTTP_VARS['user_id'])) {
+							$return_val = handle_user_deactivate($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
+							if ($return_val === "__CONFIRM__") {
+								echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_deactivate', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
+							} else if ($return_val === "__ABORTED__") {
+								echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_deactivated') . "</p>");
+								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+							} else if ($return_val === TRUE) {
+								echo ("<p class=\"success\">" . get_opendb_lang_var('user_deactivated') . "</p>");
+							} else { //if($return_val === FALSE)
+	 							echo format_error_block($errors);
+								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+							}
+						} else { //if(is_user_active($HTTP_VARS['user_id']))
+	 						echo format_error_block(get_opendb_lang_var('operation_not_available'));
+						}
+					} else {
+						echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'activate') {
+				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
+					echo _theme_header(get_opendb_lang_var('activate_user'));
+					echo ("<h2>" . get_opendb_lang_var('activate_user') . "</h2>");
+	
+					if (is_user_valid($HTTP_VARS['user_id'])) {
+						// user must be deactivated in order for this process to continue.
+						if (!is_user_active($HTTP_VARS['user_id'])) {
+							// if newly activated user, then we want to reset password and
+							// send notification email.
+							$new_activated_user = is_user_not_activated($HTTP_VARS['user_id']);
+	
+							$return_val = handle_user_activate($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
+							if ($return_val === '__CONFIRM__') {
+								echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_activate', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
+							} else if ($return_val === '__ABORTED__') {
+								echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_activated') . "</p>");
+							} else if ($return_val === TRUE) {
+								echo ("<p class=\"success\">" . get_opendb_lang_var('user_activated') . "</p>");
+	
+								// reset password and send email
+								if ($new_activated_user) {
+									$user_passwd = generate_password(8);
+									$pass_result = update_user_passwd($HTTP_VARS['user_id'], $user_passwd);
+									if ($pass_result === TRUE) {
+										$user_r = fetch_user_r($HTTP_VARS['user_id']);
+										if (is_valid_opendb_mailer()) {
+											if (send_newuser_email($user_r, $user_passwd, $errors)) {
+												echo ("\n<p class=\"success\">" . get_opendb_lang_var('welcome_email_sent', $user_r) . "</p>");
+											} else {
+												echo ("<p class=\"error\">" . get_opendb_lang_var('welcome_email_error', $user_r) . "</p>");
+												echo format_error_block($errors);
+											}
 										}
 									}
 								}
+	
+								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+							} else {
+								echo format_error_block($errors);
+								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
 							}
-
-							$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
-						} else {
-							echo format_error_block($errors);
-							$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+						} else { //if(!is_user_active($HTTP_VARS['user_id']))
+	 						echo format_error_block(get_opendb_lang_var('operation_not_available'));
+						}
+					} else {
+						echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
+				}
+			} else if ($HTTP_VARS['op'] == 'activate_users') {
+				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
+					echo _theme_header(get_opendb_lang_var('activate_users'));
+					echo ("<h2>" . get_opendb_lang_var('activate_users') . "</h2>");
+	
+					// handle activate of single user in the same way
+					if (!is_array($HTTP_VARS['user_id_rs']) && is_user_valid($HTTP_VARS['user_id'])) {
+						$HTTP_VARS['user_id_rs'][] = $HTTP_VARS['user_id'];
+						unset($HTTP_VARS['user_id']);
+					}
+	
+					if (is_not_empty_array($HTTP_VARS['user_id_rs'])) {
+						// do not display confirm screen
+						$HTTP_VARS['confirmed'] = 'true';
+	
+						$success_userid_rs = NULL;
+						$failure_userid_rs = NULL;
+	
+						while (list(, $userid) = each($HTTP_VARS['user_id_rs'])) {
+							// if newly activated user, then we want to reset password and send notification email.
+							$new_activated_user = is_user_not_activated($userid);
+	
+							$user_r = fetch_user_r($userid);
+	
+							$errors = NULL;
+	
+							if (handle_user_activate($userid, $HTTP_VARS, $errors)) {
+								// reset password and send email
+								if ($new_activated_user) {
+									$user_passwd = generate_password(8);
+									$pass_result = update_user_passwd($userid, $user_passwd);
+									if ($pass_result === TRUE) {
+										if (is_valid_opendb_mailer()) {
+											if (send_newuser_email($user_r, $user_passwd, $errors)) {
+												$user_r['_send_email_result'] = TRUE;
+											} else {
+												$user_r['_send_email_result'] = FALSE;
+												$user_r['_send_email_errors'] = $errors;
+											}
+										}
+									}
+								}
+	
+								$success_userid_rs[] = $user_r;
+							} else {
+								$failure_userid_rs[] = $user_r;
+							}
+						}
+	
+						if (is_array($success_userid_rs)) {
+							echo ("<p class=\"success\">" . get_opendb_lang_var('users_activated') . "</p>");
+							echo ("<ul>");
+							for ($i = 0; $i < count($success_userid_rs); $i++) {
+								echo ("<li class=\"smsuccess\">" . get_opendb_lang_var('user_activated_detail', $success_userid_rs[$i]));
+	
+								if ($success_userid_rs[$i]['_send_email_result'] !== FALSE) {
+									echo ("<ul><li class=\"smsuccess\">" . get_opendb_lang_var('welcome_email_sent', $success_userid_rs[$i]) . "</li></ul>");
+								} else {
+									echo format_error_block(array('error' => get_opendb_lang_var('welcome_email_error', $success_userid_rs[$i]), 'detail' => $errors));
+								}
+	
+								echo ("</li>");
+							}
+							echo ("</ul>");
+						}
+	
+						if (is_array($failure_userid_rs)) {
+							echo ("<p class=\"error\">" . get_opendb_lang_var('users_not_activated') . "</p>");
+							echo ("<ul>");
+							for ($i = 0; $i < count($failure_userid_rs); $i++) {
+								echo ("<li class=\"smerror\">\"" . get_opendb_lang_var('user_activated_detail', $failure_userid_rs[$i]) . "</li>");
+							}
+							echo ("</ul>");
 						}
 					} else { //if(!is_user_active($HTTP_VARS['user_id']))
- 						echo format_error_block(get_opendb_lang_var('operation_not_available'));
+	 					echo format_error_block(get_opendb_lang_var('operation_not_available'));
 					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
 				} else {
-					echo ("<p class=\"error\">" . get_opendb_lang_var('user_not_found', 'user_id', $HTTP_VARS['user_id']) . "</p>");
+					not_authorised();
 				}
-			} else if ($HTTP_VARS['op'] == 'activate_users' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
-				echo _theme_header(get_opendb_lang_var('activate_users'));
-				echo ("<h2>" . get_opendb_lang_var('activate_users') . "</h2>");
-
-				// handle activate of single user in the same way
-				if (!is_array($HTTP_VARS['user_id_rs']) && is_user_valid($HTTP_VARS['user_id'])) {
-					$HTTP_VARS['user_id_rs'][] = $HTTP_VARS['user_id'];
-					unset($HTTP_VARS['user_id']);
-				}
-
-				if (is_not_empty_array($HTTP_VARS['user_id_rs'])) {
-					// do not display confirm screen
-					$HTTP_VARS['confirmed'] = 'true';
-
-					$success_userid_rs = NULL;
-					$failure_userid_rs = NULL;
-
-					while (list(, $userid) = each($HTTP_VARS['user_id_rs'])) {
-						// if newly activated user, then we want to reset password and send notification email.
-						$new_activated_user = is_user_not_activated($userid);
-
-						$user_r = fetch_user_r($userid);
-
-						$errors = NULL;
-
-						if (handle_user_activate($userid, $HTTP_VARS, $errors)) {
-							// reset password and send email
-							if ($new_activated_user) {
-								$user_passwd = generate_password(8);
-								$pass_result = update_user_passwd($userid, $user_passwd);
-								if ($pass_result === TRUE) {
-									if (is_valid_opendb_mailer()) {
-										if (send_newuser_email($user_r, $user_passwd, $errors)) {
-											$user_r['_send_email_result'] = TRUE;
-										} else {
-											$user_r['_send_email_result'] = FALSE;
-											$user_r['_send_email_errors'] = $errors;
-										}
-									}
-								}
-							}
-
-							$success_userid_rs[] = $user_r;
-						} else {
-							$failure_userid_rs[] = $user_r;
-						}
+			} else if ($HTTP_VARS['op'] == 'delete') {
+				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
+					echo _theme_header(get_opendb_lang_var('delete_user'));
+					echo ("<h2>" . get_opendb_lang_var('delete_user') . "</h2>");
+	
+					$return_val = handle_user_delete($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
+					if ($return_val === '__CONFIRM__') {
+						echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_delete', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
+					} else if ($return_val === '__ABORTED__') {
+						echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_deleted') . "</p>");
+						$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id') ? get_opendb_lang_var('edit_my_info') : get_opendb_lang_var('edit_user_info')));
+					} else if ($return_val === TRUE) {
+						echo ("<p class=\"success\">" . get_opendb_lang_var('user_deleted') . "</p>");
+					} else { //if($return_val === FALSE)
+	 					echo format_error_block($errors);
 					}
-
-					if (is_array($success_userid_rs)) {
-						echo ("<p class=\"success\">" . get_opendb_lang_var('users_activated') . "</p>");
-						echo ("<ul>");
-						for ($i = 0; $i < count($success_userid_rs); $i++) {
-							echo ("<li class=\"smsuccess\">" . get_opendb_lang_var('user_activated_detail', $success_userid_rs[$i]));
-
-							if ($success_userid_rs[$i]['_send_email_result'] !== FALSE) {
-								echo ("<ul><li class=\"smsuccess\">" . get_opendb_lang_var('welcome_email_sent', $success_userid_rs[$i]) . "</li></ul>");
-							} else {
-								echo format_error_block(array('error' => get_opendb_lang_var('welcome_email_error', $success_userid_rs[$i]), 'detail' => $errors));
-							}
-
-							echo ("</li>");
-						}
-						echo ("</ul>");
-					}
-
-					if (is_array($failure_userid_rs)) {
-						echo ("<p class=\"error\">" . get_opendb_lang_var('users_not_activated') . "</p>");
-						echo ("<ul>");
-						for ($i = 0; $i < count($failure_userid_rs); $i++) {
-							echo ("<li class=\"smerror\">\"" . get_opendb_lang_var('user_activated_detail', $failure_userid_rs[$i]) . "</li>");
-						}
-						echo ("</ul>");
-					}
-				} else { //if(!is_user_active($HTTP_VARS['user_id']))
- 					echo format_error_block(get_opendb_lang_var('operation_not_available'));
-				}
-			} else if ($HTTP_VARS['op'] == 'delete' && is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
-				echo _theme_header(get_opendb_lang_var('delete_user'));
-				echo ("<h2>" . get_opendb_lang_var('delete_user') . "</h2>");
-
-				$return_val = handle_user_delete($HTTP_VARS['user_id'], $HTTP_VARS, $errors);
-				if ($return_val === '__CONFIRM__') {
-					echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_delete', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
-				} else if ($return_val === '__ABORTED__') {
-					echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_deleted') . "</p>");
-					$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id') ? get_opendb_lang_var('edit_my_info') : get_opendb_lang_var('edit_user_info')));
-				} else if ($return_val === TRUE) {
-					echo ("<p class=\"success\">" . get_opendb_lang_var('user_deleted') . "</p>");
-				} else { //if($return_val === FALSE)
- 					echo format_error_block($errors);
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
+				} else {
+					not_authorised();
 				}
 			} else if ($HTTP_VARS['op'] == 'signup' && get_opendb_config_var('login.signup', 'enable') !== FALSE) {
 				if ($HTTP_VARS['op2'] == 'send_info') {
@@ -1086,23 +1153,26 @@ if (is_site_enabled()) {
  						echo (format_error_block(get_opendb_lang_var('invalid_verify_code')));
 						echo (get_user_input_form(NULL, $HTTP_VARS));
 					}
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
 				} else {
 					$page_title = get_opendb_lang_var('new_account');
 					echo (_theme_header($page_title, is_show_login_menu_enabled()));
 					echo ("\n<h2>" . $page_title . "</h2>");
 					echo (get_user_input_form(NULL, $HTTP_VARS));
+					echo format_footer_links($footer_links_r);
+					echo _theme_footer();
 				}
 			} else { //End of $HTTP_VARS['op'] checks
  				echo _theme_header(get_opendb_lang_var('operation_not_available'));
 				echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
+				echo format_footer_links($footer_links_r);
+				echo _theme_footer();
 			}
 
 			if (is_array(get_opendb_session_var('user_listing_url_vars'))) {
 				$footer_links_r[] = array(url => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), text => get_opendb_lang_var('back_to_user_listing'));
 			}
-
-			echo format_footer_links($footer_links_r);
-			echo _theme_footer();
 		}
 	} else {
 		// invalid login, so login instead.

@@ -76,8 +76,10 @@ function is_user_granted_permission($permission, $user_id = NULL) {
 			WHERE 	role_name = '" . get_public_access_rolename () . "' AND
 				  	permission_name IN ($user_permissions_clause)";
 	} else {
-		if (strlen ( $user_id ) == 0)
-			$user_id = get_opendb_session_var ( 'user_id' );
+		if (strlen ( $user_id ) == 0) {
+			$user_id = $_SESSION['user_id'];
+			$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
+		}
 		
 		$query = "SELECT 'X' 
 			FROM 	s_role_permission srp, 
@@ -85,8 +87,13 @@ function is_user_granted_permission($permission, $user_id = NULL) {
 			WHERE 	u.user_role = srp.role_name AND
 				  	srp.permission_name IN ($user_permissions_clause) AND
 				  	u.user_id = '$user_id'";
+		
+		if ($is_remember_me) {
+			$query .= " AND srp.remember_me_ind = 'Y'";
+		}
 	}
 	
+	//echo $query;
 	$result = db_query ( $query );
 	if ($result && db_num_rows ( $result ) > 0) {
 		db_free_result ( $result );
@@ -165,24 +172,30 @@ function is_opendb_valid_session() {
 	return FALSE;
 }
 
-function register_user_login($user_id, $rememberMe = FALSE) {
+function register_user_login($user_id, $doRememberMe = FALSE, $isRememberMeLogin = FALSE) {
 	$time = time();
-	register_opendb_session_var('login_time', $time);
-	register_opendb_session_var('last_access_time', $time);
+	$_SESSION['login_time'] = $time;
+	$_SESSION['last_access_time'] = $time;
 
 	$user_r = fetch_user_r($user_id);
 
-	register_opendb_session_var('user_id', $user_id);
+	$_SESSION['user_id'] = $user_id;
 	
-	if ($rememberMe) {
-		register_opendb_session_var('remember_me', 'true');
+	if ($doRememberMe) {
+		$_SESSION['remember_me'] = 'true';
+	}
+	
+	if ($isRememberMeLogin) {
+		$_SESSION['login_method'] = 'remember_me';
+	} else {
+		$_SESSION['login_method'] = 'normal';
 	}
 	
 	// Now register security hash, so we can compare.
-	register_opendb_session_var('hash_check', get_opendb_config_var('site', 'security_hash'));
+	$_SESSION['hash_check'] = get_opendb_config_var('site', 'security_hash');
 
 	// Get the previous last visit so we can use in whats new page.
-	register_opendb_session_var('login_lastvisit', fetch_user_lastvisit($user_id));
+	$_SESSION['login_lastvisit'] = fetch_user_lastvisit($user_id);
 
 	// Not much we can do if it does not update.
 	update_user_lastvisit($user_id);
@@ -219,7 +232,8 @@ function handle_opendb_remember_me() {
 		if ($remember_me_r !== FALSE) {
 			// no need to register if already logged in
 			if ($remember_me_r['valid'] === TRUE && !$doRememberMe) { 
-				register_user_login($remember_me_r['user_id'], TRUE);
+				// the second TRUE, flags the current user login as being enabled by a remember me cookie
+				register_user_login($remember_me_r['user_id'], TRUE, TRUE);
 				$doRememberMe = TRUE;
 			}
 			delete_remember_me($remember_me_r['id']);

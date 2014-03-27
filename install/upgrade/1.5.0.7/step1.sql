@@ -70,3 +70,5 @@ CREATE TABLE remember_me (
   PRIMARY KEY ( id ),
   KEY cookie_idx (cookie)
 ) ENGINE=MyISAM COMMENT='Remember Me Cookie';
+
+ALTER TABLE s_role_permission ADD remember_me_ind VARCHAR(1) NOT NULL DEFAULT 'Y';

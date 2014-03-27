@@ -26,19 +26,6 @@ function display_role_permissions_editor($HTTP_VARS) {
 	global $ADMIN_TYPE;
 	global $PHP_SELF;
 
-	$results = fetch_role_permission_rs($HTTP_VARS['role_name']);
-	if ($results) {
-		while ($permission_r = db_fetch_assoc($results)) {
-			if (strlen($permission_r['role_name']) > 0)
-				$exists_rs[] = $permission_r;
-			else
-				$not_exists_rs[] = $permission_r;
-		}
-		db_free_result($results);
-	}
-
-    echo get_javascript('admin/select.js');
-
 	echo ("\n<form name=\"edit_role_permissions\" action=\"$PHP_SELF\" method=\"POST\">");
 	echo ("\n<input type=\"hidden\" name=\"op\" value=\"" . $HTTP_VARS['op'] . "\">");
 	echo ("\n<input type=\"hidden\" name=\"type\" value=\"" . $ADMIN_TYPE . "\">");
@@ -46,42 +33,28 @@ function display_role_permissions_editor($HTTP_VARS) {
 
 	echo ("<table>");
 	echo ("<tr class=\"navbar\">
-	<th>Exclude</th>
-	<th></th>
+	<th>Permission</th>
 	<th>Include</th>
+	<th>Remember Me</th>
 	</tr>");
 
-	echo ("<tr><td><select class=\"includeExcludeWidget\" name=\"excluded_permissions\" size=\"15\" MULTIPLE>");
-	while (list(, $permission_r) = @each($not_exists_rs)) {
-		echo ("<option value=\"" . $permission_r['permission_name'] . "\">" . $permission_r['description'] . "\n");
+	$results = fetch_role_permission_rs($HTTP_VARS['role_name']);
+	if ($results) {
+		while ($permission_r = db_fetch_assoc($results)) {
+			echo ("<tr><td>");
+			echo($permission_r['permission_name']);
+			echo ("</td>");
+		
+			$is_enabled = strlen($permission_r['role_name']) > 0;
+			$remember_me_enabled = $permission_r['remember_me_ind'] == 'Y';
+
+			echo ("<td><input type=\"checkbox\" class=\"checkbox\" name=\"".$permission_r['permission_name']."[enabled_ind]\" value=\"Y\"" .($is_enabled ? " CHECKED" : "")."></td>");
+			echo ("<td><input type=\"checkbox\" class=\"checkbox\" name=\"".$permission_r['permission_name']."[remember_me_ind]\" value=\"Y\"" .($remember_me_enabled ? " CHECKED" : "")."></td>");
+			
+			echo ("</td></tr>");
+		}
 	}
-	echo ("</select></td>");
-
-	echo ("<td>");
-	echo ("<input type=\"button\" class=\"button\" value=\">\" onClick=\"moveOptions(this.form, 's_role_permission', this.form['excluded_permissions'], this.form['included_permissions']);\">"
-			. "<input type=\"button\" class=\"button\" value=\">>\" onClick=\"moveAllOptions(this.form, 's_role_permission', this.form['excluded_permissions'], this.form['included_permissions']);\">");
-
-	echo ("<input type=\"button\" class=\"button\" value=\"<\" onClick=\"moveOptions(this.form, 's_role_permission', this.form['included_permissions'], this.form['excluded_permissions']);\">"
-			. "<input type=\"button\" class=\"button\" value=\"<<\" onClick=\"moveAllOptions(this.form, 's_role_permission', this.form['included_permissions'], this.form['excluded_permissions']);\">");
-
-	echo ("</td>");
-
-	echo ("<td><select class=\"includeExcludeWidget\" name=\"included_permissions\" size=\"15\" MULTIPLE>");
-	while (list(, $permission_r) = @each($exists_rs)) {
-		echo ("<option value=\"" . $permission_r['permission_name'] . "\">" . $permission_r['description'] . "\n");
-	}
-	echo ("</select></td>");
 	echo ("</table>");
-
-	@reset($not_exists_rs);
-	while (list(, $permission_r) = @each($not_exists_rs)) {
-		echo ("\n<input type=\"hidden\" name=\"s_role_permission[" . $permission_r['permission_name'] . "]\" value=\"exclude\">");
-	}
-
-	@reset($exists_rs);
-	while (list(, $permission_r) = @each($exists_rs)) {
-		echo ("\n<input type=\"hidden\" name=\"s_role_permission[" . $permission_r['permission_name'] . "]\" value=\"include\">");
-	}
 
 	echo ("<input type=\"button\" class=\"button\" value=\"Refresh\" onclick=\"this.form['op'].value='edit'; this.form.submit();\">");
 	echo ("\n<input type=\"button\" class=\"button\" value=\"Update\" onclick=\"this.form['op'].value='update'; this.form.submit();\">");
@@ -90,14 +63,20 @@ function display_role_permissions_editor($HTTP_VARS) {
 }
 
 if ($HTTP_VARS['op'] == 'update') {
-	$included_permissions_r = array();
-	while (list($permission_name, $value) = each($HTTP_VARS['s_role_permission'])) {
-		if ($value == 'include') {
-			$included_permissions_r[] = $permission_name;
+	$results = fetch_role_permission_rs($HTTP_VARS['role_name']);
+	$defined_permissions_r = array();
+	if ($results) {
+		while ($permission_r = db_fetch_assoc($results)) {
+			if (isset($HTTP_VARS[$permission_r['permission_name']]) && is_array($HTTP_VARS[$permission_r['permission_name']])) {
+				$perm_r = $HTTP_VARS[$permission_r['permission_name']];
+				
+				$defined_permissions_r[$permission_r['permission_name']] = array(
+						'enabled_ind'=>isset($perm_r['enabled_ind']) ? $perm_r['enabled_ind'] : 'N',
+						'remember_me_ind'=>isset($perm_r['remember_me_ind']) ? $perm_r['remember_me_ind'] : 'N');
+			}
 		}
 	}
-
-	update_role_permissions($HTTP_VARS['role_name'], $included_permissions_r);
+	update_role_permissions($HTTP_VARS['role_name'], $defined_permissions_r);
 
 	$HTTP_VARS['op'] = 'edit';
 }

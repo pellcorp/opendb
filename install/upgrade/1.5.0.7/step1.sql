@@ -67,5 +67,6 @@ CREATE TABLE remember_me (
   cookie		VARCHAR(40) NOT NULL, 
   user_id		VARCHAR(20) NOT NULL,
   created_on	TIMESTAMP NOT NULL,
-  PRIMARY KEY ( id )
+  PRIMARY KEY ( id ),
+  KEY cookie_idx (cookie)
 ) ENGINE=MyISAM COMMENT='Remember Me Cookie';

@@ -708,9 +708,9 @@ CREATE TABLE s_table_language_var (
 DROP TABLE IF EXISTS remember_me;
 CREATE TABLE remember_me (
   id			INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  cookie		VARCHAR(40) NOT NULL,
+  cookie		VARCHAR(40) NOT NULL, 
   user_id		VARCHAR(20) NOT NULL,
   created_on	TIMESTAMP NOT NULL,
   PRIMARY KEY ( id ),
-  KEY cookie_key ( cookie )
+  KEY cookie_idx (cookie)
 ) ENGINE=MyISAM COMMENT='Remember Me Cookie';

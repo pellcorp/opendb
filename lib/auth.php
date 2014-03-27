@@ -222,10 +222,9 @@ function handle_opendb_remember_me() {
 				register_user_login($remember_me_r['user_id'], TRUE);
 				$doRememberMe = TRUE;
 			}
+			delete_remember_me($remember_me_r['id']);
 		}
 	}
-	
-	delete_all_remember_me_for_user($_SESSION['user_id']);
 	
 	if ($doRememberMe) {
 		$cookie = sha1(openssl_random_pseudo_bytes(1024));
@@ -261,23 +260,7 @@ function get_remember_me_r($cookie) {
 function delete_remember_me($id) {
 	$id = addslashes($id);
 	$query = "DELETE FROM remember_me WHERE id = '$id'";
-
-	//echo $query;
-	//exit;
 	
-	$delete = db_query ( $query );
-	if (db_affected_rows () > 0) {
-		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cookie));
-		return TRUE;
-	} else {
-		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), array($cookie));
-		return FALSE;
-	}
-}
-
-function delete_all_remember_me_for_user($user_id) {
-	$user_id = addslashes($user_id);
-	$query = "DELETE FROM remember_me WHERE user_id = '$user_id'";
 	$delete = db_query ( $query );
 	if (db_affected_rows () > 0) {
 		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($cookie));

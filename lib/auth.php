@@ -232,8 +232,9 @@ function handle_opendb_remember_me() {
 		$site_r = get_opendb_config_var('site');
 		$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
 	
-		$cookie = insert_remember_me($_SESSION['user_id'], $cookie);
-		setcookie(get_opendb_remember_me_cookie_name(), $cookie, time() + $login_timeout);
+		if (insert_remember_me($_SESSION['user_id'], $cookie)) {
+			setcookie(get_opendb_remember_me_cookie_name(), $cookie, time() + $login_timeout);
+		}
 	}
 }
 
@@ -295,7 +296,7 @@ function insert_remember_me($user_id, $cookie) {
 	if ($insert && db_affected_rows () > 0) {
 		$sequence_number = db_insert_id();
 		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($user_id, $cookie));
-		return $cookie;
+		return TRUE;
 	} else {
 		opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error (), array($user_id, $cookie));
 		return FALSE;

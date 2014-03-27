@@ -314,6 +314,7 @@ INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'notica
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_allowed_cancel_reserve', 'You are not allowed to cancel this reservation'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_applicable', 'N/A'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_authorized_to_page', 'You are not authorized to access this page'); 
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_authorized_to_page_login', 'You need to login to access to this page');
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_owner_of_item', 'You are not the owner of this item'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'november', 'November'); 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'november_abbrev', 'Nov'); 

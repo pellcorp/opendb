@@ -46,8 +46,7 @@ function not_authorised($permission = NULL) {
 	echo _theme_header(get_opendb_lang_var('not_authorized_to_page'), FALSE);
 	
 	if ($permission != NULL && is_permission_disabled_for_remember_me($permission)) {
-		// TODO add a language var
-		echo ("<p class=\"error\">You need to login to access this page</p>");
+		echo ("<p class=\"error\">".get_opendb_lang_var('not_authorized_to_page_login')."</p>");
 	} else {
 		echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
 	}

@@ -72,3 +72,5 @@ CREATE TABLE remember_me (
 ) ENGINE=MyISAM COMMENT='Remember Me Cookie';
 
 ALTER TABLE s_role_permission ADD remember_me_ind VARCHAR(1) NOT NULL DEFAULT 'Y';
+
+INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_authorized_to_page_login', 'You need to login to access to this page');

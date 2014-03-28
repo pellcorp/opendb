@@ -382,8 +382,7 @@ if (is_site_enabled()) {
 
 					echo (_theme_footer());
 				} else {
-					echo _theme_header(get_opendb_lang_var('operation_not_available'));
-					echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
+					opendb_operation_not_available();
 				}
 			} else { //borrow functionality disabled.
  				echo _theme_header(get_opendb_lang_var('borrow_not_supported'));
@@ -391,18 +390,14 @@ if (is_site_enabled()) {
 				echo _theme_footer();
 			}
 		} else {
-			echo (_theme_header(get_opendb_lang_var('not_authorized_to_page')));
-			echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-			echo (_theme_footer());
+			opendb_not_authorised_page(PERM_ADMIN_QUICK_CHECKOUT, $HTTP_VARS);
 		}
 	} else {
 		// invalid login, so login instead.
 		redirect_login($PHP_SELF, $HTTP_VARS);
 	}
 } else { //if(is_site_enabled())
-	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+	opendb_site_disabled();
 }
 
 // Cleanup after begin.inc.php

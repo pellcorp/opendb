@@ -245,9 +245,7 @@ if (is_site_enabled()) {
 
 					$show_listings = FALSE;
 				} else {
-					echo (_theme_header(get_opendb_lang_var('operation_not_available')));
-					echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
-					echo (_theme_footer());
+					opendb_operation_not_available();
 
 					$show_listings = FALSE;
 				}
@@ -516,9 +514,7 @@ if (is_site_enabled()) {
 		redirect_login($PHP_SELF, $HTTP_VARS);
 	}
 } else { //if(is_site_enabled())
- 	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+ 	opendb_site_disabled();
 }
 
 // Cleanup after begin.inc.php

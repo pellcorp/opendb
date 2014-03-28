@@ -784,6 +784,10 @@ if (is_site_enabled()) {
 		if ($HTTP_VARS['op'] == 'gfx_code_check' && is_numeric($HTTP_VARS['gfx_random_number'])) {
 			secretimage($HTTP_VARS['gfx_random_number']);
 		} else {
+			if (is_array(get_opendb_session_var('user_listing_url_vars'))) {
+				$footer_links_r[] = array(url => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), text => get_opendb_lang_var('back_to_user_listing'));
+			}
+			
 			if ($HTTP_VARS['op'] == 'new_user') {
 				if(is_user_granted_permission(PERM_ADMIN_CREATE_USER)) {
 					echo _theme_header(get_opendb_lang_var('add_new_user'));
@@ -1164,14 +1168,7 @@ if (is_site_enabled()) {
 					echo _theme_footer();
 				}
 			} else { //End of $HTTP_VARS['op'] checks
- 				echo _theme_header(get_opendb_lang_var('operation_not_available'));
-				echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
-				echo format_footer_links($footer_links_r);
-				echo _theme_footer();
-			}
-
-			if (is_array(get_opendb_session_var('user_listing_url_vars'))) {
-				$footer_links_r[] = array(url => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), text => get_opendb_lang_var('back_to_user_listing'));
+ 				opendb_operation_not_available();
 			}
 		}
 	} else {
@@ -1179,9 +1176,7 @@ if (is_site_enabled()) {
 		redirect_login($PHP_SELF, $HTTP_VARS);
 	}
 } else { //if(is_site_enabled())
-	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+	opendb_site_disabled();
 }
 
 // Cleanup after begin.inc.php

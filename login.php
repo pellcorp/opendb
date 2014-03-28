@@ -230,10 +230,7 @@ if (is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op']
 					return;
 				}
 			} else if ($result === "SITE_IS_DISABLED") {
-				echo _theme_header(get_opendb_lang_var('site_is_disabled'), get_opendb_config_var('login', 'show_menu') !== FALSE);
-
-				echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-				echo (_theme_footer());
+				opendb_site_disabled(get_opendb_config_var('login', 'show_menu') !== FALSE);
 			} else { // $result === FALSE
  				show_login_form($HTTP_VARS, array('error' => get_opendb_lang_var('login_failure'), details => get_opendb_lang_var('double_check_info')));
 			}

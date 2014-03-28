@@ -1624,9 +1624,7 @@ if (is_site_enabled()) {
 			}
 		} else {
 			if (empty($HTTP_VARS['ajax_op'])) {
-				echo _theme_header(get_opendb_lang_var('not_authorized_to_page'));
-				echo ("<p class=\"error\">" . get_opendb_lang_var('not_authorized_to_page') . "</p>");
-				echo _theme_footer();
+				opendb_not_authorised_page(array(PERM_ITEM_OWNER, PERM_ITEM_ADMIN), $HTTP_VARS);
 			} else {
 				echo json_encode(array('error' => get_opendb_lang_var('not_authorized_to_page')));
 			}
@@ -1641,9 +1639,7 @@ if (is_site_enabled()) {
 	}
 } else { //if(is_site_enabled())
 	if (empty($HTTP_VARS['ajax_op'])) {
-		echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-		echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-		echo _theme_footer();
+		opendb_site_disabled();
 	} else {
 		echo json_encode(array('error' => get_opendb_lang_var('site_is_disabled')));
 	}

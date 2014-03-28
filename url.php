@@ -83,12 +83,6 @@ function handle_file_cache($file_cache_r, $isThumbnail = FALSE) {
 	}
 }
 
-function opendb_external_url_error_page() {
-	echo _theme_header(get_opendb_lang_var('operation_not_available'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
-	echo _theme_footer();
-}
-
 if (is_site_enabled()) {
 	if (is_opendb_valid_session() || is_site_public_access()) {
 		$isThumbnail = ifempty($HTTP_VARS['op'], 'fullscreen') == 'thumbnail';
@@ -102,17 +96,17 @@ if (is_site_enabled()) {
 					opendb_not_authorised_page();
 				}
 			} else {
-				opendb_external_url_error_page();
+				opendb_operation_not_available();
 			}
 		} else if (strlen($HTTP_VARS['tmpId']) > 0) {
 			$url = get_url_from_temp_file_cache($HTTP_VARS['tmpId']);
 			if ($url !== FALSE) {
 				output_cache_file($url);
 			} else {
-				opendb_external_url_error_page();
+				opendb_operation_not_available();
 			}
 		} else {
-			opendb_external_url_error_page();
+			opendb_operation_not_available();
 		}
 	} else {
 		// invalid login, so login instead.

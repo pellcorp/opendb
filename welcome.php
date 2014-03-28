@@ -128,9 +128,7 @@ if (is_site_enabled()) {
 		redirect_login($PHP_SELF, $HTTP_VARS);
 	}
 } else { //if(is_site_enabled())
-	echo _theme_header(get_opendb_lang_var('site_is_disabled'), FALSE);
-	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
-	echo _theme_footer();
+	opendb_site_disabled();
 }
 
 // Cleanup after begin.inc.php

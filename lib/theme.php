@@ -381,13 +381,13 @@ function get_user_theme_r() {
 }
 
 function opendb_operation_not_available() {
-	echo _theme_header ( get_opendb_lang_var ( 'not_authorized_to_page' ) );
+	echo _theme_header ( get_opendb_lang_var ( 'operation_not_available' ) );
 	echo ("<p class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</p>");
 	echo _theme_footer ();
 }
 
-function opendb_site_disabled() {
-	echo _theme_header ( get_opendb_lang_var ( 'site_is_disabled' ) );
+function opendb_site_disabled($inc_menu = TRUE) {
+	echo _theme_header (get_opendb_lang_var ('site_is_disabled') , $inc_menu);
 	echo ("<p class=\"error\">" . get_opendb_lang_var('site_is_disabled') . "</p>");
 	echo _theme_footer ();
 }

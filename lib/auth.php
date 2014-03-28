@@ -314,7 +314,7 @@ function handle_opendb_remember_me() {
 	// do not create a new record for logout
 	if (strpos($PHP_SELF, "logout.php") == FALSE) {
 		if ($doRememberMe) {
-			$cookie = sha1(openssl_random_pseudo_bytes(1024));
+			$cookie = generate_cookie();
 			$site_r = get_opendb_config_var('site');
 			$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
 		
@@ -323,6 +323,20 @@ function handle_opendb_remember_me() {
 			}
 		}
 	}
+}
+
+function generate_cookie() {
+	if (function_exists('openssl_random_pseudo_bytes')) {
+		return sha1(openssl_random_pseudo_bytes(1024));
+	} else {
+		return mt_rand_str(40);
+	}
+}
+
+//http://www.php.net/manual/en/function.mt-rand.php
+function mt_rand_str ($l, $c = 'abcdefghijklmnopqrstuvwxyz1234567890') {
+	for ($s = '', $cl = strlen($c)-1, $i = 0; $i < $l; $s .= $c[mt_rand(0, $cl)], ++$i);
+	return $s;
 }
 
 function get_remember_me_r($cookie) {

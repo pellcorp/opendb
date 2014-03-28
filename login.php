@@ -97,12 +97,10 @@ function show_login_form($HTTP_VARS, $errors = NULL) {
 			. get_opendb_lang_var('password') . "</label>" . 
 			"<input type=\"password\" class=\"password\" id=\"passwd\" name=\"passwd\"></li>");
 
-	if (get_opendb_config_var('session_handler', 'enable') === TRUE) {
-		echo("\n<li><label class=\"label\" for=\"remember\">"
-					. get_opendb_lang_var('remember_me') . "</label>" .
-					"<input type=\"checkbox\" class=\"remember\" id=\"remember\" name=\"remember\" value=\"true\"></li>"
-		);
-	}
+	echo("\n<li><label class=\"label\" for=\"remember\">"
+				. get_opendb_lang_var('remember_me') . "</label>" .
+				"<input type=\"checkbox\" class=\"remember\" id=\"remember\" name=\"remember\" value=\"true\"></li>"
+	);
 	
 	echo (		"</ul>" . 
 			

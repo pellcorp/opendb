@@ -288,6 +288,8 @@ function remove_opendb_remember_me() {
 }
 
 function handle_opendb_remember_me() {
+	global $PHP_SELF;
+	
 	if (isset($_SESSION['remember_me']) && isset($_SESSION['user_id'])) {
 		$doRememberMe = TRUE;
 	} else {
@@ -309,13 +311,16 @@ function handle_opendb_remember_me() {
 		}
 	}
 	
-	if ($doRememberMe) {
-		$cookie = sha1(openssl_random_pseudo_bytes(1024));
-		$site_r = get_opendb_config_var('site');
-		$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
-	
-		if (insert_remember_me($_SESSION['user_id'], $cookie)) {
-			setcookie(get_opendb_remember_me_cookie_name(), $cookie, time() + $login_timeout);
+	// do not create a new record for logout
+	if (strpos($PHP_SELF, "logout.php") == FALSE) {
+		if ($doRememberMe) {
+			$cookie = sha1(openssl_random_pseudo_bytes(1024));
+			$site_r = get_opendb_config_var('site');
+			$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
+		
+			if (insert_remember_me($_SESSION['user_id'], $cookie)) {
+				setcookie(get_opendb_remember_me_cookie_name(), $cookie, time() + $login_timeout);
+			}
 		}
 	}
 }

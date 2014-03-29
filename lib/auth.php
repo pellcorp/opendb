@@ -290,29 +290,31 @@ function remove_opendb_remember_me() {
 function handle_opendb_remember_me() {
 	global $PHP_SELF;
 	
-	if (isset($_SESSION['remember_me']) && isset($_SESSION['user_id'])) {
-		$doRememberMe = TRUE;
-	} else {
-		$doRememberMe = FALSE;
-	}
-
-	$oldCookie = $_COOKIE[get_opendb_remember_me_cookie_name()];
-	if (!empty($oldCookie)) {
-		$remember_me_r = get_remember_me_r($oldCookie);
-		if ($remember_me_r !== FALSE) {
-			
-			// no need to register if already logged in
-			if ($remember_me_r['valid'] === TRUE && !$doRememberMe) { 
-				// the second TRUE, flags the current user login as being enabled by a remember me cookie
-				register_user_login($remember_me_r['user_id'], TRUE, TRUE);
-				$doRememberMe = TRUE;
-			}
-			delete_remember_me($remember_me_r['id']);
-		}
-	}
 	
-	// do not create a new record for logout
-	if (strpos($PHP_SELF, "logout.php") == FALSE) {
+	// do nothing for these pages, if any more, should add to array and do !in_array check
+	$page = basename ( $PHP_SELF, '.php' );
+	if ($page != 'install' && $page != 'url' && $page != 'logout' && $page != 'login') {
+		if (isset($_SESSION['remember_me']) && isset($_SESSION['user_id'])) {
+			$doRememberMe = TRUE;
+		} else {
+			$doRememberMe = FALSE;
+		}
+		
+		$oldCookie = $_COOKIE[get_opendb_remember_me_cookie_name()];
+		if (!empty($oldCookie)) {
+			$remember_me_r = get_remember_me_r($oldCookie);
+			if ($remember_me_r !== FALSE) {
+				
+				// no need to register if already logged in
+				if ($remember_me_r['valid'] === TRUE && !$doRememberMe) { 
+					// the second TRUE, flags the current user login as being enabled by a remember me cookie
+					register_user_login($remember_me_r['user_id'], TRUE, TRUE);
+					$doRememberMe = TRUE;
+				}
+				delete_remember_me($remember_me_r['id']);
+			}
+		}
+	
 		if ($doRememberMe) {
 			$cookie = generate_opendb_cookie();
 			$site_r = get_opendb_config_var('site');

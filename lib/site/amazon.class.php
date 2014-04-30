@@ -117,11 +117,10 @@ class amazon extends SitePlugin {
 		$pageBuffer = preg_replace('/>[\s]*</', '><', $pageBuffer);
 
 		//<span id="btAsinTitle">Prometheus (Blu-ray/ DVD + Digital Copy) (2012)</span>
-		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</span></span>
+		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</...
 		//<h1 class="a-size-large a-spacing-none" id="title"> Illustration School: Let's Draw Happy People <span class="a-size-medium a-color-secondary a-text-normal">Hardcover</span></h1>
-		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<\/span/s", $pageBuffer, $regs) || 
-		    // FIXME - does this example still apply for books???
-		    preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
+		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<\/?span/s", $pageBuffer, $regs) || 
+		    preg_match("/<span id=\"productTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
 		    // <h1 id="title">...
 		    preg_match("/<h[^>]*?id=\"title\"[^>]*>([^<]*)</", $pageBuffer, $regs) ||
 		    preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) ||
@@ -156,7 +155,9 @@ class amazon extends SitePlugin {
 
 		// <img id="main-image" src="http://ecx.images-amazon.com/images/I/51sU2iuuXUL._SY300_.jpg"
 		if (preg_match("!<img id=\"main-image\" src=\"([^\"]+)\"!s", $pageBuffer, $regs)) {
-			$this->addItemAttribute('imageurl', $regs[1]);
+			// remove image extras _xxx_.
+			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
+			$this->addItemAttribute('imageurl', $image);
 		}
 
 		if (preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
@@ -167,7 +168,7 @@ class amazon extends SitePlugin {
 
 		if (preg_match_all("!registerImage\(\"cust_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
 			while (list(, $image) = each($regs[1])) {
-				$image = str_replace('AA240', 'SS500', $image);
+				$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $image);
 				$this->addItemAttribute('cust_imageurl', $image);
 			}
 		}

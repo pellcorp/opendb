@@ -373,7 +373,7 @@ function display_edit_form($attribute_type_r, $HTTP_VARS = NULL) {
 	if (is_array($attribute_type_r))
 		echo get_input_field("s_attribute_type", NULL, "Attribute Type", "readonly", "Y", $attribute_type_r['s_attribute_type']);
 	else
-		echo get_input_field("s_attribute_type", NULL, "Attribute Type", "text(10,10)", "Y", $HTTP_VARS['s_attribute_type'], TRUE, NULL,
+		echo get_input_field("s_attribute_type", NULL, "Attribute Type", "text(30,30)", "Y", $HTTP_VARS['s_attribute_type'], TRUE, NULL,
 				'this.value=trim(this.value.toUpperCase()); if(this.value.substring(0,2) == \'S_\'){alert(\'Attributes with a \\\'S_\\\' prefix are reserved for internal use.\'); this.value=\'\'; this.focus(); return false; }');
 
 	//description

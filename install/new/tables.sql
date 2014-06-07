@@ -160,7 +160,7 @@ CREATE TABLE s_item_listing_column_conf (
 	column_no				TINYINT(3) UNSIGNED NOT NULL,
 	column_type				VARCHAR(20) NOT NULL DEFAULT 's_field_type',
 	s_field_type			VARCHAR(10),
-	s_attribute_type		VARCHAR(10),
+	s_attribute_type		VARCHAR(30),
 	override_prompt			VARCHAR(30),
 	printable_support_ind	VARCHAR(1) NOT NULL DEFAULT 'Y',
 	orderby_support_ind		VARCHAR(1) NOT NULL DEFAULT 'Y',
@@ -175,7 +175,7 @@ CREATE TABLE s_item_listing_column_conf (
 #
 DROP TABLE IF EXISTS s_attribute_type;
 CREATE TABLE s_attribute_type (
-  s_attribute_type		VARCHAR(10) NOT NULL,
+  s_attribute_type		VARCHAR(30) NOT NULL,
   description			VARCHAR(60) NOT NULL,
   prompt				VARCHAR(30),
   lookup_attribute_ind 	VARCHAR(1) NOT NULL DEFAULT 'N',
@@ -206,7 +206,7 @@ CREATE TABLE s_attribute_type (
 DROP TABLE IF EXISTS s_item_attribute_type;
 CREATE TABLE s_item_attribute_type (
   s_item_type		VARCHAR(10) NOT NULL,
-  s_attribute_type	VARCHAR(10) NOT NULL,
+  s_attribute_type	VARCHAR(30) NOT NULL,
   order_no			TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   prompt			VARCHAR(30),
   instance_attribute_ind VARCHAR(1) NOT NULL DEFAULT 'N',
@@ -221,7 +221,7 @@ CREATE TABLE s_item_attribute_type (
 #
 DROP TABLE IF EXISTS s_attribute_type_lookup;
 CREATE TABLE s_attribute_type_lookup (
-  s_attribute_type		VARCHAR(10) NOT NULL,
+  s_attribute_type		VARCHAR(30) NOT NULL,
   order_no				TINYINT(3) UNSIGNED,
   value					VARCHAR(50) NOT NULL,
   display				VARCHAR(255),
@@ -266,7 +266,7 @@ CREATE TABLE s_address_type (
 DROP TABLE IF EXISTS s_addr_attribute_type_rltshp;
 CREATE TABLE s_addr_attribute_type_rltshp (
   s_address_type		VARCHAR(10) NOT NULL,
-  s_attribute_type		VARCHAR(10) NOT NULL,
+  s_attribute_type		VARCHAR(30) NOT NULL,
   order_no				TINYINT(3) unsigned NOT NULL,
   # override for s_attribute_type prompt field
   prompt				VARCHAR(30),
@@ -346,7 +346,7 @@ CREATE TABLE user_address (
 DROP TABLE IF EXISTS user_address_attribute;
 CREATE TABLE user_address_attribute (
   ua_sequence_number	INTEGER(10) UNSIGNED NOT NULL,
-  s_attribute_type		VARCHAR(10) NOT NULL,
+  s_attribute_type		VARCHAR(30) NOT NULL,
   order_no				TINYINT(3) UNSIGNED NOT NULL,
   attribute_no 			TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   lookup_attribute_val 	VARCHAR(50),
@@ -401,7 +401,7 @@ UNIQUE KEY ( item_id, instance_no, related_item_id, related_instance_no )
 CREATE TABLE item_attribute (
   item_id				INTEGER(10) UNSIGNED NOT NULL,
   instance_no			SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
-  s_attribute_type		VARCHAR(10) NOT NULL,
+  s_attribute_type		VARCHAR(30) NOT NULL,
   order_no				TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   attribute_no 			TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   lookup_attribute_val	VARCHAR(50),
@@ -543,12 +543,12 @@ CREATE TABLE s_site_plugin_input_field (
 #
 DROP TABLE IF EXISTS s_site_plugin_s_attribute_type_map;
 CREATE TABLE s_site_plugin_s_attribute_type_map (
-	sequence_number			INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	sequence_number		INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	site_type			VARCHAR(10) NOT NULL,
-	s_item_type_group		VARCHAR(10) NOT NULL DEFAULT '*',
+	s_item_type_group	VARCHAR(10) NOT NULL DEFAULT '*',
 	s_item_type			VARCHAR(10) NOT NULL DEFAULT '*',
 	variable			VARCHAR(20) NOT NULL,
-	s_attribute_type		VARCHAR(10) NOT NULL,
+	s_attribute_type	VARCHAR(30) NOT NULL,
 	lookup_attribute_val_restrict_ind 	VARCHAR(1) DEFAULT 'N',
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type )
@@ -560,9 +560,9 @@ CREATE TABLE s_site_plugin_s_attribute_type_map (
 DROP TABLE IF EXISTS s_site_plugin_s_attribute_type_lookup_map;
 CREATE TABLE s_site_plugin_s_attribute_type_lookup_map (
 	sequence_number		INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	site_type		VARCHAR(10) NOT NULL,
-	s_attribute_type	VARCHAR(10) NOT NULL,
-	value			VARCHAR(255) NOT NULL,
+	site_type			VARCHAR(10) NOT NULL,
+	s_attribute_type	VARCHAR(30) NOT NULL,
+	value				VARCHAR(255) NOT NULL,
 	lookup_attribute_val	VARCHAR(50) NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_attribute_type, value, lookup_attribute_val )

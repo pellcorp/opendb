@@ -19,7 +19,7 @@
 */
 
 require_once 'PHPUnit.php';
-include_once("./lib/phpsniff/phpSniff.class.php");
+include_once(dirname(__FILE__)."lib/phpsniff/phpSniff.class.php");
 
 class PhpSniffTest extends PHPUnit_TestCase
 {

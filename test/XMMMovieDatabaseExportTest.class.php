@@ -20,7 +20,7 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./lib/export/XMMMovieDatabasePlugin.class.php");
+include_once(dirname(__FILE__)."lib/export/XMMMovieDatabasePlugin.class.php");
 
 class XMMMovieDatabaseExportTest extends PHPUnit_TestCase
 {

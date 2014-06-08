@@ -21,14 +21,14 @@ define ( 'EXPIRED_ONLY', '3131' );
 define ( 'EXCLUDE_EXPIRED', '3123' );
 define ( 'INCLUDE_EXPIRED', '4442' );
 
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/file_type.php");
-include_once ("./lib/fileutils.php");
-include_once ("./lib/OpenDbSnoopy.class.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
+include_once("./lib/utils.php");
+include_once("./lib/file_type.php");
+include_once("./lib/fileutils.php");
+include_once("./lib/OpenDbSnoopy.class.php");
 include_once ('./lib/phpthumb/phpthumb.class.php');
-include_once ("./lib/item_attribute.php");
+include_once("./lib/item_attribute.php");
 
 function add_url_to_temp_file_cache($url) {
 	$key = md5 ( $url );

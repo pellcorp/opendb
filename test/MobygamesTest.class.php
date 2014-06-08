@@ -20,12 +20,12 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./lib/item_attribute.php");
-include_once("./lib/parseutils.php");
+include_once(dirname(__FILE__)."lib/item_attribute.php");
+include_once(dirname(__FILE__)."lib/site/mobygames.class.php");
 
-class ParseUtilsTest extends PHPUnit_TestCase
+class MobygamesTest extends PHPUnit_TestCase
 {
-	function ParseUtilsTest($name)
+	function MobygamesTest($name)
 	{
 		$this->PHPUnit_TestCase($name);
 	}
@@ -34,10 +34,10 @@ class ParseUtilsTest extends PHPUnit_TestCase
 	{
 	}
 
-	function testExpandNumberRange() {
-		$this->assertEquals('9569', expand_number_range('9569'));
-		$this->assertEquals('9568,9569', expand_number_range('9568,9569'));
-		$this->assertEquals('1,2,3,4,5,7', expand_number_range('1-5,7'));
+	function testParseReleaseDate() {
+		$this->assertEquals('12/11/2007', parse_mobygames_release_date("Nov 12, 2007"));
+		$this->assertEquals('01/10/1985', parse_mobygames_release_date("Oct, 1985"));
+		$this->assertEquals('01/01/1983', parse_mobygames_release_date("1983"));
 	}
 }
 ?>

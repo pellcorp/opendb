@@ -17,12 +17,12 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/utils.php");
-include_once ("./lib/sortutils.php");
-include_once ("./lib/http.php");
-include_once ("./lib/theme.php");
-include_once ("./lib/item_attribute.php");
-include_once ("./lib/item_type_group.php");
+include_once("./lib/utils.php");
+include_once("./lib/sortutils.php");
+include_once("./lib/http.php");
+include_once("./lib/theme.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/item_type_group.php");
 
 function get_list_username($user_id, $mode, $subject = NULL, $redirect_link = NULL, $redirect_url = NULL) {
 	// Do not include email link, if Current User.

@@ -22,9 +22,9 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./lib/WrapperFileHandler.class.php");
-include_once("./lib/XMLImportPluginHandler.class.php");
-include_once("./import/DVDProfilerImportPlugin.class.php");
+include_once(dirname(__FILE__)."lib/WrapperFileHandler.class.php");
+include_once(dirname(__FILE__)."lib/XMLImportPluginHandler.class.php");
+include_once(dirname(__FILE__)."import/DVDProfilerImportPlugin.class.php");
 
 
 

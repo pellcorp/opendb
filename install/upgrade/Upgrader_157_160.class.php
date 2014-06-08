@@ -18,24 +18,24 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once("./lib/OpenDbUpgrader.class.php");
+include_once(dirname(__FILE__)."lib/OpenDbUpgrader.class.php");
 
-class Upgrader_1504_1505 extends OpenDbUpgrader
+class Upgrader_157_160 extends OpenDbUpgrader
 {
-	function Upgrader_1504_1505()
+	function Upgrader_1507_160()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.0.4',
-						'1.5.0.7',
+						'1.5.7',
+						'1.6.0beta1',
 						array(
-							array('description'=>'Support Global Category Stats Chart, More Info Borrow config, Disable reviews, Fix login stuff'),
+							array('description'=>'Updates from 1.5.7 to 1.6.0'),
 						)
 					);
 	}
 	
 	function getUpgraderDir()
 	{
-		return './install/upgrade/1.5.0.4';
+		return './install/upgrade/1.5.7';
 	}
 }
 ?>

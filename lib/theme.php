@@ -17,13 +17,13 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/user.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/fileutils.php");
-include_once ("./lib/language.php");
-include_once ("./lib/cssparser/cssparser.php");
-include_once ("./lib/rss.php");
-include_once ("./lib/javascript.php");
+include_once("./lib/user.php");
+include_once("./lib/utils.php");
+include_once("./lib/fileutils.php");
+include_once("./lib/language.php");
+include_once("./lib/cssparser/cssparser.php");
+include_once("./lib/rss.php");
+include_once("./lib/javascript.php");
 
 function get_opendb_site_theme() {
 	global $_OPENDB_THEME;

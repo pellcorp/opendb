@@ -1,6 +1,6 @@
 <?php
 /* 	
- 	Open Media Collectors Database
+	Open Media Collectors Database
 	Copyright (C) 2001,2013 by Jason Pell
 
 	This program is free software; you can redistribute it and/or
@@ -16,28 +16,25 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-	*/
+*/
 
-require_once 'PHPUnit.php';
+chdir('../');
 
-include_once("./lib/item_attribute.php");
-include_once("./lib/site/mobygames.class.php");
+// This must be first - includes config.php
+require_once("./include/begin.inc.php");
 
-class MobygamesTest extends PHPUnit_TestCase
-{
-	function MobygamesTest($name)
-	{
-		$this->PHPUnit_TestCase($name);
-	}
+require_once('PHPUnit.php');
+$suite = new PHPUnit_TestSuite();
 
-	function setUp()
-	{
-	}
+$testCollector = new PHPUnit_Runner_IncludePathTestCollector(array('.'));
 
-	function testParseReleaseDate() {
-		$this->assertEquals('12/11/2007', parse_mobygames_release_date("Nov 12, 2007"));
-		$this->assertEquals('01/10/1985', parse_mobygames_release_date("Oct, 1985"));
-		$this->assertEquals('01/01/1983', parse_mobygames_release_date("1983"));
-	}
-}
+$suite = new PHPUnit_Framework_TestSuite('My Test Suite');
+$suite->addTestFiles($testCollector->collectTests());
+
+$unit = new PHPUnit();
+$result = $unit->run($suite);
+print $result->toHTML();
+
+// Cleanup after begin.inc.php
+require_once("./include/end.inc.php");
 ?>

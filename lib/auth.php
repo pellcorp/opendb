@@ -17,10 +17,10 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/user.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/http.php");
-include_once ("./lib/config.php");
+include_once("./lib/user.php");
+include_once("./lib/utils.php");
+include_once("./lib/http.php");
+include_once("./lib/config.php");
 
 define ( 'PERM_VIEW_ANNOUNCEMENTS', 'PERM_VIEW_ANNOUNCEMENTS' );
 define ( 'PERM_VIEW_WHATSNEW', 'PERM_VIEW_WHATSNEW' );

@@ -17,9 +17,9 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/status_type.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
+include_once("./lib/status_type.php");
 
 /*
 * Fetch a complete list of item records, which have at least one
@@ -112,7 +112,7 @@ function get_export_r() {
 
 function &get_export_plugin($pluginName) {
 	if (is_export_plugin ( $pluginName )) {
-		include_once ("./lib/export/" . $pluginName . ".class.php");
+		include_once("./lib/export/" . $pluginName . ".class.php");
 		$exportPlugin = new $pluginName ();
 		return $exportPlugin;
 	} else {
@@ -126,7 +126,7 @@ function get_export_plugin_list_r() {
 	$export_type_r = get_export_r ();
 	if (is_array ( $export_type_r )) {
 		while ( list ( , $pluginRef ) = @each ( $export_type_r ) ) {
-			include_once ("./lib/export/" . $pluginRef . ".class.php");
+			include_once("./lib/export/" . $pluginRef . ".class.php");
 			$exportPlugin = new $pluginRef ();
 			if ($exportPlugin !== NULL) {
 				if (strcasecmp ( $pluginRef, get_class ( $exportPlugin ) ) === 0) {

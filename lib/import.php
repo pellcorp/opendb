@@ -17,15 +17,15 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-include_once ("./lib/fileutils.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/widgets.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/DocTypeNameSpaceXMLParser.class.php");
-include_once ("./lib/XMLImportPluginHandler.class.php");
-include_once ("./lib/RowImportPluginHandler.class.php");
-include_once ("./lib/PreviewImportPlugin.class.php");
-include_once ("./lib/WrapperFileHandler.class.php");
+include_once("./lib/fileutils.php");
+include_once("./lib/logging.php");
+include_once("./lib/widgets.php");
+include_once("./lib/utils.php");
+include_once("./lib/DocTypeNameSpaceXMLParser.class.php");
+include_once("./lib/XMLImportPluginHandler.class.php");
+include_once("./lib/RowImportPluginHandler.class.php");
+include_once("./lib/PreviewImportPlugin.class.php");
+include_once("./lib/WrapperFileHandler.class.php");
 
 function get_item_id_range($item_id_r) {
 	$item_id_range = '';

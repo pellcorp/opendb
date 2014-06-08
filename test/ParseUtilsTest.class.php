@@ -1,6 +1,6 @@
 <?php
 /* 	
-	Open Media Collectors Database
+ 	Open Media Collectors Database
 	Copyright (C) 2001,2013 by Jason Pell
 
 	This program is free software; you can redistribute it and/or
@@ -16,26 +16,28 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+	*/
 
-include_once("./lib/OpenDbUpgrader.class.php");
+require_once 'PHPUnit.php';
 
-class Upgrader_1507_1600 extends OpenDbUpgrader
+include_once(dirname(__FILE__)."lib/item_attribute.php");
+include_once(dirname(__FILE__)."lib/parseutils.php");
+
+class ParseUtilsTest extends PHPUnit_TestCase
 {
-	function Upgrader_1507_1600()
+	function ParseUtilsTest($name)
 	{
-		parent::OpenDbUpgrader(
-						'1.5.0.7',
-						'1.6.0.0beta1',
-						array(
-							array('description'=>'Updates from 1.5.0.7 to 1.6.0.0'),
-						)
-					);
+		$this->PHPUnit_TestCase($name);
 	}
-	
-	function getUpgraderDir()
+
+	function setUp()
 	{
-		return './install/upgrade/1.5.0.7';
+	}
+
+	function testExpandNumberRange() {
+		$this->assertEquals('9569', expand_number_range('9569'));
+		$this->assertEquals('9568,9569', expand_number_range('9568,9569'));
+		$this->assertEquals('1,2,3,4,5,7', expand_number_range('1-5,7'));
 	}
 }
 ?>

@@ -17,20 +17,20 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/borrowed_item.php");
-include_once ("./lib/item.php");
-include_once ("./lib/http.php");
-include_once ("./lib/fileutils.php");
-include_once ("./lib/user.php");
-include_once ("./lib/review.php");
-include_once ("./lib/item_attribute.php");
-include_once ("./lib/item_type.php");
-include_once ("./lib/widgets.php");
-include_once ("./lib/parseutils.php");
-include_once ("./lib/status_type.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
+include_once("./lib/utils.php");
+include_once("./lib/borrowed_item.php");
+include_once("./lib/item.php");
+include_once("./lib/http.php");
+include_once("./lib/fileutils.php");
+include_once("./lib/user.php");
+include_once("./lib/review.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/item_type.php");
+include_once("./lib/widgets.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/status_type.php");
 
 /*
 * 	This assumes a certain amount of input validation has been performed before calling this

@@ -22,7 +22,7 @@ require_once 'PHPUnit.php';
 
 require_once("./lib/XMLImportPluginHandler.class.php");
 require_once("./lib/StringFileHandler.class.php");
-include_once("./lib/XMLImportPlugin.class.php");
+include_once(dirname(__FILE__)."lib/XMLImportPlugin.class.php");
 
 class XMLImportPluginHandlerTest extends PHPUnit_TestCase
 {

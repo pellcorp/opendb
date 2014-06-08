@@ -18,15 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-require_once 'PHPUnit.php';
+// This must be first - includes config.php
+require_once(dirname(__FILE__)."/../include/begin.inc.php");
 
-class DbPrefixesTest extends PHPUnit_TestCase
+class DbPrefixesTest extends PHPUnit_Framework_TestCase
 {
-	function DbPrefixesTest($name)
-	{
-		$this->PHPUnit_TestCase($name);
-	}
-
 	function setUp()
 	{
 	}

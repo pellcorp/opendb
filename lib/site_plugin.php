@@ -17,17 +17,17 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/item_type.php");
-include_once ("./lib/item_attribute.php");
-include_once ("./lib/item_type_group.php");
-include_once ("./lib/parseutils.php");
-include_once ("./lib/TitleMask.class.php");
-include_once ("./lib/OpenDbSnoopy.class.php");
-include_once ("./lib/phpcuecat/PHPCueCat.class.php");
-include_once ("./lib/ISBN/ISBN.class.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
+include_once("./lib/utils.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/item_type_group.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/TitleMask.class.php");
+include_once("./lib/OpenDbSnoopy.class.php");
+include_once("./lib/phpcuecat/PHPCueCat.class.php");
+include_once("./lib/ISBN/ISBN.class.php");
 
 // Construct a single copy of this object for use within the site plugin
 $SITE_PLUGIN_SNOOPY = new OpenDbSnoopy ( TRUE ); //debugging always on
@@ -111,7 +111,7 @@ function is_exists_any_site_plugin() {
 function &get_site_plugin_instance($site_type) {
 	$site_plugin_classname = fetch_site_plugin_classname ( $site_type );
 	if ($site_plugin_classname !== FALSE) {
-		include_once ("./lib/site/" . $site_plugin_classname . ".class.php");
+		include_once("./lib/site/" . $site_plugin_classname . ".class.php");
 		$sitePlugin = new $site_plugin_classname ( $site_type );
 		
 		return $sitePlugin;

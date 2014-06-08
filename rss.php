@@ -21,15 +21,15 @@
 // This must be first - includes config.php
 require_once ("./include/begin.inc.php");
 
-include_once ("./lib/database.php");
-include_once ("./lib/auth.php");
-include_once ("./lib/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/auth.php");
+include_once("./lib/logging.php");
 
-include_once ("./lib/datetime.php");
-include_once ("./lib/item_attribute.php");
-include_once ("./lib/rss.php");
-include_once ("./lib/whatsnew.php");
-include_once ("./lib/announcement.php");
+include_once("./lib/datetime.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/rss.php");
+include_once("./lib/whatsnew.php");
+include_once("./lib/announcement.php");
 
 function build_opendb_rss_feed($feed_config_r, $URL) {
 	$datemask = "DD Mon YYYY HH24:MI:SS";

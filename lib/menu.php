@@ -17,12 +17,12 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/user.php");
-include_once ("./lib/status_type.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/email.php");
-include_once ("./lib/borrowed_item.php");
-include_once ("./lib/announcement.php");
+include_once("./lib/user.php");
+include_once("./lib/status_type.php");
+include_once("./lib/utils.php");
+include_once("./lib/email.php");
+include_once("./lib/borrowed_item.php");
+include_once("./lib/announcement.php");
 
 function get_printable_page_url($pageid) {
 	global $PHP_SELF;

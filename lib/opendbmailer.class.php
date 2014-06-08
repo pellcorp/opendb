@@ -19,10 +19,10 @@
 */
 require_once ('./lib/phpmailer/class.phpmailer.php');
 // hardcoded to english messages for now
-include_once ("./lib/phpmailer/language/phpmailer.lang-en.php");
+include_once("./lib/phpmailer/language/phpmailer.lang-en.php");
 
-include_once ("./lib/config.php");
-include_once ("./lib/logging.php");
+include_once("./lib/config.php");
+include_once("./lib/logging.php");
 
 /**
 	If set to email.mailer = 'mail', then must provide extra details:

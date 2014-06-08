@@ -18,35 +18,24 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-chdir('../../');
+include_once(dirname(__FILE__)."lib/OpenDbUpgrader.class.php");
 
-// This must be first - includes config.php
-require_once("./include/begin.inc.php");
-
-require_once('PHPUnit.php');
-require_once('PHPUnit/GUI/SetupDecorator.php');
-require_once('PHPUnit/GUI/HTML.php');
-
-$gui = new PHPUnit_GUI_HTML();
-
-$handle=opendir("./docs/testcases/");
-while ($file = readdir($handle))
+class Upgrader_154_155 extends OpenDbUpgrader
 {
-	if($file != "." && $file != ".." && preg_match("/([a-zA-Z0-9]+)\.class\.php/", $file, $regs))
+	function Upgrader_154_155()
 	{
-		include_once("./docs/testcases/".$file);
-		
-		$className = basename($file,'.class.php');
-		if (class_exists($className)) {
-			$suites[] = new PHPUnit_TestSuite($className);
-		}
+		parent::OpenDbUpgrader(
+						'1.5.4',
+						'1.5.7',
+						array(
+							array('description'=>'Support Global Category Stats Chart, More Info Borrow config, Disable reviews, Fix login stuff'),
+						)
+					);
+	}
+	
+	function getUpgraderDir()
+	{
+		return './install/upgrade/1.5.4';
 	}
 }
-closedir($handle);
-
-$gui->addSuites($suites);
-$gui->show();
-
-// Cleanup after begin.inc.php
-require_once("./include/end.inc.php");
 ?>

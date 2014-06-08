@@ -20,7 +20,7 @@
 
 require_once 'PHPUnit.php';
 
-include_once("./lib/install.php");
+include_once(dirname(__FILE__)."lib/install.php");
 
 class VersionCheckTest extends PHPUnit_TestCase
 {
@@ -35,12 +35,12 @@ class VersionCheckTest extends PHPUnit_TestCase
 	
 	function testVersion150a8To150b1()
 	{
-		$this->assertTrue(version_compare('1.5.0b1', '1.5.0a8', '>'), '1.5.0b1 > 1.5.0a8');
+		$this->assertTrue(opendb_version_compare('1.5.0b1', '1.5.0a8', '>'), '1.5.0b1 > 1.5.0a8');
 	}
 	
 	function testVersion10To11Dev1()
 	{
-		$this->assertTrue(version_compare('1.1dev1', '1.0pl1', '>'), '1.1dev1 > 1.0pl1');
+		$this->assertTrue(opendb_version_compare('1.1dev1', '1.0pl1', '>'), '1.1dev1 > 1.0pl1');
 	}
 	
 	function testVersionBeta3ToBeta4()

@@ -17,9 +17,9 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/TitleMask.class.php");
-include_once ("./lib/HTML_Listing.class.php");
-include_once ("./lib/item.php");
+include_once("./lib/TitleMask.class.php");
+include_once("./lib/HTML_Listing.class.php");
+include_once("./lib/item.php");
 
 /**
 	This function will return a complete table of all links valid

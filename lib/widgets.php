@@ -17,18 +17,18 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/http.php");
-include_once ("./lib/fileutils.php");
-include_once ("./lib/utils.php");
-include_once ("./lib/parseutils.php");
-include_once ("./lib/datetime.php");
-include_once ("./lib/email.php");
-include_once ("./lib/status_type.php");
-include_once ("./lib/theme.php");
+include_once("./lib/http.php");
+include_once("./lib/fileutils.php");
+include_once("./lib/utils.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/datetime.php");
+include_once("./lib/email.php");
+include_once("./lib/status_type.php");
+include_once("./lib/theme.php");
 
 // todo - work out which scripts need input fields and which need display fields
-include_once ("./lib/inputfields.php");
-include_once ("./lib/displayfields.php");
+include_once("./lib/inputfields.php");
+include_once("./lib/displayfields.php");
 
 /*
 * A display mask consists of %value%, %display% and %img% mask variables, the

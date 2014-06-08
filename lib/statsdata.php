@@ -17,14 +17,14 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/borrowed_item.php");
+include_once("./lib/borrowed_item.php");
 
-include_once ("./lib/user.php");
-include_once ("./lib/item.php");
-include_once ("./lib/review.php");
-include_once ("./lib/item_type.php");
-include_once ("./lib/item_attribute.php");
-include_once ("./lib/item.php");
+include_once("./lib/user.php");
+include_once("./lib/item.php");
+include_once("./lib/review.php");
+include_once("./lib/item_type.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/item.php");
 
 function build_owner_item_chart_data($s_item_type) {
 	$result = fetch_user_rs ( PERM_ITEM_OWNER );

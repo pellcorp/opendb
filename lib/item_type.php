@@ -17,9 +17,9 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/site_plugin.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
+include_once("./lib/site_plugin.php");
 
 function is_exists_any_item_type() {
 	$query = "SELECT 'x' FROM s_item_type";

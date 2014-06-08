@@ -17,8 +17,8 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
 
 function fetch_interest_level($item_id, $instance_no, $user_id) {
 	$query = "SELECT level" . " FROM user_item_interest i" . " WHERE i.item_id = $item_id AND i.instance_no = $instance_no AND i.user_id = '$user_id'";

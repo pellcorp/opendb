@@ -17,9 +17,9 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-include_once ("./lib/config.php");
-include_once ("./lib/parseutils.php");
-include_once ("./lib/item_attribute.php");
+include_once("./lib/config.php");
+include_once("./lib/parseutils.php");
+include_once("./lib/item_attribute.php");
 
 class TitleMask {
 	var $_opendb_title_mask_macro_rs = array ();

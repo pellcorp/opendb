@@ -23,10 +23,10 @@
 /*
 	This is the script for the announcement table.
 */
-include_once ("./lib/database.php");
-include_once ("./lib/logging.php");
-include_once ("./lib/user.php");
-include_once ("./lib/utils.php");
+include_once("./lib/database.php");
+include_once("./lib/logging.php");
+include_once("./lib/user.php");
+include_once("./lib/utils.php");
 
 function get_announcements_whereclause($limit_days, $limit_closed) {
 	$where = NULL;

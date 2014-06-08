@@ -95,7 +95,7 @@ if ($HTTP_VARS['op'] == 'export') {
 
 	echo ("# -------------------------------------------------------------" . $CRLF);
 	echo ("# " . get_opendb_title_and_version() . $CRLF);
-	echo ("# http://sourceforge.net/projects/opendb/" . $CRLF);
+	echo ("# https://github.com/pellcorp/opendb" . $CRLF);
 	echo ("#" . $CRLF);
 	echo ("# " . get_opendb_lang_var('connected_to', get_opendb_config_var('db_server')) . $CRLF);
 	echo ("# " . get_opendb_lang_var('db_backup_generated', 'date', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))) . $CRLF);

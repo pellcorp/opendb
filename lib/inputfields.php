@@ -675,13 +675,16 @@ function enhanced_checkbox_field($name, $prompt, $checked_value, $unchecked_valu
 	else
 		$is_checked = FALSE;
 	
+	$onclick = "if (this.checked){this.form['$name'].value='$checked_value';}else{this.form['$name'].value='$unchecked_value';}";
 	if (get_opendb_config_var ( 'widgets', 'enable_javascript_validation' ) !== FALSE) {
-		$onclick = "onclick=\"$onclick_event return true;\"";
+		$onclick = "onclick=\"$onclick; $onclick_event return true;\"";
 	} else {
+		$onclick = "onclick=\"$onclick;\"";
 		$onchange = "onchange=\"$onclick_event\"";
 	}
 	
-	return "\n<input type=\"hidden\" name=\"$name\" value=\"" . ($is_checked ? $checked_value : $unchecked_value) . "\">" . "\n\t<input type=\"checkbox\" class=\"checkbox\" name=\"" . $name . "_cbox\" onclick=\"if (this.checked){this.form['$name'].value='$checked_value';}else{this.form['$name'].value='$unchecked_value';}\" $onclick " . ($is_checked ? "CHECKED" : "") . "" . ($disabled ? ' DISABLED' : '') . ">";
+	return "\n<input type=\"hidden\" name=\"$name\" value=\"" . ($is_checked ? $checked_value : $unchecked_value) . "\">" 
+			. "\n\t<input type=\"checkbox\" class=\"checkbox\" name=\"" . $name . "_cbox\" $onclick " . ($is_checked ? "CHECKED" : "") . "" . ($disabled ? ' DISABLED' : '') . ">";
 }
 
 /**

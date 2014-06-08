@@ -18,16 +18,12 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-require_once 'PHPUnit.php';
+chdir(dirname(dirname(__FILE__)));
 
-include_once(dirname(__FILE__)."lib/export/XMMMovieDatabasePlugin.class.php");
+include_once("./lib/export/XMMMovieDatabasePlugin.class.php");
 
-class XMMMovieDatabaseExportTest extends PHPUnit_TestCase
+class XMMMovieDatabaseExportTest extends PHPUnit_Framework_TestCase
 {
-	function XMMMovieDatabaseExportTest($name) {
-		parent::PHPUnit_TestCase($name);
-	}
-	
 	function testXMLParse() {
 		$plugin = new XMMMovieDatabasePlugin(FALSE);
 		

@@ -18,16 +18,12 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	*/
 
-require_once 'PHPUnit.php';
+chdir(dirname(dirname(__FILE__)));
 
-include_once(dirname(__FILE__)."lib/item_attribute.php");
-include_once(dirname(__FILE__)."lib/utils.php");
+include_once("./lib/item_attribute.php");
+include_once("./lib/utils.php");
 
-class UtilsTest extends PHPUnit_TestCase {
-	function UtilsTest($name) {
-		$this->PHPUnit_TestCase($name);
-	}
-
+class UtilsTest extends PHPUnit_Framework_TestCase {
 	function setUp() {
 	}
 

@@ -1,5 +1,6 @@
 <?php
 include_once("./lib/logging.php");
+include_once("./lib/theme.php");
 
 $GD_IMAGE_TYPES = array (
 		'png' => array (

@@ -18,29 +18,20 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-// TODO - add tests
+chdir(dirname(dirname(__FILE__)));
+include_once("./lib/WrapperFileHandler.class.php");
+include_once("./lib/XMLImportPluginHandler.class.php");
+include_once("./lib/import/DVDProfilerImportPlugin.class.php");
 
-require_once 'PHPUnit.php';
-
-include_once(dirname(__FILE__)."lib/WrapperFileHandler.class.php");
-include_once(dirname(__FILE__)."lib/XMLImportPluginHandler.class.php");
-include_once(dirname(__FILE__)."import/DVDProfilerImportPlugin.class.php");
-
-
-
-class DVDProfilerImportPluginTest extends PHPUnit_TestCase
+class DVDProfilerImportPluginTest extends PHPUnit_Framework_TestCase
 {
-	function DVDProfilerImportPluginTest($name) {
-		parent::PHPUnit_TestCase($name);
-	}
-	
 	function testXMLParse() {
 		$plugin = new DVDProfilerImportPlugin();
 		$importHandler = new TestItemImportHandler();
 		
 		$plugin->setItemImportHandler($importHandler);
 		
-		$f = fopen("./docs/testcases/resources/DVDProfilerCollection.xml", 'rb');
+		$f = fopen(dirname(__FILE__)."/resources/DVDProfilerCollection.xml", 'rb');
 		if($f) {
 			$fileHandler = new WrapperFileHandler($f);
 			

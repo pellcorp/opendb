@@ -18,15 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-require_once 'PHPUnit.php';
-include_once(dirname(__FILE__)."lib/phpsniff/phpSniff.class.php");
+chdir(dirname(dirname(__FILE__)));
+include_once("./lib/phpsniff/phpSniff.class.php");
 
-class PhpSniffTest extends PHPUnit_TestCase
+class PhpSniffTest extends PHPUnit_Framework_TestCase
 {
-	function PhpSniffTest($name) {
-		parent::PHPUnit_TestCase($name);
-	}
-	
 	function testIE55Browser() {
 		$sniffer = new phpSniff('mozilla/4.0 (compatible; msie 5.5; windows 98; win 9x 4.90)');
 		$this->assertTrue($sniffer->browser_is('ie'));

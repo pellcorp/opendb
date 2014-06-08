@@ -18,17 +18,12 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	*/
 
-require_once 'PHPUnit.php';
+chdir(dirname(dirname(__FILE__)));
 
-include_once(dirname(__FILE__)."lib/install.php");
+include_once("./lib/install.php");
 
-class VersionCheckTest extends PHPUnit_TestCase
+class VersionCheckTest extends PHPUnit_Framework_TestCase
 {
-	function VersionCheckTest($name)
-	{
-		$this->PHPUnit_TestCase($name);
-	}
-
 	function setUp()
 	{
 	}

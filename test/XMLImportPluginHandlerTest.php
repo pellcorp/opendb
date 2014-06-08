@@ -18,21 +18,14 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-require_once 'PHPUnit.php';
+chdir(dirname(dirname(__FILE__)));
 
-require_once("./lib/XMLImportPluginHandler.class.php");
-require_once("./lib/StringFileHandler.class.php");
-include_once(dirname(__FILE__)."lib/XMLImportPlugin.class.php");
+include_once("./lib/XMLImportPluginHandler.class.php");
+include_once("./lib/StringFileHandler.class.php");
+include_once("./lib/XMLImportPlugin.class.php");
 
-class XMLImportPluginHandlerTest extends PHPUnit_TestCase
+class XMLImportPluginHandlerTest extends PHPUnit_Framework_TestCase
 {
-	var $baseDir = './docs/testcases/resources/';
-	
-	function XMLImportPluginHandlerTest($name)
-	{
-		parent::PHPUnit_TestCase($name);
-	}
-	
 	function testXPath() {
 		$xml = 
 		"<Collection>

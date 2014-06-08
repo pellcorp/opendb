@@ -18,8 +18,9 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-// This must be first - includes config.php
-require_once(dirname(__FILE__)."/../include/begin.inc.php");
+chdir(dirname(dirname(__FILE__)));
+
+require_once("./lib/database.php");
 
 class DbPrefixesTest extends PHPUnit_Framework_TestCase
 {

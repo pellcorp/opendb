@@ -18,21 +18,16 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-require_once 'PHPUnit.php';
+
+chdir(dirname(dirname(__FILE__)));
+
 require_once("./lib/DocTypeNameSpaceXMLParser.class.php");
 
-class DocTypeNameSpaceXMLParserTest extends PHPUnit_TestCase
+class DocTypeNameSpaceXMLParserTest extends PHPUnit_Framework_TestCase
 {
-	var $baseDir = './docs/testcases/resources/';
-	
-	function DocTypeNameSpaceXMLParserTest($name)
-	{
-		parent::PHPUnit_TestCase($name);
-	}
-
 	function testNoNameSpaceParser() {
 		$parser = new DocTypeNameSpaceXMLParser();
-		if($parser->parseFile($this->baseDir.'FileWithNoNameSpace.xml')) {
+		if($parser->parseFile(dirname(__FILE__) . '/resources/FileWithNoNameSpace.xml')) {
 			$this->assertEquals('opendb-items', $parser->getDocType());
 			$this->assertNull($parser->getNameSpace());
 		} else {
@@ -43,7 +38,7 @@ class DocTypeNameSpaceXMLParserTest extends PHPUnit_TestCase
 	
 	function testWithNameSpaceParser() {
 		$parser = new DocTypeNameSpaceXMLParser();
-		if($parser->parseFile($this->baseDir.'FileWithNameSpace.xml')) {
+		if($parser->parseFile(dirname(__FILE__) . '/resources/FileWithNameSpace.xml')) {
 			$this->assertEquals('Items', $parser->getDocType());
 			$this->assertEquals('http://opendb.iamvegan.net/xsd/Items-1.3.xsd', $parser->getNameSpace());
 		} else {

@@ -348,7 +348,7 @@ function get_timestamp_components_for_datetime($datetime, $format_mask) {
 				}
 				
 				$hour24 = $datetime_components ['HH24'];
-				$hour = $datetime_components ['HH'];
+				$hour = @$datetime_components ['HH'];
 				if (strlen ( $hour24 ) > 0) {
 					if (! is_numeric ( $hour24 ) || $hour24 < 0 || $hour24 > 23) {
 						return FALSE;
@@ -377,12 +377,12 @@ function get_timestamp_components_for_datetime($datetime, $format_mask) {
 				}
 				
 				return array (
-						year => intval ( $year ),
-						month => intval ( $month ),
-						day => intval ( $day ),
-						hour => intval ( $hour ),
-						minute => intval ( $minute ),
-						second => intval ( $second ) );
+						'year' => intval ( $year ),
+						'month' => intval ( $month ),
+						'day' => intval ( $day ),
+						'hour' => intval ( $hour ),
+						'minute' => intval ( $minute ),
+						'second' => intval ( $second ) );
 			} else {
 				return FALSE;
 			}

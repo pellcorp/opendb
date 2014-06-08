@@ -22,22 +22,25 @@ include_once("./lib/logging.php");
 include_once("./lib/fileutils.php");
 include_once("./lib/utils.php");
 
-function fix_10_version($version) {
+function fix_version($version) {
 	if ($version == '1.0') {
 		$version = '1.0.0';
-	} else if (preg_match ( '/^1\.0(RC)([0-9]+)$/', $version, $matches ) || preg_match ( '/^1\.0(b)([0-9]+)$/', $version, $matches ) || preg_match ( '/^1\.0(a)([0-9]+)$/', $version, $matches ) || preg_match ( '/^1\.0(pl)([0-9]+)$/', $version, $matches )) {
-		$version = '1.0.0' . $matches [1] . $matches [2];
+	} else if (preg_match ( '/^1\.0(RC)([0-9]+)$/', $version, $matches ) 
+			|| preg_match ( '/^1\.0(b)([0-9]+)$/', $version, $matches ) 
+			|| preg_match ( '/^1\.0(a)([0-9]+)$/', $version, $matches ) 
+			|| preg_match ( '/^1\.0(pl)([0-9]+)$/', $version, $matches )) {
+		$version = '1.0.0' . $matches[1] . $matches[2];
+	} else if (preg_match ( '/^(1\.[5|6]\.0)\.([0-9]+)(.*)([0-9]+)$/', $version, $matches))  {
+		$version = $matches[1] . $matches[3] . $matches[4];
 	}
-	
 	return $version;
 }
 
 /**
  */
 function opendb_version_compare($to_version, $from_version, $operator) {
-	$to_version = fix_10_version ( $to_version );
-	$from_version = fix_10_version ( $from_version );
-	
+	$to_version = fix_version($to_version);
+	$from_version = fix_version($from_version);
 	return version_compare ( $to_version, $from_version, $operator );
 }
 
@@ -55,27 +58,6 @@ function fetch_081_upload_item_attributes_rs() {
 	
 	//else
 	return FALSE;
-}
-
-function fetch_missing_081_upload_item_attributes(&$errors) {
-	$missing_files_r = array ();
-	
-	if (! file_exists ( "./upload/" )) {
-		$errors [] = array (
-				'error' => './upload directory does not exist.' );
-	}
-	
-	$results = fetch_081_upload_item_attributes_rs ();
-	if ($results) {
-		while ( $item_attribute_r = db_fetch_assoc ( $results ) ) {
-			if (! file_exists ( $item_attribute_r ['attribute_val'] )) {
-				$missing_files_r [] = basename ( $item_attribute_r ['attribute_val'] );
-			}
-		}
-		db_free_result ( $results );
-	}
-	
-	return $missing_files_r;
 }
 
 function get_opendb_table_column_collation_mismatches(&$table_colation_mismatch, &$table_column_colation_mismatch) {

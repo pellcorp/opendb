@@ -25,7 +25,7 @@ if (!defined('E_DEPRECATED')) {
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 // PLEASE DO NOT CHANGE THIS AS ITS AN INTERNAL VARIABLE FOR USE IN INSTALLER and other functions.
-define('__OPENDB_RELEASE__', '1.6.0.0beta1');
+define('__OPENDB_RELEASE__', '1.6.0beta1');
 define('__OPENDB_TITLE__', 'OpenDb');
 
 if (extension_loaded('mysqli')) {
@@ -33,6 +33,9 @@ if (extension_loaded('mysqli')) {
 } else if (extension_loaded('mysql')) {
 	include_once('./lib/database/mysql.inc.php');
 }
+
+// force db session handling by default
+$CONFIG_VARS['session_handler']['enable'] = TRUE;
 
 if (file_exists("./include/local.config.php")) {
 	include_once("./include/local.config.php");

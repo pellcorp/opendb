@@ -132,27 +132,49 @@ class DVDProfilerImportPlugin extends XMLImportPlugin {
 	}
 
 	function __getMappedAudioLang($lang) {
-		$audioLangMap = array('Dolby Digital Stereo' => 'ENGLISH', 'Dolby Digital 5.1' => 'ENGLISH_5.1', 'Dolby Digital Surround EX' => 'ENGLISH_SR', 'DTS ES (Discrete)' => 'ENGLISH_DTS', 'DTS ES (Matrixed)' => 'ENGLISH_DTS', 'Dolby Digital Surround' => 'ENGLISH_SR',);
+		$audioLangMap = array('Dolby Digital Stereo' => 'ENGLISH', 
+				'Dolby Digital 5.1' => 'ENGLISH_5.1', 
+				'Dolby Digital Surround EX' => 'ENGLISH_SR', 
+				'DTS ES (Discrete)' => 'ENGLISH_DTS', 
+				'DTS ES (Matrixed)' => 'ENGLISH_DTS', 
+				'Dolby Digital Surround' => 'ENGLISH_SR',);
 
 		if (is_array($audioLangMap)) {
-			if (strlen($audioLangMap[$lang]) > 0)
+			if (isset($audioLangMap[$lang])) {
 				$lang = $audioLangMap[$lang];
+			}
 		}
 
 		return $lang;
 	}
 
 	function __getMappedFeatures($feature_r) {
-		$featureMap = array('FeatureSceneAccess' => 'Scene Access', 'FeatureCommentary' => 'Commentary', 'FeatureTrailer' => 'Trailer(s)', 'FeatureDeletedScenes' => 'Deleted Scenes', 'FeatureMakingOf' => 'Featurette', 'FeatureProductionNotes' => 'Prod. Notes/Bios',
-				'FeatureGame' => 'Interactive Game', 'FeatureDVDROMContent' => 'DVD-ROM Content', 'FeatureMultiAngle' => 'Multi-angle', 'FeatureMusicVideos' => 'Music Video(s)', 'FeatureClosedCaptioned' => 'Closed Captioned', 'FeatureTHXCertified' => 'THX Certified',
-				'FeatureInterviews' => 'Interviews', 'FeatureStoryboardComparisons' => 'Story Boards', 'FeatureOuttakes' => 'Outtakes');
+		$featureMap = array(
+				'FeatureSceneAccess' => 'Scene Access', 
+				'FeatureCommentary' => 'Commentary', 
+				'FeatureTrailer' => 'Trailer(s)', 
+				'FeatureDeletedScenes' => 'Deleted Scenes', 
+				'FeatureMakingOf' => 'Featurette', 
+				'FeatureProductionNotes' => 'Prod. Notes/Bios',
+				'FeatureGame' => 'Interactive Game', 
+				'FeatureDVDROMContent' => 'DVD-ROM Content', 
+				'FeatureMultiAngle' => 'Multi-angle', 
+				'FeatureMusicVideos' => 'Music Video(s)', 
+				'FeatureClosedCaptioned' => 'Closed Captioned', 
+				'FeatureTHXCertified' => 'THX Certified',
+				'FeatureInterviews' => 'Interviews', 
+				'FeatureStoryboardComparisons' => 'Story Boards', 
+				'FeatureOuttakes' => 'Outtakes');
 
 		if (is_array($feature_r)) {
 			reset($feature_r);
 
 			$mapped_feature_r = array();
 			while (list(, $feature) = each($feature_r)) {
-				$mapped_feature_r[] = ifempty($featureMap[$feature], $feature);
+				if (isset($featureMap[$feature])) {
+					$feature = $featureMap[$feature];
+				}
+				$mapped_feature_r[] = $feature;
 			}
 
 			return implode("\n", $mapped_feature_r);
@@ -172,7 +194,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin {
 			return 'ScienceFiction';
 		} else if ($genre == 'Suspence/Thriller') {
 			return array('Suspense', 'Thriller');
-		} else if ($pcdata == 'Special Interest') {
+		} else if ($genre == 'Special Interest') {
 			return 'Other';
 		} else {
 			return $genre;
@@ -192,7 +214,7 @@ class DVDProfilerImportPlugin extends XMLImportPlugin {
 
 	function __getFormattedName($attribs) {
 		$name = $attribs['FirstName'] . " ";
-		if (strlen($attribs['MiddleName']) > 0) {
+		if (isset($attribs['MiddleName'])) {
 			$name .= $attribs['MiddleName'] . " ";
 		}
 		$name .= $attribs['LastName'];

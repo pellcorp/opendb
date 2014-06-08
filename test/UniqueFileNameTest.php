@@ -36,7 +36,7 @@ class UniqueFileNameTest extends PHPUnit_Framework_TestCase
 		$filelist_r[] = 'abc1.gif';
 		$filelist_r[] = 'abc2.gif';
 		$filelist_r[] = 'abc3.gif';
-		
+		$count = 0;
 		do {
 			$count++;
 			$file = $file_r['name'].$count.'.'.$file_r['extension'];

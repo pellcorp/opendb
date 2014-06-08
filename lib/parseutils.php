@@ -40,8 +40,8 @@ function parse_numeric_suffix($s) {
 	}
 	
 	return array (
-			prefix => $prefix,
-			suffix => $suffix );
+			'prefix' => $prefix,
+			'suffix' => $suffix );
 }
 
 /**

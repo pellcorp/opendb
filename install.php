@@ -37,43 +37,6 @@ $_opendb_install_required_writedirs = array('./log', './include', OPENDB_IMPORT_
 $TICK_IMAGE = theme_image('tick.gif');
 $CROSS_IMAGE = theme_image('cross.gif');
 
-function install_check_missing_081_upload_item_attributes() {
-	$buffer = '';
-
-	$missing_files_r = fetch_missing_081_upload_item_attributes($errors);
-	if (is_not_empty_array($missing_files_r)) {
-		$buffer .= "<h3>0.8X Cached (" . OPENDB_ITEM_UPLOAD_DIRECTORY . " directory) Images missing</h3>\n";
-
-		$buffer .= "<p class=\"installwarning\">The following is a list of uploaded files referenced by your OpenDb database which cannot
-			be found in the " . OPENDB_ITEM_UPLOAD_DIRECTORY . " directory.  This may be because you have not copied the uploaded files from 
-			the OpenDb 0.8X " . OPENDB_ITEM_UPLOAD_DIRECTORY . " directory.</p>";
-
-		if (is_array($errors))
-			$buffer .= format_error_block($errors);
-
-		$buffer .= "<div id=\"missing-files\" class=\"toggleContainer\" onclick=\"return toggleVisible('missing-files');\">";
-		$buffer .= "<span id=\"missing-files-toggle\" class=\"toggleHidden\">File Item Attributes</span>";
-		$buffer .= "<div class=\"elementHidden\" id=\"missing-files-content\">";
-
-		$buffer .= "<ul>";
-		$count = 0;
-		$total_count = count($missing_files_r);
-		while (list(, $filename) = each($missing_files_r)) {
-			if ($count > 100) {
-				$buffer .= "<li>(" . ($total_count - $count) . " more)</li>";
-				break;
-			}
-
-			$buffer .= "<li>$filename</li>";
-			$count++;
-		}
-
-		$buffer .= "</ul></div></div>";
-	}
-
-	return $buffer;
-}
-
 function install_check_directories(&$doContinue) {
 	global $_opendb_install_required_writedirs, $TICK_IMAGE, $CROSS_IMAGE;
 
@@ -128,30 +91,15 @@ function install_check_directories(&$doContinue) {
 	return $buffer;
 }
 
-function install_check_install_dir() {
-	$buffer = '';
-
-	// installed in 0.81
-	if (file_exists("./patch") || file_exists("./lang") || file_exists("./include/config.php")) {
-		$buffer .= "<h3>Installed in a new directory?</h3>";
-
-		$buffer .= "<p class=\"installwarning\">This OpenDb release must <strong>not</strong> be installed into the same directory as a existing 0.80 or 0.81 release.
-					If you have cached images in the upload/ directory, copy the upload/ directory into the new 
-					installation directory instead.</p>";
-	}
-
-	return $buffer;
-}
-
 function install_check_php_settings() {
 	$buffer = "<h3>PHP Settings</h3>\n";
 
 	$buffer .= "<table>";
 
-	if (opendb_version_compare(phpversion(), "4.3.0", ">=")) {
+	if (opendb_version_compare(phpversion(), "5.0.0", ">=")) {
 		$buffer .= format_field("PHP Version", phpversion());
 	} else {
-		$buffer .= format_field("PHP Version", "<span class='error'>" . phpversion() . " (must be >= 4.3.0)</span>");
+		$buffer .= format_field("PHP Version", "<span class='error'>" . phpversion() . " (must be >= 5.0.0)</span>");
 	}
 
 	if (preg_match("/([0-9]+)M/", ini_get('memory_limit'), $matches)) {
@@ -204,7 +152,7 @@ function install_check_mysql_collation_mismatch() {
 		$buffer .= "<h3>MYSQL Collation Mismatch</h3>\n";
 
 		$buffer .= "<p class=\"installwarning\">This OpenDb installation has table and/or table column collation mismatches.  This may or may not
-				be indicative of a problem.  Check out the <a href=\"http://opendb.iamvegan.net/wiki/index.php?title=Mysql_Collation_Mismatch_Error\">OpenDb website topic</a> 
+				be indicative of a problem.  Check out the <a href=\"https://github.com/pellcorp/opendb/wiki/Mysql_Collation_Mismatch_Error\">OpenDb website topic</a> 
 				for more information.</p>";
 
 		$buffer .= "<p>The database default or prevalent table collation (where the database default cannot be derived) 
@@ -299,8 +247,6 @@ function install_pre_check($next_step) {
 		database in an inconsistent state.  You should always perform (at the very least) a PHPMyAdmin Database Export or OpenDb Backup 
 		(of all tables) before running the installer.</p>";
 
-	$buffer .= install_check_install_dir();
-
 	$buffer .= install_check_php_settings();
 
 	$buffer .= install_check_mysql_collation_mismatch();
@@ -311,8 +257,6 @@ function install_pre_check($next_step) {
 
 	$doContinue = TRUE;
 	$buffer .= install_check_directories($doContinue);
-
-	$buffer .= install_check_missing_081_upload_item_attributes();
 
 	$buffer .= "\n<form action=\"$PHP_SELF\" method=\"GET\">";
 
@@ -451,7 +395,7 @@ function install_write_config_file($db_details_r, &$config_file, &$errors) {
 		} else {
 			$config_file = "<?php\n" . "\$CONFIG_VARS['db_server'] = array(\n" . "	'host'=>'{$db_details_r['host']}',		//OpenDb database host\n" . "	'dbname'=>'{$db_details_r['dbname']}',		//OpenDb database name\n"
 					. "	'username'=>'{$db_details_r['username']}',		//OpenDb database user name\n" . "	'passwd'=>'{$db_details_r['passwd']}',		//OpenDb user password\n" . "	'table_prefix'=>'{$db_details_r['table_prefix']}', 	//Table prefix.\n" . "	'debug-sql'=>FALSE);\n\n"
-					. "\$CONFIG_VARS['session_handler']['enable'] = FALSE;\n" . "?>\n";
+					. "?>\n";
 
 			if (file_put_contents('./include/local.config.php', $config_file)) {
 				return TRUE;

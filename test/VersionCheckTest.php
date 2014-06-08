@@ -28,9 +28,29 @@ class VersionCheckTest extends PHPUnit_Framework_TestCase
 	{
 	}
 	
+	function testFixVersion()
+	{
+		$this->assertEquals('1.6.0', fix_version('1.6.0'), '1.6.0');
+		$this->assertEquals('1.6.0dev1', fix_version('1.6.0.0dev1'), '1.6.0dev1');
+		$this->assertEquals('1.6.0dev8', fix_version('1.6.0.0dev8'), '1.6.0.0dev8');
+		$this->assertEquals('1.6.0beta1', fix_version('1.6.0.0beta1'), '1.6.0beta1');
+		$this->assertEquals('1.0.0', fix_version('1.0'), '1.0');
+	}
+	
 	function testVersion150a8To150b1()
 	{
 		$this->assertTrue(opendb_version_compare('1.5.0b1', '1.5.0a8', '>'), '1.5.0b1 > 1.5.0a8');
+	}
+	
+	function testVersion160To160b1()
+	{
+		$this->assertTrue(opendb_version_compare('1.6.0', '1.6.0.0beta1', '>'), '1.6.0 > 1.6.0.0beta1');
+	}
+	
+	function testVersion160b1To1600b1()
+	{
+		$this->assertTrue(opendb_version_compare('1.6.0beta1', '1.6.0.0beta1', '='), '1.6.0beta1 = 1.6.0.0beta1');
+		$this->assertTrue(opendb_version_compare('1.6.0.0beta1', '1.6.0beta1', '='), '1.6.0.0beta1 = 1.6.0beta1');
 	}
 	
 	function testVersion10To11Dev1()

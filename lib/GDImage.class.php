@@ -4,20 +4,20 @@ include_once("./lib/theme.php");
 
 $GD_IMAGE_TYPES = array (
 		'png' => array (
-				extension => 'png',
-				ctype => 'image/png',
-				sendfunc => 'ImagePNG',
-				createfunc => 'ImageCreateFromPNG' ),
+				'extension' => 'png',
+				'ctype' => 'image/png',
+				'sendfunc' => 'ImagePNG',
+				'createfunc' => 'ImageCreateFromPNG' ),
 		'jpg' => array (
-				extension => 'jpg',
-				ctype => 'image/jpeg',
-				sendfunc => 'ImageJPEG',
-				createfunc => 'ImageCreateFromJPEG' ),
+				'extension' => 'jpg',
+				'ctype' => 'image/jpeg',
+				'sendfunc' => 'ImageJPEG',
+				'createfunc' => 'ImageCreateFromJPEG' ),
 		'gif' => array (
-				extension => 'gif',
-				ctype => 'image/gif',
-				sendfunc => 'ImageGIF',
-				createfunc => 'ImageCreateFromGIF' ) );
+				'extension' => 'gif',
+				'ctype' => 'image/gif',
+				'sendfunc' => 'ImageGIF',
+				'createfunc' => 'ImageCreateFromGIF' ) );
 
 function is_function_valid($function) {
 	$disabled_functions = @ini_get ( "disable_functions" );
@@ -91,7 +91,7 @@ class GDImage {
 			$imgType = $this->getImageType ();
 		}
 		
-		if (is_array ( $GD_IMAGE_TYPES [$imgType] )) {
+		if (isset($GD_IMAGE_TYPES [$imgType]) && is_array($GD_IMAGE_TYPES[$imgType])) {
 			return $GD_IMAGE_TYPES [$imgType];
 		} else {
 			return FALSE;

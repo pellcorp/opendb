@@ -71,29 +71,31 @@ class XMMMovieDatabaseExportTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(
 "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <XMM_Movie_Database>
-	<Movie>
+	<Item>
 		<MovieID>1</MovieID>
 		<Title>Family Man, The</Title>
-		<PersonalRating>5</PersonalRating>
-		<Media>DVD-Rom</Media>
+		<Media>
+			<Medium>DVD</Medium>
+		</Media>
+		<Location>Default</Location>
 		<Year>2002</Year>
 		<Length>93</Length>
 		<Plot>This is a test again
 		thanks again
 		stuff all</Plot>
-		<Purchase>12/09/2002</Purchase>
+		<PurchaseDate>20020912TT00:00:00</PurchaseDate>
 		<UPC>2132133123213213</UPC>
-		<Director>Jason Pell</Director>
-		<Rating>R</Rating>
-		<Genre>Action,Adventure,Comedy</Genre>
-		<Actors>
-		<Actor>Clair Pell</Actor>
-		<Actor>Lucy Pell</Actor>
-		<Actor>Thomas Pell</Actor>
-		</Actors>
-		<Cover>itemThumb_846_86051.jpeg</Cover>
+		<Directors>
+			<Director>Jason Pell</Director>
+		</Directors>
+		<MPAA>R</MPAA>
+		<Genres>
+			<Genre>Action</Genre>
+			<Genre>Adventure</Genre>
+			<Genre>Comedy</Genre>
+		</Genres>
 		<Country>Australia</Country>
-	</Movie>
+	</Item>
 </XMM_Movie_Database>
 ",
 $xml);
@@ -101,3 +103,4 @@ $xml);
 	}
 }
 ?>
+

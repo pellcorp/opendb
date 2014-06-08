@@ -25,6 +25,13 @@ include_once("./lib/item_attribute.php");
 include_once("./lib/datetime.php");
 include_once("./lib/site_plugin.php");
 
+
+if (extension_loaded('mysqli')) {
+	include_once('./lib/database/mysqli.inc.php');
+} else if (extension_loaded('mysql')) {
+	include_once('./lib/database/mysql.inc.php');
+}
+
 class XMMMovieDatabasePlugin {
 	var $purchasedateformatmask;
 	var $attribute_rs;

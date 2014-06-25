@@ -25,39 +25,24 @@ include_once("./lib/utils.php");
 function fix_version($version) {
 	if ($version == '1.0') {
 		$version = '1.0.0';
-	} else if (preg_match ( '/^1\.0(RC)([0-9]+)$/', $version, $matches ) 
-			|| preg_match ( '/^1\.0(b)([0-9]+)$/', $version, $matches ) 
-			|| preg_match ( '/^1\.0(a)([0-9]+)$/', $version, $matches ) 
-			|| preg_match ( '/^1\.0(pl)([0-9]+)$/', $version, $matches )) {
+	} else if (preg_match('/^1\.0(RC)([0-9]+)$/', $version, $matches) 
+			|| preg_match('/^1\.0(b)([0-9]+)$/', $version, $matches) 
+			|| preg_match('/^1\.0(a)([0-9]+)$/', $version, $matches) 
+			|| preg_match('/^1\.0(pl)([0-9]+)$/', $version, $matches)) {
 		$version = '1.0.0' . $matches[1] . $matches[2];
-	} else if (preg_match ( '/^(1\.[5|6]\.0)\.([0-9]+)(.*)([0-9]+)$/', $version, $matches))  {
+	} else if (preg_match('/^(1\.[5|6]\.0)\.([0-9]+)(.*)([0-9]+)$/', $version, $matches))  {
 		$version = $matches[1] . $matches[3] . $matches[4];
+	} else if (preg_match('/^(1\.[5|6]\.)0\.([0-9]+)$/', $version, $matches))  {
+		$version = $matches[1] . $matches[2];
 	}
 	return $version;
 }
 
-/**
- */
-function opendb_version_compare($to_version, $from_version, $operator) {
+function opendb_version_compare($from_version, $to_version, $operator) {
 	$to_version = fix_version($to_version);
 	$from_version = fix_version($from_version);
-	return version_compare ( $to_version, $from_version, $operator );
-}
-
-function fetch_081_upload_item_attributes_rs() {
-	$query = "SELECT ia.attribute_val 
-			FROM item_attribute ia, s_attribute_type sat
-			WHERE ia.s_attribute_type = sat.s_attribute_type AND 
-				sat.file_attribute_ind = 'Y' AND
-				attribute_val LIKE './upload/%'";
 	
-	$results = db_query ( $query );
-	if ($results && db_num_rows ( $results ) > 0) {
-		return $results;
-	}
-	
-	//else
-	return FALSE;
+	return version_compare($from_version, $to_version, $operator);
 }
 
 function get_opendb_table_column_collation_mismatches(&$table_colation_mismatch, &$table_column_colation_mismatch) {
@@ -523,12 +508,12 @@ function install_determine_opendb_database_version() {
 * Assumes database exists
 */
 function check_opendb_version() {
-	$opendb_release_version = fetch_opendb_release_version ();
+	$opendb_release_version = fetch_opendb_release_version();
 	
 	if ($opendb_release_version !== FALSE) {
 		// the $opendb_release_version is unlikely to be larger than get_opendb_version(),
 		// so this could be simplified to a '=', but leave as is.
-		if (opendb_version_compare ( $opendb_release_version, get_opendb_version (), '>=' )) {
+		if (opendb_version_compare ( $opendb_release_version, get_opendb_version(), '>=' )) {
 			return TRUE;
 		}
 	}
@@ -694,8 +679,10 @@ function build_upgrader_list(&$upgrader_rs, &$latest_to_version) {
 	while ( $file = readdir ( $handle ) ) {
 		if (! preg_match ( "/^\./", $file ) && preg_match ( "/Upgrader_(.*).class.php$/", $file, $regs )) {
 			$upgraderRef = 'Upgrader_' . $regs [1];
+			
 			include_once ('./install/upgrade/' . $upgraderRef . '.class.php');
-			$upgraderPlugin = new $upgraderRef ();
+			$upgraderPlugin = new $upgraderRef();
+			
 			if ($upgraderPlugin !== NULL) {
 				$upgrader_rs [] = array (
 						'to_version' => $upgraderPlugin->getToVersion (),
@@ -703,7 +690,8 @@ function build_upgrader_list(&$upgrader_rs, &$latest_to_version) {
 						'description' => $upgraderPlugin->getDescription (),
 						'upgrader_plugin' => $upgraderRef );
 				
-				if ($latest_to_version == NULL || opendb_version_compare ( $upgraderPlugin->getToVersion (), $latest_to_version, '>' )) {
+				if ($latest_to_version == NULL 
+						|| opendb_version_compare ( $upgraderPlugin->getToVersion (), $latest_to_version, '>' )) {
 					$latest_to_version = $upgraderPlugin->getToVersion ();
 				}
 			}

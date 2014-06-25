@@ -465,6 +465,7 @@ function install_opendb_upgrade($HTTP_VARS, &$errors) {
 
 		// $latest_to_version is out param!
 		$upgraders_rs = get_upgraders_rs(is_array($opendb_release_r) ? $opendb_release_r['release_version'] : NULL, get_opendb_version(), $latest_to_version);
+		
 		if (is_array($upgraders_rs)) {
 			if (count($upgraders_rs) == 1) {
 				$HTTP_VARS['upgrader_plugin'] = $upgraders_rs[0]['upgrader_plugin'];
@@ -476,6 +477,7 @@ function install_opendb_upgrade($HTTP_VARS, &$errors) {
 					$errors[] = 'Upgrader: ' . $upgraders_r['description'];
 				}
 
+				
 				return FALSE; // more than one upgrade step possible is an error!
 			}
 		} else {
@@ -747,6 +749,7 @@ if (strlen($HTTP_VARS['step']) == 0) {
 		echo _theme_header("OpenDb " . get_opendb_version() . " Installation", FALSE);
 		echo ("<h2>Pre Installation</h2>");
 
+		
 		$preinstall_details = NULL;
 		$db_version = NULL;
 
@@ -808,7 +811,7 @@ if (strlen($HTTP_VARS['step']) == 0) {
 		}
 		echo _theme_footer();
 	}
-} else {
+} else { // else step = upgrade / install
 	@set_time_limit(600);
 
 	echo _theme_header("OpenDb " . get_opendb_version() . " Installation", FALSE);
@@ -818,14 +821,15 @@ if (strlen($HTTP_VARS['step']) == 0) {
 	if (is_db_connected() && is_valid_opendb_release_table() && 
 			// require a release record if opendb database has tables other than s_opendb_release already!
 			(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release') > 0)) {
+				
 		if (is_opendb_partially_installed()) {
 			// upgrade
 			if (!check_opendb_version()) {
 				$result = install_opendb_upgrade($HTTP_VARS, $errors);
 
 				if ($result == FALSE) {
+					echo ("<p class=\"error\">The following upgrade errors occurred: </p>");
 					if (is_array($errors)) {
-						echo ("<p class=\"error\">The following upgrade errors occurred: </p>");
 						echo format_error_block($errors);
 					}
 				} else if ($result === TRUE && !check_opendb_version()) {

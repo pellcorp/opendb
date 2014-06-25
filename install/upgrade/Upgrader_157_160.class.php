@@ -18,11 +18,11 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-include_once(dirname(__FILE__)."lib/OpenDbUpgrader.class.php");
+include_once("./lib/OpenDbUpgrader.class.php");
 
 class Upgrader_157_160 extends OpenDbUpgrader
 {
-	function Upgrader_1507_160()
+	function Upgrader_157_160()
 	{
 		parent::OpenDbUpgrader(
 						'1.5.7',

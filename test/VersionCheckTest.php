@@ -35,6 +35,12 @@ class VersionCheckTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('1.6.0dev8', fix_version('1.6.0.0dev8'), '1.6.0.0dev8');
 		$this->assertEquals('1.6.0beta1', fix_version('1.6.0.0beta1'), '1.6.0beta1');
 		$this->assertEquals('1.0.0', fix_version('1.0'), '1.0');
+		$this->assertEquals('1.5.7', fix_version('1.5.0.7'), '1.5.7');
+	}
+	
+	function testVersion157To160beta1()
+	{
+		$this->assertTrue(opendb_version_compare('1.6.0beta1', '1.5.7', '>='), '1.6.0beta1 >= 1.5.7');
 	}
 	
 	function testVersion150a8To150b1()

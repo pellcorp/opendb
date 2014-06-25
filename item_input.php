@@ -900,6 +900,10 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 
 		$action_links_rs = NULL;
 
+		$pageContents .= "<ul class=\"saveButtons\">
+		<li><input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"" . get_opendb_lang_var('save_item') . "\"></li>
+			</ul>";
+		
 		if (is_not_empty_array($action_links_rs)) {
 			$pageContents .= format_footer_links($action_links_rs);
 		}

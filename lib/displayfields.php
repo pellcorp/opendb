@@ -261,7 +261,7 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		$value = nl2br ( trim ( $value ) );
 		
 		if ($item_attribute_type_r ['listing_link_ind'] == 'Y')
-			$field = format_listing_links ( $value, $item_attribute_type_r, 'partial' );
+			$field = format_listing_links ( $value, $item_attribute_type_r, 'exact' );
 		else
 			$field = $value;
 		

@@ -38,8 +38,7 @@ include_once("./lib/widgets.php");
 function get_display_field($s_attribute_type, $prompt, $display_type, $value, $dowrap = TRUE, $prompt_mask = NULL) {
 	$display_type_def = prc_function_spec ( $display_type );
 	
-	return get_item_display_field ( NULL, 	// item_r
-array (
+	return get_item_display_field ( NULL, array (
 			's_attribute_type' => $s_attribute_type,
 			'prompt' => $prompt,
 			'display_type' => $display_type_def ['type'],
@@ -262,7 +261,7 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		$value = nl2br ( trim ( $value ) );
 		
 		if ($item_attribute_type_r ['listing_link_ind'] == 'Y')
-			$field = format_listing_links ( $value, $item_attribute_type_r, 'word' );
+			$field = format_listing_links ( $value, $item_attribute_type_r, 'partial' );
 		else
 			$field = $value;
 		

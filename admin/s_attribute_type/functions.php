@@ -87,13 +87,17 @@ $input_type_functions = array('hidden' => array('args' => array(), 'description'
 		'value_select' => array('args' => array('value_list[Y]', 'size'), 'description' => 'A <i>multiple / single</i> (size parameter controls this) select object which formats a ' . ' select object with the specified value_list'));
 
 // Display type functions.
-$display_type_functions = array('list' => array('args' => array('list_type[Y]'), 'description' => 'If the attribute is multivalue, the list will be formatted according to the list type, otherwise the attribute will be delimited ' . 'using a newline and formatted as required.'),
+$display_type_functions = array(
+		'list' => array('args' => array('list_type[Y]', 'delimiter'), 'description' => 'If the attribute is multivalue, the list will be formatted according to the list type, otherwise the attribute will be delimited ' . 'using a newline and formatted as required.'),
 		'fileviewer' => array('args' => array('display_file_mask', 'width', 'height', 'target'),
 				'description' => 'This widget, will optionally display a file icon or url text, with a popup link to display ' . 'it in a new window.  The width & height arguments are optional, to ' . 'control the dimensions of the window.  The window will be opened '
-						. 'with 640x480 dimensions by default.'), 'format_mins' => array('args' => array('time_mask[Y]'), 'description' => 'Format a time value.'), 'star_rating' => array('args' => array('maxrange[Y]', 'ratingmask'), 'description' => 'Format a star rating.'),
+						. 'with 640x480 dimensions by default.'), 
+		'format_mins' => array('args' => array('time_mask[Y]'), 'description' => 'Format a time value.'), 
+		'star_rating' => array('args' => array('maxrange[Y]', 'ratingmask'), 'description' => 'Format a star rating.'),
 		'datetime' => array('args' => array('display_datetime_mask[Y]'), 'description' => 'Display a datetime populated with the matching \'datetime\' input type.'),
 		'display' => array('args' => array('display_mask[Y]'), 'description' => 'Format the display value using the %display% and %img% attributes of the matching ' . 'lookup table record, or %value% for the attribute value itself.'),
-		'category' => array('args' => array('display_mask[Y]'), 'description' => 'A special format function especially designed for item category'), 'hidden' => array('args' => array(), 'description' => 'A hidden input field.  Hidden fields are often used for site plugin link attributes.'));
+		'category' => array('args' => array('display_mask[Y]'), 'description' => 'A special format function especially designed for item category'), 
+		'hidden' => array('args' => array(), 'description' => 'A hidden input field.  Hidden fields are often used for site plugin link attributes.'));
 
 function validate_s_field_type($s_field_type) {
 	global $_FIELD_TYPES;

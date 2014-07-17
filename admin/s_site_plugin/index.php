@@ -278,7 +278,7 @@ function display_site_plugin_s_attribute_type_lookup_map_row($record_r, $row) {
 			db_free_result($results);
 		}
 		echo ("\n<td class=\"data\">" . custom_select("s_attribute_type[$row]", $attribute_types, "%value%", 1, NULL, 'value', NULL, NULL, "populateList(this.options[this.options.selectedIndex].value, this.form['lookup_attribute_val[$row]'], arrayOfLookupValues, false, null, false);") . "</td>");
-		echo ("<td class=\"data\">" . get_input_field("value[$row]", NULL, "Site Value", "text(20,255)", "Y", NULL, FALSE) . "</td>");
+		echo ("<td class=\"data\">" . get_input_field("value[$row]", NULL, "Site Value", "text(20,100)", "Y", NULL, FALSE) . "</td>");
 		echo ("\n<td class=\"data\">" . custom_select("lookup_attribute_val[$row]", array(array('value' => '', 'display' => '')), "%value% - %display%", 1, NULL) . "</td>");
 	}
 

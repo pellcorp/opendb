@@ -562,7 +562,7 @@ CREATE TABLE s_site_plugin_s_attribute_type_lookup_map (
 	sequence_number		INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	site_type			VARCHAR(10) NOT NULL,
 	s_attribute_type	VARCHAR(30) NOT NULL,
-	value				VARCHAR(255) NOT NULL,
+	value				VARCHAR(100) NOT NULL,
 	lookup_attribute_val	VARCHAR(50) NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_attribute_type, value, lookup_attribute_val )

@@ -75,6 +75,8 @@ ALTER TABLE s_role_permission ADD remember_me_ind VARCHAR(1) NOT NULL DEFAULT 'Y
 
 INSERT INTO s_language_var (language, varname, value) VALUES ('ENGLISH', 'not_authorized_to_page_login', 'You need to login to access to this page');
 
+ALTER TABLE s_site_plugin_s_attribute_type_lookup_map MODIFY value VARCHAR(100);
+
 ALTER TABLE s_item_listing_column_conf MODIFY s_attribute_type VARCHAR(30);
 ALTER TABLE s_attribute_type MODIFY s_attribute_type VARCHAR(30);
 ALTER TABLE s_item_attribute_type MODIFY s_attribute_type VARCHAR(30);

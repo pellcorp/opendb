@@ -38,7 +38,7 @@ function get_printable_page_url($pageid) {
 
 function get_menu_options($user_id) {
 	$menu_options = array ();
-	
+
 	if (is_user_granted_permission ( PERM_ITEM_OWNER, $user_id )) {
 		$menu_options ['items'] [] = array (
 				link => get_opendb_lang_var ( 'add_new_item' ),
@@ -229,6 +229,7 @@ function get_menu_section_title($section) {
 
 function get_menu_options_list($options) {
 	$buffer = '';
+
 	if (is_not_empty_array ( $options )) {
 		$active_found = FALSE;
 		

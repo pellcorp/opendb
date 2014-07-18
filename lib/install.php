@@ -30,9 +30,9 @@ function fix_version($version) {
 			|| preg_match('/^1\.0(a)([0-9]+)$/', $version, $matches) 
 			|| preg_match('/^1\.0(pl)([0-9]+)$/', $version, $matches)) {
 		$version = '1.0.0' . $matches[1] . $matches[2];
-	} else if (preg_match('/^(1\.[5|6]\.0)\.([0-9]+)(.*)([0-9]+)$/', $version, $matches))  {
-		$version = $matches[1] . $matches[3] . $matches[4];
-	} else if (preg_match('/^(1\.[5|6]\.)0\.([0-9]+)$/', $version, $matches))  {
+	} else if (preg_match('/^(1\.[5|6]\.)([0-9]+)\.([0-9]+)(.*)([0-9]+)$/', $version, $matches))  {
+		$version = $matches[1] . $matches[3] . $matches[4] . $matches[5];
+	} else if (preg_match('/^(1\.[5|6]\.)0\.([0-9]+)$/', $version, $matches))  { // 1.5.0.8 -> 1.5.8
 		$version = $matches[1] . $matches[2];
 	}
 	return $version;

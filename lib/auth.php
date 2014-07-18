@@ -89,7 +89,7 @@ function get_user_granted_permissions_r($user_id) {
 		user u
 		WHERE 	u.user_role = srp.role_name AND
 		u.user_id = '$user_id'";
-
+	
 	$children = array();
 	
 	$result = db_query ( $query );
@@ -108,6 +108,7 @@ function is_user_granted_permission($permission, $user_id = NULL, $ignoreRemembe
 	} else {
 		if (strlen ( $user_id ) == 0) {
 			$user_id = $_SESSION['user_id'];
+			
 			if (!$ignoreRememberMe) {
 				$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
 			} else {

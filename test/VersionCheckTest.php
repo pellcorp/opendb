@@ -34,6 +34,7 @@ class VersionCheckTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('1.6.0dev1', fix_version('1.6.0.0dev1'), '1.6.0dev1');
 		$this->assertEquals('1.6.0dev8', fix_version('1.6.0.0dev8'), '1.6.0.0dev8');
 		$this->assertEquals('1.6.0beta1', fix_version('1.6.0.0beta1'), '1.6.0beta1');
+		$this->assertEquals('1.5.8beta1', fix_version('1.5.0.8beta1'), '1.5.8beta1');
 		$this->assertEquals('1.0.0', fix_version('1.0'), '1.0');
 		$this->assertEquals('1.5.7', fix_version('1.5.0.7'), '1.5.7');
 	}

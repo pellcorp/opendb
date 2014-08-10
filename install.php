@@ -259,14 +259,13 @@ function install_pre_check($next_step) {
 	$buffer .= install_check_directories($doContinue);
 
 	$buffer .= "\n<form action=\"$PHP_SELF\" method=\"GET\">";
-
+	
 	if ($doContinue) {
 		$buffer .= "<input type=\"hidden\" name=\"step\" value=\"$next_step\">" . "<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">";
 	} else {
 		$buffer .= "<input type=\"hidden\" name=\"step\" value=\"\">" . "<input type=\"button\" class=\"button\" value=\"Retry\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">";
 	}
 	$buffer .= "</form>\n";
-
 	return $buffer;
 }
 
@@ -477,8 +476,9 @@ function install_opendb_upgrade($HTTP_VARS, &$errors) {
 					$errors[] = 'Upgrader: ' . $upgraders_r['description'];
 				}
 
-				
 				return FALSE; // more than one upgrade step possible is an error!
+			} else {
+				// No upgraders available
 			}
 		} else {
 			return FALSE;
@@ -628,7 +628,18 @@ if (strlen($HTTP_VARS['step']) == 0) {
 		if (is_valid_opendb_release_table() && 
 				// require a release record if opendb database has tables other than s_opendb_release already extant!
 				(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release') > 0)) {
-			$next_step = 'upgrade';
+					
+			$db_version = fetch_opendb_release_version();
+			$current_version = get_opendb_version();
+			if (opendb_version_compare($db_version, '1.5.4', '>=')) {
+				$next_step = 'upgrade';
+			} else {
+				$next_step = NULL;
+				echo "<h3>Upgrade not supported!</h3>
+				<p>Upgrading from $db_version is not supported.  You will need to install 1.5.0.4 first
+					and upgrade from $db_version to 1.5.0.4 before installing $current_version.</p>
+			  	<p>Please download <a href=\"https://github.com/pellcorp/opendb/archive/RELEASE_1_5_0_4.zip\">Release 1.5.0.4</a></p>";
+			}
 		}
 	} else {
 		$errors = db_error();
@@ -637,8 +648,10 @@ if (strlen($HTTP_VARS['step']) == 0) {
 		}
 	}
 
-	echo install_pre_check($next_step);
-
+	if ($next_step != NULL) {
+		echo install_pre_check($next_step);
+	}
+	
 	echo _theme_footer();
 } else if ($HTTP_VARS['step'] == 'pre-install') {
 	@set_time_limit(600);
@@ -821,7 +834,7 @@ if (strlen($HTTP_VARS['step']) == 0) {
 	if (is_db_connected() && is_valid_opendb_release_table() && 
 			// require a release record if opendb database has tables other than s_opendb_release already!
 			(!is_opendb_partially_installed() || count_opendb_table_rows('s_opendb_release') > 0)) {
-				
+		
 		if (is_opendb_partially_installed()) {
 			// upgrade
 			if (!check_opendb_version()) {

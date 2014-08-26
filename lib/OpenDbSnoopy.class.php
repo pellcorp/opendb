@@ -63,7 +63,10 @@ class OpenDbSnoopy extends Snoopy {
 				$curlpaths[] = 'C:\Windows\System32\curl.exe';
 			} else {
 				// assuming a unix system, first try detection and then some other standard paths
-				$curlpaths[] = exec("which curl");
+				$whichcurl = @exec("which curl");
+				if ($whichcurl != NULL) {
+					$curlpaths[] = $whichcurl;
+				}
 				$curlpaths[] = '/usr/bin/curl';
 				$curlpaths[] = '/usr/local/sbin/curl';
 				$curlpaths[] = '/usr/sbin/curl';

@@ -50,8 +50,9 @@ class amazon extends SitePlugin {
 
 		if (strlen($pageBuffer) > 0) {
 			$amazonasin = FALSE;
-
+			
 			//<li><b>ISBN-10:</b> 0812929985</li>
+			//<a href="http://www.amazon.com/Batteries-Not-Included-Jessica-Tandy/dp/0783232047/ref=sr_1_1?s=movies-tv&amp;ie=UTF8&amp;qid=1409445432&amp;sr=1-1&amp;keywords=025192052026">
 			// check for an exact match, but not if this is second page of listings or more
 			if (!$this->isPreviousPage()) {
 				if (preg_match("/ASIN: <font>(\w{10})<\/font>/", $pageBuffer, $regs)) {
@@ -59,6 +60,8 @@ class amazon extends SitePlugin {
 				} else if (preg_match("/ASIN: (\w{10})/", strip_tags($pageBuffer), $regs)) {
 					$amazonasin = trim($regs[1]);
 				} else if (preg_match("!<li><b>ISBN-10:</b>\s*([0-9]+)</li>!", $pageBuffer, $regs)) { // for books, ASIN is the same as ISBN
+					$amazonasin = trim($regs[1]);
+				} else if (preg_match("!<a href=\".*?/dp/([0-9]+)/.*?keywords=.*?!", $pageBuffer, $regs)) {
 					$amazonasin = trim($regs[1]);
 				}
 			}

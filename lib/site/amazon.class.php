@@ -61,8 +61,12 @@ class amazon extends SitePlugin {
 					$amazonasin = trim($regs[1]);
 				} else if (preg_match("!<li><b>ISBN-10:</b>\s*([0-9]+)</li>!", $pageBuffer, $regs)) { // for books, ASIN is the same as ISBN
 					$amazonasin = trim($regs[1]);
-				} else if (preg_match("!<a href=\".*?/dp/([0-9]+)/.*?keywords=.*?!", $pageBuffer, $regs)) {
-					$amazonasin = trim($regs[1]);
+				} else if (preg_match_all("!<div id=\"result_([0-9]+)\"!", $pageBuffer, $regs)) {
+					if (count($regs[0]) == 1) {
+						if (preg_match("!<a href=\".*?/dp/([0-9]+)/.*?keywords=.*?!", $pageBuffer, $regs)) {
+							$amazonasin = trim($regs[1]);
+						}
+					}
 				}
 			}
 

@@ -61,6 +61,10 @@ class amazon extends SitePlugin {
 					$amazonasin = trim($regs[1]);
 				} else if (preg_match("!<li><b>ISBN-10:</b>\s*([0-9]+)</li>!", $pageBuffer, $regs)) { // for books, ASIN is the same as ISBN
 					$amazonasin = trim($regs[1]);
+				} else if (preg_match_all("!<div id=\"result_[0-9]+\"[^>]*?name=\"([^\"])\"!", $pageBuffer, $regs)) {
+					if (count($regs[0]) == 1) {
+						$amazonasin = trim($regs[1]);
+					}
 				} else if (preg_match_all("!<div id=\"result_([0-9]+)\"!", $pageBuffer, $regs)) {
 					if (count($regs[0]) == 1) {
 						if (preg_match("!<a href=\".*?/dp/([^/]+)/.*?keywords=.*?!", $pageBuffer, $regs)) {
@@ -82,7 +86,9 @@ class amazon extends SitePlugin {
 
 				//<div class="resultCount">Showing 1 - 12 of 55 Results</div> || class="resultCount">Showing 1 Result</
 				//<span>1-24 von 194 Ergebnissen</span>
-				if ((preg_match("/ id=\"resultCount\">.*?<span>.*?.[0-9]+[\s]+?-[\s]+?[0-9]+.*?([0-9,]+).*?<\//", $pageBuffer, $regs) || preg_match("/ id=\"resultCount\">.*?<span>.*?.([0-9]+).*?<\//", $pageBuffer, $regs))) {
+				if ((preg_match("/ id=\"resultCount\">.*?<span>.*?.[0-9]+[\s]+?-[\s]+?[0-9]+.*?([0-9,]+).*?<\//", $pageBuffer, $regs) ||
+				     preg_match("/ id=\"resultCount\">.*?<span>.*?.([0-9]+).*?<\//", $pageBuffer, $regs) ||
+				     preg_match("/ id=.s-result-count.*?([0-9,]+) results for/", $pageBuffer, $regs) )) {
 					// need to remove the commas from the total
 					$total = str_replace(",", "", $regs[1]);
 

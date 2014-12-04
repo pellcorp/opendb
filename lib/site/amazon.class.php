@@ -24,8 +24,12 @@ class amazon extends SitePlugin {
 	private $url;
 	private $asinId;
 
-	private $sites = array('amazon' => array('asinId' => 'amazonasin', 'url' => 'www.amazon.com'), 'amazonuk' => array('asinId' => 'amazukasin', 'url' => 'www.amazon.co.uk'), 'amazonfr' => array('asinId' => 'amazfrasin', 'url' => 'www.amazon.fr'), 'amazonde' => array('asinId' => 'amazdeasin',
-			'url' => 'www.amazon.de'),);
+	private $sites = array(
+				'amazon' => array('asinId' => 'amazonasin', 'url' => 'www.amazon.com'), 
+				'amazonuk' => array('asinId' => 'amazukasin', 'url' => 'www.amazon.co.uk'), 
+				'amazonfr' => array('asinId' => 'amazfrasin', 'url' => 'www.amazon.fr'), 
+				'amazonde' => array('asinId' => 'amazdeasin', 'url' => 'www.amazon.de')
+	);
 
 	function amazon($site_type) {
 		parent::SitePlugin($site_type);
@@ -39,6 +43,8 @@ class amazon extends SitePlugin {
 			$this->addListingRow(NULL, NULL, NULL, array($this->asinId => $search_vars_r[$this->asinId]));
 			return TRUE;
 		} else {
+			//http://www.amazon.com/s/ref=sr_nr_p_n_format_browse-bi_mrr_0?rh=i%3Advd%2Ck%3Aguard%2Cp_n_format_browse-bin%3A2650304011&sort=movies-tv&keywords=guard&ie=UTF8&qid=1410661852&rnid=2650303011
+			//http://www.amazon.com/s/ref=sr_nr_p_n_format_browse-bi_mrr_3?rh=i%3Advd%2Ck%3Aguard%2Cp_n_format_browse-bin%3A2650305011&sort=movies-tv&keywords=guard&ie=UTF8&qid=1410661852&rnid=2650303011
 			// Get the mapped AMAZON index type
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
 
@@ -74,6 +80,7 @@ class amazon extends SitePlugin {
 				}
 			}
 
+			
 			// exact match
 			if ($amazonasin !== FALSE) {
 				// single record returned
@@ -98,13 +105,16 @@ class amazon extends SitePlugin {
 					// 2 = img, 1 = href, 3 = title		
 					if (preg_match_all("/id=\"result_.*?href=\"(.*?)\">.*?<img.*?src=\"([^\"]+)\".*?<a.*?>(.*?)<\/a/i", $pageBuffer, $matches)) {
 						for ($i = 0; $i < count($matches[0]); $i++) {
+							
 							$imageuri = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $matches[2][$i]);
 
 							if (preg_match("!/dp/([^/]+)/!", $matches[1][$i], $regs)) {
 								if (strpos($matches[2][$i], "no-img") !== FALSE)
 									$matches[2][$i] = NULL;
 
-								$this->addListingRow($matches[3][$i], $imageuri, NULL, array($this->asinId => $regs[1], 'search.title' => $search_vars_r['title']));
+								if (!preg_match("!<a .*title=\"Shop Instant Video\" href=\"[^>]*/dp/".$regs[1]."/!i", $pageBuffer, $newregs)) {
+									$this->addListingRow($matches[3][$i], $imageuri, NULL, array($this->asinId => $regs[1], 'search.title' => $search_vars_r['title']));
+								}
 							}
 						}
 					}

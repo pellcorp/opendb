@@ -95,7 +95,7 @@ class amazon extends SitePlugin {
 				//<span>1-24 von 194 Ergebnissen</span>
 				if ((preg_match("/ id=\"resultCount\">.*?<span>.*?.[0-9]+[\s]+?-[\s]+?[0-9]+.*?([0-9,]+).*?<\//", $pageBuffer, $regs) ||
 				     preg_match("/ id=\"resultCount\">.*?<span>.*?.([0-9]+).*?<\//", $pageBuffer, $regs) ||
-				     preg_match("/ id=.s-result-count.*?([0-9,]+) results for/", $pageBuffer, $regs) )) {
+				     preg_match("/ id=.s-result-count.*?([0-9,]+) results? for/", $pageBuffer, $regs) )) {
 					// need to remove the commas from the total
 					$total = str_replace(",", "", $regs[1]);
 
@@ -176,29 +176,45 @@ class amazon extends SitePlugin {
 			$this->addItemAttribute('upc_id', $upcId);
 		}
 
-		// <img id="main-image" src="http://ecx.images-amazon.com/images/I/51sU2iuuXUL._SY300_.jpg"
+		// ** Front Cover Image **
 		if (preg_match("!<img id=\"main-image\" src=\"([^\"]+)\"!s", $pageBuffer, $regs)) {
 			// remove image extras _xxx_.
 			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
-		}
 
-		if (preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
+		} else if (preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
 			// remove image extras _xxx_.
 			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
+
+		} else if (preg_match("!<img id=\"landingImage\".*?src=\"([^\"]+)\"!s", $pageBuffer, $regs)) {
+			// remove image extras _xxx_.
+			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
+			$this->addItemAttribute('imageurl', $image);
+
+		} else if (preg_match("!<img [^>]*?id=\"imgBlkFront\" [^>]*?src=\"([^\"]+)\"!s", $pageBuffer, $regs) ||
+			   preg_match("!<img [^>]*?src=\"([^\"]+)\" [^>]*?id=\"imgBlkFront\"!s", $pageBuffer, $regs)) {
+			// remove image extras _xxx_.
+			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
+			$this->addItemAttribute('imageurl', $image);
+
+		}
+
+		// ** Back Cover Image **
+		if (preg_match("!<img [^>]*?id=\"imgBlkBack\" [^>]*?src=\"([^\"]+)\"!", $pageBuffer, $regs)||
+		    preg_match("!<img [^>]*?src=\"([^\"]+)\" [^>]*?id=\"imgBlkBack\"!", $pageBuffer, $regs)) {
+			// remove image extras _xxx_.
+			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
+			$this->addItemAttribute('imageurlb', $image);
+
 		}
 
 		if (preg_match_all("!registerImage\(\"cust_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
 			while (list(, $image) = each($regs[1])) {
+                // remove image extras _xxx_.
 				$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $image);
 				$this->addItemAttribute('cust_imageurl', $image);
 			}
-		}
-
-		if (preg_match("!<img id=\"imgBlkFront\".*?src=\"([^\"]+)\"!", $pageBuffer, $regs)) {
-			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
-			$this->addItemAttribute('imageurl', $image);
 		}
 
 		//http://www.amazon.com/gp/product/product-description/0007136587/ref=dp_proddesc_0/002-1041562-0884857?ie=UTF8&n=283155&s=books
@@ -605,6 +621,9 @@ class amazon extends SitePlugin {
 
 		//<b>Rating</b>  <img src="http://ec1.images-amazon.com/images/G/01/detail/r._V46905301_.gif" alt="R" align="absmiddle" border="0" height="11" width="12"></li>
 		if (preg_match("!Rated:</span>&nbsp;(.*?)&nbsp;!mis", $pageBuffer, $regs)) {
+			$this->addItemAttribute('age_rating', $regs[1]);
+
+		} else if (preg_match("!Rated:.*?<span>\s*(.*?)\s!ms", $pageBuffer, $regs)) {
 			$this->addItemAttribute('age_rating', $regs[1]);
 		}
 

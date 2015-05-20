@@ -21,9 +21,9 @@ CREATE TABLE borrowed_item_hist (
   bi_sequence_number	INTEGER(10) UNSIGNED NOT NULL,
   more_information	TEXT,
   status			VARCHAR(1) NOT NULL,
-  update_on			TIMESTAMP(14) NOT NULL,
+  update_on			TIMESTAMP NOT NULL,
   PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT='Borrowed Item History table';
+) ENGINE=MyISAM COMMENT='Borrowed Item History table';
 
 DELETE FROM s_language_var WHERE varname IN('external_url_error', 'user_listing_column_header_sort_help');
 

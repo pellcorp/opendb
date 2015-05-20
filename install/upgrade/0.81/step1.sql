@@ -128,7 +128,7 @@ INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type
 CREATE TABLE s_file_type_content_group (
   content_group		VARCHAR(10) NOT NULL,
   PRIMARY KEY ( content_group )
-) TYPE=MyISAM COMMENT='System File Type Content Groups';
+) ENGINE=MyISAM COMMENT='System File Type Content Groups';
 
 # image is basename of image provided via theme_image call.
 CREATE TABLE s_file_type (
@@ -138,14 +138,14 @@ CREATE TABLE s_file_type (
   image					VARCHAR(255),
   thumbnail_support_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( content_type )
-) TYPE=MyISAM COMMENT='System Supported File Types';
+) ENGINE=MyISAM COMMENT='System Supported File Types';
 
 CREATE TABLE s_file_type_extension (
   content_type	VARCHAR(100) NOT NULL,
   extension		VARCHAR(10) NOT NULL,
   default_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( content_type, extension )
-) TYPE=MyISAM COMMENT='System File Type Alternate Extension';
+) ENGINE=MyISAM COMMENT='System File Type Alternate Extension';
 
 CREATE TABLE announcement (
   sequence_number   INTEGER(10) unsigned NOT NULL auto_increment,
@@ -153,12 +153,12 @@ CREATE TABLE announcement (
   title             VARCHAR(255) NOT NULL,
   content           text,
   min_user_type     VARCHAR(1) NOT NULL DEFAULT 'B',
-  submit_on         timestamp(14) NOT NULL,
+  submit_on         timestamp NOT NULL,
   display_days      INTEGER(10) unsigned NOT NULL DEFAULT 0,
   closed_ind        VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY ( sequence_number ),
   KEY submit_idx ( submit_on )
-) TYPE=MyISAM COMMENT='Site Announcements table';
+) ENGINE=MyISAM COMMENT='Site Announcements table';
 
 #
 # Install php session table to provide option of using database
@@ -169,7 +169,7 @@ CREATE TABLE php_session(
 	expiration 	INT NOT NULL,
 	value 		TEXT NOT NULL,
 	PRIMARY KEY ( SID )
-) TYPE=MyISAM COMMENT='PHP Session table';
+) ENGINE=MyISAM COMMENT='PHP Session table';
 
 CREATE TABLE s_config_group (
 	id			VARCHAR(50) NOT NULL,
@@ -177,7 +177,7 @@ CREATE TABLE s_config_group (
 	order_no	TINYINT(2) NOT NULL DEFAULT 0,
 	description	VARCHAR(255) NOT NULL,
 	PRIMARY KEY ( id )
-) TYPE=MyISAM COMMENT='System Config Group';
+) ENGINE=MyISAM COMMENT='System Config Group';
 
 CREATE TABLE s_config_group_item (
 	group_id		VARCHAR(50) NOT NULL,
@@ -189,7 +189,7 @@ CREATE TABLE s_config_group_item (
 	type			VARCHAR(30) NOT NULL DEFAULT 'text',
     subtype			VARCHAR(255),
 	PRIMARY KEY ( group_id, id, keyid )
-) TYPE=MyISAM COMMENT='System Config Group Item';
+) ENGINE=MyISAM COMMENT='System Config Group Item';
 
 #
 # Override Config Group Item Value
@@ -200,7 +200,7 @@ CREATE TABLE s_config_group_item_var (
 	keyid		VARCHAR(50) NOT NULL DEFAULT '0',
 	value		TEXT NOT NULL,
 	PRIMARY KEY ( group_id, id, keyid )
-) TYPE=MyISAM COMMENT='Config Group Item Variable';
+) ENGINE=MyISAM COMMENT='Config Group Item Variable';
 
 #
 # Title Display Mask config
@@ -209,7 +209,7 @@ CREATE TABLE s_title_display_mask (
 	id				VARCHAR(50) NOT NULL,
 	description     VARCHAR(100) NOT NULL,
 	PRIMARY KEY ( id )
-) TYPE=MyISAM COMMENT='System Title Display Mask Config';
+) ENGINE=MyISAM COMMENT='System Title Display Mask Config';
 
 CREATE TABLE s_title_display_mask_item (
 	stdm_id				VARCHAR(50) NOT NULL,
@@ -217,7 +217,7 @@ CREATE TABLE s_title_display_mask_item (
 	s_item_type			VARCHAR(10) NOT NULL DEFAULT '*',
 	display_mask		TEXT,
 	PRIMARY KEY ( stdm_id, s_item_type_group, s_item_type )
-) TYPE=MyISAM COMMENT='System Title Display Mask Config Item';
+) ENGINE=MyISAM COMMENT='System Title Display Mask Config Item';
 
 #
 # Item Listing config
@@ -228,7 +228,7 @@ CREATE TABLE s_item_listing_conf (
 	s_item_type					VARCHAR(10) NOT NULL DEFAULT '*',
 	PRIMARY KEY ( id ),
 	UNIQUE KEY ( s_item_type_group, s_item_type )
-) TYPE=MyISAM COMMENT='Item Listing Configuration';
+) ENGINE=MyISAM COMMENT='Item Listing Configuration';
 
 #
 # Item Listing Column Conf
@@ -259,7 +259,7 @@ CREATE TABLE s_item_listing_column_conf (
 	orderby_datatype		VARCHAR(10),
 	printable_support_ind	VARCHAR(1) NOT NULL DEFAULT 'Y',
 	PRIMARY KEY ( silc_id, column_no )
-) TYPE=MyISAM COMMENT='Item Listing Column Configuration';
+) ENGINE=MyISAM COMMENT='Item Listing Column Configuration';
 
 #
 # System Language table
@@ -269,7 +269,7 @@ CREATE TABLE s_language (
 	default_ind	VARCHAR(1) NOT NULL DEFAULT 'N',
 	description	VARCHAR(50) NOT NULL,
 	PRIMARY KEY ( language )
-) TYPE=MyISAM COMMENT='System Language Table';
+) ENGINE=MyISAM COMMENT='System Language Table';
 
 # all language codes are now uppercase in the database
 UPDATE user SET language = UPPER(language);
@@ -282,7 +282,7 @@ CREATE TABLE s_language_var (
 	varname		VARCHAR(50) NOT NULL,
 	value		TEXT,
 	PRIMARY KEY ( language, varname )
-) TYPE=MyISAM COMMENT='System Language Variable Table';
+) ENGINE=MyISAM COMMENT='System Language Variable Table';
 
 #
 # System Table Language Variable Table
@@ -306,7 +306,7 @@ CREATE TABLE s_table_language_var (
 	key3		VARCHAR(50) NOT NULL,
 	value		TEXT,
 	PRIMARY KEY ( language, tablename, columnname, key1, key2, key3 )
-) TYPE=MyISAM COMMENT='System Language Variable Table';
+) ENGINE=MyISAM COMMENT='System Language Variable Table';
 
 #
 # Configuration Groups

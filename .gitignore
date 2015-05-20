@@ -1,0 +1,9 @@
+/httpcache
+/itemcache
+/importcache
+/upload
+/log
+/.settings
+/.buildpath
+/.project
+/include/local.config.php

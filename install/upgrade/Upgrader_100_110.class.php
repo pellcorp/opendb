@@ -262,12 +262,19 @@ class Upgrader_100_110 extends OpenDbUpgrader
 					
 					// NOTE - we are not going to delete the cache files they can be removed later on manually
 					$uploadFile = $uploadDir.'/'.$filename;
+
 					if(!copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
 					{
 						$this->addError('Failed to copy upload file', 
 									'cacheFile='.$cacheFile.
 									'; uploadFile='.$uploadFile);
 					}
+				} 
+				else
+				{
+					$this->addError('Failed to copy cache file', 
+						'cacheFile='.$cacheFile.
+						'; url='.$fc_entry_r['url']);
 				}
 			}
 		}

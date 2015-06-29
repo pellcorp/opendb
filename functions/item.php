@@ -711,9 +711,9 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 				// if not an order by column, we want to generate the fields individually in the listings page.
 				if($column_display_config_rs[$i]['orderby_support_ind'] === 'Y' || $column_display_config_rs[$i]['search_attribute_ind'] === 'y') {
 					if($column_display_config_rs[$i]['orderby_datatype'] === 'numeric')
-						$query .= ', (ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val)+0) AS '.$fieldname;
+						$query .= ', (ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val)+0) AS \''.$fieldname . '\'';
 					else
-						$query .= ', ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val) AS '.$fieldname;
+						$query .= ', ifnull(ia'.$i.'.attribute_val, ia'.$i.'.lookup_attribute_val) AS \''.$fieldname . '\'';
 				}
 
 			} else if($column_display_config_rs[$i]['column_type'] == 's_field_type') {
@@ -765,7 +765,7 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 			if(strlen($orderbyquery)>0) {
 				$orderbyquery .= ', ';
 			} 
-			$orderbyquery .= $column_order_by_r['orderby'].' '.$column_order_by_r['sortorder'];
+			$orderbyquery .= '\'' . $column_order_by_r['orderby'].'\' '.$column_order_by_r['sortorder'];
 		}
 		
 		$query .= ' ORDER BY '.$orderbyquery.', i.title, ii.instance_no ASC, i.s_item_type';

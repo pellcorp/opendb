@@ -9,7 +9,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: imdbsearch.class.php 386 2010-05-22 22:56:46Z izzy $ */
+ /* $Id: imdbsearch.class.php 388 2010-06-03 11:28:49Z izzy $ */
 
  require_once (dirname(__FILE__)."/browseremulator.class.php");
  if (defined('IMDBPHP_CONFIG')) require_once (IMDBPHP_CONFIG);
@@ -24,7 +24,7 @@
   * @extends mdb_config
   * @author Izzy (izzysoft AT qumran DOT org)
   * @copyright (c) 2002-2004 by Giorgos Giagas and (c) 2004-2008 by Itzchak Rehberg and IzzySoft
-  * @version $Revision: 386 $ $Date: 2010-05-23 00:56:46 +0200 (So, 23. Mai 2010) $
+  * @version $Revision: 388 $ $Date: 2010-06-03 13:28:49 +0200 (Do, 03. Jun 2010) $
   */
  class imdbsearch extends mdb_base {
   var $page = "";
@@ -145,13 +145,14 @@
 
     // now we have the search content - go and parse it!
     if ($this->maxresults > 0) $maxresults = $this->maxresults; else $maxresults = 999999;
-    if ( preg_match_all('!href="/title/tt(\d{7})/"[^>]*>(.*?)</a>\s*(\((\d{4})\)|)[^<]*(<small>(.*?)</small>|)!ims',$this->page,$matches) ) {
+    if ( preg_match_all('!href="/title/tt(\d{7})/"[^>]*>(.*?)</a>\s*(\((\d{4})(/.+?|)\)|)[^<]*(<small>(.*?)</small>|)!ims',$this->page,$matches) ) {
       $this->last_results = count($matches[0]);
       $mids_checked = array();
       for ($i=0;$i<$this->last_results;++$i) {
         if (count($this->resu) == $maxresults) break; // limit result count
         if ( empty($matches[2][$i]) || substr(trim($matches[2][$i]),0,4)=='<img' || in_array($matches[1][$i],$mids_checked) ) continue; // empty titles just come from the images
-        if ( !$series && (preg_match('!&#x22;.+&#x22;!',($matches[2][$i])) || strpos(strtoupper($matches[6][$i]),'TV SERIES')!==FALSE) ) continue; // skip series if commanded so
+        if ( !$series && (preg_match('!&#x22;.+&#x22;!',($matches[2][$i])) || strpos(strtoupper($matches[7][$i]),'TV SERIES')!==FALSE) ) continue; // skip series if commanded so
+        if ( !preg_match('!onclick!i',$matches[0][$i]) ) continue; // just mentioned something in the AKAs listing
         $mids_checked[] = $matches[1][$i];
         $tmpres = new imdb($matches[1][$i]); // make a new imdb object by id
         $tmpres->main_title = $matches[2][$i];

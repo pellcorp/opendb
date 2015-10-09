@@ -10,7 +10,7 @@
  # under the terms of the GNU General Public License (see doc/LICENSE)       #
  #############################################################################
 
- /* $Id: movieposterdb.class.php 387 2010-05-23 12:31:44Z izzy $ */
+ /* $Id: movieposterdb.class.php 399 2010-09-29 20:10:05Z izzy $ */
 
  require_once (dirname(__FILE__)."/mdb_base.class.php");
 
@@ -21,7 +21,7 @@
  * @extends mdb_base
  * @author Izzy (izzysoft AT qumran DOT org)
  * @copyright (c) 2009 by Itzchak Rehberg and IzzySoft
- * @version $Revision: 387 $ $Date: 2010-05-23 14:31:44 +0200 (So, 23. Mai 2010) $
+ * @version $Revision: 399 $ $Date: 2010-09-29 22:10:05 +0200 (Mi, 29. Sep 2010) $
  */
 class movieposterdb extends mdb_base {
 
@@ -50,8 +50,9 @@ class movieposterdb extends mdb_base {
       'unset'    => 'cid=9'
     );
     $this->reset_lang();
-    if ( in_array('HTTP_USER_AGENT',array_keys($_SERVER)) ) $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
-    else $this->user_agent = 'Mozilla/5.0 (X11; U; Linux i686; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3';
+    if ($this->force_agent) $this->user_agent = $this->force_agent;
+    elseif ( in_array('HTTP_USER_AGENT',array_keys($_SERVER)) ) $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
+    else $this->user_agent = $this->default_agent;
     $this->image_exts = array('jpg','png','gif','bmp');
   }
 

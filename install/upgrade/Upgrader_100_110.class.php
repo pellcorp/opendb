@@ -106,7 +106,7 @@ class Upgrader_100_110 extends OpenDbUpgrader
 	function executeStep3($stepPart)
 	{
 		$results = db_query(
-					"SELECT ii.item_id, ii.instance_no, ii.owner_id, i.id AS related_item_id
+					"SELECT ii.update_on, ii.item_id, ii.instance_no, ii.owner_id, i.id AS related_item_id
 					FROM	item i,
 							item_instance ii 
 					WHERE	i.parent_id = ii.item_id AND 
@@ -123,7 +123,8 @@ class Upgrader_100_110 extends OpenDbUpgrader
 							'R', //$s_status_type, 
 							NULL, //$status_comment, 
 							NULL, //$borrow_duration, 
-							$item_instance_r['owner_id']);
+							$item_instance_r['owner_id'],
+							$item_instance_r['update_on']);
 				}
 					
 				insert_item_instance_relationship(
@@ -262,12 +263,19 @@ class Upgrader_100_110 extends OpenDbUpgrader
 					
 					// NOTE - we are not going to delete the cache files they can be removed later on manually
 					$uploadFile = $uploadDir.'/'.$filename;
+
 					if(!copy($cacheFile, $uploadFile) && is_file($uploadFile)) // call me paranoid!!!
 					{
 						$this->addError('Failed to copy upload file', 
 									'cacheFile='.$cacheFile.
 									'; uploadFile='.$uploadFile);
 					}
+				} 
+				else
+				{
+					$this->addError('Failed to copy cache file', 
+						'cacheFile='.$cacheFile.
+						'; url='.$fc_entry_r['url']);
 				}
 			}
 		}

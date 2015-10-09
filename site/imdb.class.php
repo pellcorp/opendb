@@ -131,17 +131,23 @@ class imdb extends SitePlugin
 		if(strlen($pageBuffer)==0)
 			return FALSE;
 		
-		//<h1>Monsters vs Aliens <span>(<a href="/year/2009/">2009</a>) <span class="pro-link"><a href="http://pro.imdb.com/rg/maindetails-title/tconst-pro-header-link/title/tt0892782/">More at <strong>IMDbPro</strong></a>&nbsp;&raquo;</span><span class="title-extra"></span></span></h1>
-		if(preg_match("!<h1>([^<]+)<span>\(<a href=\".*\">([0-9]+)</a>!", $pageBuffer, $matches))
+/*<h1 class="header">
+Planet Terror
+
+
+
+<span>(<a href="/year/2007/">2007</a>)</span>
+*/
+		if(preg_match("!<h1 class=\"header\">([^<]+)<span>\(.*?<a href=\".*\">([0-9]+)</a>!ms", $pageBuffer, $matches))
 		{
 			$this->addItemAttribute('title', $matches[1]);
 			$this->addItemAttribute('year', $matches[2]);
 		}
 		
 		//<h5>Also Known As:</h5><div class="info-content">       <a class="tn15more" href="/title/tt1234548/releaseinfo#akas"
-		if(preg_match("!<h5>Also Known As:</h5>.*?href=\"(.*?)#akas\"!", $pageBuffer, $matches))
+		if(preg_match("!Also Known As:</h4>.*?href=\"(.*?)#akas\"!ms", $pageBuffer, $matches))
 		{
-			$akas = $this->fetchURI("http://us.imdb.com".$matches[1]);
+			$akas = $this->fetchURI("http://us.imdb.com/title/tt".$search_attributes_r['imdb_id']."/".$matches[1]);
 			//print_r($akas);
 			//<h5><a name="akas">Also Known As (AKA)</a></h5>
 			if(preg_match("!Also Known As \(AKA\)(.*?)</table>!ms", $akas, $matches))
@@ -163,11 +169,21 @@ class imdb extends SitePlugin
 		}
 	
 		//image src extraction block
-		$start = strpos($pageBuffer,"alt=\"No poster or movie still available\"", $end);
+/*<td rowspan="2" id="img_primary">
+
+
+
+<a href="/media/rm3590755840/tt1077258"><img src="http://ia.media-imdb.com/images/M/MV5BMTI0NDQ5MTM2MV5BMl5BanBnXkFtZTcwOTIwMjk2MQ@@._V1._SY314_CR11,0,214,314_.jpg"
+     height="314" width="214" 
+     alt="Planet Terror Poster"
+     title="Planet Terror Poster" /></a>
+
+</td>
+*/
+		$start = strpos($pageBuffer,">Own the rights?<br />Add a poster</a>", $end);
 		if($start === FALSE)
 		{
-			//<a name="poster" href="photogallery" title="&#34;Band of Brothers&#34;"><img border="0" alt="&#34;Band of Brothers&#34;" title="&#34;Band of Brothers&#34;" src="http://ia.imdb.com/media/imdb/01/I/56/50/31m.jpg" height="122" width="100"></a>
-			if(preg_match("/<a name=\"poster\" href=\"[^\"]+\" .*><img .* src=\"([^\"]+)\"/", $pageBuffer, $matches))
+			if(preg_match("!id=\"img_primary\".*?<a href=\"/media[^\"]+\".*?><img.*? src=\"([^\"]+)\"!ms", $pageBuffer, $matches))
 			{
 				if(starts_with($matches[1], 'http://'))
 					$this->addItemAttribute('imageurl', $matches[1]);
@@ -176,86 +192,88 @@ class imdb extends SitePlugin
 			}
 		}
 	
-		if(preg_match("!<div id=\"director-info\" class=\"info\">(.*?)</div>!ms", $pageBuffer, $matches))
+/*  <h4 class="inline">
+    Directors:
+  </h4>
+
+<a  href="/name/nm0905152/">Andy Wachowski</a>, <a  href="/name/nm0905154/">Lana Wachowski</a></div>
+*/
+		if(preg_match("!<h4.*?Director(.*?)/div>!ms", $pageBuffer, $matches))
 		{
 			$buffer = $matches[1];
-			if(preg_match_all("!<a href=\"/name/nm([0-9]+)/\"[^>]*>([^<]+)</a>!", $buffer, $matches))
+			if(preg_match_all("!<a.*?href=\"/name/nm([0-9]+)/\"[^>]*>([^<]+)</a>!", $buffer, $matches))
 			{
 				$this->addItemAttribute('director', $matches[2]);
 			}
 		}
 
-		if(preg_match("!<h5>Writer.*?</h5>(.*?)</div>!ms", $pageBuffer, $matches))
+		if(preg_match("!<h4.*?Writer(.*?)</div>!ms", $pageBuffer, $matches))
 		{
 			$buffer = $matches[1];
-			if(preg_match_all("!<a href=\"/name/nm([0-9]+)/\"[^>]*>([^<]+)</a>!", $buffer, $matches))
+			if(preg_match_all("!<a.*?href=\"/name/nm([0-9]+)/\"[^>]*>([^<]+)</a>!", $buffer, $matches))
 			{
 				$this->addItemAttribute('writer', $matches[2]);
 			}
 		}
 		
-		$start = strpos($pageBuffer,"<h5>Genre:</h5>", $end);
+/*<div class="infobar">
+105 min&nbsp;&nbsp;-&nbsp;&nbsp;<a    onclick="(new Image()).src='/rg/title-overview/genre/images/b.gif?link=%2Fgenre%2FAction';"     href="/genre/Action"       >Action</a>&nbsp;<span>|</span> <a    onclick="(new Image()).src='/rg/title-overview/genre/images/b.gif?link=%2Fgenre%2FHorror';"     href="/genre/Horror"       >Horror</a>&nbsp;<span>|</span> <a    onclick="(new Image()).src='/rg/title-overview/genre/images/b.gif?link=%2Fgenre%2FSci-Fi';"     href="/genre/Sci-Fi"       >Sci-Fi</a>
+
+</div>
+*/
+		$start = strpos($pageBuffer,"<div class=\"infobar\">", $end);
 		if($start !== FALSE)
 		{
 			$end = strpos($pageBuffer,"</div>", $start);
 			
 			$genre = trim(substr($pageBuffer,$start,$end-$start));
 			
-			if(preg_match_all("!<a href=\"/Sections/Genres/[^/]+/\">([^<]+)</a>!", $genre, $matches))
+			if(preg_match("!([0-9]*) min!", $genre, $matches))
+			{
+				$this->addItemAttribute('run_time', $matches[1]);
+			}
+
+			if(preg_match_all("!<a.*?href=\"/genre/.*?>([^<]+)</a>!", $genre, $matches))
 			{
 				$this->addItemAttribute('genre', $matches[1]);
 			}
 		}
-	
-		if(preg_match("!<div class=\"starbar-meta\">.*?<b>([0-9|\.]+)/10</b>!ms", $pageBuffer, $regs))
+
+//id="star-bar-user-rate"><b>8.7</b><span class="mellow">/10</span>
+		if(preg_match("!id=\"star-bar-user-rate\">.*?<b>([0-9|\.]+)</b>!ms", $pageBuffer, $regs))
 		{
 			$this->addItemAttribute('imdbrating', $regs[1]);
 		}
 		
-		$start = strpos($pageBuffer,"<table class=\"cast\">");
+		$start = strpos($pageBuffer,"<table class=\"cast_list\">");
 		if($start!==FALSE)
 		{
 			$end = strpos($pageBuffer,"</table>", $start);
 			$actorBlock = substr($pageBuffer, $start, $end-$start);
 
-			if(preg_match_all("!<tr.*?>".
+			if(preg_match_all("!<tr.*?<td class=\"name\">.*?<a.*?href=\"/name/([^\"]*)\"[^>]*>([^<]*)</a>".
 							".*?".
-							"<td class=\"nm\"><a href=\"([^\"]*)\"[^>]*>([^<]*)</a></td>".
-							".*?".
-//							"<td class=\"char\"><a href=\"([^\"]*)\"[^>]*>([^<]*)</a></td>".
-							"</tr>!", $actorBlock, $matches))
+//							"<td class=\"character\">.*?<a href=\"([^\"]*)\"[^>]*>([^<]*)</a>.*?</td>".
+							"</tr>!ms", $actorBlock, $matches))
 			{
 				$this->addItemAttribute('actors', $matches[2]);
 			}
 		}
 	
-		if(preg_match("!<h5>Runtime:</h5>[\D]*([0-9]*) min!", $pageBuffer, $matches))
-		{
-			$this->addItemAttribute('run_time', $matches[1]);
-		}
 		
 //FCG 
-                 /* <div class="info">
-                     <h5>Language:</h5>
-                     <div class="info-content">
-                     <a href="/Sections/Languages/English/">
-                     English</a>
+/* <h4 class="inline">Language:</h4>
 
-                     </div>
-                     </div>
-                 */
-                if(preg_match_all("!<a href=\"/Sections/Languages/[^/]*/\">[\s]*([^/]*)</a>!", $pageBuffer, $matches))
+<a href="/language/en">English</a>
+
+</div>
+*/
+                if(preg_match_all("!<a href=\"/language/[^\"]*\">([^/]*)</a>!", $pageBuffer, $matches))
                 {
                         $this->addItemAttribute('audio_lang', $matches[1]);
                 }
 
-		/**
-		 * <div class="info">
-		 <h5>Aspect Ratio:</h5>
-		 2.35 : 1 <a class="tn15more inline" href="/rg/title-tease/aspect/title/tt0083944/technical">more</a>
-		 </div>
-		 */
-		if(preg_match("!<h5>Aspect Ratio:</h5>[\s]*([0-9\.]*)[\s]*:[\s]*([0-9\.]*)!", $pageBuffer, $matches))
+		if(preg_match("!>Aspect Ratio:</h4>[\s]*([0-9\.]*)[\s]*:[\s]*([0-9\.]*)!", $pageBuffer, $matches))
 		{
 			$this->addItemAttribute('ratio', $matches[1]);
 		}
@@ -271,7 +289,7 @@ class imdb extends SitePlugin
                     </div>
                     </div>
                 */
-                if(preg_match_all("!<a href=\"/List\?sound-mix=[^/]*\">[\s]*([^/]*)</a>!", $pageBuffer, $matches))
+                if(preg_match_all("!<a href=\"/search/title\?sound_mixes=.*?>(.*?)</a>!", $pageBuffer, $matches))
                 {
                         $this->addItemAttribute('dvd_audio', $matches[1]);
                 }

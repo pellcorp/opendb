@@ -487,7 +487,7 @@ function get_site_item_input_data($op, $item_r, $HTTP_VARS)
 
 // This function will calculate a field input_field value,
 // based on $HTTP_VARS, $op and $indexes (Used for site operations)
-function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_type, $attribute_val, &$HTTP_VARS, &$_FILES)
+function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_type, $attribute_val, &$HTTP_VARS)
 {
 	if(is_not_empty_array($HTTP_VARS))// Lets try to get field value, from HTTP
 	{
@@ -719,7 +719,7 @@ function get_item_form_row($op, $item_r, $item_attribute_type_r, $old_value, $ne
 	}
 }
 
-function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fields)
+function get_edit_item_form($op, $item_r, $HTTP_VARS, &$upload_file_fields)
 {
 	// is at least one field a compulsory field?
 	$compulsory_fields = FALSE;
@@ -857,7 +857,7 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, $_FILES, &$upload_file_fie
 	}
 }
 
-function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
+function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS)
 {
 	$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'instance_field_types');
 	if($results)
@@ -973,7 +973,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS, $
 	}
 }
 
-function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
+function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS)
 {
 	global $PHP_SELF;
 	
@@ -1079,7 +1079,7 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES)
 	}
 }
 
-function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
@@ -1103,7 +1103,7 @@ function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, $_FILE
 	}
 }
 
-function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
@@ -1313,7 +1313,7 @@ function do_op_title($item_r, $status_type_r, $op)
 	echo ("<h2>".$item_title." ".get_item_image($item_r['s_item_type'])."</h2>\n");
 }
 
-function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 			
@@ -1420,7 +1420,7 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	
@@ -1478,7 +1478,7 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	
@@ -1539,7 +1539,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FI
 	}
 }
 
-function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	global $titleMaskCfg;
@@ -1579,7 +1579,7 @@ function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES
 	}
 }
 
-function perform_new_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_new_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 			
@@ -1595,7 +1595,7 @@ function perform_new_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &
 	}
 }
 
-function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	global $PHP_SELF;
 	
@@ -1613,7 +1613,7 @@ function perform_edit_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, 
 	}
 }
 
-function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$_FILES, &$footer_links_r)
+function perform_site_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer_links_r)
 {
 	$sitePlugin =& get_site_plugin_instance($HTTP_VARS['site_type']);
 	if($sitePlugin !== FALSE)

@@ -5,7 +5,7 @@ CREATE TABLE s_item_type_group (
 	s_item_type_group	VARCHAR(10) NOT NULL,
 	description		VARCHAR(60) NOT NULL,
 	PRIMARY KEY ( s_item_type_group )
-) TYPE=MyISAM COMMENT='System Item Type Group';
+) ENGINE=MyISAM COMMENT='System Item Type Group';
 
 #
 # System Item Type Group Relationship
@@ -14,7 +14,7 @@ CREATE TABLE s_item_type_group_rltshp (
 	s_item_type_group	VARCHAR(10) NOT NULL,
 	s_item_type		VARCHAR(10) NOT NULL,
 	PRIMARY KEY ( s_item_type_group, s_item_type )
-) TYPE=MyISAM COMMENT='System Item Type Group Relationship';
+) ENGINE=MyISAM COMMENT='System Item Type Group Relationship';
 
 #
 # System Item Type Group system data
@@ -44,7 +44,7 @@ CREATE TABLE s_site_plugin (
 	items_per_page	TINYINT(3) UNSIGNED NOT NULL,
 	more_info_url	VARCHAR(255),
 	PRIMARY KEY ( site_type )
-) TYPE=MyISAM COMMENT='Site Plugin Configuration';
+) ENGINE=MyISAM COMMENT='Site Plugin Configuration';
 
 #
 # This table provides any site plugin specific variable configuration,
@@ -59,7 +59,7 @@ CREATE TABLE s_site_plugin_conf (
 	description	VARCHAR(255),
 	value		VARCHAR(255),
 	PRIMARY KEY ( site_type, name, keyid )
-) TYPE=MyISAM COMMENT='Site Plugin Configuration';
+) ENGINE=MyISAM COMMENT='Site Plugin Configuration';
 
 #
 # Site Plugin Input Field
@@ -77,7 +77,7 @@ CREATE TABLE s_site_plugin_input_field (
 	default_value	VARCHAR(50),
 	refresh_mask	VARCHAR(255),
 	PRIMARY KEY ( site_type, field )
-) TYPE=MyISAM COMMENT='Site Plugin Input Field';
+) ENGINE=MyISAM COMMENT='Site Plugin Input Field';
 
 #
 # Site Plugin Attribute Type Map
@@ -91,7 +91,7 @@ CREATE TABLE s_site_plugin_s_attribute_type_map (
 	s_attribute_type	VARCHAR(10) NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type )
-) TYPE=MyISAM COMMENT='Site Plugin Attribute Type Map';
+) ENGINE=MyISAM COMMENT='Site Plugin Attribute Type Map';
 
 #
 # Site Plugin Attribute Type Lookup Map
@@ -104,7 +104,7 @@ CREATE TABLE s_site_plugin_s_attribute_type_lookup_map (
 	lookup_attribute_val	VARCHAR(50) NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_attribute_type, value, lookup_attribute_val )
-) TYPE=MyISAM COMMENT='Site Plugin Attribute Type Lookup Map';
+) ENGINE=MyISAM COMMENT='Site Plugin Attribute Type Lookup Map';
 
 #
 # Site Plugin Link
@@ -120,7 +120,7 @@ CREATE TABLE s_site_plugin_link (
 	title_url		VARCHAR(255),
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( site_type, s_item_type_group, s_item_type, order_no )
-) TYPE=MyISAM COMMENT='Site Plugin Link';
+) ENGINE=MyISAM COMMENT='Site Plugin Link';
 
 #
 # Create Import Cache table
@@ -131,7 +131,7 @@ CREATE TABLE import_cache (
   plugin_name		VARCHAR(100),
   content_length	INTEGER(10) unsigned NOT NULL,
   PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT='Import Cache table';
+) ENGINE=MyISAM COMMENT='Import Cache table';
 
 #
 # Create File Cache table
@@ -155,7 +155,7 @@ CREATE TABLE file_cache (
   gzcompress_level	tinyint(1) NOT NULL DEFAULT 0,
   content			BLOB,
   PRIMARY KEY ( sequence_number )
-) TYPE=MyISAM COMMENT='File Cache table';
+) ENGINE=MyISAM COMMENT='File Cache table';
 
 #
 # Patch the display type for author to take advantage of Amazon.com multi-author parsing

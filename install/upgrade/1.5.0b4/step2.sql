@@ -10,11 +10,11 @@ CREATE TABLE user_item_interest (
 	user_id			VARCHAR(20) NOT NULL,
 	level			VARCHAR(1) NOT NULL,
 	comment			text,
-	update_on		TIMESTAMP(14) NOT NULL,
+	update_on		TIMESTAMP NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	KEY user_idx ( user_id ),
 	KEY item_idx ( item_id)
-) TYPE=MyISAM COMMENT='user item interest table';
+) ENGINE=MyISAM COMMENT='user item interest table';
 
 -- Permissions for interest
 INSERT INTO s_permission (permission_name, description) VALUES ('PERM_USER_INTEREST', 'User item interest');

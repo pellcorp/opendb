@@ -14,7 +14,7 @@ CREATE TABLE s_opendb_release(
 	description			VARCHAR(100) NOT NULL,
 	upgrade_step		TINYINT(2) UNSIGNED DEFAULT 0,
 	upgrade_step_part	TINYINT(2) UNSIGNED DEFAULT NULL,
-	update_on			TIMESTAMP(14) NOT NULL,
+	update_on			TIMESTAMP NOT NULL,
 	PRIMARY KEY ( sequence_number ),
 	UNIQUE KEY ( release_version )
-) TYPE=MyISAM COMMENT='System OpenDb Release table';
+) ENGINE=MyISAM COMMENT='System OpenDb Release table';

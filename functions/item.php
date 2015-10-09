@@ -1438,7 +1438,7 @@ function validate_item_instance_fields($s_status_type, &$status_comment, &$borro
 	Does not support $s_status_type = 'W' specific functionality.
 
 */
-function insert_item_instance($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration, $owner_id)
+function insert_item_instance($item_id, $instance_no, $s_status_type, $status_comment, $borrow_duration, $owner_id, $update_on = NULL)
 {
 	if(validate_item_instance_fields($s_status_type, $status_comment, $borrow_duration))
 	{
@@ -1473,9 +1473,9 @@ function insert_item_instance($item_id, $instance_no, $s_status_type, $status_co
 		}
 		
 		//Either the instance_no was specified to begin with, or the LOCK TABLES and fetch_max_instance_no call worked.
-		$query = "INSERT INTO item_instance(item_id, instance_no, owner_id, borrow_duration, s_status_type, status_comment)".
-				"VALUES ('$item_id','$instance_no','$owner_id',".(is_numeric($borrow_duration)?"'$borrow_duration'":"NULL").",UPPER('".$s_status_type."'),'$status_comment')";
-				
+		$query = "INSERT INTO item_instance(item_id, instance_no, owner_id, borrow_duration, s_status_type, status_comment".($update_on!=null?", update_on":"").")".
+				"VALUES ('$item_id','$instance_no','$owner_id',".(is_numeric($borrow_duration)?"'$borrow_duration'":"NULL").",UPPER('".$s_status_type."'),'$status_comment', ".($update_on!=null?"'$update_on'":"").")";
+
 		$insert = db_query($query);
 		if ($insert && db_affected_rows() > 0)
 		{

@@ -44,7 +44,7 @@ include_once("./functions/status_type.php");
 *   that even then, you will have to call this twice to insert any item_instance specific
 *   attributes.
 */
-function handle_item_attributes($op, $item_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_item_attributes($op, $item_r, $HTTP_VARS, &$errors)
 {
 	// for these operations, no instance_no context is possible
 	// item instance attributes will be handled in a separate call to this function, as a updateinstance op
@@ -158,7 +158,7 @@ function handle_item_attributes($op, $item_r, $HTTP_VARS, $_FILES, &$errors)
 * Validate item_attributes will actually update the $HTTP_VARS variable
 * with the final filtered value
 */
-function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$errors)
+function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, &$errors)
 {
 	$errors = NULL;
 	$all_fields_validated=TRUE;
@@ -255,7 +255,7 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, $_FILES, &$err
  *  "__ABORTED__"		- Operation was aborted
  * "__INVALID_DATA__" 	- indicates that the data entered was not validated
  */
-function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_item_insert(&$item_r, $HTTP_VARS, &$errors)
 {
 	if( (is_user_granted_permission(PERM_ITEM_OWNER) &&
 				$item_r['owner_id'] == get_opendb_session_var('user_id')) || 
@@ -384,7 +384,7 @@ function handle_item_insert(&$item_r, $HTTP_VARS, $_FILES, &$errors)
  *
  * Return "__INVALID_DATA__" - indicates that the data entered was not validated
  */
-function handle_item_update(&$item_r, $HTTP_VARS, $_FILES, &$errors)
+function handle_item_update(&$item_r, $HTTP_VARS, &$errors)
 {
 	if($item_r['owner_id'] == get_opendb_session_var('user_id') || is_user_granted_permission(PERM_ITEM_ADMIN))
 	{

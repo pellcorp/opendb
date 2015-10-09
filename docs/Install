@@ -18,24 +18,94 @@ will need the following:
 - SMTP server or PHP email configured.  If this is not possible, be sure to 
 set the email configuration Mailer to 'none'.
 
-2) Installation / Upgrade
+2) Installation
 
-The installer can be activated by executing install.php.
+Add the following lines to your Apache configuration (Assuming your Web server directory is in /srv/www/default
+and your opendb was unpacked into opendb or there is a link called opendb):
 
-With appropriate credentials, the OpenDb installer can create the opendb database
-and user.
+<Directory /srv/www/default/opendb>
+        Options FollowSymLinks
+        order deny,allow
+        deny from all
+        allow from all
+</Directory>
+
+<Directory /srv/www/default/opendb/log>
+        Order deny,allow
+        Deny from all
+</Directory>
+
+On Ubuntu, create a file (with the content from above) called opendb.conf (in /etc/apache2/conf-available),
+activate it using a2enconf opendb and restart apache (sudo service apache2 restart).
+
+The installer can be activated by executing install.php (http://your.site.com/your.opendb.directory/install.php)
+
+With appropriate credentials (The MySQL root user and its password, set during the MySQL installation),
+the OpenDb installer can create the opendb database and user.
+
+3) Upgrade
+
+Unpack the zip / tar file in a new directory, do NOT overwrite the directory of the old installation!
+
+A good idea is to use directories with version numbers and a link to the one currently in use with no
+version number, e.g.
+
+www-data@kaa:/srv/www/default$ ls -ald opendb*
+lrwxrwxrwx  1 www-data www-data   13 Oct  9 09:27 opendb -> opendb-1.6.0/
+drwxrwxr-x 21 www-data www-data 4096 Oct  9 09:27 opendb-1.5.0.8
+drwxrwxr-x 18 www-data www-data 4096 Jun 30 23:14 opendb-1.6.0
+
+Copy the necessary files from the old directory to the new:
+
+cd opendb-1.5.0.8
+tar cvf - itemcache/ upload/ log/ include/local.config.php | (cd ../opendb-1.6.0/ && tar xf -)
+
+Point your web browser to the new directory:
+
+https://your.site.com/opendb/
+
+Now the installer takes over and guides you through the upgrade.
 
 The install.php should be removed from the root directory of the opendb installation once
-the install / upgrade process is complete.
+the install process is complete.
 
-2.1) Cover Image Cache (upload/ directory)
+3) Backup
 
-3) Documentation
+Backups are important. Backups are important. Backups are important.
+
+E.g. a nice cronjob saving the whole database (not just a partial dump from within opendb!):
+
+00 02 * * * /usr/bin/mysqldump opendb -u lender -pYourLenderPassword > /srv/www/default/opendb/log/opendb.dmp
+
+Having done that, you can tar your /srv/www/default/opendb regularely, e.g. in the cronjob of the mysql dump. 
+(Yes, there is a potential race condition, but let's ignore it at 0200 in the morning. If you want to play
+safe, stop apache, dump the mysql database, tar the opendb directory, start apache.)
+
+4) Moving from one server to another (if filesystem access is available)
+
+If you did a backup as described above, piece of cake (assuming same MySQL and Apache versions, same php5 modules
+installed):
+
+- Install the opendb.conf file or make similar changes to your Apache2 setup as described above
+- Unpack the tar file in your web server directory
+- Create the database using the information (hostname,dbname,username,password) from include/local.config.php
+mysql -u root -p
+create database dbname; 
+use dbname;
+create user username@hostname identified by password;
+grant all on *.* to username@hostname;
+exit
+
+mysql -u user -h host -p database < /srv/www/default/opendb/log/opendb.dmp
+
+That is it. You can now point your web browser to http://newserver.com/opendb
+
+5) Documentation
 	
 	Documentation is available from the OpenDb website
 		https://github.com/pellcorp/opendb/wiki
 
-4) Security
+6) Security
 
 Be sure to delete the phpinfo.php file before going live with your site.  This file is 
 provided for convenient problem resolution but represents a security risk to leave active.

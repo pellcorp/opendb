@@ -329,8 +329,7 @@ class SitePlugin {
 							}
 						}
 					}
-				} else 				// otherwise single value only
-{
+				} else 	{ // otherwise single value only
 					if (is_numeric ( $keyname ) || is_null ( $keyname )) {
 						$this->_item_data_r [$attribute] = $value;
 					} else {
@@ -490,14 +489,12 @@ class SitePlugin {
 					
 					if ($input_field_r ['field_type'] == 'scan-isbn' || $input_field_r ['field_type'] == 'scan-upc') {
 						// Determine type of scanner.
-						if (strrpos ( $HTTP_VARS [$input_field_r ['field']], '.' )) 						// cuecat
-{
+						if (strrpos ( $HTTP_VARS [$input_field_r ['field']], '.' )) { // cuecat
 							if ($input_field_r ['field_type'] == 'scan-isbn')
 								$scanCode = get_cuecat_isbn_code ( $field_value );
 							else
 								$scanCode = get_cuecat_upc_code ( $field_value );
-						} else 						//non-cuecat or modified cuecat
-{
+						} else { //non-cuecat or modified cuecat
 							if ($input_field_r ['field_type'] == 'scan-isbn')
 								$scanCode = get_isbn_code ( $field_value );
 							else
@@ -589,8 +586,7 @@ class SitePlugin {
 				
 				return FALSE;
 			}
-		} 		//if($at_least_one_search_field_populated)
-else {
+		} else {  // if($at_least_one_search_field_populated)
 			// nothing found.
 			return TRUE;
 		}

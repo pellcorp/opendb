@@ -30,7 +30,7 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', '*', '*', 'title', 'S_TITLE', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', '*', '*', 'dvdfr_id', 'DVDFRID', 'N' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', '*', 'DVD', 'audio_lang', 'DVD_AUDIO', 'N' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'dvdfr', '*', 'DVD', 'audio_lang', 'AUDIO_LANG', 'N' );
 
 
 #
@@ -92,11 +92,6 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'AGE_RATING', '-18', 'R' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'AGE_RATING', 'X', 'X' );
 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'DVD_AUDIO', 'Espagnol 4.0', 'DOLBY2.0' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'DVD_AUDIO', 'Portugais 4.0', 'DOLBY2.0' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'DVD_AUDIO', 'Anglais 5.1', 'DOLBY5.1' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'DVD_AUDIO', 'Français 5.1', 'DOLBY5.1' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdfr', 'DVD_AUDIO', 'Allemand 5.1', 'DOLBY5.1' );
 
 ####################################################################################################
 # Item Type / Attribute Type relationships

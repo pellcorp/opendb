@@ -51,7 +51,7 @@ INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', 'BOOK', 'blurb', 'SYNOPSIS', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', 'DVD', 'dvd_audio', 'DVD_AUDIO', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', 'DVD', 'dvd_audio', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'subtitles', 'SUBTITLES', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'amazonfr', '*', '*', 'title', 'S_TITLE', 'N' );
@@ -71,8 +71,7 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Italien', 'ITALIAN' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'SUBTITLES', 'Allemand', 'GERMAN' );
 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'DVD_AUDIO', 'Anglais 2.0', 'DOLBY2.0' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Francais 2.0', 'DOLBY2.0' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'AUDIO_LANG', 'Francais 2.0', 'FRENCH' );
 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Comedie', 'COMEDY' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazonfr', 'MOVIEGENRE', 'Aventure', 'ADVENTURE' );

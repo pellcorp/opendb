@@ -28,7 +28,7 @@ INSERT INTO s_site_plugin_link ( site_type, s_item_type_group, s_item_type, orde
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', 'VIDEO', '*', 'blurb', 'MOVIE_PLOT', 'N' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'audio_lang', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'audio_xtra', 'AUDIO_XTRA', 'Y' );
-INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', 'DVD', 'dvd_audio', 'DVD_AUDIO', 'Y' );
+INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', 'DVD', 'dvd_audio', 'AUDIO_LANG', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', 'VIDEO', '*', 'genre', 'MOVIEGENRE', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'subtitles', 'SUBTITLES', 'Y' );
 INSERT INTO s_site_plugin_s_attribute_type_map ( site_type, s_item_type_group, s_item_type, variable, s_attribute_type, lookup_attribute_val_restrict_ind ) VALUES ( 'michaeld', '*', '*', 'title', 'ALT_TITLE', 'N' );
@@ -56,8 +56,8 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'Sci-Fi', 'ScienceFiction' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'MOVIEGENRE', 'star trek', 'ScienceFiction' );
 
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'DVD_AUDIO', 'ENGLISH5.1', 'DOLBY5.1' );
-INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'DVD_AUDIO', 'ENGLISH_DTS', 'DTS' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'AUDIO_LANG', 'ENGLISH5.1', 'ENGLISH_5.1' );
+INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'michaeld', 'AUDIO_LANG', 'ENGLISH_DTS', 'ENGLISH_DTS' );
 
 ####################################################################################################
 # Item Type / Attribute Type relationships

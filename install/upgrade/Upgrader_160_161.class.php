@@ -20,22 +20,22 @@
 
 include_once("./lib/OpenDbUpgrader.class.php");
 
-class Upgrader_157_160 extends OpenDbUpgrader
+class Upgrader_160_161 extends OpenDbUpgrader
 {
-	function Upgrader_157_160()
+	function Upgrader_160_161()
 	{
 		parent::OpenDbUpgrader(
-						'1.5.7',
 						'1.6.0',
+						'1.6.1',
 						array(
-							array('description'=>'Updates from 1.5.0.7 to 1.6.0'),
+							array('description'=>'Revert DVD_AUDIO refactoring'),
 						)
 					);
 	}
 	
 	function getUpgraderDir()
 	{
-		return './install/upgrade/1.5.7';
+		return './install/upgrade/1.6.0';
 	}
 }
 ?>

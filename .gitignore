@@ -1,8 +1,8 @@
-/httpcache
-/itemcache
-/importcache
-/upload
-/log
+httpcache/*
+itemcache/*
+upload/*
+importcache/*
+log/*
 /.settings
 /.buildpath
 /.project

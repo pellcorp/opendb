@@ -1,10 +1,8 @@
 #
-# AUDIO LANG / DVD AUDIO / AUDIO XTRA restructure
-# thanks to SanMadJack
+# AUDIO LANG / AUDIO XTRA restructure
 # 
 
 INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'AUDIO_XTRA', 'Additional Audio Tracks', 'Additional Audio', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
-INSERT INTO s_attribute_type ( s_attribute_type, description, prompt, input_type, input_type_arg1, input_type_arg2, input_type_arg3, input_type_arg4, input_type_arg5, display_type, display_type_arg1, display_type_arg2, display_type_arg3, display_type_arg4, display_type_arg5, listing_link_ind, file_attribute_ind, lookup_attribute_ind, multi_attribute_ind, s_field_type, site_type ) VALUES ( 'DVD_AUDIO', 'DVD Audio Format', 'Audio Format(s)', 'checkbox_grid', '%img% %display%', 'VERTICAL', NULL, NULL, NULL, 'display','%img% %display%', NULL, NULL, NULL, NULL, 'N', 'N', 'Y', 'N', NULL, NULL);
 
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 0, 'SOUNDTRACK', 'Soundtrack Only', 'director.gif', 'N' );
 INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display, img, checked_ind ) VALUES ( 'AUDIO_XTRA', 1, 'ACT_COMMENT', 'Actor\'s Commentary', 'director.gif', 'N' );
@@ -29,7 +27,7 @@ INSERT INTO s_attribute_type_lookup ( s_attribute_type, order_no, value, display
 
 # add audio_xtra and dvd_audio to DVD
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'DVD', 'AUDIO_XTRA', 75, NULL, 'N', 'N', 'Y', 'N' );
-INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'DVD', 'DVD_AUDIO', 76, NULL, 'N', 'N', 'Y', 'N' );
+#INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'DVD', 'DVD_AUDIO', 76, NULL, 'N', 'N', 'Y', 'N' );
 
 # add audio_xtra to LD
 INSERT INTO s_item_attribute_type ( s_item_type, s_attribute_type, order_no, prompt, instance_attribute_ind, compulsory_ind, printable_ind, rss_ind ) VALUES ( 'LD', 'AUDIO_XTRA', 75, NULL, 'N', 'N', 'Y', 'N' );
@@ -40,62 +38,12 @@ WHERE s_attribute_type = 'AUDIO_LANG' AND value IN (
 	'ACT_COMMENT', 
 	'DIR_COMMENT', 
 	'OTHER_COMMENT',
-	'PROD_COMMENT',
-	'ENGLISH_2.0',
-	'ENGLISH_5.0',
-	'ENGLISH_5.1',
-	'ENGLISH_6.1',
-	'ENGLISH_6.1_DTS_ES',
-	'ENGLISH_6.1_EX',
-	'ENGLISH_DTS',
-	'ENGLISH_SR',
-	'ENGLISH_THX');
+	'PROD_COMMENT');
 
 # Move existing AUDIO_LANG to AUDIO_XTRA
 UPDATE item_attribute SET s_attribute_type = 'AUDIO_XTRA', order_no = 75
 WHERE s_attribute_type = 'AUDIO_LANG' AND
 lookup_attribute_val IN ('ACT_COMMENT', 'DIR_COMMENT', 'PROD_COMMENT', 'OTHER_COMMENT');
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY2.0', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_2.0';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_5.0';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY5.1', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_5.1';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY6.1', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS6.1', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1_DTS_ES';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DOLBY6.1', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_6.1_EX';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'DTS', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_DTS';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'SURROUND', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_SR';
-
-UPDATE item_attribute SET s_attribute_type = 'DVD_AUDIO', lookup_attribute_val = 'THX', order_no = 76 
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val = 'ENGLISH_THX';
-
-#UPDATE item_attribute SET order_no = 75 where s_attribute_type = 'AUDIO_XTRA';
-#UPDATE item_attribute SET order_no = 76 where s_attribute_type = 'DVD_AUDIO';
-
-# fix dvdempire mappings
-DELETE FROM s_site_plugin_s_attribute_type_lookup_map
-WHERE s_attribute_type = 'AUDIO_LANG' AND lookup_attribute_val IN (
-	'ENGLISH_DTS',
-	'ENGLISH_5.1',
-	'ENGLISH_SR',
-	'ENGLISH_6.1_DTS_ES',
-	'ENGLISH: Dolby Digital Surround',
-	'ENGLISH: DTS ES 6.1',
-	'FRENCH_5.1');
 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'DTS Surround', 'DTS' ); 
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'dvdempire', 'DVD_AUDIO', 'ENGLISH: DTS 5.1', 'DTS' );
@@ -112,4 +60,3 @@ INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_t
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazon', 'DVD_AUDIO', 'English 6.1 DTS ES', 'DTS6.1' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazon', 'DVD_AUDIO', 'English 6.1', 'DTS6.1' );
 INSERT INTO s_site_plugin_s_attribute_type_lookup_map ( site_type, s_attribute_type, value, lookup_attribute_val ) VALUES ( 'amazon', 'DVD_AUDIO', 'English DTS', 'DTS' );
-

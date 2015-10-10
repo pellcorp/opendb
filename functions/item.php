@@ -765,7 +765,7 @@ function fetch_item_listing_rs($HTTP_VARS, &$column_display_config_rs, $order_by
 			if(strlen($orderbyquery)>0) {
 				$orderbyquery .= ', ';
 			} 
-			$orderbyquery .= '\'' . $column_order_by_r['orderby'].'\' '.$column_order_by_r['sortorder'];
+			$orderbyquery .= $column_order_by_r['orderby'].' '.$column_order_by_r['sortorder'];
 		}
 		
 		$query .= ' ORDER BY '.$orderbyquery.', i.title, ii.instance_no ASC, i.s_item_type';

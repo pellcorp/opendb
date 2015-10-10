@@ -147,7 +147,8 @@ class imdbphp extends SitePlugin {
 		$this->addItemAttribute('imdbrating', $imdb->rating());
 		$this->addItemAttribute('run_time', $imdb->runtime());
 		$this->addItemAttribute('audio_lang', $imdb->languages());
-		$this->addItemAttribute('dvd_audio', $imdb->sound());
+		$this->addItemAttribute('audio_lang', $imdb->sound());
+		
 		foreach ($imdb->mpaa() as $country => $rating) {
 			$country = strtolower($country);
 			$this->addItemAttribute($country . '_age_rating', $rating);

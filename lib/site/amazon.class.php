@@ -655,22 +655,30 @@ class amazon extends SitePlugin {
 		}
 
 		if (preg_match("/THX Certified/i", $pageBuffer)) {
-			$this->addItemAttribute('dvd_audio', 'THX');
+			$this->addItemAttribute('audio_lang', 'ENGLISH_THX');
 		}
 
 		if (preg_match("!<li><b>Language:</b>[\s]*(.*?)</li>!i", $pageBuffer, $regs)) {
 			$audio_lang_r = explode(',', $regs[1]);
 
-			$amazon_dvd_audio_map = array(array("English", "2.0"), array("English", "5.0"), array("English", "5.1"), array("English", "6.1", "EX"), // Dolby Digital 6.1 EX
-			array("English", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
-			array("English", "6.1"), array("English", "DTS"));
+			$amazon_dvd_audio_map = array(
+					array("English", "2.0"), 
+					array("English", "5.0"), 
+					array("English", "5.1"), 
+					array("English", "6.1", "EX"), // Dolby Digital 6.1 EX
+					array("English", "6.1", "DTS", "ES"), // English (6.1 DTS ES)
+					array("English", "6.1"), 
+					array("English", "DTS"));
 
-			$amazon_audio_lang_map = array(array("English"), array("French"), array("Spanish"), array("German"));
+			$amazon_audio_lang_map = array(
+					array("French"), 
+					array("Spanish"), 
+					array("German"));
 
 			while (list(, $audio_lang) = @each($audio_lang_r)) {
 				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
 				if ($key !== NULL) {
-					$this->addItemAttribute('dvd_audio', $key);
+					$this->addItemAttribute('audio_lang', $key);
 				}
 
 				$key = parse_language_info($audio_lang, $amazon_audio_lang_map);

@@ -28,7 +28,7 @@ class Upgrader_160_161 extends OpenDbUpgrader
 						'1.6.0',
 						'1.6.1',
 						array(
-							array('description'=>'Revert DVD_AUDIO refactoring'),
+							array('description'=>'Restore AUDIO_LANG options and delete DVD_AUDIO'),
 						)
 					);
 	}

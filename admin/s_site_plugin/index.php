@@ -352,7 +352,7 @@ function generate_site_plugin_sql($site_type_r) {
 
 	$buffer .= $CRLF . $CRLF . "#" . $CRLF . "# Site Plugin." . $CRLF . "#" . $CRLF;
 
-	$buffer .= $CRLF . "INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url )" . "VALUES ( " . "'" . $site_type_r['site_type'] . "', " . "'" . $site_type_r['classname'] . "', " . "'" . addslashes($site_type_r['title']) . "', "
+	$buffer .= $CRLF . "INSERT INTO s_site_plugin ( site_type, classname, title, image, description, external_url, items_per_page, more_info_url ) " . "VALUES ( " . "'" . $site_type_r['site_type'] . "', " . "'" . $site_type_r['classname'] . "', " . "'" . addslashes($site_type_r['title']) . "', "
 			. "'" . addslashes($site_type_r['image']) . "', " . "'" . addslashes($site_type_r['description']) . "', " . "'" . addslashes($site_type_r['external_url']) . "', " . "" . $site_type_r['items_per_page'] . ", " . "'" . addslashes($site_type_r['more_info_url']) . "' );";
 
 	$results = fetch_site_plugin_conf_rs($site_type_r['site_type']);

@@ -142,10 +142,11 @@ class amazon extends SitePlugin {
 		//<span id="btAsinTitle">Prometheus (Blu-ray/ DVD + Digital Copy) (2012)</span>
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</...
 		//<h1 class="a-size-large a-spacing-none" id="title"> Illustration School: Let's Draw Happy People <span class="a-size-medium a-color-secondary a-text-normal">Hardcover</span></h1>
-		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>(^<*)<\/?span/s", $pageBuffer, $regs) || 
-		    preg_match("/<span id=\"productTitle\"[^>]*>(^<*)<span/s", $pageBuffer, $regs) ||
+		//<span id="productTitle" class="a-size-large">Men in Black 3 [Blu-ray]</span>
+		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>([^<]+)<\/?span/s", $pageBuffer, $regs) || 
+		    preg_match("/<span id=\"productTitle\"[^>]*?>([^<]+)<\/span/s", $pageBuffer, $regs) ||
 		    // <h1 id="title">...
-		    preg_match("/<h[^>]*?id=\"title\"[^>]*>([^<]*)</", $pageBuffer, $regs) ||
+		    preg_match("/<h[^>]*?id=\"title\"[^>]*>([^<]+)</", $pageBuffer, $regs) ||
 		    preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) ||
 		    preg_match("/<b class=\"sans\">([^<]+)<!--/s", $pageBuffer, $regs)) {
 			$title = trim($regs[1]);
@@ -158,6 +159,8 @@ class amazon extends SitePlugin {
 			$title = trim(str_replace("\"", "", $title));
 
 			if (($idx = strpos($title, '(Blu-ray')) !== FALSE) {
+				$title = substr($title, 0, $idx);
+			} else if (($idx = strpos($title, '[Blu-ray')) !== FALSE) {
 				$title = substr($title, 0, $idx);
 			}
 

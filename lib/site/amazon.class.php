@@ -142,8 +142,8 @@ class amazon extends SitePlugin {
 		//<span id="btAsinTitle">Prometheus (Blu-ray/ DVD + Digital Copy) (2012)</span>
 		//<span id="btAsinTitle" style="">Homeland: The Dark Elf Trilogy, Part 1 (Forgotten Realms: The Legend of Drizzt, Book I) (Bk. 1) <span style="text-transform:capitalize; font-size: 16px;">[Mass Market Paperback]</...
 		//<h1 class="a-size-large a-spacing-none" id="title"> Illustration School: Let's Draw Happy People <span class="a-size-medium a-color-secondary a-text-normal">Hardcover</span></h1>
-		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>(.*?)<\/?span/s", $pageBuffer, $regs) || 
-		    preg_match("/<span id=\"productTitle\"[^>]*>(.*?)<span/s", $pageBuffer, $regs) ||
+		if (preg_match("/<span id=\"btAsinTitle\"[^>]*>(^<*)<\/?span/s", $pageBuffer, $regs) || 
+		    preg_match("/<span id=\"productTitle\"[^>]*>(^<*)<span/s", $pageBuffer, $regs) ||
 		    // <h1 id="title">...
 		    preg_match("/<h[^>]*?id=\"title\"[^>]*>([^<]*)</", $pageBuffer, $regs) ||
 		    preg_match("/<b class=\"sans\">([^<]+)<\/b>/s", $pageBuffer, $regs) ||

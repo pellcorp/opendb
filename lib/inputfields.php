@@ -193,11 +193,6 @@ function validate_item_input_field($item_attribute_type_r, $value, &$errors) {
 			return FALSE;
 		}
 	}
-	//print_r("<pre>");
-	//print_r($item_attribute_type_r[s_attribute_type]);
-	//print_r($value);
-	//print_r("</pre>");
-	
 
 	if (is_not_empty_array ( $value ) && $item_attribute_type_r ['lookup_attribute_ind'] != 'Y') {
 		switch ($item_attribute_type_r ['input_type']) {

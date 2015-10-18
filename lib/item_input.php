@@ -163,7 +163,7 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, &$errors) {
 				}
 				
 				// Indicate at least one field failed validation.
-				if (! validate_item_input_field ( $item_attribute_type_r, $HTTP_VARS [$fieldname], $errors )) {
+				if (! validate_item_input_field ( $item_attribute_type_r, $HTTP_VARS [$fieldname], $errors)) {
 					$all_fields_validated = FALSE;
 				} else {
 					// So we have the filtered version for the handle_update / handle_insert functions.
@@ -177,10 +177,11 @@ function validate_item_attributes($op, $s_item_type, &$HTTP_VARS, &$errors) {
 		}
 		db_free_result ( $attr_results );
 		
-		if (! $all_fields_validated)
+		if (! $all_fields_validated) {
 			return FALSE;
-		else
+		} else {
 			return TRUE;
+		}
 	} else {
 		//else - what else can I do here?
 		$errors [] = array (

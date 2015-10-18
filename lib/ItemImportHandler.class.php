@@ -325,8 +325,7 @@ class ItemImportHandler {
 	function endItemInstance() {
 		if ($this->_is_item_finished !== TRUE) {
 			$this->_is_item_instance = FALSE;
-		} else 		// if($this->isError() !== TRUE)
-{
+		} else {		// if($this->isError() !== TRUE)
 			return FALSE;
 		}
 	}
@@ -340,13 +339,11 @@ class ItemImportHandler {
 					$tmpItem = $this->_item_obj;
 				
 				$tmpItem->addAttribute ( $s_attribute_type, $order_no, $attribute_val );
-			} 			//if($this->_item_obj != NULL)
-else {
+			} else {			//if($this->_item_obj != NULL)
 				$this->addError ( 'itemAttribute', get_opendb_lang_var ( 'undefined_error' ) );
 				return FALSE;
 			}
-		} else 		// if($this->isError() !== TRUE)
-{
+		} else {		// if($this->isError() !== TRUE)
 			return FALSE;
 		}
 	}
@@ -380,10 +377,9 @@ else {
 				
 				$instance_valid = FALSE;
 				
-				$dummy_POST_FILES = NULL;
 				$errors = array ();
 				
-				$return_val = handle_item_insert ( $item_r, $item_vars, $dummy_POST_FILES, $errors );
+				$return_val = handle_item_insert ( $item_r, $item_vars, $errors );
 				if ($return_val === TRUE) {
 					// store item id for later use
 					if ($this->_cfg_is_trial_run !== TRUE && is_numeric ( $item_r ['item_id'] )) {
@@ -441,8 +437,7 @@ else {
 				$this->addError ( 'endItem', get_opendb_lang_var ( 'undefined_error' ) );
 				return FALSE;
 			}
-		} else 		// if($this->_is_item_finished !== TRUE)
-{
+		} else {		// if($this->_is_item_finished !== TRUE)
 			return FALSE;
 		}
 	}
@@ -487,8 +482,7 @@ else {
 			// if override status type, then we are not showing this column
 			if ($this->_cfg_override_status_type !== TRUE) {
 				if (is_array ( $status_type_r )) {
-					$this->_listingsObject->addThemeImageColumn ( $status_type_r ['img'], $status_type_r ['description'], $status_type_r ['description'], 					//title
-'s_status_type' );
+					$this->_listingsObject->addThemeImageColumn ( $status_type_r ['img'], $status_type_r ['description'], $status_type_r ['description'], 's_status_type' );
 				} else {
 					$this->_listingsObject->addColumn ( '', 1 );
 				}

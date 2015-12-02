@@ -22,7 +22,7 @@ $_OPENDB_DB_CONNECTED = NULL;
 function init_db_connection() {
 	$dbserver_conf_r = get_opendb_config_var ( 'db_server' );
 	if (is_array ( $dbserver_conf_r )) {
-		return db_connect ( $dbserver_conf_r ['host'], $dbserver_conf_r ['username'], $dbserver_conf_r ['passwd'], $dbserver_conf_r ['dbname'] );
+		return db_connect ( $dbserver_conf_r ['host'], $dbserver_conf_r ['username'], $dbserver_conf_r ['passwd'], $dbserver_conf_r ['dbname'],  $dbserver_conf_r ['charset']);
 	}
 	
 	//else

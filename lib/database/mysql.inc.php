@@ -33,7 +33,7 @@ $_opendb_dblink = NULL;
     
     @param $cache_link - if TRUE, save reference to link for reuse.
  */
-function db_connect($host, $user, $passwd, $dbname, $cache_link = TRUE) {
+function db_connect($host, $user, $passwd, $dbname, $charset, $cache_link = TRUE) {
 	global $_opendb_dblink;
 
 	$link = @mysql_connect($host, $user, $passwd);
@@ -42,6 +42,8 @@ function db_connect($host, $user, $passwd, $dbname, $cache_link = TRUE) {
 			if ($cache_link) {
 				$_opendb_dblink = $link;
 			}
+			@mysql_query("SET NAMES '.$charset.'");
+			echo "HOLA";
 			return $link;
 		}
 	}

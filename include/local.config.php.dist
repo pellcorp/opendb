@@ -5,6 +5,7 @@ $CONFIG_VARS['db_server'] = array(
 			'dbname'=>'opendb',		//OpenDb database name
 			'username'=>'lender',	//OpenDb database user name
 			'passwd'=>'test',		//OpenDb user password
+			'charset'=>'utf8',	    //Database charset
 			'table_prefix'=>NULL, 	//'opendb_';//Specify a table prefix.  Include the '_' as well!
 			'debug-sql'=>FALSE);	//Specify whether all SQL statements should be displayed in the page.
 

@@ -36,6 +36,7 @@ class amazon extends SitePlugin {
 
 		$this->asinId = $this->sites[$site_type]['asinId'];
 		$this->url = $this->sites[$site_type]['url'];
+		$this->_httpClient->agent = 'Mozilla/5.0 (OpenDB) Gecko/20100101 Firefox/42.0';
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -180,26 +181,29 @@ class amazon extends SitePlugin {
 		}
 
 		// ** Front Cover Image **
-		if (preg_match("!<img id=\"main-image\" src=\"([^\"]+)\"!s", $pageBuffer, $regs)) {
+		if (preg_match("!<img id=\"main-image\" src=\"(http[^\"]+)\"!s", $pageBuffer, $regs)) {
 			// remove image extras _xxx_.
 			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
 
-		} else if (preg_match("!registerImage\(\"original_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
+		} else if (preg_match("!registerImage\(\"original_image[^\"]*\", \"(http[^\"]+)\"!", $pageBuffer, $regs)) {
 			// remove image extras _xxx_.
 			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
 
-		} else if (preg_match("!<img id=\"landingImage\".*?src=\"([^\"]+)\"!s", $pageBuffer, $regs)) {
+		} else if (preg_match("!<img id=\"landingImage\".*?src=\"(http[^\"]+)\"!s", $pageBuffer, $regs)) {
 			// remove image extras _xxx_.
 			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
 
-		} else if (preg_match("!<img [^>]*?id=\"imgBlkFront\" [^>]*?src=\"([^\"]+)\"!s", $pageBuffer, $regs) ||
-			   preg_match("!<img [^>]*?src=\"([^\"]+)\" [^>]*?id=\"imgBlkFront\"!s", $pageBuffer, $regs)) {
+		} else if (preg_match("!<img [^>]*?id=\"imgBlkFront\" [^>]*?src=\"(http[^\"]+)\"!s", $pageBuffer, $regs) ||
+			   preg_match("!<img [^>]*?src=\"(http[^\"]+)\" [^>]*?id=\"imgBlkFront\"!s", $pageBuffer, $regs)) {
 			// remove image extras _xxx_.
 			$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $regs[1]);
 			$this->addItemAttribute('imageurl', $image);
+
+		} else if (preg_match("!imageGalleryData'[^a-z]*mainUrl\"[^\"]+\"(http[^\"]+)!s", $pageBuffer, $regs)) {
+			$this->addItemAttribute('imageurl', $regs[1]);
 
 		}
 

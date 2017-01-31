@@ -36,7 +36,7 @@ class amazon extends SitePlugin {
 
 		$this->asinId = $this->sites[$site_type]['asinId'];
 		$this->url = $this->sites[$site_type]['url'];
-		$this->_httpClient->agent = 'Mozilla/5.0 (OpenDB) Gecko/20100101 Firefox/42.0';
+		$this->_httpClient->agent = 'Mozilla/5.0 (X11; OpenDB) Gecko/20100101 Firefox/50.0';
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -50,7 +50,7 @@ class amazon extends SitePlugin {
 			$index_type = ifempty($this->getConfigValue('item_type_to_index_map', $s_item_type), strtolower($s_item_type));
 
 			// amazon does not provide the ability to specify how many items per page, so $items_per_page is ignored!
-			$queryUrl = "http://" . $this->url . "/exec/obidos/external-search?index=" . $index_type . "&keyword=" . urlencode($search_vars_r['title']) . "&page=$page_no";
+			$queryUrl = "https://" . $this->url . "/exec/obidos/external-search?index=" . $index_type . "&keyword=" . urlencode($search_vars_r['title']) . "&page=$page_no";
 
 			$pageBuffer = $this->fetchURI($queryUrl);
 		}
@@ -131,7 +131,7 @@ class amazon extends SitePlugin {
 
 	function queryItem($search_attributes_r, $s_item_type) {
 		// assumes we have an exact match here
-		$pageBuffer = $this->fetchURI("http://" . $this->url . "/gp/product/" . $search_attributes_r[$this->asinId]);
+		$pageBuffer = $this->fetchURI("https://" . $this->url . "/gp/product/" . $search_attributes_r[$this->asinId]);
 
 		// no sense going any further here.
 		if (strlen($pageBuffer) == 0)
@@ -743,7 +743,7 @@ class amazon extends SitePlugin {
 		//<A HREF="http://amazon.imdb.com/title/tt0319061/">
 		//http://www.amazon.com/gp/redirect.html/103-0177494-1143005?location=http://amazon.imdb.com/title/tt0319061&token=F5BF95E1B869FD4EB1192434BA5B7FECBA8B3718
 		//http://amazon.imdb.com/title/tt0319061
-		if (preg_match("!http://amazon.imdb.com/title/tt([0-9]+)!is", $pageBuffer, $regs)) {
+		if (preg_match("!://amazon.imdb.com/title/tt([0-9]+)!is", $pageBuffer, $regs)) {
 			$this->addItemAttribute('imdb_id', $regs[1]);
 		}
 

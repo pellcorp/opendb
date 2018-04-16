@@ -531,7 +531,7 @@ if (is_site_enabled()) {
 									echo ("</form>");
 								} else {
 									if (is_not_empty_array($itemImportHandler->getItemIDList())) {
-										$footer_links_r[] = array(url => 'listings.php?item_id_range=' . urlencode(get_item_id_range($itemImportHandler->getItemIDList())), text => get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
+										$footer_links_r[] = array('url' => 'listings.php?item_id_range=' . urlencode(get_item_id_range($itemImportHandler->getItemIDList())), 'text' => get_opendb_lang_var('list_imported_items', 'count', count($itemImportHandler->getItemIDList())));
 									}
 
 									//Get rid of the file now!

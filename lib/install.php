@@ -295,7 +295,7 @@ function split_sql_file($sql, &$pieces) {
 	
 
 	// add any rest to the returned array
-	if (strlen ( $sql ) > 0 && ereg ( '[^[:space:]]+', $sql )) {
+	if (strlen ( $sql ) > 0 && preg_match ( '/[^[:space:]]+/', $sql )) {
 		$pieces [] = $sql;
 	}
 	

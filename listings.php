@@ -310,17 +310,17 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 		// Now we have to merge in search terms, and add them after the 'title' column_id
 		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs,
 				array(
-						array(column_type => 's_attribute_type', s_attribute_type => $HTTP_VARS['attribute_type'], attribute_val => $HTTP_VARS['attribute_val'], lookup_attribute_val => $HTTP_VARS['lookup_attribute_val'], attr_match => $HTTP_VARS['attr_match'],
-								attr_update_on => $HTTP_VARS['attr_update_on'], orderby_support_ind => 'Y', attr_update_on_days => $HTTP_VARS['attr_update_on_days'], search_attribute_ind => ifempty($HTTP_VARS['search_list'], $HTTP_VARS['attribute_list']))));
+						array('column_type' => 's_attribute_type', 's_attribute_type' => $HTTP_VARS['attribute_type'], 'attribute_val' => $HTTP_VARS['attribute_val'], 'lookup_attribute_val' => $HTTP_VARS['lookup_attribute_val'], 'attr_match' => $HTTP_VARS['attr_match'],
+								'attr_update_on' => $HTTP_VARS['attr_update_on'], 'orderby_support_ind' => 'Y', 'attr_update_on_days' => $HTTP_VARS['attr_update_on_days'], 'search_attribute_ind' => ifempty($HTTP_VARS['search_list'], $HTTP_VARS['attribute_list']))));
 	}
 
 	// need to add status_comment to listing if search for status comment enabled.							
 	if (strlen($HTTP_VARS['status_comment']) > 0) {
-		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs, array(array(column_type => 's_field_type', s_field_type => 'STATUSCMNT')));
+		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs, array(array('column_type' => 's_field_type', 's_field_type' => 'STATUSCMNT')));
 	}
 
 	if (strlen($HTTP_VARS['rating']) > 0) {
-		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs, array(array(column_type => 's_field_type', s_field_type => 'RATING')));
+		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs, array(array('column_type' => 's_field_type', 's_field_type' => 'RATING')));
 	}
 
 	for ($i = 0; $i < count($v_column_display_config_rs); $i++) {
@@ -456,11 +456,11 @@ function get_search_query_matrix($HTTP_VARS) {
 
 		if ($HTTP_VARS['title_match'] == 'word' || $HTTP_VARS['title_match'] == 'partial') {
 			if (is_null($HTTP_VARS['title_case']))
-				$searches[] = array(prompt => get_opendb_lang_var('title') . ' (<em>' . get_match_type($HTTP_VARS['title_match']) . '</em>)', field => $HTTP_VARS['title']);
+				$searches[] = array('prompt' => get_opendb_lang_var('title') . ' (<em>' . get_match_type($HTTP_VARS['title_match']) . '</em>)', 'field' => $HTTP_VARS['title']);
 			else
-				$searches[] = array(prompt => get_opendb_lang_var('title') . ' (<em>' . get_match_type($HTTP_VARS['title_match']) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', field => $HTTP_VARS['title']);
+				$searches[] = array('prompt' => get_opendb_lang_var('title') . ' (<em>' . get_match_type($HTTP_VARS['title_match']) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', 'field' => $HTTP_VARS['title']);
 		} else {
-			$searches[] = array(prompt => get_opendb_lang_var('title'), field => $HTTP_VARS['title']);
+			$searches[] = array('prompt' => get_opendb_lang_var('title'), 'field' => $HTTP_VARS['title']);
 		}
 	}
 
@@ -468,20 +468,20 @@ function get_search_query_matrix($HTTP_VARS) {
 		// If s_item_type defined, we can get at the s_attribute_type of the category value.
 		if (strlen($HTTP_VARS['s_item_type']) > 0) {
 			$attribute_type_r = fetch_sfieldtype_item_attribute_type_r($HTTP_VARS['s_item_type'], 'CATEGORY');
-			$searches[] = array(prompt => get_opendb_lang_var('category'), field => get_item_display_field(NULL, $attribute_type_r, $HTTP_VARS['category'], FALSE));
+			$searches[] = array('prompt' => get_opendb_lang_var('category'), 'field' => get_item_display_field(NULL, $attribute_type_r, $HTTP_VARS['category'], FALSE));
 		} else {
-			$searches[] = array(prompt => get_opendb_lang_var('category'), field => $HTTP_VARS['category']);
+			$searches[] = array('prompt' => get_opendb_lang_var('category'), 'field' => $HTTP_VARS['category']);
 		}
 	}
 
 	if (strlen($HTTP_VARS['owner_id']) > 0) {
 		$username = fetch_user_name($HTTP_VARS['owner_id']);
 		if (strlen($username) > 0)
-			$searches[] = array(prompt => get_opendb_lang_var('owner'), field => $username . ' (' . $HTTP_VARS['owner_id'] . ')');
+			$searches[] = array('prompt' => get_opendb_lang_var('owner'), 'field' => $username . ' (' . $HTTP_VARS['owner_id'] . ')');
 	}
 
 	if (strlen($HTTP_VARS['s_item_type_group']) > 0) {
-		$searches[] = array(prompt => get_opendb_lang_var('s_item_type_group'), field => $HTTP_VARS['s_item_type_group']);
+		$searches[] = array('prompt' => get_opendb_lang_var('s_item_type_group'), 'field' => $HTTP_VARS['s_item_type_group']);
 	}
 
 	if (is_array($HTTP_VARS['s_item_type'])) {
@@ -491,16 +491,16 @@ function get_search_query_matrix($HTTP_VARS) {
 			$field .= theme_image($item_type_r['image'], $item_type_r['description'], 's_item_type');
 		}
 
-		$searches[] = array(prompt => get_opendb_lang_var('s_item_type'), field => $field);
+		$searches[] = array('prompt' => get_opendb_lang_var('s_item_type'), 'field' => $field);
 	} else if (strlen($HTTP_VARS['s_item_type']) > 0) {
 		$item_type_r = fetch_item_type_r($HTTP_VARS['s_item_type']);
-		$searches[] = array(prompt => get_opendb_lang_var('s_item_type'), field => theme_image($item_type_r['image'], $item_type_r['description'], 's_item_type'));
+		$searches[] = array('prompt' => get_opendb_lang_var('s_item_type'), 'field' => theme_image($item_type_r['image'], $item_type_r['description'], 's_item_type'));
 	}
 
 	if (is_numeric($HTTP_VARS['rating'])) {
 		$attribute_type_r = fetch_cached_attribute_type_r('S_RATING');
 
-		$searches[] = array(prompt => $attribute_type_r['prompt'], field => get_display_field($attribute_type_r['s_attribute_type'], NULL, 'review()', $HTTP_VARS['rating'], FALSE));
+		$searches[] = array('prompt' => $attribute_type_r['prompt'], 'field' => get_display_field($attribute_type_r['s_attribute_type'], NULL, 'review()', $HTTP_VARS['rating'], FALSE));
 	}
 
 	$attribute_type_r = NULL;
@@ -515,7 +515,7 @@ function get_search_query_matrix($HTTP_VARS) {
 			// Special category search, but ignore if category variable actually specified.
 			if (strlen($HTTP_VARS['category']) == 0 && strlen($HTTP_VARS['attribute_val']) > 0 && $HTTP_VARS['attr_match'] == 'category') {
 				// We do not want the Listing Link to be added to this display field
-				$searches[] = array(prompt => $attribute_type_r['prompt'], field => get_item_display_field(NULL, $attribute_type_r, stripslashes($HTTP_VARS['attribute_val']), FALSE));
+				$searches[] = array('prompt' => $attribute_type_r['prompt'], 'field' => get_item_display_field(NULL, $attribute_type_r, stripslashes($HTTP_VARS['attribute_val']), FALSE));
 			} else {
 				if (strlen($HTTP_VARS['attribute_val']) > 0) {
 					$HTTP_VARS['attribute_val'] = stripslashes($HTTP_VARS['attribute_val']);
@@ -530,17 +530,17 @@ function get_search_query_matrix($HTTP_VARS) {
 				}
 
 				if (!is_lookup_attribute_type($HTTP_VARS['attribute_type']) && $HTTP_VARS['attr_match'] != 'exact')
-					$searches[] = array(prompt => $attribute_type_r['prompt'] . ' (<em>' . get_match_type($HTTP_VARS['attr_match']) . '</em>)', field => $search);
+					$searches[] = array('prompt' => $attribute_type_r['prompt'] . ' (<em>' . get_match_type($HTTP_VARS['attr_match']) . '</em>)', 'field' => $search);
 				else
-					$searches[] = array(prompt => $attribute_type_r['prompt'], field => $search);
+					$searches[] = array('prompt' => $attribute_type_r['prompt'], 'field' => $search);
 			}
 		}//if(is_not_empty_array($attribute_type_r))
 	} else {
 		if (strlen($HTTP_VARS['attribute_val']) > 0) { // specified a search term without attribute type, this is a global search.
  			if (is_null($HTTP_VARS['attr_case'])) {
-				$searches[] = array(prompt => get_opendb_lang_var('attribute_val') . ' (<em>' . get_match_type(ifempty($HTTP_VARS['attr_match'], 'exact')) . '</em>)', field => stripslashes($HTTP_VARS['attribute_val']));
+				$searches[] = array('prompt' => get_opendb_lang_var('attribute_val') . ' (<em>' . get_match_type(ifempty($HTTP_VARS['attr_match'], 'exact')) . '</em>)', 'field' => stripslashes($HTTP_VARS['attribute_val']));
 			} else {
-				$searches[] = array(prompt => get_opendb_lang_var('attribute_val') . ' (<em>' . get_match_type(ifempty($HTTP_VARS['attr_match'], 'exact')) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', field => stripslashes($HTTP_VARS['attribute_val']));
+				$searches[] = array('prompt' => get_opendb_lang_var('attribute_val') . ' (<em>' . get_match_type(ifempty($HTTP_VARS['attr_match'], 'exact')) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', 'field' => stripslashes($HTTP_VARS['attribute_val']));
 			}
 		}
 	}
@@ -553,9 +553,9 @@ function get_search_query_matrix($HTTP_VARS) {
 			$prompt = get_opendb_lang_var('attributes_updated');
 
 		if (strlen($HTTP_VARS['datetimemask']) > 0)
-			$searches[] = array(prompt => $prompt, field => $HTTP_VARS['attr_update_on'] . ' (' . $HTTP_VARS['datetimemask'] . ')');
+			$searches[] = array('prompt' => $prompt, 'field' => $HTTP_VARS['attr_update_on'] . ' (' . $HTTP_VARS['datetimemask'] . ')');
 		else
-			$searches[] = array(prompt => $prompt, field => $HTTP_VARS['attr_update_on']);
+			$searches[] = array('prompt' => $prompt, 'field' => $HTTP_VARS['attr_update_on']);
 	} else if (is_numeric($HTTP_VARS['attr_update_on_days'])) {
 		if (is_not_empty_array($attribute_type_r))
 			$prompt = get_opendb_lang_var('attribute_prompt_updated', array('s_attribute_type' => $attribute_type_r['s_attribute_type'], 'prompt' => $attribute_type_r['prompt']));
@@ -571,14 +571,14 @@ function get_search_query_matrix($HTTP_VARS) {
 		else if ($HTTP_VARS['attr_update_on_days'] == '365')
 			$field = get_opendb_lang_var('one_year_ago');
 
-		$searches[] = array(prompt => $prompt, field => $field);
+		$searches[] = array('prompt' => $prompt, 'field' => $field);
 	}
 
 	if (strlen($HTTP_VARS['update_on']) > 0) {
 		if (strlen($HTTP_VARS['datetimemask']) > 0)
-			$searches[] = array(prompt => get_opendb_lang_var('updated'), field => $HTTP_VARS['update_on'] . ' (' . $HTTP_VARS['datetimemask'] . ')');
+			$searches[] = array('prompt' => get_opendb_lang_var('updated'), 'field' => $HTTP_VARS['update_on'] . ' (' . $HTTP_VARS['datetimemask'] . ')');
 		else
-			$searches[] = array(prompt => get_opendb_lang_var('updated'), field => $HTTP_VARS['update_on']);
+			$searches[] = array('prompt' => get_opendb_lang_var('updated'), 'field' => $HTTP_VARS['update_on']);
 	} else if (is_numeric($HTTP_VARS['update_on_days'])) {
 		if ($HTTP_VARS['update_on_days'] == '1')
 			$field = get_opendb_lang_var('one_day_ago');
@@ -589,7 +589,7 @@ function get_search_query_matrix($HTTP_VARS) {
 		else if ($HTTP_VARS['update_on_days'] == '365')
 			$field = get_opendb_lang_var('one_year_ago');
 
-		$searches[] = array(prompt => get_opendb_lang_var('updated'), field => $field);
+		$searches[] = array('prompt' => get_opendb_lang_var('updated'), 'field' => $field);
 	}
 
 	if (is_not_empty_array($HTTP_VARS['s_status_type']) > 0) {
@@ -606,7 +606,7 @@ function get_search_query_matrix($HTTP_VARS) {
 		}
 
 		if (strlen($search) > 0) {
-			$searches[] = array(prompt => get_opendb_lang_var('s_status_type'), field => $search);
+			$searches[] = array('prompt' => get_opendb_lang_var('s_status_type'), 'field' => $search);
 		}
 	}
 
@@ -616,15 +616,15 @@ function get_search_query_matrix($HTTP_VARS) {
 
 		if ($HTTP_VARS['status_comment_match'] == 'word' || $HTTP_VARS['status_comment_match'] == 'partial' || $HTTP_VARS['status_comment_match'] == 'exact') {
 			if (is_null($HTTP_VARS['status_comment_case']))
-				$searches[] = array(prompt => get_opendb_lang_var('status_comment') . ' (<em>' . get_match_type($HTTP_VARS['status_comment_match']) . '</em>)', field => $HTTP_VARS['status_comment']);
+				$searches[] = array('prompt' => get_opendb_lang_var('status_comment') . ' (<em>' . get_match_type($HTTP_VARS['status_comment_match']) . '</em>)', 'field' => $HTTP_VARS['status_comment']);
 			else
-				$searches[] = array(prompt => get_opendb_lang_var('status_comment') . ' (<em>' . get_match_type($HTTP_VARS['status_comment_match']) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', field => $HTTP_VARS['status_comment']);
+				$searches[] = array('prompt' => get_opendb_lang_var('status_comment') . ' (<em>' . get_match_type($HTTP_VARS['status_comment_match']) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', 'field' => $HTTP_VARS['status_comment']);
 		} else {
-			$searches[] = array(prompt => get_opendb_lang_var('status_comment'), field => $HTTP_VARS['status_comment']);
+			$searches[] = array('prompt' => get_opendb_lang_var('status_comment'), 'field' => $HTTP_VARS['status_comment']);
 		}
 	}
 	if (is_numeric($HTTP_VARS['interest_level']) && $HTTP_VARS['interest_level'] > 0) {
-		$searches[] = array(prompt => get_opendb_lang_var('interest'), field => theme_image("interest_1.gif", get_opendb_lang_var('interest'), 's_item_type'));
+		$searches[] = array('prompt' => get_opendb_lang_var('interest'), 'field' => theme_image("interest_1.gif", get_opendb_lang_var('interest'), 's_item_type'));
 	}
 
 	return $searches;
@@ -876,7 +876,7 @@ if (is_site_enabled()) {
 									// The option of having only Quick Checkout links should be provided.
 									if (get_opendb_config_var('listings', 'show_input_actions')) {
 										if (get_opendb_config_var('listings', 'show_input_actions')) {
-											$action_links_rs[] = array(url => 'item_input.php?op=edit&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'edit.gif', text => get_opendb_lang_var('edit'));
+											$action_links_rs[] = array('url' => 'item_input.php?op=edit&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'edit.gif', 'text' => get_opendb_lang_var('edit'));
 
 											// So we only have to check the 'is_site_plugin' once!
 											if (strlen($item_types_rs[$item_r['s_item_type']]['legal_site_type']) == 0) {
@@ -885,11 +885,11 @@ if (is_site_enabled()) {
 
 											// Only site types which are considered legal can be allowed for refresh operation.
 											if (get_opendb_config_var('listings', 'show_refresh_actions') && $item_types_rs[$item_r['s_item_type']]['legal_site_type']) {
-												$action_links_rs[] = array(url => 'item_input.php?op=site-refresh&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'refresh.gif', text => get_opendb_lang_var('refresh'));
+												$action_links_rs[] = array('url' => 'item_input.php?op=site-refresh&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'refresh.gif', 'text' => get_opendb_lang_var('refresh'));
 											}
 
 											if ($status_type_rs[$item_r['s_status_type']]['delete_ind'] == 'Y' && !is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no'])) {
-												$action_links_rs[] = array(url => 'item_input.php?op=delete&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'delete.gif', text => get_opendb_lang_var('delete'));
+												$action_links_rs[] = array('url' => 'item_input.php?op=delete&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'delete.gif', 'text' => get_opendb_lang_var('delete'));
 											}
 										}
 									}
@@ -898,12 +898,12 @@ if (is_site_enabled()) {
 								if (get_opendb_config_var('borrow', 'enable') !== FALSE && get_opendb_config_var('listings.borrow', 'enable') !== FALSE) {
 									if (is_item_borrowed($item_r['item_id'], $item_r['instance_no'])) {
 										if (is_user_allowed_to_checkin_item($item_r['item_id'], $item_r['instance_no'])) {
-											$action_links_rs[] = array(url => 'item_borrow.php?op=check_in&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'check_in_item.gif', text => get_opendb_lang_var('check_in_item'));
+											$action_links_rs[] = array('url' => 'item_borrow.php?op=check_in&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'check_in_item.gif', 'text' => get_opendb_lang_var('check_in_item'));
 										}
 									} else {
 										if (get_opendb_config_var('borrow', 'quick_checkout') !== FALSE && get_opendb_config_var('listings.borrow', 'quick_checkout_action') !== FALSE && $status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y'
 												&& is_user_allowed_to_checkout_item($item_r['item_id'], $item_r['instance_no'])) {
-											$action_links_rs[] = array(url => 'item_borrow.php?op=quick_check_out&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'quick_check_out.gif', text => get_opendb_lang_var('quick_check_out'));
+											$action_links_rs[] = array('url' => 'item_borrow.php?op=quick_check_out&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'quick_check_out.gif', 'text' => get_opendb_lang_var('quick_check_out'));
 										}
 									}
 								}
@@ -914,26 +914,26 @@ if (is_site_enabled()) {
 										if (is_user_granted_permission(PERM_USER_BORROWER) && $status_type_rs[$item_r['s_status_type']]['borrow_ind'] == 'Y') {
 											if (is_item_reserved_or_borrowed($item_r['item_id'], $item_r['instance_no'])) {
 												if (is_item_reserved_by_user($item_r['item_id'], $item_r['instance_no'])) {
-													$action_links_rs[] = array(url => 'item_borrow.php?op=cancel_reserve&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'cancel_reserve.gif', text => get_opendb_lang_var('cancel'));
+													$action_links_rs[] = array('url' => 'item_borrow.php?op=cancel_reserve&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'cancel_reserve.gif', 'text' => get_opendb_lang_var('cancel'));
 												} else if (!is_item_borrowed_by_user($item_r['item_id'], $item_r['instance_no'])) {
 													if ((get_opendb_config_var('borrow', 'allow_reserve_if_borrowed') !== FALSE || !is_item_borrowed($item_r['item_id'], $item_r['instance_no']))
 															&& (get_opendb_config_var('borrow', 'allow_multi_reserve') !== FALSE || !is_item_reserved($item_r['item_id'], $item_r['instance_no']))) {
 														if (get_opendb_config_var('borrow', 'reserve_basket') !== FALSE && get_opendb_config_var('listings.borrow', 'basket_action') !== FALSE) {
-															$action_links_rs[] = array(url => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'add_reserve_basket.gif', text => get_opendb_lang_var('add_to_reserve_list'));
+															$action_links_rs[] = array('url' => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'add_reserve_basket.gif', 'text' => get_opendb_lang_var('add_to_reserve_list'));
 														}
 
 														if (get_opendb_config_var('listings.borrow', 'reserve_action') !== FALSE) {
-															$action_links_rs[] = array(url => 'item_borrow.php?op=reserve&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'reserve_item.gif', text => get_opendb_lang_var('reserve'));
+															$action_links_rs[] = array('url' => 'item_borrow.php?op=reserve&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'reserve_item.gif', 'text' => get_opendb_lang_var('reserve'));
 														}
 													}
 												}
 											} else {
 												if (get_opendb_config_var('borrow', 'reserve_basket') !== FALSE && get_opendb_config_var('listings.borrow', 'basket_action') !== FALSE) {
-													$action_links_rs[] = array(url => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'add_reserve_basket.gif', text => get_opendb_lang_var('add_to_reserve_list'));
+													$action_links_rs[] = array('url' => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'add_reserve_basket.gif', 'text' => get_opendb_lang_var('add_to_reserve_list'));
 												}
 
 												if (get_opendb_config_var('listings.borrow', 'reserve_action') !== FALSE) {
-													$action_links_rs[] = array(url => 'item_borrow.php?op=reserve&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], img => 'reserve_item.gif', text => get_opendb_lang_var('reserve'));
+													$action_links_rs[] = array('url' => 'item_borrow.php?op=reserve&item_id=' . $item_r['item_id'] . '&instance_no=' . $item_r['instance_no'], 'img' => 'reserve_item.gif', 'text' => get_opendb_lang_var('reserve'));
 												}
 											}
 										}
@@ -968,12 +968,12 @@ if (is_site_enabled()) {
 			if ($listingObject->isCheckboxColumns() > 0) {
 				if (get_opendb_config_var('borrow', 'enable') !== FALSE && get_opendb_config_var('listings.multi_borrow', 'enable') !== FALSE) {
 					if (get_opendb_config_var('listings.multi_borrow', 'reserve_action') !== FALSE) {
-						$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reserve', link => get_opendb_lang_var('reserve_item(s)'));
+						$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reserve', 'link' => get_opendb_lang_var('reserve_item(s)'));
 					}
 
 					if (get_opendb_config_var('borrow', 'reserve_basket') !== FALSE
 							&& (get_opendb_config_var('listings.multi_borrow', 'basket_action') === TRUE && (get_opendb_config_var('listings.multi_borrow', 'basket_action_if_not_empty_only') !== TRUE || is_exists_my_reserve_basket(get_opendb_session_var('user_id'))))) {
-						$checkbox_action_rs[] = array('action' => 'borrow.php', 'op' => 'update_my_reserve_basket', link => get_opendb_lang_var('add_to_reserve_list'));
+						$checkbox_action_rs[] = array('action' => 'borrow.php', 'op' => 'update_my_reserve_basket', 'link' => get_opendb_lang_var('add_to_reserve_list'));
 					}
 				}
 

@@ -982,8 +982,8 @@ function process_lookup_results($lookup_results, $value) {
 		while ( list ( , $value ) = each ( $values_r ) ) {
 			if (strlen ( $value ) > 0) {
 				$lookup_val_rs [] = array (
-						value => $value,
-						checked_ind => 'Y' );
+						'value' => $value,
+						'checked_ind' => 'Y' );
 			}
 		}
 	}

@@ -186,7 +186,7 @@ function get_site_type_input_fields($HTTP_VARS, $site_plugin_r, $item_r) {
 
 			switch ($input_field_r['field_type']) {
 			case 'hidden':
-				$input_fields_rs[] = array(name => $input_field_r['field'], type => 'hidden', value => $value);
+				$input_fields_rs[] = array('name' => $input_field_r['field'], 'type' => 'hidden', 'value' => $value);
 				break;
 
 			default:
@@ -199,7 +199,7 @@ function get_site_type_input_fields($HTTP_VARS, $site_plugin_r, $item_r) {
 
 					$display_field_r['prompt'] = $input_field_r['prompt'];
 					$display_field_r['type'] = 'fieldset';
-					$display_field_r['fieldset'][] = array(name => $input_field_r['field'], type => 'text', value => $value);
+					$display_field_r['fieldset'][] = array('name' => $input_field_r['field'], 'type' => 'text', 'value' => $value);
 
 					$inrow = TRUE;
 				} else {
@@ -412,7 +412,7 @@ function handle_site_add_or_refresh($item_r, $status_type_r, &$HTTP_VARS, &$foot
 	}
 
 	if (is_not_empty_array($item_r)) {
-		$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+		$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 	}
 }
 
@@ -742,7 +742,7 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, &$upload_file_fields) {
 			$help_block_r[] = array('img' => 'rs.gif', 'text' => get_opendb_lang_var('refreshed'));
 		}
 
-		$help_block_r[] = array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory');
+		$help_block_r[] = array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory');
 
 		$formContents .= format_help_block($help_block_r);
 
@@ -930,11 +930,11 @@ function handle_edit_or_refresh($op, $item_r, $status_type_r, $HTTP_VARS, &$erro
 		if ($formContents != FALSE)
 			return $formContents;
 		else {
-			$errors = array('error' => get_opendb_lang_var('undefined_error'), detail => '');
+			$errors = array('error' => get_opendb_lang_var('undefined_error'), 'detail' => '');
 			return FALSE;
 		}
 	} else {
-		$errors = array('error' => get_opendb_lang_var('cannot_edit_item_not_owned'), detail => '');
+		$errors = array('error' => get_opendb_lang_var('cannot_edit_item_not_owned'), 'detail' => '');
 
 		opendb_logger(OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to edit item instance they do not own', $item_r);
 		return FALSE;
@@ -948,7 +948,7 @@ function handle_new_or_site($op, $item_r, $status_type_r, $HTTP_VARS, &$errors) 
 			if ($formContents != FALSE)
 				return $formContents;
 			else {
-				$errors = array('error' => get_opendb_lang_var('undefined_error'), detail => '');
+				$errors = array('error' => get_opendb_lang_var('undefined_error'), 'detail' => '');
 				return FALSE;
 			}
 		} else {
@@ -1064,9 +1064,9 @@ function handle_site_search(&$sitePlugin, $HTTP_VARS, &$errors, &$footer_links_r
 
 		// either site-add / site-refresh
 		if (is_exists_item_instance($HTTP_VARS['item_id'], $HTTP_VARS['instance']))
-			$footer_links_r[] = array(url => "item_input.php?op=site-refresh" . (strlen($http_url_vars) > 0 ? "&" . $http_url_vars : ""), text => get_opendb_lang_var('new_search'));
+			$footer_links_r[] = array('url' => "item_input.php?op=site-refresh" . (strlen($http_url_vars) > 0 ? "&" . $http_url_vars : ""), 'text' => get_opendb_lang_var('new_search'));
 		else
-			$footer_links_r[] = array(url => "item_input.php?op=site-add" . (strlen($http_url_vars) > 0 ? "&" . $http_url_vars : ""), text => get_opendb_lang_var('new_search'));
+			$footer_links_r[] = array('url' => "item_input.php?op=site-add" . (strlen($http_url_vars) > 0 ? "&" . $http_url_vars : ""), 'text' => get_opendb_lang_var('new_search'));
 
 		$formContents .= "</div>";
 
@@ -1147,10 +1147,10 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 	if ($return_val === "__CONFIRM_EXISTS_TITLE__" || $return_val === "__CONFIRM_EXISTS_OWNER_TITLE__") {
 		if ($return_val === "__CONFIRM_EXISTS_OWNER_TITLE__") {
 			$message_lang_var = 'confirm_title_same_type_and_owner_insert';
-			$footer_links_r[] = array(url => "listings.php?search_list=y&inc_menu=N&owner_id=" . $item_r['owner_id'] . "&title=" . urlencode($item_r['title']) . "&title_match=exact&s_item_type=" . $item_r['s_item_type'], target => '_new', text => get_opendb_lang_var('list_duplicate_title(s)'));
+			$footer_links_r[] = array('url' => "listings.php?search_list=y&inc_menu=N&owner_id=" . $item_r['owner_id'] . "&title=" . urlencode($item_r['title']) . "&title_match=exact&s_item_type=" . $item_r['s_item_type'], 'target' => '_new', 'text' => get_opendb_lang_var('list_duplicate_title(s)'));
 		} else if ($return_val === "__CONFIRM_EXISTS_TITLE__") {
 			$message_lang_var = 'confirm_title_same_type_insert';
-			$footer_links_r[] = array(url => "listings.php?search_list=y&inc_menu=N&title=" . urlencode($item_r['title']) . "&title_match=exact&s_item_type=" . $item_r['s_item_type'], target => '_new', text => get_opendb_lang_var('list_duplicate_title(s)'));
+			$footer_links_r[] = array('url' => "listings.php?search_list=y&inc_menu=N&title=" . urlencode($item_r['title']) . "&title_match=exact&s_item_type=" . $item_r['s_item_type'], 'target' => '_new', 'text' => get_opendb_lang_var('list_duplicate_title(s)'));
 		}
 
 		do_op_title($item_r, $status_type_r, $HTTP_VARS['start-op'] == 'clone_item' ? 'clone_item' : 'insert');
@@ -1187,8 +1187,8 @@ function perform_insert_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 
 			echo format_error_block($errors, 'warning');
 
-			$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
-			$footer_links_r[] = array(url => "item_input.php?op=site-add&owner_id=" . $item_r['owner_id'], text => get_opendb_lang_var('add_new_item'));
+			$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array('url' => "item_input.php?op=site-add&owner_id=" . $item_r['owner_id'], 'text' => get_opendb_lang_var('add_new_item'));
 		} else {
 			do_op_title($item_r, $status_type_r, $HTTP_VARS['start-op'] == 'clone_item' ? 'clone_item' : 'insert');
 			echo format_error_block($errors);
@@ -1249,7 +1249,7 @@ function perform_update_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 
 		echo format_error_block($errors, 'warning');
 
-		$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+		$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 	} else {
 		echo format_error_block($errors);
 	}
@@ -1277,7 +1277,7 @@ function perform_cloneitem_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$foo
 
 		echo format_help_block(get_opendb_lang_var('clone_item_help'));
 
-		$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+		$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 	} else {
 		// at this point we need to populate $HTTP_VARS with all data corresponding to a mapping between the old and possible new item type
 		$HTTP_VARS = array_merge($HTTP_VARS, copy_item_to_http_vars($item_r, $HTTP_VARS['s_item_type']));
@@ -1318,10 +1318,10 @@ function perform_delete_process(&$item_r, &$status_type_r, &$HTTP_VARS, &$footer
 	} else {
 		if ($return_val === "__ABORTED__") {
 			echo ("<p class=\"success\">" . get_opendb_lang_var('item_not_deleted') . "</p>");
-			$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 		} else if ($return_val === FALSE) {
 			echo format_error_block($errors);
-			$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 		} else {
 			echo ("<p class=\"success\">" . get_opendb_lang_var('item_deleted') . "</p>");
 		}
@@ -1370,13 +1370,13 @@ function perform_delete_relation_process(&$item_r, &$status_type_r, &$HTTP_VARS,
     } else {
         if ($return_val == "__ABORTED__") {
             echo ("<p class=\"success\">" . get_opendb_lang_var('item_relation_not_deleted') . "</p>");
-            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+            $footer_links_r[] = array('url' => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
         } else if ($return_val === FALSE) {
             echo format_error_block($errors);
-            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+            $footer_links_r[] = array('url' => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
         } else {
             echo ("<p class=\"success\">" . get_opendb_lang_var('item_relation_deleted') . "</p>");
-            $footer_links_r[] = array(url => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+            $footer_links_r[] = array('url' => "item_input.php?op=edit&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
         }
     }
 }
@@ -1518,7 +1518,7 @@ if (is_site_enabled()) {
 					if (is_exists_item($HTTP_VARS['item_id'])) {
 						$item_r = fetch_item_r($HTTP_VARS['item_id']);
 					} else {
-						$item_r = array(item_id => NULL, title => NULL, s_item_type => trim($HTTP_VARS['s_item_type']));
+						$item_r = array('item_id' => NULL, 'title' => NULL, 's_item_type' => trim($HTTP_VARS['s_item_type']));
 					}
 	
 					$item_r['instance_no'] = NULL; // if a new copy / clone let insert process work out next instance no
@@ -1605,7 +1605,7 @@ if (is_site_enabled()) {
 				}
 	
 				if (is_opendb_session_var('listing_url_vars')) {
-					$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+					$footer_links_r[] = array('url' => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), 'text' => get_opendb_lang_var('back_to_listing'));
 				}
 	
 				echo format_footer_links($footer_links_r);

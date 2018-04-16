@@ -36,10 +36,7 @@ function is_valid_opendb_mailer() {
 	Also used in lib/widgets.php 
 */
 function is_valid_email_addr($email_addr) {
-	if (strlen ( $email_addr ) == 0 || ! ereg ( "^.+@.+\\..+$", $email_addr ) || strpos ( $email_addr, ">" ) !== FALSE)
-		return FALSE;
-	else
-		return TRUE;
+    return filter_var($email_addr, FILTER_VALIDATE_EMAIL);
 }
 
 function get_email_footer() {

@@ -202,9 +202,9 @@ class Listing {
 	function _addHelpEntry($help_text, $img = NULL, $id = NULL) {
 		if ($id === NULL || ! is_array ( $this->_help_entry_added_r ) || in_array ( $id, $this->_help_entry_added_r ) !== TRUE) {
 			$this->_help_entry_rs [] = array (
-					img => $img,
-					text => $help_text,
-					type => $id );
+					'img' => $img,
+					'text' => $help_text,
+					'type' => $id );
 			$this->_help_entry_added_r [] = $id;
 		}
 	}
@@ -224,10 +224,10 @@ class Listing {
 		}
 		
 		$header_column_r = array (
-				title => $title,
-				fieldname => $fieldname,
-				sortcolumn => $sortColumn,
-				type => $type );
+				'title' => $title,
+				'fieldname' => $fieldname,
+				'sortcolumn' => $sortColumn,
+				'type' => $type );
 		
 		if ($fieldname == 'title') {
 			if (is_user_granted_permission ( PERM_VIEW_ITEM_COVERS ) && ($this->_show_item_images === TRUE || ((get_opendb_config_var ( 'listings', 'allow_override_show_item_image' ) === FALSE && get_opendb_config_var ( 'listings', 'show_item_image' ) !== FALSE) || get_opendb_config_var ( 'listings', 'allow_override_show_item_image' ) !== FALSE && ((get_opendb_config_var ( 'listings', 'show_item_image' ) !== FALSE && strlen ( $this->_http_vars ['show_item_image'] ) == 0) || $this->_http_vars ['show_item_image'] == 'Y')))) {
@@ -235,8 +235,8 @@ class Listing {
 				
 				$this->_header_column_rs [] = array (
 						//title=>$title,
-						fieldname => 'coverimage',
-						sortcolumn => FALSE );
+						'fieldname' => 'coverimage',
+						'sortcolumn' => FALSE );
 			}
 		}
 		
@@ -259,44 +259,44 @@ class Listing {
 	 */
 	function addCheckboxColumn($value, $isChecked = FALSE) {
 		$this->_row_column_rs [] = array (
-				column_type => 'checkbox',
-				value => $value,
-				checked => $isChecked );
+				'column_type' => 'checkbox',
+				'value' => $value,
+				'checked' => $isChecked );
 		
 		$this->_is_checkbox_columns = TRUE;
 	}
 
 	function addUserNameColumn($user_id, $extra_http_vars = NULL) {
 		$this->_row_column_rs [] = array (
-				column_type => 'username',
-				user_id => $user_id,
-				fullname => fetch_user_name ( $user_id ),
-				extra_http_vars => $extra_http_vars );
+				'column_type' => 'username',
+				'user_id' => $user_id,
+				'fullname' => fetch_user_name ( $user_id ),
+				'extra_http_vars' => $extra_http_vars );
 	}
 
 	function addInterestColumn($item_id, $instance_no, $user_id, $level, $extra_http_vars = NULL) {
 		$this->_row_column_rs [] = array (
-				column_type => 'interest',
-				item_id => $item_id,
-				instance_no => $instance_no,
-				user_id => $user_id,
-				level => $level,
-				extra_http_vars => $extra_http_vars );
+				'column_type' => 'interest',
+				'item_id' => $item_id,
+				'instance_no' => $instance_no,
+				'user_id' => $user_id,
+				'level' => $level,
+				'extra_http_vars' => $extra_http_vars );
 	}
 
 	function addThemeImageColumn($src, $alt = NULL, $title = NULL, $type = NULL) {
 		$this->_row_column_rs [] = array (
-				column_type => 'theme_image',
-				src => $src,
-				alt => $alt,
-				title => $title,
-				type => $type );
+				'column_type' => 'theme_image',
+				'src' => $src,
+				'alt' => $alt,
+				'title' => $title,
+				'type' => $type );
 	}
 
 	function addItemTypeImageColumn($s_item_type) {
 		$this->_row_column_rs [] = array (
-				column_type => 'item_type_image',
-				s_item_type => $s_item_type );
+				'column_type' => 'item_type_image',
+				's_item_type' => $s_item_type );
 	}
 
 	/**
@@ -342,48 +342,48 @@ class Listing {
 		
 		if ($item_cover_image !== FALSE) {
 			$this->_row_column_rs [] = array (
-					column_type => 'coverimage',
-					title_href_link => $title_href_link,
-					item_cover_image => $item_cover_image );
+					'column_type' => 'coverimage',
+					'title_href_link' => $title_href_link,
+					'item_cover_image' => $item_cover_image );
 		}
 		
 		$this->_row_column_rs [] = array (
-				column_type => 'title',
-				item_title => $item_r ['title'],
-				title_href_link => $title_href_link,
-				is_item_reviewed => $is_item_reviewed,
-				is_borrowed_or_returned => $is_borrowed_or_returned );
+				'column_type' => 'title',
+				'item_title' => $item_r ['title'],
+				'title_href_link' => $title_href_link,
+				'is_item_reviewed' => $is_item_reviewed,
+				'is_borrowed_or_returned' => $is_borrowed_or_returned );
 	}
 
 	function addActionColumn($action_links_rs) {
 		$this->_row_column_rs [] = array (
-				column_type => 'action_links',
-				action_links => $action_links_rs );
+				'column_type' => 'action_links',
+				'action_links' => $action_links_rs );
 	}
 
 	function addDisplayColumn($s_attribute_type, $prompt, $display_type, $value) {
 		$this->_row_column_rs [] = array (
-				column_type => 'display',
-				attribute_type => $s_attribute_type,
-				prompt => $prompt,
-				display_type => $display_type,
-				value => $value );
+				'column_type' => 'display',
+				'attribute_type' => $s_attribute_type,
+				'prompt' => $prompt,
+				'display_type' => $display_type,
+				'value' => $value );
 	}
 
 	/**
 	*/
 	function addAttrDisplayColumn($item_r, $attribute_type_r, $value) {
 		$this->_row_column_rs [] = array (
-				column_type => 'attribute_display',
-				item_r => $item_r,
-				attribute_type_r => $attribute_type_r,
-				value => $value );
+				'column_type' => 'attribute_display',
+				'item_r' => $item_r,
+				'attribute_type_r' => $attribute_type_r,
+				'value' => $value );
 	}
 
 	function addColumn($value = NULL) {
 		$this->_row_column_rs [] = array (
-				column_type => 'default',
-				value => $value );
+				'column_type' => 'default',
+				'value' => $value );
 	}
 
 	function startRow() {

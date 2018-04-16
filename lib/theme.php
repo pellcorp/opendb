@@ -176,7 +176,7 @@ function add_css_files($pageid, $mode, &$css_file_list) {
 	if (strlen ( $mode ) == 0) {
 		if (strlen ( $theme ) > 0 && file_exists ( "./theme/$theme/${pageid}.css" )) {
 			$css_file_list [] = array (
-					file => "./theme/$theme/${pageid}.css" );
+					'file' => "./theme/$theme/${pageid}.css" );
 		}
 		
 		$browsers_r = $_OpendbBrowserSniffer->getSupportedBrowsers ();
@@ -185,19 +185,19 @@ function add_css_files($pageid, $mode, &$css_file_list) {
 			
 			if (strlen ( $theme ) > 0 && file_exists ( "./theme/$theme/${pageid}_${suffix}.css" )) {
 				$css_file_list [] = array (
-						file => "./theme/$theme/${pageid}_${suffix}.css",
-						browser => $browser );
+						'file' => "./theme/$theme/${pageid}_${suffix}.css",
+						'browser' => $browser );
 			}
 		}
 	} else if ($mode == 'printable') {
 		if (strlen ( $theme ) > 0 && file_exists ( "./theme/$theme/${pageid}_print.css" )) {
 			$css_file_list [] = array (
-					file => "./theme/$theme/${pageid}_print.css" );
+					'file' => "./theme/$theme/${pageid}_print.css" );
 		}
 	} else if ($mode == 'no-menu') {
 		if (strlen ( $theme ) > 0 && file_exists ( "./theme/$theme/${pageid}_nomenu.css" )) {
 			$css_file_list [] = array (
-					file => "./theme/$theme/${pageid}_nomenu.css" );
+					'file' => "./theme/$theme/${pageid}_nomenu.css" );
 		}
 	}
 }
@@ -367,7 +367,7 @@ function is_exists_theme($theme) {
 function get_user_theme_r() {
 	$handle = opendir ( './theme' );
 	while ( $file = readdir ( $handle ) ) {
-		if (! ereg ( "^[.]", $file ) && is_dir ( "./theme/$file" )) {
+		if (! preg_match ( "/^[.]/", $file ) && is_dir ( "./theme/$file" )) {
 			if (is_exists_theme ( $file )) {
 				$themes [] = $file;
 			}

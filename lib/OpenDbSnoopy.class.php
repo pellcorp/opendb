@@ -38,8 +38,8 @@ class OpenDbSnoopy extends Snoopy {
 		// if file cache table is not installed, we cannot use file cache.
 		$this->_file_cache_enabled = get_opendb_config_var ( 'http.cache', 'enable' );
 		
-		//override user agent.
-		$this->agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4';
+		// override user agent.
+		$this->agent = 'Mozilla/5.0 (X11; CentOS) Gecko/20100101 Firefox/50.0';
 		
 		// in how many cases is this going to work?
 		$this->passcookies = FALSE;
@@ -90,8 +90,8 @@ class OpenDbSnoopy extends Snoopy {
 	function __debug($method, $message, $detail = NULL) {
 		if ($this->_debug) {
 			$this->_debugMessages [] = array (
-					error => "OpenDbSnoopy::$method - $message",
-					detail => $detail );
+					'error' => "OpenDbSnoopy::$method - $message",
+					'detail' => $detail );
 		}
 	}
 	

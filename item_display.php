@@ -204,12 +204,12 @@ if (is_site_enabled()) {
 			}
 
 			if (is_export_plugin(get_opendb_config_var('item_display', 'export_link')) && is_user_granted_permission(PERM_USER_EXPORT)) {
-				$footer_links_r[] = array(url => "export.php?op=export&plugin=" . get_opendb_config_var('item_display', 'export_link') . "&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('export_item_record'));
+				$footer_links_r[] = array('url' => "export.php?op=export&plugin=" . get_opendb_config_var('item_display', 'export_link') . "&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('export_item_record'));
 			}
 
 			// Include a Back to Listing link.
 			if (is_opendb_session_var('listing_url_vars')) {
-				$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+				$footer_links_r[] = array('url' => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), 'text' => get_opendb_lang_var('back_to_listing'));
 			}
 
 			echo (format_footer_links($footer_links_r));

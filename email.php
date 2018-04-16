@@ -131,7 +131,8 @@ function show_email_form($to_userid, $to_fullname, $from_userid, $from_fullname,
 
 	echo ("</table>");
 
-	$help_block_r[] = array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory');
+	$help_block_r[] = array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'),
+                            'id' => 'compulsory');
 
 	echo format_help_block($help_block_r);
 
@@ -157,7 +158,8 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 			if (opendb_user_email($touser_r['user_id'], $from_userid, $subject, $message, $errors)) {
 				$success[] = $touser_r['fullname'] . " (" . $user_id . ")";
 			} else {
-				$failures[] = array(user => $touser_r['fullname'] . " (" . $user_id . ")", error => $errors);
+				$failures[] = array('user' => $touser_r['fullname'] . " (" . $user_id . ")",
+                                    'error' => $errors);
 			}
 			$errors = NULL;
 		}

@@ -113,19 +113,19 @@ function get_s_item_listing_column_conf_rs($s_item_type_group, $s_item_type) {
 	} else {
 		return array (
 				array (
-						column_type => 's_field_type',
-						s_field_type => 'TITLE' ),
+						'column_type' => 's_field_type',
+						's_field_type' => 'TITLE' ),
 				array (
-						column_type => 'action_links' ),
+						'column_type' => 'action_links' ),
 				array (
-						column_type => 's_field_type',
-						s_field_type => 'OWNER' ),
+						'column_type' => 's_field_type',
+						's_field_type' => 'OWNER' ),
 				array (
-						column_type => 's_field_type',
-						s_field_type => 'STATUSTYPE' ),
+						'column_type' => 's_field_type',
+						's_field_type' => 'STATUSTYPE' ),
 				array (
-						column_type => 's_field_type',
-						s_field_type => 'CATEGORY' ) );
+						'column_type' => 's_field_type',
+						's_field_type' => 'CATEGORY' ) );
 	}
 }
 ?>

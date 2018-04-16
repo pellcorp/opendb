@@ -73,7 +73,7 @@ function get_edit_announcement_input_form($announcement_r, $HTTP_VARS = NULL) {
 
 	$buffer .= "</table>";
 
-	$help_r[] = array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory');
+	$help_r[] = array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory');
 	$help_r[] = array('text' => 'A zero in Display Days indicates the announcment will never expire.');
 	$help_r[] = array('text' => 'No validation is performed on HTML entered in the Announcement text field.');
 

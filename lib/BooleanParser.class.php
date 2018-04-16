@@ -48,7 +48,7 @@ class BooleanLexer {
 
 		// Initialise lookahead stack
 		$this->stackPtr = 0;
-		$this->tokenStack = NULL;
+		$this->tokenStack = array();
 	}
 	
 	/*

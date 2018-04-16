@@ -30,14 +30,14 @@ function get_opendb_rss_feeds() {
 	
 	if (is_user_granted_permission ( PERM_VIEW_ANNOUNCEMENTS )) {
 		$feeds_r [] = array (
-				feed => 'announcements',
-				title => get_opendb_lang_var ( 'announcements' ) );
+				'feed' => 'announcements',
+				'title' => get_opendb_lang_var ( 'announcements' ) );
 	}
 	
 	if (is_user_granted_permission ( PERM_VIEW_LISTINGS )) {
 		$feeds_r [] = array (
-				feed => 'new_items',
-				title => get_opendb_lang_var ( 'new_items_added' ) );
+				'feed' => 'new_items',
+				'title' => get_opendb_lang_var ( 'new_items_added' ) );
 	}
 	
 	return $feeds_r;

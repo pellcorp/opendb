@@ -697,7 +697,7 @@ if ($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update') {
 
 	display_s_item_type_insert_form($HTTP_VARS['op'] == 'insert_type' ? $HTTP_VARS : NULL);
 
-	echo (format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory')));
+	echo (format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory')));
 
 	if (get_opendb_config_var('widgets', 'enable_javascript_validation') !== FALSE)
 		echo ("\n<input type=\"button\" class=\"button\" value=\"Insert\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");

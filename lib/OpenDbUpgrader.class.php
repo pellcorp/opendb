@@ -47,9 +47,9 @@ class OpenDbUpgrader {
 			$this->_steps = $steps_r;
 		} else {
 			$this->_steps [] = array (
-					title => NULL,
-					description => NULL,
-					skippable => FALSE );
+					'title' => NULL,
+					'description' => NULL,
+					'skippable' => FALSE );
 		}
 		
 		$this->_from_version = $from_version;

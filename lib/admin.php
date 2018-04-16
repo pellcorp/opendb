@@ -72,7 +72,7 @@ function get_overflow_tooltip_column($columntext, $size = NULL) {
 function get_admin_tools_r() {
 	$handle = opendir ( './admin' );
 	while ( $file = readdir ( $handle ) ) {
-		if ((! ereg ( "[.]", $file )) && file_exists ( './admin/' . $file . '/index.php' )) {
+		if ( (strpos($file, '.') === FALSE) && file_exists ( './admin/' . $file . '/index.php' )) {
 			$adminlist [] = $file;
 		}
 	}
@@ -191,7 +191,7 @@ function generate_sql_list($ADMIN_TYPE, $typeName, $sqlRegexp, $is_not_exists_fu
 				$sqllist [] = array (
 						'sqlfile' => $filelist [$i],
 						'type' => $type,
-						description => $description );
+						'description' => $description );
 			}
 		}
 		

@@ -105,15 +105,15 @@ if (is_site_enabled()) {
 				if (is_valid_opendb_mailer() && strlen($user_r['email_addr']) > 0 && is_user_granted_permission(PERM_SEND_EMAIL) && is_user_permitted_to_receive_email($user_r['user_id'])) {
 					$url = 'email.php?' . get_url_string(Array('op' => 'send_to_uid', 'uid' => $user_r['user_id'], 'inc_menu' => 'N', 'subject' => ifempty($HTTP_VARS['subject'], get_opendb_lang_var('no_subject'))));
 
-					$footer_links_r[] = array(url => $url, target => 'popup(640,480)', text => get_opendb_lang_var('send_email'));
+					$footer_links_r[] = array('url' => $url, 'target' => 'popup(640,480)', 'text' => get_opendb_lang_var('send_email'));
 				}
 
 				if (is_user_granted_permission(PERM_VIEW_LISTINGS) && $user_r['active_ind'] == 'Y') {
-					$footer_links_r[] = array(url => "listings.php?owner_id=" . $user_r['user_id'], text => get_opendb_lang_var('list_user_items'));
+					$footer_links_r[] = array('url' => "listings.php?owner_id=" . $user_r['user_id'], 'text' => get_opendb_lang_var('list_user_items'));
 				}
 
 				if (is_user_granted_permission(PERM_ADMIN_USER_LISTING) && is_opendb_session_var('user_listing_url_vars')) {
-					$footer_links_r[] = array(url => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), text => get_opendb_lang_var('back_to_user_listing'));
+					$footer_links_r[] = array('url' => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), 'text' => get_opendb_lang_var('back_to_user_listing'));
 				}
 
 				echo format_footer_links($footer_links_r);

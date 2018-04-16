@@ -314,9 +314,9 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 						array_splice ( $value_array, $lookup_key, 1 );
 						
 						$attribute_value_rs [] = array (
-								value => $lookup_r ['value'],
-								display => $lookup_r ['display'],
-								img => $lookup_r ['img'] );
+								'value' => $lookup_r ['value'],
+								'display' => $lookup_r ['display'],
+								'img' => $lookup_r ['img'] );
 					}
 				}
 				db_free_result ( $results );
@@ -329,8 +329,8 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 			while ( list ( , $value ) = each ( $value_array ) ) {
 				if (strlen ( trim ( $value ) ) > 0) {				// In case there are extra spaces
 					$attribute_value_rs [] = array (
-							value => $value,
-							display => $value );
+							'value' => $value,
+							'display' => $value );
 				}
 			}
 		}

@@ -99,21 +99,21 @@ if (is_site_enabled()) {
 					$listingObject->addColumn('<a href="user_profile.php?uid=' . $user_r['user_id'] . '" title="' . get_opendb_lang_var('user_profile') . '">' . $user_name . '</a>');
 
 					$action_links_rs = NULL;
-					$action_links_rs[] = array(url => 'user_admin.php?op=edit&user_id=' . $user_r['user_id'], img => 'edit_user.gif', text => get_opendb_lang_var('edit'));
+					$action_links_rs[] = array('url' => 'user_admin.php?op=edit&user_id=' . $user_r['user_id'], 'img' => 'edit_user.gif', 'text' => get_opendb_lang_var('edit'));
 
 					if ($user_r['user_id'] != get_opendb_session_var('user_id')) {
 						if ($user_r['active_ind'] == 'X') {
-							$action_links_rs[] = array(url => 'user_admin.php?op=delete&user_id=' . $user_r['user_id'], img => 'delete_user.gif', text => get_opendb_lang_var('delete_user'));
+							$action_links_rs[] = array('url' => 'user_admin.php?op=delete&user_id=' . $user_r['user_id'], 'img' => 'delete_user.gif', 'text' => get_opendb_lang_var('delete_user'));
 						} else if ($user_is_active) {
-							$action_links_rs[] = array(url => 'user_admin.php?op=deactivate&user_id=' . $user_r['user_id'], img => 'deactivate_user.gif', text => get_opendb_lang_var('deactivate_user'));
+							$action_links_rs[] = array('url' => 'user_admin.php?op=deactivate&user_id=' . $user_r['user_id'], 'img' => 'deactivate_user.gif', 'text' => get_opendb_lang_var('deactivate_user'));
 						}
 
 						if (!$user_is_active) {
-							$action_links_rs[] = array(url => 'user_admin.php?op=activate&user_id=' . $user_r['user_id'], img => 'activate_user.gif', text => get_opendb_lang_var('activate_user'));
+							$action_links_rs[] = array('url' => 'user_admin.php?op=activate&user_id=' . $user_r['user_id'], 'img' => 'activate_user.gif', 'text' => get_opendb_lang_var('activate_user'));
 						}
 					}
 
-					$action_links_rs[] = array(url => 'user_admin.php?op=change_password&user_id=' . $user_r['user_id'], img => 'change_password.gif', text => get_opendb_lang_var('change_password'));
+					$action_links_rs[] = array('url' => 'user_admin.php?op=change_password&user_id=' . $user_r['user_id'], 'img' => 'change_password.gif', 'text' => get_opendb_lang_var('change_password'));
 
 					$listingObject->addActionColumn($action_links_rs);
 
@@ -136,9 +136,9 @@ if (is_site_enabled()) {
 
 			if ($listingObject->isCheckboxColumns() > 0) {
 				if ($HTTP_VARS['restrict_active_ind'] == 'X') {
-					$checkbox_action_rs[] = array('action' => 'user_admin.php', 'op' => 'activate_users', link => get_opendb_lang_var('activate_users'));
+					$checkbox_action_rs[] = array('action' => 'user_admin.php', 'op' => 'activate_users', 'link' => get_opendb_lang_var('activate_users'));
 				} else if (is_valid_opendb_mailer()) {
-					$checkbox_action_rs[] = array('action' => 'email.php', 'op' => 'send_to_uids', link => get_opendb_lang_var('email_users'));
+					$checkbox_action_rs[] = array('action' => 'email.php', 'op' => 'send_to_uids', 'link' => get_opendb_lang_var('email_users'));
 				}
 
 				echo (format_checkbox_action_links('user_id_rs', get_opendb_lang_var('no_users_checked'), $checkbox_action_rs));

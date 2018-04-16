@@ -95,12 +95,12 @@ function get_item_review_block($item_r) {
 				$action_links_rs = NULL;
 				if (get_opendb_config_var ( 'item_review', 'update_support' ) !== FALSE)
 					$action_links [] = array (
-							url => "item_review.php?op=edit&sequence_number=" . $review_r ['sequence_number'] . "&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
-							text => get_opendb_lang_var ( 'edit' ) );
+							'url' => "item_review.php?op=edit&sequence_number=" . $review_r ['sequence_number'] . "&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
+							'text' => get_opendb_lang_var ( 'edit' ) );
 				if (get_opendb_config_var ( 'item_review', 'delete_support' ) !== FALSE)
 					$action_links [] = array (
-							url => "item_review.php?op=delete&sequence_number=" . $review_r ['sequence_number'] . "&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
-							text => get_opendb_lang_var ( 'delete' ) );
+							'url' => "item_review.php?op=delete&sequence_number=" . $review_r ['sequence_number'] . "&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
+							'text' => get_opendb_lang_var ( 'delete' ) );
 				
 				$buffer .= format_footer_links ( $action_links );
 			}
@@ -137,8 +137,8 @@ function get_item_review_block($item_r) {
 	$action_links = NULL;
 	if (is_user_granted_permission ( PERM_USER_REVIEWER )) {
 		$action_links [] = array (
-				url => "item_review.php?op=add&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
-				text => get_opendb_lang_var ( 'review' ) );
+				'url' => "item_review.php?op=add&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
+				'text' => get_opendb_lang_var ( 'review' ) );
 		
 		$buffer .= format_footer_links ( $action_links );
 	}
@@ -193,14 +193,14 @@ function get_instance_info_block($item_r, $HTTP_VARS, &$instance_info_links_r) {
 	if (is_user_granted_permission ( PERM_ITEM_OWNER )) {
 		if (get_opendb_config_var ( 'item_input', 'item_instance_support' ) !== FALSE) {
 			array_push ( $instance_info_links_r, array (
-					url => "item_input.php?op=newinstance&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
-					text => get_opendb_lang_var ( 'new_item_instance' ) ) );
+					'url' => "item_input.php?op=newinstance&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
+					'text' => get_opendb_lang_var ( 'new_item_instance' ) ) );
 		}
 		
 		if (get_opendb_config_var ( 'item_input', 'clone_item_support' ) !== FALSE) {
 			array_push ( $instance_info_links_r, array (
-					url => "item_input.php?op=clone_item&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
-					text => get_opendb_lang_var ( 'clone_item' ) ) );
+					'url' => "item_input.php?op=clone_item&item_id=" . $item_r ['item_id'] . "&instance_no=" . $item_r ['instance_no'],
+					'text' => get_opendb_lang_var ( 'clone_item' ) ) );
 		}
 	}
 	
@@ -242,23 +242,23 @@ function get_item_status_row($class, $item_r, $selected) {
 	
 	if ((is_user_granted_permission ( PERM_ITEM_OWNER ) && get_opendb_session_var ( 'user_id' ) === $item_r ['owner_id']) || is_user_granted_permission ( PERM_ITEM_ADMIN )) {
 		$action_links_rs [] = array (
-				url => 'item_input.php?op=edit&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-				img => 'edit.gif',
-				text => get_opendb_lang_var ( 'edit' ) );
+				'url' => 'item_input.php?op=edit&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+				'img' => 'edit.gif',
+				'text' => get_opendb_lang_var ( 'edit' ) );
 		
 		// Checks if any legal site plugins defined for $item_r['s_item_type']
 		if (is_item_legal_site_type ( $item_r ['s_item_type'] )) {
 			$action_links_rs [] = array (
-					url => 'item_input.php?op=site-refresh&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-					img => 'refresh.gif',
-					text => get_opendb_lang_var ( 'refresh' ) );
+					'url' => 'item_input.php?op=site-refresh&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+					'img' => 'refresh.gif',
+					'text' => get_opendb_lang_var ( 'refresh' ) );
 		}
 		
 		if ($status_type_r ['delete_ind'] == 'Y' && ! is_item_reserved_or_borrowed ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 			$action_links_rs [] = array (
-					url => 'item_input.php?op=delete&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-					img => 'delete.gif',
-					text => get_opendb_lang_var ( 'delete' ) );
+					'url' => 'item_input.php?op=delete&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+					'img' => 'delete.gif',
+					'text' => get_opendb_lang_var ( 'delete' ) );
 		}
 	}
 	
@@ -269,36 +269,36 @@ function get_item_status_row($class, $item_r, $selected) {
 			if (get_opendb_config_var ( 'borrow', 'quick_checkout' ) !== FALSE && $status_type_r ['borrow_ind'] == 'Y' && is_user_allowed_to_checkout_item ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 				if (! is_item_borrowed ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 					$action_links_rs [] = array (
-							url => 'item_borrow.php?op=quick_check_out&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-							img => 'quick_check_out.gif',
-							text => get_opendb_lang_var ( 'quick_check_out' ) );
+							'url' => 'item_borrow.php?op=quick_check_out&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+							'img' => 'quick_check_out.gif',
+							'text' => get_opendb_lang_var ( 'quick_check_out' ) );
 				}
 			}
 			
 			// Check if already in reservation session variable.
 			if (get_opendb_config_var ( 'borrow', 'reserve_basket' ) !== FALSE && is_item_in_reserve_basket ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 				$action_links_rs [] = array (
-						url => 'borrow.php?op=delete_from_my_reserve_basket&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-						img => 'delete_reserve_basket.gif',
-						text => get_opendb_lang_var ( 'delete_from_reserve_list' ) );
+						'url' => 'borrow.php?op=delete_from_my_reserve_basket&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+						'img' => 'delete_reserve_basket.gif',
+						'text' => get_opendb_lang_var ( 'delete_from_reserve_list' ) );
 			} else if (is_item_reserved_or_borrowed ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 				if (is_item_reserved_by_user ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 					$action_links_rs [] = array (
-							url => 'item_borrow.php?op=cancel_reserve&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-							img => 'cancel_reserve.gif',
-							text => get_opendb_lang_var ( 'cancel_reservation' ) );
+							'url' => 'item_borrow.php?op=cancel_reserve&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+							'img' => 'cancel_reserve.gif',
+							'text' => get_opendb_lang_var ( 'cancel_reservation' ) );
 				} else if (! is_item_borrowed_by_user ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 					if ($status_type_r ['borrow_ind'] == 'Y' && (get_opendb_config_var ( 'borrow', 'allow_reserve_if_borrowed' ) !== FALSE || ! is_item_borrowed ( $item_r ['item_id'], $item_r ['instance_no'] )) && (get_opendb_config_var ( 'borrow', 'allow_multi_reserve' ) !== FALSE || ! is_item_reserved ( $item_r ['item_id'], $item_r ['instance_no'] ))) {
 						if (get_opendb_config_var ( 'borrow', 'reserve_basket' ) !== FALSE) {
 							$action_links_rs [] = array (
-									url => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-									img => 'add_reserve_basket.gif',
-									text => get_opendb_lang_var ( 'add_to_reserve_list' ) );
+									'url' => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+									'img' => 'add_reserve_basket.gif',
+									'text' => get_opendb_lang_var ( 'add_to_reserve_list' ) );
 						} else {
 							$action_links_rs [] = array (
-									url => 'item_borrow.php?op=reserve&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-									img => 'reserve_item.gif',
-									text => get_opendb_lang_var ( 'reserve_item' ) );
+									'url' => 'item_borrow.php?op=reserve&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+									'img' => 'reserve_item.gif',
+									'text' => get_opendb_lang_var ( 'reserve_item' ) );
 						}
 					}
 				}
@@ -306,14 +306,14 @@ function get_item_status_row($class, $item_r, $selected) {
 				if ($status_type_r ['borrow_ind'] == 'Y') {
 					if (get_opendb_config_var ( 'borrow', 'reserve_basket' ) !== FALSE) {
 						$action_links_rs [] = array (
-								url => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-								img => 'add_reserve_basket.gif',
-								text => get_opendb_lang_var ( 'add_to_reserve_list' ) );
+								'url' => 'borrow.php?op=update_my_reserve_basket&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+								'img' => 'add_reserve_basket.gif',
+								'text' => get_opendb_lang_var ( 'add_to_reserve_list' ) );
 					} else {
 						$action_links_rs [] = array (
-								url => 'item_borrow.php?op=reserve&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-								img => 'reserve_item.gif',
-								text => get_opendb_lang_var ( 'reserve_item' ) );
+								'url' => 'item_borrow.php?op=reserve&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+								'img' => 'reserve_item.gif',
+								'text' => get_opendb_lang_var ( 'reserve_item' ) );
 					}
 				}
 			}
@@ -322,17 +322,17 @@ function get_item_status_row($class, $item_r, $selected) {
 	
 	if (is_item_borrowed ( $item_r ['item_id'], $item_r ['instance_no'] ) && is_user_allowed_to_checkin_item ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 		$action_links_rs [] = array (
-				url => 'item_borrow.php?op=check_in&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-				img => 'check_in_item.gif',
-				text => get_opendb_lang_var ( 'check_in_item' ) );
+				'url' => 'item_borrow.php?op=check_in&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+				'img' => 'check_in_item.gif',
+				'text' => get_opendb_lang_var ( 'check_in_item' ) );
 	}
 	
 	if ($item_r ['owner_id'] == get_opendb_session_var ( 'user_id' ) || is_user_granted_permission ( PERM_ADMIN_BORROWER )) {
 		if (is_exists_item_instance_history_borrowed_item ( $item_r ['item_id'], $item_r ['instance_no'] )) {
 			$action_links_rs [] = array (
-					url => 'borrow.php?op=my_item_history&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
-					img => 'item_history.gif',
-					text => get_opendb_lang_var ( 'item_history' ) );
+					'url' => 'borrow.php?op=my_item_history&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'],
+					'img' => 'item_history.gif',
+					'text' => get_opendb_lang_var ( 'item_history' ) );
 		}
 	}
 	
@@ -412,8 +412,8 @@ function get_related_items_block($item_r, $HTTP_VARS, &$instance_info_links_r) {
 	if ((is_user_granted_permission ( PERM_ITEM_OWNER ) && get_opendb_session_var ( 'user_id' ) === $item_r ['owner_id']) || is_user_granted_permission ( PERM_ITEM_ADMIN )) {
 		if (get_opendb_config_var ( 'item_input', 'related_item_support' ) !== FALSE && is_numeric ( $item_r ['item_id'] ) && is_numeric ( $item_r ['instance_no'] )) {
 			array_push ( $instance_info_links_r, array (
-					url => "item_input.php?op=site-add&parent_item_id=" . $item_r ['item_id'] . "&parent_instance_no=" . $item_r ['instance_no'] . "&owner_id=" . $item_r ['owner_id'],
-					text => get_opendb_lang_var ( 'add_related_item' ) ) );
+					'url' => "item_input.php?op=site-add&parent_item_id=" . $item_r ['item_id'] . "&parent_instance_no=" . $item_r ['instance_no'] . "&owner_id=" . $item_r ['owner_id'],
+					'text' => get_opendb_lang_var ( 'add_related_item' ) ) );
 		}
 	}
 	
@@ -460,26 +460,26 @@ function get_related_items_listing($item_r, $HTTP_VARS, $related_mode) {
 			
 			if ((is_user_granted_permission ( PERM_ITEM_OWNER ) && get_opendb_session_var ( 'user_id' ) === $item_r ['owner_id']) || is_user_granted_permission ( PERM_ITEM_ADMIN )) {
 				$action_links_rs [] = array (
-						url => 'item_input.php?op=edit&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'],
-						img => 'edit.gif',
-						text => get_opendb_lang_var ( 'edit' ) );
+						'url' => 'item_input.php?op=edit&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'],
+						'img' => 'edit.gif',
+						'text' => get_opendb_lang_var ( 'edit' ) );
 				
 				if (get_opendb_config_var ( 'listings', 'show_refresh_actions' ) && is_item_legal_site_type ( $related_item_r ['s_item_type'] )) {
 					$action_links_rs [] = array (
-							url => 'item_input.php?op=site-refresh&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'],
-							img => 'refresh.gif',
-							text => get_opendb_lang_var ( 'refresh' ) );
+							'url' => 'item_input.php?op=site-refresh&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'],
+							'img' => 'refresh.gif',
+							'text' => get_opendb_lang_var ( 'refresh' ) );
 				}
 				
 				$action_links_rs [] = array (
-						url => 'item_input.php?op=delete&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'] . '&parent_item_id=' . $item_r ['item_id'] . '&parent_instance_no=' . $item_r ['instance_no'],
-						img => 'delete.gif',
-						text => get_opendb_lang_var ( 'delete' ) );
+						'url' => 'item_input.php?op=delete&item_id=' . $related_item_r ['item_id'] . '&instance_no=' . $related_item_r ['instance_no'] . '&parent_item_id=' . $item_r ['item_id'] . '&parent_instance_no=' . $item_r ['instance_no'],
+						'img' => 'delete.gif',
+						'text' => get_opendb_lang_var ( 'delete' ) );
 				
 				$action_links_rs [] =  array (
-						url => 'item_input.php?op=delete-relation&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'] . '&parent_item_id=' . $related_item_r ['item_id'] . '&parent_instance_no=' . $related_item_r ['instance_no'],
-						img => 'delete.gif',
-						text => get_opendb_lang_var('delete_relationship') );
+						'url' => 'item_input.php?op=delete-relation&item_id=' . $item_r ['item_id'] . '&instance_no=' . $item_r ['instance_no'] . '&parent_item_id=' . $related_item_r ['item_id'] . '&parent_instance_no=' . $related_item_r ['instance_no'],
+						'img' => 'delete.gif',
+						'text' => get_opendb_lang_var('delete_relationship') );
 			}
 			
 			$listingObject->addActionColumn ( $action_links_rs );

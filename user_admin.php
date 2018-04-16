@@ -206,7 +206,7 @@ function get_user_input_form($user_r, $HTTP_VARS) {
 		db_free_result($addr_results);
 	}//if($addr_results)
 
-	$buffer .= format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory'));
+	$buffer .= format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory'));
 
 	if ($HTTP_VARS['op'] == 'new_user') {
 		$buffer .= "<h3>" . get_opendb_lang_var('password') . "</h3>";
@@ -317,7 +317,7 @@ function get_user_password_change_form($user_r, $HTTP_VARS) {
 
 	$buffer .= "</table>";
 
-	$buffer .= format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory'));
+	$buffer .= format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory'));
 
 	if (get_opendb_config_var('widgets', 'enable_javascript_validation') !== FALSE)
 		$onclick_event = "if(!checkForm(this.form)){return false;}else{this.form.submit();}";
@@ -785,7 +785,7 @@ if (is_site_enabled()) {
 			secretimage($HTTP_VARS['gfx_random_number']);
 		} else {
 			if (is_array(get_opendb_session_var('user_listing_url_vars'))) {
-				$footer_links_r[] = array(url => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), text => get_opendb_lang_var('back_to_user_listing'));
+				$footer_links_r[] = array('url' => "user_listing.php?" . get_url_string(get_opendb_session_var('user_listing_url_vars')), 'text' => get_opendb_lang_var('back_to_user_listing'));
 			}
 			
 			if ($HTTP_VARS['op'] == 'new_user') {
@@ -906,7 +906,7 @@ if (is_site_enabled()) {
 							}
 						}
 	
-						$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+						$footer_links_r[] = array('url' => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], 'text' => get_opendb_lang_var('edit_user_info'));
 					} else { // $return_val === FALSE
 	 					echo format_error_block($errors);
 						$HTTP_VARS['op'] = 'new_user';
@@ -960,12 +960,12 @@ if (is_site_enabled()) {
 								echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_deactivate', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
 							} else if ($return_val === "__ABORTED__") {
 								echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_deactivated') . "</p>");
-								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+								$footer_links_r[] = array('url' => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], 'text' => get_opendb_lang_var('edit_user_info'));
 							} else if ($return_val === TRUE) {
 								echo ("<p class=\"success\">" . get_opendb_lang_var('user_deactivated') . "</p>");
 							} else { //if($return_val === FALSE)
 	 							echo format_error_block($errors);
-								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+								$footer_links_r[] = array('url' => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], 'text' => get_opendb_lang_var('edit_user_info'));
 							}
 						} else { //if(is_user_active($HTTP_VARS['user_id']))
 	 						echo format_error_block(get_opendb_lang_var('operation_not_available'));
@@ -1015,10 +1015,10 @@ if (is_site_enabled()) {
 									}
 								}
 	
-								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+								$footer_links_r[] = array('url' => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], 'text' => get_opendb_lang_var('edit_user_info'));
 							} else {
 								echo format_error_block($errors);
-								$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => get_opendb_lang_var('edit_user_info'));
+								$footer_links_r[] = array('url' => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], 'text' => get_opendb_lang_var('edit_user_info'));
 							}
 						} else { //if(!is_user_active($HTTP_VARS['user_id']))
 	 						echo format_error_block(get_opendb_lang_var('operation_not_available'));
@@ -1123,7 +1123,7 @@ if (is_site_enabled()) {
 						echo get_op_confirm_form($PHP_SELF, get_opendb_lang_var('confirm_user_delete', array('fullname' => fetch_user_name($HTTP_VARS['user_id']), 'user_id' => $HTTP_VARS['user_id'])), $HTTP_VARS);
 					} else if ($return_val === '__ABORTED__') {
 						echo ("<p class=\"success\">" . get_opendb_lang_var('user_not_deleted') . "</p>");
-						$footer_links_r[] = array(url => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], text => ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id') ? get_opendb_lang_var('edit_my_info') : get_opendb_lang_var('edit_user_info')));
+						$footer_links_r[] = array('url' => "$PHP_SELF?op=edit&user_id=" . $HTTP_VARS['user_id'], 'text' => ($HTTP_VARS['user_id'] == get_opendb_session_var('user_id') ? get_opendb_lang_var('edit_my_info') : get_opendb_lang_var('edit_user_info')));
 					} else if ($return_val === TRUE) {
 						echo ("<p class=\"success\">" . get_opendb_lang_var('user_deleted') . "</p>");
 					} else { //if($return_val === FALSE)

@@ -403,7 +403,7 @@ function process_borrow_results($op, $mode, $heading, $success_intro, $failure_i
 
 			$user_name = get_opendb_lang_var('user_name', array('fullname' => fetch_user_name($to_user), 'user_id' => $to_user));
 
-			$success_results_rs[] = array(user_name => $user_name, display_titles => $display_title_r, email_result => $email_result, email_errors => $errors);
+			$success_results_rs[] = array('user_name' => $user_name, 'display_titles' => $display_title_r, 'email_result' => $email_result, 'email_errors' => $errors);
 		}
 
 		if (is_not_empty_array($success_results_rs)) {
@@ -429,7 +429,7 @@ function process_borrow_results($op, $mode, $heading, $success_intro, $failure_i
 				$borrow_error_details = get_opendb_lang_var('borrow_error_detail', 'error', $borrowed_item_r['errors']);
 			}
 
-			$failure_results[] = array(display_title => $display_title, errors => array($borrow_error_details));
+			$failure_results[] = array('display_title' => $display_title, 'errors' => array($borrow_error_details));
 		}
 
 		if (is_not_empty_array($failure_results)) {
@@ -582,9 +582,9 @@ if (is_site_enabled()) {
 								// In case someone is trying to pass invalid item_id/instance_no combo's
 								if (is_exists_item_instance($reserve_item_r['item_id'], $reserve_item_r['instance_no'])) {
 									if (($new_borrowed_item_id = handle_reserve($reserve_item_r['item_id'], $reserve_item_r['instance_no'], get_opendb_session_var('user_id'), $HTTP_VARS['more_information'], $errors)) !== FALSE)// This allows reserve to support calls from borrow.php, item_display.php or listings.php
-										$success_items_rs[] = array(item_id => $reserve_item_r['item_id'], instance_no => $reserve_item_r['instance_no'], borrower_id => get_opendb_session_var('user_id'));
+										$success_items_rs[] = array('item_id' => $reserve_item_r['item_id'], 'instance_no' => $reserve_item_r['instance_no'], 'borrower_id' => get_opendb_session_var('user_id'));
 									else
-										$failure_items_rs[] = array(item_id => $reserve_item_r['item_id'], instance_no => $reserve_item_r['instance_no'], borrower_id => get_opendb_session_var('user_id'), errors => $errors);
+										$failure_items_rs[] = array('item_id' => $reserve_item_r['item_id'], 'instance_no' => $reserve_item_r['instance_no'], 'borrower_id' => get_opendb_session_var('user_id'), 'errors' => $errors);
 								}
 							}
 
@@ -739,7 +739,7 @@ if (is_site_enabled()) {
 									if ($new_borrowed_item_id !== FALSE)
 										$success_items_rs[] = fetch_borrowed_item_r($new_borrowed_item_id, TRUE);
 									else
-										$failure_items_rs[] = array(item_id => $checkout_item_r['item_id'], instance_no => $checkout_item_r['instance_no'], borrower_id => $HTTP_VARS['borrower_id'], errors => $errors);
+										$failure_items_rs[] = array('item_id' => $checkout_item_r['item_id'], 'instance_no' => $checkout_item_r['instance_no'], 'borrower_id' => $HTTP_VARS['borrower_id'], 'errors' => $errors);
 								}
 							}
 
@@ -865,10 +865,10 @@ if (is_site_enabled()) {
 
 				// Include a link no matter what, because they might have initiated the action by accident.
 				if (is_numeric($HTTP_VARS['item_id']) && is_numeric($HTTP_VARS['instance_no'])) {
-					$footer_links_r[] = array(url => "item_display.php?item_id=" . $HTTP_VARS['item_id'] . "&instance_no=" . $HTTP_VARS['instance_no'], text => get_opendb_lang_var('back_to_item'));
+					$footer_links_r[] = array('url' => "item_display.php?item_id=" . $HTTP_VARS['item_id'] . "&instance_no=" . $HTTP_VARS['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 				}
 				if (is_opendb_session_var('listing_url_vars')) {
-					$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+					$footer_links_r[] = array('url' => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), 'text' => get_opendb_lang_var('back_to_listing'));
 				}
 
 				echo format_footer_links($footer_links_r);

@@ -115,18 +115,18 @@ function show_login_form($HTTP_VARS, $errors = NULL) {
 
 	if (is_site_enabled() && is_valid_opendb_mailer()) {
 		if (strlen($HTTP_VARS['uid']) > 0 && get_opendb_config_var('login', 'enable_new_pwd_gen') !== FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $HTTP_VARS['uid'])) {
-			$footer_links_r[] = array(url => $PHP_SELF . "?op=newpassword&uid=" . urlencode($HTTP_VARS['uid']), text => get_opendb_lang_var('forgot_your_pwd'));
+			$footer_links_r[] = array('url' => $PHP_SELF . "?op=newpassword&uid=" . urlencode($HTTP_VARS['uid']), 'text' => get_opendb_lang_var('forgot_your_pwd'));
 		}
 
 		// no point if site disabled, email is not available
 		if (get_opendb_config_var('email', 'send_to_site_admin') !== FALSE) {
-			$footer_links_r[] = array(text => get_opendb_lang_var('email_administrator'), target => "popup(640,480)", url => "email.php?op=send_to_site_admin&inc_menu=N");
+			$footer_links_r[] = array('text' => get_opendb_lang_var('email_administrator'), 'target' => "popup(640,480)", 'url' => "email.php?op=send_to_site_admin&inc_menu=N");
 		}
 	}
 
 	// Indicate we should show the signup link.
 	if (get_opendb_config_var('login.signup', 'enable') !== FALSE) {
-		$footer_links_r[] = array(url => "user_admin.php?op=signup", text => get_opendb_lang_var('sign_me_up'));
+		$footer_links_r[] = array('url' => "user_admin.php?op=signup", 'text' => get_opendb_lang_var('sign_me_up'));
 	}
 
 	echo format_footer_links($footer_links_r);
@@ -204,7 +204,7 @@ if (is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op']
 
 			// no point if site disabled, email is not available
 			if (is_site_enabled() && is_valid_opendb_mailer() && get_opendb_config_var('email', 'send_to_site_admin') !== FALSE) {
-				$footer_links_r[] = array(text => get_opendb_lang_var('email_administrator'), target => "popup(640,480)", url => "email.php?op=send_to_site_admin&inc_menu=N&subject=" . get_opendb_lang_var('lost_password'));
+				$footer_links_r[] = array('text' => get_opendb_lang_var('email_administrator'), 'target' => "popup(640,480)", 'url' => "email.php?op=send_to_site_admin&inc_menu=N&subject=" . get_opendb_lang_var('lost_password'));
 			}
 
 			echo format_footer_links($footer_links_r);
@@ -230,7 +230,7 @@ if (is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op']
 			} else if ($result === "SITE_IS_DISABLED") {
 				opendb_site_disabled(get_opendb_config_var('login', 'show_menu') !== FALSE);
 			} else { // $result === FALSE
- 				show_login_form($HTTP_VARS, array('error' => get_opendb_lang_var('login_failure'), details => get_opendb_lang_var('double_check_info')));
+				show_login_form($HTTP_VARS, array('error' => get_opendb_lang_var('login_failure'), 'details' => get_opendb_lang_var('double_check_info')));
 			}
 		} else {
 			show_login_form($HTTP_VARS);

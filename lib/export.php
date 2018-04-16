@@ -131,8 +131,8 @@ function get_export_plugin_list_r() {
 			if ($exportPlugin !== NULL) {
 				if (strcasecmp ( $pluginRef, get_class ( $exportPlugin ) ) === 0) {
 					$pluginList [] = array (
-							name => $pluginRef,
-							description => $exportPlugin->get_display_name () );
+							'name' => $pluginRef,
+							'description' => $exportPlugin->get_display_name () );
 				} else {
 					opendb_logger ( OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, 'Export class is not valid', array (
 							$pluginRef ) );

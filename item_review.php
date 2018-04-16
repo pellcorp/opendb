@@ -67,7 +67,7 @@ function get_edit_form($op, $review_r, $HTTP_VARS) {
 	else
 		$onclick_event = "this.form.submit();";
 
-	$formContents .= format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory'));
+	$formContents .= format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory'));
 
 	$formContents .= "<input type=\"button\" class=\"button\" onclick=\"$onclick_event\" value=\"" . get_opendb_lang_var('save_review') . "\">
 		<input type=\"hidden\" name=\"op\" value=\"$op\">
@@ -83,11 +83,11 @@ function validate_review_input($HTTP_VARS, &$errors) {
 	$errors = NULL;
 
 	if (get_opendb_config_var('item_review', 'comment_compulsory') == TRUE && strlen($HTTP_VARS['comment']) == 0) {
-		$errors[] = array(error => get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('review')));
+		$errors[] = array('error' => get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('review')));
 	}
 
 	if (get_opendb_config_var('item_review', 'rating_compulsory') == TRUE && strlen($HTTP_VARS['rating']) == 0) {
-		$errors[] = array(error => get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('rating')));
+		$errors[] = array('error' => get_opendb_lang_var('prompt_must_be_specified', 'prompt', get_opendb_lang_var('rating')));
 	}
 
 	if (is_array($errors))
@@ -188,10 +188,10 @@ if (is_site_enabled()) {
 				echo ("<p class=\"error\">" . get_opendb_lang_var('item_not_found') . "</p>");
 			}
 
-			$footer_links_r[] = array(url => "item_display.php?item_id=" . $HTTP_VARS['item_id'] . "&instance_no=" . $HTTP_VARS['instance_no'], text => get_opendb_lang_var('back_to_item'));
+			$footer_links_r[] = array('url' => "item_display.php?item_id=" . $HTTP_VARS['item_id'] . "&instance_no=" . $HTTP_VARS['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 
 			if (is_opendb_session_var('listing_url_vars')) {
-				$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+				$footer_links_r[] = array('url' => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), 'text' => get_opendb_lang_var('back_to_listing'));
 			}
 
 			echo format_footer_links($footer_links_r);

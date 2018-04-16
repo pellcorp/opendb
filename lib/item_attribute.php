@@ -606,7 +606,7 @@ function fetch_arrayof_item_attribute_rs($item_id, $instance_no, $s_attribute_ty
 	
 	$results = db_query ( $query );
 	if ($results) {
-		$item_attribute_rs = NULL;
+		$item_attribute_rs = array ();
 		
 		while ( $item_attribute_r = db_fetch_assoc ( $results ) ) {
 			$item_attribute_rs [] = $item_attribute_r;
@@ -720,7 +720,12 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 	
 	if (db_query ( "LOCK TABLES item_attribute WRITE, item_attribute AS ia READ, s_attribute_type AS sat READ" )) {
 		$item_attribute_type_rs = fetch_arrayof_item_attribute_rs ( $item_id, $instance_no, $s_attribute_type, $order_no );
-		
+
+        if ($item_attribute_type_rs === FALSE ) {
+			db_query ( "UNLOCK TABLES" );
+			return FALSE;
+        }
+
 		// if same number of attributes, then we can perform an update only.			
 		if (count ( $item_attribute_type_rs ) > 0 && count ( $item_attribute_type_rs ) == count ( $attribute_val_r )) {
 			$op = 'update';
@@ -728,8 +733,6 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 			$op = 'insert';
 		} else {
 			// if this occurs then the delete_item_attributes function returned FALSE, and that failure would have been logged.
-			
-
 			db_query ( "UNLOCK TABLES" );
 			return FALSE;
 		}

@@ -478,7 +478,7 @@ function handle_item_instance_update($item_r, $status_type_r, $HTTP_VARS, &$erro
 		} else {
 			$errors = array (
 					'error' => get_opendb_lang_var ( 'cannot_update_item_not_owned' ),
-					detail => '' );
+					'detail' => '' );
 			
 			opendb_logger ( OPENDB_LOG_WARN, __FILE__, __FUNCTION__, 'User attempted to update item instance they do not own', $item_r );
 			return FALSE;

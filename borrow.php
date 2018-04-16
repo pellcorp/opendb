@@ -121,9 +121,9 @@ if (is_site_enabled()) {
 
 					$item_r = fetch_item_instance_r($HTTP_VARS['item_id'], $HTTP_VARS['instance_no']);
 					if (is_not_empty_array($item_r)) {
-						$footer_links_r[] = array(url => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], text => get_opendb_lang_var('back_to_item'));
+						$footer_links_r[] = array('url' => "item_display.php?item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 						if (is_opendb_session_var('listing_url_vars')) {
-							$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+							$footer_links_r[] = array('url' => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), 'text' => get_opendb_lang_var('back_to_listing'));
 						}
 
 						// Cannot view item history, unless you are admin, or own the item.
@@ -218,11 +218,11 @@ if (is_site_enabled()) {
 					$HTTP_VARS['op'] = 'my_reserve_basket';
 
 					if (is_exists_item_instance($HTTP_VARS['item_id'], $HTTP_VARS['instance_no'])) {
-						$footer_links_r[] = array(url => "item_display.php?item_id=" . $HTTP_VARS['item_id'] . "&instance_no=" . $HTTP_VARS['instance_no'], text => get_opendb_lang_var('back_to_item'));
+						$footer_links_r[] = array('url' => "item_display.php?item_id=" . $HTTP_VARS['item_id'] . "&instance_no=" . $HTTP_VARS['instance_no'], 'text' => get_opendb_lang_var('back_to_item'));
 					}
 
 					if (is_opendb_session_var('listing_url_vars')) {
-						$footer_links_r[] = array(url => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), text => get_opendb_lang_var('back_to_listing'));
+						$footer_links_r[] = array('url' => "listings.php?" . get_url_string(get_opendb_session_var('listing_url_vars')), 'text' => get_opendb_lang_var('back_to_listing'));
 					}
 				} else if ($HTTP_VARS['op'] == 'admin_history') {
 					echo (_theme_header(get_opendb_lang_var('borrower_history')));
@@ -463,24 +463,24 @@ if (is_site_enabled()) {
 
 					if ($listingObject->isCheckboxColumns() > 0) {
 						if ($HTTP_VARS['op'] == 'my_reserve_basket') {
-							$checkbox_action_rs[] = array('action' => $PHP_SELF, 'op' => 'delete_from_my_reserve_basket', link => get_opendb_lang_var('delete_from_reserve_list'));
-							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reserve', link => get_opendb_lang_var('reserve_item(s)'));
-							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reserve_all', 'checked' => FALSE, link => get_opendb_lang_var('reserve_all_item(s)'));
+							$checkbox_action_rs[] = array('action' => $PHP_SELF, 'op' => 'delete_from_my_reserve_basket', 'link' => get_opendb_lang_var('delete_from_reserve_list'));
+							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reserve', 'link' => get_opendb_lang_var('reserve_item(s)'));
+							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reserve_all', 'checked' => FALSE, 'link' => get_opendb_lang_var('reserve_all_item(s)'));
 						} else if ($HTTP_VARS['op'] == 'my_reserved') {
-							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'cancel_reserve', link => get_opendb_lang_var('cancel_reservation(s)'));
+							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'cancel_reserve', 'link' => get_opendb_lang_var('cancel_reservation(s)'));
 						} else if ($HTTP_VARS['op'] == 'owner_borrowed') {
-							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'check_in', link => get_opendb_lang_var('check_in_item(s)'));
+							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'check_in', 'link' => get_opendb_lang_var('check_in_item(s)'));
 
 							if (is_valid_opendb_mailer()) {
-								$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reminder', link => get_opendb_lang_var('send_reminder(s)'));
+								$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'reminder', 'link' => get_opendb_lang_var('send_reminder(s)'));
 							}
 
 							if (get_opendb_config_var('borrow', 'duration_support') !== FALSE) {
-								$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'extension', link => get_opendb_lang_var('borrow_duration_extension(s)'));
+								$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'extension', 'link' => get_opendb_lang_var('borrow_duration_extension(s)'));
 							}
 						} else if ($HTTP_VARS['op'] == 'owner_reserved') {
-							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'check_out', link => get_opendb_lang_var('check_out_item(s)'));
-							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'cancel_reserve', link => get_opendb_lang_var('cancel_reservation(s)'));
+							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'check_out', 'link' => get_opendb_lang_var('check_out_item(s)'));
+							$checkbox_action_rs[] = array('action' => 'item_borrow.php', 'op' => 'cancel_reserve', 'link' => get_opendb_lang_var('cancel_reservation(s)'));
 						}
 
 						echo (format_checkbox_action_links('sequence_number', get_opendb_lang_var('no_items_checked'), $checkbox_action_rs));

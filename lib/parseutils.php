@@ -192,8 +192,8 @@ function prc_function_spec($function_spec, $require_legal_func_name = FALSE) {
 			}
 			
 			return array (
-					type => strtolower ( $type ),
-					args => $arr );
+					'type' => strtolower ( $type ),
+					'args' => $arr );
 		} else
 			return NULL;
 	} else if ($require_legal_func_name == FALSE) {
@@ -202,8 +202,8 @@ function prc_function_spec($function_spec, $require_legal_func_name = FALSE) {
 		
 		// Empty argument list.
 		return array (
-				type => strtolower ( $type ),
-				args => array () );
+				'type' => strtolower ( $type ),
+				'args' => array () );
 	} else
 		return NULL;
 }

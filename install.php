@@ -331,7 +331,7 @@ function install_opendb_user_and_database_form($HTTP_VARS, $errors) {
 
 	$buffer .= "</table>";
 
-	$buffer .= format_help_block(array('img' => 'compulsory.gif', 'text' => 'Compulsory Field', id => 'compulsory'));
+	$buffer .= format_help_block(array('img' => 'compulsory.gif', 'text' => 'Compulsory Field', 'id' => 'compulsory'));
 
 	$buffer .= "<input type=\"button\" class=\"button\" value=\"Next\" onclick=\"this.value='Working...'; this.disabled=true; this.form.submit(); return true;\">\n";
 	$buffer .= "</form>\n";

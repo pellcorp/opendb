@@ -634,16 +634,16 @@ function fetch_max_instance_no($item_id) {
 
 /**
 	@param item_where_clause - the result of running the item_where_clause statement.
-	
+
 	@param $column_display_config_rs - Format of this array is:
-	 	array(
-	 		s_attribute_type => '',
-			order_no=>'',
-	 		value => '',
-	 		lookup => '',
-	 		attr_match => '',
-			search_attribute_ind => 'Y');
-	 
+		array(
+			's_attribute_type' => '',
+			'order_no' => '',
+			'value' => '',
+			'lookup' => '',
+			'attr_match' => '',
+			'search_attribute_ind' => 'Y');
+
 	 Arrays where value is defined, attr_match is one of 'word' or 'partial'
 	 and search_attribute_ind = 'y' will be included in the select statement.
 */

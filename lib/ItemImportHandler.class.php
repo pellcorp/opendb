@@ -371,9 +371,9 @@ class ItemImportHandler {
 				$item_vars ['confirmed'] = $this->_cfg_ignore_duplicate_title ? 'true' : 'false';
 				
 				$item_r = array (
-						s_item_type => $this->_item_obj->getItemType (),
-						owner_id => $this->getOwner (),
-						title => $this->_item_obj->getTitle () );
+						's_item_type' => $this->_item_obj->getItemType (),
+						'owner_id' => $this->getOwner (),
+						'title' => $this->_item_obj->getTitle () );
 				
 				$instance_valid = FALSE;
 				

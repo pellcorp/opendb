@@ -37,15 +37,19 @@ class OpenDbSnoopy extends Snoopy {
 	function OpenDbSnoopy($debug = FALSE) {
 		// if file cache table is not installed, we cannot use file cache.
 		$this->_file_cache_enabled = get_opendb_config_var ( 'http.cache', 'enable' );
-		
+
 		// override user agent.
-		$this->agent = 'Mozilla/5.0 (X11; CentOS) Gecko/20100101 Firefox/50.0';
-		
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			$this->agent = $_SERVER['HTTP_USER_AGENT'];
+		} else {
+			$this->agent = 'Mozilla/5.0 (X11; CentOS) Gecko/20100101 Firefox/75.0';
+		}
+
 		// in how many cases is this going to work?
 		$this->passcookies = FALSE;
-		
+
 		$this->_debug = $debug;
-		
+
 		$proxy_server_config_r = get_opendb_config_var ( 'http.proxy_server' );
 		if ($proxy_server_config_r ['enable'] == TRUE) {
 			$this->proxy_host = $proxy_server_config_r ['host'];
@@ -53,7 +57,7 @@ class OpenDbSnoopy extends Snoopy {
 			$this->proxy_user = $proxy_server_config_r ['userid'];
 			$this->proxy_pass = $proxy_server_config_r ['password'];
 		}
-		
+
 		// the default curl path for snoopy is /usr/local/bin/curl - often however, it will reside in another path
 		if(!empty($this->curl_path) || !@is_executable($this->curl_path)) {
 			$curlpaths = array(); // variable for test-paths

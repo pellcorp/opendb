@@ -557,7 +557,7 @@ class Snoopy {
 		if (empty ( $url ))
 			$url = "/";
 			// GET ... header not needed for curl
-			//$headers[] = $http_method." ".$url." ".$this->_httpversion;		
+			//$headers[] = $http_method." ".$url." ".$this->_httpversion;
 		if (! empty ( $this->agent ))
 			curl_setopt($curl, CURLOPT_USERAGENT, $this->agent);
 
@@ -621,6 +621,8 @@ class Snoopy {
 		if (! empty ( $this->user ) || ! empty ( $this->pass ))
 			$headers [] = "Authorization: BASIC " . base64_encode ( $this->user . ":" . $this->pass );
 
+		$header[] = "Pragma: ";
+
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 		if (! empty ( $body )) {
@@ -636,6 +638,7 @@ class Snoopy {
 		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
 		curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
 		curl_setopt($curl, CURLOPT_HEADER, 0);		// don't include headers in output
+		curl_setopt($curl, CURLOPT_ENCODING, "gzip,deflate");
 
 		$results = curl_exec($curl);
 		$status = curl_getinfo($curl);

@@ -87,7 +87,7 @@ function get_upc_code($field) {
 function get_isbn_code($field) {
 	$ISBN = new ISBN ();
 	
-	$field = strtoupper ( $field );
+	$field = str_replace('-', '', strtoupper($field));
 	
 	$isbntype = $ISBN->gettype ( $field );
 	

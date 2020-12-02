@@ -43,17 +43,17 @@ class gbooks extends SitePlugin {
 			return TRUE;
 		}
 
-// compose search query - Google Books API has the following definitions:
-/* q - Search for volumes that contain this text string. 
- * There are special keywords you can specify in the search terms to search in particular fields, such as:
- *   intitle:     Returns results where the text following this keyword is found in the title.
- *   inauthor:    Returns results where the text following this keyword is found in the author.
- *   inpublisher: Returns results where the text following this keyword is found in the publisher.
- *   subject:     Returns results where the text following this keyword is listed in the category list of the volume.
- *   isbn:        Returns results where the text following this keyword is the ISBN number.
- *   lccn:        Returns results where the text following this keyword is the Library of Congress Control Number.
- *   oclc:        Returns results where the text following this keyword is the Online Computer Library Center number.
- */
+		// compose search query - Google Books API has the following definitions:
+		/* q - Search for volumes that contain this text string.
+		 * There are special keywords you can specify in the search terms to search in particular fields, such as:
+		 *   intitle:     Returns results where the text following this keyword is found in the title.
+		 *   inauthor:    Returns results where the text following this keyword is found in the author.
+		 *   inpublisher: Returns results where the text following this keyword is found in the publisher.
+		 *   subject:     Returns results where the text following this keyword is listed in the category list of the volume.
+		 *   isbn:        Returns results where the text following this keyword is the ISBN number.
+		 *   lccn:        Returns results where the text following this keyword is the Library of Congress Control Number.
+		 *   oclc:        Returns results where the text following this keyword is the Online Computer Library Center number.
+		 */
 
 		$search_query = array();
 		if (strlen($search_vars_r['author']) > 0)
@@ -61,20 +61,25 @@ class gbooks extends SitePlugin {
 		if (strlen($search_vars_r['title']) > 0)
 			$search_query[] = 'intitle:'.urlencode('"'.$search_vars_r['title'].'"');
 		if (strlen($search_vars_r['isbn']) > 0)
-			$search_query[] = 'isbn:'.urlencode($search_vars_r['isbn']);
+			$search_query[] = 'isbn:'.urlencode(trim(str_replace('-', '', $search_vars_r['isbn'])));
 		
 		$result = json_decode($this->fetchURI($this->base_url . '?q=' . join('+',$search_query),true),true);		
 
-// Get number of matches
+		// Get number of matches
 		if(isset($result['totalItems'])&& ($result['totalItems'] > 0) ) {
 			foreach($result['items'] as $item) {
 				$vol = $item['volumeInfo'];
 				$title ='';
-					isset($vol['title'])		&& $title = $vol['title'] . ' ';
-					isset($vol['subtitle'])	&& $title .= '- '. $vol['subtitle'] . ' ';
-					isset($vol['publishedDate'])	&& $title .= '('.$vol['publishedDate'] . ') ';
-					isset($vol['authors'])	&& $title .= 'by ' . join('; ', $vol['authors']);
+				isset($vol['title'])			&& $title = $vol['title'] . ' ';
+				isset($vol['subtitle'])			&& $title .= '- '. $vol['subtitle'] . ' ';
+				isset($vol['publishedDate'])	&& $title .= '('.$vol['publishedDate'] . ') ';
+				isset($vol['authors'])			&& $title .= 'by ' . join('; ', $vol['authors']);
 				$cover_image_url = (isset($vol['imageLinks']) ? $vol['imageLinks']['thumbnail'] : NULL );
+				if ($cover_image_url != NULL) {
+					$cover_image_url = preg_replace("!edge=\w+&!", "", $cover_image_url);
+					$cover_image_url = preg_replace("!zoom=\d+&!", "zoom=1&", $cover_image_url);
+					$cover_image_url = preg_replace("!imgtk=\w+&!", "", $cover_image_url);
+				}
 				$comments='';
 					if(isset($vol['industryIdentifiers'])){
 						$iids = array();
@@ -92,7 +97,7 @@ class gbooks extends SitePlugin {
 
 	function queryItem($search_attributes_r, $s_item_type) {
 		$result = json_decode($this->fetchURI($this->base_url . '/' . $search_attributes_r['gbooks_id'],true),true);		
-//echo('GBOOKS debug: '.print_r($result,true).'<br/>');
+		//echo('GBOOKS debug: '.print_r($result,true).'<br/>');
 
 		// make sure we actually got data
 		if(!isset($result['id'])) {
@@ -101,21 +106,28 @@ class gbooks extends SitePlugin {
 
 		$vol = $result['volumeInfo'];
 
-		
 		$title ='';
-			isset($vol['title'])	&& $title = $vol['title'] . ' ';
-			isset($vol['subtitle'])	&& $title .= '- '. $vol['subtitle'] . ' ';
-		$this->addItemAttribute('title', $title);	
-		
+		isset($vol['title'])	&& $title = $vol['title'];
+		$this->addItemAttribute('title', $title);
+		isset($vol['subtitle'])	&& $this->addItemAttribute('alt_title', $title . ' - '. $vol['subtitle']);
+
 		// only year is allowd in the DB - google sometimes knows the exact date in the format YYYY-MM-DD
 		isset($vol['publishedDate']) && $this->addItemAttribute('pub_year', substr($vol['publishedDate'],0,4));
-		
+
 		isset($vol['authors']) && $this->addItemAttribute('author', $vol['authors']);
-		
+
 		// dummy file name ending appended to the image since opendb requires ending
-		isset($vol['imageLinks']) &&  $this->addItemAttribute('imageurl', $vol['imageLinks']['thumbnail'].'.jpg') ;
-		
-		
+		if (isset($vol['imageLinks']))
+			foreach(['extraLarge', 'large', 'medium', 'small', 'thumbnail'] as $size)
+				if (isset($vol['imageLinks'][$size])) {
+					$cover_image_url = $vol['imageLinks'][$size];
+					$cover_image_url = preg_replace("!edge=\w+&!", "", $cover_image_url);
+					$cover_image_url = preg_replace("!zoom=\d+&!", "zoom=1&", $cover_image_url);
+					$cover_image_url = preg_replace("!imgtk=[\w-]+&!", "", $cover_image_url);
+					$this->addItemAttribute('imageurl', $cover_image_url.'&type.jpg');
+					break;
+				}
+
 		if(isset($vol['industryIdentifiers'])){
 			foreach($vol['industryIdentifiers'] as $iid){
 				$iid['type'] == "ISBN_10" && $this->addItemAttribute('isbn', $iid['identifier']);
@@ -123,20 +135,29 @@ class gbooks extends SitePlugin {
 			}
 		}
 
+		if (isset($vol['saleInfo']['retailPrice']))
+			$this->addItemAttribute('listprice', $vol['saleInfo']['retailPrice']['amount']);
+		elseif (isset($vol['saleInfo']['listPrice']))
+			$this->addItemAttribute('listprice', $vol['saleInfo']['listPrice']['amount']);
+
+		if ($vol['saleInfo']['isEbook'])
+			$this->addItemAttribute('binding', 'eBook');
+
+		// @@ - FIXME
 		isset($vol['categories']) && $this->addItemAttribute('genre', $vol['categories']);
 
 		isset($vol['description']) && $this->addItemAttribute('synopsis', $vol['description']);
-				
+
 		isset($vol['publisher']) && $this->addItemAttribute('publisher', $vol['publisher']);
 
 		isset($vol['pageCount']) && $this->addItemAttribute('no_pages', $vol['pageCount']);
-		
+
 		$lang_replace=array('!en!i' => 'english',
-						    '!da!i' => 'danish'
-							);  
+							'!fr!i' => 'french',
+							'!da!i' => 'danish'
+							);
 		isset($vol['language']) && $this->addItemAttribute('text_lang', preg_replace(array_keys($lang_replace),array_values($lang_replace),$vol['language']));
 
-				
 		return TRUE;
 	}
 }

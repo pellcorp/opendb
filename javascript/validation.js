@@ -114,8 +114,6 @@ function isValidExtension(filename, extArray)
 		}
 	}
 	return false;
-		
-	return true;
 }
 	
 /**

@@ -270,7 +270,7 @@ function insert_s_item_listing_column_conf($silc_id, $column_no, $column_type, $
 
 				$insert = db_query($query);
 				if ($insert && db_affected_rows() > 0) {
-					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
+					opendb_logger(OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));
 					return TRUE;
 				} else {
 					opendb_logger(OPENDB_LOG_ERROR, __FILE__, __FUNCTION__, db_error(), array($silc_id, $column_no, $column_type, $s_field_type, $s_attribute_type, $override_prompt, $printable_support_ind, $orderby_support_ind, $orderby_datatype, $orderby_default_ind, $orderby_sort_order));

@@ -236,6 +236,28 @@ function ends_with($s1, $s2) {
 }
 
 /**
+ * Return first word of a string
+ *
+ * @param string $str
+ * @return string
+ */
+function first_word($str) {
+    return strstr($str, ' ', TRUE);
+}
+
+/**
+ * Return year of a given date
+ *
+ * @param string $date
+ * @return string
+ */
+function year_of($date) {
+    if (preg_match("!^[0-9]{4}$!", $date))
+        return $date;
+    return date('Y',strtotime($date));
+}
+
+/**
 	A pedestrian attempt to trim URL in a neat way.
 */
 function trim_url($str, $length) {

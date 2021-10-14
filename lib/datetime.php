@@ -109,7 +109,7 @@ function get_localised_timestamp($format_mask, $timestamp = NULL) {
 	
 	// Now expand the mask with the test of the elements.
 	reset ( $php_mask_conversion );
-	while ( list ( $key, $match ) = each ( $php_mask_conversion ) ) {
+	foreach ( $php_mask_conversion as $key => $match ) {
 		$format_mask = str_replace ( $key, adodb_date ( $match, $timestamp ), $format_mask );
 	}
 	
@@ -163,8 +163,8 @@ function tokenize_datetime_or_mask_string($value, $format_tokens = NULL) {
 	
 	$token = '';
 	$tokens = array ();
-	for($i = 0; $i < strlen ( $value ); $i ++) {
-		switch ($value {$i}) {
+	for($i = 0; $i < strlen( $value ); $i ++) {
+		switch ($value[$i]) {
 			case ' ' :
 			case "\t" :
 			case ',' :
@@ -173,29 +173,29 @@ function tokenize_datetime_or_mask_string($value, $format_tokens = NULL) {
 			case '-' :
 			case ':' :
 			case '.' :
-				if (strlen ( $token ) > 0) {
-					$tokens [] = $token;
+				if (strlen( $token ) > 0) {
+					$tokens[] = $token;
 					$token = '';
 				}
-				$tokens [] = $value {$i};
+				$tokens[] = $value[$i];
 				break;
 			
 			default :
 				// based on the format token, we may need to cut the token off,
 				// at a certain point.
-				if (is_array ( $format_tokens )) {
-					if (! is_numeric ( $value {$i} )) {	// all date tokens are numeric
-						if (strlen ( $token ) > 0) {
+				if (is_array( $format_tokens )) {
+					if (! is_numeric( $value[$i] )) {	// all date tokens are numeric
+						if (strlen( $token ) > 0) {
 							$tokens [] = $token;
 							$token = '';
 						}
-						$tokens [] = $value {$i};
+						$tokens [] = $value[$i];
 					} else {
-						$format_token = $format_tokens [count ( $tokens )];
+						$format_token = $format_tokens[count( $tokens )];
 						
-						if (array_search ( $format_token, $datetime_masks_r ) !== FALSE) {
+						if (array_search( $format_token, $datetime_masks_r ) !== FALSE) {
 							if ($format_token == 'YYYY') {
-								if (strlen ( $token ) >= 4) {
+								if (strlen( $token ) >= 4) {
 									$tokens [] = $token;
 									$token = '';
 								}
@@ -204,16 +204,16 @@ function tokenize_datetime_or_mask_string($value, $format_tokens = NULL) {
 								$token = '';
 							}
 							
-							$token .= $value {$i};
+							$token .= $value[$i];
 						}
 					}
 				} else {
-					$token .= $value {$i};
+					$token .= $value[$i];
 					
-					if (array_search ( $token, $datetime_masks_r ) !== FALSE) {
+					if (array_search( $token, $datetime_masks_r ) !== FALSE) {
 						if ($token == 'HH') {
 							// if there is actually a HH24 token, we should ignore this HH one.
-							if (strlen ( $value ) > ($i + 2) && substr ( $value, $i + 1, 2 ) == '24') {
+							if (strlen( $value ) > ($i + 2) && substr ( $value, $i + 1, 2 ) == '24') {
 								break; // break to start of switch again.
 							}
 						}

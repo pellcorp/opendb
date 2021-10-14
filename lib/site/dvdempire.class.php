@@ -104,7 +104,7 @@ function parse_film_info_block($blockid, $block) {
 		$end = strlen($block);
 
 		reset($term);
-		while (list(, $value) = each($term)) {
+		foreach ($term as $value) {
 			$idx = strpos($block, "<b>$value:</b>", $start);
 
 			if ($idx !== FALSE && $idx < $end) {
@@ -126,8 +126,8 @@ function parse_film_info_block($blockid, $block) {
 }
 
 class dvdempire extends SitePlugin {
-	function dvdempire($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -266,7 +266,7 @@ class dvdempire extends SitePlugin {
 			}
 
 			$ratio_list_r = array('1.33', '1.66', '1.78', '1.85', '2.35', '2.78');
-			while (list(, $ratio) = @each($ratio_list_r)) {
+			foreach ($ratio_list_r as $ratio) {
 				if (preg_match('/' . $ratio . ':1/', $video)) {
 					$this->addItemAttribute('ratio', $ratio);
 				}

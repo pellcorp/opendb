@@ -301,11 +301,11 @@ class phpSniff
      *  @return object phpSniff object
      */
     
-    function phpSniff($UA='',$settings = true)
-    {   //  populate the HTTP_USER_AGENT string
+    function __construct($UA='',$settings = true) {
+        //  populate the HTTP_USER_AGENT string
         //  20020425 :: rraymond
         //      routine for easier configuration of the client at runtime
-        if(is_array($settings)) {
+        if (is_array($settings)) {
             $run = true;
             extract($settings);
             $this->_check_cookies = $check_cookies;
@@ -317,10 +317,10 @@ class phpSniff
         }
         
         // if the user agent is empty, see if it exists somewhere
-        if(empty($UA)) {
-            if(isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) {
+        if (empty($UA)) {
+            if (isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) {
                 $UA = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
-            } elseif(isset($_SERVER['HTTP_USER_AGENT'])) {
+            } elseif (isset($_SERVER['HTTP_USER_AGENT'])) {
                 $UA = $_SERVER['HTTP_USER_AGENT'];
             } else {
                 // try to use the getenv function as a last resort
@@ -329,10 +329,10 @@ class phpSniff
         }
         
         // if it's still empty, just return false as there is nothing to do
-        if(empty($UA)) return false;
+        if (empty($UA)) return false;
         
-        $this->_set_browser('ua',$UA);
-        if($run) $this->init();
+        $this->_set_browser('ua', $UA);
+        if ($run) $this->init();
     }
 
     function init ()
@@ -753,10 +753,10 @@ class phpSniff
     /**
      *  @access private
      */
-    function _build_regex ()
-    {   $browsers = '';
-        while(list($k,) = each($this->_browsers))
-        {   if(!empty($browsers)) $browsers .= "|";
+    function _build_regex () {
+        $browsers = '';
+        foreach ($this->_browsers as $k => $v) {
+            if (!empty($browsers)) $browsers .= "|";
             $browsers .= $k;
         }
         $version_string = "[\/\sa-z(]*([0-9]+)([\.0-9a-z]+)?";
@@ -774,8 +774,8 @@ class phpSniff
      *  @access private
      */
     // medianes :: new test cookie routine
-    function _test_cookies()
-    {   global $HTTP_COOKIE_VARS;
+    function _test_cookies() {
+        global $HTTP_COOKIE_VARS;
         $cookies = array();
         if(isset($_COOKIE)) {
             $cookies = $_COOKIE;
@@ -819,28 +819,28 @@ class phpSniff
     function _get_javascript()
     {   $set=false;
 		// see if we have any matches
-        while(list($version,$browser) = each($this->_javascript_versions))
-        {   $browser = explode(',',$browser);
-            while(list(,$search) = each($browser))
-            {   if($this->is('b:'.$search))
-                {   $this->_set_browser('javascript',$version);
+        foreach ($this->_javascript_versions as $version => $browser) {
+            $browser = explode(',',$browser);
+            foreach ($browser as $search) {
+                if($this->is('b:'.$search)) {
+                    $this->_set_browser('javascript',$version);
                     $set = true;
                     break;
                 }
             }
-        if($set) break;
+            if ($set) break;
         }
     }
 	
     /**
      *  @access private
      */
-	function _get_features ()
-	{	while(list($feature,$browser) = each($this->_browser_features))
-		{	$browser = explode(',',$browser);
-			while(list(,$search) = each($browser))
-			{	if($this->browser_is($search))
-				{	$this->_set_feature($feature);
+	function _get_features () {
+        foreach ($this->_browser_features as $feature => $browser) {
+            $browser = explode(',',$browser);
+            foreach ($browser as $search) {
+                if ($this->browser_is($search)) {
+                    $this->_set_feature($feature);
 					break;
 				}
 			}
@@ -850,12 +850,12 @@ class phpSniff
     /**
      *  @access private
      */
-	function _get_quirks ()
-	{	while(list($quirk,$browser) = each($this->_browser_quirks))
-		{	$browser = explode(',',$browser);
-			while(list(,$search) = each($browser))
-			{	if($this->browser_is($search))
-				{	$this->_set_quirk($quirk);
+	function _get_quirks () {
+        foreach ($this->_browser_quirks as $quirk => $browser) {
+            $browser = explode(',',$browser);
+            foreach ($browser as $search) {
+                if($this->browser_is($search)) {
+                    $this->_set_quirk($quirk);
 					break;
 				}
 			}
@@ -865,9 +865,9 @@ class phpSniff
     /**
      *  @access private
      */
-    function _get_gecko ()
-	{	if(preg_match('/gecko\/([0-9]+)/i',$this->property('ua'),$match))
-		{	$this->_set_browser('gecko',$match[1]);
+    function _get_gecko () {
+        if (preg_match('/gecko\/([0-9]+)/i',$this->property('ua'),$match)) {
+            $this->_set_browser('gecko',$match[1]);
             if (preg_match('/rv[: ]?([0-9a-z.+]+)/i',$this->property('ua'),$mozv)) {   
 				// mozilla release
 				$this->_set_browser('gecko_ver',$mozv[1]);

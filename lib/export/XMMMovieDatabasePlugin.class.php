@@ -48,7 +48,7 @@ class XMMMovieDatabasePlugin {
 	 * @param $isZip Allows disabling of ZIP function mostly just for testing.
 	 * @param $includeParent Include parent items that have related items.
 	 */
-	function XMMMovieDatabasePlugin($isZip = TRUE, $includeParent = FALSE) {
+	function __construct($isZip = TRUE, $includeParent = FALSE) {
 		$this->isZip = $isZip;
 		$this->includeParent = $includeParent;
 
@@ -147,7 +147,7 @@ class XMMMovieDatabasePlugin {
 		//$actorsFound = FALSE;
 
 		reset($this->attribute_rs);
-		while (list($type, $value) = each($this->attribute_rs)) {
+		foreach ($this->attribute_rs as $type => $value) {
 			if ($type == 'Cover') {
 				$file = $this->get_cached_image($value);
 
@@ -197,7 +197,7 @@ class XMMMovieDatabasePlugin {
 
 	function print_multi_attribute($plural, $singular, $values) {
 		$this->itemBuffer .= "\n\t\t<$plural>";
-		while (list(, $value) = each($values)) {
+		foreach ($values as $value) {
 			$this->itemBuffer .= "\n\t\t\t<$singular>" . $this->encode($value) . "</$singular>";
 		}
 		$this->itemBuffer .= "\n\t\t</$plural>";

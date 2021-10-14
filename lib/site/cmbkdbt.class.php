@@ -39,8 +39,8 @@ NOTES FROM THE AUTHOR:
 include_once("./lib/SitePlugin.class.php");
 
 class cmbkdbt extends SitePlugin {
-	function cmbkdbt($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {

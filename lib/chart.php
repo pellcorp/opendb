@@ -17,21 +17,8 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-require_once ("./lib/GDImage.class.php");
-
-$chartLib = get_opendb_config_var ( 'stats', 'chart_lib' );
-
-if ($chartLib == 'legacy') {
-	include_once("./lib/chart/LegacyStatsChart.class.php");
-} else if ($chartLib == 'phplot' && is_dir ( "./lib/phplot" )) {
-	include_once("./lib/chart/PhplotStatsChart.class.php");
-} else if ($chartLib == 'jpgraph' && is_php51 () && is_dir ( "./lib/jpgraph" )) {
-	include_once("./lib/chart/JPGraphStatsChart.class.php");
-} else if (is_php5 ()) {
-	include_once("./lib/chart/StatsLibChart12.class.php");
-} else {
-	include_once("./lib/chart/StatsLibChart11.class.php");
-}
+require_once ("./lib/ODImage.class.php");
+include_once("./lib/chart/StatsLibChart.class.php");
 
 function sort_data_element($a_r, $b_r) {
 	$a = $a_r ['value'];
@@ -44,8 +31,8 @@ function sort_data_element($a_r, $b_r) {
 }
 
 function build_and_send_graph($data_rs, $chartType, $title) {
-	$gdImage = new GDImage ( get_opendb_image_type () );
-	$imgType = $gdImage->getImageType ();
+	$gdImage = new ODImage ( get_opendb_image_type() );
+	$imgType = $gdImage->getImageType();
 	unset ( $gdImage );
 	
 	$graphCfg = _theme_graph_config ();
@@ -63,7 +50,7 @@ function build_and_send_graph($data_rs, $chartType, $title) {
 			$data_rs = array_slice ( $data_rs, 0, 11 );
 		
 		reset ( $data_rs );
-		while ( list ( , $data_r ) = each ( $data_rs ) ) {
+		foreach ($data_rs as $data_r) {
 			if ($chartType == 'piechart')
 				$chart->addData ( $data_r ['display'] . " (${data_r['value']})", $data_r ['value'] );
 			else

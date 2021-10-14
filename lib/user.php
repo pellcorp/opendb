@@ -621,7 +621,7 @@ function generate_password($length) {
 
 function has_role_permission($role_name) {
     $user_r = fetch_user_r(get_opendb_session_var('user_id'));
-    if ($user_r['user_role'] == null) {
+    if ($user_r === FALSE || $user_r['user_role'] == null) {
         // Explicitly set role name to public access by default.
         $user_r['user_role'] = get_public_access_rolename();
     }

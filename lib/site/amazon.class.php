@@ -31,8 +31,8 @@ class amazon extends SitePlugin {
 				'amazonde' => array('asinId' => 'amazdeasin', 'url' => 'www.amazon.de')
 	);
 
-	function amazon($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 
 		$this->asinId = $this->sites[$site_type]['asinId'];
 		$this->url = $this->sites[$site_type]['url'];
@@ -217,7 +217,7 @@ class amazon extends SitePlugin {
 		}
 
 		if (preg_match_all("!registerImage\(\"cust_image[^\"]*\", \"([^\"]+)\"!", $pageBuffer, $regs)) {
-			while (list(, $image) = each($regs[1])) {
+			foreach ($regs[1] as $image) {
                 // remove image extras _xxx_.
 				$image = preg_replace('!(\/[^.]+\.)_[^.]+_\.!', "$1", $image);
 				$this->addItemAttribute('cust_imageurl', $image);
@@ -682,7 +682,7 @@ class amazon extends SitePlugin {
 					array("Spanish"), 
 					array("German"));
 
-			while (list(, $audio_lang) = @each($audio_lang_r)) {
+			foreach ($audio_lang_r as $audio_lang) {
 				$key = parse_language_info($audio_lang, $amazon_dvd_audio_map);
 				if ($key !== NULL) {
 					$this->addItemAttribute('audio_lang', $key);
@@ -700,7 +700,7 @@ class amazon extends SitePlugin {
 
 			$audio_lang_r = explode(',', $regs[1]);
 
-			while (list(, $audio_lang) = @each($audio_lang_r)) {
+			foreach ($audio_lang_r as $audio_lang) {
 				$key = parse_language_info($audio_lang, $amazon_video_subtitle_map);
 				if ($key !== NULL) {
 					$this->addItemAttribute('subtitles', $key);
@@ -715,7 +715,7 @@ class amazon extends SitePlugin {
 			if (preg_match_all("/<li>(.*)<\/li>/mUi", $dvdFeaturesBlock, $matches)) {
 				$dvd_extras = NULL;
 
-				while (list(, $item) = @each($matches[1])) {
+				foreach ($matches[1] as $item) {
 					$item = html_entity_decode(strip_tags($item), ENT_COMPAT, get_opendb_config_var('themes', 'charset') == 'utf-8' ? 'UTF-8' : 'ISO-8859-1');
 
 					// We may have a hard space here, so get rid of it.
@@ -757,7 +757,7 @@ class amazon extends SitePlugin {
 					$itemData = $sitePlugin->getItemData();
 					if (is_array($itemData)) {
 						// merge data in here.
-						while (list($key, $value) = each($itemData)) {
+						foreach ($itemData as $key => $value) {
 							if ($key == 'actors')
 								$this->replaceItemAttribute('actors', $value);
 							else if ($key == 'director')

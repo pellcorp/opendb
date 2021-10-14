@@ -24,7 +24,7 @@ class StringFileHandler {
 	var $_line_ending;
 	var $_line_ending_length;
 
-	function StringFileHandler($content) {
+	function __construct($content) {
 		$this->_content = $content;
 		$this->_content_length = strlen ( $content );
 		$this->_offset = 0;

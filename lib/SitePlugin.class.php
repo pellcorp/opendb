@@ -50,7 +50,7 @@ class SitePlugin {
 	var $_httpClient;
 	var $_titleMaskCfg;
 
-	function SitePlugin($site_type) {
+	function __construct($site_type) {
 		global $SITE_PLUGIN_SNOOPY;
 		
 		$this->_type = $site_type;
@@ -219,7 +219,7 @@ class SitePlugin {
 					if (is_array ( $this->_item_list_rs ['attributes'] )) {
 						$found = TRUE;
 						reset ( $attributes_r );
-						while ( list ( $key, $value ) = each ( $attributes_r ) ) {
+						foreach ($attributes_r as $key => $value) {
 							// if not set, this is considered no match and do next for loop cycle
 							if (! isset ( $this->_item_list_rs ['attributes'] [$key] ) || $this->_item_list_rs ['attributes'] [$key] != $key) {
 								$found = FALSE;
@@ -408,7 +408,7 @@ class SitePlugin {
 				unset ( $search_attributes_r ['search_title'] );
 				
 				reset ( $search_attributes_r );
-				while ( list ( $key, $value ) = each ( $search_attributes_r ) ) {
+				foreach ( $search_attributes_r as $key => $value ) {
 					if ($this->getItemAttribute ( $key ) === FALSE) {
 						$this->addItemAttribute ( $key, $value );
 					}
@@ -447,7 +447,7 @@ class SitePlugin {
 	function __getDebugItemData($itemData) {
 		@reset ( $itemData );
 		$buffer = "<ul>";
-		while ( list ( $key, $value ) = each ( $itemData ) ) {
+		foreach ( $itemData as $key => $value ) {
 			$buffer .= "\n<li>";
 			if (! is_numeric ( $key )) {
 				$buffer .= "<strong>$key:</strong> ";

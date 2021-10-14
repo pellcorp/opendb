@@ -50,8 +50,8 @@ function parse_dvdfr_release_date($day, $monthname, $year) {
 // Search for 'Au-dela de la gloire' to get an exact title match.
 //
 class dvdfr extends SitePlugin {
-	function dvdfr($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -198,7 +198,7 @@ class dvdfr extends SitePlugin {
 		// Subtitles available
 		if (preg_match(":title=\"Sous-titres disponibles\"(.*?)</td>:sim", $parseblock, $regs)) {
 			if (preg_match_all(":<small>[\s]*(.*?)[\s]*</small>:sim", $regs[1], $result)) {
-				while (list(, $subtitle) = each($result[1])) {
+				foreach ($result[1] as $subtitle) {
 					if (substr($subtitle, -1) == '.') {
 						$subtitle = substr($subtitle, 0, -1);
 					}

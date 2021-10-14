@@ -54,11 +54,6 @@ include_once("./lib/menu.php");
 
 include_once("./lib/OpenDbBrowserSniffer.class.php");
 
-// OpenDb will not work with this on!!!
-if (get_magic_quotes_runtime()) {
-	set_magic_quotes_runtime(false);
-}
-
 // Only if $PHP_SELF is not already defined.
 if (!isset($PHP_SELF)) {
 	// get_http_env is a OpenDb function!
@@ -74,12 +69,14 @@ if (!empty($_GET)) {
 	$HTTP_VARS = strip_tags_array($_GET);
 } else if (!empty($_POST)) {
 	$HTTP_VARS = $_POST;
+} else {
+    $HTTP_VARS = array();
 }
 
-// Strip all slashes from this array.
-if (get_magic_quotes_gpc()) {
-	$HTTP_VARS = stripslashes_array($HTTP_VARS);
-}
+if (!isset($HTTP_VARS['op']))
+    $HTTP_VARS['op'] = "";
+if (!isset($HTTP_VARS['mode']))
+    $HTTP_VARS['mode'] = "";
 
 //define a global browser sniffer object for use by theme and elsewhere
 $_OpendbBrowserSniffer = new OpenDbBrowserSniffer();
@@ -122,14 +119,14 @@ if (function_exists('db_connect')) {
 			handle_opendb_remember_me();
 			
 			//allows specific pages to overide themes
+			global $_OVRD_OPENDB_THEME;
 			if (is_exists_theme($_OVRD_OPENDB_THEME)) {
 				$_OPENDB_THEME = $_OVRD_OPENDB_THEME;
+
 			} else {
-				unset($_OPENDB_THEME);
-
-				if (strlen(get_opendb_session_var('user_id')) > 0 && get_opendb_config_var('user_admin', 'user_themes_support') !== FALSE) {
+				if ( strlen(get_opendb_session_var('user_id')) > 0 &&
+					 get_opendb_config_var('user_admin', 'user_themes_support') !== FALSE ) {
 					$user_theme = fetch_user_theme(get_opendb_session_var('user_id'));
-
 					if (is_exists_theme($user_theme))
 						$_OPENDB_THEME = $user_theme;
 				}
@@ -142,10 +139,11 @@ if (function_exists('db_connect')) {
 				}
 			}
 
+			global $_OVRD_OPENDB_LANGUAGE;
 			if (is_exists_language($_OVRD_OPENDB_LANGUAGE)) {
 				$_OPENDB_LANGUAGE = $_OVRD_OPENDB_LANGUAGE;
 			} else {
-				unset($_OPENDB_LANGUAGE);
+				#unset($_OPENDB_LANGUAGE);
 
 				if (strlen(get_opendb_session_var('user_id')) > 0 && get_opendb_config_var('user_admin', 'user_language_support') !== FALSE) {
 					$user_language = fetch_user_language(get_opendb_session_var('user_id'));
@@ -164,7 +162,7 @@ if (function_exists('db_connect')) {
 		}
 	}
 
-	if ($HTTP_VARS['mode'] == 'job') {
+	if (isset($HTTP_VARS["mode"]) && $HTTP_VARS['mode'] == 'job') {
 		$_OPENDB_THEME = '';
 	}
 

@@ -28,9 +28,6 @@ class DocTypeNameSpaceXMLParser {
 	var $_nameSpace;
 	var $_errors;
 
-	function DocTypeNameSpaceXMLParser() {
-	}
-
 	function parseFile($fileLocation) {
 		// reset it.
 		$this->_docType = NULL;
@@ -90,8 +87,7 @@ class DocTypeNameSpaceXMLParser {
 			
 			if (is_array ( $attributes )) {
 				reset ( $attributes );
-				while ( list ( $name, $value ) = each ( $attributes ) ) {
-					
+				foreach ($attributes as $name => $value) {
 					if (ends_with ( $name, ":schemaLocation" )) {
 						$this->_nameSpace = $value;
 						break;

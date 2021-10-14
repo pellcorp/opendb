@@ -36,9 +36,6 @@ class MARCExportPlugin {
     var $_data;
     var $_file_title;
 
-    function MARCExportPlugin() {
-    }
-
     /*
      * The content type, when saved as file.
      */

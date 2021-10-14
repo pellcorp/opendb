@@ -48,7 +48,7 @@ function update_role_permissions($role_name, $permissions_r) {
 
 	if (strlen($role_name) > 0 && is_array($permissions_r)) {
 		reset($permissions_r);
-		while (list($permission_name, $permission_r) = each($permissions_r)) {
+		foreach ($permissions_r as $permission_name => $permission_r) {
 			$enabled_ind = validate_ind_column($permission_r['enabled_ind']);
 			$remember_me_ind = validate_ind_column($permission_r['remember_me_ind']);
 			

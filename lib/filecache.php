@@ -249,9 +249,11 @@ function file_cache_get_image_r($url, $type) {
 			}
 		}
 		
-		if (! is_numeric ( $file_r ['thumbnail'] ['width'] ) && ! is_numeric ( $file_r ['thumbnail'] ['height'] )) {
-			$file_r ['thumbnail'] ['width'] = $thumbnail_size_r ['width'];
-			$file_r ['thumbnail'] ['height'] = $thumbnail_size_r ['height'];
+		if (! is_numeric ( $file_r['thumbnail']['width'] ?? '' ) && ! is_numeric ( $file_r['thumbnail']['height'] ?? '' )) {
+			if (isset($thumbnail_size_r ['width']))
+				$file_r ['thumbnail'] ['width'] = $thumbnail_size_r ['width'];
+			if (isset($thumbnail_size_r ['height']))
+				$file_r ['thumbnail'] ['height'] = $thumbnail_size_r ['height'];
 		}
 		
 		return $file_r;
@@ -888,7 +890,7 @@ function delete_file_cache($file_cache_r) {
 function delete_file_cache_rs($file_cache_rs) {
 	$count = 0;
 	reset ( $file_cache_rs );
-	while ( list ( , $file_cache_r ) = each ( $file_cache_rs ) ) {
+	foreach ( $file_cache_rs as $file_cache_r ) {
 		if (delete_file_cache ( $file_cache_r ) !== FALSE) {
 			$count ++;
 		}

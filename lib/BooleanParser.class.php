@@ -29,10 +29,6 @@ class BooleanLexer {
 	var $string;
 	var $stringLen;
 	
-	// Do nothing.
-	function BooleanLexer() {
-	}
-
 	function parse($string, $lookahead = NULL) {
 		$this->string = $string;
 		$this->stringLen = strlen ( $string );
@@ -61,12 +57,12 @@ class BooleanLexer {
 			// If idx is negative, this should work as well.
 			$index = $this->tokPtr + $idx;
 			if ($index >= 0 && $index < $this->stringLen)
-				return $this->string {$index};
+				return $this->string[$index];
 			else
 				return NULL;
 		} else {
 			if ($this->tokPtr < $this->stringLen)
-				return $this->string {$this->tokPtr ++};
+				return $this->string[$this->tokPtr ++];
 			else
 				return NULL; // reached end of string
 		}
@@ -253,17 +249,13 @@ class BooleanLexer {
 
 class BooleanParser {
 	var $lexer = NULL;
-	
-	// Do nothing.
-	function BooleanParser() {
-	}
 
 	function parseBooleanStatement($statement) {
 		if ($this->lexer == NULL)
 			$this->lexer = new BooleanLexer ();
-		
+
 		$this->lexer->parse ( $statement, 1 );
-		
+
 		while ( true ) {
 			$statement = $this->parseStatement ();
 			if ($statement === FALSE)
@@ -273,7 +265,7 @@ class BooleanParser {
 			else
 				break; // finished
 		}
-		
+
 		return $statements;
 	}
 
@@ -289,14 +281,14 @@ class BooleanParser {
 			$token = $this->lexer->nextToken ();
 		}
 		$this->lexer->pushBack ();
-		
+
 		if (is_array ( $conditions ) && count ( $conditions ) > 1) {
 			return array ('or' => $conditions );
 		} else {
 			return $conditions [0];
 		}
 	}
-	
+
 	/*
 	* Will parse several basic 'left <op> right' condition statements, as
 	* long as they are separated by AND tokens.
@@ -414,8 +406,8 @@ function get_compare_clause($column_name, $column_value, $match_mode, $case_sens
 */
 function build_boolean_clause($statement_rs, $column_name, $match_mode, $mode = 'AND', $case_sensitive = NULL) {
 	$query = "";
-	
-	while ( list ( $key, $statement ) = each ( $statement_rs ) ) {
+
+	foreach ( $statement_rs as $key => $statement ) {
 		if (strlen ( $query ) > 0)
 			$query .= " $mode ";
 		

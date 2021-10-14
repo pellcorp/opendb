@@ -28,6 +28,7 @@ include_once("./lib/filecache.php");
 include_once("./lib/TitleMask.class.php");
 
 function get_last_num_items_rs($num_of_items, $owner_id = NULL, $s_item_type = NULL, $update_on = NULL, $not_owner_id = NULL, $site_url_prefix = NULL, $title_mask_id = NULL) {
+	$search_vars_r = array();
 	if (strlen ( $owner_id ) > 0)
 		$search_vars_r ['owner_id'] = $owner_id;
 	
@@ -100,9 +101,11 @@ function get_last_num_items_rs($num_of_items, $owner_id = NULL, $s_item_type = N
 					if ($site_url_prefix != NULL) {
 						$item_r ['imageurl'] ['url'] = $site_url_prefix . $item_r ['imageurl'] ['url'];
 					}
-					
-					$item_r ['imageurl'] ['width'] = $file_r ['thumbnail'] ['width'];
-					$item_r ['imageurl'] ['height'] = $file_r ['thumbnail'] ['height'];
+
+					if (isset($file_r['thumbnail']['width']))
+						$item_r['imageurl']['width'] = $file_r['thumbnail'] ['width'];
+					if (isset($file_r['thumbnail']['height']))
+						$item_r['imageurl']['height'] = $file_r['thumbnail']['height'];
 					
 					$item_r ['imageurl'] ['title'] = $item_r ['title'];
 				}
@@ -119,13 +122,13 @@ function get_last_num_items_rs($num_of_items, $owner_id = NULL, $s_item_type = N
 
 function get_last_item_list($num_of_items, $owner_id = NULL, $s_item_type = NULL, $update_on = NULL, $not_owner_id = NULL, $site_url_prefix = NULL, $is_new_window_item_display = FALSE) {
 	$list_item_rs = get_last_num_items_rs ( $num_of_items, 	// number of items to return
-$owner_id, 	//owner_id 
-$s_item_type, 	// s_item_type
-$update_on, 	//update_on
-$not_owner_id, 	// not_owner_id
-$site_url_prefix, 'last_items_list' );
-	
-	while ( list ( , $list_item_r ) = @each ( $list_item_rs ) ) {
+											$owner_id, 	//owner_id
+											$s_item_type, 	// s_item_type
+											$update_on, 	//update_on
+											$not_owner_id, 	// not_owner_id
+											$site_url_prefix, 'last_items_list' );
+
+	foreach ( $list_item_rs as $key => $list_item_r ) {
 		$item_block = '';
 		
 		if ($is_new_window_item_display) {
@@ -168,9 +171,9 @@ function get_image_block($image_r, $class = NULL) {
 		if ($class != NULL)
 			$imageblock .= ' class="' . $class . '"';
 		
-		if (is_numeric ( $image_r ['width'] ))
+		if (is_numeric ( $image_r ['width'] ?? ""))
 			$imageblock .= ' width="' . $image_r ['width'] . '"';
-		if (is_numeric ( $image_r ['height'] ))
+		if (is_numeric ( $image_r ['height'] ?? "" ))
 			$imageblock .= ' height="' . $image_r ['height'] . '"';
 		
 		$imageblock .= ">";
@@ -181,7 +184,7 @@ function get_image_block($image_r, $class = NULL) {
 function get_last_item_list_marquee($blocks_r) {
 	$buffer = '';
 	if (is_array ( $blocks_r )) {
-		while ( list ( , $block ) = @each ( $blocks_r ) ) {
+		foreach ( $blocks_r as $key => $block ) {
 			$buffer .= "\n<div class=\"lastitemlist-item\" style=\"display: none;\">";
 			$buffer .= $block;
 			$buffer .= "</div>";
@@ -195,7 +198,7 @@ function get_last_item_list_table($blocks_r) {
 	$buffer = '';
 	if (is_array ( $blocks_r )) {
 		$buffer .= "\n<ul>";
-		while ( list ( , $block ) = @each ( $blocks_r ) ) {
+		foreach ( $blocks_r as $key => $block ) {
 			$buffer .= "\n<li>" . $block . "\n</li>";
 		}
 		$buffer .= "\n</ul>";
@@ -246,7 +249,7 @@ function get_whats_new_details($update_on, $user_id = NULL) {
 				
 				if ($status_items_updated > 0) {
 					$item_r ['class'] = 'tick';
-					$item_r ['content'] = '<a href="listings.php?' . (strlen ( $search_vars_r ['not_owner_id'] ) > 0 ? 'not_owner_id=' . $search_vars_r ['not_owner_id'] . '&' : '') . 's_status_type=' . $status_type_r ['s_status_type'] . '&update_on=' . urlencode ( $update_on ) . '">' . $status_title . '</a>';
+					$item_r ['content'] = '<a href="listings.php?' . (strlen ( $search_vars_r['not_owner_id'] ?? '' ) > 0 ? 'not_owner_id=' . $search_vars_r ['not_owner_id'] . '&' : '') . 's_status_type=' . $status_type_r ['s_status_type'] . '&update_on=' . urlencode ( $update_on ) . '">' . $status_title . '</a>';
 				} else {
 					$item_r ['class'] = 'cross';
 					$item_r ['content'] = $status_title;

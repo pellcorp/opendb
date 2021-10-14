@@ -19,9 +19,6 @@
  */
 
 class CSVExportPlugin {
-	function CSVExportPlugin() {
-	}
-
 	/*
 	 * The content type, when saved as file.
 	 */
@@ -47,7 +44,7 @@ class CSVExportPlugin {
 	function prompt_header($columns) {
 		$buffer = "";
 
-		while (list(, $column) = each($columns)) {
+		foreach ($columns as $column) {
 			if (strlen($buffer) > 0)
 				$buffer .= ",$column";
 			else
@@ -60,7 +57,7 @@ class CSVExportPlugin {
 		$buffer = "";
 
 		$isFirst = TRUE;
-		while (list(, $column) = each($columns)) {
+		foreach ($columns as $column) {
 			if (is_array($column)) {
 				$colval = '';
 				for ($i = 0; $i < count($column); $i++) {

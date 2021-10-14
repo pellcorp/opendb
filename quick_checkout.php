@@ -85,14 +85,14 @@ function display_borrower_form($HTTP_VARS) {
 function is_item_instance_in_array($item_instance_r, $item_instance_rs) {
 	if (is_array($item_instance_rs)) {
 		reset($item_instance_rs);
-		while (list(, $instance_r) = each($item_instance_rs)) {
-			if ($instance_r['item_id'] == $item_instance_r['item_id'] && $instance_r['instance_no'] == $item_instance_r['instance_no']) {
+		foreach ($item_instance_rs as $instance_r) {
+			if ($instance_r['item_id'] == $item_instance_r['item_id'] &&
+				$instance_r['instance_no'] == $item_instance_r['instance_no']) {
 				return TRUE;
 			}
 		}
 	}
 
-	//else
 	return FALSE;
 }
 
@@ -143,7 +143,7 @@ function get_decoded_item_instance_rs($op, $item_instance_list_r) {
 	$item_instance_rs = array();
 	if (is_array($item_instance_list_r)) {
 		reset($item_instance_list_r);
-		while (list(, $item_id_and_instance_no) = each($item_instance_list_r)) {
+		foreach($item_instance_list_r as $item_id_and_instance_no) {
 			if (strlen($item_id_and_instance_no) > 0) {
 				$item_instance_r = get_item_id_and_instance_no($item_id_and_instance_no);
 				if (is_not_empty_array($item_instance_r)) {
@@ -171,7 +171,7 @@ function get_encoded_item_instance_rs($checkout_item_instance_rs) {
 
 	if (is_array($checkout_item_instance_rs)) {
 		reset($checkout_item_instance_rs);
-		while (list(, $item_instance_r) = each($checkout_item_instance_rs)) {
+		foreach ($checkout_item_instance_rs as $item_instance_r) {
 			$encoded_item_instance_r[] = $item_instance_r['item_id'] . '_' . $item_instance_r['instance_no'];
 		}
 	}
@@ -182,7 +182,7 @@ function get_encoded_item_instance_rs($checkout_item_instance_rs) {
 function get_borrowed_item_sequence_number_r($altid_item_instance_rs) {
 	if (is_array($altid_item_instance_rs)) {
 		reset($altid_item_instance_rs);
-		while (list(, $altid_item_instance_r) = each($altid_item_instance_rs)) {
+		foreach ($altid_item_instance_rs as $altid_item_instance_r) {
 			$sequence_number[] = $altid_item_instance_r['sequence_number'];
 		}
 	}
@@ -197,7 +197,7 @@ function update_altid_item_instance_rs($op, $alt_item_id, $attribute_type_r, $al
 	if (strlen($alt_item_id) > 0) {
 		$item_instance_rs = get_new_altid_item_instance_rs($alt_item_id, $attribute_type_r, $altid_item_instance_rs);
 		if (is_array($item_instance_rs)) {
-			while (list(, $item_instance_r) = each($item_instance_rs)) {
+			foreach ($item_instance_rs as $item_instance_r) {
 				if ($item_instance_r['owner_id'] != $HTTP_VARS['borrower_id']) {
 					if ($op == 'checkout') {
 						if (is_item_instance_checkoutable($item_instance_r, $errors)) {
@@ -352,7 +352,7 @@ if (is_site_enabled()) {
 						}
 
 						if (is_not_empty_array($altid_item_instance_rs)) {
-							while (list(, $item_instance_r) = each($altid_item_instance_rs)) {
+							foreach ($altid_item_instance_rs as $item_instance_r) {
 								$listingObject->startRow();
 
 								$listingObject->addItemTypeImageColumn($item_instance_r['s_item_type']);

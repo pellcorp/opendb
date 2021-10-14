@@ -34,8 +34,8 @@ class OpenDbBrowserSniffer {
 			'kq',
 			'sf' );
 
-	function OpenDbBrowserSniffer() {
-		$this->phpSniffer = new phpSniff ( get_http_env ( 'HTTP_USER_AGENT' ) );
+	function __construct() {
+		$this->phpSniffer = new phpSniff( get_http_env( 'HTTP_USER_AGENT' ) );
 		$this->__initIsSupported ();
 	}
 

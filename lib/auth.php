@@ -104,33 +104,32 @@ function get_user_granted_permissions_r($user_id) {
 }
 
 function is_user_granted_permission($permission, $user_id = NULL, $ignoreRememberMe = FALSE) {
+	$is_remember_me = FALSE;
 	if (strlen ( $user_id ) == 0 && is_site_public_access()) {
 		$perms_r = get_public_access_permission_r();
-	} else {
-		if (strlen ( $user_id ) == 0) {
-			$user_id = $_SESSION['user_id'];
-			
-			if (!$ignoreRememberMe) {
-				$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
-			} else {
-				$is_remember_me = FALSE;
-			}
-			
-			global $PERM_MATRIX;
-			if (!is_array($PERM_MATRIX)) {
-				$perms_r = get_user_granted_permissions_r($user_id);
-				$PERM_MATRIX = $perms_r;
-			} else {
-				$perms_r = $PERM_MATRIX;
-			}
-		} else { // won't cache explicit request for perms
-			$perms_r = get_user_granted_permissions_r($user_id);
+
+	} elseif (strlen ( $user_id ) == 0) {
+		$user_id = $_SESSION['user_id'];
+
+		if (!$ignoreRememberMe) {
+			$is_remember_me = ($_SESSION['login_method'] == 'remember_me');
 		}
+
+		global $PERM_MATRIX;
+		if (!is_array($PERM_MATRIX)) {
+			$perms_r = get_user_granted_permissions_r($user_id);
+			$PERM_MATRIX = $perms_r;
+		} else {
+			$perms_r = $PERM_MATRIX;
+		}
+
+	} else { // won't cache explicit request for perms
+		$perms_r = get_user_granted_permissions_r($user_id);
 	}
 	
 	if (is_array($permission)) {
 		reset($permission);
-		while(list(,$perm) = each($permission)) {
+		foreach ( $permission as $perm ) {
 			if (isset($perms_r[$perm])) {
 				$rememberMe = $perms_r[$perm];
 				if (!$is_remember_me || $rememberMe == 'Y') {
@@ -138,12 +137,10 @@ function is_user_granted_permission($permission, $user_id = NULL, $ignoreRemembe
 				}
 			}
 		}
-	} else {
-		if (isset($perms_r[$permission])) {
-			$rememberMe = $perms_r[$permission];
-			if (!$is_remember_me || $rememberMe == 'Y') {
-				return TRUE;
-			}
+	} elseif (isset($perms_r[$permission])) {
+		$rememberMe = $perms_r[$permission];
+		if (!$is_remember_me || $rememberMe == 'Y') {
+			return TRUE;
 		}
 	}
 	return FALSE;
@@ -158,11 +155,9 @@ function is_permission_disabled_for_remember_me($permission) {
 	if (is_array($PERM_MATRIX)) {
 		if (is_array($permission)) {
 			reset($permission);
-			while(list(,$perm) = each($permission)) {
-				if(isset($PERM_MATRIX[$perm])) {
-					if ($PERM_MATRIX[$perm] == 'N') {
-						return TRUE;
-					}
+			foreach ( $permission as $perm ) {
+				if (isset($PERM_MATRIX[$perm]) && $PERM_MATRIX[$perm] == 'N') {
+					return TRUE;
 				}
 			}
 		}
@@ -219,8 +214,8 @@ function is_opendb_valid_session() {
 				// how long a session can remain active overall.
 				$current_time = time ();
 				
-				if (! is_numeric ( $site_r ['login_timeout'] ) || (($current_time - get_opendb_session_var ( 'login_time' )) < $site_r ['login_timeout'])) {
-					if (! is_numeric ( $site_r ['idle_timeout'] ) || (($current_time - get_opendb_session_var ( 'last_access_time' )) < $site_r ['idle_timeout'])) {
+				if (!is_numeric( $site_r['login_timeout'] ?? "" ) || ( ($current_time - get_opendb_session_var( 'login_time' )) < $site_r['login_timeout'])) {
+					if (! is_numeric ( $site_r ['idle_timeout'] ?? "" ) || (($current_time - get_opendb_session_var ( 'last_access_time' )) < $site_r ['idle_timeout'])) {
 						if (is_user_active ( get_opendb_session_var ( 'user_id' ) )) {
 							// reset the time, as we are only interested in idle session tests.
 							$_SESSION ['last_access_time'] = $current_time;
@@ -285,7 +280,7 @@ function remove_opendb_remember_me() {
 	
 	$remember_me_r = get_remember_me_r($oldCookie);
 	if ($remember_me_r !== FALSE) {
-		delete_remember_me($remember_me_r['id']);
+		delete_remember_me($remember_me_r['id'], $oldCookie);
 	}
 }
 
@@ -302,25 +297,25 @@ function handle_opendb_remember_me() {
 			$doRememberMe = FALSE;
 		}
 		
-		$oldCookie = $_COOKIE[get_opendb_remember_me_cookie_name()];
+		$oldCookie = $_COOKIE[get_opendb_remember_me_cookie_name()] ?? "";
 		if (!empty($oldCookie)) {
 			$remember_me_r = get_remember_me_r($oldCookie);
 			if ($remember_me_r !== FALSE) {
-				
+
 				// no need to register if already logged in
 				if ($remember_me_r['valid'] === TRUE && !$doRememberMe) { 
 					// the second TRUE, flags the current user login as being enabled by a remember me cookie
 					register_user_login($remember_me_r['user_id'], TRUE, TRUE);
 					$doRememberMe = TRUE;
 				}
-				delete_remember_me($remember_me_r['id']);
+				delete_remember_me($remember_me_r['id'], $oldCookie);
 			}
 		}
 	
 		if ($doRememberMe) {
 			$cookie = generate_opendb_cookie();
 			$site_r = get_opendb_config_var('site');
-			$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
+			$login_timeout = (int) ($site_r['login_timeout'] ?? $site_r['idle_timeout'] ?? 3600);
 		
 			if (insert_remember_me($_SESSION['user_id'], $cookie)) {
 				setcookie(get_opendb_remember_me_cookie_name(), $cookie, time() + $login_timeout);
@@ -347,7 +342,7 @@ function get_remember_me_r($cookie) {
 	$cookie = addslashes($cookie);
 	
 	$site_r = get_opendb_config_var ('site');
-	$login_timeout = (int) ifempty(ifempty($site_r['login_timeout'], $site_r['idle_timeout']), 3600);
+	$login_timeout = (int) ($site_r['login_timeout'] ?? ($site_r['idle_timeout'] ?? 3600));
 	
 	$query = "SELECT id, user_id, UNIX_TIMESTAMP() AS 'current_time', UNIX_TIMESTAMP(DATE_ADD(created_on, INTERVAL $login_timeout SECOND)) AS expiry_time FROM remember_me WHERE cookie = '$cookie' ";
 	$result = db_query ( $query );
@@ -363,7 +358,7 @@ function get_remember_me_r($cookie) {
 	return FALSE;
 }
 
-function delete_remember_me($id) {
+function delete_remember_me($id, $cookie) {
 	$id = addslashes($id);
 	$query = "DELETE FROM remember_me WHERE id = '$id'";
 	

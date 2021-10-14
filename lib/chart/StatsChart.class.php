@@ -26,10 +26,8 @@ class StatsChart {
 	var $height;
 	var $transparent;
 
-	function StatsChart($chartType, $graphCfg) {
+	function __construct($chartType, $graphCfg) {
 		$this->chartType = $chartType;
-		$this->imgType = $imgType;
-
 		$this->height = $graphCfg['height'];
 		$this->width = $graphCfg['width'];
 		if (!is_numeric($this->height) && !is_numeric($this->width)) {

@@ -51,10 +51,11 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS) {
 				'order_by' => $HTTP_VARS ['order_by'],
 				'sortorder' => $HTTP_VARS ['sortorder'] );
 	}
+
+	$letter = $HTTP_VARS ['letter'] ?? '';
 	
-	foreach ( array_merge ( array (
-			'#' ), range ( 'A', 'Z' ) ) as $char ) {
-		if ($HTTP_VARS ['letter'] == $char) {
+	foreach ( array_merge ( array ('#' ), range ( 'A', 'Z' ) ) as $char ) {
+		if ($letter == $char) {
 			$buffer .= "<li class=\"current\">$char</li>";
 		} else {
 			$buffer .= "<li><a href=\"$PHP_SELF?" . get_url_string ( $context_vars, array (
@@ -63,9 +64,9 @@ function getAlphaListBlock($PHP_SELF, $HTTP_VARS) {
 		}
 	}
 	
-	if (strlen ( $HTTP_VARS ['letter'] ) > 0) {
-		$buffer .= "<li class=\"all\"><a href=\"$PHP_SELF?" . get_url_string ( $context_vars, array (
-				'letter' => '' ) ) . "\">" . get_opendb_lang_var ( 'all' ) . "</a></li>";
+	if (strlen( $letter ) > 0) {
+		$buffer .= "<li class=\"all\"><a href=\"$PHP_SELF?" . get_url_string ( $context_vars, array ( 'letter' => '' ) ) .
+				"\">" . get_opendb_lang_var ( 'all' ) . "</a></li>";
 	}
 	
 	$buffer .= '</ul>';
@@ -78,7 +79,7 @@ function getItemsPerPageControl($PHP_SELF, $HTTP_VARS) {
 	$items_per_page_options_r = get_opendb_config_var ( 'listings', 'items_per_page_options' );
 	if (is_not_empty_array ( $items_per_page_options_r )) {
 		$items_per_page_rs = array ();
-		while ( list ( , $items_per_page ) = each ( $items_per_page_options_r ) ) {
+		foreach ( $items_per_page_options_r as $items_per_page ) {
 			if ($items_per_page == '0')
 				$display = get_opendb_lang_var ( 'all' );
 			else
@@ -99,7 +100,7 @@ function getItemsPerPageControl($PHP_SELF, $HTTP_VARS) {
 * 				array('value'=>'display', 'value'=>'display')
 */
 function getToggleControl($PHP_SELF, $HTTP_VARS, $text, $fieldname, $value) {
-	$buffer .= "<form class=\"toggleControl\" id=\"toggle-$fieldname\" action=\"" . $PHP_SELF . "\" method=\"GET\">" . get_url_fields ( $HTTP_VARS, NULL, array (
+	$buffer = "<form class=\"toggleControl\" id=\"toggle-$fieldname\" action=\"" . $PHP_SELF . "\" method=\"GET\">" . get_url_fields ( $HTTP_VARS, NULL, array (
 			$fieldname ) ) . "<input type=\"hidden\" name=\"$fieldname\" value=\"$value\">" . "<label for=\"toggle-$fieldname-cbox\">" . $text . "</label><input type=\"checkbox\" class=\"checkbox\" id=\"toggle-$fieldname-cbox\" name=\"${fieldname}_cbox\" value=\"Y\" onclick=\"if(this.checked){this.form['${fieldname}'].value='Y';}else{this.form['${fieldname}'].value='N';} this.form.submit()\"" . (strcasecmp ( $value, 'Y' ) === 0 ? " CHECKED" : "") . ">" . "</form>";
 	return $buffer;
 }
@@ -136,7 +137,7 @@ function remove_array_values($old_item_array, $new_item_array, $checked_item_arr
 		$new_array = array ();
 		
 		reset ( $old_item_array );
-		while ( list ( , $value ) = each ( $old_item_array ) ) {
+		foreach ( $old_item_array as $value ) {
 			// $value must exist in $old_item_array.  If $new_item_array is not an array, or the 
 			// $value is not found, remove from $session_array
 			if (! (in_array ( $value, $checked_item_array ) && @! in_array ( $value, $new_item_array ))) {
@@ -158,7 +159,7 @@ function minus_array_values($old_item_array, $item_array) {
 		$new_array = array ();
 		
 		reset ( $old_item_array );
-		while ( list ( , $value ) = each ( $old_item_array ) ) {
+		foreach ( $old_item_array as $value ) {
 			if (! in_array ( $value, $item_array )) {
 				array_push ( $new_array, $value );
 			}
@@ -173,7 +174,7 @@ function convert_array_to_csv_list($array_list) {
 	
 	if (is_array ( $array_list )) {
 		reset ( $array_list );
-		while ( list ( , $value ) = each ( $array_list ) ) {
+		foreach ( $array_list as $value ) {
 			if (strlen ( $csvlist ) > 0)
 				$csvlist .= ',';
 			$csvlist .= $value;

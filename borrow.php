@@ -188,14 +188,14 @@ if (is_site_enabled()) {
  								insert_cart_item($HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], get_opendb_session_var('user_id'));
 							}
 						} else if ($HTTP_VARS['op'] == 'update_my_reserve_basket' && is_not_empty_array($HTTP_VARS['item_id_instance_no'])) { // initiated from listings.php page!
- 							while (list(, $item_id_instance_no) = each($HTTP_VARS['item_id_instance_no'])) {
+							foreach ($HTTP_VARS['item_id_instance_no'] as $item_id_instance_no ) {
 								$item_r = get_item_id_and_instance_no($item_id_instance_no);
 								if (!is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'))) { // else add item to session array. 
  									insert_cart_item($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'));
 								}
 							}
 						} else if ($HTTP_VARS['op'] == 'delete_from_my_reserve_basket' && is_not_empty_array($HTTP_VARS['sequence_number'])) {
-							while (list(, $sequence_number) = each($HTTP_VARS['sequence_number'])) {
+							foreach ( $HTTP_VARS['sequence_number'] as $sequence_number ) {
 								delete_cart_item($sequence_number);
 							}
 						}

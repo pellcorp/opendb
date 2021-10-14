@@ -21,9 +21,6 @@
 class OpenDbExportPlugin {
 	var $_level = 1;
 
-	function OpenDbExportPlugin() {
-	}
-
 	/*
 	 * The content type, when saved as file.
 	 */

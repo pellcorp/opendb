@@ -782,7 +782,7 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 			db_query ( "UNLOCK TABLES" );
 			
 			if (is_array ( $file_attributes_rs )) {
-				while ( list ( , $file_attribute_r ) = each ( $file_attributes_rs ) ) {
+				foreach ($file_attributes_rs as $file_attribute_r) {
 					file_cache_insert_file ( $file_attribute_r ['attribute_val'], NULL, NULL, NULL, 'ITEM', $file_attribute_r ['file_attribute_ind'] == 'Y' );
 				}
 			}

@@ -8,8 +8,8 @@ class InstallTableAjaxJobs extends AdminAjaxJobs {
 	var $_uploadFile;
 	var $_totalItems;
 
-	function InstallTableAjaxJobs($job) {
-		parent::AdminAjaxJobs(get_class($this), $job, 1000);
+	function __construct($job) {
+		parent::__construct(get_class($this), $job, 1000);
 	}
 
 	function __executeJob() {
@@ -85,38 +85,5 @@ class InstallTableAjaxJobs extends AdminAjaxJobs {
 			return FALSE;
 		}
 	}
-
-	//	function summary_details(&$installPlugin) {
-	//		$buffer .= "\n<h4>Summary Details</h4>";
-	//		$buffer .= "\n<table><tr class=\"navbar\">";
-	//		$buffer .= "\n<th>Processed</th><th>Inserted</th><th>Updated</th><th>Deleted</th></tr>";
-	//		$buffer .= "\n<tr>";
-	//		$buffer .= "<td class=\"oddRow\">".$installPlugin->getProcessedCount()."</td>";
-	//		$buffer .= "<td class=\"oddRow\">".$installPlugin->getInsertCount()."</td>";
-	//		$buffer .= "<td class=\"oddRow\">".$installPlugin->getUpdateCount()."</td>";
-	//		$buffer .= "<td class=\"oddRow\">".$installPlugin->getDeleteCount()."</td>";
-	//		$buffer .= "</tr></table>";
-	//		
-	//		$errors_r = $installPlugin->getErrors();
-	//		if(is_not_empty_array($errors_r))
-	//		{
-	//			$buffer .= "\n<h4>Error Details</h4>";
-	//			
-	//			$buffer .= "\n<table>";
-	//			reset($errors_r);
-	//			$buffer .= "\n<tr class=\"navbar\"><th>Row No.</th><th>Error</th><th>Details</th></tr>";
-	//			$toggle=TRUE;
-	//			while(list(,$error_r) = each($errors_r))
-	//			{
-	//				$color = ($toggle?"oddRow":"evenRow");
-	//				$toggle = !$toggle;
-	//	
-	//				$buffer .= "\n<tr><td class=\"$color\">".$error_r['rowcount']."</td><td class=\"$color\">".$error_r['error']."</td><td class=\"$color\">".$error_r['details']."</td></tr>";
-	//			}
-	//			$buffer .= "\n</table>";
-	//		}
-	//		
-	//		return $buffer;
-	//	}
 }
 ?>

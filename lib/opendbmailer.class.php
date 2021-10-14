@@ -18,8 +18,6 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 require_once ('./lib/phpmailer/class.phpmailer.php');
-// hardcoded to english messages for now
-include_once("./lib/phpmailer/language/phpmailer.lang-en.php");
 
 include_once("./lib/config.php");
 include_once("./lib/logging.php");
@@ -33,7 +31,7 @@ include_once("./lib/logging.php");
 */
 class OpenDbMailer extends PHPMailer {
 
-	function OpenDbMailer($mailer) {
+	function __construct($mailer) {
 		$this->PluginDir = './lib/phpmailer/';
 		
 		if (get_opendb_config_var ( 'email', 'windows_smtp_server' ) === TRUE) {
@@ -74,18 +72,6 @@ class OpenDbMailer extends PHPMailer {
 				$this->Mailer = 'mail';
 			}
 		}
-	}
-
-	/**
-	    Language variables are hardcoded to english at the moment.
-	*/
-	function Lang($key) {
-		global $PHPMAILER_LANG;
-		
-		if (isset ( $PHPMAILER_LANG [$key] ))
-			return $PHPMAILER_LANG [$key];
-		else
-			return "Language string failed to load: " . $key;
 	}
 }
 ?>

@@ -498,7 +498,7 @@ if (is_site_enabled()) {
 				$field = "\n<select name=\"plugin\">\n";
 				$plugin_list_r = get_export_plugin_list_r();
 				if (is_array($plugin_list_r)) {
-					while (list(, $plugin_r) = @each($plugin_list_r)) {
+					foreach ($plugin_list_r as  $plugin_r) {
 						$field .= '<option value="' . $plugin_r['name'] . '"';
 
 						if ($plugin_r['name'] == 'OpenDbExportPlugin') {

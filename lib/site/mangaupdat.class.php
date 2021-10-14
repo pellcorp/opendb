@@ -27,8 +27,8 @@ function _html_to_utf8($data) {
 }
 
 class mangaupdat extends SitePlugin {
-	function mangaupdat($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {

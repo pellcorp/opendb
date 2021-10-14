@@ -67,7 +67,7 @@ if (is_site_enabled()) {
 				_theme_header($title);
 
 				// todo - this should really be in the <head>...</head> - does it matter?
-				if ($xajax) {
+				if (isset($xajax)) {
 					$xajax->printJavascript();
 				}
 

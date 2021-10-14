@@ -137,7 +137,7 @@ function get_system_admin_tools_menu($admin_type = NULL) {
 			return NULL;
 	} else {
 		$menu_options_rs = array ();
-		while ( list ( $id, $menu_r ) = each ( $admin_menu_rs ) ) {
+		foreach ($admin_menu_rs as $id => $menu_r ) {
 			$menu_r ['url'] = 'admin.php?type=' . $id;
 			$menu_options_rs ['admin'] [] = $menu_r;
 		}

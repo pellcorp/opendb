@@ -19,12 +19,12 @@
 */
 
 chdir(dirname(dirname(__FILE__)));
-require_once("./lib/GDImage.class.php");
+require_once("./lib/ODImage.class.php");
 
 class GDImageTest extends PHPUnit_Framework_TestCase
 {
 	function testPngBasicFunctions() {
-		$gdImage = new GDImage('png');
+		$gdImage = new ODImage('png');
 		$this->assertEquals('png', $gdImage->getImageType());
 		$this->assertEquals('png', $gdImage->getImageExtension());
 		$this->assertEquals('image/png', $gdImage->getImageContentType());
@@ -37,7 +37,7 @@ class GDImageTest extends PHPUnit_Framework_TestCase
 	}
 	
 	function testJpgBasicFunctions() {
-		$gdImage = new GDImage('jpg');
+		$gdImage = new ODImage('jpg');
 		$this->assertEquals('jpg', $gdImage->getImageExtension());
 		
 		print_r($gdImage->getErrors());
@@ -48,14 +48,14 @@ class GDImageTest extends PHPUnit_Framework_TestCase
 	 *
 	 */
 	function testAutoBasicFunctions() {
-		$gdImage = new GDImage('auto');
+		$gdImage = new ODImage('auto');
 		$this->assertEquals('png', $gdImage->getImageExtension());
 		
 		print_r($gdImage->getErrors());
 	}
 	
 	function testGetImageConfig() {
-		$gdImage = new GDImage('png');
+		$gdImage = new ODImage('png');
 		$image_config_r = $gdImage->getImageTypeConfig();
 		$this->assertEquals('png', $image_config_r['extension']);
 		
@@ -63,7 +63,7 @@ class GDImageTest extends PHPUnit_Framework_TestCase
 	}
 	
 	function testImageCreate() {
-		$gdImage = new GDImage('png');
+		$gdImage = new ODImage('png');
 		
 		$this->assertEquals(FALSE, $gdImage->createImage('code_bg.png'));
 		
@@ -75,7 +75,7 @@ class GDImageTest extends PHPUnit_Framework_TestCase
 	
 	// run after disabling ImagePNG
 //	function testImageCreateWithoutPng() {
-//		$gdImage = new GDImage();
+//		$gdImage = new ODImage();
 //		$this->assertEquals('jpg', $gdImage->getImageType());
 //	}
 }

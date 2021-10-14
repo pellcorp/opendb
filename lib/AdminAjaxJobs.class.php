@@ -13,7 +13,7 @@ class AdminAjaxJobs {
 	var $_id;
 	var $_debug;
 
-	function AdminAjaxJobs($id, $job, $batchlimit) {
+	function __construct($id, $job, $batchlimit) {
 		$this->_id = $id;
 		$this->_job = $job;
 		$this->_batchlimit = $batchlimit;

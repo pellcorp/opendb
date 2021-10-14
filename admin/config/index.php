@@ -116,7 +116,7 @@ function get_group_block_input_field($config_group_item_r, $value) {
 
 			if (is_array($value)) {
 				reset($value);
-				while (list($key, $val) = each($value)) {
+				foreach ($value as $key => $val) {
 					$buffer .= "<option value=\"" . $val . "\" SELECTED>" . $val . "\n";
 				}
 			}
@@ -145,7 +145,7 @@ function get_group_block($config_group_r) {
 	global $PHP_SELF;
 	global $ADMIN_TYPE;
 
-	$buffer .= "<form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">" . "<input type=\"hidden\" name=\"type\" value=\"" . $ADMIN_TYPE . "\">" . "<input type=\"hidden\" name=\"op\" value=\"save\">" . "<input type=\"hidden\" name=\"group_id\" value=\"" . $config_group_r['id'] . "\">";
+	$buffer = "<form name=\"config\" action=\"$PHP_SELF\" method=\"POST\">" . "<input type=\"hidden\" name=\"type\" value=\"" . $ADMIN_TYPE . "\">" . "<input type=\"hidden\" name=\"op\" value=\"save\">" . "<input type=\"hidden\" name=\"group_id\" value=\"" . $config_group_r['id'] . "\">";
 
 	$buffer .= "<ul class=\"saveButtons\">
 				<li><input type=\"submit\" class=\"submit\" value=\"Refresh\" onclick=\"this.form['op'].value='';\"></li>
@@ -259,9 +259,9 @@ function save_config($HTTP_VARS, &$errors) {
 function save_config_item($config_group_item_r, $HTTP_VARS, &$errors) {
 	$http_value = NULL;
 	if ($config_group_item_r['keyid'] != '0')
-		$http_value = $HTTP_VARS[$config_group_item_r['group_id']][$config_group_item_r['id']][$config_group_item_r['keyid']];
+		$http_value = $HTTP_VARS[$config_group_item_r['group_id']][$config_group_item_r['id']][$config_group_item_r['keyid']] ?? "";
 	else
-		$http_value = $HTTP_VARS[$config_group_item_r['group_id']][$config_group_item_r['id']];
+		$http_value = $HTTP_VARS[$config_group_item_r['group_id']][$config_group_item_r['id']] ?? "";
 
 	// if old values exist, and count of new values is the same, then no need to proceed.
 	if ($config_group_item_r['type'] == 'array') {
@@ -272,7 +272,7 @@ function save_config_item($config_group_item_r, $HTTP_VARS, &$errors) {
 
 		if (is_not_empty_array($http_value)) {
 			reset($http_value);
-			while (list($key, $value) = each($http_value)) {
+			foreach ($http_value as $key => $value) {
 				if ($value != 'NULL') {
 					if (!insert_s_config_group_item_var($config_group_item_r['group_id'], $config_group_item_r['id'], $key, $value)) {
 						$errors[] = array('error' => 'Config Group Item Var not inserted', 'detail' => db_error());
@@ -311,7 +311,7 @@ function save_config_item($config_group_item_r, $HTTP_VARS, &$errors) {
 
 @set_time_limit(0);
 
-if (strlen($HTTP_VARS['group_id']) == 0) {
+if (strlen($HTTP_VARS['group_id'] ?? "") == 0) {
 	$HTTP_VARS['group_id'] = 'site';
 }
 
@@ -321,7 +321,7 @@ if ($HTTP_VARS['op'] == 'save') {
 	save_config($HTTP_VARS, $errors);
 }
 
-if (is_not_empty_array($errors))
+if (is_not_empty_array($errors ?? ""))
 	echo format_error_block($errors);
 echo get_javascript("admin/config/select.js");
 
@@ -342,21 +342,20 @@ if (is_array($config_group_rs)) {
 	$first = TRUE;
 
 	reset($config_group_rs);
-	while (list(, $config_group_r) = each($config_group_rs)) {
+	foreach ($config_group_rs as $config_group_r) {
 		if ($config_group_r['id'] == $HTTP_VARS['group_id'])
 			echo "\n<li class=\"activetab " . ($first ? " first" : "") . "\">" . $config_group_r['name'] . "</li>";
 		else
 			echo "\n<li class=\"" . ($first ? "first" : "") . "\"><a href=\"$PHP_SELF?type=$ADMIN_TYPE&group_id=" . $config_group_r['id'] . "\">" . $config_group_r['name'] . "</a></li>";
 		$first = FALSE;
 	}
-	db_free_result($results);
 
 	echo ("\n</ul>");
 
 	echo ("<div id=\"tab-content\">");
 
 	reset($config_group_rs);
-	while (list(, $config_group_r) = each($config_group_rs)) {
+	foreach ($config_group_rs as $config_group_r) {
 		if ($config_group_r['id'] == $HTTP_VARS['group_id']) {
 			echo get_group_block($config_group_r);
 			break;

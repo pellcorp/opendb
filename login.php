@@ -113,6 +113,7 @@ function show_login_form($HTTP_VARS, $errors = NULL) {
 		document.forms['login']['uid'].focus();
 	</script>");
 
+	$footer_links_r = array();
 	if (is_site_enabled() && is_valid_opendb_mailer()) {
 		if (strlen($HTTP_VARS['uid']) > 0 && get_opendb_config_var('login', 'enable_new_pwd_gen') !== FALSE && is_user_granted_permission(PERM_CHANGE_PASSWORD, $HTTP_VARS['uid'])) {
 			$footer_links_r[] = array('url' => $PHP_SELF . "?op=newpassword&uid=" . urlencode($HTTP_VARS['uid']), 'text' => get_opendb_lang_var('forgot_your_pwd'));

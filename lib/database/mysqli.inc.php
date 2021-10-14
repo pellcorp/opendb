@@ -50,10 +50,10 @@ function db_connect($host, $user, $passwd, $dbname, $charset = NULL, $cache_link
 		}
 	}
 
-	if (strlen($socket) > 0) {
+	if (isset($socket)) {
 		$link = @mysqli_connect($host, $user, $passwd, $dbname, NULL, $socket);
 	} else {
-		if (strlen($port) > 0)
+		if (isset($port))
 			$link = @mysqli_connect($host, $user, $passwd, $dbname, $port);
 		else
 			$link = @mysqli_connect($host, $user, $passwd, $dbname);

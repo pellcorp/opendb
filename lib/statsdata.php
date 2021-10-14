@@ -111,7 +111,7 @@ function build_item_ownership_chart_data() {
 			$num_total = 0;
 			if (is_not_empty_array ( $status_type_rs )) {
 				reset ( $status_type_rs );
-				while ( list ( $key, $status_type_r ) = each ( $status_type_rs ) ) {
+				foreach ($status_type_rs as $key => $status_type_r) {
 					$status_total = fetch_owner_s_status_type_item_cnt ( $user_r ['user_id'], $status_type_r ['s_status_type'] );
 					$num_total += $status_total;
 				}

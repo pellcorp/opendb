@@ -30,9 +30,6 @@ class Item {
 	var $_title = NULL;
 	var $_attribute_rs = NULL;
 
-	function Item() {
-	}
-
 	function setItemType($s_item_type) {
 		$this->_item_type = $s_item_type;
 	}
@@ -98,8 +95,8 @@ class ItemInstance extends Item {
 	var $_borrow_duration;
 	var $_instance_no;
 
-	function ItemInstance(&$parentItemObj, $ownerId) {
-		parent::Item ();
+	function __construct(&$parentItemObj, $ownerId) {
+		parent::__construct();
 		
 		$this->setOwnerID ( $ownerId );
 		
@@ -182,7 +179,7 @@ class ItemImportHandler {
 	* @param $owner_id - Will be used for item_instance insert, as well as validation
 	* 					of any owner insert restrictions.
 	*/
-	function ItemImportHandler($owner_id, $cfg_is_trial_run, $cfg_ignore_duplicate_title, $cfg_override_status_type, $cfg_default_status_type_r, &$listingsObject) {
+	function __construct($owner_id, $cfg_is_trial_run, $cfg_ignore_duplicate_title, $cfg_override_status_type, $cfg_default_status_type_r, &$listingsObject) {
 		$this->_owner_id = $owner_id;
 		$this->_cfg_ignore_duplicate_title = $cfg_ignore_duplicate_title;
 		$this->_cfg_is_trial_run = $cfg_is_trial_run;
@@ -492,13 +489,13 @@ class ItemImportHandler {
 			if (is_array ( $attribute_rs )) {
 				$column .= '<dl class="importAttribs">';
 				reset ( $attribute_rs );
-				while ( list ( $key, $attribute_val ) = each ( $attribute_rs ) ) {
+				foreach ($attribute_rs as $key => $attribute_val) {
 					$attribute_type_r = NULL;
 					
 					$attribute_type_rs = $this->__getItemTypeAttribs ( $item_r ['s_item_type'] );
 					if (is_array ( $attribute_type_rs )) {
 						reset ( $attribute_type_rs );
-						while ( list ( , $attribute_type_r ) = each ( $attribute_type_rs ) ) {
+						foreach ($attribute_type_rs as $attribute_type_r) {
 							if ($key == get_field_name ( $attribute_type_r ['s_attribute_type'], $attribute_type_r ['order_no'] )) {
 								if ($attribute_type_r ['display_type'] == 'hidden' || ($attribute_type_r ['display_type'] == 0 && $attribute_type_r ['input_type'] == 'hidden')) {
 									$attribute_type_r ['display_type'] = 'display';
@@ -534,7 +531,7 @@ class ItemImportHandler {
 			$new_attributes_rs = $itemObj->getAttributes ();
 			
 			reset ( $attribute_type_rs );
-			while ( list ( , $attribute_type_r ) = each ( $attribute_type_rs ) ) {
+			foreach ($attribute_type_rs as $attribute_type_r) {
 				if ($attribute_type_r ['s_field_type'] != 'DURATION' && $attribute_type_r ['s_field_type'] != 'TITLE' && $attribute_type_r ['s_field_type'] != 'STATUSTYPE' && $attribute_type_r ['s_field_type'] != 'STATUSCMNT' && $attribute_type_r ['s_field_type'] != 'ITEM_ID') {
 					$fieldname = get_field_name ( $attribute_type_r ['s_attribute_type'], $attribute_type_r ['order_no'] );
 					

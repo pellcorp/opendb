@@ -29,8 +29,8 @@ class tmdb extends SitePlugin {
     private $imgResultsSize = '';
     private $apikey = '';
 
-    function tmdb($site_type) {
-        parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 
         $this->apikey = $this->_site_plugin_conf_r['tmdb_apikey'];
 

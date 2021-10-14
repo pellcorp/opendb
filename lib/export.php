@@ -125,7 +125,7 @@ function get_export_plugin_list_r() {
 	
 	$export_type_r = get_export_r ();
 	if (is_array ( $export_type_r )) {
-		while ( list ( , $pluginRef ) = @each ( $export_type_r ) ) {
+		foreach ($export_type_r as $pluginRef) {
 			include_once("./lib/export/" . $pluginRef . ".class.php");
 			$exportPlugin = new $pluginRef ();
 			if ($exportPlugin !== NULL) {

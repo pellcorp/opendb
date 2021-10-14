@@ -45,7 +45,7 @@ function get_usort_function($order_by_clause) {
 	
 	$first_element = TRUE;
 	$retval = NULL;
-	while ( list ( , $order_by ) = each ( $order_by_options_r ) ) {
+	foreach ($order_by_options_r as $order_by) {
 		if (strlen ( $retval ) > 0) {
 			$inner_val = $retval;
 		}

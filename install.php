@@ -50,7 +50,7 @@ function install_check_directories(&$doContinue) {
 				</tr>";
 
 	reset($_opendb_install_required_writedirs);
-	while (list(, $directory) = each($_opendb_install_required_writedirs)) {
+	foreach ( $_opendb_install_required_writedirs as $directory ) {
 		$buffer .= "<tr><th class=\"prompt\">" . $directory . "</td>";
 
 		if (is_dir($directory)) {
@@ -81,7 +81,7 @@ function install_check_directories(&$doContinue) {
 			<p><code>chmod ugo+w ";
 
 		reset($_opendb_install_required_writedirs);
-		while (list(, $directory) = each($_opendb_install_required_writedirs)) {
+		foreach ( $_opendb_install_required_writedirs as $directory ) {
 			$buffer .= "$directory ";
 		}
 
@@ -161,13 +161,13 @@ function install_check_mysql_collation_mismatch() {
 		$buffer .= "<table>";
 		$buffer .= "<tr class=\"navbar\"><th>Table</th><th>Column</th><th>Collation</th></tr>";
 		$table_r = fetch_opendb_table_list_r();
-		while (list(, $table) = each($table_r)) {
+		foreach ( $table_r as $table ) {
 			if (isset($table_colation_mismatch[$table])) {
 				$buffer .= "<tr><td class=\"prompt\">$table</td><td class=\"prompt\">&nbsp;</td><td class=\"data\">" . $table_colation_mismatch[$table] . "</td></tr>";
 			}
 
 			if (isset($table_column_colation_mismatch[$table])) {
-				while (list($column, $collation) = each($table_column_colation_mismatch[$table])) {
+				foreach ( $table_column_colation_mismatch[$table] as $column => $collation ) {
 					$buffer .= "<tr><td class=\"prompt\">$table</td><td class=\"prompt\">$column</td><td class=\"data\">" . $collation . "</td></tr>";
 				}
 			}
@@ -219,7 +219,7 @@ function install_check_user_permissions() {
 				</tr>";
 
 		reset($privileges_rs);
-		while (list(, $privileges_r) = each($privileges_rs)) {
+		foreach ( $privileges_rs as $privileges_r ) {
 			$buffer .= "<tr class=\"prompt\"><th>" . $privileges_r['privilege'] . "</th>";
 			if ($privileges_r['granted']) {
 				$buffer .= "<td class=\"data\">$TICK_IMAGE</td>";
@@ -472,7 +472,7 @@ function install_opendb_upgrade($HTTP_VARS, &$errors) {
 			} else if (count($upgraders_rs) > 1) {
 				$errors[] = "More than one upgrader is available for this version, this is an error, please contact the author.";
 				reset($upgraders_rs);
-				while (list(, $upgraders_r) = each($upgraders_rs)) {
+				foreach ( $upgraders_rs as $upgraders_r ) {
 					$errors[] = 'Upgrader: ' . $upgraders_r['description'];
 				}
 
@@ -734,7 +734,7 @@ if (strlen($HTTP_VARS['step']) == 0) {
 
 				if (is_array($errors)) {
 					echo ("<ul class=\"error\">");
-					while (list(, $error) = each($errors)) {
+					foreach ( $errors as $error ) {
 						echo ("<li>$error</li>");
 					}
 					echo ("</ul>");

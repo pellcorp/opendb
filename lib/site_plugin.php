@@ -514,7 +514,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 	
 	// now for any variables that do not have a mapping, add them to the $new_attributes_r
 	reset ( $site_item_attributes_r );
-	while ( list ( $key, $value ) = @each ( $site_item_attributes_r ) ) {
+	foreach ( $site_item_attributes_r as $key => $value ) {
 		$key = strtolower ( $key );
 		if (isset ( $new_attributes_r [$key] )) {
 			$oldValue = NULL;
@@ -530,8 +530,8 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 				$new_attributes_r [$key] = $value;
 			else
 				$new_attributes_r [$key] [] = $value;
-			
-			while ( list ( , $value ) = each ( $oldValue ) ) {
+
+			foreach ( $oldValue as $value ) {
 				if (! in_array ( $value, $new_attributes_r [$key] )) {
 					$new_attributes_r [$key] [] = $value;
 				}
@@ -546,7 +546,7 @@ function get_expanded_and_mapped_site_plugin_item_variables_r($site_type, $s_ite
 	// now we need to check to see if any lookup mappings exist for each
 	// of the attribute values, and update the $value's appropriately.
 	reset ( $new_attributes_r );
-	while ( list ( $key, $value ) = @each ( $new_attributes_r ) ) {
+	foreach ( $new_attributes_r as $key => $value ) {
 		// temporary UPPER so we can work with actual s_attribute_type records in database
 		$s_attribute_type = strtoupper ( $key );
 		

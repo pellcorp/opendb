@@ -353,7 +353,7 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $incl
 			$children[] = $child;
 		}
 		db_free_result($children_rs);
-	x}
+	}
     
 	$items = array();
 

@@ -631,6 +631,8 @@ function datetime_field($name, $prompt, $format_mask, $auto_datetime, $compulsor
 	} else {
 		$onchange = "onchange=\"$onchange_event\"";
 	}
+
+    $size = strlen($format_mask);
 	
 	if ($multi_value) {
 		for($i = 0; $i < count ( $value ); $i ++) {

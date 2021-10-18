@@ -39,7 +39,9 @@ Post any bugs to https://github.com/pellcorp/opendb/issues
 
 - phpSniff - Copyright 2002-2004 Roger Raymond <epsilon7@users.sourceforge.net>
 
-- phpThumb() - The PHP thumbnail creator.  by James Heinrich <info@silisoftware.com> 
+- phpThumb() - The PHP thumbnail creator by James Heinrich <info@silisoftware.com>
+
+- PHPMailer - 5.2.x - https://github.com/PHPMailer/PHPMailer
 
 - adodb-time.inc.php - ADODb Date / Time functions.  
   Copyright (c) 2000, 2001, 2002, 2003 John Lim

@@ -104,7 +104,7 @@ function fetch_attribute_type_lookup_rs($s_attribute_type = NULL, $order_by = 'v
 	}
 	
 	if (is_string ( $order_by )) {
-		$query .= " ORDER BY order_no, $order_by $order";
+		$query .= " ORDER BY order_no, $order_by";
 	}
 	
 	$result = db_query ( $query );

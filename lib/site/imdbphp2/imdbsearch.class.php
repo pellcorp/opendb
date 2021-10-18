@@ -128,7 +128,6 @@
             mdb_base::debug_scalar("No immediate response body - we are redirected.<br>New URL: $header");
             if ( preg_match('!\.imdb\.(com|de|it)/find\?!',$header) ) {
               return $this->results($header);
-              break(4);
             }
             $url = explode("/",$header);
             $id  = substr($url[count($url)-1],2);

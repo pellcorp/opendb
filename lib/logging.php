@@ -123,7 +123,7 @@ function fget_tokenised_log_entry(&$file) {
 						$count ++;
 					}
 					
-					$column .= $line[$id];
+					$column .= $line[$i];
 					break;
 				
 				default :

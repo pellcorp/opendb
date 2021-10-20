@@ -915,7 +915,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 			$parser = new BooleanParser ();
 			$statements = $parser->parseBooleanStatement ( $HTTP_VARS ['title'] );
 			if (is_array ( $statements )) {
-				$where_r [] = build_boolean_clause ( $statements, 'i.title', $HTTP_VARS ['title_match'], 'AND', $HTTP_VARS ['title_case'] );
+				$where_r [] = build_boolean_clause ( $statements, 'i.title', $HTTP_VARS ['title_match'], 'AND', $HTTP_VARS ['title_case'] ?? NULL);
 			}
 		} else {
 			if (is_null ( $HTTP_VARS ['title_case'] )) {

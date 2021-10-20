@@ -40,9 +40,9 @@ class BooleanLexer {
 			$this->lookahead = $lookahead;
 		else
 			$this->lookahead = 0; // no lookahead
-			
 
 		// Initialise lookahead stack
+		$this->tokPtr = 0;
 		$this->stackPtr = 0;
 		$this->tokenStack = array();
 	}
@@ -257,7 +257,7 @@ class BooleanParser {
 		$this->lexer->parse ( $statement, 1 );
 
 		while ( true ) {
-			$statement = $this->parseStatement ();
+			$statement = $this->parseStatement();
 			if ($statement === FALSE)
 				return FALSE;
 			else if ($statement !== NULL)
@@ -266,7 +266,7 @@ class BooleanParser {
 				break; // finished
 		}
 
-		return $statements;
+		return $statements ?? NULL;
 	}
 
 	function getError() {
@@ -315,12 +315,12 @@ class BooleanParser {
 			$condition = $token;
 		}
 		
-		if ($condition !== FALSE) {
-			$conditions [] = $condition;
+		if ($condition ?? TRUE !== FALSE) {
+			$conditions [] = $condition ?? NULL;
 			while ( true ) {
-				$token = $this->lexer->nextToken ();
+				$token = $this->lexer->nextToken();
 				if ($token == 'AND') {
-					$condition = $this->parseCompoundStatement ();
+					$condition = $this->parseCompoundStatement();
 					if ($condition !== FALSE)
 						$conditions [] = $condition;
 					else
@@ -331,7 +331,7 @@ class BooleanParser {
 				}
 			}
 			
-			if (is_array ( $conditions ) && count ( $conditions ) > 1)
+			if (is_array ( $conditions ?? '' ) && count ( $conditions ) > 1)
 				return array (
 						'and' => $conditions );
 			else

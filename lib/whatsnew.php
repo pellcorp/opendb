@@ -84,7 +84,7 @@ function get_last_num_items_rs($num_of_items, $owner_id = NULL, $s_item_type = N
 			$item_r ['itemtypeimage'] ['title'] = $item_type_r ['description'];
 			$item_r ['itemtypeimage'] ['s_item_type'] = $item_r ['s_item_type'];
 			
-			if (get_opendb_config_var ( 'welcome.last_items_list', 'show_item_image' ) !== FALSE) {
+			if (get_opendb_config_var ( 'listings', 'show_item_image' ) !== FALSE) {
 				if (! is_array ( $image_attribute_type_rs ) || ! is_array ( $image_attribute_type_rs [$item_r ['s_item_type']] )) {
 					$image_attribute_type_rs [$item_r ['s_item_type']] = fetch_sfieldtype_item_attribute_type_r ( $item_r ['s_item_type'], 'IMAGE' );
 				}

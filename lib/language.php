@@ -163,7 +163,7 @@ function get_opendb_lang_var($varname, $find = NULL, $replace = NULL) {
 		}
 	}
 	
-	if (strlen ( $LANG_VARS [$varname] ) > 0) {
+	if (strlen ( $LANG_VARS [$varname] ?? '') > 0) {
 		$langval = trim ( str_replace ( "\\n", "\n", $LANG_VARS [$varname] ) );
 		
 		if (is_array ( $find )) {

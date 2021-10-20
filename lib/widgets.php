@@ -257,6 +257,7 @@ function format_footer_links($links_rs) {
 
 function _format_help_entry($help_entry_r) {
 	if (is_array ( $help_entry_r )) {
+		$entry = '';
 		if (isset ( $help_entry_r ['img'] ))
 			$entry .= theme_image ( $help_entry_r ['img'], $help_entry_r ['text'] ) . " ";
 		$entry .= $help_entry_r ['text'];

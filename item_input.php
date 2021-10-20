@@ -91,7 +91,7 @@ function format_item_parents_select($HTTP_VARS, $item_r, $filter = null) {
 	}
 
 	foreach ($possible_parents as $parent) {
-		if (!$parent['current_parent']) {
+		if (!isset($parent['current_parent'])) {
 			$parent ['title'] = $titleMaskCfg->expand_item_title ( $parent );
 			$parent_item_list .= '<option value="' . $parent['item_id'] . '_' . $parent['instance_no'] . '">'
 					. utf8_encode($parent['title']) . '</option>';
@@ -472,7 +472,7 @@ function get_field_value($op, $item_r, $s_attribute_type, $order_no, $s_field_ty
  		$fieldname = get_field_name($s_attribute_type, $order_no);
 
 		// refresh operation!
-		if (!is_array($HTTP_VARS[$fieldname])) {
+		if (isset($HTTP_VARS[$fieldname]) && !is_array($HTTP_VARS[$fieldname])) {
 			if (preg_match("/new([0-9]+)/", $HTTP_VARS[$fieldname], $matches) && isset($HTTP_VARS[$fieldname . '_' . $matches[0]])) {
 				$HTTP_VARS[$fieldname] = $HTTP_VARS[$fieldname . '_' . $matches[0]];
 			} else if ($HTTP_VARS[$fieldname] == 'old') {
@@ -665,7 +665,7 @@ function get_edit_item_form($op, $item_r, $HTTP_VARS, &$upload_file_fields) {
 
 	$results = fetch_item_attribute_type_rs($item_r['s_item_type'], 'not_instance_field_types');
 	if ($results) {
-		$formContents .= "\n<table>";
+		$formContents = "\n<table>";
 		while ($item_attribute_type_r = db_fetch_assoc($results)) {
 			if ($item_attribute_type_r['s_field_type'] == 'ITEM_ID') {
 				continue;
@@ -784,7 +784,7 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 
 		while ($item_attribute_type_r = db_fetch_assoc($results)) {
 			if ($item_attribute_type_r['s_field_type'] == 'STATUSTYPE') {
-				$status_type = ifempty(filter_item_input_field($item_attribute_type_r, $HTTP_VARS['s_status_type']), $item_r['s_status_type']);
+				$status_type = ifempty(filter_item_input_field($item_attribute_type_r, $HTTP_VARS['s_status_type'] ?? FALSE), $item_r['s_status_type']);
 
 				if ($op == 'new' || $op == 'site' || $op == 'newinstance' || $op == 'clone_item') {
 					$lookup_results = fetch_newitem_status_type_rs();
@@ -798,12 +798,12 @@ function get_edit_item_instance_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 					'VERTICAL', $status_type)); // value
 				}
 			} else if ($item_attribute_type_r['s_field_type'] == 'STATUSCMNT') {
-				$status_comment = ifempty(filter_item_input_field($item_attribute_type_r, $HTTP_VARS['status_comment']), $item_r['status_comment']);
+				$status_comment = ifempty(filter_item_input_field($item_attribute_type_r, $HTTP_VARS['status_comment'] ?? FALSE), $item_r['status_comment']);
 
 				$formContents .= get_item_input_field('status_comment', $item_attribute_type_r, NULL, //$item_r
 				$status_comment);
 			} else if ($item_attribute_type_r['s_field_type'] == 'DURATION') {
-				$borrow_duration = ifempty(filter_item_input_field($item_attribute_type_r, $HTTP_VARS['borrow_duration']), $item_r['borrow_duration']);
+				$borrow_duration = ifempty(filter_item_input_field($item_attribute_type_r, $HTTP_VARS['borrow_duration'] ?? FALSE), $item_r['borrow_duration']);
 
 				// The S_DURATION lookup list will most likely include an 'Undefined' option, that equates
 				// to an empty string.  So for Updates, we want to allow for a match, by forcing any NULL
@@ -889,8 +889,10 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 		$pageContents .= "\n<input type=\"hidden\" name=\"start-op\" value=\"$op\">";
 		$pageContents .= "\n<input type=\"hidden\" name=\"s_item_type\" value=\"" . $item_r['s_item_type'] . "\">";
 
-		$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
-		$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
+		if (strlen( $HTTP_VARS['parent_item_id'] ?? '') > 0)
+			$pageContents .= "\n<input type=\"hidden\" name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">";
+		if (strlen( $HTTP_VARS['parent_instance_no'] ?? '') > 0)
+			$pageContents .= "\n<input type=\"hidden\" name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">";
 
 		if ($op == 'clone_item' || is_not_empty_array($item_r)) {
 			if (is_numeric($item_r['item_id']))
@@ -899,9 +901,8 @@ function get_edit_form($op, $item_r, $status_type_r, $HTTP_VARS) {
 				$pageContents .= "\n<input type=\"hidden\" name=\"instance_no\" value=\"" . $item_r['instance_no'] . "\">";
 		}
 
-		if (strlen($HTTP_VARS['owner_id']) > 0) {
+		if (strlen($HTTP_VARS['owner_id'] ?? '') > 0)
 			$pageContents .= "\n<input type=\"hidden\" name=\"owner_id\" value=\"" . $HTTP_VARS['owner_id'] . "\">";
-		}
 
 		$pageContents .= $formContents;
 
@@ -1117,7 +1118,7 @@ function do_op_title($item_r, $status_type_r, $op) {
 		$item_title = get_opendb_lang_var('new_item_instance_title', array('display_title' => $titleMaskCfg->expand_item_title($item_r)));
 	}
 
-	echo _theme_header($item_title, $HTTP_VARS['inc_menu']);
+	echo _theme_header($item_title, $HTTP_VARS['inc_menu'] ?? NULL);
 	echo ("<h2>" . $item_title . " " . get_item_image($item_r['s_item_type']) . "</h2>\n");
 }
 

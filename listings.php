@@ -307,7 +307,7 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 		$v_column_display_config_rs = &filter_for_printable_list($v_column_display_config_rs);
 	}
 
-	if (($HTTP_VARS['attr_match'] ?? '') != 'category' && strlen($HTTP_VARS['attribute_type']) > 0) {
+	if (($HTTP_VARS['attr_match'] ?? '') != 'category' && strlen($HTTP_VARS['attribute_type'] ?? '') > 0) {
 		// Now we have to merge in search terms, and add them after the 'title' column_id
 		$v_column_display_config_rs = &merge_display_column_config_arrays(
 			$v_column_display_config_rs,

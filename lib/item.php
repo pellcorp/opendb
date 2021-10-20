@@ -336,7 +336,7 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $incl
 	if ($HTTP_VARS['parent_item_id'] ?? 0 > 0) {
 		$current_parents[] = $HTTP_VARS['parent_item_id'];
 	} else {
-		$parent_instance_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+		$parent_instance_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'] ?? NULL, RELATED_PARENTS_MODE);
 
 		if ($parent_instance_rs !== false) {
 			foreach ($parent_instance_rs as $parent_instance_r) {
@@ -346,7 +346,7 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $incl
         }
     }
 
-	$children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']);
+	$children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'] ?? NULL);
 	$children = array();
 	if ($children_rs !== false) {
 		while ($child = db_fetch_assoc($children_rs)) {
@@ -390,7 +390,7 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $incl
                 }
             }
 
-            if (!$item['current_parent'] || ($item['current_parent'] && $include_parents)) {
+            if (!isset($item['current_parent']) || ($item['current_parent'] && $include_parents)) {
                 $items[] = $item;
             }
         }
@@ -657,7 +657,10 @@ function fetch_item_listing_cnt($HTTP_VARS, $column_display_config_rs = NULL) {
 			if ($column_display_config_rs [$i] ['column_type'] == 's_attribute_type') {
 				// if not an order by column, we want to generate the fields individually in the listings page.
 				if ($column_display_config_rs [$i] ['orderby_support_ind'] === 'Y') {
-					if (strlen ( $column_display_config_rs [$i] ['attribute_val'] ) > 0 && ($column_display_config_rs [$i] ['attr_match'] == 'word' || $column_display_config_rs [$i] ['attr_match'] == 'partial') && $column_display_config_rs [$i] ['search_attribute_ind'] == 'y') {
+					if (strlen ( $column_display_config_rs[$i]['attribute_val'] ?? '') > 0 &&
+						($column_display_config_rs[$i]['attr_match'] == 'word' ||
+						 $column_display_config_rs[$i]['attr_match'] == 'partial') &&
+						$column_display_config_rs[$i]['search_attribute_ind'] == 'y') {
 						$query .= ', ifnull(ia' . $i . '.attribute_val,ia' . $i . '.lookup_attribute_val)';
 					}
 				}

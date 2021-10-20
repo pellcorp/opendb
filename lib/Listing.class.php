@@ -81,10 +81,10 @@ class Listing {
 	function setTotalItems($total_items) {
 		$this->_total_items = $total_items;
 		
-		if (is_numeric ( $this->_total_items ) && $this->_total_items > 0) {
-			if (is_numeric ( $this->_items_per_page ) && $this->_items_per_page > 0) {
-				if (is_numeric ( $this->_http_vars ['page_no'] )) {
-					$this->_page_no = $this->_http_vars ['page_no'];
+		if (is_numeric( $this->_total_items ) && $this->_total_items > 0) {
+			if (is_numeric( $this->_items_per_page ) && $this->_items_per_page > 0) {
+				if (is_numeric( $this->_http_vars['page_no'] ?? '' )) {
+					$this->_page_no = $this->_http_vars['page_no'];
 					
 					// We need to ensure that the $page_no is realistic for the number of items.
 					$this->_start_index = ($this->_page_no - 1) * $this->_items_per_page;

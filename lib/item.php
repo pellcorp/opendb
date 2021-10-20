@@ -859,7 +859,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	if (is_not_empty_array( $HTTP_VARS['s_status_type'] ?? '' )) {
 		$where_r [] = 'sst.s_status_type IN(' . format_sql_in_clause ( $HTTP_VARS ['s_status_type'] ) . ')';
-	} else if (($HTTP_VARS ['s_status_type'] ?? '') != 'ALL' ) {
+	} else if (isset($HTTP_VARS ['s_status_type']) && $HTTP_VARS ['s_status_type'] != 'ALL' ) {
 		$where_r [] = 'sst.s_status_type = \'' . $HTTP_VARS ['s_status_type'] . '\'';
 	}
 

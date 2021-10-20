@@ -68,7 +68,7 @@ function get_item_input_field($fieldname, $item_attribute_type_r, $item_r, $valu
 		$widget ['args'] [4] = $item_attribute_type_r ['input_type_arg5'];
 	}
 	
-	if (isset($item_attribute_type_r ['multi_attribute_ind']) && $item_attribute_type_r ['multi_attribute_ind'] == 'Y') {
+	if (($item_attribute_type_r['multi_attribute_ind'] ?? '') == 'Y') {
 		$multi_value = TRUE;
 		
 		if (! is_array ( $value )) {
@@ -717,7 +717,7 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 		$onchange = "onchange=\"$onchange_event\"";
 	}
 	
-	if (isset($item_attribute_type_r ['file_attribute_ind']) && $item_attribute_type_r ['file_attribute_ind'] == 'Y') {
+	if (($item_attribute_type_r ['file_attribute_ind'] ?? '') == 'Y') {
 		$field .= "\n<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
 		if (is_file_upload_enabled ()) {

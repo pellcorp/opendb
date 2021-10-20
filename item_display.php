@@ -101,9 +101,9 @@ if (is_site_enabled()) {
 							}
 							echo ("<img src=\"" . $file_r['thumbnail']['url'] . "\" title=\"" . htmlspecialchars($coverimage_r['prompt']) . "\" ");
 
-							if (is_numeric($file_r['thumbnail']['width'] ?? ""))
+							if (is_numeric($file_r['thumbnail']['width'] ?? FALSE))
 								echo (' width="' . $file_r['thumbnail']['width'] . '"');
-							if (is_numeric($file_r['thumbnail']['height'] ?? ""))
+							if (is_numeric($file_r['thumbnail']['height'] ?? FALSE))
 								echo (' height="' . $file_r['thumbnail']['height'] . '"');
 
 							echo (">");

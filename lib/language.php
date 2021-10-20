@@ -150,7 +150,7 @@ function get_opendb_lang_var($varname, $find = NULL, $replace = NULL) {
 	global $LANG_VARS;
 	global $_OPENDB_LANGUAGE;
 	
-	if (!isset($LANG_VARS[$varname]) || strlen( $LANG_VARS[$varname] ) == 0) {
+	if (strlen( $LANG_VARS[$varname] ?? '' ) == 0) {
 		$value = fetch_opendb_db_lang_var( $_OPENDB_LANGUAGE, $varname );
 		if ($value !== FALSE) {
 			$LANG_VARS[$varname] = $value;
@@ -277,7 +277,7 @@ function get_system_table_r() {
 	$tables_r = NULL;
 	
 	reset ( $_OPENDB_LANG_SYSTEM_TABLES );
-	foreach ( $_OPENDB_LANG_SYSTEM_TABLES as $key => $table ) {
+	foreach ( $_OPENDB_LANG_SYSTEM_TABLES as $table => $_v ) {
 		$tables_r [] = $table;
 	}
 	

@@ -98,7 +98,8 @@ function custom_select($name, $lookup_results, $display_mask, $size = 1, $value 
 	$empty_display_mask = expand_display_mask ( $display_mask, NULL, '%' );
 	
 	$value_found = FALSE;
-	foreach ( $lookup_results as $lookup_r ) {
+	foreach ( $lookup_results as $lookup_r_key => $lookup_r_value ) {
+		$lookup_r = ["key" => $lookup_r_key, "value" => $lookup_r_value];
 		// Check if this record should be included in list of values.
 		if (! function_exists ( $include_ind_func ) || $include_ind_func ( $lookup_r )) {
 			$lookup_value = get_array_variable_value ( $lookup_r, $value_column );

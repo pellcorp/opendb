@@ -89,7 +89,7 @@ function generate_random_num() {
 	instead.
 */
 function ifempty($value, $ifnull) {
-	if (isset($value) && strlen( $value ) > 0)
+	if (strlen( $value ?? '' ) > 0)
 		return $value;
 	else
 		return $ifnull;
@@ -101,7 +101,7 @@ function ifempty($value, $ifnull) {
 	combination which is pissing me off.
 */
 function is_not_empty_array($array) {
-	if (isset( $array ) && is_array( $array ) && count( $array ) > 0)
+	if (is_array( $array ?? '' ) && count( $array ) > 0)
 		return TRUE;
 	else
 		return FALSE;

@@ -31,13 +31,13 @@ class WhatsNew extends WelcomeBlock {
 		$whats_new_rs = get_whats_new_details($lastvisit, $userid);
 		if (is_array($whats_new_rs)) {
 			$buffer = "\n<ul>";
-			foreach ( $whats_new_rs as $key => $whats_new_r ) {
+			foreach ( $whats_new_rs as $whats_new_r ) {
 				if (is_array($whats_new_r['items'])) {
 					$buffer .= "\n<li><ul class=\"block\">";
 					$buffer .= "\n<h4>" . $whats_new_r['heading'] . "</h4>";
 
 					reset($whats_new_r['items']);
-					foreach ( $whats_new_r['items'] as $k => $item_rs ) {
+					foreach ( $whats_new_r['items'] as $item_rs ) {
 						$buffer .= "\n<li class=\"" . $item_rs['class'] . "\">" . $item_rs['content'] . "</li>";
 					}
 					$buffer .= "\n</ul></li>";

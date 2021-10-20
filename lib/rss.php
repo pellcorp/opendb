@@ -48,7 +48,7 @@ function get_opendb_rss_feed_config($feed) {
 	reset ( $feeds_r );
 	
 	$buffer = '';
-	foreach ($feeds_r as $key => $feed_r) {
+	foreach ($feeds_r as $feed_r) {
 		if ($feed_r ['feed'] == $feed) {
 			return $feed_r;
 		}
@@ -63,7 +63,7 @@ function get_opendb_rss_feeds_links($browser = 'firefox') {
 	
 	$buffer = "\n";
 
-	foreach ($feeds_r as $key => $feed_r) {
+	foreach ($feeds_r as $feed_r) {
 		$buffer .= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"" . $feed_r ['title'] . "\" href=\"./rss.php?feed=" . $feed_r ['feed'] . "\">\n";
 	}
 	return $buffer;

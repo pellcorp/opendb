@@ -377,8 +377,9 @@ if ($HTTP_VARS['op'] == 'edit-tables') {
 	} else {
 		echo ("<div class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</div>");
 	}
+
 } else if ($HTTP_VARS['op'] == '') {
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? NULL))
 		echo format_error_block($errors);
 
 	// list languages and options

@@ -249,12 +249,10 @@ function file_cache_get_image_r($url, $type) {
 			}
 		}
 		
-		if (! is_numeric ( $file_r['thumbnail']['width'] ?? '' ) && ! is_numeric ( $file_r['thumbnail']['height'] ?? '' )) {
-			if (isset($thumbnail_size_r ['width']))
-				$file_r ['thumbnail'] ['width'] = $thumbnail_size_r ['width'];
-			if (isset($thumbnail_size_r ['height']))
-				$file_r ['thumbnail'] ['height'] = $thumbnail_size_r ['height'];
-		}
+		if (is_numeric($thumbnail_size_r ['width'] ?? ''))
+			$file_r ['thumbnail'] ['width'] = $thumbnail_size_r ['width'];
+		if (is_numeric($thumbnail_size_r ['height'] ?? ''))
+			$file_r ['thumbnail'] ['height'] = $thumbnail_size_r ['height'];
 		
 		return $file_r;
 	}

@@ -244,8 +244,8 @@ function get_db_config_var($type, $vars_r, $group, $id, $keyid) {
 	if (count ( $vars_r ) > 1) {
 		if ($type == 'boolean') {
 			$boolean_vars_r = NULL;
-			reset ( $vars_r );
-			foreach ($vars_r as $key=>$value) {
+			reset( $vars_r );
+			foreach ($vars_r as $key => $value) {
 				if ($value == 'TRUE')
 					$boolean_vars_r[$key] = TRUE;
 				else //if($value == 'FALSE')

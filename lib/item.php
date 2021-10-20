@@ -830,9 +830,9 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// Owner restriction
 	//
-	if (isset( $HTTP_VARS ['owner_id'] ))
+	if (strlen($HTTP_VARS ['owner_id'] ?? '') > 0)
 		$where_r [] = 'ii.owner_id = \'' . $HTTP_VARS ['owner_id'] . '\'';
-	else if (isset( $HTTP_VARS ['not_owner_id'] )) //For not showing current user items.
+	else if (strlen( $HTTP_VARS ['not_owner_id'] ?? '' ) > 0) //For not showing current user items.
 		$where_r [] = 'ii.owner_id <> \'' . $HTTP_VARS ['not_owner_id'] . '\'';
 
 	//
@@ -843,12 +843,11 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		strlen( $HTTP_VARS['s_item_type'] ) > 0)
 	{
 		$where_r [] = 'i.s_item_type = \'' . $HTTP_VARS ['s_item_type'] . '\'';
-	} else if (isset( $HTTP_VARS ['s_item_type_group'] )) {
+	} else if (strlen( $HTTP_VARS ['s_item_type_group'] ?? '') > 0) {
 		$from_r [] = 's_item_type_group_rltshp sitgr';
 		$where_r [] = 'sitgr.s_item_type = i.s_item_type';
 		$where_r [] = 'sitgr.s_item_type_group = \'' . $HTTP_VARS ['s_item_type_group'] . '\'';
-	} else if (isset( $HTTP_VARS['s_item_type'] ) &&
-			   is_not_empty_array( $HTTP_VARS['s_item_type'] )) {
+	} else if (is_not_empty_array( $HTTP_VARS['s_item_type'] ?? '' )) {
 		$where_r [] = 'i.s_item_type IN(' . format_sql_in_clause ( $HTTP_VARS ['s_item_type'] ) . ')';
 	}
 
@@ -858,11 +857,9 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// Status Type restriction
 	//
-	if (isset( $HTTP_VARS['s_status_type'] ) &&
-		is_not_empty_array ( $HTTP_VARS['s_status_type'] )) {
+	if (is_not_empty_array( $HTTP_VARS['s_status_type'] ?? '' )) {
 		$where_r [] = 'sst.s_status_type IN(' . format_sql_in_clause ( $HTTP_VARS ['s_status_type'] ) . ')';
-	} else if (isset( $HTTP_VARS ['s_status_type'] ) &&
-			   $HTTP_VARS ['s_status_type'] != 'ALL' ) {
+	} else if (($HTTP_VARS ['s_status_type'] ?? '') != 'ALL' ) {
 		$where_r [] = 'sst.s_status_type = \'' . $HTTP_VARS ['s_status_type'] . '\'';
 	}
 
@@ -874,8 +871,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// User and Status type restriction
 	//
-	if (isset($HTTP_VARS['owner_id']) &&
-		strcmp( $HTTP_VARS['owner_id'], get_opendb_session_var( 'user_id' ) ) !== 0) {	// not current user
+	if (strcmp( ($HTTP_VARS['owner_id'] ?? ''), get_opendb_session_var( 'user_id' ) ) !== 0) {	// not current user
 		$from_r [] = 'user u';
 		$where_r [] = 'u.user_id = ii.owner_id';
 		$where_r [] = 'u.active_ind = \'Y\'';
@@ -884,7 +880,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// Status Comment restriction
 	//
-	if (isset( $HTTP_VARS['status_comment'] )) {
+	if (strlen( $HTTP_VARS['status_comment'] ?? '') > 0) {
 		// Escape only the single quote!
 		$HTTP_VARS['status_comment'] = str_replace( "'", "\\'", $HTTP_VARS['status_comment'] );
 
@@ -908,7 +904,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// Title restriction
 	//
-	if (isset( $HTTP_VARS ['title'] )) {
+	if (strlen( $HTTP_VARS ['title'] ?? '') > 0) {
 		// Escape only the single quote!
 		$HTTP_VARS ['title'] = str_replace ( "'", "\\'", $HTTP_VARS ['title'] );
 

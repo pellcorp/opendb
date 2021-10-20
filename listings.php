@@ -131,10 +131,8 @@ function getListingFiltersBlock() {
 function fetch_cached_attribute_type_r($s_attribute_type) {
 	global $_OPENDB_DB_CACHE;
 
-	if (!isset($_OPENDB_DB_CACHE['s_attribute_type']) ||
-        !is_array($_OPENDB_DB_CACHE['s_attribute_type']) ||
-		!isset($_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type]) ||
-        !is_array($_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type])) {
+	if (!is_array($_OPENDB_DB_CACHE['s_attribute_type'] ?? '') ||
+		!is_array($_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type] ?? '')) {
 		$_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type] = fetch_attribute_type_r($s_attribute_type);
 	}
 
@@ -309,7 +307,7 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 		$v_column_display_config_rs = &filter_for_printable_list($v_column_display_config_rs);
 	}
 
-	if (isset($HTTP_VARS['attr_match']) && $HTTP_VARS['attr_match'] != 'category' && strlen($HTTP_VARS['attribute_type']) > 0) {
+	if (($HTTP_VARS['attr_match'] ?? '') != 'category' && strlen($HTTP_VARS['attribute_type']) > 0) {
 		// Now we have to merge in search terms, and add them after the 'title' column_id
 		$v_column_display_config_rs = &merge_display_column_config_arrays(
 			$v_column_display_config_rs,

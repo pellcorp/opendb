@@ -172,6 +172,7 @@ function execute_sql_install($ADMIN_TYPE, $sqlfile, &$errors) {
 function generate_sql_list($ADMIN_TYPE, $typeName, $sqlRegexp, $is_not_exists_function) {
 	$filelist = get_file_list ( './admin/' . $ADMIN_TYPE . '/sql/', 'sql' );
 	$sitelist = NULL;
+	$sqllist = NULL;
 	if (is_not_empty_array ( $filelist )) {
 		for($i = 0; $i < count ( $filelist ); $i ++) {
 			$parsedfile_r = parse_file ( $filelist [$i] );

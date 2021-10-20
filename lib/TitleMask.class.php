@@ -842,7 +842,7 @@ class TitleMask {
 			$item_type_group_r = fetch_item_type_groups_for_item_type_r ( $s_item_type, 'Y' );
 			if (is_array ( $item_type_group_r )) {
 				reset ( $item_type_group_r );
-				foreach ( $item_type_group_r as $key => $group ) {
+				foreach ( $item_type_group_r as $group ) {
 					$index = $this->_find_title_mask_idx ( $group, NULL );
 					if ($index != - 1) {
 						// cache mapping

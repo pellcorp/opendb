@@ -42,11 +42,11 @@ function get_display_field($s_attribute_type, $prompt, $display_type, $value, $d
 			's_attribute_type' => $s_attribute_type,
 			'prompt' => $prompt,
 			'display_type' => $display_type_def ['type'],
-			'display_type_arg1' => $display_type_def ['args'] [0],
-			'display_type_arg2' => $display_type_def ['args'] [1],
-			'display_type_arg3' => $display_type_def ['args'] [2],
-			'display_type_arg4' => $display_type_def ['args'] [3],
-			'display_type_arg5' => $display_type_def ['args'] [4] ), $value, $dowrap, $prompt_mask );
+			'display_type_arg1' => $display_type_def ['args'] [0] ?? '',
+			'display_type_arg2' => $display_type_def ['args'] [1] ?? '',
+			'display_type_arg3' => $display_type_def ['args'] [2] ?? '',
+			'display_type_arg4' => $display_type_def ['args'] [3] ?? '',
+			'display_type_arg5' => $display_type_def ['args'] [4] ?? '' ), $value, $dowrap, $prompt_mask );
 }
 
 function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, $dowrap = TRUE, $prompt_mask = NULL) {

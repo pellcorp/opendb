@@ -104,8 +104,7 @@ function build_item_stats() {
 		$toggle = TRUE;
 
 		// Totals.
-		$sum_loaned = 0;
-		$sum_reserved = 0;
+		$sum_total = 0;
 
 		while ($user_r = db_fetch_assoc($result)) {
 			$user_name = get_opendb_lang_var('user_name', array('fullname' => $user_r['fullname'], 'user_id' => $user_r['user_id']));

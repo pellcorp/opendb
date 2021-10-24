@@ -402,7 +402,7 @@ function format_error_block($errors, $err_type = 'error') {
 			else if (is_array ( $error ['detail'] ))
 				$detail_rs = $error ['detail'];
 			
-			if (is_not_empty_array ( $detail_rs )) {
+			if (is_not_empty_array ( $detail_rs ?? "")) {
 				$details = "";
 				foreach ( $detail_rs as $detail ) {
 					$details .= "\n<li class=\"$smclass\">" . $detail . "</li>";

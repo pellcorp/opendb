@@ -420,7 +420,7 @@ function start_item_input_form($HTTP_VARS, $op) {
 		echo ("<input type=hidden name=\"parent_item_id\" value=\"" . $HTTP_VARS['parent_item_id'] . "\">\n");
 	if (isset($HTTP_VARS['parent_instance_no']))
 		echo ("<input type=hidden name=\"parent_instance_no\" value=\"" . $HTTP_VARS['parent_instance_no'] . "\">\n");
-	echo ("<input type=hidden name=\"" . $op . "\" value=\"site-search\">\n");
+	echo ("<input type=hidden  name=\"op\" value=\"" . $op . "\">\n");
 }
 
 /**

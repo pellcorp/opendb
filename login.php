@@ -214,7 +214,7 @@ if (is_opendb_valid_session() && $HTTP_VARS['op'] != 'login' && $HTTP_VARS['op']
 			return;
 		}
 	} else { //if($HTTP_VARS['op'] == 'login')
-		if (strlen($HTTP_VARS['uid']) > 0 && strlen($HTTP_VARS['passwd']) > 0) {
+		if (strlen($HTTP_VARS['uid'] ?? "") > 0 && strlen($HTTP_VARS['passwd']) > 0) {
 			$result = perform_login($HTTP_VARS);
 			if ($result === TRUE) {
 				if (strlen($HTTP_VARS['redirect']) > 0) {

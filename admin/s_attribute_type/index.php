@@ -246,7 +246,7 @@ function display_lookup_attribute_type_form($HTTP_VARS) {
 		db_free_result($results);
 	}
 
-	$emptyrows = 20 - (count($attribute_type_rows) % 20);
+	$emptyrows = 20 - (count($attribute_type_rows ?? []) % 20);
 	if ($emptyrows == 0)
 		$emptyrows = 20;
 
@@ -786,7 +786,7 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 		$save_button = 'Insert';
 	}
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	echo ("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
@@ -798,7 +798,7 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 	display_edit_form($attribute_type_r, $HTTP_VARS);
 	echo ("\n</table>");
 
-	echo (format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory')));
+	echo (format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory')));
 
 	if (get_opendb_config_var('widgets', 'enable_javascript_validation') !== FALSE)
 		echo ("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
@@ -831,7 +831,7 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 
 	echo ("\n<h3>Edit " . $HTTP_VARS['s_attribute_type'] . " Attribute Type Lookups</h3>");
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	display_lookup_attribute_type_form($HTTP_VARS);

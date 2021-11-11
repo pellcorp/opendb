@@ -87,7 +87,7 @@ if (is_site_enabled()) {
 	if (is_opendb_valid_session() || is_site_public_access()) {
 		$isThumbnail = ifempty($HTTP_VARS['op'], 'fullscreen') == 'thumbnail';
 
-		if (is_numeric($HTTP_VARS['id'])) {
+		if (is_numeric($HTTP_VARS['id'] ?? "")) {
 			$file_cache_r = fetch_file_cache_r($HTTP_VARS['id']);
 			if ($file_cache_r !== FALSE) {
 				if ($file_cache_r['cache_type'] != 'ITEM' || is_user_granted_permission(PERM_VIEW_ITEM_COVERS)) {

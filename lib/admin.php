@@ -53,7 +53,7 @@ function get_user_browser_crlf() {
 	
 	if ($browser_os == 'Win') // Win case
 		return "\r\n";
-	else if (PMA_USR_OS == 'Mac') // Mac case
+	else if ($browser_os == 'Mac') // Mac case
 		return "\r";
 	else // Others
 		return "\n";

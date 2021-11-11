@@ -69,11 +69,13 @@ function get_last_num_items_rs($num_of_items, $owner_id = NULL, $s_item_type = N
 			
 			$item_type_r = fetch_item_type_r ( $item_r ['s_item_type'] );
 			$itemtypeimagesrc = theme_image_src ( $item_type_r ['image'] );
-			
-			$size = @getimagesize ( $itemtypeimagesrc );
-			if (is_array ( $size )) {
-				$item_r ['itemtypeimage'] ['width'] = $size [0];
-				$item_r ['itemtypeimage'] ['height'] = $size [1];
+
+			if ($itemtypeimagesrc) {
+				$size = @getimagesize ( $itemtypeimagesrc );
+				if (is_array ( $size )) {
+					$item_r ['itemtypeimage'] ['width'] = $size [0];
+					$item_r ['itemtypeimage'] ['height'] = $size [1];
+				}
 			}
 			
 			$item_r ['itemtypeimage'] ['url'] = $itemtypeimagesrc;

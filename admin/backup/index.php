@@ -126,6 +126,7 @@ if ($HTTP_VARS['op'] == 'export') {
 	echo ("<ul class=\"checkboxGridOptionsVertical\">");
 
 	$opendb_tables_r = fetch_opendb_table_list_r();
+	$count = 0;
 	foreach ($opendb_tables_r as $table) {
 		// the cache tables cannot be backed up as they might contain
 		// binary data, which we don't yet support.

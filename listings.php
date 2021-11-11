@@ -1013,7 +1013,7 @@ if (is_site_enabled()) {
 
 			echo ("<ul class=\"listingControls\">");
 			if (get_opendb_config_var('listings', 'allow_override_show_item_image') !== FALSE) {
-				echo ("<li>" . getToggleControl($PHP_SELF, $HTTP_VARS, get_opendb_lang_var('show_item_image'), 'show_item_image', ifempty($HTTP_VARS['show_item_image'], get_opendb_config_var('listings', 'show_item_image') == TRUE ? 'Y' : 'N')) . "</li>");
+				echo ("<li>" . getToggleControl($PHP_SELF, $HTTP_VARS, get_opendb_lang_var('show_item_image'), 'show_item_image', ifempty($HTTP_VARS['show_item_image'] ?? "", get_opendb_config_var('listings', 'show_item_image') == TRUE ? 'Y' : 'N')) . "</li>");
 			}
 			echo ("<li>" . getItemsPerPageControl($PHP_SELF, $HTTP_VARS) . "</li>");
 			echo ("</ul>");

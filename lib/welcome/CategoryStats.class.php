@@ -29,8 +29,8 @@ include_once("./lib/whatsnew.php");
  * 
  */
 class CategoryStats extends WelcomeBlock {
-	function CategoryStats() {
-		parent::WelcomeBlock('categorystats', 'category_stats', 'category_stats', PERM_VIEW_STATS);
+	function __construct() {
+		parent::__construct('categorystats', 'category_stats', 'category_stats', PERM_VIEW_STATS);
 	}
 
 	function renderBlock($userid, $lastvisit) {

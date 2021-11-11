@@ -52,7 +52,7 @@ if (is_site_enabled()) {
 				$titleMaskCfg = new TitleMask('item_display');
 
 				$page_title = $titleMaskCfg->expand_item_title($item_r);
-				echo _theme_header($page_title, $HTTP_VARS['inc_menu']);
+				echo _theme_header($page_title, $HTTP_VARS['inc_menu'] ?? TRUE);
 
 				echo ("<h2>" . $page_title . " " . get_item_image($item_r['s_item_type'], $item_r['item_id']) . "</h2>");
 
@@ -63,10 +63,12 @@ if (is_site_enabled()) {
 						$coverimages_rs = NULL;
 
 						while ($image_attribute_type_r = db_fetch_assoc($results)) {
-							$imageurl_r = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'], $image_attribute_type_r['s_attribute_type'], $image_attribute_type_r['order_no']);
+							$imageurl_r = fetch_attribute_val_r($item_r['item_id'], $item_r['instance_no'],
+                                                                $image_attribute_type_r['s_attribute_type'], $image_attribute_type_r['order_no']);
 							if ($imageurl_r !== FALSE) {
-								while (list(, $imageurl) = each($imageurl_r)) {
-									$coverimages_rs[] = array('file' => file_cache_get_image_r($imageurl, 'display'), 'prompt' => $image_attribute_type_r['prompt']);
+								foreach ( $imageurl_r as $imageurl ) {
+									$coverimages_rs[] = array('file' => file_cache_get_image_r($imageurl, 'display'),
+															  'prompt' => $image_attribute_type_r['prompt']);
 								}
 							}
 						}
@@ -78,7 +80,7 @@ if (is_site_enabled()) {
 						}
 
 						echo ("<ul class=\"coverimages\">");
-						while (list(, $coverimage_r) = each($coverimages_rs)) {
+						foreach ( $coverimages_rs as $coverimage_r ) {
 							echo ("<li>");
 							$file_r = $coverimage_r['file'];
 
@@ -99,9 +101,9 @@ if (is_site_enabled()) {
 							}
 							echo ("<img src=\"" . $file_r['thumbnail']['url'] . "\" title=\"" . htmlspecialchars($coverimage_r['prompt']) . "\" ");
 
-							if (is_numeric($file_r['thumbnail']['width']))
+							if (is_numeric($file_r['thumbnail']['width'] ?? FALSE))
 								echo (' width="' . $file_r['thumbnail']['width'] . '"');
-							if (is_numeric($file_r['thumbnail']['height']))
+							if (is_numeric($file_r['thumbnail']['height'] ?? FALSE))
 								echo (' height="' . $file_r['thumbnail']['height'] . '"');
 
 							echo (">");
@@ -147,7 +149,8 @@ if (is_site_enabled()) {
                         if (has_role_permission($item_attribute_type_r['view_perm'])) {
                             $display_type = trim($item_attribute_type_r['display_type']);
 
-                            if (($HTTP_VARS['mode'] == 'printable' && $item_attribute_type_r['printable_ind'] != 'Y') || (strlen($display_type) == 0 && $item_attribute_type_r['input_type'] == 'hidden')) {
+                            if ( ( $HTTP_VARS['mode'] == 'printable' && $item_attribute_type_r['printable_ind'] != 'Y') ||
+                                 ( strlen($display_type) == 0 && $item_attribute_type_r['input_type'] == 'hidden')) {
                                 // We allow the get_display_field to handle hidden variable, in case at some stage
                                 // we might want to change the functionality of 'hidden' to something other than ignore.
                                 $display_type = 'hidden';
@@ -169,7 +172,7 @@ if (is_site_enabled()) {
                                 $field = get_item_display_field($item_r, $item_attribute_type_r, $value, FALSE);
 
                                 if (strlen($field) > 0) {
-                                    echo format_item_data_field($item_attribute_type_r, $field, $prompt_mask, NULL); // field mask
+                                    echo format_item_data_field($item_attribute_type_r, $field); // field mask
                                 }
                             }
                         }
@@ -203,6 +206,7 @@ if (is_site_enabled()) {
 				echo ("<p class=\"error\">" . get_opendb_lang_var('item_not_found') . "</p>");
 			}
 
+			$footer_links_r = array();
 			if (is_export_plugin(get_opendb_config_var('item_display', 'export_link')) && is_user_granted_permission(PERM_USER_EXPORT)) {
 				$footer_links_r[] = array('url' => "export.php?op=export&plugin=" . get_opendb_config_var('item_display', 'export_link') . "&item_id=" . $item_r['item_id'] . "&instance_no=" . $item_r['instance_no'], 'text' => get_opendb_lang_var('export_item_record'));
 			}

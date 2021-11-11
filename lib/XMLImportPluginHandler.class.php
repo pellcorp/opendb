@@ -30,7 +30,7 @@ class XMLImportPluginHandler {
 	// stores the first error encountered.
 	var $_error;
 
-	function XMLImportPluginHandler(&$importPlugin, &$fileHandler) {
+	function __construct(&$importPlugin, &$fileHandler) {
 		$this->importPlugin = & $importPlugin;
 		$this->fileHandler = & $fileHandler;
 	}

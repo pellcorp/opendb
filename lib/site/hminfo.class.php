@@ -105,8 +105,8 @@ function fetch_hometheaterinfo_rs($title, $upc_id = NULL, $hmi_id = NULL, $start
 }
 
 class hminfo extends SitePlugin {
-	function hminfo($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -206,7 +206,7 @@ class hminfo extends SitePlugin {
 			//------------------
 			if (strlen($hometheaterinfo_r['dvd_format']) > 0) {
 				$dvd_format_r = trim_explode(',', $hometheaterinfo_r['dvd_format']);
-				while (list(, $dvd_format) = each($dvd_format_r)) {
+				foreach ($dvd_format_r as $dvd_format) {
 					switch ($dvd_format) {
 					case 'LBX':
 						$this->addItemAttribute('dvd_format', 'LBX');

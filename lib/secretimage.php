@@ -21,7 +21,7 @@
  */
 include_once("./lib/config.php");
 include_once("./lib/http.php");
-require_once ("./lib/GDImage.class.php");
+require_once ("./lib/ODImage.class.php");
 
 function get_secret_image_random_num() {
 	mt_srand ( ( double ) microtime () * 1000000 );
@@ -73,7 +73,7 @@ function CenterImageString($image, $image_width, $string, $font_size, $y, $color
 }
 
 function render_secret_image($random_num) {
-	$gdImage = new GDImage ( get_opendb_image_type () );
+	$gdImage = new ODImage ( get_opendb_image_type () );
 	$gdImage->createImage ( 'code_bg' );
 	$image = & $gdImage->getImage ();
 	$text_color = ImageColorAllocate ( $image, 80, 80, 80 );

@@ -90,7 +90,7 @@ function build_item_stats() {
 
 	if (is_not_empty_array($status_type_rs)) {
 		reset($status_type_rs);
-		while (list(, $status_type_r) = each($status_type_rs)) {
+		foreach ( $status_type_rs as $status_type_r ) {
 			echo ("<th>" . theme_image($status_type_r['img'], $status_type_r['description'], "s_status_type") . "</th>");
 		}
 	}
@@ -104,8 +104,7 @@ function build_item_stats() {
 		$toggle = TRUE;
 
 		// Totals.
-		$sum_loaned = 0;
-		$sum_reserved = 0;
+		$sum_total = 0;
 
 		while ($user_r = db_fetch_assoc($result)) {
 			$user_name = get_opendb_lang_var('user_name', array('fullname' => $user_r['fullname'], 'user_id' => $user_r['user_id']));
@@ -121,7 +120,7 @@ function build_item_stats() {
 			$num_total = 0;
 			if (is_not_empty_array($status_type_rs)) {
 				reset($status_type_rs);
-				while (list($key, $status_type_r) = each($status_type_rs)) {
+				foreach ( $status_type_rs as $key => $status_type_r ) {
 					$status_total = fetch_owner_s_status_type_item_cnt($user_r['user_id'], $status_type_r['s_status_type']);
 					$status_type_rs[$key]['total'] += $status_total;
 
@@ -147,7 +146,7 @@ function build_item_stats() {
 
 		if (is_not_empty_array($status_type_rs)) {
 			reset($status_type_rs);
-			while (list(, $status_type_r) = each($status_type_rs)) {
+			foreach ( $status_type_rs as $status_type_r ) {
 				echo ("<td>" . $status_type_r['total'] . "</td>");
 			}
 			echo ("<td>" . $sum_total . "</td>");
@@ -249,7 +248,7 @@ if (is_site_enabled()) {
 					echo ("<li id=\"menu-breakdown\" class=\"first activeTab\" onclick=\"return activateTab('breakdown', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">" . get_opendb_lang_var('overview') . "</li>");
 
 					reset($item_type_rs);
-					while (list(, $item_type_r) = each($item_type_rs)) {
+					foreach ( $item_type_rs as $item_type_r ) {
 						echo ("<li id=\"menu-${item_type_r['s_item_type']}\" onclick=\"return activateTab('${item_type_r['s_item_type']}', 'tab-menu', 'tab-content', 'activeTab', 'tabContent')\">${item_type_r['s_item_type']}</li>");
 					}
 					echo ("</ul>");
@@ -272,7 +271,7 @@ if (is_site_enabled()) {
 					echo ("</div>");
 
 					reset($item_type_rs);
-					while (list(, $item_type_r) = each($item_type_rs)) {
+					foreach ( $item_type_rs as $item_type_r) {
 						echo ("\n<div class=\"tabContentHidden\" id=\"${item_type_r['s_item_type']}\">");
 						echo ("<h3>" . get_opendb_lang_var('itemtype_breakdown', array('desc' => $item_type_r['description'], 's_item_type' => $item_type_r['s_item_type'], 'total' => $item_type_r['count'])) . "</h3>");
 						echo ("<ul class=\"graph\">");

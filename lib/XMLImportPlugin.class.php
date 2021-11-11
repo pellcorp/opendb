@@ -20,9 +20,6 @@
 class XMLImportPlugin {
 	var $_itemImportHandler;
 
-	function XMLImportPlugin() {
-	}
-
 	/**
 	 * Import script will inject the ItemImportHandler before using this
 	 * class.

@@ -79,7 +79,7 @@ function get_site_plugin_links($page_title, $item_r) {
 }
 
 function get_item_review_block($item_r) {
-	$buffer .= "<h3>" . get_opendb_lang_var ( 'review(s)' ) . "</h3>";
+	$buffer = "<h3>" . get_opendb_lang_var ( 'review(s)' ) . "</h3>";
 	
 	$result = fetch_review_rs ( $item_r ['item_id'] );
 	if ($result) {

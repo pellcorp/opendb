@@ -33,7 +33,7 @@ class OpenDbUpgrader {
 	    		description=>'step description',
 	    		skippable=>[TRUE|FALSE]),
 	*/
-	function OpenDbUpgrader($from_version, $to_version = NULL, $steps_r = NULL) {
+	function __construct($from_version, $to_version = NULL, $steps_r = NULL) {
 		// derive a upgrade sql directory from the classname
 		$this->_upgraderdir = './install/upgrade/' . $from_version;
 		if ($to_version != NULL) {
@@ -204,7 +204,7 @@ class OpenDbUpgrader {
 	*/
 	function addErrors($errors) {
 		if (is_array ( $errors )) {
-			while ( list ( , $error ) = each ( $errors ) ) {
+			foreach ($errors as $error) {
 				if (is_array ( $error ))
 					$this->addError ( $error ['error'], $error ['detail'] );
 				else

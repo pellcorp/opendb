@@ -152,7 +152,7 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 	}
 
 	reset($user_id_rs);
-	while (list(, $user_id) = each($user_id_rs)) {
+	foreach( $user_id_rs as $user_id) {
 		$touser_r = fetch_user_r($user_id);
 		if (is_not_empty_array($touser_r)) {
 			if (opendb_user_email($touser_r['user_id'], $from_userid, $subject, $message, $errors)) {
@@ -167,7 +167,7 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 
 	if (is_not_empty_array($success)) {
 		echo ("<p class=\"success\">" . get_opendb_lang_var('message_sent_to') . ": <ul>");
-		while (list(, $touser) = each($success)) {
+		foreach ( $success as $touser) {
 			echo ("<li class=\"smsuccess\">" . $touser . "</li>");
 		}
 		echo ("</ul></p>");
@@ -175,7 +175,7 @@ function send_email_to_userids($user_id_rs, $from_userid, $subject, $message, &$
 
 	if (is_not_empty_array($failures)) {
 		echo ("<p class=\"error\">" . get_opendb_lang_var('message_not_sent_to') . ": <ul>");
-		while (list(, $failure_r) = each($failures)) {
+		foreach ( $failures as $failure_r) {
 			echo ("<li class=\smerror\">" . $failure_r['user'] . format_error_block($failure_r['error']) . "</li>");
 		}
 		echo ("</ul></p>");
@@ -202,7 +202,7 @@ function get_user_ids_tovalue($user_id_rs) {
 	$to = "";
 	if (is_not_empty_array($user_id_rs)) {
 		reset($user_id_rs);
-		while (list(, $user_id) = each($user_id_rs)) {
+		foreach ( $user_id_rs as $user_id) {
 			if (strlen($to) == 0)
 				$to = $user_id;
 			else

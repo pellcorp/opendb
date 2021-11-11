@@ -23,8 +23,8 @@ include_once("./lib/statsdata.php");
 include_once("./lib/whatsnew.php");
 
 class LastItemsList extends WelcomeBlock {
-	function LastItemsList() {
-		parent::WelcomeBlock('lastitemslist', 'last_items_list', 'last_items_list', PERM_VIEW_LISTINGS);
+	function __construct() {
+		parent::__construct('lastitemslist', 'last_items_list', 'last_items_list', PERM_VIEW_LISTINGS);
 	}
 
 	function renderBlock($userid, $lastvisit) {

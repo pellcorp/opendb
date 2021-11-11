@@ -73,12 +73,12 @@ function opendb_redirect($link) {
 				$link,
 				$url ) );
 		
-		header ( 'Location: ' . $url );
+		header( 'Location: ' . $url );
 	} else {
 		opendb_logger ( OPENDB_LOG_INFO, __FILE__, __FUNCTION__, NULL, array (
 				$link ) );
 		
-		header ( "Location: $link" );
+		header( 'Location: ' . $link );
 	}
 }
 
@@ -110,10 +110,7 @@ function is_register_globals_enabled() {
 	version independant manner.
 */
 function get_http_env($envname) {
-	// supposedly not required
-	global $_SERVER;
-	
-	return $_SERVER [$envname];
+	return $_SERVER[$envname];
 }
 
 /**
@@ -210,7 +207,7 @@ function get_url_string($http_vars, $extra_vars_r = NULL, $exclude_keys_r = NULL
 		$http_vars = $extra_vars_r;
 	
 	@reset ( $http_vars );
-	while ( list ( $key, $value ) = @each ( $http_vars ) ) {
+	foreach ( $http_vars as $key => $value ) {
 		if (! is_array ( $exclude_keys_r ) || ! in_array ( $key, $exclude_keys_r )) {
 			$url = _get_url_string ( $url, $key, $value );
 		}
@@ -221,7 +218,7 @@ function get_url_string($http_vars, $extra_vars_r = NULL, $exclude_keys_r = NULL
 
 function _get_url_string($url, $key, $value) {
 	if (is_array ( $value )) {
-		while ( list ( $akey, $avalue ) = each ( $value ) ) {
+		foreach ( $value as $akey => $avalue ) {
 			if (is_numeric ( $akey ))
 				$url = _get_url_string ( $url, $key . '[]', $avalue );
 			else
@@ -252,7 +249,7 @@ function get_url_fields($http_vars, $extra_vars_r = NULL, $exclude_keys_r = NULL
 		$http_vars = $extra_vars_r;
 	
 	@reset ( $http_vars );
-	while ( list ( $key, $value ) = @each ( $http_vars ) ) {
+	foreach ( $http_vars as $key => $value ) {
 		if (! is_array ( $exclude_keys_r ) || ! in_array ( $key, $exclude_keys_r )) {
 			$fields .= _get_url_field ( $key, $value );
 		}
@@ -263,7 +260,7 @@ function get_url_fields($http_vars, $extra_vars_r = NULL, $exclude_keys_r = NULL
 function _get_url_field($key, $value) {
 	$fields = '';
 	if (is_array ( $value )) {
-		while ( list ( $akey, $avalue ) = each ( $value ) ) {
+		foreach ( $value as $akey => $avalue ) {
 			if (is_numeric ( $akey ))
 				$fields .= _get_url_field ( $key . '[]', $avalue );
 			else

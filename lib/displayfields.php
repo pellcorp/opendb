@@ -42,11 +42,11 @@ function get_display_field($s_attribute_type, $prompt, $display_type, $value, $d
 			's_attribute_type' => $s_attribute_type,
 			'prompt' => $prompt,
 			'display_type' => $display_type_def ['type'],
-			'display_type_arg1' => $display_type_def ['args'] [0],
-			'display_type_arg2' => $display_type_def ['args'] [1],
-			'display_type_arg3' => $display_type_def ['args'] [2],
-			'display_type_arg4' => $display_type_def ['args'] [3],
-			'display_type_arg5' => $display_type_def ['args'] [4] ), $value, $dowrap, $prompt_mask );
+			'display_type_arg1' => $display_type_def ['args'] [0] ?? '',
+			'display_type_arg2' => $display_type_def ['args'] [1] ?? '',
+			'display_type_arg3' => $display_type_def ['args'] [2] ?? '',
+			'display_type_arg4' => $display_type_def ['args'] [3] ?? '',
+			'display_type_arg5' => $display_type_def ['args'] [4] ?? '' ), $value, $dowrap, $prompt_mask );
 }
 
 function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, $dowrap = TRUE, $prompt_mask = NULL) {
@@ -65,7 +65,7 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		
 		if (count ( $values ) > 0) {
 			$display_value_r = array ();
-			while ( list ( , $value ) = each ( $values ) ) {
+			foreach ( $values as $value ) {
 				$value = trim ( $value );
 				$value_format_mask = $format_mask;
 				
@@ -106,7 +106,7 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		
 		if (count ( $values ) > 0) {
 			$display_value_r = array ();
-			while ( list ( , $value ) = each ( $values ) ) {
+			foreach ( $values as $value ) {
 				$value = trim ( $value );
 				
 				$timestamp = get_timestamp_for_datetime ( $value, 'YYYYMMDDHH24MISS' );
@@ -141,7 +141,7 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		
 		if (count ( $values ) > 0) {
 			$display_value_r = array ();
-			while ( list ( , $value ) = each ( $values ) ) {
+			foreach ( $values as $value ) {
 				$value = trim ( $value );
 				if (is_numeric ( $value )) {
 					// Ensure we have a mask to work with.
@@ -213,7 +213,7 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		
 		if (count ( $values ) > 0) {
 			$display_value_r = array ();
-			while ( list ( , $value ) = each ( $values ) ) {
+			foreach ( $values as $value ) {
 				$value = trim ( $value );
 				
 				// no point unless numeric
@@ -326,11 +326,12 @@ function get_item_display_field($item_r, $item_attribute_type_r, $value = NULL, 
 		// where extra items that do not have a matching lookup value.
 		if (is_not_empty_array ( $value_array )) {
 			reset ( $value_array );
-			while ( list ( , $value ) = each ( $value_array ) ) {
+			foreach ( $value_array as $value ) {
 				if (strlen ( trim ( $value ) ) > 0) {				// In case there are extra spaces
 					$attribute_value_rs [] = array (
 							'value' => $value,
-							'display' => $value );
+							'display' => $value,
+							'img' => '' );
 				}
 			}
 		}
@@ -389,7 +390,7 @@ function format_multivalue_block($display_value_r, $type) {
 		
 		$first = TRUE;
 		reset ( $display_value_r );
-		while ( list ( , $value ) = each ( $display_value_r ) ) {
+		foreach ( $display_value_r as $value ) {
 			$field .= '<li' . ($first ? ' class="first"' : '') . '>' . $value . '</li>';
 			
 			if ($first)
@@ -406,7 +407,7 @@ function format_lookup_display_block($item_attribute_type_r, $attribute_value_rs
 	$block = '';
 	
 	$first = TRUE;
-	while ( list ( , $attribute_value_r ) = each ( $attribute_value_rs ) ) {
+	foreach ( $attribute_value_rs as $attribute_value_r ) {
 		$display_value = format_lookup_display_field ( $item_attribute_type_r, $attribute_value_r );
 		
 		$block .= '<li' . ($first ? ' class="first"' : '') . '>' . $display_value . '</li>';
@@ -451,7 +452,7 @@ function format_listing_links($value, $item_attribute_type_r, $attr_match) {
 	else
 		$tokens [] = $value;
 	
-	while ( list ( , $token ) = @each ( $tokens ) ) {
+	foreach ( $tokens as $token ) {
 		$token = trim ( $token );
 		$lines [] = format_listing_link ( $token, $token, $item_attribute_type_r, $attr_match );
 	}
@@ -500,7 +501,7 @@ function format_list_from_array($tokens, $item_attribute_type_r, $attr_match = F
 	if (is_not_empty_array ( $tokens )) {
 		$first = TRUE;
 		$value = '';
-		while ( list ( , $token ) = each ( $tokens ) ) {
+		foreach ( $tokens as $token ) {
 			if ($attr_match !== FALSE)
 				$token = format_listing_link ( $token, $token, $item_attribute_type_r, $attr_match );
 			
@@ -536,7 +537,7 @@ function format_display_value($mask, $img, $value, $display, $theme_image_type =
 	if (strlen ( $mask ) == 0)
 		$mask = "%display%";
 		
-		// Note: We are only modifying local copy of $mask for return.
+	// Note: We are only modifying local copy of $mask for return.
 	if (strlen ( trim ( $img ) ) > 0 && $img !== "none") {
 		$image = theme_image ( $img, $display, $theme_image_type );
 		if (strlen ( $image ) > 0)

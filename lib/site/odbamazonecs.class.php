@@ -26,8 +26,8 @@ class odbamazonecs extends SitePlugin {
 	private $isConfigured = FALSE;
 	private $client;
 
-	function odbamazonecs($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 
 		$this->siteAttributeType = strtolower(fetch_site_attribute_type($site_type));
 
@@ -62,7 +62,7 @@ class odbamazonecs extends SitePlugin {
 			if (is_array($response['Items']) && is_array($response['Items']['Request']) && $response['Items']['Request']['IsValid'] == 'True') {
 				$this->setTotalCount($response['Items']['TotalResults']);
 
-				while (list(, $item_r) = each($response['Items']['Item'])) {
+				foreach ($response['Items']['Item'] as $item_r) {
 					$this->addListingRow($item_r['ItemAttributes']['Title'], $item_r['SmallImage']['URL'], NULL, array($this->siteAttributeType => $item_r['ASIN'], 'search.title' => $search_vars_r['title']));
 
 				}
@@ -96,7 +96,7 @@ class odbamazonecs extends SitePlugin {
 			}
 
 			if (is_array($response['EditorialReviews']) && is_array($response['EditorialReviews']['EditorialReview'])) {
-				while (list(, $review_r) = each($response['EditorialReviews']['EditorialReview'])) {
+				foreach ($response['EditorialReviews']['EditorialReview'] as $review_r) {
 					$review = $review_r['Content'];
 					$review = str_replace("<br />", "\n", $review);
 					$review = trim(html_entity_decode(strip_tags($review)));
@@ -144,7 +144,7 @@ class odbamazonecs extends SitePlugin {
 
 	function parse_video_data($attributes) {
 		if (is_array($attributes['Languages'])) {
-			while (list(, $lang_r) = each($attributes['Languages'])) {
+			foreach ($attributes['Languages'] as $lang_r) {
 				if ($lang_r['Type'] == 'Subtitled') {
 					$this->addItemAttribute('subtitles', $lang_r['Name']);
 				} else {
@@ -154,13 +154,13 @@ class odbamazonecs extends SitePlugin {
 		}
 
 		if (is_array($attributes['Actor'])) {
-			while (list(, $actor) = each($attributes['Actor'])) {
+			foreach ($attributes['Actor'] as $actor) {
 				$this->addItemAttribute('actors', $actor);
 			}
 		}
 
 		if (is_array($attributes['Director'])) {
-			while (list(, $director) = each($attributes['Director'])) {
+			foreach ($attributes['Director'] as $director) {
 				$this->addItemAttribute('director', $director);
 			}
 		} else {
@@ -186,7 +186,7 @@ class odbamazonecs extends SitePlugin {
 		}
 
 		if (is_array($attributes['Feature'])) {
-			while (list(, $feature) = each($attributes['Feature'])) {
+			foreach ($attributes['Feature'] as $feature) {
 				$this->addItemAttribute('dvd_extras', $feature);
 			}
 		}

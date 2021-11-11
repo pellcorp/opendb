@@ -29,7 +29,7 @@ include_once("./lib/javascript.php");
 $input_type_functions_cats = array('lookup' => array('radio_grid', 'checkbox_grid', 'single_select', 'multi_select'), 'multi' => array('datetime', 'email', 'filtered', 'number', 'password', 'text', 'url'), 'normal' => array(), 'restricted' => array('review_options'));
 
 reset($input_type_functions);
-while (list($key, ) = each($input_type_functions)) {
+foreach($input_type_functions as $key => $_v) {
 	if (!in_array($key, $input_type_functions_cats['lookup']) && !in_array($key, $input_type_functions_cats['restricted'])) {
 		$input_type_functions_cats['normal'][] = $key;
 	}
@@ -57,7 +57,7 @@ function get_attribute_ind_type_function_list($type) {
 	$new_function_list = Array();
 
 	reset($input_type_functions);
-	while (list($key, $function) = each($input_type_functions)) {
+	foreach ($input_type_functions as $key => $function) {
 		if (in_array($key, $input_type_functions_cats[$type])) {
 			$new_function_list[$key] = $function;
 		}
@@ -74,7 +74,7 @@ function get_attribute_ind_type_function_list($type) {
 function build_function_list($name, $list_array, $function_type, $onchange_event = NULL) {
 	$select = "\n<select name=\"$name\" onchange=\"$onchange_event\">";
 
-	while (list($key, ) = each($list_array)) {
+	foreach($list_array as $key => $_v) {
 		if (strcasecmp($function_type, $key) === 0)
 			$select .= "\n<option value=\"$key\" SELECTED>$key";
 		else
@@ -94,7 +94,7 @@ function get_function_spec($type, $func_args) {
 	$args = "";
 
 	@reset($func_args);
-	while (list(, $value) = @each($func_args)) {
+	foreach ($func_args as $value) {
 		if (substr($value, -3) === '[Y]') {
 			$value = substr($value, 0, -3);
 			if (strlen($args) == 0)
@@ -124,13 +124,13 @@ function get_widget_tooltip_array() {
 
 	//name, type, description, spec, args
 	reset($input_type_functions);
-	while (list($name, $definition) = each($input_type_functions)) {
+	foreach ($input_type_functions as $name => $definition) {
 		$arrayOfAttributes .= "arrayOfWidgetTooltips[$count] = " . get_widget_js_entry($name, 'input', $definition);
 		$count++;
 	}
 
 	reset($display_type_functions);
-	while (list($name, $definition) = each($display_type_functions)) {
+	foreach ($display_type_functions as $name => $definition) {
 		$arrayOfAttributes .= "arrayOfWidgetTooltips[$count] = " . get_widget_js_entry($name, 'display', $definition);
 		$count++;
 	}
@@ -145,7 +145,7 @@ function get_widget_js_entry($name, $type, $definition) {
 	$spec = get_function_spec($name, $definition['args']);
 
 	$args = array();
-	while (list(, $value) = each($definition['args'])) {
+	foreach ($definition['args'] as $value) {
 		if (substr($value, -3) === "[Y]") {
 			$value = substr($value, 0, -3);
 		}
@@ -191,11 +191,13 @@ function display_attribute_type_form($HTTP_VARS) {
 	}
 
 	echo ("<div class=\"tabContainer\">" . "<form name=\"s_attribute_type_lookup\" action=\"$PHP_SELF\" method=\"POST\">" . "<input type=\"hidden\" name=\"type\" value=\"" . $ADMIN_TYPE . "\">" . "<input type=\"hidden\" name=\"op\" value=\"\">"
-			. "<input type=\"hidden\" name=\"s_attribute_type\" value=\"" . $HTTP_VARS['s_attribute_type'] . "\">");
+		  . "<input type=\"hidden\" name=\"s_attribute_type\" value=\"" . ($HTTP_VARS['s_attribute_type'] ?? "") . "\">");
 
 	$isFirst = true;
 	echo ("<ul class=\"tabMenu\" id=\"tab-menu\">");
-	while (list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs)) {
+	if (!isset($HTTP_VARS['active_tab']))
+		$HTTP_VARS['active_tab'] = "";
+	foreach ($alpha_attribute_type_rs as $letter => $attribute_type_rs) {
 		$isFirst ? $class = "first" : $class = "";
 		if ($letter == $HTTP_VARS['active_tab'] || ($HTTP_VARS['active_tab'] == "" && $isFirst))
 			$class .= " activeTab";
@@ -207,14 +209,14 @@ function display_attribute_type_form($HTTP_VARS) {
 	reset($alpha_attribute_type_rs);
 	$isFirst = true;
 	echo ('<div id="tab-content">');
-	while (list($letter, $attribute_type_rs) = each($alpha_attribute_type_rs)) {
+	foreach ($alpha_attribute_type_rs as $letter => $attribute_type_rs) {
 		($isFirst && $HTTP_VARS['active_tab'] == "") ? $class = "tabContent" : $class = "tabContentHidden";
 		if ($letter == $HTTP_VARS['active_tab'])
 			$class = "tabContent";
 		echo ("<div id=\"pane$letter\" class=\"$class\">\n" . "\n<table>" . "<tr class=\"navbar\">" . "<th>Type</th>" . "<th>Description</th>" . "<th>Field Type</th>" . "<th colspan=\"2\"></th>" . "</tr>");
 
-		while (list(, $attribute_type_r) = each($attribute_type_rs)) {
-			echo (get_s_attribute_type_row($attribute_type_r, $row, $letter));
+		foreach ($attribute_type_rs as $attribute_type_r) {
+			echo (get_s_attribute_type_row($attribute_type_r, NULL, $letter));
 		}
 
 		echo ("</table></div>");
@@ -244,7 +246,7 @@ function display_lookup_attribute_type_form($HTTP_VARS) {
 		db_free_result($results);
 	}
 
-	$emptyrows = 20 - (count($attribute_type_rows) % 20);
+	$emptyrows = 20 - (count($attribute_type_rows ?? []) % 20);
 	if ($emptyrows == 0)
 		$emptyrows = 20;
 
@@ -485,7 +487,7 @@ function build_roles_select($attribute_type_r) {
 function build_options_array($type, $input_type_functions_cats) {
 	$buffer = "inputOptions['$type'] = new Array(";
 	reset($input_type_functions_cats[$type]);
-	while (list(, $value) = each($input_type_functions_cats[$type])) {
+	foreach ($input_type_functions_cats[$type] as $value) {
 		$buffer .= "'$value',";
 	}
 
@@ -538,7 +540,7 @@ function build_attribute_ind_type_widget($attribute_ind_type, $HTTP_VARS) {
 	$options = array('lookup' => 'Lookup', 'normal' => 'Normal', 'multi' => 'Multi Value');
 
 	$field = '';
-	while (list($key, $value) = each($options)) {
+	foreach ($options as $key => $value) {
 		$field .= "<input type=\"radio\" class=\"radio\" name=\"attribute_ind_type\" value=\"$key\" onClick=\"populateInputSelect(this.form['input_type'], '$key');\"";
 		if ($key == $attribute_ind_type)
 			$field .= ' CHECKED';
@@ -784,7 +786,7 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 		$save_button = 'Insert';
 	}
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	echo ("\n<form name=\"s_attribute_type\" action=\"$PHP_SELF\" method=\"POST\">");
@@ -796,7 +798,7 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 	display_edit_form($attribute_type_r, $HTTP_VARS);
 	echo ("\n</table>");
 
-	echo (format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), id => 'compulsory')));
+	echo (format_help_block(array('img' => 'compulsory.gif', 'text' => get_opendb_lang_var('compulsory_field'), 'id' => 'compulsory')));
 
 	if (get_opendb_config_var('widgets', 'enable_javascript_validation') !== FALSE)
 		echo ("\n<input type=\"button\" class=\"button\" value=\"$save_button\" onclick=\"if(!checkForm(this.form)){return false;}else{this.form.submit();}\">");
@@ -829,14 +831,15 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 
 	echo ("\n<h3>Edit " . $HTTP_VARS['s_attribute_type'] . " Attribute Type Lookups</h3>");
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	display_lookup_attribute_type_form($HTTP_VARS);
 
 	echo (format_help_block('Image(s) must be in a <i>theme search path</i> directory.'));
+
 } else if ($HTTP_VARS['op'] == '') {
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	echo ("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Attribute Type</a>]</p>");

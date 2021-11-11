@@ -80,33 +80,33 @@ function fget_tokenised_log_entry(&$file) {
 		$line = trim ( fgets ( $file, 4096 ) );
 		
 		for($i = 0; $i < strlen ( $line ); $i ++) {
-			switch ($line {$i}) {
+			switch ($line[$i]) {
 				case "\\" :
-					if ($i < strlen ( $line + 1 ) && $line {$i + 1} != '"') {
-						$column .= $line {$i};
+					if ($i < strlen ( $line + 1 ) && $line[$i + 1] != '"') {
+						$column .= $line[$i];
 					}
 					break;
 				
 				case '"' :
-					if ($i == 0 || $line {$i - 1} != "\\") {
+					if ($i == 0 || $line[$i - 1] != "\\") {
 						$in_quote = ! $in_quote;
 					} else {
-						$column .= $line {$i};
+						$column .= $line[$i];
 					}
 					break;
 				
 				case '[' :
-					if (! $in_quote && $token_names [$count] == 'datetime') // only column allowed to be enclodes this way is datetime
+					if (! $in_quote && $token_names[$count] == 'datetime') // only column allowed to be enclodes this way is datetime
 						$in_bracket = TRUE;
 					else
-						$column .= $line {$i};
+						$column .= $line[$i];
 					break;
 				
 				case ']' :
-					if ($in_bracket && ! $in_quote && $token_names [$count] == 'datetime') // only column allowed to be enclodes this way is datetime
+					if ($in_bracket && ! $in_quote && $token_names[$count] == 'datetime') // only column allowed to be enclodes this way is datetime
 						$in_bracket = FALSE;
 					else
-						$column .= $line {$i};
+						$column .= $line[$i];
 					break;
 				
 				case ' ' :
@@ -114,30 +114,30 @@ function fget_tokenised_log_entry(&$file) {
 				case '\n' :
 					if (! $in_bracket && ! $in_quote) {
 						// end of column
-						$tokens [$token_names [$count]] = stripslashes ( trim ( $column ) );
+						$tokens[$token_names[$count]] = stripslashes ( trim ( $column ) );
 						
-						if (strlen ( $tokens [$token_names [$count]] ) == 0 || $tokens [$token_names [$count]] == '-')
+						if (strlen ( $tokens[$token_names[$count]] ) == 0 || $tokens[$token_names[$count]] == '-')
 							$tokens [$token_names [$count]] = NULL;
 						
 						$column = '';
 						$count ++;
 					}
 					
-					$column .= $line {$i};
+					$column .= $line[$i];
 					break;
 				
 				default :
-					$column .= $line {$i};
+					$column .= $line[$i];
 			}
 		}
 		
 		// todo - remove code duplication here!
 		if (! $in_bracket && ! $in_quote) {
 			// end of column
-			$tokens [$token_names [$count]] = stripslashes ( trim ( $column ) );
+			$tokens[$token_names[$count]] = stripslashes( trim( $column ) );
 			
-			if (strlen ( $tokens [$token_names [$count]] ) == 0 || $tokens [$token_names [$count]] == '-')
-				$tokens [$token_names [$count]] = NULL;
+			if (strlen ( $tokens[$token_names[$count]] ) == 0 || $tokens [$token_names [$count]] == '-')
+				$tokens[$token_names[$count]] = NULL;
 			
 			$column = '';
 			$count ++;
@@ -211,7 +211,7 @@ function opendb_logger($msgtype, $file, $function, $message = NULL, $params_r = 
 		else
 			$entry ['message'] = '-';
 		
-		$fileptr = @fopen ( get_opendb_config_var ( 'logging', 'file' ), 'a' );
+		$fileptr = @fopen( get_opendb_config_var( 'logging', 'file' ), 'a' );
 		if ($fileptr) 		// verify file was opened
 {
 			$entry ['datetime'] = '[' . $entry ['datetime'] . ']';
@@ -236,7 +236,7 @@ function expand_opendb_logger_params($params_r) {
 		$params = $params_r;
 	} else {
 		reset ( $params_r );
-		while ( list ( $key, $value ) = each ( $params_r ) ) {
+		foreach ($params_r as $key => $value) {
 			if (strlen ( $params ) > 0)
 				$params .= ', ';
 			

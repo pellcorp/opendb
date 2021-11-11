@@ -25,7 +25,7 @@ function get_s_attribute_type_tooltip_array($s_attribute_type_list_rs) {
 	$arrayOfAttributes = "arrayOfSystemAttributeTypeTooptips = new Array(" . count($s_attribute_type_list_rs) . ");\n";
 	$count = 0;
 	reset($s_attribute_type_list_rs);
-	while (list(, $s_attribute_type_r) = each($s_attribute_type_list_rs)) {
+	foreach ($s_attribute_type_list_rs as $s_attribute_type_r) {
 		$arrayOfAttributes .= "arrayOfSystemAttributeTypeTooptips[$count] = new SystemAttributeTypeTooltip('" . addslashes($s_attribute_type_r['s_attribute_type']) . "', '" . addslashes($s_attribute_type_r['description']) . "', '" . addslashes($s_attribute_type_r['prompt']) . "', '"
 				. addslashes($s_attribute_type_r['input_type']) . "', '" . addslashes($s_attribute_type_r['display_type']) . "', '" . addslashes($s_attribute_type_r['s_field_type']) . "', '" . addslashes($s_attribute_type_r['site_type']) . "');\n";
 		$count++;

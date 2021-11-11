@@ -42,8 +42,8 @@ class HTML_Listing extends Listing {
 	* @param $PHP_SELF
 	* @param $HTTP_VARS
 	*/
-	function HTML_Listing($PHP_SELF, $HTTP_VARS) {
-		parent::Listing ( $PHP_SELF, $HTTP_VARS );
+	function __construct($PHP_SELF, $HTTP_VARS) {
+		parent::__construct( $PHP_SELF, $HTTP_VARS );
 	}
 
 	function setIncludeFooter($boolean) {

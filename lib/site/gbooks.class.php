@@ -31,8 +31,8 @@ class gbooks extends SitePlugin {
 	
 	var $base_url='https://www.googleapis.com/books/v1/volumes';
 	
-	function gbooks($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {

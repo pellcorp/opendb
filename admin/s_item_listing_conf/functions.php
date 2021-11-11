@@ -240,7 +240,7 @@ function validate_item_column_conf(&$column_no, &$column_type, &$s_field_type, &
 function insert_new_column_conf_set($silc_id, $column_conf_rs) {
 	if (db_query("LOCK TABLES s_item_listing_column_conf WRITE, s_item_listing_conf WRITE")) {
 		if (delete_s_item_listing_column_conf($silc_id)) {
-			while (list(, $column_conf_r) = each($column_conf_rs)) {
+			foreach ($column_conf_rs as $column_conf_r) {
 				// there is not a whole lot we can do if this fails, so keep going
 				insert_s_item_listing_column_conf($silc_id, $column_conf_r['column_no'], $column_conf_r['column_type'], $column_conf_r['s_field_type'], $column_conf_r['s_attribute_type'], $column_conf_r['override_prompt'], $column_conf_r['printable_support_ind'],
 						$column_conf_r['orderby_support_ind'], $column_conf_r['orderby_datatype'], $column_conf_r['orderby_default_ind'], $column_conf_r['orderby_sort_order'], TRUE); //assumes validation already performed

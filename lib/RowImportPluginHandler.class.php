@@ -28,7 +28,7 @@ class RowImportPluginHandler {
 	// stores the first error encountered.
 	var $_error;
 
-	function RowImportPluginHandler(&$itemImportHandler, &$importPlugin, &$fileHandler, $field_column_r, $field_default_r, $field_initcap_r) {
+	function __construct(&$itemImportHandler, &$importPlugin, &$fileHandler, $field_column_r, $field_default_r, $field_initcap_r) {
 		$this->itemImportHandler = & $itemImportHandler;
 		$this->importPlugin = & $importPlugin;
 		$this->fileHandler = & $fileHandler;

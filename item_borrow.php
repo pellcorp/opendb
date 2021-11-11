@@ -94,7 +94,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 		$default_borrow_duration = NULL;
 
 		reset($borrowed_item_rs);
-		while (list(, $borrowed_item_r) = each($borrowed_item_rs)) {
+		foreach ($borrowed_item_rs as $borrowed_item_r) {
 			$listingObject->startRow();
 
 			// If only a sequence_number, we need to fetch the borrow record.
@@ -169,7 +169,7 @@ function more_information_form($op, $borrowed_item_rs, $HTTP_VARS, $email_notifi
 			}//if(get_opendb_config_var('borrow', 'duration_support') && $duration_attr_type!==FALSE)
 
 			$listingObject->endRow();
-		}//while(list(,$borrowed_item_r) = each($borrowed_item_rs))
+		}
 
 		$listingObject->endListing();
 
@@ -265,12 +265,12 @@ function display_html_success_borrow_results($section_intro, $results_rs) {
 	echo ("<dl class=\"userItemList\">");
 
 	reset($results_rs);
-	while (list(, $results_r) = each($results_rs)) {
+	foreach ($results_rs as $results_r) {
 		echo ("<dt>" . $results_r['user_name'] . "</dt>");
 		echo ("<dd>");
 
 		echo ("<ul>");
-		while (list(, $display_title) = each($results_r['display_titles'])) {
+		foreach ($results_r['display_titles'] as $display_title) {
 			echo ("<li>");
 			echo ($display_title);
 			echo ("</li>");
@@ -297,8 +297,7 @@ function display_html_failure_borrow_results($section_intro, $results_rs) {
 	echo ("<p class=\"error\">$section_intro</p>");
 	echo ("<ul class=\"failureItems\">");
 	reset($results_rs);
-
-	while (list(, $results_r) = each($results_rs)) {
+	foreach ($results_rs as $results_r) {
 		echo ("<li>");
 		echo ($results_r['display_title']);
 		if (is_not_empty_array($results_r['errors'])) {
@@ -313,10 +312,10 @@ function display_job_success_borrow_results($section_intro, $results_rs) {
 	echo ("\n$section_intro\n");
 
 	reset($results_rs);
-	while (list(, $results_r) = each($results_rs)) {
+	foreach ($results_rs as $results_r) {
 		echo ("\n\t" . $results_r['user_name']);
 
-		while (list(, $display_title) = each($results_r['display_titles'])) {
+		foreach ($results_r['display_titles'] as $display_title) {
 			echo ("\n\t\t * $display_title");
 		}
 
@@ -325,7 +324,7 @@ function display_job_success_borrow_results($section_intro, $results_rs) {
 			if ($results_r['email_result'] !== TRUE) {
 				echo (get_opendb_lang_var('notication_email_not_sent'));
 				if (is_not_empty_array($results_r['email_errors'])) {
-					while (list(, $error) = each($results_r['email_errors'])) {
+					foreach ($results_r['email_errors'] as $error) {
 						echo ("\n\t\t$error");
 					}
 				}
@@ -341,11 +340,11 @@ function display_job_failure_borrow_results($section_intro, $results_rs) {
 	echo ("\n$section_intro\n");
 
 	reset($results_rs);
-	while (list(, $results_r) = each($results_rs)) {
+	foreach ($results_rs as $results_r) {
 		echo ("\n\t* ");
 		echo ($results_r['display_title']);
 		if (is_not_empty_array($results_r['errors'])) {
-			while (list(, $error) = each($results_r['errors'])) {
+			foreach ($results_r['errors'] as $error) {
 				echo ("\n\t$error");
 			}
 		}
@@ -363,7 +362,7 @@ function process_borrow_results($op, $mode, $heading, $success_intro, $failure_i
 		// Sort the items by user, so we can send emails for multiple 
 		// items, instead of individually.
 		$borrowed_item_user_r = array();
-		while (list(, $borrowed_item_r) = each($success_item_rs)) {
+		foreach ($success_item_rs as $borrowed_item_r) {
 			$item_r = fetch_item_instance_r($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']);
 			$item_r['title'] = $titleMaskCfg->expand_item_title($item_r);
 
@@ -387,7 +386,7 @@ function process_borrow_results($op, $mode, $heading, $success_intro, $failure_i
 		}
 
 		$success_results = array();
-		while (list($to_user, $item_entry_rs) = each($borrowed_item_user_r)) {
+		foreach ($borrowed_item_user_r as $to_user => $item_entry_rs) {
 			$errors = NULL;
 
 			if (is_valid_opendb_mailer() && $email_notification !== FALSE) {
@@ -397,7 +396,7 @@ function process_borrow_results($op, $mode, $heading, $success_intro, $failure_i
 
 			$display_title_r = NULL;
 			reset($item_entry_rs);
-			while (list(, $item_entry_r) = each($item_entry_rs)) {
+			foreach ($item_entry_rs as $item_entry_r) {
 				$display_title_r[] = $item_entry_r['display_title'];
 			}
 
@@ -416,7 +415,7 @@ function process_borrow_results($op, $mode, $heading, $success_intro, $failure_i
 
 	if (is_not_empty_array($failure_item_rs)) {
 		$failure_results = array();
-		while (list(, $borrowed_item_r) = each($failure_item_rs)) {
+		foreach ($failure_item_rs as $borrowed_item_r) {
 			$item_r = fetch_item_instance_r($borrowed_item_r['item_id'], $borrowed_item_r['instance_no']);
 
 			// Expand title mask.
@@ -475,11 +474,11 @@ function send_notification_email($to_user, $from_user, $heading, $introduction, 
 	// Format the entire message.
 	$message = get_opendb_lang_var('to_user_email_intro', 'fullname', fetch_user_name($to_user)) . "\n\n" . $introduction;
 
-	while (list(, $item_entry_r) = each($item_entry_rs)) {
+	foreach ($item_entry_rs as $item_entry_r) {
 		$message .= "\n*    " . $item_entry_r['display_title'];
 
 		// Add any item Borrow (overdue,due,reminder,etc) details here.
-		while (list(, $detail) = @each($item_entry_r['detail'])) {
+		foreach ($item_entry_r['detail'] as $detail) {
 			$message .= "\n     - " . $detail;
 		}
 	}
@@ -556,12 +555,12 @@ if (is_site_enabled()) {
 						$HTTP_VARS['op'] = 'reserve';
 					} else if (is_not_empty_array($HTTP_VARS['sequence_number'])) { // from reserve basket
  						reset($HTTP_VARS['sequence_number']);
-						while (list(, $sequence_number) = each($HTTP_VARS['sequence_number'])) {
+						foreach ($HTTP_VARS['sequence_number'] as $sequence_number) {
 							$reserve_item_rs[] = fetch_borrowed_item_pk_r($sequence_number);
 						}
 					} else if (is_not_empty_array($HTTP_VARS['item_id_instance_no'])) { // direct from listings
  						// Format of $item_id_instance_no {item_id}_{instance_no}
-						while (list(, $item_id_instance_no) = each($HTTP_VARS['item_id_instance_no'])) {
+						foreach ($HTTP_VARS['item_id_instance_no'] as $item_id_instance_no) {
 							$item_id_instance_no_r = get_item_id_and_instance_no($item_id_instance_no);
 							if (is_not_empty_array($item_id_instance_no_r))
 								$reserve_item_rs[] = $item_id_instance_no_r;
@@ -578,7 +577,7 @@ if (is_site_enabled()) {
 						if (get_opendb_config_var('borrow', 'reserve_more_information') && $HTTP_VARS['more_info_requested'] != 'true') {
 							more_information_form('reserve', $reserve_item_rs, $HTTP_VARS, get_opendb_config_var('borrow', 'reserve_email_notification'));
 						} else {
-							while (list(, $reserve_item_r) = @each($reserve_item_rs)) {
+							foreach ($reserve_item_rs as $reserve_item_r) {
 								// In case someone is trying to pass invalid item_id/instance_no combo's
 								if (is_exists_item_instance($reserve_item_r['item_id'], $reserve_item_r['instance_no'])) {
 									if (($new_borrowed_item_id = handle_reserve($reserve_item_r['item_id'], $reserve_item_r['instance_no'], get_opendb_session_var('user_id'), $HTTP_VARS['more_information'], $errors)) !== FALSE)// This allows reserve to support calls from borrow.php, item_display.php or listings.php
@@ -616,7 +615,7 @@ if (is_site_enabled()) {
 						if (get_opendb_config_var('borrow', 'cancel_more_information') && $HTTP_VARS['more_info_requested'] != 'true') {
 							more_information_form('cancel_reserve', $sequence_number_r, $HTTP_VARS, get_opendb_config_var('borrow', 'cancel_email_notification'));
 						} else {
-							while (list(, $sequence_number) = @each($sequence_number_r)) {
+							foreach ($sequence_number_r as $sequence_number) {
 								// This allows cancel-reserve to support calls from borrow.php, item_display.php or listings.php
 								if (handle_cancelreserve($sequence_number, $HTTP_VARS['more_information'], $errors))
 									$success_items_rs[] = fetch_borrowed_item_r($sequence_number);
@@ -647,7 +646,7 @@ if (is_site_enabled()) {
 						if (get_opendb_config_var('borrow', 'checkout_more_information') && $HTTP_VARS['more_info_requested'] != 'true') {
 							more_information_form('check_out', $sequence_number_r, $HTTP_VARS, get_opendb_config_var('borrow', 'checkout_email_notification'));
 						} else {
-							while (list(, $sequence_number) = each($sequence_number_r)) {
+							foreach ($sequence_number_r as $sequence_number) {
 								$borrow_duration = NULL;
 
 								// The More Information form was not presented
@@ -701,7 +700,7 @@ if (is_site_enabled()) {
 					}
 
 					if (is_not_empty_array($HTTP_VARS['checkout_item_instance_rs'])) {
-						while (list(, $item_id_and_instance_no) = each($HTTP_VARS['checkout_item_instance_rs'])) {
+						foreach ($HTTP_VARS['checkout_item_instance_rs'] as $item_id_and_instance_no) {
 							if (strlen($item_id_and_instance_no) > 0) {
 								$item_id_and_instance_no_r = get_item_id_and_instance_no($item_id_and_instance_no);
 								if (is_not_empty_array($item_id_and_instance_no_r)) {
@@ -725,7 +724,7 @@ if (is_site_enabled()) {
 						if ($HTTP_VARS['more_info_requested'] != 'true') {
 							more_information_form('quick_check_out', $checkout_item_rs, $HTTP_VARS, get_opendb_config_var('borrow', 'quick_checkout_email_notification'));
 						} else {
-							while (list(, $checkout_item_r) = @each($checkout_item_rs)) {
+							foreach ($checkout_item_rs as $checkout_item_r) {
 								// In case someone is trying to pass invalid item_id/instance_no combo's
 								if (is_exists_item_instance($checkout_item_r['item_id'], $checkout_item_r['instance_no'])) {
 									$borrow_duration = NULL;
@@ -774,7 +773,7 @@ if (is_site_enabled()) {
 						if (get_opendb_config_var('borrow', 'checkin_more_information') && $HTTP_VARS['more_info_requested'] != 'true') {
 							more_information_form('check_in', $sequence_number_r, $HTTP_VARS, get_opendb_config_var('borrow', 'checkin_email_notification'));
 						} else {
-							while (list(, $sequence_number) = @each($sequence_number_r)) {
+							foreach ($sequence_number_r as $sequence_number) {
 								if (handle_checkin($sequence_number, $HTTP_VARS['more_information'], $errors))
 									$success_items_rs[] = fetch_borrowed_item_r($sequence_number);
 								else
@@ -804,7 +803,7 @@ if (is_site_enabled()) {
 							if (get_opendb_config_var('borrow', 'reminder_more_information') && $HTTP_VARS['more_info_requested'] != 'true') {
 								more_information_form('reminder', $sequence_number_r, $HTTP_VARS, TRUE);
 							} else {
-								while (list(, $sequence_number) = @each($sequence_number_r)) {
+								foreach ($sequence_number_r as $sequence_number) {
 									if (handle_reminder($sequence_number, $errors))
 										$success_items_rs[] = fetch_borrowed_item_r($sequence_number, TRUE);
 									else
@@ -842,7 +841,7 @@ if (is_site_enabled()) {
 								}
 								more_information_form('extension', $sequence_number_r, $HTTP_VARS, TRUE);
 							} else {
-								while (list(, $sequence_number) = @each($sequence_number_r)) {
+								foreach ($sequence_number_r as $sequence_number) {
 									if (handle_extension($sequence_number, $HTTP_VARS['default_borrow_duration'], $HTTP_VARS['more_information'], $errors))
 										$success_items_rs[] = fetch_borrowed_item_r($sequence_number, TRUE);
 									else

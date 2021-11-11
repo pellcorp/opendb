@@ -218,6 +218,7 @@ function prc_args($args) {
 	$square_brace = 0;
 	$dbl_quote = FALSE;
 	$sgl_quote = FALSE;
+	$arguments = array ();
 	
 	for($i = 0; $i < strlen ( $args ); $i ++) {
 		switch ($args [$i]) {
@@ -416,22 +417,22 @@ function expand_number_range($range) {
 	$number = '';
 	$left_number = '';
 	$right_number = '';
-	while ( $i < strlen ( $range ) ) {
-		if (is_numeric ( $range {$i} )) {
-			if (is_numeric ( $left_number ))
-				$right_number .= $range {$i};
+	while ( $i < strlen( $range ) ) {
+		if (is_numeric( $range[$i] )) {
+			if (is_numeric( $left_number ))
+				$right_number .= $range[$i];
 			else
-				$number .= $range {$i};
-		} else if ($range {$i} == '-') 		// end of left range number
+				$number .= $range[$i];
+		} else if ($range[$i] == '-') 		// end of left range number
 {
 			$left_number = $number;
 			
 			//reset
 			$number = '';
-		} else if ($range {$i} == ',') 		// end of right range number, or lone number
+		} else if ($range[$i] == ',') 		// end of right range number, or lone number
 {
-			if (is_numeric ( $left_number ) && is_numeric ( $right_number )) {
-				$retval .= expand_range ( $left_number, $right_number );
+			if (is_numeric( $left_number ) && is_numeric( $right_number )) {
+				$retval .= expand_range( $left_number, $right_number );
 				
 				//reset
 				$left_number = '';
@@ -449,37 +450,37 @@ function expand_number_range($range) {
 		$i ++;
 	}
 	
-	if (is_numeric ( $left_number ) && is_numeric ( $right_number )) {
-		$retval .= expand_range ( $left_number, $right_number );
+	if (is_numeric( $left_number ) && is_numeric( $right_number )) {
+		$retval .= expand_range( $left_number, $right_number );
 	} else {
 		$retval .= $number;
 	}
 	
 	// get rid of last character, if a comma.
-	if ($retval {strlen ( $retval ) - 1} == ',')
-		$retval = substr ( $retval, 0, strlen ( $retval ) - 1 );
+	if ($retval[strlen( $retval ) - 1] == ',')
+		$retval = substr( $retval, 0, strlen( $retval ) - 1 );
 	
 	return $retval;
 }
 
 function get_array_variable_value($lookup_r, $value_column) {
-	if (is_array ( $lookup_r )) {
+	if (is_array( $lookup_r )) {
 		// Work out what to return, based on value_column specifier.
 		if ($value_column == 'key')
-			return $lookup_r ['key'];
+			return $lookup_r['key'];
 		else if ($value_column == 'valkey') 		// key is actual value, but not if numeric.
-{
+        {
 			// Use value, if 'key' column is auto generated numeric index.
-			if (! is_array ( $lookup_r ['value'] ) && is_numeric ( $lookup_r ['key'] ))
-				return $lookup_r ['value'];
+			if (! is_array( $lookup_r['value'] ) && is_numeric( $lookup_r['key'] ))
+				return $lookup_r['value'];
 			else
-				return $lookup_r ['key'];
-		} else if (! is_array ( $lookup_r ['value'] ) && $value_column == 'value')
-			return $lookup_r ['value'];
-		else if (is_array ( $lookup_r ['value'] ) && isset ( $lookup_r ['value'] [$value_column] ))
-			return $lookup_r ['value'] [$value_column];
-		else if (isset ( $lookup_r [$value_column] ))
-			return $lookup_r [$value_column];
+				return $lookup_r['key'];
+		} else if (isset($lookup_r['value']) && !is_array( $lookup_r['value'] ) && $value_column == 'value')
+			return $lookup_r['value'];
+		else if (isset($lookup_r['value']) && is_array( $lookup_r['value'] ) && isset( $lookup_r['value'][$value_column] ))
+			return $lookup_r['value'][$value_column];
+		else if (isset( $lookup_r[$value_column] ))
+			return $lookup_r[$value_column];
 	}
 	
 	return ''; // no value found
@@ -504,7 +505,7 @@ function expand_display_mask($display_mask, $values_r, $variable_char = "%") {
 	for($i = 0; $i < strlen ( $display_mask ); $i ++) {
 		if ($inside_variable) {
 			// If closing bracket
-			if ($display_mask [$i] == $variable_char && ($i == 0 || $display_mask [$i - 1] != '\\')) {
+			if ($display_mask[$i] == $variable_char && ($i == 0 || $display_mask[$i - 1] != '\\')) {
 				// Indicate close of reference.
 				$inside_variable = FALSE;
 				
@@ -514,9 +515,9 @@ function expand_display_mask($display_mask, $values_r, $variable_char = "%") {
 					$variable = '';
 				}
 			} else {
-				$variable .= $display_mask [$i];
+				$variable .= $display_mask[$i];
 			}
-		} else if ($display_mask [$i] == $variable_char && ($i == 0 || $display_mask [$i - 1] != '\\')) {
+		} else if ($display_mask[$i] == $variable_char && ($i == 0 || $display_mask[$i - 1] != '\\')) {
 			$inside_variable = TRUE;
 		}
 	}

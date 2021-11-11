@@ -114,14 +114,14 @@ function get_item_input_file_upload_url($filename) {
 }
 
 function filecache_generate_cache_filename($file_cache_r, $thumbnail = FALSE) {
-	$prefix = strtolower ( $file_cache_r ['cache_type'] );
+	$prefix = strtolower( $file_cache_r['cache_type'] );
 	if ($thumbnail)
 		$prefix .= 'Thumb';
 	
-	$randomNum = $file_cache_r ['sequence_number'] . '_' . generate_random_num ();
-	$extension = $file_cache_r ['extension'];
+	$randomNum = $file_cache_r['sequence_number'] . '_' . generate_random_num ();
+	$extension = $file_cache_r['extension'];
 	
-	return $prefix . $sequence_number . '_' . $randomNum . '.' . $extension;
+	return $prefix . $randomNum . '.' . $extension;
 }
 
 function save_uploaded_file($tmpFile, $name) {
@@ -158,24 +158,23 @@ function save_uploaded_file($tmpFile, $name) {
 }
 
 /**
-	Returns an array which includes fullsize and cached image versions, complete
-	with dimensions.  Its quite possible that the dimensions for the fullsize image
-	will not be available in which case it should be set in the calling function
-	for the popup window size.
-
-	array(
-	'thumbnail'=>
-	array('url'=>urlOfThumbnail,
-	'width'=>widthOfThumbnail,
-	'height'=>heightOfThumbnail),
-	'fullsize'=>
-	array('url'=>urlOfFullsize,
-	'width'=>widthOfFullsize,
-	'height'=>heightOfFullsize));
-
-	NOTE: There is an assumption that this function is only ever used for IMAGE
-	group entries.
-	*/
+ *	Returns an array which includes fullsize and cached image versions, complete
+ *	with dimensions.  Its quite possible that the dimensions for the fullsize image
+ *	will not be available in which case it should be set in the calling function
+ *	for the popup window size.
+ *
+ *	array('thumbnail'=>
+ *	          array('url'=>urlOfThumbnail,
+ *	                'width'=>widthOfThumbnail,
+ *	                'height'=>heightOfThumbnail),
+ *	      'fullsize'=>
+ *	          array('url'=>urlOfFullsize,
+ *	                'width'=>widthOfFullsize,
+ *	                'height'=>heightOfFullsize));
+ *
+ *	NOTE: There is an assumption that this function is only ever used for IMAGE
+ *	group entries.
+ */
 function file_cache_get_image_r($url, $type) {
 	if ($type == 'display')
 		$thumbnail_size_r = get_opendb_config_var ( 'item_display', 'item_image_size' );
@@ -185,6 +184,9 @@ function file_cache_get_image_r($url, $type) {
 		$thumbnail_size_r = get_opendb_config_var ( 'item_input.site', 'item_image_size' );
 	
 	$file_r = array ();
+	$uploadUrl = FALSE;
+	$file = FALSE;
+	$thumbnail_file = FALSE;
 	
 	if (strlen ( $url ) > 0) {
 		$file_cache_r = fetch_url_file_cache_r ( $url, 'ITEM', INCLUDE_EXPIRED );
@@ -207,20 +209,20 @@ function file_cache_get_image_r($url, $type) {
 			$file_r ['thumbnail'] ['url'] = $uploadUrl;
 			$file_r ['url'] = $uploadUrl;
 		}
-		
+
 		if ($file_cache_r !== FALSE) {
 			$file = file_cache_get_cache_file ( $file_cache_r );
 			$thumbnail_file = file_cache_get_cache_file_thumbnail ( $file_cache_r );
-		} else if ($uploadUrl !== FALSE) {
+		} else if ($uploadUrl) {
 			$file = $uploadUrl;
 			$thumbnail_file = $uploadUrl;
 		}
-		
+
 		// defaults
 		$file_r ['fullsize'] ['width'] = '400';
 		$file_r ['fullsize'] ['height'] = '300';
-		
-		if ($file !== FALSE) {
+
+		if ($file) {
 			$size = @getimagesize ( $file );
 			
 			if (is_array ( $size ) && $size [0] > 0 && $size [1] > 0) {
@@ -228,31 +230,31 @@ function file_cache_get_image_r($url, $type) {
 				$file_r ['fullsize'] ['height'] = $size [1];
 			}
 		}
-		
-		if ($thumbnail_file !== FALSE) {
+
+		if ($thumbnail_file) {
 			$size = @getimagesize ( $thumbnail_file );
-			if (is_array ( $size )) {
-				$file_r ['thumbnail'] ['width'] = $size [0];
-				$file_r ['thumbnail'] ['height'] = $size [1];
+			if (is_array( $size )) {
+				$file_r['thumbnail']['width'] = $size[0];
+				$file_r['thumbnail']['height'] = $size[1];
 				
-				if (is_numeric ( $thumbnail_size_r ['width'] ) && $thumbnail_size_r ['width'] < $file_r ['thumbnail'] ['width']) {
-					$file_r ['thumbnail'] ['width'] = $thumbnail_size_r ['width'];
+				if (is_numeric( $thumbnail_size_r['width'] ?? "") && $thumbnail_size_r['width'] < $file_r['thumbnail']['width']) {
+					$file_r['thumbnail']['width'] = $thumbnail_size_r['width'];
 					
 					// let browser auto dither image
-					$file_r ['thumbnail'] ['height'] = NULL;
-				} else if (is_numeric ( $thumbnail_size_r ['height'] ) && $thumbnail_size_r ['height'] < $file_r ['thumbnail'] ['height']) {
-					$file_r ['thumbnail'] ['height'] = $thumbnail_size_r ['height'];
+					$file_r['thumbnail']['height'] = NULL;
+				} else if (is_numeric( $thumbnail_size_r['height'] ) && $thumbnail_size_r['height'] < $file_r['thumbnail']['height']) {
+					$file_r['thumbnail']['height'] = $thumbnail_size_r['height'];
 					
 					// let browser auto dither image
-					$file_r ['thumbnail'] ['width'] = NULL;
+					$file_r['thumbnail']['width'] = NULL;
 				}
 			}
 		}
 		
-		if (! is_numeric ( $file_r ['thumbnail'] ['width'] ) && ! is_numeric ( $file_r ['thumbnail'] ['height'] )) {
+		if (is_numeric($thumbnail_size_r ['width'] ?? ''))
 			$file_r ['thumbnail'] ['width'] = $thumbnail_size_r ['width'];
+		if (is_numeric($thumbnail_size_r ['height'] ?? ''))
 			$file_r ['thumbnail'] ['height'] = $thumbnail_size_r ['height'];
-		}
 		
 		return $file_r;
 	}
@@ -888,7 +890,7 @@ function delete_file_cache($file_cache_r) {
 function delete_file_cache_rs($file_cache_rs) {
 	$count = 0;
 	reset ( $file_cache_rs );
-	while ( list ( , $file_cache_r ) = each ( $file_cache_rs ) ) {
+	foreach ( $file_cache_rs as $file_cache_r ) {
 		if (delete_file_cache ( $file_cache_r ) !== FALSE) {
 			$count ++;
 		}

@@ -107,7 +107,7 @@ function display_s_addr_attribute_type_rltshp_row($s_address_type, $s_addr_attri
 
 		echo ("<td class=\"$class\">" . "<select name=\"s_attribute_type[$row]\">" . "\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
-		while (list(, $attribute_type_r) = each($s_attribute_type_list_rs)) {
+		foreach ($s_attribute_type_list_rs as $attribute_type_r) {
 			if (is_not_empty_array($s_addr_attribute_type_rltshp_r) && $s_addr_attribute_type_rltshp_r['s_attribute_type'] == $attribute_type_r['s_attribute_type'])
 				echo ("\n<option value=\"" . $attribute_type_r['s_attribute_type'] . "\" SELECTED>" . $attribute_type_r['s_attribute_type']);
 			else
@@ -302,7 +302,7 @@ if ($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update') {
 
 		// Now display records that could not be inserted.
 		if (is_not_empty_array($saatr_already_exists)) {
-			while (list(, $saatr_r) = each($saatr_already_exists)) {
+			foreach ($saatr_already_exists as $saatr_r) {
 				display_s_addr_attribute_type_rltshp_row($HTTP_VARS['s_address_type'], $saatr_r, $row, TRUE, $s_attribute_type_list_rs);
 				$row++;
 			}
@@ -365,7 +365,7 @@ if ($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update') {
 if (strlen($HTTP_VARS['op']) == 0 || $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types') {
 	echo ("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Address Type</a>]</p>");
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	$results = fetch_s_address_type_rs();

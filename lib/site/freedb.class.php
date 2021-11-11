@@ -30,8 +30,8 @@ function get_hello_param() {
 // discid search
 
 class freedb extends SitePlugin {
-	function freedb($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function doDiscidSearch($search_vars_r) {
@@ -40,7 +40,7 @@ class freedb extends SitePlugin {
 		$entries = NULL;
 
 		reset($freedb_categories);
-		while (list(, $cat) = each($freedb_categories)) {
+		foreach ($freedb_categories as $cat) {
 			$result = $this->fetchURI("http://freedb2.org/~cddb/cddb.cgi?cmd=cddb+read+$cat+" . $search_vars_r['freedb_id'] . "&hello=" . get_hello_param() . "&proto=5");
 			if (preg_match("/([0-9]+) /", $result, $regs) && $regs[1] != '401') {
 				$entry['cddbgenre'] = $cat;
@@ -80,7 +80,7 @@ class freedb extends SitePlugin {
 
 				//blues 590ff119 Various Artists / Cool, Cool Blues, The Classic Sides (1951-54) - Disc B (Jackson, MS)
 				reset($lines);
-				while (list(, $line) = each($lines)) {
+				foreach ($lines as $line) {
 					$entry = NULL;
 					if (preg_match("/([^\ ]+) ([^\ ]+) ([^$]+)/", $line, $matches)) {
 						$entry['cddbgenre'] = $matches[1];
@@ -113,7 +113,7 @@ class freedb extends SitePlugin {
 			}
 
 			if (is_array($entries)) {
-				while (list(, $entry) = each($entries)) {
+				foreach ($entries as $entry) {
 					$this->addListingRow($entry['artist'] . ' / ' . $entry['title'], NULL, $entry['cddbgenre'] . '/' . $entry['freedb_id'], array('freedb_id' => $entry['freedb_id'], 'cddbgenre' => $entry['cddbgenre']));
 				}
 			}

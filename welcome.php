@@ -76,7 +76,7 @@ function get_announcements_block() {
 		// include a login warning if user password and email are still the defaults
 		if (get_opendb_session_var('user_id') == 'admin') {
 			$announcements_rs = get_admin_announcements_rs();
-			while (list(, $announcement_r) = each($announcements_rs)) {
+			foreach ( $announcements_rs as $announcement_r ) {
 				$buffer .= "<li><h4>" . $announcement_r['heading'] . "</h4>
 					<p class=\"content\">" . $announcement_r['message'] . "<a class=\"adminLink\" href=\"" . $announcement_r['link'] . "\">" . $announcement_r['link_text'] . "</a></p>";
 			}
@@ -105,8 +105,9 @@ function get_announcements_block() {
 
 function display_last_login_block($userid, $lastvisit) {
 	$plugins_r = get_welcome_block_plugin_r();
+	$buffer = "";
 	if (is_array($plugins_r)) {
-		while (list(, $plugin) = each($plugins_r)) {
+		foreach ( $plugins_r as $plugin ) {
 			$buffer .= renderWelcomeBlockPlugin($plugin, $userid, $lastvisit);
 		}
 	}

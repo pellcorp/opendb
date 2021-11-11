@@ -106,13 +106,13 @@ if ($HTTP_VARS['op'] == 'export') {
 		unset($HTTP_VARS['tables']);
 
 		$opendb_tables_r = fetch_opendb_table_list_r();
-		while (list(, $value) = each($opendb_tables_r)) {
+		foreach ($opendb_tables_r as $value) {
 			$HTTP_VARS['tables'][] = $value;
 		}
 	}
 
 	@reset($HTTP_VARS['tables']);
-	while (list(, $table) = @each($HTTP_VARS['tables'])) {
+	foreach ($HTTP_VARS['tables'] as $table) {
 		echo $CRLF . "#" . $CRLF;
 		echo "# " . get_opendb_lang_var('dumping_data_for_table', 'table', $table) . $CRLF;
 		echo "#" . $CRLF . $CRLF;
@@ -126,7 +126,8 @@ if ($HTTP_VARS['op'] == 'export') {
 	echo ("<ul class=\"checkboxGridOptionsVertical\">");
 
 	$opendb_tables_r = fetch_opendb_table_list_r();
-	while (list(, $table) = each($opendb_tables_r)) {
+	$count = 0;
+	foreach ($opendb_tables_r as $table) {
 		// the cache tables cannot be backed up as they might contain
 		// binary data, which we don't yet support.
 		if (!ends_with($table, '_cache') && $table != 'php_session') {

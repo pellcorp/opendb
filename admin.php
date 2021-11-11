@@ -37,7 +37,7 @@ define('OPENDB_ADMIN_TOOLS', 'true');
 if (is_site_enabled()) {
 	if (is_opendb_valid_session()) {
 		if (is_user_granted_permission(PERM_ADMIN_TOOLS)) {
-			$HTTP_VARS['type'] = ifempty($HTTP_VARS['type'], 'config');
+			$HTTP_VARS['type'] = ifempty($HTTP_VARS['type'] ?? NULL, 'config');
 
 			$ADMIN_TYPE = $HTTP_VARS['type'];
 			$ADMIN_DIR = './admin/' . $ADMIN_TYPE;
@@ -67,7 +67,7 @@ if (is_site_enabled()) {
 				_theme_header($title);
 
 				// todo - this should really be in the <head>...</head> - does it matter?
-				if ($xajax) {
+				if (isset($xajax)) {
 					$xajax->printJavascript();
 				}
 

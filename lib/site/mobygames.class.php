@@ -77,8 +77,8 @@ USK Ratings
     436	=> Not free for minors
  */
 class mobygames extends SitePlugin {
-	function mobygames($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {

@@ -48,7 +48,7 @@ function get_opendb_rss_feed_config($feed) {
 	reset ( $feeds_r );
 	
 	$buffer = '';
-	while ( list ( , $feed_r ) = each ( $feeds_r ) ) {
+	foreach ($feeds_r as $feed_r) {
 		if ($feed_r ['feed'] == $feed) {
 			return $feed_r;
 		}
@@ -62,8 +62,8 @@ function get_opendb_rss_feeds_links($browser = 'firefox') {
 	reset ( $feeds_r );
 	
 	$buffer = "\n";
-	
-	while ( list ( , $feed_r ) = each ( $feeds_r ) ) {
+
+	foreach ($feeds_r as $feed_r) {
 		$buffer .= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"" . $feed_r ['title'] . "\" href=\"./rss.php?feed=" . $feed_r ['feed'] . "\">\n";
 	}
 	return $buffer;

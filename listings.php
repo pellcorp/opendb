@@ -51,7 +51,7 @@ function getListingFiltersBlock() {
 
 	$buffer = '';
 
-	if ($HTTP_VARS['listings.filters'] != 'N' && get_opendb_config_var('listings.filters', 'enable') !== FALSE) {
+	if (($HTTP_VARS['listings.filters'] ?? '') != 'N' && get_opendb_config_var('listings.filters', 'enable') !== FALSE) {
 		$excluded_vars_list = NULL;
 
 		$buffer .= "<div id=\"listing-filters\" class=\"menuContainer toggleContainer\">";
@@ -131,7 +131,8 @@ function getListingFiltersBlock() {
 function fetch_cached_attribute_type_r($s_attribute_type) {
 	global $_OPENDB_DB_CACHE;
 
-	if (!is_array($_OPENDB_DB_CACHE['s_attribute_type']) || !is_array($_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type])) {
+	if (!is_array($_OPENDB_DB_CACHE['s_attribute_type'] ?? '') ||
+		!is_array($_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type] ?? '')) {
 		$_OPENDB_DB_CACHE['s_attribute_type'][$s_attribute_type] = fetch_attribute_type_r($s_attribute_type);
 	}
 
@@ -177,7 +178,7 @@ function get_list_item_type_groups() {
 
 function is_item_type_in_item_type_r($v_item_types, $s_item_type) {
 	reset($v_item_types);
-	while (list(, $item_type_r) = each($v_item_types)) {
+	foreach ( $v_item_types as $item_type_r ) {
 		if ($item_type_r['value'] == $s_item_type) {
 			return TRUE;
 		}
@@ -300,27 +301,45 @@ function &filter_for_printable_list($column_display_config_rs) {
 }
 
 function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action_column, $show_interest_column) {
-	$v_column_display_config_rs = get_s_item_listing_column_conf_rs($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
+	$v_column_display_config_rs = get_s_item_listing_column_conf_rs($HTTP_VARS['s_item_type_group'] ?? '', $HTTP_VARS['s_item_type'] ?? '');
 
 	if ($HTTP_VARS['mode'] == 'printable') {
 		$v_column_display_config_rs = &filter_for_printable_list($v_column_display_config_rs);
 	}
 
-	if ($HTTP_VARS['attr_match'] != 'category' && strlen($HTTP_VARS['attribute_type']) > 0) {
+	if (($HTTP_VARS['attr_match'] ?? '') != 'category' && strlen($HTTP_VARS['attribute_type'] ?? '') > 0) {
 		// Now we have to merge in search terms, and add them after the 'title' column_id
-		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs,
-				array(
-						array('column_type' => 's_attribute_type', 's_attribute_type' => $HTTP_VARS['attribute_type'], 'attribute_val' => $HTTP_VARS['attribute_val'], 'lookup_attribute_val' => $HTTP_VARS['lookup_attribute_val'], 'attr_match' => $HTTP_VARS['attr_match'],
-								'attr_update_on' => $HTTP_VARS['attr_update_on'], 'orderby_support_ind' => 'Y', 'attr_update_on_days' => $HTTP_VARS['attr_update_on_days'], 'search_attribute_ind' => ifempty($HTTP_VARS['search_list'], $HTTP_VARS['attribute_list']))));
+		$v_column_display_config_rs = &merge_display_column_config_arrays(
+			$v_column_display_config_rs,
+			array(
+				array('column_type' => 's_attribute_type',
+					  's_attribute_type' => $HTTP_VARS['attribute_type'],
+					  'attribute_val' => $HTTP_VARS['attribute_val'],
+					  'lookup_attribute_val' => $HTTP_VARS['lookup_attribute_val'],
+					  'attr_match' => $HTTP_VARS['attr_match'],
+					  'attr_update_on' => $HTTP_VARS['attr_update_on'],
+					  'attr_update_on_days' => $HTTP_VARS['attr_update_on_days'],
+					  'orderby_support_ind' => 'Y',
+					  'search_attribute_ind' => ifempty($HTTP_VARS['search_list'], $HTTP_VARS['attribute_list']))));
 	}
 
 	// need to add status_comment to listing if search for status comment enabled.							
-	if (strlen($HTTP_VARS['status_comment']) > 0) {
-		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs, array(array('column_type' => 's_field_type', 's_field_type' => 'STATUSCMNT')));
+	if (strlen($HTTP_VARS['status_comment'] ?? '') > 0) {
+		$v_column_display_config_rs = &merge_display_column_config_arrays(
+			$v_column_display_config_rs,
+			array(
+				array(
+					'column_type' => 's_field_type',
+					's_field_type' => 'STATUSCMNT')));
 	}
 
-	if (strlen($HTTP_VARS['rating']) > 0) {
-		$v_column_display_config_rs = &merge_display_column_config_arrays($v_column_display_config_rs, array(array('column_type' => 's_field_type', 's_field_type' => 'RATING')));
+	if (strlen($HTTP_VARS['rating'] ?? '') > 0) {
+		$v_column_display_config_rs = &merge_display_column_config_arrays(
+			$v_column_display_config_rs,
+			array(
+				array(
+					'column_type' => 's_field_type',
+					's_field_type' => 'RATING')));
 	}
 
 	for ($i = 0; $i < count($v_column_display_config_rs); $i++) {
@@ -329,7 +348,7 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 		if ($v_column_display_config_rs[$i]['column_type'] == 's_attribute_type') {
 			$v_attribute_type_r = fetch_cached_attribute_type_r($v_column_display_config_rs[$i]['s_attribute_type']);
 			if (is_array($v_attribute_type_r)) {
-				if (strlen($HTTP_VARS['s_item_type']) > 0) {
+				if (strlen($HTTP_VARS['s_item_type'] ?? '') > 0) {
 					$v_column_display_config_rs[$i]['prompt'] = ifempty(fetch_s_item_type_attr_prompt($HTTP_VARS['s_item_type'], $v_column_display_config_rs[$i]['s_attribute_type']), $v_attribute_type_r['prompt']);
 				} else {
 					$v_column_display_config_rs[$i]['prompt'] = ifempty($v_column_display_config_rs[$i]['override_prompt'], $v_attribute_type_r['prompt']);
@@ -339,7 +358,9 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 				if ($v_attribute_type_r['lookup_attribute_ind'] == 'Y') {
 					$v_column_display_config_rs[$i]['lookup_attribute_ind'] = 'Y';
 
-					if (strlen($v_column_display_config_rs[$i]['lookup_attribute_val']) == 0 && strlen($v_column_display_config_rs[$i]['attribute_val']) > 0) {
+					if (strlen($v_column_display_config_rs[$i]['lookup_attribute_val'] ?? '') == 0 &&
+						strlen($v_column_display_config_rs[$i]['attribute_val'] ?? '') > 0)
+					{
 						$v_column_display_config_rs[$i]['lookup_attribute_val'] = $v_column_display_config_rs[$i]['attribute_val'];
 						$v_column_display_config_rs[$i]['attribute_val'] = NULL;
 					}
@@ -359,7 +380,11 @@ function get_column_display_config(&$HTTP_VARS, $show_owner_column, $show_action
 				$v_column_display_config_rs[$i]['include_in_listing'] = FALSE;
 
 				// TODO - revise to get rid of this reverse logic!!!! 
-				if ($v_column_display_config_rs[$i]['search_attribute_ind'] != 'y' || $v_column_display_config_rs[$i]['item_listing_conf_ind'] == 'Y' || $v_column_display_config_rs[$i]['attr_match'] != 'exact' || get_opendb_config_var('listings', 'show_exact_match_search_columns') !== FALSE) {
+				if (($v_column_display_config_rs[$i]['search_attribute_ind'] ?? '') != 'y' ||
+					$v_column_display_config_rs[$i]['item_listing_conf_ind'] == 'Y' ||
+					$v_column_display_config_rs[$i]['attr_match'] != 'exact' ||
+					get_opendb_config_var('listings', 'show_exact_match_search_columns') !== FALSE)
+				{
 					$v_column_display_config_rs[$i]['include_in_listing'] = TRUE;
 				}
 			} else {
@@ -455,7 +480,7 @@ function get_search_query_matrix($HTTP_VARS) {
 		$HTTP_VARS['title_match'] = ifempty($HTTP_VARS['title_match'], 'exact');
 
 		if ($HTTP_VARS['title_match'] == 'word' || $HTTP_VARS['title_match'] == 'partial') {
-			if (is_null($HTTP_VARS['title_case']))
+			if (!isset($HTTP_VARS['title_case']))
 				$searches[] = array('prompt' => get_opendb_lang_var('title') . ' (<em>' . get_match_type($HTTP_VARS['title_match']) . '</em>)', 'field' => $HTTP_VARS['title']);
 			else
 				$searches[] = array('prompt' => get_opendb_lang_var('title') . ' (<em>' . get_match_type($HTTP_VARS['title_match']) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', 'field' => $HTTP_VARS['title']);
@@ -464,7 +489,7 @@ function get_search_query_matrix($HTTP_VARS) {
 		}
 	}
 
-	if (strlen($HTTP_VARS['category']) > 0) {
+	if (strlen($HTTP_VARS['category'] ?? '') > 0) {
 		// If s_item_type defined, we can get at the s_attribute_type of the category value.
 		if (strlen($HTTP_VARS['s_item_type']) > 0) {
 			$attribute_type_r = fetch_sfieldtype_item_attribute_type_r($HTTP_VARS['s_item_type'], 'CATEGORY');
@@ -474,17 +499,17 @@ function get_search_query_matrix($HTTP_VARS) {
 		}
 	}
 
-	if (strlen($HTTP_VARS['owner_id']) > 0) {
+	if (strlen($HTTP_VARS['owner_id'] ?? '') > 0) {
 		$username = fetch_user_name($HTTP_VARS['owner_id']);
 		if (strlen($username) > 0)
 			$searches[] = array('prompt' => get_opendb_lang_var('owner'), 'field' => $username . ' (' . $HTTP_VARS['owner_id'] . ')');
 	}
 
-	if (strlen($HTTP_VARS['s_item_type_group']) > 0) {
+	if (strlen($HTTP_VARS['s_item_type_group'] ?? '') > 0) {
 		$searches[] = array('prompt' => get_opendb_lang_var('s_item_type_group'), 'field' => $HTTP_VARS['s_item_type_group']);
 	}
 
-	if (is_array($HTTP_VARS['s_item_type'])) {
+	if (is_array($HTTP_VARS['s_item_type'] ?? '')) {
 		$field = '';
 		for ($i = 0; $i < count($HTTP_VARS['s_item_type']); $i++) {
 			$item_type_r = fetch_item_type_r($HTTP_VARS['s_item_type'][$i]);
@@ -492,19 +517,20 @@ function get_search_query_matrix($HTTP_VARS) {
 		}
 
 		$searches[] = array('prompt' => get_opendb_lang_var('s_item_type'), 'field' => $field);
-	} else if (strlen($HTTP_VARS['s_item_type']) > 0) {
+
+	} else if (strlen($HTTP_VARS['s_item_type'] ?? '') > 0) {
 		$item_type_r = fetch_item_type_r($HTTP_VARS['s_item_type']);
 		$searches[] = array('prompt' => get_opendb_lang_var('s_item_type'), 'field' => theme_image($item_type_r['image'], $item_type_r['description'], 's_item_type'));
 	}
 
-	if (is_numeric($HTTP_VARS['rating'])) {
+	if (is_numeric($HTTP_VARS['rating'] ?? '')) {
 		$attribute_type_r = fetch_cached_attribute_type_r('S_RATING');
 
 		$searches[] = array('prompt' => $attribute_type_r['prompt'], 'field' => get_display_field($attribute_type_r['s_attribute_type'], NULL, 'review()', $HTTP_VARS['rating'], FALSE));
 	}
 
 	$attribute_type_r = NULL;
-	if (strlen($HTTP_VARS['attribute_type']) > 0) {
+	if (strlen($HTTP_VARS['attribute_type'] ?? '') > 0) {
 		$attribute_type_r = fetch_cached_attribute_type_r($HTTP_VARS['attribute_type']);
 		if (is_not_empty_array($attribute_type_r)) {
 			$attribute_type_r['listing_link_ind'] = 'N';
@@ -536,8 +562,8 @@ function get_search_query_matrix($HTTP_VARS) {
 			}
 		}//if(is_not_empty_array($attribute_type_r))
 	} else {
-		if (strlen($HTTP_VARS['attribute_val']) > 0) { // specified a search term without attribute type, this is a global search.
- 			if (is_null($HTTP_VARS['attr_case'])) {
+		if (strlen($HTTP_VARS['attribute_val'] ?? '') > 0) { // specified a search term without attribute type, this is a global search.
+ 			if (!isset($HTTP_VARS['attr_case'])) {
 				$searches[] = array('prompt' => get_opendb_lang_var('attribute_val') . ' (<em>' . get_match_type(ifempty($HTTP_VARS['attr_match'], 'exact')) . '</em>)', 'field' => stripslashes($HTTP_VARS['attribute_val']));
 			} else {
 				$searches[] = array('prompt' => get_opendb_lang_var('attribute_val') . ' (<em>' . get_match_type(ifempty($HTTP_VARS['attr_match'], 'exact')) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', 'field' => stripslashes($HTTP_VARS['attribute_val']));
@@ -546,7 +572,7 @@ function get_search_query_matrix($HTTP_VARS) {
 	}
 
 	// add another search field if update_on value also specified.	
-	if (strlen($HTTP_VARS['attr_update_on']) > 0) {
+	if (strlen($HTTP_VARS['attr_update_on'] ?? '') > 0) {
 		if (is_not_empty_array($attribute_type_r))
 			$prompt = get_opendb_lang_var('attribute_prompt_updated', array('s_attribute_type' => $attribute_type_r['s_attribute_type'], 'prompt' => $attribute_type_r['prompt']));
 		else
@@ -556,7 +582,7 @@ function get_search_query_matrix($HTTP_VARS) {
 			$searches[] = array('prompt' => $prompt, 'field' => $HTTP_VARS['attr_update_on'] . ' (' . $HTTP_VARS['datetimemask'] . ')');
 		else
 			$searches[] = array('prompt' => $prompt, 'field' => $HTTP_VARS['attr_update_on']);
-	} else if (is_numeric($HTTP_VARS['attr_update_on_days'])) {
+	} else if (is_numeric($HTTP_VARS['attr_update_on_days'] ?? '')) {
 		if (is_not_empty_array($attribute_type_r))
 			$prompt = get_opendb_lang_var('attribute_prompt_updated', array('s_attribute_type' => $attribute_type_r['s_attribute_type'], 'prompt' => $attribute_type_r['prompt']));
 		else
@@ -574,12 +600,12 @@ function get_search_query_matrix($HTTP_VARS) {
 		$searches[] = array('prompt' => $prompt, 'field' => $field);
 	}
 
-	if (strlen($HTTP_VARS['update_on']) > 0) {
+	if (strlen($HTTP_VARS['update_on'] ?? '') > 0) {
 		if (strlen($HTTP_VARS['datetimemask']) > 0)
 			$searches[] = array('prompt' => get_opendb_lang_var('updated'), 'field' => $HTTP_VARS['update_on'] . ' (' . $HTTP_VARS['datetimemask'] . ')');
 		else
 			$searches[] = array('prompt' => get_opendb_lang_var('updated'), 'field' => $HTTP_VARS['update_on']);
-	} else if (is_numeric($HTTP_VARS['update_on_days'])) {
+	} else if (is_numeric($HTTP_VARS['update_on_days'] ?? '')) {
 		if ($HTTP_VARS['update_on_days'] == '1')
 			$field = get_opendb_lang_var('one_day_ago');
 		else if ($HTTP_VARS['update_on_days'] == '7')
@@ -592,7 +618,7 @@ function get_search_query_matrix($HTTP_VARS) {
 		$searches[] = array('prompt' => get_opendb_lang_var('updated'), 'field' => $field);
 	}
 
-	if (is_not_empty_array($HTTP_VARS['s_status_type']) > 0) {
+	if (is_not_empty_array($HTTP_VARS['s_status_type'] ?? NULL) > 0) {
 		$search = '';
 		for ($i = 0; $i < count($HTTP_VARS['s_status_type']); $i++) {
 			if (strlen($search) > 0) {
@@ -610,12 +636,12 @@ function get_search_query_matrix($HTTP_VARS) {
 		}
 	}
 
-	if (strlen($HTTP_VARS['status_comment']) > 0) {
+	if (strlen($HTTP_VARS['status_comment'] ?? NULL) > 0) {
 		// Default status_comment match is exact match.
 		$HTTP_VARS['status_comment_match'] = ifempty($HTTP_VARS['status_comment_match'], 'exact');
 
 		if ($HTTP_VARS['status_comment_match'] == 'word' || $HTTP_VARS['status_comment_match'] == 'partial' || $HTTP_VARS['status_comment_match'] == 'exact') {
-			if (is_null($HTTP_VARS['status_comment_case']))
+			if (!isset($HTTP_VARS['status_comment_case']))
 				$searches[] = array('prompt' => get_opendb_lang_var('status_comment') . ' (<em>' . get_match_type($HTTP_VARS['status_comment_match']) . '</em>)', 'field' => $HTTP_VARS['status_comment']);
 			else
 				$searches[] = array('prompt' => get_opendb_lang_var('status_comment') . ' (<em>' . get_match_type($HTTP_VARS['status_comment_match']) . ', ' . get_opendb_lang_var('case_sensitive') . '</em>)', 'field' => $HTTP_VARS['status_comment']);
@@ -623,7 +649,7 @@ function get_search_query_matrix($HTTP_VARS) {
 			$searches[] = array('prompt' => get_opendb_lang_var('status_comment'), 'field' => $HTTP_VARS['status_comment']);
 		}
 	}
-	if (is_numeric($HTTP_VARS['interest_level']) && $HTTP_VARS['interest_level'] > 0) {
+	if (is_numeric($HTTP_VARS['interest_level'] ?? NULL) && $HTTP_VARS['interest_level'] > 0) {
 		$searches[] = array('prompt' => get_opendb_lang_var('interest'), 'field' => theme_image("interest_1.gif", get_opendb_lang_var('interest'), 's_item_type'));
 	}
 
@@ -633,9 +659,9 @@ function get_search_query_matrix($HTTP_VARS) {
 if (is_site_enabled()) {
 	if (is_opendb_valid_session() || is_site_public_access()) {
 		if (is_user_granted_permission(PERM_VIEW_LISTINGS)) {
-			$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'], $HTTP_VARS['s_item_type']);
-			if (!is_array($HTTP_VARS['s_item_type']) && strlen($HTTP_VARS['s_item_type']) > 0 && is_not_empty_array($v_item_types)) {
-				if (!is_item_type_in_item_type_r($v_item_types, $HTTP_VARS['s_item_type'])) {
+			$v_item_types = get_list_item_types($HTTP_VARS['s_item_type_group'] ?? "", $HTTP_VARS['s_item_type'] ?? NULL);
+			if (!is_array($HTTP_VARS['s_item_type'] ?? "") && strlen($HTTP_VARS['s_item_type'] ?? "") > 0 && is_not_empty_array($v_item_types)) {
+				if (!is_item_type_in_item_type_r($v_item_types, $HTTP_VARS['s_item_type'] ?? NULL)) {
 					unset($HTTP_VARS['s_item_type']);
 				}
 			}
@@ -656,7 +682,7 @@ if (is_site_enabled()) {
 				$xajax->processRequest();
 			}
 
-			if (strlen($HTTP_VARS['owner_id']) > 0)
+			if (strlen($HTTP_VARS['owner_id'] ?? '') > 0)
 				$show_owner_column = FALSE;
 			else
 				$show_owner_column = TRUE;
@@ -680,7 +706,7 @@ if (is_site_enabled()) {
 			}
 
 			if (get_opendb_config_var('listings', 'show_input_actions') !== FALSE) {
-				if (is_user_granted_permission(PERM_ITEM_OWNER) && (strlen($HTTP_VARS['not_owner_id']) == 0 || $HTTP_VARS['not_owner_id'] != get_opendb_session_var('user_id')) && (strlen($HTTP_VARS['owner_id']) == 0 || $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))) {
+				if (is_user_granted_permission(PERM_ITEM_OWNER) && (strlen($HTTP_VARS['not_owner_id'] ?? "") == 0 || $HTTP_VARS['not_owner_id'] != get_opendb_session_var('user_id')) && (strlen($HTTP_VARS['owner_id'] ?? '') == 0 || $HTTP_VARS['owner_id'] == get_opendb_session_var('user_id'))) {
 					$show_action_column = TRUE;
 				}
 			}
@@ -689,7 +715,7 @@ if (is_site_enabled()) {
 
 			$page_title = NULL;
 			if ($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y') {
-				if (strlen($HTTP_VARS['override_page_title']) > 0)
+				if (strlen($HTTP_VARS['override_page_title'] ?? '') > 0)
 					$page_title = $HTTP_VARS['override_page_title'];
 				else
 					$page_title = get_opendb_lang_var('search_results');
@@ -715,21 +741,24 @@ if (is_site_enabled()) {
 					$page_title = get_opendb_lang_var('all_item_listing');
 			}
 
-			echo (_theme_header($page_title, $HTTP_VARS['inc_menu']));
+			echo (_theme_header($page_title, $HTTP_VARS['inc_menu'] ?? NULL));
 			echo ('<h2>' . $page_title . '</h2>');
 
 			if ($HTTP_VARS['search_list'] == 'y' || $HTTP_VARS['attribute_list'] == 'y') {
 				// default search term if attribute_type specified, but no value provided.
-				if (strlen($HTTP_VARS['attribute_type']) > 0 && strlen($HTTP_VARS['attribute_val']) == 0 && strlen($HTTP_VARS['lookup_attribute_val']) == 0) {
+				if (strlen($HTTP_VARS['attribute_type'] ?? '') > 0 &&
+					strlen($HTTP_VARS['attribute_val'] ?? '') == 0 &&
+					strlen($HTTP_VARS['lookup_attribute_val'] ?? '') == 0)
+				{
 					$HTTP_VARS['attribute_val'] = '%';
 				}
 
-				if ($HTTP_VARS['show_search_query_matrix'] != 'N') {
+				if (($HTTP_VARS['show_search_query_matrix'] ?? '') != 'N') {
 					$matrix_rs = get_search_query_matrix($HTTP_VARS);
 					if (is_not_empty_array($matrix_rs)) {
 						echo ('<div class="search-query"><dl>');
 
-						while (list(, $matrix_r) = each($matrix_rs)) {
+						foreach ( $matrix_rs as $matrix_r ) {
 							echo ('<dt>' . $matrix_r['prompt'] . '</dt>' . '<dd>' . $matrix_r['field'] . '</dd>');
 						}
 						echo ('</dl></div>');
@@ -984,7 +1013,7 @@ if (is_site_enabled()) {
 
 			echo ("<ul class=\"listingControls\">");
 			if (get_opendb_config_var('listings', 'allow_override_show_item_image') !== FALSE) {
-				echo ("<li>" . getToggleControl($PHP_SELF, $HTTP_VARS, get_opendb_lang_var('show_item_image'), 'show_item_image', ifempty($HTTP_VARS['show_item_image'], get_opendb_config_var('listings', 'show_item_image') == TRUE ? 'Y' : 'N')) . "</li>");
+				echo ("<li>" . getToggleControl($PHP_SELF, $HTTP_VARS, get_opendb_lang_var('show_item_image'), 'show_item_image', ifempty($HTTP_VARS['show_item_image'] ?? "", get_opendb_config_var('listings', 'show_item_image') == TRUE ? 'Y' : 'N')) . "</li>");
 			}
 			echo ("<li>" . getItemsPerPageControl($PHP_SELF, $HTTP_VARS) . "</li>");
 			echo ("</ul>");

@@ -31,8 +31,8 @@ include_once("./lib/site/imdbphp2/imdbsearch.class.php");
 
 class imdbphp extends SitePlugin {
 	var $results;
-	function imdbphp($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -156,10 +156,10 @@ class imdbphp extends SitePlugin {
 		$age_certification_codes_r = $this->getConfigValue('age_certification_codes');
 		if (!is_array($age_certification_codes_r) && strlen($age_certification_codes_r) > 0) // single value
 			$age_certification_codes_r = array($age_certification_codes_r);
-		if (is_array($age_certification_codes_r)) // get a single value for the age rating depending on the users settings
- {
+		if (is_array($age_certification_codes_r)) {
+			// get a single value for the age rating depending on the users settings
 			reset($age_certification_codes_r);
-			while (list(, $country) = @each($age_certification_codes_r)) {
+			foreach ($age_certification_codes_r as $country) {
 				$country = strtolower($country);
 
 				$ageRating = $this->getItemAttribute($country . '_age_rating');

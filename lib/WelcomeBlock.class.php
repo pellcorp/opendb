@@ -29,7 +29,7 @@ class WelcomeBlock {
 	/**
 	 * Assumes the configuration ID = welcome.$id, or $cfgId needs to be non NULL to override
 	 */
-	function WelcomeBlock($id, $titlelangvar = NULL, $cfgId = NULL, $permId = NULL) {
+	function __construct($id, $titlelangvar = NULL, $cfgId = NULL, $permId = NULL) {
 		$this->_id = $id;
 		$this->_title = $titlelangvar;
 		$this->_cfgId = $cfgId;

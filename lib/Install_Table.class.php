@@ -47,7 +47,7 @@ class Install_Table {
 
 	/**
 	*/
-	function Install_Table($table) {
+	function __construct($table) {
 		$this->_table_name = $table;
 		
 		if (! check_opendb_table ( $this->_table_name )) {

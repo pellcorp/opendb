@@ -25,8 +25,8 @@ include_once("./lib/SitePlugin.class.php");
 include_once("./lib/item_attribute.php");
 
 class michaeld extends SitePlugin {
-	function michaeld($site_type) {
-		parent::SitePlugin($site_type);
+	function __construct($site_type) {
+		parent::__construct($site_type);
 	}
 
 	function queryListing($page_no, $items_per_page, $offset, $s_item_type, $search_vars_r) {
@@ -246,7 +246,7 @@ class michaeld extends SitePlugin {
 						$itemData = $sitePlugin->getItemData();
 						if (is_array($itemData)) {
 							// merge data in here.
-							while (list($key, $value) = each($itemData)) {
+							foreach ($itemData as $key => $value) {
 								if ($key == 'actors')
 									$this->replaceItemAttribute('actors', $value);
 								else if ($key == 'director')

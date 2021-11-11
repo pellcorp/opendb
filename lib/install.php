@@ -58,14 +58,14 @@ function get_opendb_table_column_collation_mismatches(&$table_colation_mismatch,
 	
 	if (strlen ( $default_collation ) > 0) {
 		reset ( $table_collations_r );
-		while ( list ( $table, $collation ) = each ( $table_collations_r ) ) {
+		foreach ( $table_collations_r as $table => $collation ) {
 			if (strlen ( $collation ) > 0 && $collation != $default_collation) {
 				$table_colation_mismatch [$table] = $collation;
 			}
 		}
 		
-		while ( list ( $table, $columns_r ) = each ( $table_column_collations_r ) ) {
-			while ( list ( $column, $collation ) = each ( $columns_r ) ) {
+		foreach ( $table_column_collations_r as $table => $columns_r ) {
+			foreach ( $columns_r as $column => $collation ) {
 				if (strlen ( $collation ) > 0 && $collation != $default_collation) {
 					$table_column_colation_mismatch [$table] [$column] = $collation;
 				}
@@ -117,7 +117,7 @@ function fetch_opendb_table_column_collations(&$table_collations_r, &$table_colu
 	$collation_spread = array ();
 	
 	reset ( $table_r );
-	while ( list ( , $table ) = each ( $table_r ) ) {
+	foreach ( $table_r as $table ) {
 		$query = "SHOW TABLE STATUS LIKE '$table'";
 		
 		$result = db_query ( $query );
@@ -146,8 +146,8 @@ function fetch_opendb_table_column_collations(&$table_collations_r, &$table_colu
 	
 	$prevalent_colation = NULL;
 	$colation_highest_count = NULL;
-	
-	while ( list ( $collation, $count ) = each ( $collation_spread ) ) {
+
+	foreach ( $collation_spread as $collation => $count ) {
 		if (! is_numeric ( $colation_highest_count ) || $count > $colation_highest_count) {
 			$prevalent_colation = $collation;
 			$colation_highest_count = $count;
@@ -347,7 +347,7 @@ function exec_install_sql($sqltext, &$errors) {
 	split_sql_file ( $sqltext, $queries );
 	
 	$return_val = TRUE;
-	while ( list ( , $sql ) = each ( $queries ) ) {
+	foreach ( $queries as $sql ) {
 		if (! exec_install_sql_statement ( $sql, $error )) {
 			$return_val = FALSE;
 			$errors [] = $error;
@@ -552,7 +552,7 @@ function install_filter_opendb_tables($tables_r, $table_prefix = NULL) {
 			$table_prefix = '';
 		
 		$opendb_table_list_r = fetch_opendb_table_list_r ();
-		while ( list ( , $table ) = each ( $opendb_table_list_r ) ) {
+		foreach ( $opendb_table_list_r as $table ) {
 			if ($table != 's_opendb_release') {
 				if (array_search ( $table_prefix . $table, $tables_r ) !== FALSE) {
 					$opendb_table_r [] = $table;
@@ -625,10 +625,10 @@ function install_determine_db_prefixes($db_tables_r) {
 	$prefixes = array ();
 	
 	$opendb_table_list_r = fetch_opendb_table_list_r ();
-	while ( list ( , $odb_table ) = each ( $opendb_table_list_r ) ) {
+	foreach ( $opendb_table_list_r as $odb_table ) {
 		reset ( $db_tables_r );
-		
-		while ( list ( , $table ) = each ( $db_tables_r ) ) {
+
+		foreach ( $db_tables_r as $table ) {
 			if (preg_match ( "/^(.+)" . preg_quote ( $odb_table ) . "$/", $table, $matches )) {
 				// exclude prefix match for tables that end in _item
 				if ($odb_table == 'item' && ends_with ( $table, '_item' )) {
@@ -655,7 +655,7 @@ function is_opendb_partially_installed() {
 	$table_list_r = fetch_opendb_table_list_r ();
 	
 	reset ( $table_list_r );
-	while ( list ( , $table ) = each ( $table_list_r ) ) {
+	foreach ( $table_list_r as $table ) {
 		// ignore release table
 		if ($table != 's_opendb_release') {
 			if (check_opendb_table ( $table )) {

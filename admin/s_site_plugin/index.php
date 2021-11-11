@@ -542,7 +542,7 @@ if ($HTTP_VARS['op'] == 'insert_site_plugin') {
 		if (is_not_empty_array($site_attribute_type_r)) {
 			if (is_not_empty_array($HTTP_VARS['s_item_type'])) {
 				reset($HTTP_VARS['s_item_type']);
-				while (list($v_s_item_type, $value) = each($HTTP_VARS['s_item_type'])) {
+				foreach ($HTTP_VARS['s_item_type'] as $v_s_item_type => $value) {
 					if (is_exists_item_type($v_s_item_type)) {
 						// now we need to transfer in 
 						if ($value == 'exclude') {
@@ -558,7 +558,7 @@ if ($HTTP_VARS['op'] == 'insert_site_plugin') {
 
 							$delete = TRUE;
 							reset($site_item_attribute_type_rs);
-							while (list(, $site_item_attribute_type_r) = each($site_item_attribute_type_rs)) {
+							foreach ($site_item_attribute_type_rs as $site_item_attribute_type_r) {
 								if (!is_s_item_attribute_type_deletable($v_s_item_type, $site_item_attribute_type_r['s_attribute_type'], $site_item_attribute_type_r['order_no'])) {
 									$errors[] = array('error' => 'Dependent Item Attribute records exist', 'detail' => 's_item_type=' . $v_s_item_type . ', s_attribute_type=' . $site_item_attribute_type_r['s_attribute_type'] . ', order_no=' . $site_item_attribute_type_r['order_no']);
 									$delete = FALSE;
@@ -567,7 +567,7 @@ if ($HTTP_VARS['op'] == 'insert_site_plugin') {
 
 							if ($delete) {
 								reset($site_item_attribute_type_rs);
-								while (list(, $site_item_attribute_type_r) = each($site_item_attribute_type_rs)) {
+								foreach ($site_item_attribute_type_rs as $site_item_attribute_type_r) {
 									if (!delete_s_item_attribute_type($v_s_item_type, $site_item_attribute_type_r['s_attribute_type'], $site_item_attribute_type_r['order_no']))
 										$errors[] = array('error' => 'System Item Attribute Type (s_item_type=' . $v_s_item_type . ', s_attribute_type=' . $site_item_attribute_type_r['s_attribute_type'] . ', order_no=' . $site_item_attribute_type_r['order_no'] . ') not deleted', 'detail' => db_error());
 								}
@@ -1145,7 +1145,7 @@ if ($HTTP_VARS['op'] == 'edit_site_plugin_item_types') {
 			if (is_not_empty_array($file_list_r)) {
 				$toggle = TRUE;
 				reset($file_list_r);
-				while (list(, $file) = each($file_list_r)) {
+				foreach ($file_list_r as $file) {
 					$color = ($toggle ? "oddRow" : "evenRow");
 					$toggle = !$toggle;
 
@@ -1179,7 +1179,7 @@ if ($HTTP_VARS['op'] == 'edit_site_plugin_item_types') {
 if ($HTTP_VARS['op'] == 'list_site_plugins') {
 	echo ("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_site_plugin\">New Site Plugin</a>]</p>");
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	$results = fetch_site_plugin_rs();

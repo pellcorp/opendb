@@ -98,7 +98,8 @@ function custom_select($name, $lookup_results, $display_mask, $size = 1, $value 
 	$empty_display_mask = expand_display_mask ( $display_mask, NULL, '%' );
 	
 	$value_found = FALSE;
-	while ( $lookup_r = each ( $lookup_results ) ) {
+	foreach ( $lookup_results as $lookup_r_key => $lookup_r_value ) {
+		$lookup_r = ["key" => $lookup_r_key, "value" => $lookup_r_value];
 		// Check if this record should be included in list of values.
 		if (! function_exists ( $include_ind_func ) || $include_ind_func ( $lookup_r )) {
 			$lookup_value = get_array_variable_value ( $lookup_r, $value_column );
@@ -106,8 +107,7 @@ function custom_select($name, $lookup_results, $display_mask, $size = 1, $value 
 			$display = expand_display_mask ( $display_mask, $lookup_r, '%' );
 			
 			// if all variables were replaced with nothing, then assume empty option
-			if (strlen ( strval ( $lookup_value ) ) == 0 && $display == $empty_display_mask) 			//thawn: added strval() to fix variable type mismatch warning in php5.3
-{
+			if (strlen ( strval ( $lookup_value ) ) == 0 && $display == $empty_display_mask) {			//thawn: added strval() to fix variable type mismatch warning in php5.3
 				$display = '';
 			}
 			
@@ -117,11 +117,11 @@ function custom_select($name, $lookup_results, $display_mask, $size = 1, $value 
 				else
 					$var .= "\n<option value=\"" . $lookup_value . "\">$display";
 			} else {
-				if (! $value_found && $value == NULL && $lookup_r [$checked_ind] == 'Y')
+				if (!$value_found && $value == NULL && ( $checked_ind == "" || $lookup_r [$checked_ind] == 'Y')) {
 					$var .= "\n<option value=\"" . $lookup_value . "\" SELECTED>$display";
-				else {
-					if (strcasecmp ( trim ( $value ), strval ( $lookup_value ) ) === 0) 					//thawn: added strval() to fix variable type mismatch warning in php5.3
-{
+					$value_found = TRUE;
+				} else {
+					if (strcasecmp ( trim ( $value ), strval ( $lookup_value ) ) === 0) { 					//thawn: added strval() to fix variable type mismatch warning in php5.3
 						$value_found = TRUE;
 						$var .= "\n<option value=\"" . $lookup_value . "\" SELECTED>$display";
 					} else {
@@ -219,15 +219,15 @@ function format_footer_links($links_rs) {
 			}
 			
 			$field .= "\"><a";
-			if (strlen ( $footer_links_r ['url'] ) > 0) {
+			if (strlen ( $footer_links_r ['url'] ?? '' ) > 0) {
 				$field .= " href=\"" . $footer_links_r ['url'] . "\"";
 			}
 			
-			if (strlen ( $footer_links_r ['onclick'] ) > 0) {
+			if (strlen ( $footer_links_r ['onclick'] ?? '') > 0) {
 				$field .= " onclick=\"" . $footer_links_r ['onclick'] . "\" ";
 			}
 			
-			if (starts_with ( $footer_links_r ['target'], 'popup' )) {
+			if (starts_with ( $footer_links_r ['target'] ?? '', 'popup' )) {
 				$spec = prc_function_spec ( $footer_links_r ['target'] );
 				
 				if (! is_array ( $spec ['args'] )) {
@@ -237,10 +237,10 @@ function format_footer_links($links_rs) {
 				
 				$field .= " onclick=\"popup('" . $footer_links_r ['url'] . "','" . $spec ['args'] [0] . "','" . $spec ['args'] [1] . "'); return false;\">";
 			} else {
-				$field .= (strlen ( $footer_links_r ['target'] ) > 0 ? "target=\"" . $footer_links_r ['target'] . "\"" : "") . ">";
+				$field .= (strlen ( $footer_links_r ['target'] ?? "") > 0 ? "target=\"" . $footer_links_r ['target'] . "\"" : "") . ">";
 			}
 			
-			if (strlen ( $footer_links_r ['img'] ) > 0) {
+			if (strlen ( $footer_links_r ['img'] ?? '' ) > 0) {
 				$field .= '<img src="' . $footer_links_r ['img'] . '" title="' . $footer_links_r ['text'] . '">';
 			}
 			
@@ -257,6 +257,7 @@ function format_footer_links($links_rs) {
 
 function _format_help_entry($help_entry_r) {
 	if (is_array ( $help_entry_r )) {
+		$entry = '';
 		if (isset ( $help_entry_r ['img'] ))
 			$entry .= theme_image ( $help_entry_r ['img'], $help_entry_r ['text'] ) . " ";
 		$entry .= $help_entry_r ['text'];
@@ -271,11 +272,11 @@ function _format_help_list($help_entry) {
 	$field = '';
 	
 	if (is_array ( $help_entry ) && ! isset ( $help_entry ['text'] )) {
-		while ( list ( $key, $entry ) = each ( $help_entry ) ) {
+		foreach ( $help_entry as $entry ) {
 			$field .= _format_help_list ( $entry );
 		}
 	} else {
-		$field .= "\n<li class=\"help_entry_" . $help_entry ['type'] . "\">" . _format_help_entry ( $help_entry ) . "</li>";
+		$field .= "\n<li>" . _format_help_entry ( $help_entry ) . "</li>";
 	}
 	
 	return $field;
@@ -291,6 +292,8 @@ function format_help_block($help_entries_rs) {
 				$help_entries_rs );
 	else if (is_array ( $help_entries_rs ))
 		$entries [] = & $help_entries_rs;
+	else
+		$entries = array();
 	
 	if (is_array ( $entries )) {
 		return "\n<ul class=\"help\">" . _format_help_list ( $entries ) . "</ul>\n";
@@ -302,12 +305,15 @@ function format_help_block($help_entries_rs) {
 function format_action_links($action_links_rs) {
 	$field = '';
 	$first = TRUE;
-	while ( list ( , $action_link_r ) = @each ( $action_links_rs ) ) {
+	if (!isset($action_links_rs))
+		return NULL;
+
+	foreach ($action_links_rs as $action_link_r) {
 		if (strlen ( $action_link_r ['img'] ) > 0)
 			$action_image = theme_image ( 'action_' . $action_link_r ['img'], $action_link_r ['text'], "action" );
 		else
 			$action_image = FALSE;
-		
+
 		$field .= "<li class=\"" . ($first ? 'first' : '') . "\"><a href=\"" . $action_link_r ['url'] . "\">";
 		if ($first)
 			$first = FALSE;
@@ -336,7 +342,7 @@ function format_checkbox_action_links($cbname, $not_checked_message, $action_lin
 	$first = TRUE;
 	
 	@reset ( $action_links_rs );
-	while ( list ( , $action_links_r ) = @each ( $action_links_rs ) ) {
+	foreach ($action_links_rs as $action_links_r) {
 		$field .= "<li class=\"" . ($first ? 'first' : '') . "\">";
 		
 		if ($action_links_r ['checked'] !== FALSE) {
@@ -387,7 +393,7 @@ function format_error_block($errors, $err_type = 'error') {
 		$error_rs = $errors;
 	
 	$error_entries = NULL;
-	while ( list ( , $error ) = each ( $error_rs ) ) {
+	foreach ($error_rs as $error) {
 		if (is_not_empty_array ( $error )) {
 			$error_entry = $error ['error'];
 			
@@ -396,9 +402,9 @@ function format_error_block($errors, $err_type = 'error') {
 			else if (is_array ( $error ['detail'] ))
 				$detail_rs = $error ['detail'];
 			
-			if (is_not_empty_array ( $detail_rs )) {
+			if (is_not_empty_array ( $detail_rs ?? "")) {
 				$details = "";
-				while ( list ( , $detail ) = each ( $detail_rs ) ) {
+				foreach ( $detail_rs as $detail ) {
 					$details .= "\n<li class=\"$smclass\">" . $detail . "</li>";
 				}
 				
@@ -414,7 +420,7 @@ function format_error_block($errors, $err_type = 'error') {
 	
 	if (count ( $error_entries ) > 1) {
 		$error_block = "\n<ul>";
-		while ( list ( , $error_entry ) = each ( $error_entries ) ) {
+		foreach ( $error_entries as $error_entry ) {
 			$error_block .= "\n<li class=\"$class\">$error_entry</li>";
 		}
 		$error_block .= "</ul>";

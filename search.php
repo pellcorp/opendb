@@ -58,7 +58,7 @@ function encode_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategori
 						// This array, is only so we can make sure that we have unique attributes only!
 						$arrayOfUniqueAttributes[] = $item_attribute_type_r['s_attribute_type'];
 
-						$jsArrayOfUniqueAttributes .= "\narrayOfAttributes[$jsArrayOfAttributesCount] = new LookupAttribute(\"\",\"" . $item_attribute_type_r['s_attribute_type'] . "\",\"" . $item_attribute_type_r['s_attribute_type'] . " - " . $item_attribute_type_r['description'] . "\");";
+#						$jsArrayOfUniqueAttributes .= "\narrayOfAttributes[$jsArrayOfAttributesCount] = new LookupAttribute(\"\",\"" . $item_attribute_type_r['s_attribute_type'] . "\",\"" . $item_attribute_type_r['s_attribute_type'] . " - " . $item_attribute_type_r['description'] . "\");";
 
 						$item_attribute_type_rs[] = $item_attribute_type_r;
 					}
@@ -101,14 +101,14 @@ function encode_search_javascript_arrays(&$item_type_rs, &$arrayOfUniqueCategori
 	$buffer .= "\n\narrayOfAttributes = new Array($jsArrayOfAttributesCount);";
 	$buffer .= $jsArrayOfAttributes;
 
-	$arrayOfUniqueCategoryValues = "";
+	$arrayOfUniqueCatValues = "";
 	$arrayOfUniqueCatValuesCount = 0;
 
 	// Now sort all values into alphabetical order!
 	if (is_array($arrayOfUniqueCategories)) {
 		asort($arrayOfUniqueCategories);
 		reset($arrayOfUniqueCategories);
-		while (list($value, $display) = each($arrayOfUniqueCategories)) {
+		foreach ($arrayOfUniqueCategories as $value => $display) {
 			$arrayOfUniqueCatValues .= "\narrayOfUniqueCatValues[$arrayOfUniqueCatValuesCount] = new LookupAttribute('',\"$value\",\"$display\");";
 			$arrayOfUniqueCatValuesCount++;
 		}
@@ -143,10 +143,10 @@ if (is_site_enabled()) {
 				$catTypeSelect = "<select name=\"category\" id=\"search-category\">" . "\n<option value=\"\">-------------- " . get_opendb_lang_var('all') . " --------------";
 
 				reset($category_type_rs);
-				while (list($value, $display) = each($category_type_rs)) {
+				foreach ($category_type_rs as $value => $display) {
 					$catTypeSelect .= "\n<option value=\"$value\">$display";
 				}
-				$itemTypeBlock .= "</select>";
+				$catTypeSelect .= "</select>";
 
 				echo format_field(get_opendb_lang_var('category'), $catTypeSelect);
 			}
@@ -163,10 +163,10 @@ if (is_site_enabled()) {
 						. "\n<option value=\"\">-------------- " . get_opendb_lang_var('all') . " --------------";
 
 				reset($item_type_rs);
-				while (list(, $item_type_r) = each($item_type_rs)) {
+				foreach ($item_type_rs as $item_type_r) {
 					$itemTypeSelect .= "\n<option value=\"" . $item_type_r['s_item_type'] . "\" >" . $item_type_r['s_item_type'] . " - " . $item_type_r['description'];
 				}
-				$itemTypeBlock .= "</select>";
+				$itemTypeSelect .= "</select>";
 
 				echo format_field(get_opendb_lang_var('item_type'), $itemTypeSelect);
 			}
@@ -175,12 +175,12 @@ if (is_site_enabled()) {
 					. "\n<option value=\"\">-------------- " . get_opendb_lang_var('all') . " --------------";
 
 			@reset($item_attribute_type_rs);
-			while (list(, $item_attribute_type_r) = @each($item_attribute_type_rs)) {
+			foreach ($item_attribute_type_rs as  $item_attribute_type_r) {
                 if (has_role_permission($item_attribute_type_r['view_perm'])) {
 				    $attrTypeSelect .= "\n<option value=\"" . $item_attribute_type_r['s_attribute_type'] . "\">" . $item_attribute_type_r['s_attribute_type'] . " - " . $item_attribute_type_r['description'];
                 }
 			}
-			$itemTypeBlock .= "</select>";
+			$attrTypeSelect .= "</select>";
 
 			echo format_field(get_opendb_lang_var('s_attribute_type'), $attrTypeSelect);
 

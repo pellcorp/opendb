@@ -34,7 +34,7 @@ class OpenDbSnoopy extends Snoopy {
 	var $_file_cache_r;
 	var $_file_cache_enabled;
 
-	function OpenDbSnoopy($debug = FALSE) {
+	function __construct($debug = FALSE) {
 		// if file cache table is not installed, we cannot use file cache.
 		$this->_file_cache_enabled = get_opendb_config_var ( 'http.cache', 'enable' );
 		

@@ -20,22 +20,21 @@
 $_OPENDB_DB_CONNECTED = NULL;
 
 function init_db_connection() {
-	$dbserver_conf_r = get_opendb_config_var ( 'db_server' );
-	if (is_array ( $dbserver_conf_r )) {
-		return db_connect ( $dbserver_conf_r ['host'], $dbserver_conf_r ['username'], $dbserver_conf_r ['passwd'], $dbserver_conf_r ['dbname'],  $dbserver_conf_r ['charset']);
+	$dbserver_conf_r = get_opendb_config_var( 'db_server' );
+	if (is_array( $dbserver_conf_r )) {
+		return db_connect( $dbserver_conf_r['host'], $dbserver_conf_r['username'], $dbserver_conf_r['passwd'], $dbserver_conf_r['dbname'], $dbserver_conf_r['charset']);
 	}
-	
-	//else
+
 	return FALSE;
 }
 
 function is_db_connected() {
 	global $_OPENDB_DB_CONNECTED;
-	
+
 	if (! is_bool ( $_OPENDB_DB_CONNECTED )) {
 		$_OPENDB_DB_CONNECTED = (init_db_connection () !== FALSE);
 	}
-	
+
 	return $_OPENDB_DB_CONNECTED;
 }
 
@@ -179,7 +178,7 @@ function parse_sql_statement($sql, $prefix) {
 			
 			// Reset from clause.
 			$from_clause = '';
-			while ( list ( , $table ) = each ( $array_of_tables ) ) {
+			foreach ($array_of_tables as $table) {
 				if (strlen ( $from_clause ) > 0)
 					$from_clause .= ', ';
 				$from_clause .= $prefix . trim ( $table );
@@ -213,7 +212,7 @@ function parse_sql_statement($sql, $prefix) {
 		$tables_r = explode ( ',', substr ( $sql, 12 ) ); //LOCK TABLES	
 		if (is_array ( $tables_r )) {
 			$query = '';
-			while ( list ( $key, $table ) = each ( $tables_r ) ) {
+			foreach ( $tables_r as  $key => $table ) {
 				if (strlen ( $query ) > 0)
 					$query .= ', ';
 				

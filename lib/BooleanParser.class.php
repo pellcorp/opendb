@@ -29,10 +29,6 @@ class BooleanLexer {
 	var $string;
 	var $stringLen;
 	
-	// Do nothing.
-	function BooleanLexer() {
-	}
-
 	function parse($string, $lookahead = NULL) {
 		$this->string = $string;
 		$this->stringLen = strlen ( $string );
@@ -44,9 +40,9 @@ class BooleanLexer {
 			$this->lookahead = $lookahead;
 		else
 			$this->lookahead = 0; // no lookahead
-			
 
 		// Initialise lookahead stack
+		$this->tokPtr = 0;
 		$this->stackPtr = 0;
 		$this->tokenStack = array();
 	}
@@ -61,12 +57,12 @@ class BooleanLexer {
 			// If idx is negative, this should work as well.
 			$index = $this->tokPtr + $idx;
 			if ($index >= 0 && $index < $this->stringLen)
-				return $this->string {$index};
+				return $this->string[$index];
 			else
 				return NULL;
 		} else {
 			if ($this->tokPtr < $this->stringLen)
-				return $this->string {$this->tokPtr ++};
+				return $this->string[$this->tokPtr ++];
 			else
 				return NULL; // reached end of string
 		}
@@ -253,19 +249,15 @@ class BooleanLexer {
 
 class BooleanParser {
 	var $lexer = NULL;
-	
-	// Do nothing.
-	function BooleanParser() {
-	}
 
 	function parseBooleanStatement($statement) {
 		if ($this->lexer == NULL)
 			$this->lexer = new BooleanLexer ();
-		
+
 		$this->lexer->parse ( $statement, 1 );
-		
+
 		while ( true ) {
-			$statement = $this->parseStatement ();
+			$statement = $this->parseStatement();
 			if ($statement === FALSE)
 				return FALSE;
 			else if ($statement !== NULL)
@@ -273,8 +265,8 @@ class BooleanParser {
 			else
 				break; // finished
 		}
-		
-		return $statements;
+
+		return $statements ?? NULL;
 	}
 
 	function getError() {
@@ -289,14 +281,14 @@ class BooleanParser {
 			$token = $this->lexer->nextToken ();
 		}
 		$this->lexer->pushBack ();
-		
+
 		if (is_array ( $conditions ) && count ( $conditions ) > 1) {
 			return array ('or' => $conditions );
 		} else {
 			return $conditions [0];
 		}
 	}
-	
+
 	/*
 	* Will parse several basic 'left <op> right' condition statements, as
 	* long as they are separated by AND tokens.
@@ -323,12 +315,12 @@ class BooleanParser {
 			$condition = $token;
 		}
 		
-		if ($condition !== FALSE) {
-			$conditions [] = $condition;
+		if ($condition ?? TRUE !== FALSE) {
+			$conditions [] = $condition ?? NULL;
 			while ( true ) {
-				$token = $this->lexer->nextToken ();
+				$token = $this->lexer->nextToken();
 				if ($token == 'AND') {
-					$condition = $this->parseCompoundStatement ();
+					$condition = $this->parseCompoundStatement();
 					if ($condition !== FALSE)
 						$conditions [] = $condition;
 					else
@@ -339,7 +331,7 @@ class BooleanParser {
 				}
 			}
 			
-			if (is_array ( $conditions ) && count ( $conditions ) > 1)
+			if (is_array ( $conditions ?? '' ) && count ( $conditions ) > 1)
 				return array (
 						'and' => $conditions );
 			else
@@ -414,8 +406,8 @@ function get_compare_clause($column_name, $column_value, $match_mode, $case_sens
 */
 function build_boolean_clause($statement_rs, $column_name, $match_mode, $mode = 'AND', $case_sensitive = NULL) {
 	$query = "";
-	
-	while ( list ( $key, $statement ) = each ( $statement_rs ) ) {
+
+	foreach ( $statement_rs as $key => $statement ) {
 		if (strlen ( $query ) > 0)
 			$query .= " $mode ";
 		

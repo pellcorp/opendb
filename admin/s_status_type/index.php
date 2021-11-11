@@ -245,7 +245,7 @@ if ($HTTP_VARS['op'] == 'new' || $HTTP_VARS['op'] == 'edit') {
 } else if (strlen($HTTP_VARS['op']) == 0) {
 	echo ("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new\">New Status Type</a>]</p>");
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	$results = fetch_status_type_rs();

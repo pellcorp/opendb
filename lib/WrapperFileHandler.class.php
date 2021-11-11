@@ -20,7 +20,7 @@
 class WrapperFileHandler {
 	var $_fileHandle;
 
-	function WrapperFileHandler($fileHandle) {
+	function __construct($fileHandle) {
 		$this->_fileHandle = $fileHandle;
 	}
 

@@ -236,11 +236,11 @@ function get_menu_options_list($options) {
 		$buffer .= "\n<ul class=\"menu\">";
 		
 		$startList = TRUE;
-		
-		while ( list ( $id, $option_rs ) = @each ( $options ) ) {
+
+		foreach ( $options as $id => $options_rs) {
 			$startListSection = TRUE;
-			
-			while ( list ( , $option_r ) = @each ( $option_rs ) ) {
+
+			foreach ( $options_rs as $key => $option_r ) {
 				$buffer .= "\n<li class=\"$id";
 				if (! $active_found && is_menu_option_active ( $option_r )) {
 					$buffer .= ' active';
@@ -266,9 +266,9 @@ function get_menu_options_list($options) {
 }
 
 function get_menu_option($option_r) {
-	$buffer = "<a href=\"" . $option_r ['url'] . "\" title=\"" . ifempty ( $option_r ['alt'], $option_r ['link'] ) . "\"";
+	$buffer = "<a href=\"" . $option_r['url'] . "\" title=\"" . ($option_r['alt'] ?? $option_r['link']) . "\"";
 	
-	if ($option_r ['target'] == '_new') {
+	if (isset($option_r['target']) && $option_r['target'] == '_new') {
 		$buffer .= ' target="_new"';
 	}
 	
@@ -289,9 +289,9 @@ function is_menu_option_active($option_r) {
 	if ($parse_r ['path'] == $php_self) {
 		$active = TRUE;
 		
-		parse_str ( $parse_r ['query'], $query_r );
+		parse_str ( $parse_r['query'] ?? '', $query_r );
 		if (is_array ( $query_r )) {
-			while ( list ( $name, $value ) = each ( $query_r ) ) {
+			foreach ( $query_r as $name => $value ) {
 				if (! isset ( $HTTP_VARS [$name] ) || $HTTP_VARS [$name] != $value) {
 					$active = FALSE;
 				}

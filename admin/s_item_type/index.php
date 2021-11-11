@@ -174,7 +174,7 @@ function display_s_item_attribute_type_row($s_item_type, $s_item_attribute_type_
 
 		echo ("<td class=\"$class\">" . "<select name=\"s_attribute_type[$row]\">" . "\n<option value=\"\">");
 		reset($s_attribute_type_list_rs);
-		while (list(, $attribute_type_r) = each($s_attribute_type_list_rs)) {
+		foreach ($s_attribute_type_list_rs as $attribute_type_r) {
 			if (is_not_empty_array($s_item_attribute_type_r) && $s_item_attribute_type_r['s_attribute_type'] == $attribute_type_r['s_attribute_type'])
 				echo ("\n<option value=\"" . $attribute_type_r['s_attribute_type'] . "\" SELECTED>" . $attribute_type_r['s_attribute_type']);
 			else
@@ -368,6 +368,7 @@ if ($HTTP_VARS['op'] == 'sql' && is_exists_item_type($HTTP_VARS['s_item_type']))
 	$sqlfile = generate_s_item_type_sql($HTTP_VARS['s_item_type']);
 	header("Content-Length: " . strlen($sqlfile));
 	echo ($sqlfile);
+
 } else if ($HTTP_VARS['op'] == 'delete_type') { // This is initiated from the main s_item_type form.
 	$item_type_r = fetch_s_item_type_r($HTTP_VARS['s_item_type']);
 	if ($item_type_r !== FALSE) {
@@ -648,7 +649,7 @@ if ($HTTP_VARS['op'] == 'edit' || $HTTP_VARS['op'] == 'update') {
 
 		// Now display records that could not be inserted.
 		if (is_not_empty_array($sait_already_exists)) {
-			while (list(, $sait_r) = each($sait_already_exists)) {
+			foreach ($sait_already_exists as $sait_r) {
 				display_s_item_attribute_type_row($HTTP_VARS['s_item_type'], $sait_r, $row, TRUE, $s_attribute_type_list_rs);
 				$row++;
 			}
@@ -712,7 +713,7 @@ if (strlen($HTTP_VARS['op']) == 0 || (($HTTP_VARS['op'] == 'delete_sitem_type_it
 		|| $HTTP_VARS['op'] == 'edit_types' || $HTTP_VARS['op'] == 'update_types') {
 	echo ("<p>[<a href=\"${PHP_SELF}?type=${ADMIN_TYPE}&op=new_type\">New Item Type</a>]</p>");
 
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? ""))
 		echo format_error_block($errors);
 
 	$results = fetch_s_item_type_rs();

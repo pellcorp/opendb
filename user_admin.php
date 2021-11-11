@@ -1035,21 +1035,21 @@ if (is_site_enabled()) {
 				if (is_user_granted_permission(PERM_ADMIN_USER_PROFILE)) {
 					echo _theme_header(get_opendb_lang_var('activate_users'));
 					echo ("<h2>" . get_opendb_lang_var('activate_users') . "</h2>");
-	
+
 					// handle activate of single user in the same way
 					if (!is_array($HTTP_VARS['user_id_rs']) && is_user_valid($HTTP_VARS['user_id'])) {
 						$HTTP_VARS['user_id_rs'][] = $HTTP_VARS['user_id'];
 						unset($HTTP_VARS['user_id']);
 					}
-	
+
 					if (is_not_empty_array($HTTP_VARS['user_id_rs'])) {
 						// do not display confirm screen
 						$HTTP_VARS['confirmed'] = 'true';
-	
+
 						$success_userid_rs = NULL;
 						$failure_userid_rs = NULL;
-	
-						while (list(, $userid) = each($HTTP_VARS['user_id_rs'])) {
+
+						foreach ($HTTP_VARS['user_id_rs'] as $userid) {
 							// if newly activated user, then we want to reset password and send notification email.
 							$new_activated_user = is_user_not_activated($userid);
 	

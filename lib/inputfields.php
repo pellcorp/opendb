@@ -43,11 +43,11 @@ function get_input_field($fieldname, $s_attribute_type, $prompt, $input_type, $c
 			'order_no' => NULL,
 			'prompt' => $prompt,
 			'input_type' => $input_type_def ['type'],
-			'input_type_arg1' => $input_type_def ['args'] [0],
-			'input_type_arg2' => $input_type_def ['args'] [1],
-			'input_type_arg3' => $input_type_def ['args'] [2],
-			'input_type_arg4' => $input_type_def ['args'] [3],
-			'input_type_arg5' => $input_type_def ['args'] [4],
+			'input_type_arg1' => $input_type_def ['args'] [0] ?? "",
+			'input_type_arg2' => $input_type_def ['args'] [1] ?? "",
+			'input_type_arg3' => $input_type_def ['args'] [2] ?? "",
+			'input_type_arg4' => $input_type_def ['args'] [3] ?? "",
+			'input_type_arg5' => $input_type_def ['args'] [4] ?? "",
 			'compulsory_ind' => $compulsory_ind ), NULL, 	// $item_r
 $value, $dowrap, $prompt_mask, $onchange_event, $disabled );
 }
@@ -68,7 +68,7 @@ function get_item_input_field($fieldname, $item_attribute_type_r, $item_r, $valu
 		$widget ['args'] [4] = $item_attribute_type_r ['input_type_arg5'];
 	}
 	
-	if ($item_attribute_type_r ['multi_attribute_ind'] == 'Y') {
+	if (($item_attribute_type_r['multi_attribute_ind'] ?? '') == 'Y') {
 		$multi_value = TRUE;
 		
 		if (! is_array ( $value )) {
@@ -97,7 +97,7 @@ function get_item_input_field($fieldname, $item_attribute_type_r, $item_r, $valu
 	} else if ($item_attribute_type_r ['input_type'] == 'readonly') {
 		$field = readonly_field ( $fieldname, $value );
 	} else if ($item_attribute_type_r ['input_type'] == 'textarea' || $item_attribute_type_r ['input_type'] == 'htmlarea') { 	// arg[0] = rows, arg[1] = cols, arg[2] = length
-		$field = textarea_field ( $fieldname, $prompt, $widget ['args'] ['0'], $widget ['args'] ['1'], $widget ['widget'] ['2'], $compulsory_ind, $value, $onchange_event, $disabled );
+		$field = textarea_field ( $fieldname, $prompt, $widget ['args'] ['0'], $widget ['args'] ['1'], $widget ['args'] ['2'], $compulsory_ind, $value, $onchange_event, $disabled );
 	} else if ($item_attribute_type_r ['input_type'] == 'text') {	// arg[0] = length of field, arg[1] = maxlength of field
 		$field = text_field ( $fieldname, $prompt, $widget ['args'] ['0'], $widget ['args'] ['1'], $compulsory_ind, $value, $onchange_event, $disabled, $multi_value );
 	} else if ($item_attribute_type_r ['input_type'] == 'password') { 	// arg[0] = length of field, arg[1] = maxlength of field
@@ -469,7 +469,7 @@ function readonly_field($name, $value) {
  * Generic function to be used by all 'text' fields
  */
 function multivalue_text_field($class, $name, $size, $maxlength, $onchange, $value) {
-	$buffer .= "\n<div class=\"multiValue\">";
+	$buffer = "\n<div class=\"multiValue\">";
 	$buffer .= "<ul class=\"multiValue\" id=\"${name}-multi_value_list\">";
 	for($i = 0; $i < count ( $value ); $i ++) {
 		$buffer .= "\n<li><input type=\"text\" class=\"text\" name=\"" . $name . "[]\" $onchange size=\"" . $size . "\" " . (is_numeric ( $maxlength ) ? "maxlength=\"" . $maxlength . "\"" : "") . " value=\"" . $value [$i] . "\"></li>";
@@ -631,6 +631,9 @@ function datetime_field($name, $prompt, $format_mask, $auto_datetime, $compulsor
 	} else {
 		$onchange = "onchange=\"$onchange_event\"";
 	}
+
+    $size = strlen($format_mask);
+    $maxlength = $size + 2;
 	
 	if ($multi_value) {
 		for($i = 0; $i < count ( $value ); $i ++) {
@@ -714,8 +717,9 @@ function url($name, $item_r, $item_attribute_type_r, $prompt, $length, $maxlengt
 	} else {
 		$onchange = "onchange=\"$onchange_event\"";
 	}
-	
-	if ($item_attribute_type_r ['file_attribute_ind'] == 'Y') {
+
+    $field = '';
+	if (($item_attribute_type_r ['file_attribute_ind'] ?? '') == 'Y') {
 		$field .= "\n<ul class=\"urlOptionsMenu\" id=\"${name}-tab-menu\" class=\"file-upload-menu\">";
 		$field .= "<li id=\"menu-${name}_saveurl\" class=\"activeTab\" onclick=\"return activateTab('${name}_saveurl', '${name}-tab-menu', '${name}-tab-content', 'activeTab', 'fieldContent');\">URL</li>";
 		if (is_file_upload_enabled ()) {
@@ -751,7 +755,7 @@ function value_radio_grid($name, $lookup_rs, $value, $disabled = FALSE) {
 	$field = "<ul class=\"radioGridOptionsVertical\">";
 	
 	$is_checked = FALSE;
-	while ( list ( , $val ) = each ( $lookup_rs ) ) {
+	foreach ( $lookup_rs as $val ) {
 		if ((strlen ( $value ) > 0 && strcasecmp ( trim ( $value ), $val ) === 0) || (strlen ( $value ) == 0 && ! $is_checked)) {
 			$field .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"$val\" CHECKED" . ($disabled ? ' DISABLED' : '') . ">$val</li>";
 			$is_checked = TRUE;
@@ -831,7 +835,7 @@ function radio_grid($name, $lookup_results, $mask, $orientation, $value, $disabl
 	$buffer = "<ul class=\"$class\">";
 	
 	reset ( $lookup_val_rs );
-	while ( list ( , $lookup_val_r ) = each ( $lookup_val_rs ) ) {
+	foreach ( $lookup_val_rs as $lookup_val_r ) {
 		$buffer .= "\n<li><input type=\"radio\" class=\"radio\" name=\"$name\" value=\"" . $lookup_val_r ['value'] . "\"" . ($lookup_val_r ['checked_ind'] == 'Y' ? ' CHECKED' : '') . ($disabled ? ' DISABLED' : '') . ">" . format_display_value ( $mask, $lookup_val_r ['img'], $lookup_val_r ['value'], $lookup_val_r ['display'] ) . "</li>";
 	}
 	
@@ -851,7 +855,7 @@ function checkbox_grid($name, $lookup_results, $mask, $orientation, $value, $dis
 	$buffer = "<ul class=\"$class\">";
 	
 	reset ( $lookup_val_rs );
-	while ( list ( , $lookup_val_r ) = each ( $lookup_val_rs ) ) {
+	foreach ( $lookup_val_rs as $lookup_val_r ) {
 		$buffer .= "<li><input type=\"checkbox\" class=\"checkbox\" name=\"" . $name . "[]\" value=\"" . $lookup_val_r ['value'] . "\"" . ($lookup_val_r ['checked_ind'] == 'Y' ? ' CHECKED' : '') . ($disabled ? ' DISABLED' : '') . ">" . format_display_value ( $mask, $lookup_val_r ['img'], $lookup_val_r ['value'], $lookup_val_r ['display'] ) . "</li>";
 	}
 	
@@ -871,7 +875,7 @@ function single_select($name, $lookup_results, $mask, $length, $value, $onchange
 	$var = "\n<select " . ($id != NULL ? "id=\"$id\"" : "") . " name=\"$name\" $onchange" . ($disabled ? ' DISABLED' : '') . ">";
 	
 	reset ( $lookup_val_rs );
-	while ( list ( , $lookup_val_r ) = each ( $lookup_val_rs ) ) {
+	foreach ( $lookup_val_rs as $lookup_val_r ) {
 		// Now get the display value.
 		$display = format_display_value ( $mask, NULL, $lookup_val_r ['value'], $lookup_val_r ['display'] );
 		
@@ -880,7 +884,7 @@ function single_select($name, $lookup_results, $mask, $length, $value, $onchange
 			$display = substr ( $display, 0, $length );
 		}
 		
-		$var .= "\n<option value=\"" . $lookup_val_r ['value'] . "\"" . ($lookup_val_r ['checked_ind'] == 'Y' ? ' SELECTED' : '') . ">$display";
+		$var .= "\n<option value=\"" . $lookup_val_r['value'] . "\"" . (($lookup_val_r['checked_ind'] ?? '') == 'Y' ? ' SELECTED' : '') . ">$display";
 	}
 	
 	$var .= "\n</select>";
@@ -901,7 +905,7 @@ function multi_select($name, $lookup_results, $mask, $length, $size, $value, $on
 	$lookup_val_rs = process_lookup_results ( $lookup_results, $value );
 	
 	reset ( $lookup_val_rs );
-	while ( list ( , $lookup_val_r ) = each ( $lookup_val_rs ) ) {
+	foreach ( $lookup_val_rs as $lookup_val_r ) {
 		// Now get the display value.
 		$display = format_display_value ( $mask, NULL, $lookup_val_r ['value'], $lookup_val_r ['display'] );
 		
@@ -927,8 +931,8 @@ function value_select($name, $values_r, $size, $value, $onchange_event = NULL, $
 		$var = "\n<select multiple name=\"" . $name . "[]\" size=\"$size\" $onchange" . ($disabled ? ' DISABLED' : '') . ">";
 	else
 		$var = "\n<select name=\"$name\" $onchange" . ($disabled ? ' DISABLED' : '') . ">";
-	
-	while ( list ( , $val ) = @each ( $values_r ) ) {
+
+	foreach ( $values_r as $val ) {
 		if ($value !== NULL && strcasecmp ( trim ( $value ), $val ) === 0)
 			$var .= "\n<option value=\"$val\" SELECTED>$val";
 		else
@@ -951,7 +955,7 @@ function process_lookup_results($lookup_results, $value) {
 	$lookup_rs = fetch_results_array ( $lookup_results );
 	
 	$value_found = FALSE;
-	while ( list ( , $lookup_r ) = each ( $lookup_rs ) ) {
+	foreach ( $lookup_rs as $lookup_r ) {
 		if (is_array ( $values_r ) && ($lookup_key = array_search2 ( $lookup_r ['value'], $values_r, TRUE )) !== FALSE) {
 			$value_found = TRUE;
 			break;
@@ -961,7 +965,7 @@ function process_lookup_results($lookup_results, $value) {
 	$lookup_val_rs = array ();
 	
 	reset ( $lookup_rs );
-	while ( list ( , $lookup_r ) = each ( $lookup_rs ) ) {
+	foreach ( $lookup_rs as $lookup_r ) {
 		if ($value_found) {
 			$lookup_r ['checked_ind'] = 'N';
 		}
@@ -979,7 +983,7 @@ function process_lookup_results($lookup_results, $value) {
 	if (is_array ( $values_r )) {
 		// Add the value to the list of options and select it.
 		reset ( $values_r );
-		while ( list ( , $value ) = each ( $values_r ) ) {
+		foreach ( $values_r as $value ) {
 			if (strlen ( $value ) > 0) {
 				$lookup_val_rs [] = array (
 						'value' => $value,

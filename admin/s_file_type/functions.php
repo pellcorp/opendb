@@ -135,7 +135,7 @@ function insert_s_file_type_extensions($content_type, $default_extension, $alt_e
 				else
 					$extensions_r[] = $default_extension;
 
-				while (list(, $extension) = each($extensions_r)) {
+				foreach ($extensions_r as $extension) {
 					$extension = strtolower(trim($extension));
 					if (strlen($extension) > 0) {
 						$query = "INSERT INTO s_file_type_extension ( content_type, extension, default_ind )" . "VALUES ('$content_type', '" . $extension . "', '" . ($extension == $default_extension ? 'Y' : 'N') . "')";

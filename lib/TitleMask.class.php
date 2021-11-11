@@ -39,10 +39,10 @@ class TitleMask {
 	/**
 	    @param mask_group - if an array, then will use first group that has values defined.
 	*/
-	function TitleMask($mask_group = NULL) {
+	function __construct($mask_group = NULL) {
 		if ($mask_group !== NULL) {
 			if (is_array ( $mask_group )) {
-				while ( list ( , $group ) = each ( $mask_group ) ) {
+				foreach ( $mask_group as $group ) {
 					$results = fetch_title_display_mask_rs ( $group );
 					if ($results) {
 						$this->_mask_group = $group;
@@ -161,12 +161,12 @@ class TitleMask {
 	*/
 	function _parse_field_mask(&$display_mask) {
 		$i = 0;
-		$array_of_vars = NULL;
+		$array_of_vars = [];
 		$inside_variable = 0;
 		$variable = '';
 		$new_display_mask = '';
 		
-		for($i = 0; $i < strlen ( $display_mask ); $i ++) {
+		for ($i = 0; $i < strlen ( $display_mask ); $i ++) {
 			if ($inside_variable > 0) {
 				// if closing bracket
 				if ($display_mask [$i] == '}') {
@@ -318,9 +318,10 @@ class TitleMask {
 										
 										break;
 								}
-							} 							//if(is_array($function_r))
-else if ($variable == 'title' || $variable == 's_item_type' || $variable == 's_status_type' || $variable == 'item_id' || $variable == 'instance_no') {
+
+							} elseif ($variable == 'title' || $variable == 's_item_type' || $variable == 's_status_type' || $variable == 'item_id' || $variable == 'instance_no') {
 								$array_of_vars [] = $variable;
+
 							} else {
 								$index_of_sep = strrpos ( $variable, '.' );
 								if ($index_of_sep !== false) {
@@ -329,8 +330,9 @@ else if ($variable == 'title' || $variable == 's_item_type' || $variable == 's_s
 									
 									if ($option == 'display_type') {
 										$attribute_r = fetch_attribute_type_r ( $s_attribute_type );
-										
-										$array_of_vars [] = array (
+
+										if ($attribute_r)
+											$array_of_vars [] = array (
 												's_attribute_type' => $s_attribute_type,
 												'option' => $option,
 												'display_type' => $attribute_r ['display_type'],
@@ -398,35 +400,35 @@ else if ($variable == 'title' || $variable == 's_item_type' || $variable == 's_s
 		
 		for($i = 0; $i < count ( $mask_element_rs ); $i ++) {
 			// no array set, or simple attribute variable 's_attribute_type.option' not set.
-			if (is_not_empty_array ( $mask_element_rs [$i] ) && ! isset ( $mask_element_rs [$i] ['s_attribute_type'] ) && ! isset ( $mask_element_rs [$i] ['option'] )) {
+			if (is_not_empty_array ( $mask_element_rs[$i] ) && ! isset ( $mask_element_rs [$i] ['s_attribute_type'] ) && ! isset ( $mask_element_rs [$i] ['option'] )) {
 				// replace the array index.
-				switch ($mask_element_rs [$i] ['type']) {
+				switch ($mask_element_rs[$i]['type']) {
 					case 'ifdef' : // ifdef(s_attribute_type, "if_mask"[, "else_mask"])
-						if (is_item_attribute_set ( $item_instance_r ['item_id'], $item_instance_r ['instance_no'], strtoupper ( $mask_element_rs [$i] ['varname'] ) ))
-							$value = $this->_expand_title_mask ( $item_instance_r, $mask_element_rs [$i] ['if_mask'], $mask_element_rs [$i] ['if_mask_elements'] );
-						else if (strlen ( $mask_element_rs [$i] ['else_mask'] ) > 0)
-							$value = $this->_expand_title_mask ( $item_instance_r, $mask_element_rs [$i] ['else_mask'], $mask_element_rs [$i] ['else_mask_elements'] );
+						if (isset($item_instance_r['item_id']) && is_item_attribute_set( $item_instance_r['item_id'], $item_instance_r['instance_no'], strtoupper( $mask_element_rs[$i]['varname'] ) ))
+							$value = $this->_expand_title_mask( $item_instance_r, $mask_element_rs[$i]['if_mask'], $mask_element_rs[$i]['if_mask_elements'] );
+						else if (strlen( $mask_element_rs[$i]['else_mask'] ?? "" ) > 0)
+							$value = $this->_expand_title_mask( $item_instance_r, $mask_element_rs[$i]['else_mask'], $mask_element_rs[$i]['else_mask_elements'] );
 						else
 							$value = NULL;
 						break;
 					
 					case 'if' : // if(varname[<|<=|>=|>|==|!=]value, "if_mask"[, "else_mask"])
-						if ($mask_element_rs [$i] ['varname'] == 'instance_no')
-							$value = $item_instance_r ['instance_no'];
-						else if ($mask_element_rs [$i] ['varname'] == 's_status_type')
-							$value = $item_instance_r ['s_status_type'];
-						else if ($mask_element_rs [$i] ['varname'] == 's_item_type')
-							$value = $item_instance_r ['s_item_type'];
+						if ($mask_element_rs[$i]['varname'] == 'instance_no')
+							$value = $item_instance_r['instance_no'];
+						else if ($mask_element_rs[$i]['varname'] == 's_status_type')
+							$value = $item_instance_r['s_status_type'];
+						else if ($mask_element_rs[$i]['varname'] == 's_item_type')
+							$value = $item_instance_r['s_item_type'] ?? "";
 						else {
-							$value = fetch_attribute_val ( $item_instance_r ['item_id'], $item_instance_r ['instance_no'], strtoupper ( $mask_element_rs [$i] ['varname'] ) );
+							$value = fetch_attribute_val( $item_instance_r['item_id'], $item_instance_r['instance_no'], strtoupper( $mask_element_rs[$i]['varname'] ) );
 						}
 						
 						// the attribute is defined, so now lets do the comparison.
 						if ($value !== false) {
-							if ($this->_test_if_condition ( $value, $mask_element_rs [$i] ['op'], $mask_element_rs [$i] ['value'] ))
-								$value = $this->_expand_title_mask ( $item_instance_r, $mask_element_rs [$i] ['if_mask'], $mask_element_rs [$i] ['if_mask_elements'] );
-							else if (strlen ( $mask_element_rs [$i] ['else_mask'] ) > 0)
-								$value = $this->_expand_title_mask ( $item_instance_r, $mask_element_rs [$i] ['else_mask'], $mask_element_rs [$i] ['else_mask_elements'] );
+							if ($this->_test_if_condition( $value, $mask_element_rs[$i]['op'], $mask_element_rs[$i]['value'] ))
+								$value = $this->_expand_title_mask( $item_instance_r, $mask_element_rs[$i]['if_mask'], $mask_element_rs[$i]['if_mask_elements'] );
+							else if (strlen( $mask_element_rs[$i]['else_mask'] ?? "" ) > 0)
+								$value = $this->_expand_title_mask( $item_instance_r, $mask_element_rs[$i]['else_mask'], $mask_element_rs[$i]['else_mask_elements'] );
 							else {
 								$value = NULL;
 							}
@@ -533,9 +535,9 @@ else if ($variable == 'title' || $variable == 's_item_type' || $variable == 's_s
 					default : // no valid function specified, so set to empty.
 						$value = '';
 				}
-			} 			//if(is_not_empty_array($mask_element_rs[$i]))
-else 			// standard variable (title, instance_no, item_attribute or plain text)
-{
+
+			} else {
+				// standard variable (title, instance_no, item_attribute or plain text)
 				$value = $this->_get_mask_variable_value ( $mask_element_rs [$i], $item_instance_r );
 			}
 			
@@ -568,23 +570,23 @@ else 			// standard variable (title, instance_no, item_attribute or plain text)
 				// Replace the array index.
 				switch ($mask_element_rs [$i] ['type']) {
 					case 'ifdef' : // ifdef(s_attribute_type, "if_mask"[, "else_mask"])
-						if (isset ( $values_rs [$mask_element_rs [$i] ['varname']] ))
-							$value = $this->_expand_field_mask ( $values_rs, $mask_element_rs [$i] ['if_mask'], $mask_element_rs [$i] ['if_mask_elements'], $config_var_rs );
-						else if (strlen ( $mask_element_rs [$i] ['else_mask'] ) > 0)
-							$value = $this->_expand_field_mask ( $values_rs, $mask_element_rs [$i] ['else_mask'], $mask_element_rs [$i] ['else_mask_elements'], $config_var_rs );
+						if (isset( $values_rs[$mask_element_rs[$i]['varname']] ))
+							$value = $this->_expand_field_mask ( $values_rs, $mask_element_rs[$i]['if_mask'], $mask_element_rs[$i]['if_mask_elements'], $config_var_rs );
+						else if (strlen( $mask_element_rs[$i]['else_mask'] ?? '' ) > 0)
+							$value = $this->_expand_field_mask( $values_rs, $mask_element_rs[$i]['else_mask'], $mask_element_rs[$i]['else_mask_elements'], $config_var_rs );
 						else
 							$value = NULL;
 						break;
 					
 					case 'if' : // if(varname[<|<=|>=|>|==|!=]value, "if_mask"[, "else_mask"])
-						$value = $values_rs [$mask_element_rs [$i] ['varname']];
+						$value = $values_rs[$mask_element_rs[$i]['varname']];
 						
 						// The attribute is defined, so now lets do the comparison.
 						if (! empty ( $value )) {
-							if ($this->_test_if_condition ( $value, $mask_element_rs [$i] ['op'], $mask_element_rs [$i] ['value'] ))
-								$value = $this->_expand_field_mask ( $values_rs, $mask_element_rs [$i] ['if_mask'], $mask_element_rs [$i] ['if_mask_elements'], $config_var_rs );
-							else if (strlen ( $mask_element_rs [$i] ['else_mask'] ) > 0)
-								$value = $this->_expand_field_mask ( $values_rs, $mask_element_rs [$i] ['else_mask'], $mask_element_rs [$i] ['else_mask_elements'], $config_var_rs );
+							if ($this->_test_if_condition( $value, $mask_element_rs[$i]['op'], $mask_element_rs[$i]['value'] ))
+								$value = $this->_expand_field_mask( $values_rs, $mask_element_rs[$i]['if_mask'], $mask_element_rs[$i]['if_mask_elements'], $config_var_rs );
+							else if (strlen ( $mask_element_rs[$i]['else_mask'] ?? '' ) > 0)
+								$value = $this->_expand_field_mask ( $values_rs, $mask_element_rs[$i]['else_mask'], $mask_element_rs[$i]['else_mask_elements'], $config_var_rs );
 							else {
 								$value = NULL;
 							}
@@ -594,7 +596,7 @@ else 			// standard variable (title, instance_no, item_attribute or plain text)
 						break;
 					
 					case 'switch' :
-						$value = $values_rs [$mask_element_rs [$i] ['varname']];
+						$value = $values_rs[$mask_element_rs[$i]['varname']];
 						
 						// The attribute is defined, so now lets do the comparison.
 						if (! empty ( $value )) {
@@ -759,7 +761,7 @@ else 			// standard variable (title, instance_no, item_attribute or plain text)
 			$value = NULL;
 			
 			// the options that require a item_id context
-			if (is_numeric ( $item_instance_r ['item_id'] )) {
+			if (is_numeric ( $item_instance_r ['item_id'] ?? "")) {
 				if ($mask_variable ['option'] == 'img') {
 					$lookup_attr_r = fetch_attribute_type_lookup_r ( $mask_variable ['s_attribute_type'], fetch_attribute_val ( $item_instance_r ['item_id'], $item_instance_r ['instance_no'], $mask_variable ['s_attribute_type'] ) );
 					if ($lookup_attr_r !== false) {
@@ -779,7 +781,7 @@ else 			// standard variable (title, instance_no, item_attribute or plain text)
 				if (strlen ( $value ) == 0) {
 					$value = fetch_attribute_val ( $item_instance_r ['item_id'], $item_instance_r ['instance_no'], $mask_variable ['s_attribute_type'] );
 				}
-			} else if (strlen ( $item_instance_r ['s_item_type'] ) > 0) 			// s_item_type context items.
+			} else if (strlen ( $item_instance_r ['s_item_type'] ?? "" ) > 0) 			// s_item_type context items.
 {
 				if ($mask_variable ['option'] == 'prompt') 				// the s_attribute_type prompt
 {
@@ -789,15 +791,15 @@ else 			// standard variable (title, instance_no, item_attribute or plain text)
 			return $value;
 		} 		// special variable references.
 		else if (! is_array ( $mask_variable ) && $mask_variable == 'title')
-			return $item_instance_r ['title'];
+			return $item_instance_r['title'] ?? "";
 		else if (! is_array ( $mask_variable ) && $mask_variable == 's_item_type')
-			return $item_instance_r ['s_item_type'];
+			return $item_instance_r['s_item_type'] ?? "";
 		else if (! is_array ( $mask_variable ) && $mask_variable == 'item_id')
-			return $item_instance_r ['item_id'];
+			return $item_instance_r['item_id'] ?? "";
 		else if (! is_array ( $mask_variable ) && $mask_variable == 'instance_no')
-			return $item_instance_r ['instance_no'];
+			return $item_instance_r['instance_no'] ?? "";
 		else if (! is_array ( $mask_variable ) && $mask_variable == 's_status_type')
-			return $item_instance_r ['s_status_type'];
+			return $item_instance_r['s_status_type'] ?? "";
 		else 		// plain text
 {
 			return $mask_variable;
@@ -840,7 +842,7 @@ else 			// standard variable (title, instance_no, item_attribute or plain text)
 			$item_type_group_r = fetch_item_type_groups_for_item_type_r ( $s_item_type, 'Y' );
 			if (is_array ( $item_type_group_r )) {
 				reset ( $item_type_group_r );
-				while ( list ( , $group ) = each ( $item_type_group_r ) ) {
+				foreach ( $item_type_group_r as $group ) {
 					$index = $this->_find_title_mask_idx ( $group, NULL );
 					if ($index != - 1) {
 						// cache mapping

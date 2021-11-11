@@ -104,7 +104,7 @@ function fetch_attribute_type_lookup_rs($s_attribute_type = NULL, $order_by = 'v
 	}
 	
 	if (is_string ( $order_by )) {
-		$query .= " ORDER BY order_no, $order_by $order";
+		$query .= " ORDER BY order_no, $order_by";
 	}
 	
 	$result = db_query ( $query );
@@ -781,8 +781,8 @@ function _insert_or_update_item_attributes($item_id, $instance_no, $s_item_type,
 			
 			db_query ( "UNLOCK TABLES" );
 			
-			if (is_array ( $file_attributes_rs )) {
-				while ( list ( , $file_attribute_r ) = each ( $file_attributes_rs ) ) {
+			if (isset( $file_attributes_rs )) {
+				foreach ($file_attributes_rs as $file_attribute_r) {
 					file_cache_insert_file ( $file_attribute_r ['attribute_val'], NULL, NULL, NULL, 'ITEM', $file_attribute_r ['file_attribute_ind'] == 'Y' );
 				}
 			}

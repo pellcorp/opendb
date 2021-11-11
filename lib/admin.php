@@ -53,7 +53,7 @@ function get_user_browser_crlf() {
 	
 	if ($browser_os == 'Win') // Win case
 		return "\r\n";
-	else if (PMA_USR_OS == 'Mac') // Mac case
+	else if ($browser_os == 'Mac') // Mac case
 		return "\r";
 	else // Others
 		return "\n";
@@ -137,7 +137,7 @@ function get_system_admin_tools_menu($admin_type = NULL) {
 			return NULL;
 	} else {
 		$menu_options_rs = array ();
-		while ( list ( $id, $menu_r ) = each ( $admin_menu_rs ) ) {
+		foreach ($admin_menu_rs as $id => $menu_r ) {
 			$menu_r ['url'] = 'admin.php?type=' . $id;
 			$menu_options_rs ['admin'] [] = $menu_r;
 		}
@@ -172,6 +172,7 @@ function execute_sql_install($ADMIN_TYPE, $sqlfile, &$errors) {
 function generate_sql_list($ADMIN_TYPE, $typeName, $sqlRegexp, $is_not_exists_function) {
 	$filelist = get_file_list ( './admin/' . $ADMIN_TYPE . '/sql/', 'sql' );
 	$sitelist = NULL;
+	$sqllist = NULL;
 	if (is_not_empty_array ( $filelist )) {
 		for($i = 0; $i < count ( $filelist ); $i ++) {
 			$parsedfile_r = parse_file ( $filelist [$i] );

@@ -57,11 +57,11 @@ function generate_language_sql($language, $options = NULL) {
 				$sqlscript .= $CRLF . '#' . $CRLF . '# System Table Language Variables' . $CRLF . '#' . $CRLF;
 
 				reset($table_r);
-				while (list(, $table) = each($table_r)) {
+				foreach ($table_r as $table) {
 					$tableconf_r = get_system_table_config($table); // key, column
 					if (is_array($tableconf_r) && is_array($tableconf_r['columns'])) {
 						reset($tableconf_r['columns']);
-						while (list(, $column) = each($tableconf_r['columns'])) {
+						foreach ($tableconf_r['columns'] as $column) {
 							$results = fetch_system_table_column_langvar_rs($language, $table, $column, $options);
 							if ($results) {
 								while ($lang_var_r = db_fetch_assoc($results)) {
@@ -120,7 +120,7 @@ function build_langvar_page($language) {
 	echo ("<ul class=\"tabMenu\" id=\"tab-menu\">");
 
 	$isFirst = true;
-	while (list($letter, $lang_var_rs) = each($alpha_lang_var_rs)) {
+	foreach ($alpha_lang_var_rs as $letter => $lang_var_rs) {
 		echo ("<li id=\"menu-pane$letter\"" . ($isFirst ? " class=\"first activetab\" " : "") . " onclick=\"return activateTab('pane$letter')\">&nbsp;$letter&nbsp;</li>");
 		$isFirst = false;
 	}
@@ -132,7 +132,7 @@ function build_langvar_page($language) {
 	echo ("<ul class=\"saveButtons\"><li><input type=\"submit\" class=\"submit\" value=\"Update\"></li></ul>");
 
 	$isFirst = true;
-	while (list($letter, $lang_var_rs) = each($alpha_lang_var_rs)) {
+	foreach ($alpha_lang_var_rs as $letter => $lang_var_rs) {
 		echo ("<div id=\"pane$letter\" class=\"" . ($isFirst ? "tabContent" : "tabContentHidden") . "\">\n");
 
 		echo ('<table><tr class="navbar">');
@@ -143,7 +143,7 @@ function build_langvar_page($language) {
 		}
 
 		echo ('<th>Value</th></tr>');
-		while (list(, $lang_var_r) = each($lang_var_rs)) {
+		foreach ($lang_var_rs as $letter => $lang_var_r) {
 			echo ('<tr>');
 			echo ('<td class="prompt">' . $lang_var_r['varname'] . '</td>');
 			if (!is_default_language($language)) {
@@ -181,11 +181,11 @@ function build_table_page($language) {
 
 	$table_r = get_system_table_r();
 	reset($table_r);
-	while (list(, $table) = each($table_r)) {
+	foreach ($table_r as $table) {
 		$tableconf_r = get_system_table_config($table);
 		if (is_array($tableconf_r) && is_array($tableconf_r['columns'])) {
 			reset($tableconf_r['columns']);
-			while (list(, $column) = each($tableconf_r['columns'])) {
+			foreach ($tableconf_r['columns'] as $column) {
 				$results = fetch_system_table_column_langvar_rs($language, $table, $column, !is_default_language($language) ? OPENDB_LANG_INCLUDE_DEFAULT : NULL);
 				if ($results) {
 					$current_key1_value = NULL;
@@ -250,7 +250,7 @@ function build_div_table($language, $table, $column, $table_lang_rs, &$row) {
 
 	$block .= '<th>Default ' . $column . '</th><th>Language ' . $column . '</th></tr>';
 
-	while (list(, $table_lang_r) = each($table_lang_rs)) {
+	foreach ($table_lang_rs as $table_lang_r) {
 		$block .= '<tr>';
 
 		for ($i = 1; $i <= count($tableconf_r['key']); $i++) {
@@ -272,13 +272,13 @@ function build_div_table($language, $table, $column, $table_lang_rs, &$row) {
 function update_system_table_lang_vars($HTTP_VARS) {
 	if (is_array($HTTP_VARS['lang_var'])) {
 		reset($HTTP_VARS['lang_var']);
-		while (list($table, ) = each($HTTP_VARS['lang_var'])) {
+		foreach ($HTTP_VARS['lang_var'] as $table => $_v) {
 			if (is_array($HTTP_VARS['lang_var'][$table])) {
 				reset($HTTP_VARS['lang_var'][$table]);
-				while (list($column, ) = each($HTTP_VARS['lang_var'][$table])) {
+				foreach ($HTTP_VARS['lang_var'][$table] as $column => $_v) {
 					if (is_array($HTTP_VARS['lang_var'][$table][$column])) {
 						reset($HTTP_VARS['lang_var'][$table][$column]);
-						while (list(, $lang_conf_r) = each($HTTP_VARS['lang_var'][$table][$column])) {
+						foreach ($HTTP_VARS['lang_var'][$table][$column] as $lang_conf_r) {
 							if (strlen($lang_conf_r['langvar']) > 0) {
 								if (is_exists_system_table_language_var($HTTP_VARS['language'], $table, $column, $lang_conf_r['key1'], $lang_conf_r['key2'], $lang_conf_r['key3'])) {
 									update_s_table_language_var($HTTP_VARS['language'], $table, $column, $lang_conf_r['key1'], $lang_conf_r['key2'], $lang_conf_r['key3'], $lang_conf_r['langvar']);
@@ -299,7 +299,7 @@ function update_system_table_lang_vars($HTTP_VARS) {
 function update_lang_vars($HTTP_VARS) {
 	if (is_array($HTTP_VARS['lang_var'])) {
 		reset($HTTP_VARS['lang_var']);
-		while (list($varname, $value) = each($HTTP_VARS['lang_var'])) {
+		foreach ($HTTP_VARS['lang_var'] as $varname => $value) {
 			if (strlen($value) > 0) {
 				if (is_exists_language_var($HTTP_VARS['language'], $varname)) {
 					update_s_language_var($HTTP_VARS['language'], $varname, $value);
@@ -377,8 +377,9 @@ if ($HTTP_VARS['op'] == 'edit-tables') {
 	} else {
 		echo ("<div class=\"error\">" . get_opendb_lang_var('operation_not_available') . "</div>");
 	}
+
 } else if ($HTTP_VARS['op'] == '') {
-	if (is_not_empty_array($errors))
+	if (is_not_empty_array($errors ?? NULL))
 		echo format_error_block($errors);
 
 	// list languages and options

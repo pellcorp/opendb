@@ -150,10 +150,10 @@ function get_opendb_lang_var($varname, $find = NULL, $replace = NULL) {
 	global $LANG_VARS;
 	global $_OPENDB_LANGUAGE;
 	
-	if (strlen ( $LANG_VARS [$varname] ) == 0) {
-		$value = fetch_opendb_db_lang_var ( $_OPENDB_LANGUAGE, $varname );
+	if (strlen( $LANG_VARS[$varname] ?? '' ) == 0) {
+		$value = fetch_opendb_db_lang_var( $_OPENDB_LANGUAGE, $varname );
 		if ($value !== FALSE) {
-			$LANG_VARS [$varname] = $value;
+			$LANG_VARS[$varname] = $value;
 		} else if (! is_default_language ( $_OPENDB_LANGUAGE )) 		// otherwise get default
 {
 			$value = fetch_opendb_db_lang_var ( fetch_default_language (), $varname );
@@ -163,12 +163,12 @@ function get_opendb_lang_var($varname, $find = NULL, $replace = NULL) {
 		}
 	}
 	
-	if (strlen ( $LANG_VARS [$varname] ) > 0) {
+	if (strlen ( $LANG_VARS [$varname] ?? '') > 0) {
 		$langval = trim ( str_replace ( "\\n", "\n", $LANG_VARS [$varname] ) );
 		
 		if (is_array ( $find )) {
 			reset ( $find );
-			while ( list ( $key, $value ) = @each ( $find ) ) {
+			foreach ( $find as $key => $value ) {
 				$langval = str_replace ( '{' . $key . '}', $value, $langval );
 			}
 		} else if (strlen ( $find ) > 0 && $replace !== NULL) 		// can replace with empty string.
@@ -277,7 +277,7 @@ function get_system_table_r() {
 	$tables_r = NULL;
 	
 	reset ( $_OPENDB_LANG_SYSTEM_TABLES );
-	while ( list ( $table, ) = each ( $_OPENDB_LANG_SYSTEM_TABLES ) ) {
+	foreach ( $_OPENDB_LANG_SYSTEM_TABLES as $table => $_v ) {
 		$tables_r [] = $table;
 	}
 	

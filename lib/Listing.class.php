@@ -49,11 +49,10 @@ class Listing {
 	// TitleMask class reference
 	var $_titleMaskCfg;
 
-	function Listing($PHP_SELF, $HTTP_VARS) {
+	function __construct($PHP_SELF, $HTTP_VARS) {
 		$this->_php_self = $PHP_SELF;
 		$this->_http_vars = $HTTP_VARS;
 		
-		$this->_mode = $mode;
 		if (isset ( $HTTP_VARS ['items_per_page'] )) {
 			$this->_items_per_page = $HTTP_VARS ['items_per_page'];
 		} else {
@@ -66,8 +65,8 @@ class Listing {
 			$this->_start_index = NULL;
 		}
 		
-		$this->_current_orderby = $this->_http_vars ['order_by'];
-		$this->_current_sortorder = $this->_http_vars ['sortorder'];
+		$this->_current_orderby = $this->_http_vars ['order_by'] ?? '';
+		$this->_current_sortorder = $this->_http_vars ['sortorder'] ?? '';
 		
 		// initialise to default.
 		$this->_no_rows_message = get_opendb_lang_var ( 'no_matches_found' );
@@ -82,10 +81,10 @@ class Listing {
 	function setTotalItems($total_items) {
 		$this->_total_items = $total_items;
 		
-		if (is_numeric ( $this->_total_items ) && $this->_total_items > 0) {
-			if (is_numeric ( $this->_items_per_page ) && $this->_items_per_page > 0) {
-				if (is_numeric ( $this->_http_vars ['page_no'] )) {
-					$this->_page_no = $this->_http_vars ['page_no'];
+		if (is_numeric( $this->_total_items ) && $this->_total_items > 0) {
+			if (is_numeric( $this->_items_per_page ) && $this->_items_per_page > 0) {
+				if (is_numeric( $this->_http_vars['page_no'] ?? '' )) {
+					$this->_page_no = $this->_http_vars['page_no'];
 					
 					// We need to ensure that the $page_no is realistic for the number of items.
 					$this->_start_index = ($this->_page_no - 1) * $this->_items_per_page;
@@ -191,7 +190,7 @@ class Listing {
 	function addHelpEntry($help_text, $img = NULL, $id = NULL) {
 		if (is_array ( $help_text )) {
 			reset ( $help_text );
-			while ( list ( , $help ) = @each ( $help_text ) ) {
+			foreach ( $help_text as $help ) {
 				$this->_addHelpEntry ( $help, $img, $id );
 			}
 		} else {
@@ -210,7 +209,7 @@ class Listing {
 	}
 
 	/**
-	 * @$fieldname should always be provided as it provides the header element id, which can be used to style the 
+	 * @$fieldname should always be provided as it provides the header element id, which can be used to style the
 	 * width of the column, etc.  The $sortColumn parameter should be used to control whether the column is sortable
 	 * or not.
 	 *
@@ -230,7 +229,14 @@ class Listing {
 				'type' => $type );
 		
 		if ($fieldname == 'title') {
-			if (is_user_granted_permission ( PERM_VIEW_ITEM_COVERS ) && ($this->_show_item_images === TRUE || ((get_opendb_config_var ( 'listings', 'allow_override_show_item_image' ) === FALSE && get_opendb_config_var ( 'listings', 'show_item_image' ) !== FALSE) || get_opendb_config_var ( 'listings', 'allow_override_show_item_image' ) !== FALSE && ((get_opendb_config_var ( 'listings', 'show_item_image' ) !== FALSE && strlen ( $this->_http_vars ['show_item_image'] ) == 0) || $this->_http_vars ['show_item_image'] == 'Y')))) {
+			if ( is_user_granted_permission ( PERM_VIEW_ITEM_COVERS ) &&
+                 ( $this->_show_item_images === TRUE ||
+                   ( ( get_opendb_config_var( 'listings', 'allow_override_show_item_image' ) === FALSE &&
+                       get_opendb_config_var( 'listings', 'show_item_image' ) !== FALSE) ||
+                     get_opendb_config_var( 'listings', 'allow_override_show_item_image' ) !== FALSE &&
+                     ( ( get_opendb_config_var( 'listings', 'show_item_image' ) !== FALSE &&
+                         strlen( $this->_http_vars['show_item_image'] ?? '') == 0) ||
+                       $this->_http_vars['show_item_image'] === 'Y')))) {
 				$header_column_r ['cover_image_support'] = TRUE;
 				
 				$this->_header_column_rs [] = array (
@@ -507,7 +513,7 @@ class Listing {
 			
 			$title_mask_elements = $this->_titleMaskCfg->title_mask_macro_element_r ( 'theme_img' );
 			if (is_array ( $title_mask_elements )) {
-				while ( list ( $img, $prompt ) = each ( $title_mask_elements ) ) {
+				foreach ($title_mask_elements as $img => $prompt ) {
 					$this->addHelpEntry ( $prompt, $img, 'title_mask' );
 				}
 			}

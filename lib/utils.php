@@ -53,7 +53,7 @@ function deduplicate_array($value1, $value2) {
 // Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
 function stripslashes_array($array) {
 	$rs = array ();
-	while ( list ( $key, $val ) = @each ( $array ) ) {
+	foreach ($array as $key => $val) {
 		if (is_array ( $val )) {
 			$rs [$key] = stripslashes_array ( $val );
 		} else {
@@ -66,7 +66,7 @@ function stripslashes_array($array) {
 // Only tested with normal $HTTP_VARS arrays which should _not_ go deeper than 2 levels in OpenDb.
 function strip_tags_array($params) {
 	$rs = array ();
-	while ( list ( $key, $val ) = @each ( $params ) ) {
+	foreach ($params as $key => $val) {
 		if (is_array ( $val )) {
 			$rs [$key] = strip_tags_array ( $val );
 		} else {
@@ -89,10 +89,10 @@ function generate_random_num() {
 	instead.
 */
 function ifempty($value, $ifnull) {
-	if (strlen ( $value ) == 0)
-		return $ifnull;
-	else
+	if (strlen( $value ?? '' ) > 0)
 		return $value;
+	else
+		return $ifnull;
 }
 
 /**
@@ -101,7 +101,7 @@ function ifempty($value, $ifnull) {
 	combination which is pissing me off.
 */
 function is_not_empty_array($array) {
-	if (is_array ( $array ) && count ( $array ) > 0)
+	if (is_array( $array ?? '' ) && count( $array ) > 0)
 		return TRUE;
 	else
 		return FALSE;
@@ -254,7 +254,7 @@ function trim_url($str, $length) {
 function array_search2($needle, $haystack, $strcasecmp = FALSE) {
 	if (is_array ( $haystack )) {
 		reset ( $haystack );
-		while ( list ( $key, $value ) = each ( $haystack ) ) {
+		foreach ( $haystack as $key => $value ) {
 			if (($strcasecmp !== TRUE && strcmp ( $value, $needle ) === 0) || ($strcasecmp === TRUE && strcasecmp ( $value, $needle ) === 0)) {
 				return $key;
 			}
@@ -288,8 +288,8 @@ function format_sql_in_clause($values_r) {
 				$values_r );
 	else
 		$array_of_values = $values_r;
-	
-	while ( list ( , $value ) = @each ( $array_of_values ) ) {
+
+    foreach ($array_of_values as $value) {
 		if (strlen ( $inclause ) > 0)
 			$inclause .= ', ';
 		$inclause .= "'$value'";
@@ -319,7 +319,7 @@ function validate_ind_column($column, $options_r = NULL) {
 	Note: Match is NOT case sensitive.
 */
 function format_title_grammar_article($title, $articles) {
-	while ( list ( , $article ) = each ( $articles ) ) {
+    foreach ($articles as $article) {
 		$article = trim ( $article );
 		
 		// If $title starts with $entry - NOT CASE SENSITIVE!!!
@@ -359,7 +359,7 @@ function fetch_results_array($results) {
 		while ( $record_r = db_fetch_assoc ( $results ) ) {
 			$record_rs [] = $record_r;
 		}
-		db_free_result ( $lookup_results );
+		db_free_result ( $results );
 		
 		return $record_rs;
 	} else if (is_array ( $results )) {

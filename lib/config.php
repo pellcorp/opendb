@@ -31,10 +31,10 @@ $_OPENDB_CONFIG_EXISTS = NULL;
 function is_gzip_compression_enabled($php_self) {
 	$page = basename ( $php_self, '.php' );
 	
-	if (get_opendb_config_var ( 'site.gzip_compression', 'enable' ) === TRUE) {
+	if (get_opendb_config_var( 'site.gzip_compression', 'enable' ) === TRUE) {
 		// hard code disable for installer and url as most images already compressed
 		// so is superfluous.
-		if ($page != 'install' && $page != 'url' && ! in_array ( $page, get_opendb_config_var ( 'site.gzip_compression', 'disabled' ) )) {
+		if ($page != 'install' && $page != 'url' && ! in_array ( $page, get_opendb_config_var( 'site.gzip_compression', 'disabled' ) )) {
 			return TRUE;
 		}
 	}
@@ -44,14 +44,14 @@ function is_gzip_compression_enabled($php_self) {
 }
 
 function get_opendb_image_type() {
-	return strlen ( get_opendb_config_var ( 'site', 'image_type' ) ) > 0 ? get_opendb_config_var ( 'site', 'image_type' ) : "auto";
+	return strlen( get_opendb_config_var( 'site', 'image_type' ) ) > 0 ? get_opendb_config_var ( 'site', 'image_type' ) : "auto";
 }
 
 /**
  * @return unknown
  */
 function is_show_login_menu_enabled() {
-	return get_opendb_config_var ( 'login', 'show_menu' ) !== FALSE;
+	return get_opendb_config_var( 'login', 'show_menu' ) !== FALSE;
 }
 
 /**
@@ -116,25 +116,26 @@ function get_opendb_config_var($group, $id = NULL, $keyid = NULL) {
 		
 		if ($group != NULL) {
 			// override config value.
-			if ($group == 'db_server' || $group == 'session_handler' || is_array ( $CONFIG_VARS [$group] )) { // cached vars
+			if ( $group == 'db_server' ||
+				 $group == 'session_handler' ||
+				 ( array_key_exists($group, $CONFIG_VARS) && is_array( $CONFIG_VARS[$group] ))) { // cached vars
 				if ($id !== NULL && $keyid !== NULL)
-					return $CONFIG_VARS [$group] [$id] [$keyid];
+					return $CONFIG_VARS[$group][$id][$keyid];
 				else if ($id !== NULL)
-					return $CONFIG_VARS [$group] [$id];
+					return $CONFIG_VARS[$group][$id];
 				else
-					return $CONFIG_VARS [$group]; // will return an array of all config items in group
+					return $CONFIG_VARS[$group]; // will return an array of all config items in group
 			} else {
-				$group_r = get_opendb_db_config_var ( $group );
-				if (is_array ( $group_r )) {
-					$CONFIG_VARS [$group] = $group_r;
+				$group_r = get_opendb_db_config_var( $group );
+				if (is_array( $group_r )) {
+					$CONFIG_VARS[$group] = $group_r;
 				}
-				
 				if ($id !== NULL && $keyid !== NULL)
-					return $CONFIG_VARS [$group] [$id] [$keyid];
+					return $CONFIG_VARS[$group][$id][$keyid];
 				else if ($id !== NULL)
-					return $CONFIG_VARS [$group] [$id];
+					return $CONFIG_VARS[$group][$id];
 				else
-					return $CONFIG_VARS [$group];
+					return $CONFIG_VARS[$group];
 			}
 		} else {		//if($group!=NULL)
 			return NULL;
@@ -148,49 +149,68 @@ function get_opendb_db_config_var($group, $id = NULL, $keyid = NULL) {
 	if (is_db_connected ()) {
 		if ($group != NULL) {
 			if ($id != NULL && $keyid != NULL) {
-				$query = "SELECT cgiv.group_id, cgiv.id, scgi.type, cgiv.keyid, cgiv.value " . "FROM s_config_group_item_var cgiv, s_config_group_item scgi " . "WHERE cgiv.group_id = scgi.group_id AND " . "cgiv.id = scgi.id AND " . "cgiv.keyid = scgi.keyid AND " . "cgiv.group_id = '$group' AND " . "cgiv.id = '$id' AND " . "cgiv.keyid = '$keyid' " . "LIMIT 0,1"; // enforce only one record returned.
+				$query = "SELECT cgiv.group_id, cgiv.id, scgi.type, cgiv.keyid, cgiv.value " .
+					   "FROM s_config_group_item_var cgiv, s_config_group_item scgi " .
+					   "WHERE cgiv.group_id = scgi.group_id AND cgiv.id = scgi.id AND " .
+					   " cgiv.keyid = scgi.keyid AND " . "cgiv.group_id = '$group' AND " .
+					   " cgiv.id = '$id' AND " . "cgiv.keyid = '$keyid' " .
+					   "LIMIT 0,1";
 			} else if ($id != NULL) {
-				$query = "SELECT cgiv.group_id, cgiv.id, scgi.type, cgiv.keyid, cgiv.value " . "FROM s_config_group_item_var cgiv, s_config_group_item scgi " . "WHERE cgiv.group_id = scgi.group_id AND " . "cgiv.id = scgi.id AND " . "(scgi.type = 'array' OR cgiv.keyid = scgi.keyid) AND " . "cgiv.group_id = '$group' AND cgiv.id = '$id' " . "ORDER BY cgiv.keyid";
+				$query = "SELECT cgiv.group_id, cgiv.id, scgi.type, cgiv.keyid, cgiv.value " .
+					   "FROM s_config_group_item_var cgiv, s_config_group_item scgi " .
+					   "WHERE cgiv.group_id = scgi.group_id AND " . "cgiv.id = scgi.id AND " .
+					   " (scgi.type = 'array' OR cgiv.keyid = scgi.keyid) AND " .
+					   " cgiv.group_id = '$group' AND cgiv.id = '$id' " .
+					   "ORDER BY cgiv.keyid";
 			} else {
 				// will need to update these lines if we ever add any more array types.
-				$query = "SELECT cgiv.group_id, cgiv.id, scgi.type, cgiv.keyid, cgiv.value " . "FROM s_config_group_item_var cgiv, s_config_group_item scgi " . "WHERE cgiv.group_id = scgi.group_id AND " . "cgiv.id = scgi.id AND " . "(scgi.type = 'array' OR cgiv.keyid = scgi.keyid) AND " . "cgiv.group_id = '$group' " . "ORDER BY cgiv.id, cgiv.keyid";
+				$query = "SELECT cgiv.group_id, cgiv.id, scgi.type, cgiv.keyid, cgiv.value " .
+					   "FROM s_config_group_item_var cgiv, s_config_group_item scgi " .
+					   "WHERE cgiv.group_id = scgi.group_id AND cgiv.id = scgi.id AND " .
+					   " (scgi.type = 'array' OR cgiv.keyid = scgi.keyid) AND " . "cgiv.group_id = '$group' " .
+					   "ORDER BY cgiv.id, cgiv.keyid";
 			}
 		} else {
 			// invalid parameters provided
 			return NULL;
 		}
 		
-		$results = db_query ( $query );
+		$results = db_query( $query );
 		if ($results) {
-			if (db_num_rows ( $results ) > 0) {
+			if (db_num_rows( $results ) > 0) {
 				$results_r = NULL;
 				$tmp_vars_r = NULL;
 				$current_id = NULL;
 				$current_type = NULL;
-				
-				while ( $config_var_r = db_fetch_assoc ( $results ) ) {
+
+				while ( $config_var_r = db_fetch_assoc( $results ) ) {
 					// first time through loop
 					if ($current_id == NULL) {
-						$current_id = $config_var_r ['id'];
-						$current_type = $config_var_r ['type'];
-					} else if ($current_id !== $config_var_r ['id']) {	// end of id, so process
-						$results_r [$current_id] = get_db_config_var ( $current_type, $tmp_vars_r, $group, $id, $keyid );
-						
-						$current_id = $config_var_r ['id'];
-						$current_type = $config_var_r ['type'];
-						
+						$current_id = $config_var_r['id'];
+						$current_type = $config_var_r['type'];
+					} else if ($current_id !== $config_var_r['id']) {
+						// end of id, so process
+						$results_r[$current_id] = get_db_config_var(
+							$current_type, $tmp_vars_r, $group, $id, $keyid
+						);
+
+						$current_id = $config_var_r['id'];
+						$current_type = $config_var_r['type'];
+
 						// reset
 						$tmp_vars_r = NULL;
 					}
-					
-					$tmp_vars_r [$config_var_r ['keyid']] = $config_var_r ['value'];
+
+					$tmp_vars_r[$config_var_r['keyid']] = $config_var_r['value'];
 				}
-				db_free_result ( $results );
-				
-				$results_r [$current_id] = get_db_config_var ( $current_type, $tmp_vars_r, $group, $id, $keyid );
-				
+				db_free_result( $results );
+
+				$results_r[$current_id] = get_db_config_var(
+					$current_type, $tmp_vars_r, $group, $id, $keyid
+				);
+
 				if ($id != NULL)
-					return $results_r [$current_id];
+					return $results_r[$current_id];
 					// 				else
 					return $results_r;
 			} else {			//if(db_num_rows($results)>0)
@@ -224,48 +244,45 @@ function get_db_config_var($type, $vars_r, $group, $id, $keyid) {
 	if (count ( $vars_r ) > 1) {
 		if ($type == 'boolean') {
 			$boolean_vars_r = NULL;
-			reset ( $vars_r );
-			while ( list ( $key, $value ) = each ( $vars_r ) ) {
+			reset( $vars_r );
+			foreach ($vars_r as $key => $value) {
 				if ($value == 'TRUE')
-					$boolean_vars_r [$key] = TRUE;
+					$boolean_vars_r[$key] = TRUE;
 				else //if($value == 'FALSE')
-					$boolean_vars_r [$key] = FALSE;
+					$boolean_vars_r[$key] = FALSE;
 			}
-			
 			return $boolean_vars_r;
-		} else {
-			return $vars_r;
 		}
-	} else {
-		if ($type == 'array') {
-			return $vars_r;
-		} else {
-			reset ( $vars_r );
-			if (list ( $key, $value ) = each ( $vars_r )) {
-				if ($type == 'boolean') {
-					if ($value == 'TRUE') {
-						return TRUE;
-					} else {//if($value == 'FALSE')
-						return FALSE;
-					}
-				} else {
-					// if keyid specified, or key is numeric, then return simple
-					// value, otherwise be helpful and return single element array.
-					if ($keyid != NULL || is_numeric ( $key ))
-						return $value;
-					else {
-						return $vars_r;
-					}
-				}
-			}
-			
-			//else
-			if ($type == 'boolean') {
+		return $vars_r;
+
+	} elseif ($type == 'array') {
+		return $vars_r;
+
+	} elseif (count( $vars_r ) == 1) {
+		$key = key( $vars_r );
+		$value = current( $vars_r );
+
+		if ($type == 'boolean') {
+			if ($value == 'TRUE') {
+				return TRUE;
+			} else {//if($value == 'FALSE')
 				return FALSE;
-			} else {
-				return NULL;
+			}
+		} else {
+			// if keyid specified, or key is numeric, then return simple
+			// value, otherwise be helpful and return single element array.
+			if ($keyid != NULL || is_numeric ( $key ))
+				return $value;
+			else {
+				return $vars_r;
 			}
 		}
+	}
+
+	if ($type == 'boolean') {
+		return FALSE;
+	} else {
+		return NULL;
 	}
 }
 

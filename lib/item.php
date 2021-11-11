@@ -206,12 +206,12 @@ function fetch_owner_item_cnt($owner_id, $s_item_type = NULL) {
 */
 function fetch_owner_s_status_type_item_cnt($owner_id, $s_status_type) {
 	$query = "SELECT count(ii.item_id) as count " . "FROM item_instance ii, s_status_type sst, item i " . "WHERE i.id = ii.item_id AND sst.s_status_type = ii.s_status_type AND ii.owner_id='" . $owner_id . "' AND ii.s_status_type = '$s_status_type' ";
-	
+
 	// no need for such a restriction if current user is item admin
 	if (! is_user_granted_permission ( PERM_ITEM_ADMIN )) {
 		$query .= " AND ( sst.hidden_ind = 'N' OR ii.owner_id = '" . get_opendb_session_var ( 'user_id' ) . "') ";
 	}
-	
+
 	$result = db_query ( $query );
 	if ($result && db_num_rows ( $result ) > 0) {
 		$found = db_fetch_assoc ( $result );
@@ -332,42 +332,42 @@ function fetch_item_instance_relationship_r($item_id, $instance_no = NULL, $rela
 }
 
 function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $include_parents = true) {
-    $current_parents = array();
-    if ($HTTP_VARS['parent_item_id'] > 0) {
-        $current_parents[] = $HTTP_VARS['parent_item_id'];
-    } else {
-        $parent_instance_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'], RELATED_PARENTS_MODE);
+	$current_parents = array();
+	if ($HTTP_VARS['parent_item_id'] ?? 0 > 0) {
+		$current_parents[] = $HTTP_VARS['parent_item_id'];
+	} else {
+		$parent_instance_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'] ?? NULL, RELATED_PARENTS_MODE);
 
-        if ($parent_instance_rs !== false) {
-            foreach ($parent_instance_rs as $parent_instance_r) {
-                $current_parents[] = $parent_instance_r['item_id'];
-            }
+		if ($parent_instance_rs !== false) {
+			foreach ($parent_instance_rs as $parent_instance_r) {
+				$current_parents[] = $parent_instance_r['item_id'];
+			}
+			db_free_result($parent_instance_rs);
         }
-
-        db_free_result($parent_instance_rs);
     }
 
-    $children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no']);
-    $children = array();
-    while ($child = db_fetch_assoc($children_rs)) {
-        $children[] = $child;
-    }
-    db_free_result($children_rs);
+	$children_rs = fetch_item_instance_relationship_rs($item_r['item_id'], $item_r['instance_no'] ?? NULL);
+	$children = array();
+	if ($children_rs !== false) {
+		while ($child = db_fetch_assoc($children_rs)) {
+			$children[] = $child;
+		}
+		db_free_result($children_rs);
+	}
     
-    $items = array();
+	$items = array();
 
-    if (is_null($filter)) {
-        // Fetch every item.
-        $items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
-    } elseif ($filter == '%parent_only%') {
-        // Fetch parent items only.
-        foreach ($current_parents as $parent) {
-            $item = fetch_item_r($parent);
-            $item['current_parent'] = true;
-            $items[] = $item;
-        }
-        
-        return $items;
+	if (is_null($filter)) {
+		// Fetch every item.
+		$items_rs = fetch_item_listing_rs(null, null, 'title', 'asc');
+	} elseif ($filter == '%parent_only%') {
+		// Fetch parent items only.
+		foreach ($current_parents as $parent) {
+			$item = fetch_item_r($parent);
+			$item['current_parent'] = true;
+			$items[] = $item;
+		}
+		return $items;
     } else {
         // Filter items.
         $items_rs = fetch_item_listing_rs(array('title' => $filter, 'title_match' => 'partial'), array(), 'title', 'asc');
@@ -390,7 +390,7 @@ function fetch_available_item_parents($HTTP_VARS, $item_r, $filter = null, $incl
                 }
             }
 
-            if (!$item['current_parent'] || ($item['current_parent'] && $include_parents)) {
+            if (!isset($item['current_parent']) || ($item['current_parent'] && $include_parents)) {
                 $items[] = $item;
             }
         }
@@ -600,6 +600,8 @@ function is_exists_item_instance_with_owner_and_status($item_id, $s_status_type,
 	Checks if the underlying item record actually exists or not.
 */
 function is_exists_item($item_id) {
+	if (!isset($item_id))
+		return FALSE;
 	$query = "SELECT 'x' FROM item WHERE id = '$item_id'";
 	
 	$result = db_query ( $query );
@@ -655,7 +657,10 @@ function fetch_item_listing_cnt($HTTP_VARS, $column_display_config_rs = NULL) {
 			if ($column_display_config_rs [$i] ['column_type'] == 's_attribute_type') {
 				// if not an order by column, we want to generate the fields individually in the listings page.
 				if ($column_display_config_rs [$i] ['orderby_support_ind'] === 'Y') {
-					if (strlen ( $column_display_config_rs [$i] ['attribute_val'] ) > 0 && ($column_display_config_rs [$i] ['attr_match'] == 'word' || $column_display_config_rs [$i] ['attr_match'] == 'partial') && $column_display_config_rs [$i] ['search_attribute_ind'] == 'y') {
+					if (strlen ( $column_display_config_rs[$i]['attribute_val'] ?? '') > 0 &&
+						($column_display_config_rs[$i]['attr_match'] == 'word' ||
+						 $column_display_config_rs[$i]['attr_match'] == 'partial') &&
+						$column_display_config_rs[$i]['search_attribute_ind'] == 'y') {
 						$query .= ', ifnull(ia' . $i . '.attribute_val,ia' . $i . '.lookup_attribute_val)';
 					}
 				}
@@ -695,7 +700,7 @@ function fetch_item_listing_cnt($HTTP_VARS, $column_display_config_rs = NULL) {
 	@param	$index is the LIMIT value to apply.
 */
 function fetch_item_listing_rs($HTTP_VARS, $column_display_config_rs, $order_by, $sortorder, $start_index = NULL, $items_per_page = NULL) {
-	$query .= 'SELECT DISTINCT i.id AS item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
+	$query = 'SELECT DISTINCT i.id AS item_id, ii.instance_no, ii.s_status_type, ii.status_comment, ii.owner_id, ii.borrow_duration, i.s_item_type, i.title, UNIX_TIMESTAMP(ii.update_on) AS update_on';
 	
 	$column_order_by_rs = array ();
 	
@@ -757,8 +762,8 @@ function fetch_item_listing_rs($HTTP_VARS, $column_display_config_rs, $order_by,
 	
 	if (count ( $column_order_by_rs ) > 0) {
 		$orderbyquery = '';
-		
-		while ( list ( , $column_order_by_r ) = each ( $column_order_by_rs ) ) {
+
+		foreach ( $column_order_by_rs as $column_order_by_r ) {
 			if (strlen ( $orderbyquery ) > 0) {
 				$orderbyquery .= ', ';
 			}
@@ -822,89 +827,95 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	$from_r [] = 'item_instance ii';
 	
 	$where_r [] = 'ii.item_id = i.id'; // only parent items should ever be listed.
+	$query = "";
 	
 
 	//
 	// Owner restriction
 	//
-	if (strlen ( $HTTP_VARS ['owner_id'] ) > 0)
+	if (strlen($HTTP_VARS ['owner_id'] ?? '') > 0)
 		$where_r [] = 'ii.owner_id = \'' . $HTTP_VARS ['owner_id'] . '\'';
-	else if (strlen ( $HTTP_VARS ['not_owner_id'] ) > 0) //For not showing current user items.
+	else if (strlen( $HTTP_VARS ['not_owner_id'] ?? '' ) > 0) //For not showing current user items.
 		$where_r [] = 'ii.owner_id <> \'' . $HTTP_VARS ['not_owner_id'] . '\'';
-		
-		//
-		// Item Type / Item Type group restriction
-		//
-	if (! is_array ( $HTTP_VARS ['s_item_type'] ) && strlen ( $HTTP_VARS ['s_item_type'] ) > 0) {
+
+	//
+	// Item Type / Item Type group restriction
+	//
+	if (isset($HTTP_VARS['s_item_type']) &&
+		!is_array( $HTTP_VARS['s_item_type'] ) &&
+		strlen( $HTTP_VARS['s_item_type'] ) > 0)
+	{
 		$where_r [] = 'i.s_item_type = \'' . $HTTP_VARS ['s_item_type'] . '\'';
-	} else if (strlen ( $HTTP_VARS ['s_item_type_group'] ) > 0) {
+	} else if (strlen( $HTTP_VARS ['s_item_type_group'] ?? '') > 0) {
 		$from_r [] = 's_item_type_group_rltshp sitgr';
 		$where_r [] = 'sitgr.s_item_type = i.s_item_type';
 		$where_r [] = 'sitgr.s_item_type_group = \'' . $HTTP_VARS ['s_item_type_group'] . '\'';
-	} else if (is_not_empty_array ( $HTTP_VARS ['s_item_type'] )) {
+	} else if (is_not_empty_array( $HTTP_VARS['s_item_type'] ?? '' )) {
 		$where_r [] = 'i.s_item_type IN(' . format_sql_in_clause ( $HTTP_VARS ['s_item_type'] ) . ')';
 	}
-	
+
 	$from_r [] = 's_status_type sst';
 	$where_r [] = 'sst.s_status_type = ii.s_status_type';
-	
+
 	//
 	// Status Type restriction
 	//
-	if (is_not_empty_array ( $HTTP_VARS ['s_status_type'] )) {
+	if (is_not_empty_array( $HTTP_VARS['s_status_type'] ?? '' )) {
 		$where_r [] = 'sst.s_status_type IN(' . format_sql_in_clause ( $HTTP_VARS ['s_status_type'] ) . ')';
-	} else if ($HTTP_VARS ['s_status_type'] != 'ALL' && strlen ( $HTTP_VARS ['s_status_type'] ) > 0) {
+	} else if (isset($HTTP_VARS ['s_status_type']) && $HTTP_VARS ['s_status_type'] != 'ALL' ) {
 		$where_r [] = 'sst.s_status_type = \'' . $HTTP_VARS ['s_status_type'] . '\'';
 	}
-	
+
 	// no need for such a restriction if current user is item admin
-	if (! is_user_granted_permission ( PERM_ITEM_ADMIN )) {
+	if (! is_user_granted_permission( PERM_ITEM_ADMIN )) {
 		$where_r [] = "( sst.hidden_ind = 'N' OR ii.owner_id = '" . get_opendb_session_var ( 'user_id' ) . "') ";
 	}
-	
+
 	//
 	// User and Status type restriction
 	//
-	if (strcmp ( $HTTP_VARS ['owner_id'], get_opendb_session_var ( 'user_id' ) ) !== 0) {	// not current user
+	if (strcmp( ($HTTP_VARS['owner_id'] ?? ''), get_opendb_session_var( 'user_id' ) ) !== 0) {	// not current user
 		$from_r [] = 'user u';
 		$where_r [] = 'u.user_id = ii.owner_id';
 		$where_r [] = 'u.active_ind = \'Y\'';
 	}
-	
+
 	//
 	// Status Comment restriction
 	//
-	if (strlen ( $HTTP_VARS ['status_comment'] ) > 0) {
+	if (strlen( $HTTP_VARS['status_comment'] ?? '') > 0) {
 		// Escape only the single quote!
-		$HTTP_VARS ['status_comment'] = str_replace ( "'", "\\'", $HTTP_VARS ['status_comment'] );
-		
-		if ($HTTP_VARS ['status_comment_match'] != 'exact') {
+		$HTTP_VARS['status_comment'] = str_replace( "'", "\\'", $HTTP_VARS['status_comment'] );
+
+		if ($HTTP_VARS['status_comment_match'] != 'exact') {
 			$parser = new BooleanParser ();
 			$statements = $parser->parseBooleanStatement ( $HTTP_VARS ['status_comment'] );
 			if (is_array ( $statements )) {
-				$where_r [] = build_boolean_clause ( $statements, 'ii.status_comment', $HTTP_VARS ['status_comment_match'], 'AND', $HTTP_VARS ['status_comment_case'] );
+				$where_r [] = build_boolean_clause ( $statements, 'ii.status_comment',
+													 $HTTP_VARS['status_comment_match'], 'AND',
+													 $HTTP_VARS['status_comment_case'] );
 			}
 		} else {
-			if (is_null ( $HTTP_VARS ['status_comment_case'] )) {
-				$where_r [] = 'ii.status_comment = \'' . $HTTP_VARS ['status_comment'] . '\'';
+			if (is_null( $HTTP_VARS['status_comment_case'] )) {
+				$where_r[] = 'ii.status_comment = \'' . $HTTP_VARS['status_comment'] . '\'';
 			} else {
-				$where_r [] = 'BINARY ii.status_comment = \'' . $HTTP_VARS ['status_comment'] . '\'';
+				$where_r[] = 'BINARY ii.status_comment = \'' . $HTTP_VARS['status_comment'] . '\'';
 			}
 		}
 	}
-	
+
 	//
 	// Title restriction
 	//
-	if (strlen ( $HTTP_VARS ['title'] ) > 0) {
+	if (strlen( $HTTP_VARS ['title'] ?? '') > 0) {
 		// Escape only the single quote!
 		$HTTP_VARS ['title'] = str_replace ( "'", "\\'", $HTTP_VARS ['title'] );
-		
+
 		if ($HTTP_VARS ['title_match'] != 'exact') {
 			$parser = new BooleanParser ();
 			$statements = $parser->parseBooleanStatement ( $HTTP_VARS ['title'] );
 			if (is_array ( $statements )) {
-				$where_r [] = build_boolean_clause ( $statements, 'i.title', $HTTP_VARS ['title_match'], 'AND', $HTTP_VARS ['title_case'] );
+				$where_r [] = build_boolean_clause ( $statements, 'i.title', $HTTP_VARS ['title_match'], 'AND', $HTTP_VARS ['title_case'] ?? NULL);
 			}
 		} else {
 			if (is_null ( $HTTP_VARS ['title_case'] )) {
@@ -913,19 +924,20 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 				$where_r [] = 'BINARY i.title = \'' . $HTTP_VARS ['title'] . '\'';
 			}
 		}
-	} else if (strlen ( $HTTP_VARS ['letter'] ) > 0) {
+	}
+	if (strlen ( $HTTP_VARS ['letter'] ?? '' ) > 0) {
 		// Numeric match.
 		if ($HTTP_VARS ['letter'] == '#')
 			$where_r [] = 'ASCII(LEFT(title,1)) BETWEEN ASCII(\'0\') AND ASCII(\'9\')';
 		else
 			$where_r [] = 'UPPER(LEFT(i.title,1)) = \'' . strtoupper ( $HTTP_VARS ['letter'] ) . '\'';
 	}
-	
+
 	//
 	// Last Updated support
 	//
-	if (strlen ( $HTTP_VARS ['update_on'] ) > 0) {
-		if (strlen ( $HTTP_VARS ['datetimemask'] ) > 0) {
+	if (strlen( $HTTP_VARS ['update_on'] ?? "" ) > 0) {
+		if (strlen( $HTTP_VARS ['datetimemask'] ?? "" ) > 0) {
 			$timestamp = get_timestamp_for_datetime ( $HTTP_VARS ['update_on'], $HTTP_VARS ['datetimemask'] );
 			if ($timestamp !== FALSE) {
 				$where_r [] = 'ii.update_on >= FROM_UNIXTIME(' . $timestamp . ')';
@@ -936,7 +948,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		} else {
 			$where_r [] = 'ii.update_on >= \'' . $HTTP_VARS ['update_on'] . '\'';
 		}
-	} else if (is_numeric ( $HTTP_VARS ['update_on_days'] )) {	// GIve us all records updated in the last however many days.
+	} else if (is_numeric ( $HTTP_VARS ['update_on_days'] ?? "" )) {	// Give us all records updated in the last however many days.
 		$where_r [] = 'TO_DAYS(ii.update_on) >= (TO_DAYS(now())-' . $HTTP_VARS ['update_on_days'] . ')';
 	}
 	
@@ -1041,16 +1053,19 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	
 	// If attribute_val specified without a attribute_type, then do a loose join to item_attribute table,
 	// only on attribute_val column.
-	if (strlen ( $HTTP_VARS ['attribute_type'] ) == 0 && (strlen ( $HTTP_VARS ['attribute_val'] ) > 0 || strlen ( $HTTP_VARS ['attr_update_on'] ) > 0 || strlen ( $HTTP_VARS ['attr_update_on_days'] ) > 0)) {
+	if ( strlen ( $HTTP_VARS ['attribute_type'] ?? "" ) == 0 &&
+		 ( strlen ( $HTTP_VARS ['attribute_val'] ?? 0 ) > 0 ||
+		   strlen ( $HTTP_VARS ['attr_update_on'] ?? 0 ) > 0 ||
+		   strlen ( $HTTP_VARS ['attr_update_on_days'] ?? 0 ) > 0)) {
 		$from_r [] = 'item_attribute ia';
 		
 		// now do the where clause.
 		$where_r [] = 'ia.item_id = i.id '; //AND ia.attribute_no = 1';
 		
 
-		if ($HTTP_VARS ['attr_match'] != 'exact') {
+		if ($HTTP_VARS['attr_match'] ?? '' != 'exact') {
 			$parser = new BooleanParser ();
-			$statements = $parser->parseBooleanStatement ( strtoupper ( str_replace ( "'", "\\'", $HTTP_VARS ['attribute_val'] ) ) );
+			$statements = $parser->parseBooleanStatement ( strtoupper ( str_replace ( "'", "\\'", $HTTP_VARS ['attribute_val'] ?? '' ) ) );
 			if (is_array ( $statements )) {
 				if (is_lookup_attribute_type ( $HTTP_VARS ['attribute_type'] )) {
 					$where_r [] = build_boolean_clause ( $statements, 'ia.lookup_attribute_val', 'plain', 'AND', $HTTP_VARS ['attr_case'] );
@@ -1074,7 +1089,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 			}
 		}
 		
-		if (strlen ( $HTTP_VARS ['attr_update_on'] ) > 0) {
+		if (strlen ( $HTTP_VARS ['attr_update_on'] ?? '' ) > 0) {
 			if (strlen ( $HTTP_VARS ['datetimemask'] ) > 0) {
 				$timestamp = get_timestamp_for_datetime ( $HTTP_VARS ['attr_update_on'], $HTTP_VARS ['datetimemask'] );
 				if ($timestamp !== FALSE) {
@@ -1086,7 +1101,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 			} else {
 				$where_r [] = 'ia.update_on >= \'' . $HTTP_VARS ['attr_update_on'] . '\'';
 			}
-		} else if (is_numeric ( $HTTP_VARS ['attr_update_on_days'] )) {		// GIve us all records updated in the last however many days.
+		} else if (is_numeric ( $HTTP_VARS ['attr_update_on_days'] ?? '' )) {		// Give us all records updated in the last however many days.
 			$where_r [] = 'TO_DAYS(ia.update_on) >= (TO_DAYS(now())-' . $HTTP_VARS ['attr_update_on_days'] . ')';
 		}
 	}
@@ -1094,7 +1109,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// Review restrictions
 	//
-	if (strlen ( $HTTP_VARS ['rating'] ) > 0) {
+	if (strlen ( $HTTP_VARS ['rating'] ?? "" ) > 0) {
 		$where_r [] = 'r.item_id = i.id AND r.rating >= ' . $HTTP_VARS ['rating'];
 		$from_r [] = 'review r';
 	}
@@ -1102,7 +1117,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 	//
 	// Item ID range restriction (Used by Import script)
 	//
-	if (strlen ( $HTTP_VARS ['item_id_range'] ) > 0) {
+	if (strlen ( $HTTP_VARS ['item_id_range'] ?? "" ) > 0) {
 		$where_r [] = 'i.id IN (' . expand_number_range ( $HTTP_VARS ['item_id_range'] ) . ')';
 	}
 	
@@ -1119,7 +1134,7 @@ function from_and_where_clause($HTTP_VARS, $column_display_config_rs = NULL, $qu
 		$query .= 'FROM (' . $from_clause . ') ';
 	}
 	
-	if (is_array ( $left_join_from_r )) {
+	if (isset ($left_join_from_r) && is_array ( $left_join_from_r )) {
 		$left_join_from_clause = '';
 		for($i = 0; $i < count ( $left_join_from_r ); $i ++) {
 			if (strlen ( $left_join_from_clause ) > 0)
@@ -1477,7 +1492,7 @@ function insert_item_instance_relationships($item_id, $related_item_id, $related
 	
 	// todo - should this be locked?!
 	if (is_array ( $instance_no_r )) {
-		while ( list ( , $instance_no ) = each ( $instance_no_r ) ) {
+		foreach ($instance_no_r as $instance_no) {
 			insert_item_instance_relationship ( $item_id, $instance_no, $related_item_id, $related_instance_no );
 		}
 	}
@@ -1550,7 +1565,7 @@ function copy_related_item_instance_relationships($item_id, $instance_no) {
 	}
 	
 	if (is_array ( $item_instance_rs )) {
-		while ( list ( , $item_instance_r ) = each ( $item_instance_rs ) ) {
+		foreach ($item_instance_rs as $item_instance_r) {
 			insert_item_instance_relationship ( $item_id, $instance_no, $item_instance_r ['item_id'], $item_instance_r ['instance_no'] );
 		}
 	}

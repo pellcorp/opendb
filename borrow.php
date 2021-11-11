@@ -188,14 +188,14 @@ if (is_site_enabled()) {
  								insert_cart_item($HTTP_VARS['item_id'], $HTTP_VARS['instance_no'], get_opendb_session_var('user_id'));
 							}
 						} else if ($HTTP_VARS['op'] == 'update_my_reserve_basket' && is_not_empty_array($HTTP_VARS['item_id_instance_no'])) { // initiated from listings.php page!
- 							while (list(, $item_id_instance_no) = each($HTTP_VARS['item_id_instance_no'])) {
+							foreach ($HTTP_VARS['item_id_instance_no'] as $item_id_instance_no ) {
 								$item_r = get_item_id_and_instance_no($item_id_instance_no);
 								if (!is_item_in_reserve_basket($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'))) { // else add item to session array. 
  									insert_cart_item($item_r['item_id'], $item_r['instance_no'], get_opendb_session_var('user_id'));
 								}
 							}
 						} else if ($HTTP_VARS['op'] == 'delete_from_my_reserve_basket' && is_not_empty_array($HTTP_VARS['sequence_number'])) {
-							while (list(, $sequence_number) = each($HTTP_VARS['sequence_number'])) {
+							foreach ( $HTTP_VARS['sequence_number'] as $sequence_number ) {
 								delete_cart_item($sequence_number);
 							}
 						}
@@ -232,7 +232,7 @@ if (is_site_enabled()) {
 					echo ("\n<input type=\"hidden\" name=\"op\" value=\"my_history\">");
 
 					echo ("\n<table>");
-					$results = fetch_user_rs(PERM_USER_BORROWER, ROLE_PERMISSIONS_INCLUDE, INCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, "fullname", "ASC");
+					$results = fetch_user_rs(PERM_USER_BORROWER, INCLUDE_ROLE_PERMISSIONS, INCLUDE_CURRENT_USER, EXCLUDE_DEACTIVATED_USER, "fullname", "ASC");
 					echo (format_field(get_opendb_lang_var('borrower'), custom_select('uid', $results, '%fullname% (%user_id%)', 1, get_opendb_session_var('user_id'), 'user_id')));
 
 					echo ("</table>");
@@ -252,7 +252,7 @@ if (is_site_enabled()) {
 
 				if ($show_listings) {
 					echo (_theme_header($page_title));
-					echo ('<h2>' . $page_title . ' ' . $page_image . '</h2>');
+					echo ('<h2>' . $page_title . ' ' . ($page_image ?? '') . '</h2>');
 
 					$listingObject->startListing($page_title);
 
@@ -298,7 +298,7 @@ if (is_site_enabled()) {
 					$listingObject->addHeaderColumn(get_opendb_lang_var('more_information'));
 
 					// If mysql resultset or static $item_reservation_rs array defined, we can continue.
-					if ($result) {
+					if (isset($result)) {
 						while ($borrowed_item_r = db_fetch_assoc($result)) {
 							$listingObject->startRow();
 
@@ -497,7 +497,7 @@ if (is_site_enabled()) {
 
 					echo ("<p class=\"listingDate\">" . get_opendb_lang_var('listing_generated', 'datetime', get_localised_timestamp(get_opendb_config_var('listings', 'print_listing_datetime_mask'))) . "</p>");
 
-					echo (format_footer_links($footer_links_r));
+					echo (format_footer_links($footer_links_r ?? ''));
 					echo (_theme_footer());
 
 				}//end if($show_listings)		

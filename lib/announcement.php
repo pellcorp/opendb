@@ -40,7 +40,7 @@ function get_announcements_whereclause($limit_days, $limit_closed) {
 		$query = 'WHERE ';
 		
 		$whereclause = '';
-		while ( list ( , $q ) = each ( $where ) ) {
+		foreach ( $where as $q ) {
 			if (strlen ( $whereclause ) > 0)
 				$whereclause .= ' AND';
 			

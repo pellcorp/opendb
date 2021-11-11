@@ -61,7 +61,7 @@ function build_new_items_feed($URL, $datemask) {
 	
 	if (is_not_empty_array ( $list_item_rs )) {
 		reset ( $list_item_rs );
-		while ( list ( , $list_item_r ) = @each ( $list_item_rs ) ) {
+		foreach ( $list_item_rs as $list_item_r ) {
 			$rssout .= "\n	<item>" . "\n		<title>" . rss_encoded ( $list_item_r ['title'] ) . "</title>" . "\n		<link>" . rss_encoded ( $URL . $list_item_r ['item_display_url'] ) . "</link>" . "\n		<pubDate>" . $list_item_r ['update_on'] . " " . date ( 'T' ) . "</pubDate>" . "\n		<guid>" . rss_encoded ( $URL . $list_item_r ['item_display_url'] ) . "</guid>" . "\n		<description>";
 			
 			$results = fetch_item_attribute_type_rs ( $list_item_r ['s_item_type'], 'rss_ind' );
@@ -76,7 +76,7 @@ function build_new_items_feed($URL, $datemask) {
 						$attributes_r = fetch_attribute_val_r ( $list_item_r ['item_id'], $list_item_r ['instance_no'], $item_attribute_type_r ['s_attribute_type'], $item_attribute_type_r ['order_no'] );
 						if (is_array ( $attributes_r )) {
 							$attribute = "";
-							while ( list ( , $value ) = each ( $attributes_r ) ) {
+							foreach ( $attributes_r as $value ) {
 								if (strlen ( $attribute ) > 0)
 									$attribute .= ", ";
 								
@@ -140,7 +140,7 @@ if (is_site_enabled ()) {
 			echo "<ul id=\"rssfeeds\">";
 			
 			reset ( $feeds_r );
-			while ( list ( , $feed_r ) = each ( $feeds_r ) ) {
+			foreach ( $feeds_r  as $feed_r ) {
 				echo ('<li><a href="' . $PHP_SELF . '?feed=' . $feed_r ['feed'] . '">' . $feed_r ['title'] . '</a></dd>');
 			}
 			echo "</ul>";

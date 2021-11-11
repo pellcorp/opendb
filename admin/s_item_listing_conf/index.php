@@ -42,7 +42,7 @@ function get_attribute_type_rs($attribute_type_rs) {
 	}
 
 	reset($_attribute_type_list_rs);
-	while (list(, $_attribute_type_list_r) = each($_attribute_type_list_rs)) {
+	foreach ($_attribute_type_list_rs as $_attribute_type_list_r) {
 		$attribute_type_rs[] = $_attribute_type_list_r;
 	}
 
@@ -175,7 +175,7 @@ function get_column_details($record_r, $row) {
 	// column_no hidden must be null for us to determine if a row has been populated
 	$buffer .= get_input_field("column_no[$row]", NULL, 'Column No', 'hidden', 'N', $record_r['column_no'], FALSE);
 
-	while (list(, $column_r) = each($columns_r)) {
+	foreach ($columns_r as $column_r) {
 		$buffer .= '<td class="' . $class . '" id="' . $column_r['column'] . '[' . $row . ']" nowrap>' . $column_r['field'] . '</td>';
 	}
 	$buffer .= '</tr>';

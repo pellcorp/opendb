@@ -3,14 +3,12 @@ class cssparser {
 	var $css;
 	var $html;
 
-	function cssparser($html = true) {
-		// Register "destructor"
-		register_shutdown_function(array(&$this, "finalize"));
+	function __construct($html = true) {
 		$this->html = ($html != false);
 		$this->Clear();
 	}
 
-	function finalize() {
+	function __destruct() {
 		unset($this->css);
 	}
 
@@ -103,7 +101,13 @@ class cssparser {
 		if (count($codes) > 0) {
 			foreach ($codes as $code) {
 				$code = trim($code);
-				list($codekey, $codevalue) = explode(":", $code);
+				$v = explode(":", $code);
+				if (count($v) == 2)
+					list($codekey, $codevalue) = $v;
+				else {
+					$codekey = $v[0];
+					$codevalue = "";
+				}
 				if (strlen($codekey) > 0) {
 					$this->css[$key][trim($codekey)] = trim($codevalue);
 				}

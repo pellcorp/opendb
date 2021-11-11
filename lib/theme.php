@@ -1,5 +1,5 @@
 <?php
-/* 	
+/*
 	Open Media Collectors Database
 	Copyright (C) 2001,2013 by Jason Pell
 
@@ -59,13 +59,13 @@ function _theme_header($title = NULL, $inc_menu = TRUE) {
 		}
 		
 		$include_menu = ($inc_menu !== FALSE && $inc_menu !== 'N' ? TRUE : FALSE);
-		if (! $include_menu && strlen ( $HTTP_VARS ['mode'] ) == 0) {
-			$HTTP_VARS ['mode'] = 'no-menu';
+		if (! $include_menu && strlen($HTTP_VARS['mode'] ) == 0) {
+			$HTTP_VARS['mode'] = 'no-menu';
 		}
 		
 		$pageId = basename ( $PHP_SELF, '.php' );
 		
-		return theme_header ( $pageId, $title, $include_menu, $HTTP_VARS ['mode'], $user_id );
+		return theme_header( $pageId, $title, $include_menu, $HTTP_VARS['mode'], $user_id );
 	} else {
 		return NULL;
 	}
@@ -109,8 +109,8 @@ function get_theme_javascript($pageid) {
 	}
 	
 	$buffer = '';
-	
-	while ( list ( , $script ) = each ( $scripts ) ) {
+
+	foreach ($scripts as $script) {
 		$buffer .= get_javascript ( $script );
 	}
 	
@@ -122,24 +122,24 @@ function get_theme_css($pageid, $mode = NULL) {
 	
 	$buffer = "\n";
 	
-	$file_list = _theme_css_file_list ( $pageid );
+	$file_list = _theme_css_file_list( $pageid );
 	if (count ( $file_list ) > 0) {
-		while ( list ( , $css_file_r ) = each ( $file_list ) ) {
-			if (strlen ( $css_file_r ['browser'] ) == 0 || $_OpendbBrowserSniffer->isBrowser ( $css_file_r ['browser'] )) {
-				$buffer .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css_file_r ['file'] . "\">\n";
+		foreach ($file_list as $css_file_r) {
+			if (!isset($css_file_r['browser'] ) || $_OpendbBrowserSniffer->isBrowser ( $css_file_r['browser'] )) {
+				$buffer .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css_file_r['file'] . "\">\n";
 			}
 		}
 	}
-	
+
 	if ($mode == 'printable' || $mode == 'no-menu') {
 		$file_list = _theme_css_file_list ( $pageid, $mode );
 		if (count ( $file_list ) > 0) {
-			while ( list ( , $css_file_r ) = each ( $file_list ) ) {
+			foreach ($file_list as $css_file_r) {
 				$buffer .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css_file_r ['file'] . "\">\n";
 			}
 		}
 	}
-	
+
 	return $buffer;
 }
 
@@ -158,7 +158,7 @@ function _theme_css_file_list($pageid, $mode = NULL) {
 	$css_map = _theme_css_map ( $pageid );
 	if (is_not_empty_array ( $css_map )) {
 		reset ( $css_map );
-		while ( list ( , $page ) = each ( $css_map ) ) {
+		foreach ($css_map as $page) {
 			add_css_files ( $page, $mode, $css_file_list );
 		}
 	}
@@ -176,11 +176,11 @@ function add_css_files($pageid, $mode, &$css_file_list) {
 	if (strlen ( $mode ) == 0) {
 		if (strlen ( $theme ) > 0 && file_exists ( "./theme/$theme/${pageid}.css" )) {
 			$css_file_list [] = array (
-					'file' => "./theme/$theme/${pageid}.css" );
+				'file' => "./theme/$theme/${pageid}.css" );
 		}
 		
 		$browsers_r = $_OpendbBrowserSniffer->getSupportedBrowsers ();
-		while ( list ( , $browser ) = each ( $browsers_r ) ) {
+		foreach ($browsers_r as $browser) {
 			$suffix = str_replace ( ".", NULL, $browser );
 			
 			if (strlen ( $theme ) > 0 && file_exists ( "./theme/$theme/${pageid}_${suffix}.css" )) {
@@ -253,10 +253,10 @@ function theme_image_src($src) {
 
 		// temporary until we fix up the theme image calls to use the actual images that exist.
 		$extension_r = array($file_r['extension'], 'png', 'jpg', 'gif');
-		
-		while ( list ( , $dir ) = each ( $dirPaths ) ) {
+
+		foreach($dirPaths as $dir) {
 			reset ( $extension_r );
-			while ( list ( , $extension ) = each ( $extension_r ) ) {
+			foreach ($extension_r as $extension) {
 				$file = './' . $dir . '/' . $src . '.' . $extension;
 				if (file_exists ( $file )) {
 					return $file;
@@ -266,18 +266,6 @@ function theme_image_src($src) {
 	}
 	
 	return FALSE; // no image found.
-}
-
-function find_filename() {
-	while ( list ( , $dir ) = each ( $dirPaths ) ) {
-		reset ( $extension_r );
-		while ( list ( , $extension ) = each ( $extension_r ) ) {
-			$file = './' . $dir . '/' . $src . '.' . $extension;
-			if (file_exists ( $file )) {
-				return $file;
-			}
-		}
-	}
 }
 
 /**
@@ -355,7 +343,7 @@ function _theme_graph_config() {
 }
 
 function is_exists_theme($theme) {
-	if (strlen ( $theme ) <= 20 && file_exists ( "./theme/$theme/theme.php" ))
+	if (strlen( $theme ) <= 20 && file_exists( "./theme/$theme/theme.php" ))
 		return TRUE;
 	else
 		return FALSE;
